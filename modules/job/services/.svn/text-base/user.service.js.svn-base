@@ -1,0 +1,168 @@
+/**
+ * Created by sourabhagrawal on 20/5/15.
+ */
+
+
+'use strict';
+var authHeader = 'authorization';
+
+var app = angular.module('com.module.users');
+
+
+  app.config(['$httpProvider', function($httpProvider) {
+     $httpProvider.interceptors.push();
+  }])
+
+  app.factory('OUAuth', ["$cookies", function($cookies) {
+    var props = ['accessTokenId', 'currentUserData', 'refreshToken'];
+    var propsPrefix = '$OU$';
+
+    function OUAuth() {
+      var self = this;
+      props.forEach(function(name) {
+        self[name] = load(name);
+      });
+      this.rememberMe = undefined;
+    }
+
+    OUAuth.prototype.save = function() {
+      var self = this;
+      var storage = this.rememberMe ? localStorage : sessionStorage;
+
+        props.forEach(function(name) {
+          if(self.rememberMe) {
+              if(name == 'refreshToken')
+              save(localStorage, name, self[name]);
+              else
+              save(sessionStorage, name, self[name]);
+          }else{
+              save(sessionStorage, name, self[name]);
+          }
+
+
+      });
+    };
+
+    OUAuth.prototype.setUser = function(accessTokenId, userData, refreshToken) {
+      this.accessTokenId = accessTokenId;
+      this.currentUserData = JSON.stringify(userData);
+      this.refreshToken = refreshToken;
+    }
+
+    OUAuth.prototype.clearUser = function() {
+      this.accessTokenId = null;
+      this.currentUserData = null;
+      this.refreshToken = null;
+    }
+
+    OUAuth.prototype.clearStorage = function() {
+      props.forEach(function(name) {
+        save(sessionStorage, name, null);
+        save(localStorage, name, null);
+      });
+        delete $cookies['refresh_token'];
+        delete $cookies['access_token'];
+    };
+
+
+    return new OUAuth();
+
+    // Note: LocalStorage converts the value to string
+    // We are using empty string as a marker for null/undefined values.
+    function save(storage, name, value) {
+      var key = propsPrefix + name;
+      if (value == null) value = '';
+      storage[key] = value;
+    }
+
+    function load(name) {
+      var key = propsPrefix + name;
+
+      return localStorage[key] || sessionStorage[key] || null;
+    }
+  }]);
+
+
+  app.factory('LoginService', ["$http", "$q", "URL", "OUAuth", "OUCourse", "$location", function($http, $q, URL, OUAuth, OUCourse, $location) {
+
+      return {
+
+          /**
+           * The function to get all access token of default user
+           * @returns {*}
+           */
+          defaultLogin: function () {
+              var url = URL.getUrl() + 'oauth/token?grant_type=password&client_id=angularapp&client_secret=angularapp&username=anon@firstonlineuniversity.org&password=anon@123';
+              var deferred = $q.defer();
+              $http.get(url).then(function (result) {
+                  deferred.resolve(result);
+              }, function (error) {
+                  deferred.reject(error);
+              });
+
+              return deferred.promise;
+          },
+
+          /**
+           * Logout user
+           */
+          logout: function () {
+              $http.get(URL.getUrl() + 'logout?access_token=' + OUAuth.accessTokenId + '#').success(function (res) {
+
+              });
+              OUAuth.clearUser();
+              OUAuth.clearStorage();
+              OUCourse.clearCourse();
+              OUCourse.clearStorage();
+              $location.path('/login');
+          },
+
+          /**
+           * Logout user
+           */
+          locked: function () {
+
+              OUAuth.accessTokenId = null;
+              OUAuth.save();
+              $location.path('/locked');
+          },
+
+          /**
+           * The function to get all access token of default user
+           * @returns {*}
+           */
+          userToken: function () {
+              var url = URL.getUrl() + 'oauth/token?grant_type=refresh_token&client_id=angularapp&client_secret=angularapp&refresh_token=' + OUAuth.refreshToken;
+              var deferred = $q.defer();
+              $http.get(url).then(function (result) {
+                  deferred.resolve(result.data);
+              }, function (error) {
+                  deferred.reject(error);
+              });
+
+              return deferred.promise;
+          }
+      }
+  }]);
+
+app.factory('UserService', ["$http", "$q", "URL", function($http, $q, URL) {
+
+    return {
+
+        /**
+         * The function to load user info based on access token
+         * @returns {*}
+         */
+        getUser: function (token) {
+            var url = URL.getUrl() + 'api/users/profile/?access_token=' + token;
+            var deferred = $q.defer();
+            $http.get(url).then(function (result) {
+                deferred.resolve(result.data);
+            }, function (error) {
+                deferred.reject(error);
+            });
+
+            return deferred.promise;
+        }
+    }
+}]);

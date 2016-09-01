@@ -1,0 +1,138 @@
+<div class="white box-shadow">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                    </div>
+                    <button class="btn btn-grey btn-sm m-l-sm p-l-md p-r-md"><i class="fa fa-stop"></i>  <span class="hidden-sm-down">Stop Job Chain</span>
+                    </button>
+                    <button class="btn btn-grey btn-sm m-l-sm p-l-md p-r-md"><i class="fa fa-plus"></i> <span class="hidden-sm-down">Add an Order</span>
+                    </button>
+                    <button class="btn btn-grey btn-sm m-l-sm p-l-md p-r-md"><i class="fa fa-calendar"></i> <span class="hidden-sm-down">View Calendar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="padding">
+         <div class="row">
+        <div class="col-md-3 ">
+             <h5 class=" _300" ncy-breadcrumb-last></h5>
+        </div>
+        </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box m-t p-l p-r">
+                <div class="row">
+                    <div class="col-md-9 col-sm-8 m-t">
+
+                        <div class="pull-left">
+                            <span class="text-muted">Status</span>
+
+                            <div>Planned</div>
+                        </div>
+
+                        <div class="btn-group pull-right" style="margin-top: 6px">
+                            <button class="btn btn-grey btn-sm" ng-model="pageView" uib-btn-radio="'grid'"
+                                    ng-class="{'btn-primary': pageView=='grid'}"><i
+                                    class="fa fa-sliders"></i>
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="pageView"
+                                    uib-btn-radio="'list'"
+                                    ng-class="{'btn-primary': pageView=='list'}"><i
+                                    class="fa fa-bars"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-4 m-t">
+                        <div class="light p-a-xs b-a">
+                        <span class="p-l-sm p-r hidden-sm-down">
+                            Zoom
+                         </span>
+                            <rzslider rz-slider-model="slider.value"
+                                      rz-slider-options="slider.options"></rzslider>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div  class="hide zoomViewport" ng-class="{'show': pageView=='grid'}">
+                     <div id="zoom" class="zoomContainer" >
+                        <div class="zoomTarget1">
+                            <order-flow-diagram items="jobs"
+                                                on-add="onAdd($item)"
+                                                on-remove="onRemove($item)"
+                                                on-start-job="onStartJob($item)"
+                                                on-stop-job="onStopJob($item)">
+                            </order-flow-diagram>
+                        </div>
+                    </div>
+                </div>
+                <div class="hide m-t" ng-class="{'show': pageView=='list'}">
+                   <!--<tree-grid tree-data="tree_data"></tree-grid>-->
+                </div>
+               <!--<div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}"><div class="cssload-loading">{{'Loading' | translate}}...</div></div>-->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box white m-t-sm">
+                <div class="box-header  p-b-0">
+                     <div class="row">
+                        <div class="col-md-3 ">
+                             <h5 class=" _300 m-t-xs"><i class="fa fa-file"></i> Logs</h5>
+                        </div>
+                        <div class="col-md-9 ">
+                             <a class="pull-right text-u-l m-l m-t-xs" ng-click="advanceFilter()">Advanced Search</a>
+                             <input type="text" class="form-control inline w pull-right search-box light" placeholder="Search">
+                             <button class="btn btn-default grey btn-sm pull-right m-r" ng-click="advanceFilter()">Modify Log View</button>
+                        </div>
+                     </div>
+                </div>
+                 <div class="box-body p-t-0 p-b-0">
+                     <pre class='log'>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 46.565 + 0200[info](Task test / set: 3718124) SCHEDULER - 842 Task is going to process Order test / set: c: \temp\ a\ Neues Textdokument.txt, state = 100, on JobScheduler '<a
+                             class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>', Order's Process_class test/agent4447-oh</span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 46.565 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = loading </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 46.565 + 0200[info](Task test / set: 3718124) </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 46.565 + 0200[info](Task test / set: 3718124) Task test / set: 3718124 - Protocol starts in C: /ProgramData/sos - berlin.com / jobscheduler / scheduler.1.10 / logs / task.test, set.log </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 46.582 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = waiting_for_process </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 46.865 + 0200[info](Task test / set: 3718124) SCHEDULER - 726 Task runs on remote scheduler <a
+                             class='log' href='http://oh.sos:4447' target='_blank'> http: //oh.sos:4447</a></span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 46.866 + 0200[info](Task test / set: 3718124) SCHEDULER - 918 state = starting(at = never) </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 47.292 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = running_remote_process </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 47.300 + 0200[info](Task test / set: 3718124)[stdout] SCHEDULER_PARAM_SCRIPTROOTDIR = </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 47.307 + 0200[info](Task test / set: 3718124)[stderr] Das System kann den angegebenen Pfad nicht finden. </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 47.334 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = release </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 47.346 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = killing </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 47.346 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = ended </span>
+                     <span class='log_error'> 2016 - 06 - 20 15: 57: 47.348 + 0200[ERROR](Task test / set: 3718124) SCHEDULER - 280 Process terminated with exit code 3(0x3) </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 47.348 + 0200[info](Task test / set: 3718124) SCHEDULER - 843 Task has ended processing of Order test / set: c: \temp\ a\ Neues Textdokument.txt, state = 100, on JobScheduler '<a
+                             class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>'</span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 47.363 + 0200[info] set_state error, Job / scheduler_file_order_sink </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.033 + 0200[info](Task scheduler_file_order_sink: 3718125) SCHEDULER - 842 Task is going to process Order test / set: c: \temp\ a\ Neues Textdokument.txt, state = error, on JobScheduler '<a
+                             class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>', Order's Process_class test/agent4447-oh</span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 48.038 + 0200[debug9](Task scheduler_file_order_sink: 3718125) SCHEDULER - 918 state = loading </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.039 + 0200[info](Task scheduler_file_order_sink: 3718125) </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.039 + 0200[info](Task scheduler_file_order_sink: 3718125) Task scheduler_file_order_sink: 3718125 - Protocol starts in C: /ProgramData/sos - berlin.com / jobscheduler / scheduler.1.10 / logs / task.scheduler_file_order_sink.log </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.041 + 0200[info](Task scheduler_file_order_sink: 3718125) SCHEDULER - 726 Task runs on this JobScheduler '<a
+                             class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>'</span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.042 + 0200[info](Task scheduler_file_order_sink: 3718125) SCHEDULER - 918 state = starting(at = never) </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 48.075 + 0200[debug9](Task scheduler_file_order_sink: 3718125) SCHEDULER - 918 state = opening </span>
+                     <span class='log_debug9'> 2016 - 06 - 20 15: 57: 48.076 + 0200[debug9](Task scheduler_file_order_sink: 3718125) SCHEDULER - 918 state = running </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.109 + 0200[info](Task scheduler_file_order_sink: 3718125) SCHEDULER - 979 Removing file c: \temp\ a\ Neues Textdokument.txt </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.119 + 0200[info](Task scheduler_file_order_sink: 3718125) SCHEDULER - 843 Task has ended processing of Order test / set: c: \temp\ a\ Neues Textdokument.txt, state = error, on JobScheduler '<a
+                             class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>'</span>
+                     <span class='log_debug3'> 2016 - 06 - 20 15: 57: 48.126 + 0200[debug3] SCHEDULER - 341 Order has been set on the blacklist and is removed as soon as the Agent confirms the file removal </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.166 + 0200[info] SCHEDULER - 981 File has been removed </span>
+                     <span class='log_info'> 2016 - 06 - 20 15: 57: 48.166 + 0200[info] SCHEDULER - 940 Removing order from job chain </span>
+                     </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

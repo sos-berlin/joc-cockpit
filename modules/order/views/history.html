@@ -1,0 +1,398 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 text-c p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                    <div ng-class="{'hide':object.historys.length>0}">
+                         <div class="btn-group m-l-sm">
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': filter.date=='all'}" >All
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastHour'"
+                                    ng-class="{'btn-primary': filter.date=='lastHour'}">Last 1 Hour
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'halfDay'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': filter.date=='halfDay'}" >Last 12 Hours
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'fullDay'"
+                                    ng-class="{'btn-primary': filter.date=='fullDay'}">Last 24 Hours
+                            </button>
+                             <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastweak'"
+                                    ng-class="{'btn-primary': filter.date=='lastweak'}">Last Weak
+                            </button>
+                        </div>
+                        <div class="btn-group m-l-sm">
+                            <button id="jobs" class="btn btn-grey btn-sm" ng-model="filter.type" uib-btn-radio="'jobChain'"
+                                    ng-class="{'btn-primary': filter.type=='jobChain'}" >Job Chain
+                            </button>
+                            <button id="stopped" class="btn btn-grey btn-sm" ng-model="filter.type"
+                                    uib-btn-radio="'job'"
+                                    ng-class="{'btn-primary': filter.type=='job'}" ng-click="jobHistory()">Job
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown m-r-sm">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">Filters <span class="text-primary" ng-bind="savedHistoryFilter.selected"></span></button>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" href ng-click="advanceFilter()">Create a new filter</a>
+                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedHistoryFilter.list.length>0">Edit existing filters</a>
+                                <div class="dropdown-divider" ng-if="savedHistoryFilter.list.length>0"></div>
+                                <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedHistoryFilter.list track by $index">
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <button class="btn btn-grey btn-sm" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                    </div>
+                    <div class="hide" ng-class="{'show-block':object.historys.length>0}">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="addToIgnorelist()"> Add to ignorelist</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+<div class="padding p-b-0" >
+    <div class="hide"  ng-class="{'show': isLoading}">
+        <div class="m-t-sm box p-a" ng-show="filter.type == 'jobChain'" >
+            <div class="table-responsive" resizable r-directions="['bottom']" r-height="450" context-menu="menuOptions">
+                <table class="table table-hover table-bordered " id="{{filter.type}}" >
+                    <thead>
+                        <tr>
+                           <th class="noExl">
+                               <label class="md-check">
+                                   <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
+                               </label>
+                           </th>
+                            <th ng-click="sortBy('orderId')"><a>Order Id
+                                <i ng-show="filter.sortBy == 'orderId' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'orderId' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('jobChain')"><a>Job Chain
+                                <i ng-show="filter.sortBy == 'jobChain' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'jobChain' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('state._text')"><a>Status
+                                <i ng-show="filter.sortBy == 'state._text' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'state._text' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('startTime')"><a>Start time
+                                <i ng-show="filter.sortBy == 'startTime' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'startTime' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('endTime')"><a>End time
+                                <i ng-show="filter.sortBy == 'endTime' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'endTime' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('duration')">
+                                <a>Duration
+                                <i ng-show="filter.sortBy == 'duration' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'duration' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('node')"><a>End Node
+                                <i ng-show="filter.sortBy == 'node' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'node' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th class="noExl"></th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == history}">
+                    <tr >
+                        <td class="noExl">
+                            <label class="md-check">
+                                <input type="checkbox" data-checklist-model="object.historys" data-checklist-value="history"><i class="primary"></i>
+                            </label>
+                        </td>
+                        <td width="12%">
+                            <i class="cursor fa fa-caret-down" ng-if="showPanel != history.historyId" ng-click="showPanelFuc(history.historyId)"></i>
+                            <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == history.historyId" ng-click="hidePanelFuc()"></i>
+                            <a ng-click="showLogFuc(history)" href="" ng-bind="history.orderId"></a>
+                        </td>
+                        <td width="38%" ng-bind="history.jobChain"></td>
+                        <td ><span class="text-c label" ng-class="bgColorFunction(history.state.severity)" ng-bind="history.state._text | translate"></span></td>
+                        <td ng-bind="history.startTime | stringToDate"></td>
+                        <td ng-bind="history.endTime | stringToDate"></td>
+                        <td ng-bind="history.startTime | duration:history.endTime"></td>
+                        <td ng-bind="history.node || '-' "></td>
+                        <td class="noExl">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                        class="fa fa-ellipsis-h"></i></button>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                    <a class="dropdown-item" target="_blank" href="#/log">Show Log in new tab</a>
+                                    <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addOrderToIgnoreList(history.orderId)">Add Order to ignorelist</a>
+                                    <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addJobChainToIgnoreList(history.jobChain)">Add Job Chain to ignorelist</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                     <tr class="noExl" ng-show="showPanel == history.historyId">
+                         <td></td>
+                         <td colspan="8" style="padding: 0 !important;">
+                             <table class="table m-a-0">
+                                 <thead>
+                                 <tr>
+                                     <th>Step</th>
+                                     <th>State</th>
+                                     <th>Job</th>
+                                     <th>Start</th>
+                                     <th>End</th>
+                                     <th>Duration</th>
+                                     <th>Exit Code</th>
+                                     <th>Error Code</th>
+                                     <th>Error Text</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-repeat="order in steps">
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                     <td></td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </td>
+                     </tr>
+                    </tbody>
+                </table>
+                <div ng-if="isLoading && historys.length==0" class="text-center m-t-md h6 text-uppercase">No Order History Found</div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>No data matched</div>
+                <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-right" ng-show="filtered.length > 10">
+                        <div class="btn-group m-r-xxs">
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                                    ng-class="{'primary': pageSize=='10'}" >10
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                                    ng-class="{'primary': pageSize=='25'}" >25
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                                    ng-class="{'primary': pageSize=='50'}" >50
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                                    ng-class="{'primary': pageSize=='100'}">100
+                            </button>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-t-sm box p-a" ng-show="filter.type == 'job'">
+            <div class="table-responsive" resizable r-directions="['bottom']" r-height="450" context-menu="menuOptions">
+                <table class="table table-hover table-bordered " id="{{filter.type}}">
+                    <thead>
+                        <tr>
+                           <th class="noExl">
+                               <label class="md-check">
+                                   <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
+                               </label>
+                           </th>
+                            <th ng-click="sortBy('taskId')"><a>Task Id
+                                <i ng-show="filter.sortBy == 'taskId' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'taskId' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('job')"><a>Job
+                                <i ng-show="filter.sortBy == 'job' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'job' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('state._text')"><a>Status
+                                <i ng-show="filter.sortBy == 'state._text' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'state._text' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('startTime')"><a>Start time
+                                <i ng-show="filter.sortBy == 'startTime' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'startTime' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('endTime')"><a>End time
+                                <i ng-show="filter.sortBy == 'endTime' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'endTime' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('duration')">
+                                <a>Duration
+                                <i ng-show="filter.sortBy == 'duration' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'duration' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('exitCode')"><a>Exit Code
+                                <i ng-show="filter.sortBy == 'exitCode' && !sortReverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="filter.sortBy == 'exitCode' && sortReverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th class="noExl"></th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == jobHistory}">
+                    <tr >
+                        <td class="noExl">
+                            <label class="md-check">
+                                <input type="checkbox" data-checklist-model="object.historys" data-checklist-value="jobHistory"><i class="primary"></i>
+                            </label>
+                        </td>
+                        <td>
+                            <i class="cursor fa fa-caret-down" ng-if="showPanel != jobHistory.taskId" ng-click="showPanelFuc(jobHistory.taskId)"></i>
+                            <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == jobHistory.taskId" ng-click="hidePanelFuc()"></i>
+                            <a ng-click="showLogFuc(jobHistory)" href="" ng-bind="jobHistory.taskId"></a>
+                        </td>
+                        <td width="40%" ng-bind="jobHistory.job"></td>
+                        <td ><span class="text-c label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
+                        <td ng-bind="jobHistory.startTime | stringToDate"></td>
+                        <td ng-bind="jobHistory.endTime | stringToDate"></td>
+                        <td ng-bind="jobHistory.startTime | duration:jobHistory.endTime"></td>
+                        <td ng-bind="jobHistory.exitCode"></td>
+                        <td class="noExl">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                        class="fa fa-ellipsis-h"></i></button>
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                    <a class="dropdown-item" target="_blank" href="#/log">Show Log in new tab</a>
+                                    <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addJobToIgnoreList(jobHistory.job)">Add Job to ignorelist</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                     <tr class="noExl" ng-show="showPanel == jobHistory.taskId">
+
+                                <td></td>
+                                <td colspan="8" style="padding: 0 !important;">
+                                    <table class="table m-a-0">
+                                        <thead>
+                                        <tr>
+                                            <th>Step</th>
+                                            <th>State</th>
+                                            <th>Job</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Duration</th>
+                                            <th>Exit Code</th>
+                                            <th>Error Code</th>
+                                            <th>Error Text</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="order in steps">
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
+                <div ng-if="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase">No Job history Found</div>
+              <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>No data matched</div>
+                 <ul ng-show="jobFiltered.length > pageSize" uib-pagination total-items="jobFiltered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-right" ng-show="jobFiltered.length > 10">
+                        <div class="btn-group m-r-xxs">
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                                    ng-class="{'primary': pageSize=='10'}" >10
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                                    ng-class="{'primary': pageSize=='25'}" >25
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                                    ng-class="{'primary': pageSize=='50'}" >50
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                                    ng-class="{'primary': pageSize=='100'}">100
+                            </button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div  ng-if="!isLoading" class="text-center m-t-lg" >
+        <div class="cssload-loading">Loading...</div>
+    </div>
+    <div class="hide " ng-class="{'show': isLoading}" >
+        <div class="row" ng-show="showLogPanel" >
+            <div class="col-md-12">
+                <div  class="box white">
+                    <div class="box-header">
+                        <span class="text">{{showLogPanel.jobChain}} - <i class="text-sm text-muted">{{showLogPanel.orderId}}</i></span>
+                    </div>
+                    <div class="box-tool">
+                        <ul class="nav text-muted text-md">
+                            <li class="nav-item inline m-l-sm">
+                                <a href="" ng-click="hideLogPanel()"><img src="images/remove.png"> </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="box-body b-t" >
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm"><i class="fa fa-print"></i></button>
+                                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm"><i class="fa fa-save"></i></button>
+                                <input type="text" class="form-control inline w pull-right search-box light" placeholder="Search">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <pre class = 'log' >
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 46.565 + 0200[info](Task test / set: 3718124) SCHEDULER - 842 Task is going to process Order test / set: c: \temp\ a\ Neues Textdokument.txt, state = 100, on JobScheduler '<a class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>', Order's Process_class test/agent4447-oh</span>
+                                    <span class = 'log_debug9' > 2016 - 06 - 20 15: 57: 46.565 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = loading </span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 46.565 + 0200[info](Task test / set: 3718124) </span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 46.565 + 0200[info](Task test / set: 3718124) Task test / set: 3718124 - Protocol starts in C: /ProgramData/sos - berlin.com / jobscheduler / scheduler.1.10 / logs / task.test, set.log </span>
+                                    <span class = 'log_debug9' > 2016 - 06 - 20 15: 57: 46.582 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = waiting_for_process </span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 46.865 + 0200[info](Task test / set: 3718124) SCHEDULER - 726 Task runs on remote scheduler <a class = 'log' href = 'http://oh.sos:4447' target = '_blank' > http: //oh.sos:4447</a></span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 46.866 + 0200[info](Task test / set: 3718124) SCHEDULER - 918 state = starting(at = never) </span>
+                                    <span class = 'log_debug9'> 2016 - 06 - 20 15: 57: 47.292 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = running_remote_process </span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 47.300 + 0200[info](Task test / set: 3718124)[stdout] SCHEDULER_PARAM_SCRIPTROOTDIR = </span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 47.307 + 0200[info](Task test / set: 3718124)[stderr] Das System kann den angegebenen Pfad nicht finden. </span>
+                                    <span class = 'log_debug9' > 2016 - 06 - 20 15: 57: 47.334 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = release </span>
+                                    <span class = 'log_debug9' > 2016 - 06 - 20 15: 57: 47.346 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = killing </span>
+                                    <span class = 'log_debug9' > 2016 - 06 - 20 15: 57: 47.346 + 0200[debug9](Task test / set: 3718124) SCHEDULER - 918 state = ended </span>
+                                    <span class = 'log_error' > 2016 - 06 - 20 15: 57: 47.348 + 0200[ERROR](Task test / set: 3718124) SCHEDULER - 280 Process terminated with exit code 3(0x3) </span>
+                                    <span class = 'log_info' > 2016 - 06 - 20 15: 57: 47.348 + 0200[info](Task test / set: 3718124) SCHEDULER - 843 Task has ended processing of Order test / set: c: \temp\ a\ Neues Textdokument.txt, state = 100, on JobScheduler '<a class='log ' href='http: //OH:4410' target='_blank'>http://OH:4410</a>'</span>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       </div>
+    </div>
+</div>
+

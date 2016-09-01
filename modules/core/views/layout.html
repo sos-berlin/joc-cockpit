@@ -1,0 +1,30 @@
+<!-- content -->
+<div id="content" class="app-content " role="main" ng-controller="HeaderCtrl">
+    <div class="w-full text-right top-header-bar">
+        <span class="m-r-sm">Time: <span class="text-white" ng-bind="currentTime | stringToDate"></span></span>
+        <span class="m-r-sm">JobScheduler Start Time: <span class="text-white" ng-bind="selectedJobScheduler.startedAt | stringToDate"></span></span>
+
+
+        <div class="btn-group dropdown">
+            <a class="nav-link " data-toggle="dropdown">
+                ID: <span class="_600 text-orange" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
+            </a>
+            <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
+                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler)">
+                    <span><i class="fa fa-circle text-muted text-xs" ng-class="{'text-success':schedulerIds.selected == jobScheduler}"></i> {{jobScheduler}}</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+    <div class="app-header navbar-md white box-shadow bg-blue-color" >
+        <div ui-include="'modules/core/views/header.html'"></div>
+    </div>
+    <div class="app-footer">
+        <div ui-include="'modules/core/views/footer.html'"></div>
+    </div>
+    <div class="app-body" >
+        <div ui-view id="view"></div>
+    </div>
+</div>
+<!-- / -->

@@ -1,0 +1,46 @@
+<link href="css/lock.css" rel="stylesheet" type="text/css"/>
+<div class="page-lock">
+	<div class="page-logo">
+		<img src="images/logo.png" alt="logo" class="img-responsive"/>
+
+	</div>
+	<div class="page-body">
+		<img class="page-lock-img" ng-src="{{server_path}}{{user.photoLink}}" onError="this.onerror=null;this.src='images/thumb.jpg';">
+		<div class="page-lock-info">
+			<h1 ng-bind="userName"></h1>
+			<span class="email" ng-bind="email"></span>
+			<span class="locked">
+			Locked </span>
+			<form class="form-inline" ng-submit="login()" method="post">
+                <div ng-if="loginError" class="error">{{loginError}}</div>
+				<div class="input-group input-medium">
+					<input type="password" class="form-control" placeholder="Password" ng-model="password" required>
+					<span class="input-group-btn">
+					<button type="submit" class="btn blue icn-only"><i class="m-icon-swapright m-icon-white"></i></button>
+					</span>
+				</div>
+				<!-- /input-group -->
+				<div class="relogin">
+					<a href="" ng-click="logout()">
+					Not {{userName}} ? </a>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="page-footer-custom">
+		 2014 &copy; First Online University.
+	</div>
+</div>
+<script>
+  jQuery(document).ready(function() {
+     $.backstretch([
+        "images/1.jpg",
+        "images/3.jpg",
+        "images/4.jpg"
+        ], {
+          fade: 1000,
+          duration: 8000
+    }
+    );
+  });
+</script>

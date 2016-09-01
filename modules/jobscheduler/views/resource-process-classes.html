@@ -1,0 +1,83 @@
+<div class="hide" ng-class="{'show': isLoading}">
+    <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
+        <div>
+            <div class="col-xxl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 hide" ng-class="{'show': pageView=='grid'}" ng-repeat="processClass in filtered = (processClasses | filter: filterString:strict)  | orderBy: filter.sortBy:sortReverse">
+                <div class="box card">
+                    <div class="box-body">
+                        <div>
+                            <a class="text-left">
+                                <i class="fa fa-stop text-sm"></i>
+                                <span class="text" ng-bind="processClass.name"></span>
+                            </a>
+                        </div>
+                        <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses"></span> Max Process</div>
+                        <div class="text-sm  text-left text-muted p-t-xs" ><a class="text-black _600" href="" ng-bind="processClass.numOfProcesses"></a>  No. of Process</div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && processClasses.length !==0)}">No data matched</div>
+        </div>
+    </div>
+    <div class="m-t-sm box p-a" ng-show="pageView=='list'">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered  ">
+                <thead>
+                <tr>
+                    <th ng-click="sortBy('name')"><a>Name
+                        <i ng-show="propertyName == 'name' && !reverse"
+                           class="fa fa-caret-down "></i>
+                        <i ng-show="propertyName == 'name' && reverse"
+                           class="fa fa-caret-up "></i></a>
+                    </th>
+                    <th ng-click="sortBy('path')"><a>Path
+                        <i ng-show="propertyName == 'path' && !reverse"
+                           class="fa fa-caret-down "></i>
+                        <i ng-show="propertyName == 'path' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                    </th>
+                    <th ng-click="sortBy('maxProcesses')"><a>Max Process
+                        <i ng-show="propertyName == 'maxProcesses' && !reverse"
+                           class="fa fa-caret-down "></i>
+                        <i ng-show="propertyName == 'maxProcesses' && reverse"
+                           class="fa fa-caret-up "></i></a>
+                    </th>
+                    <th ng-click="sortBy('numOfProcesses')"><a>No. of Process
+                        <i ng-show="propertyName == 'numOfProcesses' && !reverse"
+                           class="fa fa-caret-down "></i>
+                        <i ng-show="propertyName == 'numOfProcesses' && reverse"
+                           class="fa fa-caret-up "></i></a>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="processClass in filtered = (processClasses | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
+                    <td ng-bind="processClass.name"></td>
+                    <td ng-bind="processClass.path"></td>
+                    <td ng-bind="processClass.maxProcesses"></td>
+                    <td><a href="" class="text-primary" ng-bind="processClass.numOfProcesses"></a></td>
+                </tr>
+                </tbody>
+            </table>
+            <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev">
+            <div class="pull-right" ng-show="filtered.length > 10">
+                <div class="btn-group m-r-xxs">
+                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                            ng-class="{'primary': pageSize=='10'}" >10
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                            ng-class="{'primary': pageSize=='25'}" >25
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                            ng-class="{'primary': pageSize=='50'}" >50
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                            ng-class="{'primary': pageSize=='100'}">100
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="isLoading && processClasses.length==0" class="text-center m-t h6 text-uppercase">No process classes found</div>
+    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && locks.length !==0)}">No data matched</div>
+</div>
+<div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">Loading...</div></div>

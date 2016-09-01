@@ -1,0 +1,336 @@
+/**
+ * Created by sourabhagrawal on 18/5/15.
+ */
+
+'use strict';
+
+var app = angular.module('com.module.users');
+
+app.controller('LoginCtrl', ["$scope", "$cookies", "$http", "URL", "OUAuth", "$location", "UserService", function($scope, $cookies, $http, URL, OUAuth, $location, UserService) {
+
+    $scope.data = {};
+    $scope.rememberMe = false;
+
+    $scope.login = function () {
+
+        if ($scope.data.username && $scope.data.password) {
+            OUAuth.currentUserId = OUAuth.accessTokenId = null;
+            var url = URL.getUrl() + 'oauth/token?grant_type=password&client_id=angularapp&client_secret=angularapp&' +
+                'username=' + encodeURIComponent($scope.data.username) +
+                '&password=' + encodeURIComponent($scope.data.password);
+
+            $http.post(url,{
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).success(function (response) {
+
+                var next = $location.nextAfterLogin || '/';
+
+                $location.nextAfterLogin = null;
+
+                UserService.getUser(response.value).then(function (res) {
+                    if (res) {
+                        OUAuth.setUser(response.value, res, response.refreshToken.value);
+                        OUAuth.rememberMe = $scope.rememberMe;
+                    }
+
+                    OUAuth.save();
+
+                    if (next === '/login') {
+                        next = '/';
+                    }
+
+                    $location.path(next);
+                }, function(err){
+                    OUAuth.refreshToken = OUAuth.accessTokenId = null;
+                    OUAuth.save();
+                });
+
+
+            }).error(function (err) {
+
+                $scope.loginError = 'Username or password is wrong';
+                OUAuth.refreshToken = OUAuth.accessTokenId = null;
+                OUAuth.save();
+
+            });
+        }
+
+    }
+}]);
+
+
+app.controller('LockedCtrl', ["$scope", "$http", "URL", "OUAuth", "$location", "OUCourse", function($scope, $http, URL, OUAuth, $location, OUCourse) {
+
+    $scope.server_path = URL.filePathUrl();
+
+    $scope.user = JSON.parse(OUAuth.currentUserData);
+
+    $scope.userName = $scope.user.firstName + " " + $scope.user.lastName;
+
+    $scope.email = $scope.user.email;
+
+    $scope.logout = function () {
+        OUAuth.clearUser();
+        OUAuth.clearStorage();
+        OUCourse.clearCourse();
+        OUCourse.clearStorage();
+        $location.path('/login');
+    }
+
+    $scope.login = function () {
+
+        if ($scope.password) {
+
+            var url = URL.getUrl() + 'oauth/token?grant_type=password&client_id=angularapp&client_secret=angularapp&' +
+                'username=' + encodeURIComponent($scope.email) +
+                '&password=' + encodeURIComponent($scope.password);
+            $http.post(url, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).success(function (response) {
+
+                OUAuth.accessTokenId = response.value;
+                OUAuth.save();
+
+                $location.path('/');
+
+              }).error(function (err) {
+                $scope.loginError = 'Invalid password';
+            });
+        }
+    }
+}]);
+
+
+ app.controller('ProfileCtrl', ["$scope", "$rootScope", "$http", "URL", "CoreService", "gettextCatalog", "OUAuth", "FileUploader", "$sce", "UserService", "$state", function($scope, $rootScope, $http, URL, CoreService, gettextCatalog, OUAuth, FileUploader,$sce, UserService, $state) {
+
+     $scope.server_path = URL.filePathUrl();
+     $rootScope.relaod = false;
+
+     $scope.userInfo =  JSON.parse(OUAuth.currentUserData);
+     $scope.desc = $sce.trustAsHtml($scope.userInfo.biography);
+
+     $scope.mon =$scope.userInfo.bdMonth;
+     $scope.day =$scope.userInfo.bdDay;
+
+     if (( $scope.userInfo.bdMonth + '').length === 1) {
+          $scope.mon = 0 + '' +  $scope.userInfo.bdMonth;
+     }
+
+     if (( $scope.userInfo.bdDay + '').length === 1) {
+          $scope.day = 0 + '' +  $scope.userInfo.bdDay;
+     }
+
+     $scope.dob = $scope.mon + '/' +  $scope.day + '/' +  $scope.userInfo.bdYear;
+
+
+     /**
+      * Load user profile detail
+      */
+     $scope.profile= function() {
+          UserService.getUser(OUAuth.accessTokenId).then(function (res) {
+
+             OUAuth.currentUserData =  JSON.stringify(res);
+             OUAuth.save();
+              $rootScope.$broadcast('reload', $rootScope.reload);
+         },function (err) {
+             if (err)
+                 CoreService.toastError(gettextCatalog.getString('Oops'),
+                     gettextCatalog.getString('Error ' + err.message));
+         });
+     }
+
+
+     $scope.checkName = function (data, id) {
+         if (id === 2 && data !== 'awesome') {
+             return "Username 2 should be `awesome`";
+         }
+     };
+
+     $scope.sexs = [
+         {value: 'M', text: 'Male'},
+         {value: 'F', text: 'Female'},
+         {value: 'U', text: 'I would not rather say'}
+     ];
+
+     $scope.degrees = [
+         {value: 'MBA (Finance)', text: 'MBA (Finance)'},
+         {value: 'MBA (HR)', text: 'MBA (HR)'},
+         {value: 'MBA (Marketing)', text: 'MBA (Marketing)'}
+     ];
+
+     $scope.videoPlayers = [
+         {value: 'Html player', text: 'Html player'},
+         {value: 'Flash player', text: 'Flash player'}
+     ];
+
+      $scope.typeChar = "";
+
+      if ($scope.userInfo.biography) {
+          $scope.typeChar = String($scope.userInfo.biography).replace(/<[^>]+>/gm, '').length;
+      }
+
+      $scope.changeDesc = function (content) {
+
+          var code = String(content).replace(/<[^>]+>/gm, '');
+
+          $scope.typeChar = code.length;
+
+          if (code.length > 2000) {
+              $scope.errorMsg = "Description length exceeded";
+          }
+          else {
+              $scope.errorMsg = "";
+          }
+      }
+
+      var uploader = $scope.uploader = new FileUploader({
+
+          url: URL.getUrl() + 'api/coursesadmin/files/upload?access_token=' + OUAuth.accessTokenId,
+          formData: [
+            {
+                file1:'info/images/profiles'
+            }]
+      });
+
+      // CALLBACKS
+      uploader.onAfterAddingFile = function (item) {
+          if (item.file.size > 1024 * 1024 * 5) {
+              CoreService.toastWarning(gettextCatalog.getString('File size is exceed!'), 'Please upload profile image less than 5 MB');
+              item.remove();
+          }
+         var ext = item.file.name.slice(item.file.name.lastIndexOf('.') + 1);
+          if (ext.toLocaleLowerCase() === 'jpg' || ext.toLocaleLowerCase() === 'png' ||
+              ext.toLocaleLowerCase() === 'jpeg') {
+              item.file.name = new Date().getTime()+'_profile_image'+'.'+ext;
+               $scope.loading = true;
+              item.upload();
+
+          } else {
+              CoreService.toastWarning(gettextCatalog.getString('File extension .' + ext + ' is allowed!'), 'Please upload profile image with following extensions jpg/jpeg/png');
+              item.remove();
+          }
+      };
+
+      uploader.onErrorItem = function (fileItem, response, status, headers) {
+          CoreService.toastError(gettextCatalog.getString('Error in profile image uploading'), 'We received a ' + status + ' error from the API!');
+          $scope.loading = false;
+      };
+
+      uploader.onCompleteItem = function (fileItem, response, status, headers) {
+
+          if (status == 200) {
+              $scope.userInfo.photoLink = 'info/images/profiles/'+ fileItem.file.name
+              $scope.saveUser();
+              $scope.loading = false;
+          }
+      };
+
+     /**
+      * The function to update user detail
+      * @returns {*}
+      */
+      $scope.saveUser = function() {
+          $scope.mon = $scope.userInfo.bdMonth;
+          $scope.day = $scope.userInfo.bdDay;
+
+          if (( $scope.userInfo.bdMonth + '').length === 1) {
+              $scope.mon = 0 + '' + $scope.userInfo.bdMonth;
+          }
+
+          if (( $scope.userInfo.bdDay + '').length === 1) {
+              $scope.day = 0 + '' + $scope.userInfo.bdDay;
+          }
+
+          $scope.dob = $scope.mon + '/' + $scope.day + '/' + $scope.userInfo.bdYear;
+
+          // $scope.user already updated!
+          return $http.put(URL.getUrl() + 'api/users/profile/?access_token=' + OUAuth.accessTokenId, $scope.userInfo).success(function (res) {
+              $scope.profile();
+              //CoreService.toastSuccess(gettextCatalog.getString('Profile Successfully Updated!'));
+          }).error(function (err) {
+              CoreService.toastError(gettextCatalog.getString('Oops'),
+                  gettextCatalog.getString('Error ' + err.message));
+          });
+      };
+ }]);
+
+ app.controller('RegisterCtrl', ["$scope", "$rootScope", "$http", "URL", "CoreService", "gettextCatalog", "LoginService", function($scope, $rootScope, $http, URL, CoreService,  gettextCatalog, LoginService) {
+
+     $scope.user = {};
+     $scope.ConfirmAgree = false;
+
+
+     $rootScope.getIP = function() {
+         /**
+          * Call back function to get IP address and location of user
+          */
+         $http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK')
+             .success(function (data) {
+                 $scope.user.ip = data.ip;
+                 $scope.user.lk = data.city + ', ' + data.region + ', ' + data.country;
+                 console.log($scope.user.ip);
+             });
+     }
+
+
+     /**
+      * The function to register user
+      */
+     $scope.create = function () {
+
+         $scope.accepted = function () {
+             $scope.tnc = undefined;
+         }
+
+         if(angular.equals($scope.user.password, $scope.user.confirmPassword)) {
+
+             if ($scope.ConfirmAgree) {
+
+                 LoginService.defaultLogin().then(function (res) {
+
+                     $http.post(URL.getUrl() + 'api/login/register/?access_token=' + res.data.value, $scope.user).success(function (response) {
+                         CoreService.toastSuccess(gettextCatalog.getString('Registration Successfully '),
+                             'Check your email address for account activation link !');
+                     }).error(function (err) {
+                         $scope.registerError = err.message;
+
+                     });
+
+                 }, function (err) {
+                     $scope.registerError = "Registration Failed";
+                     CoreService.toastError(gettextCatalog.getString('Registration Failed '),
+                         'Your are not authorized');
+                 });
+             } else {
+                 $scope.tnc = "You have to accept Terms and Conditions.";
+             }
+         }
+     };
+ }]);
+
+app.controller('ResetCtrl', ["$scope", "$http", "URL", "CoreService", "gettextCatalog", "LoginService", function($scope, $http, URL, CoreService,  gettextCatalog, LoginService) {
+
+    $scope.email = '';
+
+    /**
+     * The function to reset user password
+     */
+    $scope.reset = function () {
+        LoginService.defaultLogin().then(function (res) {
+            $http.post(URL.getUrl() + 'api/login/forgetpassword/' + $scope.email + '?access_token=' + res.data.value).success(function (response) {
+                CoreService.toastSuccess(gettextCatalog.getString('A password change link is being sent to your registered email address !'), '');
+            }).error(function (err) {
+                $scope.resetError = err.message;
+
+            });
+        }, function (err) {
+            $scope.registerError = "Reset Password Failed";
+            CoreService.toastSuccess(gettextCatalog.getString('Registration Failed '),
+                'Your are not authorized');
+        });
+    };
+}]);

@@ -1,0 +1,64 @@
+   <!-- BEGIN HEADER INNER -->
+   <div class="page-header-inner">
+		<!-- BEGIN LOGO -->
+		<div class="page-logo">
+			<a href="#!/">
+			   <img src="images/logo-default.png" alt="logo" class="logo-default"/>
+			</a>
+			<div class="menu-toggler sidebar-toggler">
+				<!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
+			</div>
+		</div>
+		<!-- END LOGO -->
+		<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+		<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+		</a>
+		<!-- END RESPONSIVE MENU TOGGLER -->
+
+		<!-- BEGIN PAGE TOP -->
+		<div class="page-top">
+			<!-- BEGIN TOP NAVIGATION MENU -->
+			<div class="top-menu">
+				<ul class="nav navbar-nav pull-right">
+
+                    <li class="dropdown dropdown-user">
+						<a href="" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
+                        <img alt="" class="img-circle" ng-src="{{server_path}}{{user.photoLink}}" onError="this.onerror=null;this.src='images/thumb.jpg';"/>
+						<span class="username username-hide-on-mobile">{{userName}}</span>
+						<i class="fa fa-angle-down"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-default">
+							<li>
+								<a ui-sref="app.profile">
+								   <i class="icon-user"></i> My Profile
+                                </a>
+							</li>
+
+                            <li>
+								<a ui-sref="app.add-instructor">
+								   <i class="fa fa-user"></i> Instructor Profile
+                                </a>
+							</li>
+
+							<li>
+								<a ui-sref="app.reset">
+								   <i class="icon-settings"></i>Change Password
+								</a>
+							</li>
+							<li class="divider">
+							</li>
+							<li>
+								<a href="" ng-click="logout()">
+								  <i class="icon-key"></i> Log Out
+                                </a>
+							</li>
+						</ul>
+					</li>
+					<!-- END USER LOGIN DROPDOWN -->
+				</ul>
+			</div>
+			<!-- END TOP NAVIGATION MENU -->
+		</div>
+		<!-- END PAGE TOP -->
+   </div>
+   <!-- END HEADER INNER -->

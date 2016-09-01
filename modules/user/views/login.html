@@ -1,0 +1,43 @@
+<div class="bg-color bg-auto w-full">
+    <div class="smooth pos-rlt">
+        <div class="center-block w-xxxl w-auto-xs p-y-md">
+            <div class="padding box text-color m-a-md">
+                <div class="navbar m-t">
+                    <div class="pull-center">
+                        <a class="navbar-brand">
+                            <img src="images/jobscheduler-logo.png" alt=".">
+                        </a>
+                    </div>
+                </div>
+                <div class="m-b text-md text-midnight-blue _600 text-center m-t-md">
+                    Sign In
+                </div>
+                <div class="hide alert alert-danger" ng-class="{'show':loginError}">
+                    <span ng-bind="loginError | translate"></span>
+                </div>
+                <form method="post" name="loginForm" ng-submit="login()">
+                    <div class="md-form-group">
+                        <input type="text" class="md-input" ng-model="user.username" required>
+                        <label class="font14">Username</label>
+                    </div>
+                    <div class="md-form-group">
+                        <input type="password" class="md-input" autocomplete="off" ng-model="user.password" required
+                               maxlength="15">
+                        <label class="font14">Password</label>
+                    </div>
+
+                    <div class="m-b-md">
+                        <label class="md-check">
+                            <input type="checkbox" ng-model="rememberMe"><i class="primary"></i> Remember Me
+                        </label>
+                        <a href class="text-primary _500 pull-right">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block p-x-md"
+                            ng-disabled="loginForm.$invalid || isProcessing" id="loginBtn">Sign In
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

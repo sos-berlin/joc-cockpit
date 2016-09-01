@@ -1,0 +1,407 @@
+
+<div ng-controller="OrderFunctionCtrl">
+    <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
+
+        <div class="hide m-l-xs m-t-xs " ng-class="{'show': pageView=='grid'}" >
+            <div class="row parent" ng-repeat="(key, value) in filtered = (orders | filter: filterString:strict) | groupBy: 'path1'">
+                <div class="col-md-12 m-b-sm">
+                    <a href data-toggle="collapse" data-target="#{{$index}}" aria-expanded="false"
+                       aria-controls="{{$index}}" >
+                        <i class="collap fa fa-folder-open m-r-xs"></i>
+                    </a>
+                    <span class="text text-dark" ng-bind="key"></span>
+                </div>
+                <div class="collapse in" id="{{$index}}">
+                    <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 " ng-repeat="order in value" >
+                        <div class="box card" ng-class="{'light-bg':showLogPanel == order}">
+                            <div class="box-body">
+                                <div>
+                                    <label class="md-check pos-abt">
+                                        <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i
+                                            class="primary"></i></label>
+
+                                    <div class="text-left m-l-md block-ellipsis" >
+                                        <a href="" uib-tooltip="{{order.title}}" ng-click="showLogFuc(order)" ng-bind="order.orderId"></a></div>
+                                    <div class="btn-group dropdown pull-right abt-dropdown ">
+                                        <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
+                                                class="text fa fa-ellipsis-v"></i></a>
+
+                                        <div class="dropdown-menu dropdown-ac dropdown-more">
+                                            <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" >Show configuration</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text == 'pending' || order.processingState._text == 'setback') && permission.Order.start"
+                                               ng-click="start(order)">Start Order Now</a>
+                                             <a href class="dropdown-item" ng-if="(order.processingState._text == 'pending' || order.processingState._text == 'setback') && permission.Order.start"
+                                               ng-click="startOrder(order)">Start Order at</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text == 'suspended' || order.processingState._text == 'pending') && permission.Order.update"
+                                               ng-click="setOrderState(order)">Set Order State</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text == 'suspended' || order.processingState._text == 'pending') && permission.Order.update"
+                                               ng-click="setRunTime(order)">Set Run Time</a>
+                                            <a href class="dropdown-item bg-hover-color"
+                                               ng-if="(order.processingState._text != 'suspended' && order.processingState._text != 'blacklist') && permission.Order.suspend"
+                                               ng-click="suspendOrder(order)">Suspend Order</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrder(order)">Resume Order</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrderWithParam(order)">Resume Order Parametrized</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrderNextstate(order)">Resume Order from next state</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text != 'blacklist') && permission.Order.update"
+                                               ng-click="resetOrder(order)">Reset Order</a>
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'setblack' && permission.Order.removeSetback "
+                                               ng-click="removeOrder(order)">Remove Order</a>
+                                            <a href class="dropdown-item" ng-if="order.processingState._text != 'blacklist'"
+                                               ng-click="viewCalendar(order)">Show Calendar</a>
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'blacklist' && permission.Order.delete.permanent"
+                                               ng-click="deleteOrder(order)">Delete Order</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-left text-muted p-t-sm">
+                                    <span>State: </span>
+                                    <span class="text-c" ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                </div>
+                            </div>
+                            <div class="box-footer b-t">
+                                <div>
+                                    <a href class="hide text-left"
+                                       ng-if="(order.processingState._text == 'pending' || order.processingState._text == 'setback') "
+                                       ng-class="{'show-block':permission.Order.start}"
+                                       ng-click="start(order)">
+                                        <i class="fa fa-play text-black-lt"></i>
+                                        <span class="text-black-lt">Start Now</span>
+                                    </a>
+                                    <a href class="hide text-left" ng-if="order.processingState._text == 'suspended' "
+                                       ng-class="{'show-block':permission.Order.resume}"
+                                       ng-click="resumeOrder(order)">
+                                        <i class="fa fa-step-forward text-black-lt"></i>
+                                        <span class="text-black-lt">Resume</span>
+                                    </a>
+                                    <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text != 'running'}" ng-if="(order.processingState._text && order.processingState._text != 'suspended' && order.processingState._text != 'blacklist') && permission.Order.suspend"
+                                       ng-click="suspendOrder(order)">
+                                        <i class="fa fa-pause text-black-lt"></i>
+                                        <span class="text-black-lt">Suspend</span>
+                                    </a>
+                                    <a target="_blank" href="" ng-if="order.historyId" class="hide text-right"
+                                       ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}"
+                                       ng-click="viewOrder(order)"><i class="fa fa-file-text text-black-lt"></i> <span
+                                            class="text-black-lt">View Log</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>No data matched</div>
+        </div>
+        <div>
+            <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " >
+                        <thead>
+                        <tr>
+                            <th>
+                                <label class="md-check">
+                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
+                                        class="primary"></i>
+                                </label>
+                            </th>
+                            <th ng-click="sortBy('orderId')"><a>Order ID
+                                <i ng-show="propertyName == 'orderId' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'orderId' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('path')"><a>Path/Job Chain
+                                <i ng-show="propertyName == 'path' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'path' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('processingState._text')"><a>Processing Status
+                                <i ng-show="propertyName == 'processingState._text' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'processingState._text' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('state')"><a>State
+                                <i ng-show="propertyName == 'state' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'state' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-show="filter.state!='pending'"  ng-click="sortBy('startedAt')"><a>Started At
+                                <i ng-show="propertyName == 'startedAt' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'startedAt' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th  ng-show="filter.state!='pending'" ng-click="sortBy('inProcessSince')"><a>Running Since
+                                <i ng-show="propertyName == 'inProcessSince' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'inProcessSince' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-show="filter.state!='pending'" ng-click="sortBy('historyId')"><a>History ID
+                                <i ng-show="propertyName == 'historyId' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'historyId' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy('nextStartTime')" ng-show="filter.state=='pending' || filter.state =='waitingForResource' || filter.state =='all'"><a>Next Start Time
+                                <i ng-show="propertyName == 'nextStartTime' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'nextStartTime' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="order in filtered = (orders | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == order}">
+                            <tr>
+                                <td>
+                                    <label class="md-check">
+                                        <input type="checkbox" data-checklist-model="object.orders"
+                                               data-checklist-value="order"><i class="primary"></i>
+                                    </label>
+                                </td>
+                                <td>
+                                    <i class="cursor fa fa-caret-down" ng-if="showPanel != order.path"
+                                       ng-click="showPanelFuc(order.path)"></i>
+                                    <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
+                                    <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                    <i class="text-muted">{{order.title}}</i></a>
+                                </td>
+                                <td><span ng-bind="order.path1"></span></td>
+                                <td><span class="text-c label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                    <span class="text-muted text-sm" ng-if="order.processingState._text == 'setback'">{{order.setback}}</span>
+                                </td>
+                                <td><a uib-tooltip="{{order.stateText}}" ng-bind="order.state"></a></td>
+                                <td ng-show="filter.state!='pending'" ng-bind="order.startedAt | stringToDate"></td>
+                                <td ng-show="filter.state!='pending'" ng-bind="order.inProcessSince | fromNow"></td>
+                                <td ng-show="filter.state!='pending'" ng-bind="order.historyId || '-'"></td>
+                                <td ng-show="filter.state=='pending' || filter.state =='waitingForResource' || filter.state =='all'" class="text-muted" ng-bind="order.nextStartTime | stringToDate"></td>
+                                <td>
+                                    <div class="btn-group dropdown ">
+                                        <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                            <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" >Show configuration</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text == 'pending' || order.processingState._text == 'setback') && permission.Order.start"
+                                               ng-click="start(order)">Start Order Now</a>
+                                             <a href class="dropdown-item" ng-if="(order.processingState._text == 'pending' || order.processingState._text == 'setback') && permission.Order.start"
+                                               ng-click="startOrder(order)">Start Order at</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text == 'suspended' || order.processingState._text == 'pending') && permission.Order.update"
+                                               ng-click="setOrderState(order)">Set Order State</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text == 'suspended' || order.processingState._text == 'pending') && permission.Order.update"
+                                               ng-click="setRunTime(order)">Set Run Time</a>
+                                            <a href class="dropdown-item bg-hover-color"
+                                               ng-if="(order.processingState._text != 'suspended' && order.processingState._text != 'blacklist') && permission.Order.suspend"
+                                               ng-click="suspendOrder(order)">Suspend Order</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrder(order)">Resume Order</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrderWithParam(order)">Resume Order Parametrized</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrderNextstate(order)">Resume Order from next state</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text != 'blacklist') && permission.Order.update"
+                                               ng-click="resetOrder(order)">Reset Order</a>
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'setblack' && permission.Order.removeSetback "
+                                               ng-click="removeOrder(order)">Remove Order</a>
+                                            <a href class="dropdown-item" ng-if="order.processingState._text != 'blacklist'"
+                                               ng-click="viewCalendar(order)">Show Calendar</a>
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'blacklist' && permission.Order.delete.permanent"
+                                               ng-click="deleteOrder(order)">Delete Order</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-show="showPanel == order.path">
+
+                                <td></td>
+                                <td colspan="9" style="padding: 0 !important;">
+                                    <table class="table m-a-0">
+                                        <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>End State</th>
+                                            <th>Priority</th>
+                                            <th>Params</th>
+                                            <th>Task Id</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{order._type || '-'}}</td>
+                                            <td>{{order.endState || '-'}}</td>
+                                            <td>{{order.priority || '-'}}</td>
+                                            <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
+                                            <td>{{order.taskId || '-'}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                     <div class="pull-right" ng-show="filtered.length > 10">
+                        <div class="btn-group m-r-xxs">
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                                    ng-class="{'primary': pageSize=='10'}" >10
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                                    ng-class="{'primary': pageSize=='25'}" >25
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                                    ng-class="{'primary': pageSize=='50'}" >50
+                            </button>
+                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                                    ng-class="{'primary': pageSize=='100'}">100
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>No data matched</div>
+            </div>
+        </div>
+        <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase">No orders found</div>
+    </div>
+    <div class="hide " ng-class="{'show': isLoading}" >
+        <div class="row" ng-show="showLogPanel">
+            <div class="col-md-12" ng-if="isLoading1">
+                <div class="box white" id="scrollToLog">
+                    <div class="box-header">
+                        <span class="text">{{showLogPanel.jobChain.substring(showLogPanel.jobChain.lastIndexOf('/')+1)}} : {{showLogPanel.orderId}} - <i class="text-sm text-muted">{{showLogPanel.title}}</i></span>
+                    </div>
+                    <div class="box-tool">
+                        <ul class="nav text-muted text-md">
+                            <li class="nav-item inline m-l-sm">
+                                <a href="" ng-click="hideLogPanel()"><img src="images/remove.png"></a>
+                            </li>
+                        </ul>
+                    </div>
+                     <div class="box-body p-t b-t" >
+                        <div class="b-b">
+                          <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                              <a class="nav-link active" href data-toggle="tab" data-target="#tab1">Order Log</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href data-toggle="tab" data-target="#tab2">Order History</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link" href data-toggle="tab" data-target="#tab3">Order Step History</a>
+                            </li>
+                          </ul>
+                        </div>
+                         <div class="tab-content p-a m-b-md">
+                          <div class="tab-pane animated fadeIn active text-muted" id="tab1">
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <button type="button" class="btn btn-default btn-sm pull-right m-l-sm"><i class="fa fa-print"></i></button>
+                                      <button type="button" class="btn btn-default btn-sm pull-right m-l-sm"><i class="fa fa-save"></i></button>
+                                      <input type="text" class="form-control inline w pull-right search-box light" placeholder="Search">
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col-md-12">
+                                     {{logs}}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="tab-pane animated fadeIn text-muted" id="tab2">
+                              <div class="row">
+                                  <div class="table-responsive">
+                                    <table class="table table-striped table-bordered " >
+                                        <thead>
+                                        <tr>
+                                            <th>Sr. No</th>
+                                            <th>Start of Execution</th>
+                                            <th>End of Execution</th>
+                                            <th>Duration</th>
+                                            <th>Exit Code</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="order in history">
+                                                <td>{{$index+1}}</td>
+                                                <td><span ng-if="order.title"></span></td>
+                                                <td><span ng-bind="order.path"></span></td>
+                                                <td ng-bind="order.state"></td>
+                                                <td ng-bind="order.state"></td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="tab-pane animated fadeIn text-muted" id="tab3">
+                              <div class="row">
+                                  <div class="table-responsive">
+                                    <table class="table table-striped table-bordered " >
+                                        <thead>
+                                        <tr>
+                                            <th>Step</th>
+                                            <th>State</th>
+                                            <th>Job</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Duration</th>
+                                            <th>Exit Code</th>
+                                            <th>Error Code</th>
+                                            <th>Error Text</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="order in history">
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
+            <div class="cssload-loading">Loading...</div>
+        </div>
+    </div>
+    <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading}">
+        <div class="cssload-loading">Loading...</div>
+    </div>
+</div>
+
+<script>
+  $('.table-responsive').on('shown.bs.dropdown', function (e) {
+    var $table = $(this),
+        $menu = $(e.target).find('.dropdown-menu'),
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +20);
+  });
+
+  $('.table-responsive').on('hide.bs.dropdown', function () {
+    $(this).css("padding-bottom", 0);
+  });
+</script>

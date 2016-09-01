@@ -1,0 +1,53 @@
+/**
+ * Created by sourabhagrawal on 18/5/15.
+ */
+
+'use strict';
+angular.module('com.module.users')
+  .config(["$httpProvider", function($httpProvider) {
+
+        // Intercept 401 responses and redirect to login screen
+        $httpProvider.interceptors.push(["$q", "$location", "CoreService", "OUAuth", "OUCourse", function ($q, $location, CoreService,OUAuth, OUCourse) {
+            return {
+                responseError: function (rejection) {
+                     // save the current location so that login can redirect back
+                     $location.nextAfterLogin = $location.path();
+
+
+                    if (rejection.status === 401) {
+
+                        if( $location.path()!='/login') {
+                            OUAuth.clearUser();
+                            OUAuth.clearStorage();
+                            OUCourse.clearCourse();
+                            OUCourse.clearStorage();
+
+                            CoreService.toastWarning('Error 401 received',
+                                'We received a 401 error from the API! Redirecting to login'
+                            );
+                            $location.path('/login');
+                            return $location.path();
+                        }
+
+                    }
+                    if (rejection.status === 404) {
+                        console.log(rejection);
+                        CoreService.toastError('Error 404 received', 'We received a 404 error from the API!');
+                    }
+                    if (rejection.status === 422) {
+                        console.log(rejection);
+                        CoreService.toastError('Error 422 received', 'We received a 404 error from the API!');
+                    }
+                    if (rejection.status === 0) {
+                         console.log(rejection);
+                        $location.path('/');
+                        CoreService.toastError('Connection Refused',
+                            'The connection to the API is refused. Please verify that the API is running!'
+                        );
+                    }
+                    return $q.reject(rejection);
+                }
+            };
+        }]);
+    }]);
+

@@ -1,0 +1,47 @@
+{
+  "name": "angular-bootstrap-grid-tree",
+  "version": "0.4.0",
+  "description": "AngularJS directive for a tree grid, using Bootstrap",
+  "main": [
+    "src/treeGrid.css",
+    "src/tree-grid-directive.js"
+  ],
+  "licence": "MIT",
+  "keywords": [
+    "angularjs",
+    "bootstrap",
+    "tree",
+    "grid",
+    "widget"
+  ],
+  "authors": [
+    "Md Khan"
+  ],
+  "homepage": "https://github.com/khan4019/tree-grid-directive",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khan4019/tree-grid-directive.git"
+  },
+  "ignore": [
+    "temp",
+    "test",
+    ".gitignore",
+    "bower.json",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "angular": ">=1.1.16",
+    "bootstrap": ">=2.3"
+  },
+  "_release": "0.4.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.4.0",
+    "commit": "2ba8d1dc23fac4cb529a4741c12cc26b4ccc14d7"
+  },
+  "_source": "https://github.com/khan4019/tree-grid-directive.git",
+  "_target": "~0.4.0",
+  "_originalSource": "angular-bootstrap-grid-tree",
+  "_direct": true
+}

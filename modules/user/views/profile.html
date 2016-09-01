@@ -1,0 +1,296 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left m-b-xs">
+                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="row m-t-sm">
+            <div class="col-sm-12">
+                <div class="box p-a p-b-lg">
+                   <h5>User Details</h5>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">User Name</span></div>
+                       <div class="col-sm-6">
+                          <span class="text-black-lt text-c">{{permission.user}}</span>
+                       </div>
+                   </div>
+                   <hr>
+                   <h5>Preferences</h5>
+                   <div class="row m-t">
+                       <div class="col-sm-2 text-dark form-control-label">Language</div>
+                       <div class="col-sm-3">
+                          <select class="form-control w-xl" ng-model="perferences.locale" ng-change="setLocale()"  ng-options="locale as locale.name for locale in locales"></select>
+                       </div>
+                   </div>
+                   <div class="row m-t-sm">
+                       <div class="col-sm-2 text-dark form-control-label">Time Zone</div>
+                       <div class="col-sm-3">
+                           <select class="form-control w-xl"  ng-model="perferences.zone" ng-change="setTimeZone()">
+                                <option value="{{timezone}}">local ({{timezone}})</option>
+                                <option>-----------------------------</option>
+                                <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
+                           </select>
+                       </div>
+                   </div>
+                   <div class="row m-t-sm">
+                       <div class="col-sm-2 text-dark form-control-label">Date Time Format</div>
+                       <div class="col-sm-10">
+
+                           <select class="form-control w-xl" ng-model="perferences.dateFormat" ng-change="setDateFormat()">
+                               <option value="hh:mm A | DD.MM.YYYY">Default (hh:mm A | DD.MM.YYYY)</option>
+                               <option>---------------------------------------------------</option>
+                               <option value="HH:mm | DD.MM.YYYY">HH:mm | DD.MM.YYYY</option>
+                               <option value="YYYY/DD/MM HH:mm">YYYY/DD/MM HH:mm</option>
+                               <option value="YYYY/DD/MM hh:mm A">YYYY/DD/MM hh:mm A</option>
+                               <option value="YYYY/DD/MM HH:mm:ss">YYYY/DD/MM HH:mm:ss</option>
+                               <option value="YYYY/DD/MM hh:mm:ss A">YYYY/DD/MM hh:mm:ss A</option>
+
+                               <option value="YYYY-MM-DD HH:mm">YYYY-MM-DD HH:mm</option>
+                               <option value="YYYY-MM-DD hh:mm A">YYYY-MM-DD hh:mm A</option>
+                               <option value="YYYY-MM-DD HH:mm:ss">YYYY-MM-DD HH:mm:ss</option>
+                               <option value="YYYY-MM-DD hh:mm:ss A">YYYY-MM-DD hh:mm:ss A</option>
+
+                               <option value="YYYY.MM.DD HH:mm">YYYY.MM.DD HH:mm</option>
+                               <option value="YYYY.MM.DD hh:mm A">YYYY.MM.DD hh:mm A</option>
+                               <option value="YYYY.MM.DD HH:mm:ss">YYYY.MM.DD HH:mm:ss</option>
+                               <option value="YYYY.MM.DD hh:mm:ss A">YYYY.MM.DD hh:mm:ss A</option>
+
+                               <option value="YYYY MM DD HH:mm">YYYY MM DD HH:mm</option>
+                               <option value="YYYY MM DD hh:mm A">YYYY MM DD hh:mm A</option>
+                               <option value="YYYY MM DD HH:mm:ss">YYYY MM DD HH:mm:ss</option>
+                               <option value="YYYY MM DD hh:mm:ss A">YYYY MM DD hh:mm:ss A</option>
+
+                               <option value="DD/MM/YYYY HH:mm">DD/MM/YYYY HH:mm </option>
+                               <option value="DD/MM/YYYY hh:mm A">DD/MM/YYYY hh:mm A</option>
+                               <option value="DD/MM/YYYY HH:mm:ss">DD/MM/YYYY HH:mm:ss</option>
+                               <option value="DD/MM/YYYY hh:mm:ss A">DD/MM/YYYY hh:mm:ss A</option>
+
+                               <option value="DD-MM-YYYY HH:mm">DD-MM-YYYY HH:mm </option>
+                               <option value="DD-MM-YYYY hh:mm A">DD-MM-YYYY hh:mm A</option>
+                               <option value="DD-MM-YYYY HH:mm:ss">DD-MM-YYYY HH:mm:ss</option>
+                               <option value="DD-MM-YYYY hh:mm:ss A">DD-MM-YYYY hh:mm:ss A</option>
+
+                               <option value="DD.MM.YYYY HH:mm">DD.MM.YYYY HH:mm </option>
+                               <option value="DD.MM.YYYY hh:mm A">DD.MM.YYYY hh:mm A</option>
+                               <option value="DD.MM.YYYY HH:mm:ss">DD.MM.YYYY HH:mm:ss</option>
+                               <option value="DD.MM.YYYY hh:mm:ss A">DD.MM.YYYY hh:mm:ss A</option>
+
+                               <option value="DD MM YYYY HH:mm">DD MM YYYY HH:mm </option>
+                               <option value="DD MM YYYY hh:mm A">DD MM YYYY hh:mm A</option>
+                               <option value="DD MM YYYY HH:mm:ss">DD MM YYYY HH:mm:ss</option>
+                               <option value="DD MM YYYY hh:mm:ss A">DD MM YYYY hh:mm:ss A</option>
+
+                               <option value="DD.MMM YYYY HH:mm">DD.MMM YYYY HH:mm </option>
+                               <option value="DD.MMM YYYY hh:mm A">DD.MMM YYYY hh:mm A</option>
+                               <option value="DD.MMM YYYY HH:mm:ss">DD.MMM YYYY HH:mm:ss</option>
+                               <option value="DD.MMM YYYY hh:mm:ss A">DD.MMM YYYY hh:mm:ss A</option>
+
+                               <option value="MM/DD/YYYY HH:mm">MM/DD/YYYY HH:mm</option>
+                               <option value="MM/DD/YYYY hh:mm A">MM/DD/YYYY hh:mm A</option>
+                               <option value="MM/DD/YYYY HH:mm:ss">MM/DD/YYYY HH:mm:ss</option>
+                               <option value="MM-DD-YYYY hh:mm:ss A">MM-DD-YYYY hh:mm:ss A</option>
+
+                               <option value="MMM/DD/YYYY HH:mm">MMM/DD/YYYY HH:mm</option>
+                               <option value="MMM/DD/YYYY hh:mm A">MMM/DD/YYYY hh:mm A</option>
+                               <option value="MMM/DD/YYYY HH:mm:ss">MMM/DD/YYYY HH:mm:ss</option>
+                               <option value="MMM-DD-YYYY hh:mm:ss A">MMM-DD-YYYY hh:mm:ss A</option>
+
+                               <option value="MM-DD-YYYY HH:mm">MM-DD-YYYY HH:mm</option>
+                               <option value="MM-DD-YYYY hh:mm A">MM-DD-YYYY hh:mm A</option>
+                               <option value="MM-DD-YYYY HH:mm:ss">MM-DD-YYYY HH:mm:ss</option>
+                               <option value="MM-DD-YYYY hh:mm:ss A">MM-DD-YYYY hh:mm:ss A</option>
+
+                               <option value="MM.DD.YYYY HH:mm">MM.DD.YYYY HH:mm</option>
+                               <option value="MM.DD.YYYY hh:mm A">MM.DD.YYYY hh:mm A</option>
+                               <option value="MM.DD.YYYY HH:mm:ss">MM.DD.YYYY HH:mm:ss</option>
+                               <option value="MM.DD.YYYY hh:mm:ss A">MM.DD.YYYY hh:mm:ss A</option>
+
+                               <option value="MM DD YYYY HH:mm">MM DD YYYY HH:mm</option>
+                               <option value="MM DD YYYY hh:mm A">MM DD YYYY hh:mm A</option>
+                               <option value="MM DD YYYY HH:mm:ss">MM DD YYYY HH:mm:ss</option>
+                               <option value="MM DD YYYY hh:mm:ss A">MM DD YYYY hh:mm:ss A</option>
+
+                               <option value="MMM.DD YYYY HH:mm">MMM.DD YYYY HH:mm</option>
+                               <option value="MMM.DD YYYY hh:mm A">MMM.DD YYYY hh:mm A</option>
+                               <option value="MMM.DD YYYY HH:mm:ss">MMM.DD YYYY HH:mm:ss</option>
+                               <option value="MMM.DD YYYY hh:mm:ss A">MMM.DD YYYY hh:mm:ss A</option>
+
+                               <option value="D.M.YYYY HH:mm">D.M.YYYY HH:mm </option>
+                               <option value="D.M.YYYY hh:mm A">D.M.YYYY hh:mm A</option>
+                               <option value="D.M.YYYY HH:mm:ss">D.M.YYYY HH:mm:ss</option>
+                               <option value="D.M.YYYY hh:mm:ss A">D.M.YYYY hh:mm:ss A</option>
+
+                               <option value="D.MMMM YYYY HH:mm">D.MMMM YYYY HH:mm </option>
+                               <option value="D.MMMM YYYY hh:mm A">D.MMMM YYYY hh:mm A</option>
+                               <option value="D.MMMM YYYY HH:mm:ss">D.MMMM YYYY HH:mm:ss</option>
+                               <option value="D.MMMM YYYY hh:mm:ss A">D.MMMM YYYY hh:mm:ss A</option>
+
+                               <option value="D/M/YY HH:mm">D/M/YY HH:mm </option>
+                               <option value="D/M/YY hh:mm A">D/M/YY hh:mm A</option>
+                               <option value="D/M/YY HH:mm:ss">D/M/YY HH:mm:ss</option>
+                               <option value="D/M/YY hh:mm:ss A">D/M/YY hh:mm:ss A</option>
+
+                               <option value="M/D/YYYY HH:mm">M/D/YYYY HH:mm </option>
+                               <option value="M/D/YYYY hh:mm A">M/D/YYYY hh:mm A</option>
+                               <option value="M/D/YYYY HH:mm:ss">M/D/YYYY HH:mm:ss</option>
+                               <option value="M/D/YYYY hh:mm:ss A">M/D/YYYY hh:mm:ss A</option>
+
+                               <option value="MMM DD, YYYY HH:mm">MMM DD, YYYY HH:mm </option>
+                               <option value="MMM DD, YYYY hh:mm A">MMM DD, YYYY hh:mm A</option>
+                               <option value="MMM DD, YYYY HH:mm:ss">MMM DD, YYYY HH:mm:ss</option>
+                               <option value="MMM DD, YYYY hh:mm:ss A">MMM DD, YYYY hh:mm:ss A</option>
+
+                               <option value="MMMM DD, YYYY HH:mm">MMMM DD, YYYY HH:mm </option>
+                               <option value="MMMM DD, YYYY hh:mm A">MMMM DD, YYYY hh:mm A</option>
+                               <option value="MMMM DD, YYYY HH:mm:ss">MMMM DD, YYYY HH:mm:ss</option>
+                               <option value="MMMM DD, YYYY hh:mm:ss A">MMMM DD, YYYY hh:mm:ss A</option>
+                           </select>
+                           <div class="help-block">YYYY - 4 digit year, YY - 2 digit year, M/MM - month number, MMM/MMMM - month name, D/DD - day of month</div>
+                           <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss - seconds</div>
+                       </div>
+                   </div>
+                   <hr>
+                   <h5>Roles</h5>
+                   <div class="row m-t-sm">
+                       <div class="col-sm-6">
+                           <div class="m-t-sm" ng-repeat="permission in permission.SOSPermissionRoles.SOSPermissionRole">
+                               <div class="text-black-lt">{{permission}}</div>
+                           </div>
+                       </div>
+                   </div>
+                   <hr>
+                   <h5>Permissions</h5>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">JobScheduler Master</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.view.status}"></i> view status</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.view.mainlog}"></i> view main log</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.pause}"></i> pause</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.continue}"></i> continue</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.terminate}"></i> terminate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.abort}"></i> abort</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.restart.terminate}"></i> restart terminate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.restart.abort}"></i> restart abort</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.manageCategories}"></i> manage catagories</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">JobScheduler Master Cluster</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.view.clusterStatus}"></i> view cluster status</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.terminate}"></i> terminate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.terminateFailSafe}"></i> terminate failsafe</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.restart}"></i> restart</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">JobScheduler Universal Agent</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.view.status}"></i> view status</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.terminate}"></i> terminate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.abort}"></i> abort</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.restart.terminate}"></i> restart terminate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.restart.abort}"></i> restart abort</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Daily Plan</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.DailyPlan.view.status}"></i> view status</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">History</span></div>
+                       <div class="col-sm-10">
+                            <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.History.view}"></i> view</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Order</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.configuration}"></i> view configuration</span>
+                          <span class="m-l text-black-lt" ng-if="permission.Order.view.history ==true || permission.Order.view.history == false"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.history}"></i> view history</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.orderLog}"></i> view order log</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.status}"></i> view status</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.change.startAndEndNode}"></i> change start and end node</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.change.timeForAdhocOrder}"></i> change time for adhoc order</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.change.parameter}"></i> change parameters</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.start}"></i> start</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.update}"></i> update</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.suspend}"></i> suspend</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.resume}"></i> resume</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.delete.permanent}"></i> delete permanent</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.delete.temporary}"></i> delete temporary</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.removeSetback}"></i> remove setback</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Job Chain</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.view.configuration}"></i> view configuration</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.view.history}"></i> view history</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.view.status}"></i> view status</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.stop}"></i> stop</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.unstop}"></i> unstop</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.addOrder}"></i> addOrder</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.skipJobChainNode}"></i> skip JobChain node</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.unskipJobChainNode}"></i> unskip JobChain node</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.stopJobChainNode}"></i> stop JobChain node</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.unstopJobChainNode}"></i> unstop JobChain node</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Job</span></div>
+                       <div class="col-sm-10">
+                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.configuration}"></i> view configuration</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.history}"></i> view history</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.taskLog}"></i> view taskLog</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.status}"></i> view status</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.start.task}"></i> start task</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.start.taskImmediately}"></i> start task immediate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.stop}"></i> stop</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.unstop}"></i> unstop</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.terminate}"></i> terminate</span>
+                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.kill}"></i> kill</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Process Class</span></div>
+                       <div class="col-sm-10">
+                           <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.ProcessClass.view.configuration}"></i> view configuration</span>
+                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.ProcessClass.view.status}"></i> view status</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Lock</span></div>
+                       <div class="col-sm-10">
+                           <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Lock.view.configuration}"></i> view configuration</span>
+                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Lock.view.status}"></i> view status</span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2"><span class="text-dark">Schedule</span></div>
+                       <div class="col-sm-10">
+                           <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.view.configuration}"></i> view configuration</span>
+                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.view.status}"></i> view status</span>
+                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.edit}"></i> edit</span>
+                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.addSubstitute}"></i> add substitute</span>
+                       </div>
+                   </div>
+               </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,76 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <h4 class="modal-title">Create an new Filter</h4>
+    </div>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+               <label class="col-sm-3 form-control-label">Filter Name</label>
+               <div class=" col-sm-6">
+                   <input type="text" required class="form-control" placeholder="Name" name="filterName" ng-maxlength="25"  ng-model="jobFilter.name" ng-blur="checkFilterName()">
+                   <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                       <div ng-message="required">Name is required.</div>
+                       <div ng-message="maxlength">Value enter is too long</div>
+                   </div>
+                   <div class="help-block text-danger" ng-if="!isUnique">
+                       <div>Name is already taken.</div>
+                   </div>
+               </div>
+            </div>
+            <div class="form-group row">
+               <label class="col-sm-3 form-control-label">Job Name</label>
+               <div class=" col-sm-6">
+                   <input type="text" class="form-control" placeholder="Name of job, regex or choose from tree " ng-model="jobFilter.regex">
+               </div>
+               <div class="col-sm-1  p-l-0 p-t-sm"><a href=""><i class="fa fa-folder-o fa-lg"></i></a></div>
+            </div>
+            <div class="form-group row" ng-class="{'m-b-sm': radio == 'planned' }">
+                <label class="col-sm-3 form-control-label">Job State</label>
+                <div class=" col-md-9" ng-init="radio = 'current'">
+                    <div>
+                        <label class="md-check m-t-xs">
+                            <input type="radio" name="radio" ng-model="radio" value="current">
+                            <i class="primary"></i> Current
+                        </label>
+                        <label class="md-check m-l">
+                            <input type="radio" name="radio" ng-model="radio" value="planned">
+                            <i class="primary"></i> Planned
+                        </label>
+                    </div>
+                    <div ng-show="radio == 'current'">
+                        <label class="md-check m-t">
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'pending'">
+                            <i class="primary"></i>Pending
+                        </label>
+                        <label class="md-check m-l">
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'running'" >
+                            <i class="primary"></i>Running
+                        </label>
+                        <label class="md-check m-l">
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'stopped'" >
+                            <i class="primary"></i>Stopped
+                        </label>
+                        <label class="md-check m-l">
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'queued'" >
+                            <i class="primary"></i>Queued
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row m-t-sm" ng-show="radio == 'planned'">
+               <label class="col-sm-3 form-control-label">Planned Orders</label>
+               <div class=" col-sm-6">
+                <input type="text" class="form-control" placeholder="Today or between date/time" ng-model="jobFilter.planned">
+               </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique">Save Filter</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

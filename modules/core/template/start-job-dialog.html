@@ -1,0 +1,60 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <h4 class="modal-title">Start Job</h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-3">Job Name</label>
+                <label class="col-sm-3">{{job.name}}</label>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 form-control-label">Start Time</label>
+
+                <div class="col-sm-8">
+                    <input class="form-control input-date" ng-model="fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="Start date" bs-datepicker type="text">
+                    <input  class="form-control input-time" ng-model="fromTime" data-time-format="HH:mm" data-autoclose="1" placeholder="hh:mm" bs-timepicker type="text">
+                </div>
+            </div>
+            <div class="form-group row m-b-sm " ng-repeat="param in job.params">
+                <div class="col-sm-12 m-b-sm _600" ng-if="$index==0">Change parameters</div>
+                <label class="col-sm-3 form-control-label">{{param.name}}</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control " ng-model="param.value" placeholder="Value">
+                </div>
+            </div>
+            <div class="form-group row m-b-sm m-t _600" ng-if="job.params.length>0">
+                <div class="col-md-12">Declare new parameters</div>
+            </div>
+            <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index">
+
+                    <div class="col-sm-3 m-b-sm" ng-if="$index==0">Name</div>
+                    <div class="col-sm-9 m-b-sm" ng-if="$index==0">Value</div>
+                    <div class="col-sm-3 m-b-sm">
+                        <input type="text" class="form-control " ng-model="param.name" placeholder="Name {{$index+1}}">
+                    </div>
+
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control " ng-model="param.value" placeholder="Value {{$index+1}}">
+                    </div>
+                <div class="col-sm-1 p-l-0">
+                        <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <a href class="text-u-l" ng-if="paramObject.params.length>0" ng-click="addCriteria()">Add another Parameter</a>
+                        <a href class="text-u-l" ng-if="paramObject.params.length==0" ng-click="addCriteria()">Add Parameter</a>
+                    </div>
+                </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
+    </form>    
+</div>

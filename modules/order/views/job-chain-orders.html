@@ -1,0 +1,20 @@
+<div class="m-t-sm">
+    <div class="hide-block sidebar-btn resize-cursor">
+        <i  class="material-icons" ng-click="showLeftPanel()">&#xe5d4;</i>
+    </div>
+    <aside id="leftPanel" class="hidden-sm-down">
+        <pie-chart-component></pie-chart-component>
+    </aside>
+    <div id="rightPanel">
+        <div ui-include="'modules/order/views/orders-list.html'"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#leftPanel').stickySidebar({
+            sidebarTopMargin: 170,
+            footerThreshold: 100
+        });
+    });
+</script>

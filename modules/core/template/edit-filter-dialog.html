@@ -1,0 +1,37 @@
+<div>
+    <div class="modal-header">
+         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <h4 class="modal-title">Edit filters</h4>
+    </div>
+     <form name="form" novalidate>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12">
+                   <div class="table-responsive">
+                       <table class="table table-hover table-bordered " >
+                        <thead>
+                        <tr>
+                            <th>
+                                Sr.No
+                            </th>
+                            <th>Filter Name</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="filter in filters">
+                            <tr>
+                                <td>{{$index+1}}</td>
+                                <td>{{filter.name}}</td>
+                                <td>
+                                    <a href="" class="text-u-l text-primary" ng-click="ok();editFilter(filter)">Edit</a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                      </table>
+                   </div>
+                </div>
+            </div>
+        </div>
+     </form>
+</div>

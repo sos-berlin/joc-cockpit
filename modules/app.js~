@@ -1,0 +1,60 @@
+'use strict';
+/**
+ * @ngdoc overview
+ * @name loopbackApp
+ * @description
+ * # loopbackApp
+ *
+ * Main module of the application.
+ */
+angular.module('OUApp', [
+    'angular.filter',
+    'angularFileUpload',
+    'oitozero.ngSweetAlert',
+    'ngAnimate',
+    'ngCookies',
+    'ui.bootstrap',
+    'ui.router',
+    'toasty',
+    'gettext',
+    'oc.lazyLoad',
+    'ngTable',
+    'ncy-angular-breadcrumb',
+    'ngIdle',
+    'angular-loading-bar',
+    'summernote',
+    'ngSanitize',
+    'ngTagsInput',
+    'ui.sortable',
+    'spring-security-csrf-token-interceptor',
+    'frapontillo.bootstrap-switch',
+    'com.module.core',
+    'com.module.course',
+    'com.module.section',
+    'com.module.resource',
+    'com.module.lecture',
+    'com.module.content',
+    'com.module.quiz',
+    'com.module.search',
+    'com.module.users',
+
+
+  ]).config(['$locationProvider', function($locationProvider) {
+          $locationProvider.hashPrefix('!');
+        }
+   ]).config(['$httpProvider', function($httpProvider) {
+        $httpProvider.defaults.useXDomain = true;
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    }
+]   ).config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+          cfpLoadingBarProvider.includeSpinner = false;
+  }]) .config(function(csrfProvider) {
+            // optional configurations
+            csrfProvider.config({
+                url: '/login',
+                maxRetries: 3,
+                csrfHttpType: 'get',
+                csrfTokenHeader: 'X-CSRF-XXX-TOKEN',
+                httpTypes: ['PUT', 'POST', 'DELETE','GET'] //CSRF token will be added only to these method types 
+            });
+        });

@@ -1,0 +1,39 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <h4 class="modal-title">Substitute Schedule<span ng-if="object.schedules.length>1">s</span></h4>
+    </div>
+    <div class="modal-body p-a">
+       <div class="form-group row m-t" ng-if="_schedule">
+           <label class="col-sm-3">{{_schedule.name}}</label>
+           <div class=" col-sm-6">
+               {{_schedule.title}}
+           </div>
+        </div>
+        <div class="form-group row" ng-repeat="_schedule in object.schedules">
+           <label class="col-sm-3">{{$index + 1}} {{_schedule.name}}</label>
+           <div class=" col-sm-6">
+               {{_schedule.title}}
+           </div>
+        </div>
+        <div class="form-group row m-t-lg">
+            <label class="col-sm-3 form-control-label">Substitute with </label>
+            <div class="col-sm-6">
+                <select class="form-control" ng-model="scheduleName" ng-options="schedule as schedule.name for schedule in schedules">
+                    <option value="">Select a schedule</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-offset-3 text-muted" ng-if="!scheduleName">Schedule rule</label>
+            <label class="col-sm-offset-3 text-muted">{{scheduleName.title}}</label>
+        </div>
+        <div class="row m-t-md">
+            <div class="b-t"></div>
+        </div>
+        <div class="form-group m-t m-b-xs">
+            <button type="submit" class="btn btn-primary btn-sm" ng-click="ok()">Substitute</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+</div>

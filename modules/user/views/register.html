@@ -1,0 +1,89 @@
+
+  <div class="row ">
+       <button type="button" class="close-color pull-right" style="margin-top: 1px" ng-click="closeModal()"><img src="images/close-button.png"></button>
+    <div class="center-form">
+      <div class="panel-body">
+          <h3 class="text-center" ng-hide="isSubmit">Sign Up in seconds!</h3>
+          <h3 class="text-center" ng-show="isSubmit">Create Organization</h3>
+
+        <form method="post" ng-hide="isSubmit" ng-submit="register()" name="signupForm">
+           <div style="display: none" class="alert alert-danger" ng-class="{'show':registerError}">
+               <span>{{registerError | translate}} </span>
+           </div>
+          <p class="form-group has-feedback" ng-class="{ 'has-error' : signupForm.fullName.$invalid && signupForm.fullName.$dirty }">
+            <input class="form-control input-lg" type="text" name="fullName" ng-model="user.name" placeholder="{{'Name' | translate}}" required ng-maxlength="50" autofocus>
+            <span class="fa fa-user form-control-feedback"></span>
+            <div class="help-block text-danger" ng-if="signupForm.fullName.$dirty" ng-messages="signupForm.fullName.$error">
+              <div ng-message="required">{{'Name is required.' | translate}}</div>
+              <div ng-message="maxlength">{{'Name field is too long.' | translate}}</div>
+            </div>
+          </p>
+          <p class="form-group has-feedback" ng-class="{ 'has-error' : signupForm.email.$invalid && signupForm.email.$dirty }">
+            <input unique-email class="form-control input-lg" type="email" id="email" name="email" ng-model="user.email" placeholder="{{'Email ID' | translate}}" required ng-minlength="7"
+                 ng-maxlength="100">
+            <span class="fa fa-envelope form-control-feedback"></span>
+            <div class="help-block text-danger" ng-if="signupForm.email.$dirty" ng-messages="signupForm.email.$error">
+              <div ng-message="required">{{'Email address is required.' | translate}}</div>
+              <div ng-message="user.accountEmail">Email address is invalid.</div>
+              <div ng-message="maxlength">{{'Email field is too long.' | translate}}</div>
+              <div ng-message="minlength">{{'Email field is too short.' | translate}}</div>
+              <div ng-message="unique">{{'Email is already taken.' | translate}}</div>
+            </div>
+          </p>
+          <p class="form-group has-feedback" ng-class="{ 'has-error' : signupForm.password.$invalid && signupForm.password.$dirty }">
+            <input password-strength class="form-control input-lg" type="password" name="password" ng-model="user.password" placeholder="{{'Password' | translate}}" required autocomplete="off">
+            <span class="fa fa-key form-control-feedback"></span>
+            <div class="help-block text-danger" ng-if="signupForm.password.$dirty" ng-messages="signupForm.password.$error">
+              <div ng-message="required">{{'Password is required.' | translate}}</div>
+            </div>
+          </p>
+
+          <p class="text-center text-muted"><small>By clicking on Sign up, you agree to <a href="#">terms & conditions</a> and <a href="#">privacy policy</a></small></p>
+
+          <button type="submit" ng-disabled="signupForm.$invalid || isProcessing" id="signup" class="btn btn-block btn-primary uppercase">{{'Sign up' | translate}}</button>
+
+          <br>
+          <p class="text-center text-muted">{{'Already have an account? ' | translate}}<a href="" ng-click="loginBox()" class="font-blue-soft underline">{{'Sign in now' | translate}}</a></p>
+        </form>
+
+        <form method="post" ng-show="!isSubmit" ng-submit="registerOrganization()" name="createForm">
+           <div style="display: none" class="alert alert-danger" ng-class="{'show':registerError}">
+               <span>{{registerError | translate}} </span>
+           </div>
+
+          <p class="form-group has-feedback" ng-class="{ 'has-error' : createForm.organizationName.$invalid && createForm.organizationName.$dirty }">
+            <input unique-name class="form-control input-lg" type="text" required name="organizationName" ng-model="org.name" placeholder="{{'Organization Name' | translate}}" ng-minlength="3" ng-maxlength="100">
+            <span class="fa fa-institution form-control-feedback"></span>
+            <div class="help-block text-danger" ng-if="createForm.organizationName.$dirty" ng-messages="createForm.organizationName.$error">
+              <div ng-message="required">{{'Name is required.' | translate}}</div>
+               <div ng-message="unique">{{'Name is already taken.' | translate}}</div>
+              <div ng-message="maxlength">{{'Name is too long.' | translate}}</div>
+              <div ng-message="minlength">{{'Name is too short.' | translate}}</div>
+            </div>
+          </p>
+          <p class="form-group has-feedback" ng-class="{ 'has-error' : createForm.organizationEmail.$invalid && createForm.organizationEmail.$dirty }">
+            <input class="form-control input-lg" type="email" name="organizationEmail" required ng-model="org.email" placeholder="{{'Organization Email' | translate}}"  maxlength="100">
+            <span class="fa fa-sitemap form-control-feedback"></span>
+            <div class="help-block text-danger" ng-if="createForm.organizationEmail.$dirty" ng-messages="createForm.organizationEmail.$error">
+              <div ng-message="required">{{'Email is required.' | translate}}</div>
+               <div ng-message="org.email">Email address is invalid.</div>
+            </div>
+          </p>
+
+          <label>Become a member</label>
+          <p class="form-group has-feedback" ng-class="{ 'has-error' : createForm.organizationId.$invalid && createForm.organizationId.$dirty }">
+            <input class="form-control input-lg" name="organizationId" ng-model="user.organizationId" placeholder="{{'Search Organization' | translate}}"
+               bs-typeahead="typeaheadFn" type="text">
+            <span class="fa fa-sitemap form-control-feedback"></span>
+            <div class="help-block text-danger" ng-if="createForm.organizationId.$dirty" ng-messages="createForm.organizationId.$error">
+              <div ng-message="required">{{'Organization is required.' | translate}}</div>
+              <div ng-message="maxlength">{{'Organization is too long.' | translate}}</div>
+            </div>
+          </p>
+          {{user.organizationId}}
+          <button type="submit" ng-disabled="createForm.$invalid || isProcessing" id="create" class="btn btn-block btn-primary uppercase">{{'Create' | translate}}</button>
+
+        </form>
+      </div>
+    </div>
+  </div>

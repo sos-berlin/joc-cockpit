@@ -1,0 +1,117 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                     <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                    </div>
+                    <div class="inline" ng-class="{'hide':object.orders.length>0}">
+                        <div class="btn-group">
+                            <button id="allorders_id" class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
+                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()">All Orders
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'running'"
+                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()">Running
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'suspended'"
+                                    ng-class="{'btn-primary': filter.state=='suspended'}" ng-click="load()">Suspended
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'setback'"
+                                    ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()">Setback
+                            </button>
+                        </div>
+                        <div class="btn-group m-l-sm">
+                            <button id="permanent_id" class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'permanent'"
+                                    ng-class="{'btn-primary': filter.state=='permanent'}" ng-click="load1()">Permanent
+                            </button>
+                            <button id="adhoc_id" class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'ad_hoc'"
+                                    ng-class="{'btn-primary': filter.state=='ad_hoc'}" ng-click="load1()">Ad hoc
+                            </button>
+                            <button id="fileorder_id" class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'file_order'"
+                                    ng-class="{'btn-primary': filter.state=='file_order'}" ng-click="load()">File Order
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown">
+                            <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span class="hidden-md-down">Sort By</span> <span class="text-primary">
+                                <span  ng-show="filter.sortBy =='orderId'">
+                                    Order Id
+                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                </span>
+                                <span ng-show="filter.sortBy =='processingState._text'">
+                                    Status
+                                   <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    </span>
+                                <span  ng-show="filter.sortBy =='startedAt'">
+                                    Date
+                                  <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    </span>
+                                </span> </a>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a id="orderid_id" class="dropdown-item" ng-click="mainSortBy1('orderId')">Order Id</a>
+                                <a  id="status_id" class="dropdown-item" ng-click="mainSortBy1('processingState._text')">Status</a>
+                                <a id="date_id" class="dropdown-item" ng-click="mainSortBy1('startedAt')" >Date</a>
+                            </div>
+                        </div>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">Filters <span class="text-primary" ng-bind="savedOrderFilter.selected"></span></button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-click="applyFilter()">Create a new filter</a>
+                                <a class="dropdown-item" ng-click="editFilters()" ng-if="savedOrderFilter.list.length>0">Edit existing filters</a>
+                                <div class="dropdown-divider" ng-if="savedOrderFilter.list.length>0"></div>
+                                <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedOrderFilter.list track by $index">
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
+                                </a>
+                            </div>
+                        </div>
+                     </div>
+
+                     <div class="hide" ng-class="{'show-block':object.orders.length>0}">
+                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
+                                 ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> Delete Order</button>
+                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
+                                 ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> Suspend Order</button>
+                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> Reset Order</button>
+                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}"
+                                 ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> Start Order now</button>
+                     </div>
+                     <toggle-view></toggle-view>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="m-t-sm">
+            <div class="hide-block sidebar-btn resize-cursor">
+                <i  class="material-icons" ng-click="showLeftPanel()">&#xe5d4;</i>
+            </div>
+            <aside id="leftPanel" class="hidden-sm-down">
+                <pie-chart-component></pie-chart-component>
+            </aside>
+            <div id="rightPanel">
+               <div ui-include="'modules/order/views/orders-list.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+
+			$('#leftPanel').stickySidebar({
+				sidebarTopMargin: 150
+			});
+
+		});
+</script>

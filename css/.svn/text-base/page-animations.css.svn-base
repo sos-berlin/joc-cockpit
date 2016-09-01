@@ -1,0 +1,55 @@
+
+
+/* scale up */
+@keyframes scaleUp {
+    from 		{ opacity: 0.3; transform: scale(0.8); }
+}
+@-moz-keyframes scaleUp {
+    from 		{ opacity: 0.3; -moz-transform: scale(0.8); }
+}
+@-webkit-keyframes scaleUp {
+    from 		{ opacity: 0.3; -webkit-transform: scale(0.8); }
+}
+
+
+[ui-view].ng-enter, [ui-view].ng-leave {
+  position: relative;
+  left: 0;
+  right: 0;
+  -webkit-transition:all .5s linear;
+  -moz-transition:all .5s linear;
+  -o-transition:all .5s linear;
+  transition:all .5s linear;
+}
+
+[ui-view].ng-enter {
+  opacity: 0;
+  -webkit-transform:scaleY(0);
+  -moz-transform:scaleY(0);
+  transform:scaleY(0);
+}
+
+[ui-view].ng-enter-active {
+  opacity: 1;
+  -webkit-transform:scaleY(1);
+  -moz-transform:scaleY(1);
+  transform:scaleY(1);
+}
+
+[ui-view].ng-leave {
+  opacity: 1;
+  -webkit-transform:translate3d(0, 0, 0);
+  -moz-transform:translate3d(0, 0, 0);
+  transform:translate3d(0, 0, 0);
+}
+
+[ui-view].ng-leave-active {
+  opacity: 0;
+  display: none;
+  -webkit-transform:translate3d(100px, 0, 0);
+  -moz-transform:translate3d(100px, 0, 0);
+  transform:translate3d(100px, 0, 0);
+}
+.nav-tabs > li > a, .nav-tabs > li > a:hover {
+  cursor: pointer;
+}

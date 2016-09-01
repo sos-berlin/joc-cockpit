@@ -1,0 +1,192 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="row m-t-sm">
+            <div class=" col-xxl-4 col-lg-5 col-md-6 col-sm-12" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box" style="max-height: 294px">
+                            <div class="box-header b-b">
+                                <h3>Agent Cluster Status</h3>
+                            </div>
+                                <div class="row" style="margin-top: -35px !important;">
+                                    <div class="col-xs-5" style="margin-left: -15px">
+                                        <nvd3-pie-chart
+                                                id="agentClusterId"
+                                                data="agentClusterData"
+                                                x="xFunction()"
+                                                y="yFunction()"
+                                                width="300"
+                                                height="300"
+                                                pieLabelsOutside="false"
+                                                showLabels="true"
+                                                labelType="percent"
+                                                color="colorFunction()"
+                                                useInteractiveGuideLine="true">
+                                            <svg height="295" cursor="pointer"></svg>
+                                        </nvd3-pie-chart>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <ul class="status-list m-l-sm">
+                                            <li id="{{data.key}}" ng-repeat="data in agentClusterData | orderBy: 'key'" class="p-a-xs text-c"><i class="fa fa-stop {{data.key}}"></i><a href="" ng-click="setLabel(data.key)"> {{data.key}}</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="box">
+                            <div class="box-header b-b">
+                                <h3>Agent Cluster Running Tasks</h3>
+                            </div>
+                            <div class="box-tool" >
+                                <ul class="nav" >
+                                    <li class="nav-item inline">
+                                        <a href="" class="text-primary pull-right" ng-click="viewAllAgents()">
+                                            View all Agents detail
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <nvd3-discrete-bar-chart
+                                        data="agentStatusChart"
+                                        id="agentClusterStatus"
+                                        width="550"
+                                        height="235"
+                                        interactive="true"
+                                        showXAxis="true"
+                                        showYAxis="true"
+                                        margin="{bottom:60, right: 30, top:20}"
+                                        valueFormat="valueFormatFunction()"
+                                        showValues="true">
+                                    <svg cursor="pointer"></svg>
+                                </nvd3-discrete-bar-chart>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-8 col-lg-7 col-md-6 col-sm-12">
+                 <div class="row" >
+                    <div class="col-md-12" >
+                        <div class=" box" >
+                            <div class="box-header b-b">
+                                <h3>Master Cluster Status</h3>
+                            </div>
+                            <div class="box-tool">
+                                <div class="btn-group dropdown pull-right">
+                                    <button class="btn btn-sm grey dropdown-toggle" data-toggle="dropdown" >Menu</button>
+                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
+                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart" ng-click="clusterAction('cluster','restart')" ng-class="{'disable-link':clusterStatus=='stopped'}">Restart</a>
+                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate" ng-click="clusterAction('cluster','terminate')" ng-class="{'disable-link':clusterStatus=='stopped'}">Terminate</a>
+                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminateFailSafe" ng-click="clusterAction('cluster','terminateFailsafe')" ng-class="{'disable-link':clusterStatus=='stopped'}">Terminate failsafe</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-body " style="min-height: 330px">
+
+                              <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()"
+                                                   on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="white">
+
+                            <div class="box">
+                                <div class="box-header b-b">
+                                    <h3 class="m-t-xs">Orders Overview</h3>
+                                </div>
+                                <div class="box-body" >
+                                    <div class="text-center row">
+                                        <div class="col-xs-2">
+                                            <div class="text-sm ">Pending</div>
+                                            <a id ="pending-id" href="#/orders/pending" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <div class="text-sm ">Running</div>
+                                            <a id ="running-id" href="#/orders/running" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
+                                        </div>
+
+                                        <div class="col-xs-2">
+                                            <div class="text-sm ">Suspended</div>
+                                            <a id ="suspended-id" href="#/orders/suspended" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended"></a>
+                                        </div>
+
+                                        <div class="col-xs-2">
+                                            <div class="text-sm ">Setback</div>
+                                            <a id ="setback-id" href="#/orders/setback" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback"></a>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <div class="text-sm ">Waiting for Resource</div>
+                                            <a id ="waitingForResource-id" href="#/orders/waitingForResource" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <div class="text-sm ">Blacklist</div>
+                                            <a id ="blacklist-id" href="#/orders/blacklist" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hide row" ng-class="{show: permission.DailyPlan.view.status}">
+            <div class="col-sm-12">
+                <div class="box">
+                    <div class="box-header b-b">
+                        <h3 class="m-t-xs">Today's Plan</h3>
+                    </div>
+                    <div class="box-tool">
+                        <ul class="nav">
+                            <li class="nav-item inline ">
+                                <a class="btn btn-grey btn-sm ">
+                                    This hour
+                                </a>
+                            </li>
+                            <li class="nav-item inline">
+                                <a class="btn  btn-sm m-l-xs">
+                                    Next 12 hours
+                                </a>
+                            </li>
+                            <li class="nav-item inline">
+                                <a class="btn  btn-sm m-l-xs ">
+                                    Next 24 hours
+                                </a>
+                            </li>
+                            <li class="nav-item inline">
+                                <a class=" btn  btn-sm m-l-xs ">
+                                    Next 7 days
+                                </a>
+                            </li>
+                            <li class="nav-item inline">
+                                <button class="btn btn-sm btn-default m-l-xs grey">
+                                    Enter Criteria
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="box-body">
+                        TODO
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

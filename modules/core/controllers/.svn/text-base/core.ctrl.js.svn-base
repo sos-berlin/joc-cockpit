@@ -1,0 +1,116 @@
+/**
+ * Created by sourabhagrawal on 6/5/15.
+ */
+
+'use strict';
+
+var app = angular.module('com.module.core');
+
+  app.controller('HeaderCtrl', ["$scope","$rootScope", "OUAuth", "LoginService", "URL", function($scope,$rootScope, OUAuth, LoginService, URL) {
+      $scope.$on('$includeContentLoaded', function () {
+          Layout.initHeader(); // init header
+      });
+
+      $scope.server_path = URL.filePathUrl();
+
+      $scope.user = JSON.parse(OUAuth.currentUserData);
+
+      $scope.userName = $scope.user.firstName + " " + $scope.user.lastName;
+
+      $scope.logout = function () {
+          LoginService.logout();
+      }
+
+      $rootScope.$on('reload', function currentUser(event, value) {
+          $scope.user = JSON.parse(OUAuth.currentUserData);
+
+          $scope.userName = $scope.user.firstName + " " + $scope.user.lastName;
+
+      });
+  }]);
+
+ /* Setup Layout Part - Footer */
+  app.controller('FooterCtrl', ["$scope", function($scope) {
+    $scope.$on('$includeContentLoaded', function() {
+        Layout.initFooter(); // init footer
+    });
+  }])
+
+    /* Setup Layout Part - Sidebar */
+  app.controller('SidebarCtrl', ["$scope", function($scope) {
+      $scope.$on('$includeContentLoaded', function() {
+           Layout.initSidebar(); // init sidebar
+      });
+
+  }]);
+
+   /* Controller for handle Session expire*/
+  app.controller('SessionCtrl', ["$scope", "Idle", "Keepalive", "LoginService", "CoreService", "$modal", "$timeout", function($scope, Idle, Keepalive, LoginService, CoreService, $modal, $timeout) {
+
+      Idle.watch();
+
+      $scope.$on('IdleStart', function () {
+
+          CoreService.confirmation('Session Expiring!', 'Your session is about to expire. Do you want to continue?', function () {
+                  $scope.start();
+              },
+              function () {
+                  $scope.stop();
+              });
+      });
+
+      $scope.$on('IdleEnd', function () {
+
+          $scope.start(); //  Reset the idle timer
+      });
+
+      $scope.$on('IdleTimeout', function () {
+          $timeout(function () {
+              LoginService.locked();
+          }, 1000);
+      });
+
+      $scope.$on('keepalive', function () {
+          // do something to keep the user's session alive
+      });
+
+      $scope.start = function () {
+          Idle.watch();
+      };
+
+      $scope.stop = function () {
+          Idle.watch();  //  Watch the init so we can close the modals
+          Idle.unwatch();
+          LoginService.locked();
+      };
+  }]);
+
+  app.controller('DatePickerCtrl', ["$scope", function ($scope) {
+
+      $scope.clear = function () {
+          $scope.dt = null;
+      };
+
+      // Disable weekend selection
+      $scope.disabled = function (date, mode) {
+          return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+      };
+
+
+      $scope.open = function ($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          $scope.opened = true;
+      };
+
+      $scope.dateOptions = {
+          formatYear: 'yy',
+          startingDay: 1,
+          showWeeks: false
+
+      };
+
+      $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+      $scope.format = $scope.formats[0];
+  }]);

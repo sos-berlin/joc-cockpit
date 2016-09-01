@@ -1,0 +1,47 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <h4 class="modal-title">Set run time of {{order.orderId}}</h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-3">Order ID</label>
+                <label class="col-sm-3">{{order.orderId}}</label>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 form-control-label">Enter a run time</label>
+                <div class=" col-md-9" ng-init="order.at = 'now'">
+                    <label class="md-check m-t-xs">
+                        <input type="radio" name="radio" ng-model="order.at" value="now">
+                        <i class="primary"></i>Rum time
+                    </label>
+                    <label class="md-check m-l">
+                        <input type="radio" name="radio" ng-model="order.at" value="later">
+                        <i class="primary"></i>Schedule
+                    </label>
+                </div>
+            </div>
+            <div class="form-group row">
+
+                <div class="col-sm-offset-3 col-sm-6" ng-if="order.at == 'later'">
+                    <select class="form-control" ng-model="order.scheduleName"
+                            ng-options="schedule.name as schedule.name for schedule in schedules">
+                        <option value="" translate>Select a schedule</option>
+                    </select>
+                </div>
+                <div class="col-sm-offset-3 col-sm-8" ng-if="order.at == 'now'">
+                    <input class="form-control input-date" ng-model="order.date" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                    <input class="form-control input-time" ng-model="order.time" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

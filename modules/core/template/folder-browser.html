@@ -1,0 +1,17 @@
+<li>
+    <a href ng-click="loadFolder(folder.path)">
+        <span class="nav-text"><i class="fa fa-folder"></i> {{folder.foldername}} </span>
+    </a>
+</li>
+<ul class="nav-sub">
+    <li class="p-l-sm" ng-repeat="subfolder in folder.folders | orderBy:'foldername'">
+        <file-browser-control folder="subfolder"></file-browser-control>
+    </li>
+</ul>
+<ul class="nav-sub">
+    <li ng-repeat="file in folder.files | orderBy:'filename'">
+        <a href ng-click="loadFile(file)">
+            <span class="nav-text p-l"><i class="fa fa-file"></i> {{file.filename}}</span>
+        </a>
+    </li>
+</ul>

@@ -1,0 +1,344 @@
+.pagination {
+  display: inline-block;
+  padding-right: 0;
+  margin: -23px 0 5px 0;
+  border-radius: 4px;
+  float: right !important;
+}
+.pagination > li {
+  display: inline;
+}
+.pagination > li > a,
+.pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #337ab7;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+  margin-left: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+  color: #23527c;
+  background-color: #eee;
+  border-color: #ddd;
+}
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  z-index: 2;
+  color: #fff;
+  cursor: default;
+  background-color: #337ab7;
+  border-color: #337ab7;
+}
+.pagination > .disabled > span,
+.pagination > .disabled > span:hover,
+.pagination > .disabled > span:focus,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
+  color: #777;
+  cursor: not-allowed;
+  background-color: #fff;
+  border-color: #ddd;
+}
+.pagination-lg > li > a,
+.pagination-lg > li > span {
+  padding: 10px 16px;
+  font-size: 18px;
+}
+.pagination-lg > li:last-child > a,
+.pagination-lg > li:last-child > span {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+.pagination-lg > li:first-child > a,
+.pagination-lg > li:first-child > span {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.pagination-sm > li > a,
+.pagination-sm > li > span {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+.pagination-sm > li:last-child > a,
+.pagination-sm > li:last-child > span {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.pagination-sm > li:first-child > a,
+.pagination-sm > li:first-child > span {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+input[type="search"]{
+    padding-left:26px !important;
+    background-image: url("../images/Search.png") !important;
+    background-repeat: no-repeat;
+    background-position: 6px center;
+    width: 180px !important;
+}
+.breadcrumb {
+  padding: 8px 15px;
+  border-radius: 0 !important;
+}
+/*change breadcrumb separator to raquo symbol*/
+.breadcrumb > li + li:before {
+     content: "\00BB";
+     color: #aaa;
+}
+
+.breadcrumb a:hover {
+     text-decoration: none;
+}
+.breadcrumb > li > a{
+    width: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.breadcrumb > li:first-child{
+  padding: 0 0 0 20px;
+  color: #aaa;
+  margin-left: 4px;
+  background-image: url('../images/Home.png');
+  background-size: 15px;
+  background-repeat:no-repeat;
+}
+
+.overlay,
+.loading-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.overlay {
+  z-index: 1010;
+  background: rgba(248, 248, 248, 0.70);
+}
+.overlay.dark {
+  background: rgba(0, 0, 0, 0.5);
+}
+.loading-img {
+  z-index: 1020;
+  background: transparent url('../images/ajax-loader1.gif') 50% 50% no-repeat;
+}
+.list-group {
+  padding-left: 10px;
+  margin-bottom: 20px;
+  padding-top: 10px;
+  background-color: #F1F3FA;
+}
+.list-group1 {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f6f8ff;
+}
+.list-group-item {
+  position: relative;
+  display: table-cell;
+  padding: 10px 15px;
+  margin-bottom: -1px;
+  background-color:  #F1F3FA ;
+  border: none;
+  color:#5b9bd1 !important;
+}
+.list-group-item:hover{
+    color: #3175af !important;
+}
+.list-group-item:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.list-group-item:last-child {
+  margin-bottom: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.active-step{
+   /* margin-top: 10px !important;*/
+    color:#333 !important;
+   background-color: #fff;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+   border-bottom-color: transparent;
+   border-top: 3px solid rgba(255, 79, 74, 0.90);
+}
+.active-step:hover,.active-step:focus{
+   /* margin-top: 10px !important;*/
+    color:#333 !important;
+   background-color: #fff !important;
+
+}
+.marg-left5{
+    margin-left: 5px !important;
+}
+.marg-left10{
+    margin-left: 10px !important;
+}
+.marg-top5{
+    margin-top: 5px !important;
+}
+.marg-top-30 {
+  margin-top: 30px !important;
+}
+
+
+.course-table{
+    margin: 8px 0 0 0 !important;
+}
+
+input[readonly] {
+  background-color: #ffffff !important;
+}
+.img-100{
+    width: 80px;
+    height: 80px;
+}
+.edit-img{
+   margin-top: 26px;
+}
+.model-large{
+	width: 100% !important;
+	height: 100%;
+}
+.model-large .modal-header {
+  min-height: 12.42857143px;
+  padding: 8px;
+  border-bottom: 1px solid #e5e5e5;
+  padding-left: 10px;
+  padding-right: 15px;
+}
+.model-large .modal-header .modal-title {
+	padding-left: 15px;
+	font-size: 14px;
+	font-weight: 600;
+	font-family: 'Lato', sans-serif;
+}
+
+iframe{
+ 	width: 100% !important;
+	height: 810px;
+ }
+
+@media (min-width: 992px) {
+    iframe {
+        width: 100% !important;
+        height: 812px;
+    }
+}
+ @media ( min-width : 1200px) {
+
+     iframe {
+         width: 100% !important;
+         height: 863px;
+     }
+ }
+
+/* user profile custom css*/
+.profile-table .table>tbody>tr>td {
+	padding: 14px 8px;
+	line-height: 2;
+	vertical-align: middle;
+}
+.profile-table .table>tbody>tr>th {
+	padding: 14px 8px;
+	line-height: 2;
+	vertical-align: middle;
+}
+.border-title{
+    font-size: 16px;
+    font-weight: 600;
+
+}
+.profile-heading{
+  padding: 10px 0;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  color: #6a6a6a;
+}
+.heading-profile{
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-weight: 900;
+}
+.bottom-border{
+     padding-bottom: 5px;
+     border-bottom: 4px solid #5b9bd1;
+}
+.social-info{
+    text-align: center;
+    padding: 10px 10px 10px 25%;
+}
+
+.embed-resp {
+  position: relative;
+  display: block;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.embed-resp .embed-responsive-item,
+.embed-resp iframe,
+.embed-resp embed,
+.embed-resp object,
+.embed-resp video
+{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  border: 0;
+}
+.embed-resp-16by9 {
+  padding-bottom: 40%;
+}
+
+/* here you can put your own css to customize and override the theme */
+
+/***
+Rounded Portlets
+***/
+
+/*.portlet {
+	border-radius: 2px !important;
+}
+
+.portlet .portlet-title {
+	border-radius: 2px 2px 0px 0px !important;
+}
+
+.portlet .portlet-body,
+.portlet .portlet-body .form-actions  {
+	border-radius: 0px 0px 2px 2px !important;
+}*/
+
+
