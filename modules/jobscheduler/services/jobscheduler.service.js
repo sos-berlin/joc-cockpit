@@ -53,10 +53,10 @@
                 });
                 return deferred.promise;
             },
-            getConfiguration: function (path,jobschedulerId) {
+            getConfiguration: function (jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource(apiUrl + 'lock/configuration');
-                JobChain.save({lock : path,jobschedulerId:jobschedulerId},function (res) {
+                JobChain.save({jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
@@ -112,14 +112,26 @@
             },
             getConfiguration: function (path,jobschedulerId) {
                 var deferred = $q.defer();
-                var JobChain = $resource(apiUrl + 'schedule/configuration');
-                JobChain.save({schedule : path,jobschedulerId:jobschedulerId},function (res) {
+                var Schedule = $resource(apiUrl + 'schedule/configuration');
+                Schedule.save({schedule : path,jobschedulerId:jobschedulerId},function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+            setRunTime: function (filter) {
+                var deferred = $q.defer();
+                var Schedule = $resource(apiUrl + 'schedule/set_run_time');
+                Schedule.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
                 });
                 return deferred.promise;
             }
+
+
         }
     }
 
@@ -375,9 +387,9 @@
                     {
                         name: 'CheckDaysSchedule',
                         path: '/sos/dailyschedule/CreateDaysSchedule',
-                        planned: '2016-08-05 0:00:01',
-                        executed: '2016-08-09 0:00:02',
-                        endOfExecution: '2016-08-09 0:00:05',
+                        planned: '2016-09-02T12:30:01Z',
+                        executed: '2016-09-09T00:00:02Z',
+                        endOfExecution: '2016-09-09T00:00:05Z',
                         duration: '00:00:03',
                         exitCode: '0',
                         status: 'waiting',
@@ -388,9 +400,9 @@
                     {
                         name: 'event_processor',
                         path: '/sos/dailyschedule/event_processor',
-                        planned: '2016-08-05 0:00:01',
-                        executed: '2016-08-09 0:00:02',
-                        endOfExecution: '2016-08-09 0:00:05',
+                        planned: '2016-09-02T12:30:01Z',
+                        executed: '2016-09-09T00:00:02Z',
+                        endOfExecution: '2016-09-09T00:00:05Z',
                         duration: '00:00:03',
                         exitCode: '0',
                         status: 'waiting',
@@ -401,9 +413,9 @@
                     {
                         name: 'createDaysSchedule',
                         path: '/sos/dailyschedule/createDaysSchedule',
-                        planned: '2016-08-05 0:00:01',
-                        executed: '2016-08-09 0:00:02',
-                        endOfExecution: '2016-08-09 0:00:05',
+                        planned: '2016-09-05T00:00:01Z',
+                        executed: '2016-09-09T00:00:02Z',
+                        endOfExecution: '2016-09-09T00:00:05Z',
                         duration: '00:00:03',
                         exitCode: '0',
                         status: 'executed',
@@ -414,9 +426,9 @@
                     {
                         name: 'createDaysSchedule02',
                         path: '/sos/dailyschedule/createDaysSchedule02',
-                        planned: '2016-08-05 0:00:01',
-                        executed: '2016-08-09 0:00:02',
-                        endOfExecution: '2016-08-09 0:00:05',
+                        planned: '2016-09-05T00:00:01Z',
+                        executed: '2016-09-09T00:00:02Z',
+                        endOfExecution: '2016-09-09T00:00:05Z',
                         duration: '00:00:03',
                         exitCode: '0',
                         status: 'executed',

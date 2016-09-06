@@ -6,7 +6,7 @@
                 <div class="box card">
                     <div class="box-body">
                         <div>
-                            <a href="" class="text-left">
+                            <a href="#/showConfiguration?type=lock&path={{lock.path}}/{{lock.name}}" class="text-left">
                                 <i class="fa fa-lock text-sm"></i>
                                 <span ng-bind="lock.path"></span></a>
                         </div>
@@ -65,7 +65,7 @@
                     <tbody>
                     <tr ng-repeat="lock in filtered = (locks | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                         <td ng-bind="lock.name || '-'"></td>
-                        <td ng-bind="lock.path"></td>
+                        <td ><a href="#/showConfiguration?type=lock&path={{lock.path}}/{{lock.name}}">{{lock.path}}</a></td>
                         <td ng-bind="lock.status || '-'"></td>
                         <td ng-bind="lock.maxNonExclusive || '0'"></td>
                         <td ng-bind="lock.holders.tasks.length || '0'"></td>

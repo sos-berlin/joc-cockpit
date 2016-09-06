@@ -87,7 +87,6 @@
             }
         };
 
-
         vm.calculateHeight = function () {
             var headerHt = $('.app-header').height() || 64;
             var footerHt = $('.app-footer').height() || 30;
@@ -174,7 +173,7 @@
         vm.getClusterMembersP(vm.schedulerIds.selected);
 
         vm.changeScheduler = function (jobScheduler) {
-            JobSchedulerService.switchSchedulerId(jobScheduler).then(function (res) {
+            JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {
                 $state.reload();
             }, function (err) {
 
@@ -213,55 +212,60 @@
         };
     }
 
-    ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$location"];
-    function ConfigurationCtrl($scope, JobService, JobChainService, OrderService, ScheduleService, ResourceService, $location) {
+    ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$location", "SOSAuth"];
+    function ConfigurationCtrl($scope, JobService, JobChainService, OrderService, ScheduleService, ResourceService, $location, SOSAuth) {
+         var vm = $scope;
+        if (SOSAuth.scheduleIds) {
+            vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+        }
+
 
         var object = $location.search();
         document.title = object.path.substring(object.path.lastIndexOf('/') + 1) + " - JobScheduler";
-        $scope.type = object.type;
+        vm.type = object.type;
         if (object.type == 'jobChain') {
-            JobChainService.getConfiguration(object.path).then(function (res) {
-                $scope.configuration = res.configuration;
-                $scope.html = $.parseHTML(res.configuration.content.html);
-                $scope.html = $scope.html[0].textContent;
+            JobChainService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+                vm.configuration = res.configuration;
+                vm.html = $.parseHTML(res.configuration.content.html);
+                vm.html = vm.html[0].textContent;
             }, function (err) {
 
             });
         }
         else if (object.type == 'job') {
-            JobService.getConfiguration(object.path).then(function (res) {
-                $scope.configuration = res.configuration;
-                $scope.html = $.parseHTML(res.configuration.content.html);
-                $scope.html = $scope.html[0].textContent;
+            JobService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+                vm.configuration = res.configuration;
+                vm.html = $.parseHTML(res.configuration.content.html);
+                vm.html = vm.html[0].textContent;
 
             }, function (err) {
 
             });
         } else if (object.type == 'order') {
-            OrderService.getConfiguration(object.path).then(function (res) {
-                $scope.configuration = res.configuration;
-                $scope.html = $.parseHTML(res.configuration.content.html);
-                $scope.html = $scope.html[0].textContent;
+            OrderService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+                vm.configuration = res.configuration;
+                vm.html = $.parseHTML(res.configuration.content.html);
+                vm.html = vm.html[0].textContent;
 
             }, function (err) {
 
             });
         }
         else if (object.type == 'schedule') {
-            ScheduleService.getConfiguration(object.path).then(function (res) {
-                $scope.configuration = res.configuration;
-                $scope.html = $.parseHTML(res.configuration.content.html);
-                $scope.html = $scope.html[0].textContent;
+            ScheduleService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+                vm.configuration = res.configuration;
+                vm.html = $.parseHTML(res.configuration.content.html);
+                vm.html = vm.html[0].textContent;
 
             }, function (err) {
 
             });
         }
         else if (object.type == 'lock') {
-            ResourceService.getConfiguration(object.path).then(function (res) {
-                $scope.configuration = res.configuration;
-                $scope.html = $.parseHTML(res.configuration.content.html);
-                $scope.html = $scope.html[0].textContent;
+            ResourceService.getConfiguration(vm.schedulerIds.selected).then(function (res) {
+                vm.configuration = res.configuration;
+                vm.html = $.parseHTML(res.configuration.content.html);
+                vm.html = vm.html[0].textContent;
 
             }, function (err) {
 

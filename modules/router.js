@@ -180,7 +180,24 @@
                     parent: 'app.ordersOverview'
                 }
             })
-
+            .state('app.orderLog', {
+                url: '/order/log/:historyId/:orderId',
+                templateUrl: 'modules/order/views/log.html',
+                controller: 'LogCtrl',
+                ncyBreadcrumb: {
+                    label: '{{orderId}}',
+                    parent: 'app.history'
+                }
+            })
+            .state('app.jobLog', {
+                url: '/job/log/:taskId',
+                templateUrl: 'modules/order/views/log.html',
+                controller: 'LogCtrl',
+                ncyBreadcrumb: {
+                    label: '{{taskId}}',
+                    parent: 'app.history'
+                }
+            })
             .state('app.resources', {
                 url: '/resources',
                 templateUrl: 'modules/jobscheduler/views/resource.html',

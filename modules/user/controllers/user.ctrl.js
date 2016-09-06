@@ -81,8 +81,6 @@
     UserProfileCtrl.$inject = ['$scope', '$rootScope', '$window', 'gettextCatalog'];
     function UserProfileCtrl($scope, $rootScope, $window, gettextCatalog) {
         var vm = $scope;
-        vm.height = window.innerHeight - 177 + 'px';
-        $('.max-ht').css('height', vm.height);
 
         vm.zones = moment.tz.names();
 

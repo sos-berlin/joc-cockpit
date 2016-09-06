@@ -88,12 +88,7 @@
 
         var watcher1 = vm.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
-                if (newNames.length == vm.jobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length) {
-                    vm.allCheck.checkbox = true;
-                }
-                else {
-                    vm.allCheck.checkbox = false;
-                }
+                vm.allCheck.checkbox = newNames.length == vm.jobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
@@ -301,9 +296,9 @@
             modalInstance.result.then(function () {
                 vm.savedJobChainFilter.list.push(vm.jobChainFilter);
                 vm.savedJobChainFilter.selected = vm.jobChainFilter.name;
-                filterData();
                 SavedFilter.setJobChain(vm.savedJobChainFilter);
                 SavedFilter.save();
+                filterData();
             }, function () {
 
             });
@@ -362,6 +357,7 @@
             }
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
+            filterData();
         };
 
         vm.checkFilterName = function () {
@@ -383,9 +379,9 @@
 
         vm.changeFilter = function (filter) {
             vm.savedJobChainFilter.selected= filter;
-            filterData();
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
+            filterData();
 
         };
 
@@ -487,11 +483,7 @@
 
         var watcher1 = vm.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-                if (newNames.length == vm.jobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length) {
-                    vm.allCheck.checkbox = true;
-                } else {
-                    vm.allCheck.checkbox = false;
-                }
+                vm.allCheck.checkbox = newNames.length == vm.jobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
 
                 vm.isOrderJob = false;
                 vm.isStopped = false;
@@ -569,9 +561,9 @@
             modalInstance.result.then(function () {
                 vm.savedJobFilter.list.push(vm.jobFilter);
                 vm.savedJobFilter.selected = vm.jobFilter.name;
-                filterData();
                 SavedFilter.setJob(vm.savedJobFilter);
                 SavedFilter.save();
+                filterData();
             }, function () {
 
             });
@@ -629,6 +621,7 @@
             }
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
+            filterData();
         };
 
         vm.checkFilterName = function () {
@@ -650,9 +643,9 @@
 
         vm.changeFilter = function (filter) {
             vm.savedJobFilter.selected = filter;
-            filterData();
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
+            filterData();
 
         };
 
@@ -669,11 +662,11 @@
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
-            jobs.jobs.push(value.path);
+            jobs.jobs.push({job:value.path});
             TaskService.historys(jobs).then(function (res) {
                 vm.taskHistory = res.history;
                 vm.isLoading1 = true;
-            }, function (err) {
+            }, function () {
                 vm.isLoading1 = true;
             });
 
@@ -682,8 +675,8 @@
 
         };
 
-        vm.taskLog = function(task){
-            TaskService.log({taskId: task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+        vm.taskLog = function(){
+            TaskService.log({taskId: vm.showTaskPanel.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
                 vm.log = res.log;
             });
         };

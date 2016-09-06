@@ -36,8 +36,8 @@
             'gantt.overlap'
         ])
         .constant("apiUrl", "http://test.sos-berlin.com:3001/joc/api/")
-        //.constant("APIUrl", "http://test.sos-berlin.com:3001/joc/api/")
-        .constant("APIUrl", "http://uk.sos-berlin.com:8888/rest/")
+        .constant("APIUrl", "http://test.sos-berlin.com:3001/joc/api/")
+        //.constant("APIUrl", "http://uk.sos-berlin.com:8888/rest/")
         .config(['calendarConfig' ,function (calendarConfig) {
             calendarConfig.dateFormatter = 'moment'; //use either moment or angular to format dates on the calendar. Default angular. Setting this will override any date formats you have already set.
 

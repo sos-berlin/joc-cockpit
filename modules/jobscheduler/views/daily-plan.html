@@ -6,22 +6,26 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                     <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
+                    <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
                         <div class="btn-group">
+
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'this-hour'"
-                                    ng-class="{'btn-primary': filter.range=='all'}" ng-click="getPlans()">This hour
+                                    ng-class="{'btn-primary': filter.range=='this-hour'}" ng-click="getPlans()">This hour
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-12-hours'"
-                                    ng-class="{'btn-primary': filter.range=='running'}" ng-click="getPlans()">Next 12 hours
+                                    ng-class="{'btn-primary': filter.range=='next-12-hours'}" ng-click="getPlans()">Next 12
+                                hours
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': filter.range=='active'}" ng-click="getPlans()">Next 24 hours
+                                    ng-class="{'btn-primary': filter.range=='active'}" ng-click="getPlans()">Next 24
+                                hours
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-7-days'"
-                                    ng-class="{'btn-primary': filter.range=='stopped'}" ng-click="getPlans()">Next 7 days
+                                    ng-class="{'btn-primary': filter.range=='stopped'}" ng-click="getPlans()">Next 7
+                                days
                             </button>
                         </div>
                         <div class="btn-group dropdown">
@@ -32,34 +36,47 @@
                                  <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='processClass'">
-                                    Process Class
+                                <span ng-show="filter.sortBy =='path'">
+                                    Path
                                   <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='startedAt'">
-                                    Date
+                                <span ng-show="filter.sortBy =='planned'">
+                                    Planned
                                <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
-                                </span> </a>
+                                <span ng-show="filter.sortBy =='executed'">
+                                    Executed
+                               <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                </span>
+
+                                </span>
+                             </a>
 
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('name')" >Name</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('name')">Name</a>
                                 <a class="dropdown-item" href ng-click="mainSortBy('path')"> Path</a>
                                 <a class="dropdown-item" href ng-click="mainSortBy('planned')">Planned</a>
                                 <a class="dropdown-item" href ng-click="mainSortBy('executed')">Executed</a>
                             </div>
                         </div>
-                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">Filters
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">Filters <span class="text-primary" ng-bind="savedDailyPlanFilter.selected"></span>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">                                
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="applyFilter()">Create a new filter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobChainFilter.length>0">Edit existing filters</a>
-                                <div class="dropdown-divider" ng-if="savedJobChainFilter.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedJobChainFilter.selected == filter.name}" ng-click="changeFilter(filter)" href ng-repeat="filter in savedJobChainFilter">{{filter.name}}</a>
-                            </div>
+                                <a class="dropdown-item" href ng-click="editFilters()"
+                                   ng-if="savedDailyPlanFilter.list.length>0">Edit existing filters</a>
+                                <div class="dropdown-divider" ng-if="savedDailyPlanFilter.length>0"></div>
+                                <a class="dropdown-item" ng-class="{orange: savedDailyPlanFilter.selected == filter.name}"
+                                   ng-click="changeFilter(filter.name)"
+                                   ng-repeat="filter in savedDailyPlanFilter.list track by $index">
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
+                                                       ng-if="savedDailyPlanFilter.selected == filter.name"
+                                                       class="fa fa-times-circle-o remove"></i>
+                                </a></div>
                         </div>
                     </div>
 
@@ -74,46 +91,48 @@
 
         <div class="hide" ng-class="{'show': isLoading  && permission.JobChain.view.status}">
             <div class="hide m-t-sm" ng-class="{'show': pageView=='grid'}">
-                <div class="box p-a" >
+                <div class="box p-a">
                     <div gantt
-                                         data="data"
-                                         show-side="options.labelsEnabled"
-                                         daily="options.daily"
-                                         filter-task="{'name': options.filterTask}"
-                                         filter-row="{'name': options.filterRow}"
-                                         sort-mode="options.sortMode"
-                                         view-scale="options.scale"
-                                         column-width="getColumnWidth(options.width, options.scale, options.zoom)"
-                                         auto-expand="options.autoExpand"
-                                         task-out-of-range="options.taskOutOfRange"
-                                         from-date = "options.fromDate"
-                                         to-date = "options.toDate"
-                                         allow-side-resizing = "options.allowSideResizing"
-                                         task-content = "options.taskContentEnabled ? options.taskContent : undefined"
-                                         row-content = "options.rowContentEnabled ? options.rowContent : undefined"
-                                         current-date="options.currentDate"
-                                         current-date-value="options.currentDateValue"
-                                         headers="options.width && options.shortHeaders || options.longHeaders"
-                                         max-height="options.maxHeight && 300 || 0"
-                                         time-frames="options.timeFrames"
-                                         date-frames="options.dateFrames"
-                                         time-frames-working-mode="options.timeFramesWorkingMode"
-                                         time-frames-non-working-mode="options.timeFramesNonWorkingMode"
-                                         time-frames-magnet="options.timeFramesMagnet"
-                                         api="options.api"
-                                         column-magnet="options.columnMagnet">
-                                        <gantt-tree header-content="options.treeHeaderContent"
-                                                    keep-ancestor-on-filter-row="false">
-                                        </gantt-tree>
+                         data="data"
+                         show-side="options.labelsEnabled"
+                         daily="options.daily"
+                         filter-task="{'name': options.filterTask}"
+                         filter-row="{'name': options.filterRow}"
+                         sort-mode="options.sortMode"
+                         view-scale="options.scale"
+                         column-width="getColumnWidth(options.width, options.scale, options.zoom)"
+                         auto-expand="options.autoExpand"
+                         task-out-of-range="options.taskOutOfRange"
+                         from-date="options.fromDate"
+                         to-date="options.toDate"
+                         allow-side-resizing="options.allowSideResizing"
+                         task-content="options.taskContentEnabled ? options.taskContent : undefined"
+                         row-content="options.rowContentEnabled ? options.rowContent : undefined"
+                         current-date="options.currentDate"
+                         current-date-value="options.currentDateValue"
+                         headers="options.width && options.shortHeaders || options.longHeaders"
+                         max-height="options.maxHeight && 300 || 0"
+                         time-frames="options.timeFrames"
+                         date-frames="options.dateFrames"
+                         time-frames-working-mode="options.timeFramesWorkingMode"
+                         time-frames-non-working-mode="options.timeFramesNonWorkingMode"
+                         time-frames-magnet="options.timeFramesMagnet"
+                         api="options.api"
+                         column-magnet="options.columnMagnet">
+                        <gantt-tree header-content="options.treeHeaderContent"
+                                    keep-ancestor-on-filter-row="false">
+                        </gantt-tree>
 
-                                        <gantt-groups enabled="options.groupDisplayMode === 'group' || options.groupDisplayMode === 'overview' || options.groupDisplayMode === 'promote'" display="options.groupDisplayMode"></gantt-groups>
-                                        <gantt-tooltips></gantt-tooltips>
-                                        <gantt-bounds></gantt-bounds>
-                                        <gantt-progress></gantt-progress>
-                                        <gantt-sortable></gantt-sortable>
-                                        <gantt-movable enabled="!options.readOnly"></gantt-movable>
+                        <gantt-groups
+                                enabled="options.groupDisplayMode === 'group' || options.groupDisplayMode === 'overview' || options.groupDisplayMode === 'promote'"
+                                display="options.groupDisplayMode"></gantt-groups>
+                        <gantt-tooltips></gantt-tooltips>
+                        <gantt-bounds></gantt-bounds>
+                        <gantt-progress></gantt-progress>
+                        <gantt-sortable></gantt-sortable>
+                        <gantt-movable enabled="!options.readOnly"></gantt-movable>
 
-                                        <gantt-overlap></gantt-overlap>
+                        <gantt-overlap></gantt-overlap>
 
                     </div>
                 </div>
@@ -122,8 +141,8 @@
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'Loading' | translate}}...</div>
         </div>
-         <div>
-            <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
+        <div>
+            <div class="hide box p-a " ng-class="{'show': pageView=='list'}" context-menu="menuOptions">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " >
                         <thead>
@@ -170,13 +189,13 @@
                                 <i ng-show="propertyName == 'state' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-show="filter.state!='pending'"  ng-click="sortBy('startedAt')"><a>Duration
+                            <th ng-show="filter.state!='pending'" ng-click="sortBy('startedAt')"><a>Duration
                                 <i ng-show="propertyName == 'startedAt' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'startedAt' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th  ng-show="filter.state!='pending'" ng-click="sortBy('inProcessSince')"><a>Exit Code
+                            <th ng-show="filter.state!='pending'" ng-click="sortBy('inProcessSince')"><a>Exit Code
                                 <i ng-show="propertyName == 'inProcessSince' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'inProcessSince' && reverse"
@@ -187,90 +206,102 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == plan}">
-                            <tr>
-                                <td>
-                                    <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="object.orders"
-                                               data-checklist-value="order"><i class="primary"></i>
-                                    </label>
-                                </td>
-                                <td>
-                                    <i class="cursor fa fa-caret-down" ng-if="showPanel != plan.path"
-                                       ng-click="showPanelFuc(plan.path)"></i>
-                                    <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == plan.path" ng-click="hidePanelFuc()"></i>
-                                    <a ng-click="showLogFuc(plan)"><span class="text-dark">{{plan.path.substring(plan.path.lastIndexOf('/')+1,plan.path.length)}}</span></a>
-                                </td>
-                                <td><span ng-bind="plan.path"></span></td>
+                        <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize"
+                               ng-class="{'light-bg':showLogPanel == plan}">
+                        <tr>
+                            <td>
+                                <label class="md-check">
+                                    <input type="checkbox" data-checklist-model="object.orders"
+                                           data-checklist-value="order"><i class="primary"></i>
+                                </label>
+                            </td>
+                            <td>
+                                <i class="cursor fa fa-caret-down" ng-if="showPanel != plan.path"
+                                   ng-click="showPanelFuc(plan.path)"></i>
+                                <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == plan.path"
+                                   ng-click="hidePanelFuc()"></i>
+                                <a ng-click="showLogFuc(plan)"><span class="text-dark">{{plan.path.substring(plan.path.lastIndexOf('/')+1,plan.path.length)}}</span></a>
+                            </td>
+                            <td><span ng-bind="plan.path"></span></td>
 
-                                <td><span class="text-c label" ng-class="bgColorFunction(plan.status)" ng-bind="plan.status"></span></td>
-                                <td><a uib-tooltip="{{plan.planned}}" ng-bind="plan.planned"></a></td>
-                                <td ng-show="filter.state!='pending'" ng-bind="plan.executed | stringToDate"></td>
-                                <td ng-show="filter.state!='pending'" ng-bind="plan.endOfExecution | fromNow"></td>
-                                <td ng-show="filter.state!='pending'" ng-bind="plan.duration || '-'"></td>
-                                <td ng-show="filter.state!='pending'" ng-bind="plan.exitCode || '-'"></td>
-                                <td>
-                                    <div class="btn-group dropdown ">
-                                        <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                            <td><span class="text-c label" ng-class="bgColorFunction(plan.status)"
+                                      ng-bind="plan.status"></span></td>
+                            <td><a uib-tooltip="{{plan.planned}}" ng-bind="plan.planned | stringToDate"></a></td>
+                            <td ng-show="filter.state!='pending'" ng-bind="plan.executed | stringToDate"></td>
+                            <td ng-show="filter.state!='pending'" ng-bind="plan.endOfExecution | fromNow"></td>
+                            <td ng-show="filter.state!='pending'" ng-bind="plan.duration || '-'"></td>
+                            <td ng-show="filter.state!='pending'" ng-bind="plan.exitCode || '-'"></td>
+                            <td>
+                                <div class="btn-group dropdown ">
+                                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                            <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" >Show configuration</a>
-                                            <a href class="dropdown-item"
-                                               ng-if="permission.Order.start"
-                                               ng-click="start(plan)">Start Now</a>
-                                             <a href class="dropdown-item"
-                                               ng-click="startOrder(order)">Handle Ingnorelist</a>
-                                            <a href class="dropdown-item"
-                                               ng-click="setOrderState(order)">Add To Ignorelist</a>
-                                            <a href class="dropdown-item"
-                                               ng-click="setRunTime(order)">Add JobChain Without Order To Ignorelist</a>
-                                            <a href class="dropdown-item bg-hover-color"
-                                               ng-click="suspendOrder(order)">Disable Ignorelist</a>
-                                            <a href class="dropdown-item"
-                                               ng-click="resumeOrder(order)">Reset Ignorelist</a>
-                                        </div>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                        <a target="_blank"
+                                           href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}"
+                                           class="hide dropdown-item"
+                                           ng-class="{show:permission.Order.view.configuration}">Show configuration</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="permission.Order.start"
+                                           ng-click="start(plan)">Start Now</a>
+                                        <a href class="dropdown-item"
+                                           ng-click="startOrder(order)">Handle Ingnorelist</a>
+                                        <a href class="dropdown-item"
+                                           ng-click="setOrderState(order)">Add To Ignorelist</a>
+                                        <a href class="dropdown-item"
+                                           ng-click="setRunTime(order)">Add JobChain Without Order To Ignorelist</a>
+                                        <a href class="dropdown-item bg-hover-color"
+                                           ng-click="suspendOrder(order)">Disable Ignorelist</a>
+                                        <a href class="dropdown-item"
+                                           ng-click="resumeOrder(order)">Reset Ignorelist</a>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr ng-show="showPanel == order.path">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-show="showPanel == order.path">
 
-                                <td></td>
-                                <td colspan="9" style="padding: 0 !important;">
-                                    <table class="table m-a-0">
-                                        <thead>
-                                        <tr>
-                                            <th>Type</th>
-                                            <th>End State</th>
-                                            <th>Priority</th>
-                                            <th>Params</th>
-                                            <th>Task Id</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>{{order._type || '-'}}</td>
-                                            <td>{{order.endState || '-'}}</td>
-                                            <td>{{order.priority || '-'}}</td>
-                                            <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
-                                            <td>{{order.taskId || '-'}}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
+                            <td></td>
+                            <td colspan="9" style="padding: 0 !important;">
+                                <table class="table m-a-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>End State</th>
+                                        <th>Priority</th>
+                                        <th>Params</th>
+                                        <th>Task Id</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{order._type || '-'}}</td>
+                                        <td>{{order.endState || '-'}}</td>
+                                        <td>{{order.priority || '-'}}</td>
+                                        <td>
+                                            <div ng-repeat="param in order.params">{{param.name}} - {{param.value}}
+                                            </div>
+                                        </td>
+                                        <td>{{order.taskId || '-'}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
-                     <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                     <div class="pull-right" ng-show="filtered.length > 10">
+                    <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length"
+                        ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()"
+                        class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false"
+                        previous-text="Prev"></ul>
+                    <div class="pull-right" ng-show="filtered.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
-                                    ng-class="{'primary': pageSize=='10'}" >10
+                                    ng-class="{'primary': pageSize=='10'}">10
                             </button>
                             <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
-                                    ng-class="{'primary': pageSize=='25'}" >25
+                                    ng-class="{'primary': pageSize=='25'}">25
                             </button>
                             <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
-                                    ng-class="{'primary': pageSize=='50'}" >50
+                                    ng-class="{'primary': pageSize=='50'}">50
                             </button>
                             <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
                                     ng-class="{'primary': pageSize=='100'}">100
@@ -278,105 +309,107 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>No data matched</div>
+                <div class="text-center m-t text-uppercase hide text-orange"
+                     ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>No data matched
+                </div>
             </div>
         </div>
         <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase">No orders found</div>
 
-    <div class="hide " ng-class="{'show': isLoading}" >
-        <div class="row" ng-show="showLogPanel">
-            <div class="col-md-12" ng-if="isLoading1">
-                <div class="box white" id="scrollToLog">
-                    <div class="box-header">
-                        <span class="text">{{showLogPanel.path.substring(showLogPanel.path.lastIndexOf('/')+1)}}</span>
-                    </div>
-                    <div class="box-tool">
-                        <ul class="nav text-muted text-md">
-                            <li class="nav-item inline m-l-sm">
-                                <a href="" ng-click="hideLogPanel()"><img src="images/remove.png"></a>
-                            </li>
-                        </ul>
-                    </div>
-                     <div class="box-body p-t b-t" >
-                        <div class="b-b">
-                          <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                              <a class="nav-link active" href data-toggle="tab" data-target="#dpHistoryTab">History</a>
-                            </li>
-                            <li class="nav-item">
-                              <a class="nav-link" href data-toggle="tab" data-target="#dpStepsTab">Steps</a>
-                            </li>
-
-                          </ul>
+        <div class="hide " ng-class="{'show': isLoading}">
+            <div class="row" ng-show="showLogPanel">
+                <div class="col-md-12" ng-if="isLoading1">
+                    <div class="box white" id="scrollToLog">
+                        <div class="box-header">
+                            <span class="text">{{showLogPanel.path.substring(showLogPanel.path.lastIndexOf('/')+1)}}</span>
                         </div>
-                         <div class="tab-content p-a m-b-md">
-
-                             <div class="tab-pane animated active fadeIn text-muted" id="dpHistoryTab">
-                              <div class="row">
-                                  <div class="table-responsive">
-                                    <table class="table table-striped table-bordered" >
-                                        <thead>
-                                        <tr>
-                                            <th>Sr. No</th>
-                                            <th>Start of Execution</th>
-                                            <th>End of Execution</th>
-                                            <th>Duration</th>
-                                            <th>Exit Code</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="history in histories">
-                                                <td>{{$index+1}}</td>
-                                                <td><span ng-if="history.startOfExecution" ng-bind="history.startOfExecution"></span></td>
-                                                <td><span ng-bind="history.endOfExecution"></span></td>
-                                                <td ng-bind="history.duration"></td>
-                                                <td ng-bind="history.exitCode"></td>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                              </div>
-                          </div>
-                              <div class="tab-pane animated fadeIn text-muted" id="dpStepsTab">
-                              <div class="row">
-                                  <div class="table-responsive">
-                                    <table class="table table-striped table-bordered" >
-                                        <thead>
-                                        <tr>
-                                            <th>Step</th>
-                                            <th>State</th>
-                                            <th>Job</th>
-                                             <th>Start</th>
-                                             <th>Stop</th>
-                                             <th>Duration</th>
-                                             <th>Exit Code</th>
-                                             <th>Error Code</th>
-                                             <th>Error Text</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="step in steps">
-                                                <td><span ng-bind="step.step"></span></td>
-                                                <td><span ng-bind="step.state"></span></td>
-                                                <td ng-bind="step.job"></td>
-                                                <td ng-bind="step.start"></td>
-                                                <td ng-bind="step.stop"></td>
-                                                <td ng-bind="step.duration"></td>
-                                                <td ng-bind="step.exitCode"></td>
-                                                <td ng-bind="step.errorCode"></td>
-                                                <td ng-bind="step.errorText"></td>
-
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                              </div>
-                          </div>
-
+                        <div class="box-tool">
+                            <ul class="nav text-muted text-md">
+                                <li class="nav-item inline m-l-sm">
+                                    <a href="" ng-click="hideLogPanel()"><img src="images/remove.png"></a>
+                                </li>
+                            </ul>
                         </div>
+                        <div class="box-body p-t b-t">
+                            <div class="b-b">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href data-toggle="tab" data-target="#dpHistoryTab">History</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href data-toggle="tab" data-target="#dpStepsTab">Steps</a>
+                                    </li>
 
+                                </ul>
+                            </div>
+                            <div class="tab-content p-a m-b-md">
+
+                                <div class="tab-pane animated active fadeIn text-muted" id="dpHistoryTab">
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Sr. No</th>
+                                                    <th>Start of Execution</th>
+                                                    <th>End of Execution</th>
+                                                    <th>Duration</th>
+                                                    <th>Exit Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="history in histories">
+                                                    <td>{{$index+1}}</td>
+                                                    <td><span ng-if="history.startOfExecution"
+                                                              ng-bind="history.startOfExecution"></span></td>
+                                                    <td><span ng-bind="history.endOfExecution"></span></td>
+                                                    <td ng-bind="history.duration"></td>
+                                                    <td ng-bind="history.exitCode"></td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane animated fadeIn text-muted" id="dpStepsTab">
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Step</th>
+                                                    <th>State</th>
+                                                    <th>Job</th>
+                                                    <th>Start</th>
+                                                    <th>Stop</th>
+                                                    <th>Duration</th>
+                                                    <th>Exit Code</th>
+                                                    <th>Error Code</th>
+                                                    <th>Error Text</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="step in steps">
+                                                    <td><span ng-bind="step.step"></span></td>
+                                                    <td><span ng-bind="step.state"></span></td>
+                                                    <td ng-bind="step.job"></td>
+                                                    <td ng-bind="step.start"></td>
+                                                    <td ng-bind="step.stop"></td>
+                                                    <td ng-bind="step.duration"></td>
+                                                    <td ng-bind="step.exitCode"></td>
+                                                    <td ng-bind="step.errorCode"></td>
+                                                    <td ng-bind="step.errorText"></td>
+
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
 
 
                         </div>
@@ -384,12 +417,12 @@
                 </div>
             </div>
         </div>
-        </div>
-        <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
-            <div class="cssload-loading">Loading...</div>
-        </div>
     </div>
-    <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading}">
+    <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
         <div class="cssload-loading">Loading...</div>
     </div>
+</div>
+<div class="hide text-center m-t-lg " ng-class="{'show': !isLoading}">
+    <div class="cssload-loading">Loading...</div>
+</div>
 

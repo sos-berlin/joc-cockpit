@@ -54,7 +54,7 @@
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
 
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters','ignoreList'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters','ignoreList','dailyPlanFilters'];
 
         var propsPrefix = '$SOS$';
 
@@ -88,6 +88,9 @@
         };
         SavedFilter.prototype.setHistory = function (history) {
             this.historyFilters = JSON.stringify(history);
+        };
+        SavedFilter.prototype.setDailyPlan = function (dailyPlan) {
+            this.dailyPlanFilters = JSON.stringify(dailyPlan);
         };
 
         SavedFilter.prototype.setIgnoreList = function (list) {

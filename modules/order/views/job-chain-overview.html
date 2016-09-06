@@ -74,16 +74,24 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                    <tr ng-repeat="node in filtered = (jobChain.nodes | filter: filterString:strict)">
+                    <tbody ng-repeat="node in filtered = (jobChain.nodes | filter: filterString:strict)">
+                    <tr >
                         <td width="40">
                             <label class="md-check">
                                 <input type="checkbox" data-checklist-model="object.nodes" data-checklist-value="node"><i class="primary"></i>
                             </label>
                         </td>
                         <td ><a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
-                            <i class="fa fa-circle text-xs" ng-class="colorFunction(node.state.severity)"></i>
-                            {{node.name}}</a>
+                            <i class="fa fa-circle  text-xs" ng-click="showPanelFuc(order.path)" ng-class="[colorFunction(node.state.severity),{'text-success':node.orders && node.orders.length>0}]"></i>
+                            {{node.name}} </a>
+                            <div ng-repeat="order in node.orders">
+                                   <span ng-bind="order.orderId">  </span>
+                                </div>
+
+                                     <i class="cursor fa fa-caret-down" ng-if="showPanel != node.name && node.orders && node.orders.length>1"
+                                       ng-click="showPanelFuc(node.name)"></i>
+                                    <i class="cursor fa fa-caret-up" ng-if="showPanel == node.name && node.orders && node.orders.length>1" ng-click="hidePanelFuc()"></i>
+
                         </td>
                         <td ng-bind="node.job.path"></td>
                         <td><span class="text-c label" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span></td>
@@ -106,6 +114,33 @@
                             </div>
                         </td>
                     </tr>
+                    Here {{showPanel == node.name}} {{showPanel}}
+                    <tr ng-show="showPanel == node.name">
+
+                                <td></td>
+                                <td colspan="9" style="padding: 0 !important;">
+                                    <table class="table m-a-0">
+                                        <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>End State</th>
+                                            <th>Priority</th>
+                                            <th>Params</th>
+                                            <th>Task Id</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{order._type || '-'}}</td>
+                                            <td>{{order.endState || '-'}}</td>
+                                            <td>{{order.priority || '-'}}</td>
+                                            <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
+                                            <td>{{order.taskId || '-'}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
             </div>

@@ -3450,6 +3450,17 @@ a[href]:hover span.text-white {
 .text-lg {
     font-size: 26px;
 }
+.text-2x {
+  font-size: 2em;
+}
+
+.text-3x {
+  font-size: 3em;
+}
+
+.text-4x {
+  font-size: 4em;
+}
 
 .l-h {
     line-height: 1.5;
@@ -4681,7 +4692,6 @@ div.order-panel div {
     background: #ffffff;
     position: absolute;
     border: 1px solid rgba(0, 0, 0, 0.12);
-
     width: 230px;
     height: 117px;
     padding: 10px;

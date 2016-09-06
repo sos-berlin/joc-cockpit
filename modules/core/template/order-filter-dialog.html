@@ -72,12 +72,26 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row m-t-sm" ng-show="radio == 'planned'">
+<!--        <div class="form-group row m-t-sm" ng-show="radio == 'planned'">
            <label class="col-sm-3 form-control-label">Planned Orders</label>
            <div class=" col-sm-6">
             <input type="text" class="form-control" placeholder="Today or between date/time" ng-model="orderFilter.planned">
            </div>
 
+        </div>-->
+        <div class="form-group row" ng-show="radio == 'planned'">
+            <label class="col-sm-3 form-control-label">Form</label>
+            <div class="col-sm-8">
+                <input class="form-control input-date" ng-model="orderFilter.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                <input  class="form-control input-time" ng-model="orderFilter.fromTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+            </div>
+        </div>
+        <div class="form-group row" ng-show="radio == 'planned'">
+            <label class="col-sm-3 form-control-label">To</label>
+            <div class="col-sm-8">
+                <input class="form-control input-date" ng-model="orderFilter.toDate" data-date-format="yyyy-MM-dd" data-autoclose="1" data-min-date="{{orderFilter.fromDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                <input class="form-control input-time" ng-model="orderFilter.toTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+            </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 form-control-label">Type</label>

@@ -74,10 +74,10 @@
                 });
                 return deferred.promise;
             },
-            getConfiguration: function (path) {
+            getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource(apiUrl + 'job_chain/configuration');
-                JobChain.save({jobChain : path},function (res) {
+                JobChain.save({jobChain : path, jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
@@ -87,8 +87,8 @@
         }
     }
 
-    JobService.$inject = ["$resource", "$q", "apiUrl", "SOSAuth"];
-    function JobService($resource, $q, apiUrl, SOSAuth) {
+    JobService.$inject = ["$resource", "$q", "apiUrl"];
+    function JobService($resource, $q, apiUrl) {
         return {
             get: function (filter) {
                 var deferred = $q.defer();
@@ -190,10 +190,10 @@
                 });
                 return deferred.promise;
             },
-            getConfiguration: function (jobs) {
+            getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource(apiUrl + 'job/configuration');
-                JobChain.save(jobs,function (res) {
+                JobChain.save({job:path,  jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);

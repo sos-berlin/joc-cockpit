@@ -22,6 +22,12 @@
                 });
                 return deferred.promise;
             },
+            getSimulated: function (res) {
+
+                var deferred = $q.defer();
+                deferred.resolve(res);
+                return deferred.promise;
+            },
             getOrdersP: function (filter) {
 
                 var deferred = $q.defer();
@@ -59,7 +65,6 @@
                 return deferred.promise;
             },
             log: function (filter) {
-
                 var deferred = $q.defer();
                 var Orders = $resource(APIUrl + 'order/log');
                 Orders.save(filter, function (res) {
@@ -184,9 +189,19 @@
                 });
                 return deferred.promise;
             },
-            history: function (filter) {
+            historys: function (filter) {
                 var deferred = $q.defer();
                 var History = $resource(APIUrl + 'orders/history');
+                History.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+            history: function (filter) {
+                var deferred = $q.defer();
+                var History = $resource(APIUrl + 'order/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

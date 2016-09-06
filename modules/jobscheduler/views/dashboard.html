@@ -39,7 +39,7 @@
                                         </nvd3-pie-chart>
                                     </div>
                                     <div class="col-xs-7">
-                                        <ul class="status-list m-l-sm">
+                                        <ul class="status-list m-l-sm" ng-class="{'m-top-132': agentClusterData.length==1, 'm-top-122': agentClusterData.length==2 }">
                                             <li id="{{data.key}}" ng-repeat="data in agentClusterData | orderBy: 'key'" class="p-a-xs text-c"><i class="fa fa-stop {{data.key}}"></i><a href="" ng-click="setLabel(data.key)"> {{data.key}}</a></li>
                                         </ul>
                                     </div>
@@ -118,25 +118,25 @@
                                         </div>
                                         <div class="col-xs-2">
                                             <div class="text-sm ">Running</div>
-                                            <a id ="running-id" href="#/orders/running" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
+                                            <a id ="running-id" href="#/orders/running" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
                                         </div>
 
                                         <div class="col-xs-2">
                                             <div class="text-sm ">Suspended</div>
-                                            <a id ="suspended-id" href="#/orders/suspended" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended"></a>
+                                            <a id ="suspended-id" href="#/orders/suspended" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
                                         </div>
 
                                         <div class="col-xs-2">
                                             <div class="text-sm ">Setback</div>
-                                            <a id ="setback-id" href="#/orders/setback" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback"></a>
+                                            <a id ="setback-id" href="#/orders/setback" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
                                             <div class="text-sm ">Waiting for Resource</div>
-                                            <a id ="waitingForResource-id" href="#/orders/waitingForResource" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
+                                            <a id ="waitingForResource-id" href="#/orders/waitingForResource" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
                                             <div class="text-sm ">Blacklist</div>
-                                            <a id ="blacklist-id" href="#/orders/blacklist" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
+                                            <a id ="blacklist-id" href="#/orders/blacklist" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
                                         </div>
                                     </div>
                                 </div>

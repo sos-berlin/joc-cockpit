@@ -10,11 +10,13 @@
         .filter('duration', duration)
         .filter('startFrom', startFrom);
 
-    function fromNow() {
+    fromNow.$inject =['$window'];
+    function fromNow($window) {
         return function (date) {
             if(!date){
                 return '-';
             }
+            date = moment(date).tz($window.localStorage.$SOS$ZONE);
             return moment(date).fromNow();
         }
     }
@@ -28,9 +30,13 @@
         }
     }
 
-    function duration() {
+    duration.$inject =['$window'];
+    function duration($window) {
         return function (d1, d2) {
             if (!d1 || !d2) return '-';
+
+            d1 = moment(d1).tz($window.localStorage.$SOS$ZONE);
+            d2 = moment(d2).tz($window.localStorage.$SOS$ZONE);
             var milliseconds = moment(d2).diff(d1);
 
 

@@ -50,7 +50,7 @@
                 element.addClass('hide'); // hide spinner bar by default
 
                 // display the spinner bar whenever the route changes(the content part started loading)
-                $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
+                $rootScope.$on('$stateChangeStart', function (event, toState) {
                     element.removeClass('hide'); // show spinner bar
 
                     if (toState.url === '/jobChainDetails') {
@@ -67,12 +67,14 @@
                 });
 
                 // hide the spinner bar on rounte change success(after the content loaded)
-                $rootScope.$on('$stateChangeSuccess', function () {
+                $rootScope.$on('$stateChangeSuccess', function (event, toState) {
                     element.addClass('hide'); // hide spinner bar
                     $('body, html').animate({
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
+                     if(toState.ncyBreadcrumb.label)
+                    document.title = toState.ncyBreadcrumb.label + " - JobScheduler";
                 });
 
                 // handle errors
