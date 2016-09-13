@@ -135,12 +135,12 @@
         }
     }
 
-    JobSchedulerService.$inject=["$resource", "$q", "APIUrl"];
-    function JobSchedulerService($resource,$q,APIUrl){
+    JobSchedulerService.$inject=["$resource", "$q", "apiUrl"];
+    function JobSchedulerService($resource,$q,apiUrl){
         return{
             getSchedulerIds: function () {
                 var deferred = $q.defer();
-                var Schedule = $resource(APIUrl + 'jobscheduler/ids');
+                var Schedule = $resource(apiUrl + 'jobscheduler/ids');
                 Schedule.save(function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -150,7 +150,7 @@
             },
             switchSchedulerId: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var Schedule = $resource(APIUrl + 'jobscheduler/switch');
+                var Schedule = $resource(apiUrl + 'jobscheduler/switch');
                 Schedule.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -160,7 +160,7 @@
             },
              get: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobChain = $resource(APIUrl + 'jobscheduler');
+                var JobChain = $resource(apiUrl + 'jobscheduler');
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -170,7 +170,7 @@
             },
             getJobSchedulerP: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobChain = $resource(APIUrl + 'jobscheduler/p');
+                var JobChain = $resource(apiUrl + 'jobscheduler/p');
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -180,7 +180,7 @@
             },
             getAgents: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobChain = $resource(APIUrl + 'jobscheduler/agents');
+                var JobChain = $resource(apiUrl + 'jobscheduler/agents');
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -190,7 +190,7 @@
             },
             getPermanentAgent: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobChain = $resource(APIUrl + 'jobscheduler/agents/p');
+                var JobChain = $resource(apiUrl + 'jobscheduler/agents/p');
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -200,7 +200,7 @@
             },
               getSupervisor: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/supervisor');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/supervisor');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -211,9 +211,9 @@
             getSupervisorP: function (jobschedulerId) {
                 console.log("getSupervisorP ");
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/supervisor/p');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/supervisor/p');
                 JobScheduler.save(jobschedulerId, function (resP) {
-                    JobScheduler = $resource(APIUrl + 'jobscheduler/supervisor');
+                    JobScheduler = $resource(apiUrl + 'jobscheduler/supervisor');
                     JobScheduler.save(jobschedulerId, function (res) {
                         resP.jobscheduler.state = res.jobscheduler.state;
                         resP.jobscheduler.os.distribution = 'Linux release 7.2.1511';
@@ -230,7 +230,7 @@
 
             getClusterMembersP: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/cluster/members/p');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/cluster/members/p');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -241,7 +241,7 @@
 
             getClusterMembers: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/cluster/members');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/cluster/members');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -253,7 +253,7 @@
             getDatabase: function (jobschedulerId) {
 
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/db');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/db');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -263,7 +263,7 @@
             },
             getAgentCluster: function (filter) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/agent_clusters');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/agent_clusters');
                 JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -273,7 +273,7 @@
             },
             getAgentClusterP: function (filter) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/agent_clusters/p');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/agent_clusters/p');
                 JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -284,7 +284,7 @@
             terminate: function (host,port,jobschedulerId) {
                 console.log("IN terminate "+host+" port "+port);
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/terminate');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/terminate');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -294,7 +294,7 @@
             },
              restart: function (host,port,jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/restart');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/restart');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -304,7 +304,7 @@
             },
              abort: function (host,port,jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/abort');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/abort');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -314,7 +314,7 @@
             },
              abortAndRestart: function (host,port,jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/abort_and_restart');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/abort_and_restart');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -324,7 +324,7 @@
             },
             pause: function (host,port, jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/pause');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/pause');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -334,7 +334,7 @@
             },
             continue: function (host,port,jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/continue');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/continue');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -344,7 +344,7 @@
             },
             terminateCluster: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/cluster/terminate');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/cluster/terminate');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -354,7 +354,7 @@
             },
             restartCluster: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/cluster/restart');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/cluster/restart');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -364,7 +364,7 @@
             },
             terminateFailsafeCluster: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource(APIUrl + 'jobscheduler/cluster/terminate_failsafe');
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/cluster/terminate_failsafe');
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -377,68 +377,6 @@
                 var deferred = $q.defer();
                 deferred.resolve({});
                 return deferred.promise;
-            },
-            getSampleData: function () {
-                var to = new Date();
-                to.setMonth(9);
-                to.setDate(25);
-
-                return [
-                    {
-                        name: 'CheckDaysSchedule',
-                        path: '/sos/dailyschedule/CreateDaysSchedule',
-                        planned: '2016-09-02T12:30:01Z',
-                        executed: '2016-09-09T00:00:02Z',
-                        endOfExecution: '2016-09-09T00:00:05Z',
-                        duration: '00:00:03',
-                        exitCode: '0',
-                        status: 'waiting',
-                        tasks: [
-                            {name: 'CheckDaysSchedule', from: new Date(), to: to}
-                        ]
-                    },
-                    {
-                        name: 'event_processor',
-                        path: '/sos/dailyschedule/event_processor',
-                        planned: '2016-09-02T12:30:01Z',
-                        executed: '2016-09-09T00:00:02Z',
-                        endOfExecution: '2016-09-09T00:00:05Z',
-                        duration: '00:00:03',
-                        exitCode: '0',
-                        status: 'waiting',
-                        tasks: [
-                            {name: 'event_processor', from: new Date(), to: to}
-                        ]
-                    },
-                    {
-                        name: 'createDaysSchedule',
-                        path: '/sos/dailyschedule/createDaysSchedule',
-                        planned: '2016-09-05T00:00:01Z',
-                        executed: '2016-09-09T00:00:02Z',
-                        endOfExecution: '2016-09-09T00:00:05Z',
-                        duration: '00:00:03',
-                        exitCode: '0',
-                        status: 'executed',
-                        tasks: [
-                            {name: 'createDaysSchedule', from: new Date(), to: to}
-                        ]
-                    },
-                    {
-                        name: 'createDaysSchedule02',
-                        path: '/sos/dailyschedule/createDaysSchedule02',
-                        planned: '2016-09-05T00:00:01Z',
-                        executed: '2016-09-09T00:00:02Z',
-                        endOfExecution: '2016-09-09T00:00:05Z',
-                        duration: '00:00:03',
-                        exitCode: '0',
-                        status: 'executed',
-                        tasks: [
-                            {name: 'createDaysSchedule02', from: new Date(), to: to}
-                        ]
-                    }
-
-
-                ];
             },
             getSampleTimespans: function () {
                 return [

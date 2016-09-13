@@ -1,25 +1,37 @@
 <div>
     <div class="modal-header primary">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">Update Filter : {{filterName}}</h4>
+        <h4 class="modal-title"><span translate>label.updateFilter</span> : {{filterName}}</h4>
     </div>
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-               <label class="col-sm-3 form-control-label">Filter Name</label>
+               <label class="col-sm-3 form-control-label" translate>label.filterName</label>
                <div class=" col-sm-6">
                    <input type="text" required class="form-control" placeholder="Name" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" ng-blur="checkFilterName()">
                    <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                       <div ng-message="required">Name is required.</div>
-                       <div ng-message="maxlength">Value enter is too long</div>
+                       <div ng-message="required" translate>message.requiredError</div>
+                       <div ng-message="maxlength" translate>message.tooLongError</div>
                    </div>
                    <div class="help-block text-danger" ng-if="!isUnique">
-                       <div>Name is already taken.</div>
+                       <div translate>message.uniqueError</div>
                    </div>
                </div>
             </div>
+
+             <div class="form-group row">
+            <label class="col-sm-3" translate>label.sharedFilter</label>
+
+                <div class="col-sm-9">
+                    <label class="md-check">
+                        <input ng-disabled="true" type="checkbox" model="historyFilter.shared" >
+                        <i class="primary"></i>
+                    </label>
+                </div>
+        </div>
+
             <div class="form-group row" ng-show="filter.type == 'jobChain'">
-               <label class="col-sm-3 form-control-label">Order Name</label>
+               <label class="col-sm-3 form-control-label" translate>label.orderName</label>
                <div class=" col-sm-6">
                    <input type="text" class="form-control" placeholder="Name of order or regex" ng-model="historyFilter.regex">
                </div>
@@ -33,20 +45,20 @@
 
             </div>-->
             <div class="form-group row" ng-show="filter.type == 'jobChain'">
-               <label class="col-sm-3 form-control-label">Job Chain Name</label>
+               <label class="col-sm-3 form-control-label" translate>label.jobChainName</label>
                <div class=" col-sm-6">
                    <input type="text" class="form-control" placeholder="Name of job chain or choose from tree " ng-model="historyFilter.jobChain">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-show="filter.type == 'job'">
-               <label class="col-sm-3 form-control-label">Job Name</label>
+               <label class="col-sm-3 form-control-label" translate>label.jobName</label>
                <div class=" col-sm-6">
                    <input type="text" class="form-control" placeholder="Name of order or regex" ng-model="historyFilter.job">
                </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Form</label>
+                <label class="col-sm-3 form-control-label" translate>label.form</label>
 
                 <div class="col-sm-8">
                          <input class="form-control input-date" ng-model="historyFilter.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" data-max-date="{{historyFilter.toDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
@@ -54,27 +66,27 @@
                 <input  class="form-control input-time" ng-model="historyFilter.fromTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">To</label>
+                <label class="col-sm-3 form-control-label" translate>label.to</label>
                 <div class="col-sm-8">
                     <input class="form-control input-date" ng-model="historyFilter.toDate" data-date-format="yyyy-MM-dd" data-autoclose="1" data-min-date="{{historyFilter.fromDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
                 <input class="form-control input-time" ng-model="historyFilter.toTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
 
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Status</label>
+                <label class="col-sm-3" translate>label.status</label>
 
                 <div class="col-sm-9">
-                    <label class="md-check m-t-sm">
+                    <label class="md-check">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'incomplete'">
-                        <i class="primary"></i>Incomplete
+                        <i class="primary"></i><span translate>label.incomplete</span>
                     </label>
                     <label class="md-check m-l">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'successful'">
-                        <i class="primary"></i>Success
+                        <i class="primary"></i><span translate>label.success</span>
                     </label>
                     <label class="md-check m-l">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'failed'">
-                        <i class="primary"></i>Failed
+                        <i class="primary"></i><span translate>label.failed</span>
                     </label>
                 </div>
             </div>
@@ -82,9 +94,13 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique">Update Filter</button>
-                <button type="button" class="btn btn-default orange btn-sm m-l-sm" ng-click="ok();deleteFilter()">Delete Filter</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique"
+                        translate>button.updateFilter
+                </button>
+                <button type="button" class="btn btn-default orange btn-sm m-l-sm" ng-click="ok();deleteFilter()"
+                     translate>button.deleteFilter
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </form>
     </div>

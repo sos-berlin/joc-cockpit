@@ -195,7 +195,7 @@
                             avatarTop = top + rectH / 2 + 5 - avatarW / 2;
                             var startTop = avatarTop - 25;
                             var startLeft = avatarW / 2 - "Start".length * 3;
-                            rectangleTemplate = rectangleTemplate + '<span id="lbStart" class="text-primary" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px' + '">Start</span>' +
+                            rectangleTemplate = rectangleTemplate + '<span id="lbStart" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px' + '" translate>label.start</span>' +
                             '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
                         }
@@ -295,29 +295,30 @@
                             //console.log("ID is " + chkId);
                             var rectCls = "border-grey";
                             //console.log("Item " + JSON.stringify(item));
-                            var op1 = "Stop Node";
-                            var op2 = "Skip Node";
-                            var op3 = "Stop Job";
+                            var op1 = "button.stopNode";
+                            var op2 = "button.skipNode";
+                            var op3 = "button.stopJob";
                             var op1Cls = "text-hover-color";
 
                             item.state = item.state || {};
                             item.job.state = item.job.state || {};
-                            item.state._text = item.state._text || "active";
-                            item.job.state._text = item.job.state._text || "active";
+                            item.state._text = item.state._text || "ACTIVE";
+                            item.job.state._text = item.job.state._text || "ACTIVE";
                             //item.state._text = "stopped";
-                            if (item.state._text != "active") {
-                                if (item.state._text == "skipped") {
-                                    op2 = "Proceed Node";
+                            if (item.state._text.toLowerCase() != "active") {
+                                if (item.state._text.toLowerCase() == "skipped") {
+                                    op2 = "button.proceedNode";
                                     rectCls = "border-red";
-                                } else if (item.state._text == "stopped") {
-                                    op1 = "Proceed Node";
+                                } else if (item.state._text.toLowerCase() == "stopped") {
+                                    op1 = "button.proceedNode";
                                     op1Cls = "";
                                     rectCls = "border-red";
                                 }
 
                             } else {
-                                if (item.job.state._text == "running") {
-                                } else if (item.job.state._text == "stopped") {
+                                if (item.job.state._text.toLowerCase() == "running") {
+                                } else if (item.job.state._text.toLowerCase() == "stopped") {
+                                } else if (item.job.state._text.toLowerCase() == "stopped") {
                                     rectCls = "border-red";
                                 }
                             }
@@ -330,16 +331,16 @@
                             '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
                             '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
                             '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                            '<a target="_blank" href="#/showConfiguration?type=job&path=' + item.job.path + '" id="' + btnId4 + '" class="dropdown-item">Show Configuration</a>' +
-                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color">' + op3 + '</a>' +
+                            '<a target="_blank" href="#/showConfiguration?type=job&path=' + item.job.path + '" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
                             '</div></div></div>'
                             + '<div class="text-left text-muted p-t-sm ">' + jobName +
                             '</div>' +
                             host +
                             '</div >' +
                             '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> ' + op1 + '</a>' +
-                            '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  ' + op2 + ' </a>' +
+                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> <span translate>' + op1 + '</span></a>' +
+                            '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
                             '</div>' +
                             '</div>';
                         }
@@ -403,8 +404,8 @@
                                     '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
                                     '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a target="_blank" href="" id="' + btnId4 + '" class="dropdown-item">Show Configuration</a>' +
-                                    '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color"> Stop Job</a>' +
+                                    '<a target="_blank" href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                    '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
                                     '</div></div></div>'
                                     + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
                                     '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
@@ -412,8 +413,8 @@
                                     '<span class="show" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
                                     '</div>' + '</div>' +
                                     '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                    '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> Stop Node</a>' +
-                                    '<a href class=" pull-right " id="' + btnId2 + '" > <i class="fa fa-step-forward"></i> Skip Node</a>' +
+                                    '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> {{\'button.stopNode\' | translate}}</a>' +
+                                    '<a href class=" pull-right " id="' + btnId2 + '" > <i class="fa fa-step-forward"></i> {{\'button.skipNode\' | translate}}</a>' +
                                     '</div>' +
                                     '</div>';
                                 }
@@ -1263,16 +1264,16 @@
                     var orderMargin = 10;
 
                     vm.orders({filter: filter}).then(function (res) {
-                        res.orders = orderBy(res.orders, '+processingState._text', false, function (v1, v2) {
-                            //console.log("Property " + JSON.stringify(v1) + " and " + JSON.stringify(v2));
-                            if (v1.value == 'running') {
-                                return -1;
-                            } else if (v1.value > v2.value) {
-                                return -1;
-                            }
-                            return 1;
-
-                        })
+                        //res.orders = orderBy(res.orders, '+processingState._text', false, function (v1, v2) {
+                        //    //console.log("Property " + JSON.stringify(v1) + " and " + JSON.stringify(v2));
+                        //    if (v1.value == 'running') {
+                        //        return -1;
+                        //    } else if (v1.value > v2.value) {
+                        //        return -1;
+                        //    }
+                        //    return 1;
+                        //
+                        //})
                         res.orders = res.orders.slice(0, 1);
                         console.log("Progress "+res.orders[0].state);
 

@@ -25,6 +25,8 @@
             $window.history.back();
         };
 
+       vm.selectedScheduler={};
+
         function isIE() {
             return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
         }
@@ -91,8 +93,10 @@
             var headerHt = $('.app-header').height() || 64;
             var footerHt = $('.app-footer').height() || 30;
             var topHeaderHt = $('.top-header-bar').height() || 16;
-            var subHeaderHt = $('div.sub-header').height() || 58;
+            var subHeaderHt = 58;
+
             var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt)) + 'px';
+
             $('.max-ht').css('height', ht);
         };
 
@@ -122,6 +126,8 @@
             vm.selectedJobScheduler.startedAt = date;
         });
 
+
+
         vm.username = SOSAuth.currentUserData;
 
         setPermission();
@@ -150,27 +156,16 @@
         };
 
 
-        var jobSchedulers = [];
-        vm.getClusterMembersP = function (id) {
-            JobSchedulerService.getClusterMembersP({jobschedulerId:id}).then(function (res) {
-                angular.forEach(res.masters, function (master) {
-                    var flag = true;
-                    angular.forEach(jobSchedulers, function (value) {
-                        if (value.jobschedulerId == master.jobschedulerId) {
-                            flag = false;
-                        }
-                    });
-                    if (flag)
-                        jobSchedulers.push(master);
-                });
-                vm.jobSchedulers = jobSchedulers;
-                vm.selectedJobScheduler = jobSchedulers[0];
+        vm.getScheduleDetail = function (id) {
+            JobSchedulerService.get({jobschedulerId:id}).then(function (res) {
+                vm.selectedJobScheduler = res.jobscheduler;
+                vm.selectedScheduler.scheduler=vm.selectedJobScheduler;
             }, function (err) {
 
             })
         };
 
-        vm.getClusterMembersP(vm.schedulerIds.selected);
+        vm.getScheduleDetail(vm.schedulerIds.selected);
 
         vm.changeScheduler = function (jobScheduler) {
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {

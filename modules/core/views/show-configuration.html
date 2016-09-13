@@ -4,10 +4,9 @@
         <span>{{configuration.path}}</span>
     </div>
     <div class="m-t text">
-        <span>File timestamp: </span><span>{{configuration.configurationDate | stringToDate}}</span>
+        <span><span translate>label.fileTimestamp</span>: </span><span>{{configuration.configurationDate | stringToDate}}</span>
     </div>
     <div class="m-t">
         <span ng-bind-html="html"></span>
     </div>
-
 </div>

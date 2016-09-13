@@ -9,8 +9,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="m-b text-md text-midnight-blue _600 text-center m-t-md">
-                    Sign In
+                <div class="m-b text-md text-midnight-blue _600 text-center m-t-md" translate>label.signIn
                 </div>
                 <div class="hide alert alert-danger" ng-class="{'show':loginError}">
                     <span ng-bind="loginError | translate"></span>
@@ -18,22 +17,21 @@
                 <form method="post" name="loginForm" ng-submit="login()">
                     <div class="md-form-group">
                         <input type="text" class="md-input" ng-model="user.username" required>
-                        <label class="font14">Username</label>
+                        <label class="font14" translate>label.userName</label>
                     </div>
                     <div class="md-form-group">
-                        <input type="password" class="md-input" autocomplete="off" ng-model="user.password" required
-                               maxlength="15">
-                        <label class="font14">Password</label>
+                        <input type="password" class="md-input" autocomplete="off" ng-model="user.password" required>
+                        <label class="font14" translate>label.password</label>
                     </div>
 
                     <div class="m-b-md">
                         <label class="md-check">
-                            <input type="checkbox" ng-model="rememberMe"><i class="primary"></i> Remember Me
+                            <input type="checkbox" ng-model="rememberMe"><i class="primary"></i> {{'label.rememberMe' | translate}}
                         </label>
-                        <a href class="text-primary _500 pull-right">Forgot password?</a>
+                       <!-- <a href class="text-primary _500 pull-right" translate>button.forgotPassword?</a>-->
                     </div>
                     <button type="submit" class="btn btn-primary btn-block p-x-md"
-                            ng-disabled="loginForm.$invalid || isProcessing" id="loginBtn">Sign In
+                            ng-disabled="loginForm.$invalid || isProcessing" id="loginBtn" translate>button.signIn
                     </button>
                 </form>
             </div>

@@ -6,15 +6,15 @@
                      <div>
                        <div class="text-right ">
                            <div class="pull-left">
-                                <span class="text-muted">Running on</span>
+                                <span class="text-muted" translate>label.runningOn</span>
                                <div class="text" ng-bind="jobChain.processClass || '-'"></div>
                             </div>
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="stopJobs()">Stop Job</button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="unstopJobs()">Unstop Job</button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="stopNodes()">Stop Node</button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="skipNodes()">Skip Node</button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="unskipNodes()">Proceed Node</button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="stopJobs()" translate>button.stopJob</button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="unstopJobs()" translate>button.unstopJob</button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="stopNodes()" translate>button.stopNode</button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="skipNodes()" translate>button.skipNode</button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="unskipNodes()" translate>button.proceedNode</button>
                             </div>
 
                             <div ng-class="{'hide':selectedNodes.length>0}">
@@ -22,11 +22,11 @@
                                     <div class="m-r-sm m-l-sm inline" >
                                         <label class="md-check" ng-init="showErrorNodes = true">
                                             <input data-ng-model="showErrorNodes" type="checkbox"><i class="primary"></i>
-                                            <span>Show error nodes</span>
+                                            <span translate>label.showErrorNodes</span>
                                         </label>
                                     </div>
                                     <div class="light p-r-xs b-a inline w-lg">
-                                        <span class="p-r-sm hidden-sm-down" >Zoom</span>
+                                        <span class="p-r-sm hidden-sm-down" translate>label.zoom</span>
                                         <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options" ></rzslider>
                                     </div>
                                 </div>
@@ -66,11 +66,11 @@
                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                </label>
                             </th>
-                            <th>State</th>
-                            <th>Job Path</th>
-                            <th>Job Status</th>
-                            <th>Next node</th>
-                            <th>Error node</th>
+                            <th translate>label.state</th>
+                            <th translate>label.jobPath</th>
+                            <th translate>label.jobStatus</th>
+                            <th translate>label.nextNode</th>
+                            <th translate>label.errorNode</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -84,8 +84,8 @@
                         <td ><a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
                             <i class="fa fa-circle  text-xs" ng-click="showPanelFuc(order.path)" ng-class="[colorFunction(node.state.severity),{'text-success':node.orders && node.orders.length>0}]"></i>
                             {{node.name}} </a>
-                            <div ng-repeat="order in node.orders">
-                                   <span ng-bind="order.orderId">  </span>
+                            <div ng-repeat="order in node.orders | limitTo : 2:0">
+                                   <span class="text-xs" ng-bind="order.orderId">  </span>
                                 </div>
 
                                      <i class="cursor fa fa-caret-down" ng-if="showPanel != node.name && node.orders && node.orders.length>1"
@@ -103,18 +103,18 @@
                                     <i class="fa fa-ellipsis-h"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                    <a class="dropdown-item" target="_blank" href="#/showConfiguration?type=job&path={{node.job.path}}">Show Configuration</a>
-                                    <a class="dropdown-item bg-hover-color" ng-if="node.job.state._text != 'stopped'" ng-click="onAction(jobChain.path, node, 'stop job')">Stop Job</a>
-                                    <a class="dropdown-item" ng-if="node.job.state._text == 'stopped'" ng-click="onAction(jobChain.path, node, 'unstop job')">Unstop Job</a>
-                                    <a class="dropdown-item bg-hover-color" ng-if="node.state._text != 'stopped'" ng-click="onAction(jobChain.path, node, 'stop node')">Stop Node</a>
-                                    <a class="dropdown-item" ng-if="node.state._text == 'stopped'" ng-click="onAction(jobChain.path, node, 'unstop node')">Unstop Node</a>
-                                    <a class="dropdown-item" ng-if="node.state._text != 'skipped'" ng-click="onAction(jobChain.path, node, 'skip')">Skip Node</a>
-                                    <a class="dropdown-item" ng-if="node.state._text == 'skipped'" ng-click="onAction(jobChain.path, node, 'unskip')">Unskip Node</a>
+                                    <a class="dropdown-item" target="_blank" href="#/showConfiguration?type=job&path={{node.job.path}}" translate>button.showConfiguration</a>
+                                    <a class="dropdown-item bg-hover-color" ng-if="node.job.state._text != 'stopped'" ng-click="onAction(jobChain.path, node, 'stop job')" translate>button.stopJob</a>
+                                    <a class="dropdown-item" ng-if="node.job.state._text == 'stopped'" ng-click="onAction(jobChain.path, node, 'unstop job')" translate>button.unstopJob</a>
+                                    <a class="dropdown-item bg-hover-color" ng-if="node.state._text != 'stopped'" ng-click="onAction(jobChain.path, node, 'stop node')" translate>button.stopNode</a>
+                                    <a class="dropdown-item" ng-if="node.state._text == 'stopped'" ng-click="onAction(jobChain.path, node, 'unstop node')" translate>button.unstopNode</a>
+                                    <a class="dropdown-item" ng-if="node.state._text != 'skipped'" ng-click="onAction(jobChain.path, node, 'skip')" translate>button.skipNode</a>
+                                    <a class="dropdown-item" ng-if="node.state._text == 'skipped'" ng-click="onAction(jobChain.path, node, 'unskip')" translate>button.unskipNode</a>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                    Here {{showPanel == node.name}} {{showPanel}}
+
                     <tr ng-show="showPanel == node.name">
 
                                 <td></td>
@@ -122,20 +122,15 @@
                                     <table class="table m-a-0">
                                         <thead>
                                         <tr>
-                                            <th>Type</th>
-                                            <th>End State</th>
-                                            <th>Priority</th>
-                                            <th>Params</th>
-                                            <th>Task Id</th>
+                                            <th translate>label.orderId</th>
+                                            <th translate>label.nextRunning</th>
+                                           
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>{{order._type || '-'}}</td>
-                                            <td>{{order.endState || '-'}}</td>
-                                            <td>{{order.priority || '-'}}</td>
-                                            <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
-                                            <td>{{order.taskId || '-'}}</td>
+                                        <tr ng-repeat="order in node.orders | limitTo : node.orders.length:2">
+                                            <td >{{order.orderId || '-'}}</td>
+                                            <td>{{order.nextStartTime || stringToDate}}</td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -147,7 +142,7 @@
             <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase">
                 No Nodes Found</div>
               <div class="text-center m-t m-b text-uppercase hide text-orange"
-                         ng-class="{'show': (filtered.length===0 && jobChain.nodes.length !==0)}" translate>No data matched</div>
+                         ng-class="{'show': (filtered.length===0 && jobChain.nodes.length !==0)}" translate>message.noDataMatched</div>
             </div>
             <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
                 <div class="cssload-loading">{{'Loading' | translate}}...</div>

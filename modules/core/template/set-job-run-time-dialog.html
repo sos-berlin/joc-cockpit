@@ -1,26 +1,27 @@
 <div>
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">Set run time of {{job.name}}</h4>
+        <h4 class="modal-title"><span translate>label.setRunTimeOf</span> {{job.name}}</h4>
     </div>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
     <div class="modal-body p-a">
         <div class="form-group row">
-            <label class="col-sm-3">Job Name</label>
-            <label class="col-sm-3">{{job.name}}</label>
+            <label class="col-sm-3" translate>label.jobName</label>
+            <label class="col-sm-6">{{job.name}}</label>
         </div>
         <div class="form-group row">
-            <label class="col-sm-3 form-control-label">Rum time</label>
+            <label class="col-sm-3 form-control-label" translate>label.runTime</label>
                 <div class="col-sm-8">
                      <input class="form-control input-date" ng-model="job.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text">
                     <input class="form-control input-time" ng-model="job.fromTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
                 </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-3 form-control-label">Select Schedule</label>
+            <label class="col-sm-3 form-control-label" translate>label.selectSchedule</label>
             <div class="col-sm-6">
                 <select class="form-control" ng-model="order.scheduleName"
                         ng-options="schedule.name as schedule.name for schedule in schedules">
-                    <option value="" translate>Select a schedule</option>
+                    <option value="" translate>label.selectASchedule</option>
                 </select>
             </div>
         </div>
@@ -28,8 +29,9 @@
             <div class="b-t"></div>
         </div>
         <div class="form-group m-t m-b-xs">
-            <button type="submit" class="btn btn-primary btn-sm" ng-click="ok()">Submit</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </div>
+    </form>
 </div>

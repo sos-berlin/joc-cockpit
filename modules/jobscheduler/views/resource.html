@@ -8,53 +8,53 @@
                     </div>
                     <div class="btn-group" ng-if="state=='lock'">
                         <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                ng-class="{'btn-primary': filter.state=='all'}">All <span class="hidden-md-down">Locks</span>
+                                ng-class="{'btn-primary': filter.state=='all'}" translate>button.allLocks
                         </button>
                         <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'available'"
-                                ng-class="{'btn-primary': filter.state=='available'}">Free
+                                ng-class="{'btn-primary': filter.state=='available'}" translate>button.free
                         </button>
                         <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                 uib-btn-radio="'occupied'"
-                                ng-class="{'btn-primary': filter.state=='occupied'}" >Locked
+                                ng-class="{'btn-primary': filter.state=='occupied'}" translate>button.locked
                         </button>
                     </div>
                     <div class="hide btn-group" ng-class="{'show-block':state=='agent'}">
                         <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents()">All <span class="hidden-md-down">Agent Cluster</span>
+                                ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster</span>
                         </button>
                         <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                 uib-btn-radio="'healthy'"
-                                ng-class="{'btn-primary': filter.state=='healthy'}" ng-click="loadAgents(0)">Healthy <span class="hidden-md-down">Agent Cluster</span>
+                                ng-class="{'btn-primary': filter.state=='healthy'}" ng-click="loadAgents(0)" translate>button.healthyAgentCluster</span>
                         </button>
                         <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                 uib-btn-radio="'unhealthy'"
-                                ng-class="{'btn-primary': filter.state=='unhealthy'}" ng-click="loadAgents(1)">Unhealthy <span class="hidden-md-down">Agent Cluster</span>
+                                ng-class="{'btn-primary': filter.state=='unhealthy'}" ng-click="loadAgents(1)" translate>button.unhealthyAgentCluster</span>
                         </button>
                         <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                 uib-btn-radio="'unreachable'"
-                                ng-class="{'btn-primary': filter.state=='unreachable'}" ng-click="loadAgents(2)">Unreachable <span class="hidden-md-down">Agent Cluster</span>
+                                ng-class="{'btn-primary': filter.state=='unreachable'}" ng-click="loadAgents(2)" translate>button.unreachableAgentCluster</span>
                         </button>
                     </div>
 
 
                     <div class="btn-group dropdown">
-                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span class="hidden-md-down">Sort By</span>
+                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
                                     <span ng-show="filter.sortBy =='name'">
-                                        Name
+                                         {{'label.name' | translate}}
                                         <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
                                     <span ng-show="filter.sortBy =='startedAt'">
-                                        Date
+                                         {{'label.date' | translate}}
                                       <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('name')">Name</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('startedAt')" >Date</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('name')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('startedAt')" translate>label.date</a>
                             </div>
                     </div>
                     <toggle-view></toggle-view>
@@ -70,7 +70,7 @@
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                      <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentClusters">
-                            <span class="nav-text text-dark p-b-sm"><span class="text-sm">Agent Clusters</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.agentClusters</span></span>
                         </a>
                     </li>
                      <li class="nav-item dropdown-separator">
@@ -78,7 +78,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.locks">
-                            <span class="nav-text text-dark p-b-sm"><span class="text-sm">Locks</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.locks</span></span>
                         </a>
                     </li>
                      <li class="nav-item dropdown-separator">
@@ -86,7 +86,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.processClasses">
-                            <span class="nav-text text-dark p-b-sm"><span class="text-sm">Process Classes</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.processClasses</span></span>
                         </a>
                     </li>
                  </ul>

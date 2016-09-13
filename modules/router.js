@@ -59,6 +59,7 @@
                 url: '/login',
                 templateUrl: 'modules/user/views/login.html',
                 controller: 'LoginCtrl',
+                title: 'Login',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -66,6 +67,7 @@
             .state('404', {
                 url: '/404',
                 templateUrl: 'modules/core/views/404.html',
+                title: '404',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -83,37 +85,41 @@
                 templateUrl: 'modules/jobscheduler/views/dashboard.html',
                 controller: 'DashboardCtrl',
                 ncyBreadcrumb: {
-                    label: 'Dashboard'
+                    label: '{{ \'breadcrumb.dashboard\' | translate}}'
                 }
             })
             .state('app.dailyPlan', {
                 url: '/dailyPlan',
                 templateUrl: 'modules/jobscheduler/views/daily-plan.html',
                 controller: 'DailyPlanCtrl',
+                title: 'Daily Plan',
                 ncyBreadcrumb: {
-                    label: 'Daily Plan'
+                    label: '{{ \'breadcrumb.dailyPlan\' | translate}}'
                 }
             })
             .state('app.jobs', {
                 url: '/jobs',
                 templateUrl: 'modules/job/views/job.html',
                 controller: 'JobCtrl',
+                title: 'Jobs',
                 ncyBreadcrumb: {
-                    label: 'Jobs'
+                    label: '{{ \'breadcrumb.jobs\' | translate}}'
                 }
             })
             .state('app.jobChain', {
                 url: '/jobChain',
                 templateUrl: 'modules/job/views/job-chain.html',
                 controller: 'JobChainCtrl',
+                title: 'Job Chains',
                 ncyBreadcrumb: {
-                    label: 'Job Chains'
+                    label: '{{ \'breadcrumb.jobChains\' | translate}}'
                 }
             })
             .state('app.jobChainDetails', {
                 url: '/jobChainDetails',
                 templateUrl: 'modules/order/views/job-chain-details.html',
                 controller: 'JobChainDetailsCtrl',
+                title: 'JobChain detail',
                 ncyBreadcrumb: {
                     label: '{{jobChain.name}}',
                     parent: 'app.jobChain'
@@ -123,6 +129,7 @@
                 url: '/orders',
                 templateUrl: 'modules/order/views/job-chain-orders.html',
                 controller: 'JobChainOrdersCtrl',
+                title: 'Job chain orders',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -131,17 +138,9 @@
                 url: '/overview',
                 templateUrl: 'modules/order/views/job-chain-overview.html',
                 controller: 'JobChainOverviewCtrl',
+                title: 'Job chain overview',
                 ncyBreadcrumb: {
                     skip: true
-                }
-            })
-            .state('app.orderFlow', {
-                url: '/orderFlow',
-                templateUrl: 'modules/order/views/order-flow.html',
-                controller: 'OrderFlowCtrl',
-                ncyBreadcrumb: {
-                    label: '{{orderId}}',
-                    parent: 'app.jobChainDetails'
                 }
             })
 
@@ -149,41 +148,28 @@
                 url: '/allOrders',
                 templateUrl: 'modules/order/views/order.html',
                 controller: 'OrderCtrl',
+                title: 'Orders',
                 ncyBreadcrumb: {
-                    label: 'Orders'
+                    label: '{{ \'breadcrumb.orders\' | translate}}'
                 }
             })
-            .state('app.orderFlow1', {
-                url: '/order/orderFlow',
-                templateUrl: 'modules/order/views/order-flow.html',
-                controller: 'OrderFlowCtrl',
-                ncyBreadcrumb: {
-                    label: '{{orderId}}',
-                    parent: 'app.orders'
-                }
-            })
+
             .state('app.ordersOverview', {
                 url: '/orders/:name',
                 templateUrl: 'modules/order/views/orders-overview.html',
                 controller: 'OrderOverviewCtrl',
+                 title: 'Order overview',
                 ncyBreadcrumb: {
-                    label: 'Orders',
+                    label: '{{ \'breadcrumb.orders\' | translate}}',
                     parent: 'app.dashboard'
                 }
             })
-            .state('app.orderFlow2', {
-                url: '/:name/orderFlow',
-                templateUrl: 'modules/order/views/order-flow.html',
-                controller: 'OrderFlowCtrl',
-                ncyBreadcrumb: {
-                    label: '{{orderId}}',
-                    parent: 'app.ordersOverview'
-                }
-            })
+
             .state('app.orderLog', {
                 url: '/order/log/:historyId/:orderId',
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
+                title: 'Order log',
                 ncyBreadcrumb: {
                     label: '{{orderId}}',
                     parent: 'app.history'
@@ -193,6 +179,7 @@
                 url: '/job/log/:taskId',
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
+                 title: 'Job log',
                 ncyBreadcrumb: {
                     label: '{{taskId}}',
                     parent: 'app.history'
@@ -202,13 +189,15 @@
                 url: '/resources',
                 templateUrl: 'modules/jobscheduler/views/resource.html',
                 controller: 'ResourceCtrl',
+                 title: 'Resources',
                 ncyBreadcrumb: {
-                    label: 'Resources'
+                    label: '{{ \'breadcrumb.resources\' | translate}}'
                 }
             })
             .state('app.resources.agentClusters', {
                 url: '/agentClusters/:type',
                 templateUrl: 'modules/jobscheduler/views/resource-agents.html',
+                title: 'Agent cluster',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -216,6 +205,7 @@
             .state('app.resources.locks', {
                 url: '/locks',
                 templateUrl: 'modules/jobscheduler/views/resource-locks.html',
+                title: 'Locks',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -223,6 +213,7 @@
             .state('app.resources.processClasses', {
                 url: '/processClasses',
                 templateUrl: 'modules/jobscheduler/views/resource-process-classes.html',
+                title: 'Process Classes',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -231,14 +222,16 @@
                 url: '/schedules',
                 templateUrl: 'modules/jobscheduler/views/schedule.html',
                 controller: 'ScheduleCtrl',
+                 title: 'Schedules',
                 ncyBreadcrumb: {
-                    label: 'Schedules'
+                    label: '{{ \'breadcrumb.schedules\' | translate}}'
                 }
             })
             .state('app.schedule-orders', {
                 url: '/schedule/:name',
                 templateUrl: 'modules/jobscheduler/views/schedule-orders.html',
                 controller: 'ScheduleOrderCtrl',
+                title: 'Schedule orders',
                 ncyBreadcrumb: {
                     label: '{{name}}',
                     parent: 'app.schedules'
@@ -248,8 +241,9 @@
                 url: '/history',
                 templateUrl: 'modules/order/views/history.html',
                 controller: 'HistoryCtrl',
+                title: 'History',
                 ncyBreadcrumb: {
-                    label: 'History'
+                    label: '{{ \'breadcrumb.history\' | translate}}'
                 }
             })
             .state('configuration', {
@@ -265,8 +259,9 @@
                 url: '/user/profile',
                 templateUrl: 'modules/user/views/profile.html',
                 controller: 'UserProfileCtrl',
+                title: 'Profile',
                 ncyBreadcrumb: {
-                    label: 'User Profile'
+                   label: '{{ \'breadcrumb.userProfile\' | translate}}'
                 }
             });
     }

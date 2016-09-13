@@ -45,7 +45,7 @@
                         if (!scope.clusterStatusData) {
                             $("#clusterStatusContainer").remove();
                             template = mainTemplate;
-                            template += '<div style="position: absolute;top: 50%;left: 40%;" class="_600">No Data Available</div>';
+                            template += '<div style="position: absolute;top: 50%;left: 40%;" class="_600 text-u-c" translate>message.noDataAvailable</div>';
                             template = template + '</div>';
                             template = $compile(template)(scope);
                             elem.append(template);
@@ -269,20 +269,20 @@
                                 if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
                                     var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
                                     if (results[1] == 'supervisor' && results[3] == supervisor.host && results[4] == supervisor.port) {
-                                        if (supervisor.data.jobscheduler.state._text == 'stopped') {
+                                        if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
                                             span.className = span.className.replace(/text-.+/, " text-danger");
                                             anchor.className = anchor.className.replace('hide', 'show') + " disable-link";
                                             connectLink(host, port);
-                                        } else if (supervisor.data.jobscheduler.state._text == 'waiting_for_activation') {
+                                        } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'waiting_for_activation') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             connectLink(supervisor.host, supervisor.port);
                                         }
-                                        else if (supervisor.data.jobscheduler.state._text == 'running') {
+                                        else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'running') {
                                             span.className = span.className.replace(/text-.+/, " text-success");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             connectLink(supervisor.host, supervisor.port);
-                                        } else if (supervisor.data.jobscheduler.state._text == 'paused') {
+                                        } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'paused') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
                                             if (results[2] == 'pause') {
                                                 anchor.className = anchor.className.replace('show', 'hide');
@@ -291,7 +291,7 @@
                                             }
                                             connectLink(supervisor.host, supervisor.port);
 
-                                        } else if (supervisor.data.jobscheduler.state._text == 'unreachable') {
+                                        } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
                                             //console.log("Unreachable ....");
                                             disconnectLink(supervisor.host, supervisor.port);
                                         }
@@ -352,10 +352,10 @@
 
                             var sClassRunning = 'text-success';
 
-                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text == 'stopped') {
+                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
                                 console.log("Class supervisor " + sClassRunning);
                                 sClassRunning = 'text-danger';
-                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text != 'running') {
+                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
                                 //console.log("Class supervisor " + sClassRunning);
                                 sClassRunning = 'text-black-lt';
 
@@ -364,10 +364,10 @@
                             var pauseClass = 'show';
                             var continueClass = 'hide';
                             var disableClass = '';
-                            if (supervisor.data.jobscheduler.state._text == 'paused') {
+                            if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'paused') {
                                 pauseClass = 'hide';
                                 continueClass = 'show';
-                            } else if (supervisor.data.jobscheduler.state._text == 'stopped') {
+                            } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
                                 disableClass = 'disable-link';
                             }
 
@@ -380,11 +380,11 @@
                                 '</span> <div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option text-muted" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor-terminate-' + supervisor.host + ':' + supervisor.port + '" >Terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-restart-' + supervisor.host + ':' + supervisor.port + '" >Restart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-abortAndRestart-' + supervisor.host + ':' + supervisor.port + '">Abort and restart</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor-pause-' + supervisor.host + ':' + supervisor.port + '" >Pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor-continue-' + supervisor.host + ':' + supervisor.port + '" >Continue</a>' +
+                                '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor-terminate-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-restart-' + supervisor.host + ':' + supervisor.port + '" translate>button.restart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-abortAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor-pause-' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
+                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor-continue-' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                                 '</div>' +
                                 '</div></div>' +
 
@@ -459,11 +459,11 @@
                                     '</span>' + '<div class="btn-group dropdown pull-right" >' +
                                     '<a href class=" more-option text-muted" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" >Terminate</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" >Restart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '">Abort and restart</a>' +
-                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '">Pause</a>' +
-                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '">Continue</a>' +
+                                    '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
                                     '</div> </div>' +
                                     '<div class="font14  text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name + '"></i><span class="p-l-sm">' + master.version +
@@ -558,11 +558,11 @@
                                 '<div class="font14  text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option text-muted" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '">Terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '">Restart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '">Abort and restart</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '">Pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '">Continue</a>' +
+                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                 '</div></div>' +
                                 '</span></div>' +
                                 '<div class="font14  text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name + '"></i><span class="p-l-sm">' + master.version +
@@ -604,9 +604,9 @@
 
 
                         var classRunning = 'text-success';
-                        if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text == 'stopped') {
+                        if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text.toLowerCase() == 'stopped') {
                             classRunning = 'text-danger';
-                        } else if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text == 'running') {
+                        } else if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text.toLowerCase() == 'running') {
                             classRunning = 'text-black-lt';
                         }
                         scope.popoverTemplate1 = $sce.trustAsHtml(' Last Refreshed Date : ' + $filter('date')(scope.clusterStatusData.database.deliveryDate, 'dd-MMM-yy HH:mm:ss'));
@@ -789,7 +789,7 @@
 
                             var lNoConnection = '#D9D9D9';
                             //console.log("Line not connected 01" + supervisor.data.jobscheduler.state.text);
-                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text == 'unreachable') {
+                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
                                 lNoConnection = '#eb8814';
                                 //console.log("Line not connected " + lNoConnection);
 

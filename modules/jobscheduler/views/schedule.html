@@ -10,40 +10,40 @@
 
                         <div class="btn-group">
                                 <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()">All <span class="hidden-md-down">Schedules</span>
+                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allSchedules</span>
                                 </button>
                                 <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                         uib-btn-radio="'active'"
-                                        ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()">Active
+                                        ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()" translate>button.active
                                 </button>
                                 <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                         uib-btn-radio="'stopped'"
-                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()">Inactive
+                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.inactive
                                 </button>
                         </div>
 
                         <div class="btn-group dropdown">
-                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">Sort By <span class="text-primary">
+                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">{{'label.sortBy' | translate}} <span class="text-primary">
                                 <span ng-show="filter.sortBy =='name'">
-                                    Name
+                                   {{'label.name' | translate}}
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='nextStartTime'">
-                                    Next Start
+                                    {{'label.nextStart' | translate}}
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
                                 </span>
                              </a>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('name')" >Name</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('nextStartTime')">Next Start</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('name')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('nextStartTime')" translate>label.nextStart</a>
                             </div>
                         </div>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.schedules.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="substituteAll()"><i class="fa fa-repeat"></i> Substitute</button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="substituteAll()"><i class="fa fa-repeat"></i> {{'button.substitute' | translate}}</button>
 
                     </div>
                     <toggle-view></toggle-view>
@@ -67,7 +67,7 @@
                                             class="primary"></i></label>
 
                                     <div class="text-left m-l-md block-ellipsis" >
-                                         <a href="#/schedule/{{schedule.name}}" uib-tooltip="{{schedule.title}}"  ng-bind="schedule.name"></a>
+                                         <a href="#/schedule/{{schedule.name}}" uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></a>
                                         <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                     </div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -75,23 +75,23 @@
                                                 class="text fa fa-ellipsis-v"></i></a>
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                                            <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}">Show configuration</a>
+                                            <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="text-sm text-left text-muted p-t-sm">
-                                    <span>Validity: </span>
+                                    <span translate>label.validity </span>:
                                     <span ng-bind="'-'"></span>
                                 </div>
                                  <div class="text-sm text-left text-muted p-t-sm">
-                                    <span>No. of orders: </span>
+                                    <span translate>label.noOfOrders </span>:
                                     <span class="text-dark" ng-bind="schedule.usedByOrders.length"></span>
                                 </div>
                             </div>
                             <div class="box-footer b-t">
                                 <div>
-                                    <a href class="text-left" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt">Substitute</span></a>
-                                    <a href class="pull-right" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt">Edit Schedule</span></a>
+                                    <a href class="text-left" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
+                                    <a href class="pull-right" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
                                 </div>
                             </div>
                         </div>
@@ -108,49 +108,49 @@
                                     <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                 </label>
                             </th>
-                            <th ng-click="sortBy('name')"><a>Schedule Name
+                            <th ng-click="sortBy('name')"><a><span translate>label.scheduleName</span>
                                 <i ng-show="propertyName == 'name' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'name' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('path')"><a>Path
+                            <th ng-click="sortBy('path')"><a><span translate>label.path</span>
                                 <i ng-show="propertyName == 'path' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'path' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('state._text')"><a>State
+                            <th ng-click="sortBy('state._text')"><a><span translate>label.state</span>
                                 <i ng-show="propertyName == 'state._text' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'state._text' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('usedByOrders.length')"><a>Used by Orders
+                            <th ng-click="sortBy('usedByOrders.length')"><a><span translate>label.usedByOrders</span>
                                 <i ng-show="propertyName == 'usedByOrders.length' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'usedByOrders.length' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                              <th ng-click="sortBy('validityFrom')"><a>Validity from
+                              <th ng-click="sortBy('validityFrom')"><a><span translate>label.validityFrom</span>
                                 <i ng-show="propertyName == 'validityFrom' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'validityFrom' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                              <th ng-click="sortBy('validityTo')"><a>Validity to
+                              <th ng-click="sortBy('validityTo')"><a><span translate>label.validityTo</span>
                                 <i ng-show="propertyName == 'validityTo' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'validityTo' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                             <th ng-click="sortBy('subsituteBy')"><a>Subsitute by
+                             <th ng-click="sortBy('subsituteBy')"><a><span translate>label.substituteBy</span>
                                 <i ng-show="propertyName == 'subsituteBy' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'subsituteBy' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('nextStartTime')"><a>Next start
+                            <th ng-click="sortBy('nextStartTime')"><a><span translate>label.nextStart</span>
                                 <i ng-show="propertyName == 'nextStartTime' && !reverse"
                                    class="fa fa-caret-down "></i>
                                 <i ng-show="propertyName == 'nextStartTime' && reverse"
@@ -182,16 +182,16 @@
                                 <div class="btn-group dropdown">
                                 <a class="more-option-h" href data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                    <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}">Show configuration</a>
-                                    <a class="dropdown-item" ng-click="substitute(schedule)">Substitute</a>
-                                    <a class="dropdown-item" ng-click="editSchedule(schedule)">Edit schedule</a>
+                                    <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                    <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
+                                    <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                 </div>
                                 </div>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                    <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-right" ng-show="filtered.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
@@ -209,11 +209,12 @@
                         </div>
                     </div>
                 </div>
-            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && schedules.length !==0)}" translate>No data matched</div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && schedules.length !==0)}" translate>message.noDataMatched</div>
+                 <div ng-if="isLoading && schedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noDataFound</div>
         </div>
-        <div ng-if="isLoading && schedules.length==0" class="text-center m-t h6 text-uppercase">No Data Found</div>
+
     </div>
-    <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">Loading...</div></div>
+    <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
 </div>
 

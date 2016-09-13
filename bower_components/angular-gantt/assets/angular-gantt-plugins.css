@@ -207,7 +207,7 @@
     position: absolute;
     overflow: hidden;
     bottom: 0px;
-    height: 6px;
+    height: 100%;
     border-radius: 2px;
 }
 

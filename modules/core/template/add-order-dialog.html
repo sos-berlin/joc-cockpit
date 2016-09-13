@@ -1,71 +1,72 @@
 <div>
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">Add new order to {{_jobChain.name}}</h4>
+        <h4 class="modal-title"><span
+                addNewOrderTo</span> {{_jobChain.name}}</h4>
     </div>
      <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Order ID</label>
+                <label class="col-sm-3 form-control-label" translate>label.orderId</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="Order Id" required ng-model="order.orderId">
+                    <input type="text" class="form-control" placeholder="{{'placeholder.orderId' | translate}}" required ng-model="order.orderId">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Order Title</label>
+                <label class="col-sm-3 form-control-label" translate>label.orderTitle</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control " placeholder="Title " ng-model="order.title">
+                    <input type="text" class="form-control " placeholder="{{'placeholder.title' | translate}} " ng-model="order.title">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Start Time</label>
+                <label class="col-sm-3 " translate>label.startTime</label>
                 <div class=" col-md-9" ng-init="order.at = 'now'">
-                    <label class="md-check m-t-xs">
+                    <label class="md-check ">
                         <input type="radio" name="radio" ng-model="order.at" value="now">
-                        <i class="primary"></i>Now
+                        <i class="primary"></i><span translate>label.now</span>
                     </label>
                     <label class="md-check m-l">
                         <input type="radio" name="radio" ng-model="order.at" value="later">
-                        <i class="primary"></i>Schedule for later
+                        <i class="primary"></i><span translate>label.scheduleForLater</span>
                     </label>
                 </div>
             </div>
             <div class="form-group row" ng-if="order.at == 'later'">
-                <label class="col-sm-3 form-control-label">Enter date and time</label>
+                <label class="col-sm-3 form-control-label"  translate>label.enterDateAndTime</label>
 
                 <div class="col-sm-8">
-                     <input ng-required="order.at == 'later'" class="form-control input-date" ng-model="order.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="Set Date" bs-datepicker type="text">
-                    <input ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.fromTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="Set Time" bs-timepicker type="text">
+                     <input ng-required="order.at == 'later'" class="form-control input-date" ng-model="order.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="{{'placeholder.setDate' | translate}}" bs-datepicker type="text">
+                    <input ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.fromTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="{{'placeholder.setTime' | translate}}" bs-timepicker type="text">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Start step</label>
+                <label class="col-sm-3 form-control-label" translate>label.startStep</label>
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="order.state"
                             ng-options="node.name as node.name for node in _jobChain.nodes">
-                        <option value="" translate>Choose starting step</option>
+                        <option value="" translate>label.chooseStartingStep</option>
                     </select>
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">End step</label>
+                <label class="col-sm-3 form-control-label" translate>label.endStep</label>
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="order.endstate"
                             ng-options="node.name as node.name for node in _jobChain.endNodes">
-                        <option value="" translate>Choose end step</option>
+                        <option value="" translate>label.chooseEndStep</option>
                     </select>
                 </div>
             </div>
             <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index">
 
-                <div class="col-sm-3 m-b-sm" ng-if="$index==0">Name</div>
-                <div class="col-sm-9 m-b-sm" ng-if="$index==0">Value</div>
+                <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                <div class="col-sm-9 m-b-sm" ng-if="$index==0" translate>label.value</div>
                 <div class="col-sm-3 m-b-sm">
-                    <input type="text" class="form-control" ng-model="param.name" placeholder="Name {{$index+1}}">
+                    <input type="text" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                 </div>
 
                 <div class="col-sm-6 m-b-sm">
-                    <input type="text" class="form-control" ng-model="param.value" placeholder="Value {{$index+1}}">
+                    <input type="text" class="form-control" ng-model="param.value" placeholder="{{'placeholder.value' | translate}} {{$index+1}}">
                 </div>
                 <div class="col-sm-1 p-l-0">
                     <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
@@ -73,8 +74,8 @@
             </div>
             <div class="form-group row">
                 <div class="col-sm-12">
-                    <a href class="text-u-l" ng-if="paramObject.params.length>0" ng-click="addCriteria()">Add another Parameter</a>
-                    <a href class="text-u-l" ng-if="paramObject.params.length==0" ng-click="addCriteria()">Add Parameter</a>
+                    <a href class="text-u-l" ng-if="paramObject.params.length>0" ng-click="addCriteria()" translate>button.addAnotherParameter</a>
+                    <a href class="text-u-l" ng-if="paramObject.params.length==0" ng-click="addCriteria()" translate>button.addParameter</a>
                 </div>
             </div>
             <div class="row m-t-md">
@@ -82,8 +83,8 @@
             </div>
             <div class="form-group m-t m-b-xs">
 
-                <button type="submit" class="btn btn-primary btn-sm">Submit Order</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" translate>button.submitOrder</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </div>
      </form>

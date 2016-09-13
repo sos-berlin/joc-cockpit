@@ -10,19 +10,23 @@
         .controller('UserProfileCtrl', UserProfileCtrl);
 
 
-    LoginCtrl.$inject = ['$scope', 'SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService'];
-    function LoginCtrl($scope, SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService) {
+    LoginCtrl.$inject = ['$scope', 'SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'toasty'];
+    function LoginCtrl($scope, SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,toasty) {
         var vm = $scope;
         vm.user = {};
         vm.rememberMe = false;
 
         function getSchedulerIds(response) {
             JobSchedulerService.getSchedulerIds().then(function (res) {
-                SOSAuth.setIds(res);
-                SOSAuth.save();
-                getPermissions(response);
-            }, function (err) {
-
+                if(res && !res.data) {
+                    SOSAuth.setIds(res);
+                    SOSAuth.save();
+                    getPermissions(response);
+                }else{
+                    toasty.error({
+                       msg: res.data.error.message
+                    });
+                }
             });
         }
 
@@ -62,14 +66,13 @@
                             SOSAuth.rememberMe = vm.rememberMe;
                              getSchedulerIds(response);
 
-
                         } else {
-                            vm.loginError = 'Username or password is wrong';
+                            vm.loginError = 'message.loginError';
                         }
                         $('#loginBtn').text("Sign In");
                         vm.isProcessing = false;
                     }, function (err) {
-                        vm.loginError = 'Username or password is wrong';
+                        vm.loginError = 'message.loginError';
                         $('#loginBtn').text("Sign In");
                         vm.isProcessing = false;
                     });
@@ -78,8 +81,8 @@
 
     }
 
-    UserProfileCtrl.$inject = ['$scope', '$rootScope', '$window', 'gettextCatalog'];
-    function UserProfileCtrl($scope, $rootScope, $window, gettextCatalog) {
+    UserProfileCtrl.$inject = ['$scope', '$rootScope', '$window', 'gettextCatalog', "$resource"];
+    function UserProfileCtrl($scope, $rootScope, $window, gettextCatalog, $resource) {
         var vm = $scope;
 
         vm.zones = moment.tz.names();
@@ -93,6 +96,7 @@
         vm.perferences.zone = $window.localStorage.$SOS$ZONE;
         vm.perferences.dateFormat = $window.localStorage.$SOS$DATEFORMAT;
 
+
         vm.setLocale = function () {
             // set the current lang
             vm.locale = vm.perferences.locale;
@@ -100,6 +104,11 @@
             $window.localStorage.$SOS$LANG = vm.locale.lang;
             // You can change the language during runtime
             gettextCatalog.setCurrentLanguage(vm.locale.lang);
+            $resource("/modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
+               gettextCatalog.setStrings(vm.locale.lang, data);
+            });
+
+
         };
 
         vm.setTimeZone = function () {

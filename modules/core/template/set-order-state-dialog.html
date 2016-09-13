@@ -1,31 +1,34 @@
 <div>
     <div class="modal-header">
           <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">Set order state of {{order.orderId}}</h4>
+        <h4 class="modal-title">
+            <span translate>label.setOrderStateOf </span>
+            {{order.orderId}}
+        </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row">
-                <label class="col-sm-3">Order ID</label>
-                <label class="col-sm-3">{{order.orderId}}</label>
+                <label class="col-sm-3" translate>label.orderId</label>
+                <label class="col-sm-6">{{order.orderId}}</label>
             </div>
                 <div class="form-group row">
-                    <label class="col-sm-3 form-control-label">New order state</label>
+                    <label class="col-sm-3 form-control-label" translate>label.newOrderState</label>
 
                     <div class="col-sm-6">
                         <select class="form-control" ng-model="order.state"
                                 ng-options="node.name as node.name for node in order.nodes">
-                            <option value="" translate>Choose starting step</option>
+                            <option value="" translate>label.chooseStartingStep</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-3 form-control-label">New order end state</label>
+                    <label class="col-sm-3 form-control-label" translate>label.newOrderEndState</label>
 
                     <div class="col-sm-6">
                         <select class="form-control" ng-model="order.endState"
                                 ng-options="node.name as node.name for node in order.endNodes">
-                            <option value="" translate>Choose end step</option>
+                            <option value="" translate>label.chooseEndStep</option>
                         </select>
                     </div>
                 </div>
@@ -33,8 +36,8 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm">Submit</button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </div>
     </form>

@@ -4,7 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left m-b-xs">
-                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                 </div>
             </div>
@@ -16,33 +16,34 @@
         <div class="row m-t-sm">
             <div class="col-sm-12">
                 <div class="box p-a p-b-lg">
-                   <h5>User Details</h5>
+                   <h5 translate>label.userDetails</h5>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">User Name</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.userName</span></div>
                        <div class="col-sm-6">
                           <span class="text-black-lt text-c">{{permission.user}}</span>
                        </div>
                    </div>
                    <hr>
-                   <h5>Preferences</h5>
+                   <h5 translate>label.preferences</h5>
                    <div class="row m-t">
-                       <div class="col-sm-2 text-dark form-control-label">Language</div>
+                       <div class="col-sm-2 text-dark form-control-label" translate>label.language</div>
                        <div class="col-sm-3">
                           <select class="form-control w-xl" ng-model="perferences.locale" ng-change="setLocale()"  ng-options="locale as locale.name for locale in locales"></select>
                        </div>
                    </div>
                    <div class="row m-t-sm">
-                       <div class="col-sm-2 text-dark form-control-label">Time Zone</div>
+                       <div class="col-sm-2 text-dark form-control-label" translate>label.timeZone</div>
                        <div class="col-sm-3">
                            <select class="form-control w-xl"  ng-model="perferences.zone" ng-change="setTimeZone()">
                                 <option value="{{timezone}}">local ({{timezone}})</option>
+                                <option value="{{selectedJobScheduler.timeZone}}">JobScheduler ({{selectedJobScheduler.timeZone}})</option>
                                 <option>-----------------------------</option>
                                 <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
                            </select>
                        </div>
                    </div>
                    <div class="row m-t-sm">
-                       <div class="col-sm-2 text-dark form-control-label">Date Time Format</div>
+                       <div class="col-sm-2 text-dark form-control-label" translate>label.dateTimeFormat</div>
                        <div class="col-sm-10">
 
                            <select class="form-control w-xl" ng-model="perferences.dateFormat" ng-change="setDateFormat()">
@@ -159,131 +160,131 @@
                        </div>
                    </div>
                    <hr>
-                   <h5>Roles</h5>
+                   <h5 translate>label.roles</h5>
                    <div class="row m-t-sm">
                        <div class="col-sm-6">
                            <div class="m-t-sm" ng-repeat="permission in permission.SOSPermissionRoles.SOSPermissionRole">
-                               <div class="text-black-lt">{{permission}}</div>
+                               <div class="col-sm-3 text-black-lt">{{permission}}</div>
                            </div>
                        </div>
                    </div>
                    <hr>
-                   <h5>Permissions</h5>
+                   <h5 translate>label.permissions</h5>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">JobScheduler Master</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.view.status}"></i> view status</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.view.mainlog}"></i> view main log</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.pause}"></i> pause</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.continue}"></i> continue</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.terminate}"></i> terminate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.abort}"></i> abort</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.restart.terminate}"></i> restart terminate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.restart.abort}"></i> restart abort</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMaster.manageCategories}"></i> manage catagories</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.view.status}"></i> <span translate>label.viewStatus</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.view.mainlog}"></i> <span translate>label.viewMainLog</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.pause}"></i> <span translate>label.pause</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.continue}"></i> <span translate>label.continue</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.terminate}"></i> <span translate>label.terminate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.abort}"></i> <span translate>label.abort</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.restart.terminate}"></i> <span translate>label.restartTerminate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.restart.abort}"></i> <span translate>label.restartAbort</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMaster.manageCategories}"></i> <span translate>label.manageCatagories</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">JobScheduler Master Cluster</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.jobSchedulerMasterCluster</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.view.clusterStatus}"></i> view cluster status</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.terminate}"></i> terminate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.terminateFailSafe}"></i> terminate failsafe</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerMasterCluster.restart}"></i> restart</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.view.clusterStatus}"></i> <span translate>label.viewClusterStatus</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.terminate}"></i> <span translate>label.terminate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.terminateFailSafe}"></i> <span translate>label.terminateFailsafe</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerMasterCluster.restart}"></i> <span translate>label.restart</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">JobScheduler Universal Agent</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.jobSchedulerUniversalAgent</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.view.status}"></i> view status</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.terminate}"></i> terminate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.abort}"></i> abort</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.restart.terminate}"></i> restart terminate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobschedulerUniversalAgent.restart.abort}"></i> restart abort</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.view.status}"></i> <span translate>label.viewStatus</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.terminate}"></i> <span translate>label.terminate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.abort}"></i> <span translate>label.abort</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.restart.terminate}"></i> <span translate>label.restartTerminate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobschedulerUniversalAgent.restart.abort}"></i> <span translate>label.restartAbort</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Daily Plan</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.dailyPlan</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.DailyPlan.view.status}"></i> view status</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.DailyPlan.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">History</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.history</span></div>
                        <div class="col-sm-10">
-                            <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.History.view}"></i> view</span>
+                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.History.view}"></i> <span translate>label.view</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Order</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.order</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.configuration}"></i> view configuration</span>
-                          <span class="m-l text-black-lt" ng-if="permission.Order.view.history ==true || permission.Order.view.history == false"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.history}"></i> view history</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.orderLog}"></i> view order log</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.view.status}"></i> view status</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.change.startAndEndNode}"></i> change start and end node</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.change.timeForAdhocOrder}"></i> change time for adhoc order</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.change.parameter}"></i> change parameters</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.start}"></i> start</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.update}"></i> update</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.suspend}"></i> suspend</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.resume}"></i> resume</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.delete.permanent}"></i> delete permanent</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.delete.temporary}"></i> delete temporary</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Order.removeSetback}"></i> remove setback</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-if="permission.Order.view.history ==true || permission.Order.view.history == false"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.history}"></i> <span translate>label.viewHistory</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.orderLog}"></i> <span translate>label.viewOrderLog</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.status}"></i> <span translate>label.viewStatus</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.startAndEndNode}"></i> <span translate>label.changeStartAndEndNode</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.timeForAdhocOrder}"></i> <span translate>label.changeTimeForAdhocOrder</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.parameter}"></i> <span translate>label.changeParameters</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.start}"></i> <span translate>label.start</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.update}"></i> <span translate>label.update</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.suspend}"></i> <span translate>label.suspend</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.resume}"></i> <span translate>label.resume</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.delete.permanent}"></i> <span translate>label.deletePermanent</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.delete.temporary}"></i> <span translate>label.deleteTemporary</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.removeSetback}"></i> <span translate>label.removeSetback</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Job Chain</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.jobChain</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.view.configuration}"></i> view configuration</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.view.history}"></i> view history</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.view.status}"></i> view status</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.stop}"></i> stop</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.unstop}"></i> unstop</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.addOrder}"></i> addOrder</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.skipJobChainNode}"></i> skip JobChain node</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.unskipJobChainNode}"></i> unskip JobChain node</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.stopJobChainNode}"></i> stop JobChain node</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.JobChain.unstopJobChainNode}"></i> unstop JobChain node</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.history}"></i> <span translate>label.viewHistory</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.status}"></i> <span translate>label.viewStatus</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.stop}"></i> <span translate>label.stop</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.unstop}"></i> <span translate>label.unstop</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.addOrder}"></i> <span translate>label.addOrder</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.skipJobChainNode}"></i> <span translate>label.skipJobChainNode</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.unskipJobChainNode}"></i> <span translate>label.unskipJobChainNode</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.stopJobChainNode}"></i> <span translate>label.stopJobChainNode</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.unstopJobChainNode}"></i> <span translate>label.unstopJobChainNode</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Job</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.job</span></div>
                        <div class="col-sm-10">
-                          <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.configuration}"></i> view configuration</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.history}"></i> view history</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.taskLog}"></i> view taskLog</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.view.status}"></i> view status</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.start.task}"></i> start task</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.start.taskImmediately}"></i> start task immediate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.stop}"></i> stop</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.unstop}"></i> unstop</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.terminate}"></i> terminate</span>
-                          <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Job.kill}"></i> kill</span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.history}"></i> <span translate>label.viewHistory</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.taskLog}"></i> <span translate>label.viewTaskLog</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.status}"></i> <span translate>label.viewStatus</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.start.task}"></i> <span translate>label.startTask</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.start.taskImmediately}"></i> <span translate>label.startTaskImmediate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.stop}"></i> <span translate>label.stop</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.unstop}"></i> <span translate>label.unstop</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.terminate}"></i> <span translate>label.terminate</span></span>
+                          <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.kill}"></i> <span translate>label.kill</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Process Class</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.processClass</span></div>
                        <div class="col-sm-10">
-                           <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.ProcessClass.view.configuration}"></i> view configuration</span>
-                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.ProcessClass.view.status}"></i> view status</span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.ProcessClass.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Lock</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.lock</span></div>
                        <div class="col-sm-10">
-                           <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Lock.view.configuration}"></i> view configuration</span>
-                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Lock.view.status}"></i> view status</span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Lock.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark">Schedule</span></div>
+                       <div class="col-sm-2"><span class="text-dark" translate>label.schedule</span></div>
                        <div class="col-sm-10">
-                           <span class="text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.view.configuration}"></i> view configuration</span>
-                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.view.status}"></i> view status</span>
-                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.edit}"></i> edit</span>
-                           <span class="m-l text-black-lt"><i class="fa fa-check" ng-class="{'fa-times': !permission.Schedule.addSubstitute}"></i> add substitute</span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.view.status}"></i> <span translate>label.viewStatus</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.edit}"></i> <span translate>label.edit</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.addSubstitute}"></i> <span translate>label.addSubstitute</span></span>
                        </div>
                    </div>
                </div>

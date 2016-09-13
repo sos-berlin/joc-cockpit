@@ -9,80 +9,81 @@
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group">
                             <button id="allorders_id" class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()">All Orders
+                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allOrders
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'running'"
-                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()">Running
+                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'suspended'"
-                                    ng-class="{'btn-primary': filter.state=='suspended'}" ng-click="load()">Suspended
+                                    ng-class="{'btn-primary': filter.state=='suspended'}" ng-click="load()" translate>button.suspended
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'setback'"
-                                    ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()">Setback
+                                    ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()" translate>button.setback
                             </button>
                         </div>
                         <div class="btn-group m-l-sm">
                             <button id="permanent_id" class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'permanent'"
-                                    ng-class="{'btn-primary': filter.state=='permanent'}" ng-click="load1()">Permanent
+                                    ng-class="{'btn-primary': filter.state=='permanent'}" ng-click="load1()" translate>button.permanent
                             </button>
                             <button id="adhoc_id" class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'ad_hoc'"
-                                    ng-class="{'btn-primary': filter.state=='ad_hoc'}" ng-click="load1()">Ad hoc
+                                    ng-class="{'btn-primary': filter.state=='ad_hoc'}" ng-click="load1()" translate>button.adhoc
                             </button>
                             <button id="fileorder_id" class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'file_order'"
-                                    ng-class="{'btn-primary': filter.state=='file_order'}" ng-click="load()">File Order
+                                    ng-class="{'btn-primary': filter.state=='file_order'}" ng-click="load()" translate>button.fileOrder
                             </button>
                         </div>
                         <div class="btn-group dropdown">
-                            <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span class="hidden-md-down">Sort By</span> <span class="text-primary">
+                            <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span  ng-show="filter.sortBy =='orderId'">
-                                    Order Id
+                                     {{'label.orderId' | translate}}
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='processingState._text'">
-                                    Status
+                                     {{'label.status' | translate}}
                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
                                 <span  ng-show="filter.sortBy =='startedAt'">
-                                    Date
+                                     {{'label.date' | translate}}
                                   <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
                                 </span> </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a id="orderid_id" class="dropdown-item" ng-click="mainSortBy1('orderId')">Order Id</a>
-                                <a  id="status_id" class="dropdown-item" ng-click="mainSortBy1('processingState._text')">Status</a>
-                                <a id="date_id" class="dropdown-item" ng-click="mainSortBy1('startedAt')" >Date</a>
+                                <a id="orderid_id" class="dropdown-item" ng-click="mainSortBy1('orderId')" translate>label.orderId</a>
+                                <a  id="status_id" class="dropdown-item" ng-click="mainSortBy1('processingState._text')" translate>label.status</a>
+                                <a id="date_id" class="dropdown-item" ng-click="mainSortBy1('startedAt')" translate>label.date</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">Filters <span class="text-primary" ng-bind="savedOrderFilter.selected"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedOrderFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-click="applyFilter()">Create a new filter</a>
-                                <a class="dropdown-item" ng-click="editFilters()" ng-if="savedOrderFilter.list.length>0">Edit existing filters</a>
+                                <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
+                                <a class="dropdown-item" ng-click="editFilters()" ng-if="savedOrderFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedOrderFilter.list.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedOrderFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
                                 </a>
                             </div>
                         </div>
+                        <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                      </div>
 
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
-                                 ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> Delete Order</button>
+                                 ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
-                                 ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> Suspend Order</button>
-                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> Reset Order</button>
+                                 ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span translate>button.suspendOrder</span></button>
+                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> <span translate>button.resetOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}"
-                                 ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> Start Order now</button>
+                                 ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span translate>button.startOrderNow</span></button>
                      </div>
                      <toggle-view></toggle-view>
                 </div>

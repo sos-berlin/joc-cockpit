@@ -12,12 +12,13 @@
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
 
-    ResourceCtrl.$inject = ["$scope", 'JobSchedulerService', '$stateParams', "ResourceService", "orderByFilter"];
-    function ResourceCtrl($scope, JobSchedulerService, $stateParams, ResourceService, orderBy) {
+    ResourceCtrl.$inject = ["$scope", 'JobSchedulerService', '$stateParams', "ResourceService", "orderByFilter", "gettextCatalog"];
+    function ResourceCtrl($scope, JobSchedulerService, $stateParams, ResourceService, orderBy, gettextCatalog) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
         vm.filter.sortBy = "name";
+
 
         vm.pageSize = 10;
         vm.currentPage = 1;
@@ -59,51 +60,51 @@
             {
                 field: "Status",
                 sortable: true,
-                cellTemplate: "<span class='text-c label b-{{row.branch[col.field]}}'>{{ row.branch[col.field]}}</span>"
+                cellTemplate: "<span class='text-u-c label b-{{row.branch[col.field]}}'>{{ row.branch[col.field]}}</span>"
             },
             {
                 field: "URL",
-                displayName: "URL",
+                displayName: gettextCatalog.getString('label.url'),
                 sortable: true
             },
             {
                 field: "TotalAgents",
-                displayName: "Total Agents",
+                displayName: gettextCatalog.getString('label.totalAgents'),
                 sortable: true,
                 sortingType: "number"
             },
             {
                 field: "RunningAgent",
-                displayName: "Running Agent",
+                displayName: gettextCatalog.getString('label.runningAgent'),
                 sortable: true,
                 sortingType: "number"
             },
             {
                 field: "NotReachable",
-                displayName: "Not Reachable",
+                displayName: gettextCatalog.getString('label.notReachable'),
                 sortable: true,
                 sortingType: "number"
             }, {
                 field: "SchedulingType",
-                displayName: "Scheduling Type",
+                displayName: gettextCatalog.getString('label.schedulingType'),
                 sortable: true,
-                cellTemplate: "<span class='text-c'>{{ row.branch[col.field] | translate }}</span>"
+                cellTemplate: "<span >{{ row.branch[col.field] | translate }}</span>"
             },
             {
                 field: "LastUpdateTime",
-                displayName: "Last Update time",
+                displayName: gettextCatalog.getString('label.lastUpdateTime'),
                 sortable: true,
                 cellTemplate: "<span class='text-muted'>{{ row.branch[col.field] | stringToDate }}</span>"
             },
             {
                 field: "MaxProcess",
-                displayName: "Max Process",
+                displayName: gettextCatalog.getString('label.maxProcess'),
                 sortable: true,
                 sortingType: "number"
             },
             {
                 field: "RunningTasks",
-                displayName: "Running Tasks",
+                displayName: gettextCatalog.getString('label.runningTasks'),
                 sortable: true,
                 sortingType: "number"
             }
@@ -447,24 +448,22 @@
                     agentArray.push([value.path.substring(value.path.lastIndexOf('/') + 1), numTask]);
 
                     if (value.state._text == "all_agents_are_running") {
-                        value.state._text = "Healthy Agent Cluster";
+                        value.state._text = "label.healthyAgentCluster";
                         bgColorArray.push('#7ab97a');
                     } else if (value.state._text == "all_agents_are_unreachable") {
-                        value.state._text = "Unreachable Agent Cluster";
+                        value.state._text = "label.unreachableAgentCluster";
                         bgColorArray.push('#e86680');
                     } else {
-                        value.state._text = "Unhealthy Agent Cluster";
+                        value.state._text = "label.unhealthyAgentCluster";
                         bgColorArray.push('rgba(255, 195, 0, 0.9)');
                     }
                     agentArray1.push({
                         key: value.state._text,
                         y: value.numOfAgents.any
                     });
-
                 });
 
                 vm.agentClusterData = agentArray1;
-
 
                 vm.agentStatusChart = [
                     {
@@ -595,9 +594,9 @@
 
             var key = '';
             if (event.point.key) {
-                if (event.point.key == "Healthy Agent Cluster") {
+                if (event.point.key == "label.healthyAgentCluster") {
                     key = 'healthy';
-                } else if (event.point.key == "Unhealthy Agent Cluster") {
+                } else if (event.point.key == "label.unhealthyAgentCluster") {
                     key = 'unhealthy';
                 } else {
                     key = 'unreachable';
@@ -623,9 +622,9 @@
 
         vm.setLabel = function (label) {
             var key = '';
-            if (label == "Healthy Agent Cluster") {
+            if (label == "label.healthyAgentCluster") {
                 key = 'healthy';
-            } else if (label == "Unhealthy Agent Cluster") {
+            } else if (label == "label.unhealthyAgentCluster") {
                 key = 'unhealthy';
             } else {
                 key = 'unreachable';
@@ -761,10 +760,12 @@
 
     }
 
-    DailyPlanCtrl.$inject = ['$scope', 'JobSchedulerService', '$timeout', '$log', 'ganttUtils', 'GanttObjectModel', 'ganttMouseOffset', 'ganttDebounce',
-        'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty'];
-    function DailyPlanCtrl($scope, JobSchedulerService, $timeout, $log, utils, ObjectModel, mouseOffset, debounce, moment, orderBy, $uibModal, SavedFilter, toasty) {
-        var vm = $scope;
+
+    DailyPlanCtrl.$inject = ['$scope', 'JobSchedulerService', '$timeout', '$log', 'ganttUtils', 'GanttObjectModel', 'gettextCatalog', 'ganttDebounce',
+        'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'JobService'];
+    function DailyPlanCtrl($scope, JobSchedulerService, $timeout, $log, utils, ObjectModel, gettextCatalog, debounce, moment, orderBy, $uibModal, SavedFilter, toasty,
+                           OrderService, JobService) {
+
         var vm = $scope;
 
         vm.pageSize = 10;
@@ -773,8 +774,9 @@
         vm.isLoading = true;
         vm.isLoading1 = true;
         vm.filter = {};
-        vm.filter.range = "this-hour";
+        vm.filter.range = "today";
         vm.filter.sortBy = "name";
+        vm.filter.status = 'all';
         vm.showPanel = '';
         vm.showLogPanel = undefined;
         vm.object = {};
@@ -783,41 +785,34 @@
         vm.savedIgnoreList = JSON.parse(SavedFilter.ignoreList) || {};
         vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
         vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
+        vm.dataSource = 'Demo';
+        setDateRange();
 
-
-        vm.getPlans = function () {
-            JobSchedulerService.getPlans(vm.filter).then(function (res) {
-
-            }, function (err) {
-
-            });
-            var date = new Date();
-            if(!vm.savedDailyPlanFilter.selected){
-                vm.plans = vm.temp;
-            }
-            var data = [];
-            if (vm.filter.range == 'this-hour') {
-                date.setHours(date.getHours() + 1);
-            }
-            else if (vm.filter.range == 'next-12-hours') {
-                date.setHours(date.getHours() + 12);
-            }
-            else if (vm.filter.range == 'next-24-hours') {
-                date.setDate(date.getDate() + 1);
-            } else if (vm.filter.range == 'next-7-days') {
-                date.setDate(date.getDate() + 7);
+        function setDateRange(range) {
+            var from = new Date();
+            var to = new Date();
+            if (range == 'today' || !range) {
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setSeconds(0);
+                to.setDate(to.getDate() + 1);
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setSeconds(0);
+            } else if (range == 'next-24-hours') {
+                to.setHours(to.getHours() + 24);
             }
 
+            vm.filter.from = from;
+            vm.filter.to = to;
+        }
 
-                angular.forEach(vm.plans, function (value) {
-                    if (new Date(value.planned) > new Date() && new Date(value.planned) <= date) {
-                        data.push(value);
-                    }
-                });
+        vm.getPlans = function (dateRange) {
+            filterData(dateRange);
+        }
 
+        vm.toggleSource = function () {
 
-
-            vm.plans = data;
         }
 
         var objectModel;
@@ -884,43 +879,55 @@
 
 
         // angular-gantt options
+        var toDate = new Date();
+        toDate.setDate(toDate.getDate() + 1);
         $scope.options = {
             mode: 'custom',
-            scale: 'day',
+            scale: '30 minutes',
             sortMode: undefined,
             sideMode: 'TreeTable',
             daily: false,
-            maxHeight: false,
+            maxHeight: window.innerHeight - 300,
             width: false,
             zoom: 1,
-            columns: ['model.name'],
-            columnsHeaders: {'model.name': 'Name'},
-            columnsClasses: {'model.name': 'gantt-column-name'},
-
-            treeHeaderContent: '<i class="fa fa-align-justify"></i> {{getHeader()}}',
+            treeTableColumns: ['model.orderId', 'model.status'],
+            columnsHeaders: {
+                'model.name': gettextCatalog.getString('label.processesPlanned'),
+                'model.orderId': gettextCatalog.getString('label.orderId'),
+                'model.status': gettextCatalog.getString('label.status')
+            },
+            columnsClasses: {
+                'model.name': 'gantt-column-name',
+                'model.orderId': 'gantt-column-from',
+                'model.status': 'gantt-column-to'
+            },
+            treeHeaderContent: gettextCatalog.getString('label.processedPlans'),
             columnsHeaderContents: {
-                'model.name': '<i class="fa fa-align-justify"></i> {{getHeader()}}'
+                'model.name': '{{getHeader()}}',
+                'mode.lorderId': '{{getHeader()}}',
+                'model.status': '{{getHeader()}}'
             },
             autoExpand: 'none',
             taskOutOfRange: 'truncate',
             fromDate: moment(null),
-            toDate: undefined,
-            rowContent: '<i class="fa fa-align-justify"></i> {{row.model.name}}',
-            taskContent: '<i class="fa fa-tasks"></i> {{task.model.name}}',
+            toDate: toDate,
+            rowContent: '<i class="fa fa-align-justify"></i> {{row.model.orderId}}',
+            taskContent: '<i class="fa fa-tasks"></i> {{task.model.orderId}}',
             allowSideResizing: true,
             labelsEnabled: true,
             currentDate: 'line',
-            currentDateValue: new Date(2013, 9, 23, 11, 20, 0),
+            currentDateValue: new Date(),
             draw: false,
             readOnly: false,
             groupDisplayMode: 'group',
             filterTask: '',
             filterRow: '',
+            shrinkToFit: true,
             timeFrames: {
                 'day': {
                     start: moment('8:00', 'HH:mm'),
                     end: moment('20:00', 'HH:mm'),
-                    color: '#ACFFA3',
+                    color: '#a88add',
                     working: true,
                     default: true
                 },
@@ -952,7 +959,8 @@
                 },
                 '11-november': {
                     evaluator: function (date) {
-                        return date.month() === 10 && date.date() === 11;
+                        date = new Date(date);
+                        return date.getTime() === new Date().getTime();
                     },
                     targets: ['holiday']
                 }
@@ -1028,16 +1036,16 @@
                     api.tasks.on.filter($scope, logTasksFilterEvent);
 
                     api.data.on.change($scope, function (newData) {
-                        if (dataToRemove === undefined) {
-                            dataToRemove = [
-                                {'id': newData[1].id}, // Remove Kickoff row
-                                {
-                                    'id': newData[0].id, 'tasks': [
-                                    {'id': newData[0].tasks[0].id},
-                                ]
-                                }
-                            ];
-                        }
+                        //if (dataToRemove === undefined) {
+                        //    dataToRemove = [
+                        //        {'id': newData[1].id}, // Remove Kickoff row
+                        //        {
+                        //            'id': newData[0].id, 'tasks': [
+                        //            {'id': newData[0].tasks[0].id},
+                        //        ]
+                        //        }
+                        //    ];
+                        //}
                     });
 
                     // When gantt is ready, load data.
@@ -1149,10 +1157,44 @@
 
         // Reload data action
         $scope.load = function () {
-            $scope.data = JobSchedulerService.getSampleData();
-            $scope.plans = $scope.data;
-            vm.temp = $scope.plans;
-            filterData();
+            //$scope.data = JobSchedulerService.getSampleData();
+
+
+            if (vm.dataSource == 'Demo') {
+                vm.temp = OrderService.getDailyPlanData();
+                filterData();
+            } else {
+                OrderService.get().then(function (res) {
+
+                    res.orders = res.orders.splice(0, 20);
+                    vm.temp = res.orders;
+                    angular.forEach(vm.temp, function (value, index) {
+                        value.nextStartTime = new Date();
+                        value.nextStartTime.setMinutes(value.nextStartTime.getMinutes() + 30);
+
+                    });
+                    JobService.get({compact: false}).then(function (res) {
+                        res.jobs = res.jobs.splice(0, 20);
+                        angular.forEach(res.jobs, function (value, index) {
+                            //if (value.nextStartTime) {
+                            console.log("Job is having next start time");
+                            value.nextStartTime = new Date();
+                            value.nextStartTime.setMinutes(value.nextStartTime.getMinutes() + 30);
+                            vm.temp.push(value);
+                            //  }
+
+
+                        });
+                        filterData();
+                    }, function (err) {
+
+                    })
+
+
+                })
+            }
+
+
             dataToRemove = undefined;
 
             $scope.timespans = JobSchedulerService.getSampleTimespans();
@@ -1202,10 +1244,19 @@
             }
         };
 
+        vm.sortBy = function (propertyName) {
+            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
+            vm.propertyName = propertyName;
+            vm.plans = orderBy(vm.plans, vm.propertyName, vm.reverse);
+            prepareGanttData(vm.plans);
+
+        };
+
         vm.mainSortBy = function (propertyName) {
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
             vm.plans = orderBy(vm.plans, vm.filter.sortBy, vm.sortReverse);
+            prepareGanttData(vm.plans);
         };
 
 
@@ -1290,37 +1341,32 @@
             $scope.live.rowJson = angular.toJson($scope.live.row, true);
         });
 
-        $scope.bgColorFunction = function (d) {
-            if (d == 'waiting') {
-                return 'bg-corn-flower-blue';
-            } else if (d == 'executed') {
-                return 'bg-green';
-            } else {
-                return 'bg-crimson';
-            }
+        vm.showPanel = '';
+        vm.showPanelFuc = function (value) {
+            vm.showPanel = value;
+            vm.hidePanel = !vm.hidePanel;
+        };
+        vm.hidePanelFuc = function () {
+            vm.showPanel = '';
+            vm.hidePanel = !vm.hidePanel;
         };
 
         vm.showLogFuc = function (plan) {
-            vm.showLogPanel = plan
-            vm.histories = [{
-                startOfExecution: '2016-08-05 0:00:01',
-                endOfExecution: '2016-08-05 0:00:01',
-                duration: '00:00:03',
-                exitCode: '0'
-            }];
-            vm.steps = [{
-                step: '1',
-                state: 'start',
-                job: 'sos/events/scheduler_event_service',
-                start: '2016-08-04 0:27:43',
-                stop: '2016-08-04 0:27:44',
-                duration: '00:00:01',
-                exitCode: '0'
-            }];
+            vm.showLogPanel = plan;
+            var filter = [];
+            filter[0] = {};
+            filter[0].jobChain = plan.jobChain;
+            filter[0].orderId = plan.orderId;
+            OrderService.histories(filter).then(function (res) {
+                vm.histories = res.history;
+            }, function (err) {
+
+            })
+            vm.steps = [];
         };
 
         vm.applyFilter = function () {
-            vm.orderFilter = {};
+            vm.dailyPlanFilter = {};
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/daily-plan-filter-dialog.html',
@@ -1328,14 +1374,20 @@
                 scope: vm
             });
             modalInstance.result.then(function () {
-                vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
-                vm.savedDailyPlanFilter.list = vm.savedDailyPlanFilter.list || [];
+                if (vm.savedDailyPlanFilter.shared) {
+                        //TODO Save daily plan filter into database.
+                } else {
+                    vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
+                    vm.savedDailyPlanFilter.list = vm.savedDailyPlanFilter.list || [];
 
-                vm.savedDailyPlanFilter.list.push(vm.orderFilter);
-                vm.savedDailyPlanFilter.selected = vm.orderFilter.name;
+                    vm.savedDailyPlanFilter.list.push(vm.dailyPlanFilter);
+                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+                    SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+                    SavedFilter.save();
+                }
+
                 filterData();
-                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-                SavedFilter.save();
+
             }, function () {
 
             });
@@ -1391,8 +1443,10 @@
             });
             if (vm.savedDailyPlanFilter.list.length == 0) {
                 vm.savedDailyPlanFilter = {};
+            } else if (vm.savedDailyPlanFilter.selected == vm.dailyPlanFilter.name) {
+                vm.savedDailyPlanFilter.selected = undefined;
             }
-            SavedFilter.setOrder(vm.savedDailyPlanFilter);
+            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
         };
 
@@ -1406,7 +1460,7 @@
                     }
                 } else {
                     if (value.name != vm.filterName) {
-                        if (vm.orderFilter.name == value.name) {
+                        if (vm.dailyPlanFilter.name == value.name) {
                             vm.isUnique = false;
                         }
                     }
@@ -1422,75 +1476,254 @@
 
         };
 
-
-        function filterData() {
-            console.log("Filtering "+JSON.stringify(vm.savedDailyPlanFilter));
-            var data = [];
-            if(!vm.savedDailyPlanFilter.selected ){
-                data = vm.temp;
-            }else{
-                angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
+        function applySavedFilter(data) {
+            angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
                 if (value.name == vm.savedDailyPlanFilter.selected) {
                     angular.forEach(vm.temp, function (res) {
                         var flag = true;
-                        if (value.regex) {
-                            if (!res.path.match(value.regex)) {
+
+                        if (value.regex && res.orderId) {
+                            if (!res.orderId.match(value.regex)) {
                                 flag = false;
                             }
                         }
-                        if (flag && value.status && res.status) {
-                            if (value.status.indexOf(res.status) === -1) {
+
+
+                        if (flag && value.state && !value.name && res.processingState._text) {
+                            if (value.state.indexOf(res.processingState._text) === -1) {
                                 flag = false;
                             }
                         }
+
+                        if (flag && value.state && value.name && res.processingState._text) {
+                            if (value.state.indexOf(res.processingState._text) === -1) {
+                                flag = false;
+                            }
+                        }
+
+
+                        if (value.processPlanned && res.name) {
+                            if (!res.name.match(value.name)) {
+                                flag = false;
+                            }
+                        }
+
+                        if (flag && value.processPlanned && !res.name && res.jobChain) {
+                            if (!res.jobChain.match(value.jobChain)) {
+                                flag = false;
+                            }
+                        }
+                        if (flag && value.fromDate && res.nextStartTime) {
+
+                            if (value.fromTime) {
+                                value.fromDate = new Date(value.fromDate);
+                                value.fromTime = new Date(value.fromTime);
+                                value.fromDate.setHours(value.fromTime.getHours());
+                                value.fromDate.setMinutes(value.fromTime.getMinutes());
+                                value.fromDate.setSeconds(value.fromTime.getSeconds());
+                            }
+                            var time1 = moment(value.fromDate).diff(moment(res.nextStartTime));
+                            var time2 = moment(res.nextStartTime).diff(moment(value.toDate));
+                            if (time1 >= 0 && time2 <= 0) {
+                                flag = false;
+                            }
+                        }
+
+
                         if (flag)
                             data.push(res);
                     });
                 }
             });
+        }
+
+        function filterData(dateRange) {
+            console.log("Filtering " + JSON.stringify(vm.savedDailyPlanFilter));
+            var data = [];
+            if (!vm.savedDailyPlanFilter.selected) {
+                data = vm.temp;
+            } else {
+                applySavedFilter(data);
             }
-            var date = new Date();
-            if (vm.filter.range == 'this-hour') {
-                date.setHours(date.getHours() + 1);
+            var to = new Date();
+            var from = new Date();
+
+            if (dateRange) {
+                from = vm.filter.from;
+                to = vm.filter.to;
+            } else {
+                if (vm.filter.range == 'today') {
+                    from.setHours(0);
+                    from.setMinutes(0);
+                    from.setSeconds(0);
+                    to.setHours(0);
+                    to.setMinutes(0);
+                    to.setSeconds(0);
+                    to.setDate(to.getDate() + 1);
+                    setDateRange('today');
+                } else if (vm.filter.range == 'next-24-hours') {
+                    to.setDate(to.getDate() + 1);
+                    setDateRange('next-24-hours');
+                }
             }
-            else if (vm.filter.range == 'next-12-hours') {
-                date.setHours(date.getHours() + 12);
-            }
-            else if (vm.filter.range == 'next-24-hours') {
-                date.setDate(date.getDate() + 1);
-            } else if (vm.filter.range == 'next-7-days') {
-                date.setDate(date.getDate() + 7);
-            }
-            var data2=[];
-            angular.forEach(data, function (value,index) {
-                if (new Date(value.planned) > new Date() && new Date(value.planned) <= date) {
-                        data2.push(value);
+
+
+            var data2 = [];
+
+            angular.forEach(data, function (value, index) {
+                console.log("Filter for state " + vm.filter.status);
+                var flag = true;
+                if (new Date(value.nextStartTime) < from || new Date(value.nextStartTime) > to) {
+
+                    flag = false;
+                }
+
+                if (vm.filter.status && vm.filter.status != 'all' && !value.name && value.processingState._text) {
+                    console.log("Found " + value.processingState._text);
+                    if (vm.filter.status.indexOf(value.processingState._text) === -1) {
+                        console.log("Not matched ");
+                        flag = false;
+                    } else {
+                        console.log("Matched ");
+                    }
+                }
+
+                if (vm.filter.status && vm.filter.status != 'all' && value.name && value.state._text) {
+                    if (vm.filter.status.indexOf(value.state._text) === -1) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    data2.push(value);
                 }
             });
+
             vm.plans = data2;
+            prepareGanttData(data2);
+            console.log("Data " + vm.data.length);
         }
+
+        function prepareGanttData(data2) {
+            var orders = [];
+            angular.forEach(data2, function (order, index) {
+                orders[index] = {};
+                orders[index].tasks = [];
+                orders[index].tasks[0] = {};
+                if (order.name) {
+                    orders[index].name = order.name;
+                    vm.plans[index].processedPlan = order.name;
+                    orders[index].tasks[0].name = order.name;
+                    orders[index].orderId = '-';
+                    orders[index].status = order.state._text;
+                    vm.plans[index].status = order.state._text;
+                    if (order.state._text == 'EXECUTED') {
+                        orders[index].tasks[0].color = "#7ab97a";
+                    } else if (order.state._text == 'LATE') {
+                        orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
+                    }
+                } else {
+                    orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
+                    vm.plans[index].processedPlan = orders[index].name;
+                    orders[index].tasks[0].name = order.orderId;
+                    orders[index].orderId = order.orderId;
+                    orders[index].status = order.processingState._text;
+                    vm.plans[index].status = order.processingState._text;
+                    if (order.processingState._text == 'EXECUTED') {
+                        orders[index].tasks[0].color = "#7ab97a";
+                    } else if (order.processingState._text == 'LATE') {
+                        orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
+                    }
+                }
+                orders[index].tasks[0].from = new Date(order.nextStartTime);
+                orders[index].tasks[0].to = new Date(order.nextStartTime);
+                orders[index].tasks[0].to.setMinutes(orders[index].tasks[0].to.getMinutes() + 30);
+
+
+            })
+            vm.data = orders;
+        }
+
+        vm.tree =[];
+        vm.getTreeStructure = function() {
+            console.log("Getting tree structure");
+            $('#treeModal').modal('show');
+            var tree = [], keys = [];
+            angular.forEach(vm.temp, function (item) {
+                var key = item['jobChain']||item['path'];
+               if (keys.indexOf(key) === -1) {
+                    keys.push(key);
+                    tree.push(key.split('/'));
+                }
+            });
+            vm.tree = convertToHierarchy(tree);
+
+        };
+
+        function convertToHierarchy(arry) {
+            // Discard duplicates and set up parent/child relationships
+            var children = {};
+            var hasParent = {};
+            for (var i = 0; i < arry.length; i++)
+            {
+                var path = arry[i];
+                var parent = null;
+                for (var j = 0; j < path.length; j++)
+                {
+                    var item = path[j];
+                    if (!children[item]) {
+                        children[item] = {};
+                    }
+                    if (parent) {
+                        children[parent][item] = true; /* dummy value */
+                        hasParent[item] = true;
+                    }
+                    parent = item;
+                }
+            }
+
+            // Now build the hierarchy
+            var result = [];
+            for (item in children) {
+                if (!hasParent[item]) {
+                    result.push(buildNodeRecursive(item, children));
+                }
+            }
+            return result;
+        }
+
+        function buildNodeRecursive(item, children)
+        {
+            var node = {'JobChain':item, children:[]};
+            for (var child in children[item]) {
+                node.children.push(buildNodeRecursive(child, children));
+            }
+            return node;
+        }
+
+         vm.selectValue = function(data){
+            vm.filterString1 = data.JobChain;
+            vm.dailyPlanFilter.name = vm.filterString1;
+        };
 
 
         function contextmenu() {
             vm.menuOptions = [
-                ['Edit ignorelist', function () {
+                [gettextCatalog.getString('button.editIgnoreList'), function () {
                     vm.editIgnoreList();
                 }],
-                ['Disable ignorelist', function () {
+                [gettextCatalog.getString('button.disableIgnoreList'), function () {
                     vm.enableDisableIgnoreList(false);
                 }, vm.savedIgnoreList.isEnable],
-                ['Enable ignorelist', function () {
+                [gettextCatalog.getString('button.enableIgnoreList'), function () {
                     vm.enableDisableIgnoreList(true);
                 }, vm.savedIgnoreList.isEnable],
-                ['Reset ignorelist', function () {
+                [gettextCatalog.getString('button.resetIgnoreList'), function () {
                     vm.resetIgnoreList();
                 }]
             ];
         }
 
         contextmenu();
-
-
 
 
     }

@@ -15,12 +15,12 @@
     <div class="padding p-b-0">
         <div class="row">
             <div class="col-md-3 ">
-                 <h5 class=" _300 m-t-xs"><i class="fa fa-file"></i> Logs</h5>
+                 <h5 class=" _300 m-t-xs"><i class="fa fa-file"></i> <span translate>label.logs</span></h5>
             </div>
             <div class="col-md-9 ">
-                <a class="pull-right text-u-l m-l m-t-xs" ng-click="advanceFilter()">Advanced Search</a>
-                <input type="text" class="form-control inline w pull-right search-box" placeholder="Search">
-                <button class="btn btn-default grey btn-sm pull-right m-r" ng-click="advanceFilter()">Modify Log View</button>
+                <a class="pull-right text-u-l m-l m-t-xs" ng-click="advanceFilter()" translate>button.advancedSearch</a>
+                <input type="text" class="form-control inline w pull-right search-box" placeholder="{{'placeholder.search' | translate}}">
+                <button class="btn btn-default grey btn-sm pull-right m-r" ng-click="advanceFilter()" translate>button.modifyLogView</button>
             </div>
         </div>
         <div class="row">

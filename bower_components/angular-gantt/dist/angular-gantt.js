@@ -5358,7 +5358,8 @@ angular.module('gantt.templates', []).run(['$templateCache', function($templateC
         '\n' +
         '    <!-- Body foreground template -->\n' +
         '    <script type="text/ng-template" id="template/ganttBodyForeground.tmpl.html">\n' +
-        '        <div ng-transclude class="gantt-body-foreground"></div>\n' +
+        '        <div ng-transclude class="gantt-body-foreground">' +
+        ' </div>\n' +
         '    </script>\n' +
         '\n' +
         '    <!-- Body columns template -->\n' +

@@ -5292,7 +5292,8 @@ angular.module('gantt.templates', []).run(['$templateCache', function($templateC
         '                <gantt-row-background ng-repeat="row in gantt.rowsManager.visibleRows track by row.model.id"></gantt-row-background>\n' +
         '            </gantt-body-background>\n' +
         '            <gantt-body-foreground>\n' +
-        '                <div class="gantt-current-date-line" ng-show="currentDate === \'line\' && gantt.currentDateManager.position >= 0 && gantt.currentDateManager.position <= gantt.width" ng-style="{\'left\': gantt.currentDateManager.position + \'px\' }"></div>\n' +
+        '                <div class="gantt-current-date-line" ng-show="currentDate === \'line\' && gantt.currentDateManager.position >= 0 && gantt.currentDateManager.position <= gantt.width" ng-style="{\'left\': gantt.currentDateManager.position + \'px\' }">' +
+        '</div>\n' +
         '            </gantt-body-foreground>\n' +
         '            <gantt-body-columns>\n' +
         '                <gantt-column ng-repeat="column in gantt.columnsManager.visibleColumns">\n' +
@@ -5358,7 +5359,7 @@ angular.module('gantt.templates', []).run(['$templateCache', function($templateC
         '\n' +
         '    <!-- Body foreground template -->\n' +
         '    <script type="text/ng-template" id="template/ganttBodyForeground.tmpl.html">\n' +
-        '        <div ng-transclude class="gantt-body-foreground"></div>\n' +
+        '        <div ng-transclude class="gantt-body-foreground"><span style="z-index: 1000">Hello</span></div>\n' +
         '    </script>\n' +
         '\n' +
         '    <!-- Body columns template -->\n' +

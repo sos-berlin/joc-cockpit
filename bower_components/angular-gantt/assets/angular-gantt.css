@@ -75,6 +75,7 @@
 .gantt-side {
     float: left;
     position: relative;
+    width: 25%;
 }
 
 .gantt-header-row {
@@ -327,10 +328,11 @@
 }
 
 .gantt-current-date-line {
-    border: 1px dotted green;
+    border: 1px solid #2e3e4e;
     opacity: 0.6;
     height: 100%;
     position: absolute;
+    z-index: 1000;
 }
 
 .unselectable {

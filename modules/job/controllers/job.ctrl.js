@@ -8,8 +8,8 @@
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl);
 
-    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "$state", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter","toasty"];
-    function JobChainCtrl($scope, JobChainService, OrderService, $state, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,toasty) {
+    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "$state", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter","toasty", "gettextCatalog"];
+    function JobChainCtrl($scope, JobChainService, OrderService, $state, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,toasty, gettextCatalog) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -67,14 +67,14 @@
                 filterData();
                 vm.data = [];
                 angular.forEach(vm.jobChains, function (value) {
-                    if (value.state._text == vm.filter.state || vm.filter.state == 'all')
+                    if (value.state._text.toLowerCase() == vm.filter.state || vm.filter.state == 'all')
                         vm.data.push(value);
                 });
                 vm.jobChains = vm.data;
             } else {
                 vm.data = [];
                 angular.forEach(vm.temp, function (value) {
-                    if (value.state._text == vm.filter.state || vm.filter.state == 'all')
+                    if (value.state._text.toLowerCase() == vm.filter.state || vm.filter.state == 'all')
                         vm.data.push(value);
                 });
                 vm.jobChains = vm.data;
@@ -92,12 +92,12 @@
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
-                    if (value.state && value.state._text == 'stopped') {
+                    if (value.state && value.state._text.toLowerCase() == 'stopped') {
                         vm.isStopped = true;
                     } else {
                         vm.isUnstopped = true;
                     }
-                    if (value.state && (value.state._text == 'under_construction' || value.state._text == 'not_initialized')) {
+                    if (value.state && (value.state._text.toLowerCase() == 'under_construction' || value.state._text.toLowerCase() == 'not_initialized')) {
                         vm.isStopped = true;
                         vm.isUnstopped = true;
                     }
@@ -128,6 +128,7 @@
         /**--------------- Actions -----------------------------*/
         vm.viewOrders = function (jobChain) {
             SOSAuth.setJobChain(JSON.stringify(jobChain));
+            SOSAuth.save();
             $state.go('app.jobChainDetails.overview');
         };
 
@@ -192,7 +193,7 @@
             jobChains.jobschedulerId = vm.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: jobChain.path});
             JobChainService.stop(jobChains).then(function (res) {
-                jobChain.state._text = 'stopped';
+                jobChain.state._text = 'STOPPED';
                 jobChain.state.severity = 2;
             }, function (err) {
 
@@ -205,7 +206,7 @@
             jobChains.jobschedulerId = vm.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: jobChain.path});
             JobChainService.unstop(jobChains).then(function (res) {
-                jobChain.state._text = 'running';
+                jobChain.state._text = 'RUNNING';
                 jobChain.state.severity = 0;
             }, function (err) {
 
@@ -222,7 +223,7 @@
             });
             JobChainService.stop(jobChains).then(function (res) {
                 angular.forEach(vm.object.jobChains, function (jobChain) {
-                    jobChain.state._text = 'stopped';
+                    jobChain.state._text = 'STOPPED';
                     jobChain.state.severity = 2;
                 });
                 vm.object.jobChains = [];
@@ -240,7 +241,7 @@
             });
             JobChainService.unstop(jobChains).then(function (res) {
                 angular.forEach(vm.object.jobChains, function (jobChain) {
-                    jobChain.state._text = 'running';
+                    jobChain.state._text = 'RUNNING';
                     jobChain.state.severity = 0;
                 });
                 vm.object.jobChains = [];
@@ -346,7 +347,7 @@
             angular.forEach(vm.savedJobChainFilter.list, function (value, index) {
                 if (value.name == vm.jobChainFilter.name) {
                     toasty.success({
-                        title: value.name + ' filter deleted successfully!',
+                        title: value.name + ' '+ gettextCatalog.getString('message.filterDeleteSuccessfully'),
                         msg: ''
                     });
                     vm.savedJobChainFilter.list.splice(index, 1);
@@ -393,8 +394,8 @@
     }
 
 
-    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService"];
-    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService) {
+    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService", "gettextCatalog"];
+    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService, gettextCatalog) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -453,14 +454,14 @@
                 filterData();
                 vm.data = [];
                 angular.forEach(vm.jobs, function (value) {
-                    if (value.state._text == vm.filter.state || vm.filter.state == 'all')
+                    if (value.state._text.toLowerCase() == vm.filter.state || vm.filter.state == 'all')
                         vm.data.push(value);
                 });
                 vm.jobs = vm.data;
             } else {
                 vm.data = [];
                 angular.forEach(vm.temp, function (value) {
-                    if (value.state._text == vm.filter.state || vm.filter.state == 'all')
+                    if (value.state._text.toLowerCase() == vm.filter.state || vm.filter.state == 'all')
                         vm.data.push(value);
                 });
                 vm.jobs = vm.data;
@@ -492,7 +493,7 @@
                     if (value.isOrderJob) {
                         vm.isOrderJob = true;
                     }
-                    if (value.state && value.state._text == 'stopped') {
+                    if (value.state && value.state._text.toLowerCase() == 'stopped') {
                         vm.isStopped = true;
                     } else {
                         vm.isUnstopped = true;
@@ -610,7 +611,7 @@
             angular.forEach(vm.savedJobFilter.list, function (value, index) {
                 if (value.name == vm.jobFilter.name) {
                     toasty.success({
-                        title: value.name + ' filter deleted successfully!',
+                        title: value.name + ' '+ gettextCatalog.getString('message.filterDeleteSuccessfully'),
                         msg: ''
                     });
                     vm.savedJobFilter.list.splice(index, 1);
@@ -701,7 +702,7 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.stop(jobs).then(function (res) {
-                job.state._text = 'stopped';
+                job.state._text = 'STOPPED';
                 job.state.severity = 2;
             }, function (err) {
 
@@ -714,7 +715,7 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.unstop(jobs).then(function (res) {
-                job.state._text = 'running';
+                job.state._text = 'RUNNING';
                 job.state.severity = 0;
             }, function (err) {
 
@@ -727,7 +728,7 @@
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
             JobService.start(jobs).then(function (res) {
-                job.state._text = 'running';
+                job.state._text = 'RUNNING';
                 job.state.severity = 0;
             }, function (err) {
 
@@ -793,7 +794,7 @@
             });
             JobService.unstop(jobs).then(function (res) {
                 angular.forEach(vm.object.jobs, function (job) {
-                    job.state._text = 'running';
+                    job.state._text = 'RUNNING';
                     job.state.severity = '0';
 
                 });
@@ -811,7 +812,7 @@
             });
             JobService.start(jobs).then(function (res) {
                 angular.forEach(vm.object.jobs, function (job) {
-                    job.state._text = 'running';
+                    job.state._text = 'RUNNING';
                     job.state.severity = '0';
 
                 });

@@ -3,7 +3,7 @@
     <div>
       <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">{{_jobChain.name}} Calendar view for planned orders</h4>
+        <h4 class="modal-title">{{_jobChain.name}} <span translate>label.calendarViewForPlannedOrders</span></h4>
       </div>
         <div class="modal-body">
             <div class="text-md text-center">
@@ -29,7 +29,7 @@
                 <li class="nav-item">
                     <a class="nav-link" ng-class="{'active' : calendarView=='month'}" ng-model="calendarView" uib-btn-radio="'month'">
                         <span class="nav-text text-dark p-b-sm" >
-                            <span class="text-sm">Monthly</span>
+                            <span class="text-sm" translate>label.monthly</span>
                         </span>
                     </a>
                 </li>
@@ -38,7 +38,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" ng-class="{'active' : calendarView=='week'}" ng-model="calendarView" uib-btn-radio="'week'">
-                        <span class="nav-text text-dark p-b-sm"><span class="text-sm">Weekly</span></span>
+                        <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.weekly</span></span>
                     </a>
                 </li>
                 <li class="nav-item dropdown-separator">
@@ -46,7 +46,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" ng-class="{'active' : calendarView=='year'}" ng-model="calendarView" uib-btn-radio="'year'">
-                        <span class="nav-text text-dark p-b-sm"><span class="text-sm">Yearly</span></span>
+                        <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.yearly</span></span>
                     </a>
                 </li>
              </ul>

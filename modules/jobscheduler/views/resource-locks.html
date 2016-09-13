@@ -10,9 +10,9 @@
                                 <i class="fa fa-lock text-sm"></i>
                                 <span ng-bind="lock.path"></span></a>
                         </div>
-                        <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> Max Task</div>
-                        <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.holders.tasks.length || '0'"></span> Running Task</div>
-                        <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.queue.length || '0'"></span> Waiting Task</div>
+                        <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> {{'label.maxTask' | translate}}</div>
+                        <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.holders.tasks.length || '0'"></span> {{'label.runningTask' | translate}}</div>
+                        <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="lock.queue.length || '0'"></span> {{'label.waitingTask' | translate}}</div>
                     </div>
 
                 </div>
@@ -23,37 +23,37 @@
             <div class="table-responsive">
                 <table class="table table-hover table-bordered  ">
                     <tr>
-                        <th ng-click="sortBy('name')"><a>Lock Name
+                        <th ng-click="sortBy('name')"><a><span translate>label.lockName</span>
                             <i ng-show="propertyName == 'name' && !reverse"
                                class="fa fa-caret-down "></i>
                             <i ng-show="propertyName == 'name' && reverse"
                                class="fa fa-caret-up "></i></a>
                         </th>
-                        <th ng-click="sortBy('path')"><a>Path
+                        <th ng-click="sortBy('path')"><a><span translate>label.path</span>
                             <i ng-show="propertyName == 'path' && !reverse"
                                class="fa fa-caret-down "></i>
                             <i ng-show="propertyName == 'path' && reverse"
                                class="fa fa-caret-up "></i></a>
                         </th>
-                        <th ng-click="sortBy('status')"><a>Status
+                        <th ng-click="sortBy('status')"><a><span translate>label.status</span>
                             <i ng-show="propertyName == 'status' && !reverse"
                                class="fa fa-caret-down "></i>
                             <i ng-show="propertyName == 'status' && reverse"
                                class="fa fa-caret-up "></i></a>
                         </th>
-                        <th ng-click="sortBy('maxNonExclusive')"><a>Max Non Exclusive
+                        <th ng-click="sortBy('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>
                             <i ng-show="propertyName == 'maxNonExclusive' && !reverse"
                                class="fa fa-caret-down "></i>
                             <i ng-show="propertyName == 'maxNonExclusive' && reverse"
                                class="fa fa-caret-up "></i></a>
                         </th>
-                        <th ng-click="sortBy('holders.tasks.length')"><a>Number Lock Holder
+                        <th ng-click="sortBy('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>
                             <i ng-show="propertyName == 'holders.tasks.length' && !reverse"
                                class="fa fa-caret-down "></i>
                             <i ng-show="propertyName == 'holders.tasks.length' && reverse"
                                class="fa fa-caret-up "></i></a>
                         </th>
-                        <th ng-click="sortBy('queue.length')"><a>Number Queued
+                        <th ng-click="sortBy('queue.length')"><a><span translate>label.numberQueued</span>
                             <i ng-show="propertyName == 'queue.length' && !reverse"
                                class="fa fa-caret-down "></i>
                             <i ng-show="propertyName == 'queue.length' && reverse"
@@ -73,7 +73,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev">            </div>
+                <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-right" ng-show="filtered.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
@@ -91,9 +91,10 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="isLoading && locks.length==0" class="text-center m-t h6 text-uppercase">No locks Found</div>
-            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && locks.length !==0)}">No data matched</div>
+        </div>
+        <div ng-if="isLoading && locks.length==0" class="text-center m-t h6 text-uppercase"  translate>message.noLocksFound</div>
+        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && locks.length !==0)}"  translate>message.noDataMatched</div>
     </div>
-<div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">Loading...</div></div>
+<div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 
 

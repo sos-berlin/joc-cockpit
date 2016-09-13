@@ -38,31 +38,24 @@
             d1 = moment(d1).tz($window.localStorage.$SOS$ZONE);
             d2 = moment(d2).tz($window.localStorage.$SOS$ZONE);
             var milliseconds = moment(d2).diff(d1);
+            if (milliseconds >= 1000) {
+                var s = parseInt((milliseconds / 1000) % 60),
+                    m = parseInt((milliseconds / (60 * 1000)) % 60),
+                    h = parseInt((milliseconds / (1000 * 60 * 60)) % 24),
+                    d = parseInt(milliseconds / (1000 * 60 * 60 * 24));
 
-
-            function numberEnding(number) {
-                return (number > 1) ? 's' : '';
+                if (d == 0 && h != 0) {
+                    return h + 'h ' + m + 'm ' + s + 's';
+                } else if (h == 0 && m != 0) {
+                    return m + ' m' + s + ' s';
+                } else if (d == 0 && h == 0 && m == 0) {
+                    return s + ' sec';
+                } else {
+                    return d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
+                }
+            } else {
+                return 'less than a sec';
             }
-
-            var temp = Math.floor(milliseconds / 1000);
-
-            var days = Math.floor((temp %= 31536000) / 86400);
-            if (days) {
-                return days + ' day' + numberEnding(days);
-            }
-            var hours = Math.floor((temp %= 86400) / 3600);
-            if (hours) {
-                return hours + ' hour' + numberEnding(hours);
-            }
-            var minutes = Math.floor((temp %= 3600) / 60);
-            if (minutes) {
-                return minutes + ' min';
-            }
-            var seconds = temp % 60;
-            if (seconds) {
-                return seconds + ' sec';
-            }
-            return 'less than a sec';
         }
     }
 

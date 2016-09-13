@@ -7,14 +7,13 @@
     angular.module('app')
         .directive('a', a)
         .directive('ngSpinnerBar', ngSpinnerBar)
-        .directive('passwordStrength', passwordStrength)
         .directive("uiInclude", uiInclude).value('uiJpConfig', {})
-        .directive('onFinishRender', onFinishRender)
         .directive('uiNav', uiNav)
         .directive('checklistModel', checklistModel)
         .directive('contextMenu', contextMenu)
         .directive('toggleView', toggleView)
         .directive('letterAvatar', letterAvatar)
+
         .constant('defaultAvatarSettings', {
             alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
             textColor: '#ffffff',
@@ -73,8 +72,8 @@
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
-                     if(toState.ncyBreadcrumb.label)
-                    document.title = toState.ncyBreadcrumb.label + " - JobScheduler";
+                    if(toState.title)
+                    document.title = toState.title + " - JobScheduler";
                 });
 
                 // handle errors
@@ -90,70 +89,6 @@
                      }
                 });
             }
-        };
-    }
-
-    function passwordStrength() {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            scope: {
-                ngModel: '='
-            },
-            link: function (scope, element, attrs, ngModel) {
-
-                var strength = {
-                    measureStrength: function (p) {
-                        var _regex = /[$@&+#-/:-?{-~!"^_`\[\]]/g;
-                        var _lowerLetters = /[a-z]+/.test(p);
-                        var _upperLetters = /[A-Z]+/.test(p);
-                        var _symbols = _regex.test(p);
-                        var _flags = [_lowerLetters, _upperLetters, _symbols];
-                        var _passedMatches = $.grep(_flags, function (el) {
-                            return el === true;
-                        }).length;
-                        return _passedMatches;
-                    }
-                };
-
-                var indicator = element.children();
-                var dots = Array.prototype.slice.call(indicator.children());
-                var weakest = dots.slice(-1)[0];
-                var weak = dots.slice(-2);
-                var strong = dots.slice(-3);
-                var strongest = dots.slice(-4);
-
-                element.after(indicator);
-
-                var listener = scope.$watch('ngModel', function (newValue) {
-                    angular.forEach(dots, function (el) {
-                        el.style.backgroundColor = '#ebeef1';
-                    });
-                    if (ngModel.$modelValue) {
-                        var c = strength.measureStrength(ngModel.$modelValue);
-                        if (ngModel.$modelValue.length > 7 && c > 2) {
-                            angular.forEach(strongest, function (el) {
-                                el.style.backgroundColor = '#008cdd';
-                            });
-                        } else if (ngModel.$modelValue.length > 5 && c > 1) {
-                            angular.forEach(strong, function (el) {
-                                el.style.backgroundColor = '#6ead09';
-                            });
-                        } else if (ngModel.$modelValue.length > 3 && c > 0) {
-                            angular.forEach(weak, function (el) {
-                                el.style.backgroundColor = '#e09115';
-                            });
-                        } else {
-                            weakest.style.backgroundColor = '#e01414';
-                        }
-                    }
-                });
-
-                scope.$on('$destroy', function () {
-                    return listener();
-                });
-            },
-            template: '<span class="password-strength-indicator"><span></span><span></span><span></span><span></span></span>'
         };
     }
 
@@ -175,19 +110,6 @@
         }
     }
 
-    onFinishRender.$inject = ["$timeout"];
-    function onFinishRender($timeout) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attr) {
-                if (scope.$last === true) {
-                    $timeout(function () {
-                        scope.$emit('ngRepeatFinished');
-                    });
-                }
-            }
-        }
-    }
 
     function uiNav() {
         var directive = {
@@ -334,8 +256,8 @@
         };
     }
 
-    contextMenu.$inject = ["$q"];
-    function contextMenu($q) {
+    contextMenu.$inject = ["$q", "gettextCatalog"];
+    function contextMenu($q, gettextCatalog) {
         var contextMenus = [];
         var $currentContextMenu = null;
         var defaultItemText = "New Item";
@@ -571,10 +493,11 @@
 
                 var $li = $('<li>');
                     if (typeof item[2] === "boolean") {
-                        if(item[0].substring(0, 6) === 'Enable' && item[2] ==false){
+
+                        if(item[0] === gettextCatalog.getString('button.enableIgnoreList') && item[2] ==false){
                             processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
                         }
-                        if(item[0].substring(0, 7) === 'Disable' && item[2] == true){
+                        if(item[0] === gettextCatalog.getString('button.disableIgnoreList') && item[2] == true){
                             processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
                         }
                     }else {
@@ -799,6 +722,7 @@
 
         return textTag;
     }
+
 
 
 })();

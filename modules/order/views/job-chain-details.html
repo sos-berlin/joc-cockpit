@@ -4,43 +4,43 @@
             <div class="padding">
                 <div class="text-right ">
                      <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
-                        <button class="hide btn btn-grey btn-sm m-l-sm p-l-md p-r-md bg-hover-color" ng-if="jobChain.state._text != 'stopped'" ng-class="{'show-block':permission.JobChain.stop}" ng-disabled="jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized'" ng-click="stopJob()"><i class="fa fa-stop"></i> Stop Job Chain</button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm p-l-md p-r-md" ng-if="jobChain.state._text == 'stopped'"  ng-class="{'show-block':permission.JobChain.unstop}" ng-disabled="jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized'" ng-click="unstopJob()"><i class="fa fa-play"></i> Unstop Job Chain</button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm p-l-md p-r-md" ng-click="addOrder()" ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized')}" ><i class="fa fa-plus-square"></i> Add an Order</button>
-                        <button class="btn btn-grey btn-sm m-l-sm p-l-md p-r-md" ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized')}" ng-click="viewCalendar();"><i class="fa fa-calendar"></i> View Calendar</button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm p-l-md p-r-md bg-hover-color" ng-if="jobChain.state._text != 'stopped'" ng-class="{'show-block':permission.JobChain.stop}" ng-disabled="jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized'" ng-click="stopJob()"><i class="fa fa-stop"></i>  <span translate>button.stopJobChain</span></button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm p-l-md p-r-md" ng-if="jobChain.state._text == 'stopped'"  ng-class="{'show-block':permission.JobChain.unstop}" ng-disabled="jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized'" ng-click="unstopJob()"><i class="fa fa-play"></i>  <span translate>button.unstopJob Chain</span></button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm p-l-md p-r-md" ng-click="addOrder()" ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized')}" ><i class="fa fa-plus-square"></i>  <span translate>button.addAnOrder</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm p-l-md p-r-md" ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'under_construction' || jobChain.state._text == 'not_initialized')}" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span translate>button.viewCalendar</span></button>
                         <div class="btn-group dropdown" ng-show="!overview">
-                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span class="hidden-md-down">Sort By</span> <span class="text-primary">
+                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span ng-show="filter.sortBy =='orderId'">
-                                    Order Id
+                                     {{'label.orderId' | translate}}
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='processingState._text'">
-                                    Status
+                                     {{'label.status' | translate}}
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='startedAt'">
-                                    Date
+                                     {{'label.date' | translate}}
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                             </span> </a>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy2('orderId')">Order Id</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy2('processingState._text')">Status</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy2('startedAt')" >Date</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy2('orderId')" translate>label.orderId</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy2('processingState._text')" translate>label.status</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy2('startedAt')" translate>label.date</a>
                             </div>
                         </div>
                     </div>
                     <div class="hide" ng-class="{'show-block' :object.orders.length>0}">
-                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}" ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> Delete Order</button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}" ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> Suspend Order</button>
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> Reset Order</button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}" ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> Start Order now</button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}" ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span translate>button.deleteOrder</span></button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}" ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span translate>button.suspendOrder</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> <span translate>button.resetOrder</span></button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}" ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span translate>button.startOrderNow</span></button>
                      </div>
                     <toggle-view ng-show="!overview"></toggle-view>
                 </div>
@@ -54,11 +54,11 @@
             <div class="col-sm-12">
                  <h5 class="pos-abt _300">{{jobChain.path}}</h5>
                 <div class="btn-group inline pull-right">
-                    <a role="button" class="btn white btn-sm"
-                            ui-sref-active="btn-primary" ui-sref="app.jobChainDetails.orders" >Job Chain Orders
+                    <a role="button" class="btn btn-sm"
+                            ui-sref-active="btn-primary" ui-sref="app.jobChainDetails.orders" translate>button.jobChainOrders
                     </a>
-                    <a role="button" class="btn white btn-sm"
-                            ui-sref-active="btn-primary" ui-sref="app.jobChainDetails.overview">Job Chain Overview
+                    <a role="button" class="btn btn-sm"
+                            ui-sref-active="btn-primary" ui-sref="app.jobChainDetails.overview" translate>button.jobChainOverview
                     </a>
                 </div>
 <!--                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pull-right">

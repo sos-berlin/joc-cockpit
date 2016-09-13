@@ -1,13 +1,11 @@
 <!-- content -->
 <div id="content" class="app-content " role="main" ng-controller="HeaderCtrl">
     <div class="w-full text-right top-header-bar">
-        <span class="m-r-sm">Time: <span class="text-white" ng-bind="currentTime | stringToDate"></span></span>
-        <span class="m-r-sm">JobScheduler Start Time: <span class="text-white" ng-bind="selectedJobScheduler.startedAt | stringToDate"></span></span>
-
-
-        <div class="btn-group dropdown">
+        <span class="m-r-sm p-l-xs p-r-xs" style="box-shadow: 0 1px 3px rgba(0,0,0,0.3); "><span translate>label.time</span>: <span class="text-white" ng-bind="currentTime | stringToDate"></span></span>
+        <span class="m-r-sm p-l-xs p-r-xs" style="box-shadow: 0 1px 3px rgba(0,0,0,0.3); "><span translate>label.jobSchedulerStartTime</span>: <span class="text-white" ng-bind="selectedJobScheduler.startedAt | stringToDate"></span></span>
+        <div class="btn-group dropdown p-l-xs p-r-xs" style="box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
             <a class="nav-link " data-toggle="dropdown">
-                ID: <span class="_600 text-orange" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
+                <span translate>label.id</span>: <span class="_600 text-orange" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
             </a>
             <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
                 <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler)">

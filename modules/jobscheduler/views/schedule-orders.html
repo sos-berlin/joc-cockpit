@@ -6,8 +6,8 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <button class="btn btn-grey btn-sm m-l-sm" ng-click="editSchedule(schedule)"><i class="fa fa-pencil"></i> Edit Schedule</button>
-                    <button class="btn btn-grey btn-sm m-l-sm" ng-click="substitute(schedule)"><i class="fa fa-repeat"></i> Substitute</button>
+                    <button class="btn btn-grey btn-sm m-l-sm" ng-click="editSchedule(schedule)"><i class="fa fa-pencil"></i> <span translate>button.editSchedule</span></button>
+                    <button class="btn btn-grey btn-sm m-l-sm" ng-click="substitute(schedule)"><i class="fa fa-repeat"></i> <span translate>button.substitute</span></button>
                     <toggle-view></toggle-view>
                 </div>
             </div>
@@ -22,12 +22,12 @@
             </div>
             <div class="col-md-12">
                 <div class="box padding m-t-sm">
-                    <span>Validity : -{{schedule.title}}</span>
+                    <span>{{'label.validity' | translate}} : -{{schedule.title}}</span>
                 </div>
             </div>
         </div>
 
-        <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">Waiting for API...</div></div>
+        <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
 </div>
 

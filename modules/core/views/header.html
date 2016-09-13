@@ -24,16 +24,12 @@
             </a>
             <div class="dropdown-menu pull-right dropdown-ac">
                 <a class="dropdown-item" ui-sref="app.profile">
-
-                      <s class="fa fa-user "></s>
-                      Profile
-
+                    <s class="fa fa-user"></s>
+                    {{'button.profile' | translate}}
                 </a>
                 <a class="dropdown-item" ng-click="logout()">
-
-                      <i class="fa fa-sign-out"></i>
-                      Sign out
-
+                    <i class="fa fa-sign-out"></i>
+                    {{'button.signOut' | translate}}
                 </a>
             </div>
         </li>
@@ -45,7 +41,7 @@
         <!-- search form -->
         <form class="navbar-form form-inline pull-right navbar-item m-r" role="search">
             <div class="l-h">
-                <input type="search" data-ng-model="filterString" placeholder="Search">
+                <input type="search" data-ng-model="filterString" placeholder="{{'placeholder.search'| translate}}">
             </div>
         </form>
         <!-- / search form -->
@@ -55,7 +51,7 @@
                 <a class="nav-link" ui-sref="app.dashboard" ui-sref-active="active">
                     <span class="nav-text">
                          <i class="fa fa-dashboard text-white"></i>
-                        <span id="dashboard_id" class="text-sm text-white">Dashboard</span>
+                        <span id="dashboard_id" class="text-sm text-white" translate>label.dashboard</span>
                     </span>
                 </a>
             </li>
@@ -63,7 +59,7 @@
                 <a class="nav-link" ui-sref="app.dailyPlan" ui-sref-active="active">
                     <span class="nav-text">
                          <img src="images/daily_plan.png">
-                        <span id="dailyPlan_id" class="text-sm text-white">Daily Plan</span>
+                        <span id="dailyPlan_id" class="text-sm text-white" translate>label.dailyPlan</span>
                     </span>
                 </a>
             </li>
@@ -71,7 +67,7 @@
                 <a class="nav-link" ui-sref="app.jobChain" ui-sref-active-eq="active">
                     <span class="nav-text ">
                         <i class="fa fa-chain text-white"></i>
-                        <span id="jobChain_id" class="text-sm text-white">Job Chains</span>
+                        <span id="jobChain_id" class="text-sm text-white" translate>label.jobChains</span>
                     </span>
                 </a>
             </li>
@@ -79,7 +75,7 @@
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
                     <span class="nav-text ">
                         <i class="fa fa-list-ul text-white"></i>
-                        <span id="orders_id" class="text-sm text-white">Orders</span>
+                        <span id="orders_id" class="text-sm text-white" translate>label.orders</span>
                     </span>
                 </a>
             </li>
@@ -87,7 +83,7 @@
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
                     <span class="nav-text ">
                         <i class="fa fa-tasks text-white"></i>
-                        <span id="jobs_id" class="text-sm text-white">Jobs</span>
+                        <span id="jobs_id" class="text-sm text-white" translate>label.jobs</span>
                     </span>
                 </a>
             </li>
@@ -95,7 +91,7 @@
                 <a class="nav-link" ui-sref="app.resources.agentClusters" ui-sref-active-eq="active">
                     <span class="nav-text" >
                         <img src="images/resources.png">
-                        <span class="text-sm text-white">Resources</span>
+                        <span class="text-sm text-white" translate>label.resources</span>
                     </span>
                 </a>
 
@@ -104,7 +100,7 @@
                 <a class="nav-link" ui-sref="app.schedules" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-calendar text-white"></i>
-                        <span class="text-sm text-white">Schedules</span>
+                        <span class="text-sm text-white" translate>label.schedules</span>
                     </span>
                 </a>
             </li>
@@ -112,7 +108,7 @@
                 <a class="nav-link" ui-sref="app.history" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-history text-white"></i>
-                        <span class="text-sm text-white">History</span>
+                        <span class="text-sm text-white" translate>label.history</span>
                     </span>
                 </a>
             </li>

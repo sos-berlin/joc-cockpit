@@ -1,7 +1,7 @@
 <div>
     <div class="modal-header">
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">Edit filters</h4>
+        <h4 class="modal-title" translate>label.editFilters</h4>
     </div>
      <form name="form" novalidate>
         <div class="modal-body">
@@ -11,11 +11,9 @@
                        <table class="table table-hover table-bordered " >
                         <thead>
                         <tr>
-                            <th>
-                                Sr.No
-                            </th>
-                            <th>Filter Name</th>
-                            <th>Action</th>
+                            <th translate>label.srNo</th>
+                            <th translate>label.filterName</th>
+                            <th translate>label.action</th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="filter in filters">
@@ -23,7 +21,7 @@
                                 <td>{{$index+1}}</td>
                                 <td>{{filter.name}}</td>
                                 <td>
-                                    <a href="" class="text-u-l text-primary" ng-click="ok();editFilter(filter)">Edit</a>
+                                    <a href="" class="text-u-l text-primary" ng-click="ok();editFilter(filter)" translate>button.edit</a>
                                 </td>
                             </tr>
 
