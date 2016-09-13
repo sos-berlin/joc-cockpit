@@ -890,7 +890,7 @@
             maxHeight: window.innerHeight - 300,
             width: false,
             zoom: 1,
-            treeTableColumns: ['model.orderId', 'model.status'],
+            treeTableColumns: ['model.name','model.orderId', 'model.status'],
             columnsHeaders: {
                 'model.name': gettextCatalog.getString('label.processesPlanned'),
                 'model.orderId': gettextCatalog.getString('label.orderId'),
@@ -909,7 +909,6 @@
             },
             autoExpand: 'none',
             taskOutOfRange: 'truncate',
-            fromDate: moment(null),
             toDate: toDate,
             rowContent: '<i class="fa fa-align-justify"></i> {{row.model.orderId}}',
             taskContent: '<i class="fa fa-tasks"></i> {{task.model.orderId}}',
@@ -1375,7 +1374,7 @@
             });
             modalInstance.result.then(function () {
                 if (vm.savedDailyPlanFilter.shared) {
-                        //TODO Save daily plan filter into database.
+                    //TODO Save daily plan filter into database.
                 } else {
                     vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
                     vm.savedDailyPlanFilter.list = vm.savedDailyPlanFilter.list || [];
@@ -1603,6 +1602,8 @@
             console.log("Data " + vm.data.length);
         }
 
+        var minNextStartTime;
+
         function prepareGanttData(data2) {
             var orders = [];
             angular.forEach(data2, function (order, index) {
@@ -1635,22 +1636,32 @@
                     }
                 }
                 orders[index].tasks[0].from = new Date(order.nextStartTime);
+                if (!minNextStartTime || minNextStartTime > order.nextStartTime) {
+                    minNextStartTime = new Date(order.nextStartTime);
+                }
                 orders[index].tasks[0].to = new Date(order.nextStartTime);
                 orders[index].tasks[0].to.setMinutes(orders[index].tasks[0].to.getMinutes() + 30);
 
 
             })
+
+            if(minNextStartTime){
+                minNextStartTime.setMinutes(0);
+                minNextStartTime.setHours(0);
+                $scope.options.fromDate=minNextStartTime;
+            }
+
             vm.data = orders;
         }
 
-        vm.tree =[];
-        vm.getTreeStructure = function() {
+        vm.tree = [];
+        vm.getTreeStructure = function () {
             console.log("Getting tree structure");
             $('#treeModal').modal('show');
             var tree = [], keys = [];
             angular.forEach(vm.temp, function (item) {
-                var key = item['jobChain']||item['path'];
-               if (keys.indexOf(key) === -1) {
+                var key = item['jobChain'] || item['path'];
+                if (keys.indexOf(key) === -1) {
                     keys.push(key);
                     tree.push(key.split('/'));
                 }
@@ -1663,18 +1674,17 @@
             // Discard duplicates and set up parent/child relationships
             var children = {};
             var hasParent = {};
-            for (var i = 0; i < arry.length; i++)
-            {
+            for (var i = 0; i < arry.length; i++) {
                 var path = arry[i];
                 var parent = null;
-                for (var j = 0; j < path.length; j++)
-                {
+                for (var j = 0; j < path.length; j++) {
                     var item = path[j];
                     if (!children[item]) {
                         children[item] = {};
                     }
                     if (parent) {
-                        children[parent][item] = true; /* dummy value */
+                        children[parent][item] = true;
+                        /* dummy value */
                         hasParent[item] = true;
                     }
                     parent = item;
@@ -1691,16 +1701,15 @@
             return result;
         }
 
-        function buildNodeRecursive(item, children)
-        {
-            var node = {'JobChain':item, children:[]};
+        function buildNodeRecursive(item, children) {
+            var node = {'JobChain': item, children: []};
             for (var child in children[item]) {
                 node.children.push(buildNodeRecursive(child, children));
             }
             return node;
         }
 
-         vm.selectValue = function(data){
+        vm.selectValue = function (data) {
             vm.filterString1 = data.JobChain;
             vm.dailyPlanFilter.name = vm.filterString1;
         };

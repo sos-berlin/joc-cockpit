@@ -135,7 +135,7 @@
             <div class="hide m-t-sm" ng-class="{'show': pageView=='grid'}">
                 <div class="box p-a">
                     <div class="hide" ng-class="{show:data.length>0}">
-                        <div gantt
+                           <div gantt
                          data="data"
                          show-side="options.labelsEnabled"
                          daily="options.daily"
@@ -163,9 +163,7 @@
                          api="options.api"
                          shrink-to-fit="option.shrinkToFit"
                          column-magnet="options.columnMagnet">
-                        <gantt-tree header-content="options.treeHeaderContent"
-                                    keep-ancestor-on-filter-row="false">
-                        </gantt-tree>
+
                         <gantt-table enabled="options.sideMode === 'Table' || options.sideMode === 'TreeTable'"
                                      columns="options.treeTableColumns "
                                      headers="options.columnsHeaders"
