@@ -704,8 +704,8 @@
         };
     }
 
-    OrderCtrl.$inject = ["$scope", "OrderService", "CoreService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog"];
-    function OrderCtrl($scope, OrderService, CoreService, orderBy, $uibModal, SavedFilter, toasty,gettextCatalog) {
+    OrderCtrl.$inject = ["$scope", "OrderService", "CoreService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog","FileSaver","Blob"];
+    function OrderCtrl($scope, OrderService, CoreService, orderBy, $uibModal, SavedFilter, toasty,gettextCatalog,FileSaver,Blob) {
         var vm = $scope;
 
         vm.filter = {};
@@ -765,6 +765,10 @@
             $('.sidebar-btn').hide();
         };
 
+        vm.downloadLog = function(logs){
+            var data = new Blob(['file-with-test-log-data'],{type:'text/plain;charset=utf-8'});
+            FileSaver.saveAs(data,'order.log');
+        }
 
         vm.init = function () {
             OrderService.getOrdersP({jobschedulerId: vm.schedulerIds.selected}).then(function (result) {

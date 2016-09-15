@@ -394,8 +394,8 @@
     }
 
 
-    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService", "gettextCatalog"];
-    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService, gettextCatalog) {
+    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService", "gettextCatalog","FileSaver","Blob"];
+    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService, gettextCatalog,FileSaver,Blob) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -426,6 +426,8 @@
             vm.filter.sortBy = propertyName;
             vm.jobs = orderBy(vm.jobs, vm.filter.sortBy, vm.sortReverse);
         };
+
+
 
 
         vm.init = function () {
@@ -940,6 +942,11 @@
             });
 
         };
+
+        vm.downloadLog = function(logs){
+            var data = new Blob(['file-with-test-log-data'],{type:'text/plain;charset=utf-8'});
+            FileSaver.saveAs(data,'job.log');
+        }
 
         vm.$on('$destroy', function () {
             watcher1();

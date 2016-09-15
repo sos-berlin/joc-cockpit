@@ -328,11 +328,11 @@
 }
 
 .gantt-current-date-line {
-    border: 1px solid #2e3e4e;
-    opacity: 0.6;
+    background-color: #6cc788;
     height: 100%;
     position: absolute;
     z-index: 1000;
+    width: 4px;
 }
 
 .unselectable {
