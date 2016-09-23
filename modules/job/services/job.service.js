@@ -13,6 +13,7 @@
     JobChainService.$inject = ["$resource", "$q", "apiUrl","SOSAuth"];
     function JobChainService($resource, $q, apiUrl, SOSAuth) {
         return {
+            selectedJobChain:undefined,
             get: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource(apiUrl + 'job_chains');
@@ -78,6 +79,16 @@
                 var deferred = $q.defer();
                 var JobChain = $resource(apiUrl + 'job_chain/configuration');
                 JobChain.save({jobChain : path, jobschedulerId: jobschedulerId},function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+             histories: function (filter) {
+                var deferred = $q.defer();
+                var JobChain = $resource(apiUrl + 'job_chain/history');
+                JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);

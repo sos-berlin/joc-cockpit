@@ -8,7 +8,8 @@
     angular.module('app')
         .service('ResourceService', ResourceService)
         .service('ScheduleService', ScheduleService)
-        .service('JobSchedulerService', JobSchedulerService);
+        .service('JobSchedulerService', JobSchedulerService)
+     .service('DailyPlanService', DailyPlanService);
 
     ResourceService.$inject = ["$resource", "$q", "apiUrl"];
     function ResourceService($resource, $q, apiUrl) {
@@ -302,6 +303,27 @@
                 });
                 return deferred.promise;
             },
+            terminateWithin: function (host,port,jobschedulerId,timeout) {
+                console.log("IN terminate "+host+" port "+port);
+                var deferred = $q.defer();
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/terminate');
+                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+             restartWithin: function (host,port,jobschedulerId,timeout) {
+                var deferred = $q.defer();
+                var JobScheduler = $resource(apiUrl + 'jobscheduler/restart');
+                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
              abort: function (host,port,jobschedulerId) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource(apiUrl + 'jobscheduler/abort');
@@ -389,6 +411,22 @@
                         //data: undefined
                     }
                 ];
+            }
+        }
+    }
+
+    DailyPlanService.$inject = ["$resource", "$q", "apiUrl"];
+    function DailyPlanService($resource, $q, apiUrl) {
+        return{
+            getPlans:function(filter){
+                var deferred = $q.defer();
+                var Plan = $resource(apiUrl + 'plan');
+                Plan.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
             }
         }
     }

@@ -1,70 +1,52 @@
-
-
-    <div>
-      <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title">{{_jobChain.name}} <span translate>label.calendarViewForPlannedOrders</span></h4>
-      </div>
-        <div class="modal-body">
-            <div class="text-md text-center">
-                <a
-                  class="m-r-sm"
-                  mwl-date-modifier
-                  date="viewDate"
-                  decrement="calendarView">
-                  <i class="fa fa-angle-left fa-lg"></i>
-                </a>
-                {{ calendarTitle }}
-                <a
-                  class="m-l-sm"
-                  mwl-date-modifier
-                  date="viewDate"
-                  increment="calendarView">
-                  <i class="fa fa-angle-right fa-lg"></i>
-                </a>
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img
+                src="images/close-button.png"></span></button>
+        <h4 class="modal-title">{{_jobChain.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedOrders</span></h4>
+    </div>
+    <div class="modal-body">
+        <div class="text-md text-center">
+            <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView">
+                <i class="fa fa-angle-left fa-lg"></i>
+            </a>
+            {{ calendarTitle }}
+            <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView">
+                <i class="fa fa-angle-right fa-lg"></i>
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item">
+                        <a class="nav-link" ng-class="{'active' : calendarView=='month'}" ng-model="calendarView"
+                           uib-btn-radio="'month'">
+                            <span class="nav-text text-dark p-b-sm">
+                                <span class="text-sm" translate>label.monthly</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ng-class="{'active' : calendarView=='year'}" ng-model="calendarView"
+                           uib-btn-radio="'year'">
+                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.yearly</span></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
-                <li class="nav-item">
-                    <a class="nav-link" ng-class="{'active' : calendarView=='month'}" ng-model="calendarView" uib-btn-radio="'month'">
-                        <span class="nav-text text-dark p-b-sm" >
-                            <span class="text-sm" translate>label.monthly</span>
-                        </span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" ng-class="{'active' : calendarView=='week'}" ng-model="calendarView" uib-btn-radio="'week'">
-                        <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.weekly</span></span>
-                    </a>
-                </li>
-                <li class="nav-item dropdown-separator">
-                    <span class="separator"></span>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" ng-class="{'active' : calendarView=='year'}" ng-model="calendarView" uib-btn-radio="'year'">
-                        <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.yearly</span></span>
-                    </a>
-                </li>
-             </ul>
-                </div>
-            </div>
+        </div>
 
-            <div class="calendar-body">
-                <mwl-calendar
+        <div class="calendar-body">
+            <mwl-calendar
                     events="events"
                     view="calendarView"
-                    view-title="calendarTitle"
                     view-date="viewDate"
-                    on-event-click="eventClicked(calendarEvent)"
-                    on-event-times-changed="eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
-                    cell-is-open="isCellOpen"
-                    cell-modifier="modifyCell(calendarCell)">
-                </mwl-calendar>
-            </div>
-      </div>
+                    view-title="calendarTitle"
+                    cell-is-open="vm.isCellOpen"
+                    on-view-change-click="vm.viewChangeClicked(calendarNextView)">
+            </mwl-calendar>
+        </div>
     </div>
-
+</div>

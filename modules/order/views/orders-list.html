@@ -23,9 +23,8 @@
                                     <div class="text-left m-l-md block-ellipsis" >
                                         <a href="" uib-tooltip="{{order.title}}" ng-click="showLogFuc(order)" ng-bind="order.orderId"></a></div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
-                                        <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                                class="text fa fa-ellipsis-v"></i></a>
-
+                                        <a href class=" more-option text-black-lt" data-toggle="dropdown">
+                                            <i class="text fa fa-ellipsis-v"></i></a>
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
                                             <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                             <a href class="dropdown-item"
@@ -66,16 +65,13 @@
                             </div>
                             <div class="box-footer b-t">
                                 <div>
-                                    <a href class="hide text-left"
-                                       ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
-                                       ng-class="{'show-block':permission.Order.start}"
-                                       ng-click="start(order)">
+                                    <a href class="hide text-left" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
+                                       ng-class="{'show-block':permission.Order.start}" ng-click="start(order)">
                                         <i class="fa fa-play text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.startNow</span>
                                     </a>
                                     <a href class="hide text-left" ng-if="order.processingState._text == 'SUSPENDED' "
-                                       ng-class="{'show-block':permission.Order.resume}"
-                                       ng-click="resumeOrder(order)">
+                                       ng-class="{'show-block':permission.Order.resume}" ng-click="resumeOrder(order)">
                                         <i class="fa fa-step-forward text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.resume</span>
                                     </a>
@@ -84,10 +80,11 @@
                                         <i class="fa fa-pause text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.suspend</span>
                                     </a>
-                                    <a target="_blank" href="" ng-if="order.historyId" class="hide text-right"
-                                       ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}"
-                                       ng-click="viewOrder(order)"><i class="fa fa-file-text text-black-lt"></i> <span
-                                            class="text-black-lt" translate>button.viewLog</span></a>
+                                    <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" ng-if="order.historyId" class="hide text-right"
+                                       ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
+                                        <i class="fa fa-file-text text-black-lt"></i>
+                                        <span class="text-black-lt" translate>button.viewLog</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -100,10 +97,10 @@
 
         <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
                 <div class="table-responsive">
-                    <table class="table table-hover table-bordered " >
+                    <table class="table table-hover table-bordered " id="orderTableId">
                         <thead>
                         <tr>
-                            <th>
+                            <th class="noExl">
                                 <label class="md-check">
                                     <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
                                         class="primary"></i>
@@ -158,34 +155,34 @@
                                 <i ng-show="propertyName == 'nextStartTime' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th></th>
+                            <th class="noExl"></th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="order in filtered = (orders | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == order}">
                             <tr>
-                                <td>
+                                <td class="noExl">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.orders"
                                                data-checklist-value="order"><i class="primary"></i>
                                     </label>
                                 </td>
                                 <td>
-                                    <i class="cursor fa fa-caret-down" ng-if="showPanel != order.path"
+                                    <i class="cursor fa fa-caret-down noExl" ng-if="showPanel != order.path"
                                        ng-click="showPanelFuc(order.path)"></i>
-                                    <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
+                                    <i class="cursor fa fa-caret-up noExl" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
                                     <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                     <i class="text-muted">{{order.title}}</i></a>
                                 </td>
                                 <td><span ng-bind="order.path1"></span></td>
                                 <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
-                                    <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.SETBACK}}</span>
+                                    <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                 </td>
                                 <td><a uib-tooltip="{{order.stateText}}" ng-bind="order.state"></a></td>
                                 <td ng-show="filter.state!='pending'" ng-bind="order.startedAt | stringToDate"></td>
                                 <td ng-show="filter.state!='pending'" ng-bind="order.inProcessSince | fromNow"></td>
                                 <td ng-show="filter.state!='pending'" ng-bind="order.historyId || '-'"></td>
                                 <td ng-show="filter.state=='pending' || filter.state =='waitingForResource' || filter.state =='all'" class="text-muted" ng-bind="order.nextStartTime | stringToDate"></td>
-                                <td>
+                                <td class="noExl">
                                     <div class="btn-group dropdown ">
                                         <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
@@ -223,7 +220,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr ng-show="showPanel == order.path">
+                            <tr ng-show="showPanel == order.path" class="noExl">
 
                                 <td></td>
                                 <td colspan="9" style="padding: 0 !important;">

@@ -66,6 +66,10 @@
   width: 14.285714285714285%;
   *width: 14.232409381663112%;
 }
+.cal-row-fluid .cal-cellMonth {
+  width: 5.285714285714285%;
+  *width: 5.232409381663112%;
+}
 .cal-week-box .cal-offset7,
 .cal-row-fluid .cal-offset7,
 .cal-row-fluid .cal-offset7:first-child {
@@ -565,4 +569,9 @@ a.cal-event-week {
   .cal-year-box [class*="span"]:nth-child(2) {
     border-bottom: 1px solid #e1e1e1;
   }
+}
+.month-name {
+  background-color: dodgerblue;
+  text-align: center;
+  margin: 0 -12px;
 }

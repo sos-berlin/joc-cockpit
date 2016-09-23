@@ -132,7 +132,7 @@
                                 <input type="checkbox" data-checklist-model="object.historys" data-checklist-value="history"><i class="primary"></i>
                             </label>
                         </td>
-                        <td width="12%">
+                        <td>
                             <i class="cursor fa fa-caret-down" ng-if="showPanel != history.historyId" ng-click="showPanelFuc(history.historyId)"></i>
                             <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == history.historyId" ng-click="hidePanelFuc()"></i>
                             <a ng-click="showLogFuc(history)" href="" ng-bind="history.orderId"></a>
@@ -280,7 +280,7 @@
                                 <input type="checkbox" data-checklist-model="object.jobHistorys" data-checklist-value="jobHistory"><i class="primary"></i>
                             </label>
                         </td>
-                        <td width="12%">
+                        <td>
                             <i class="cursor fa fa-caret-down" ng-if="showPanel != jobHistory.taskId" ng-click="showPanelFuc(jobHistory.taskId)"></i>
                             <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == jobHistory.taskId" ng-click="hidePanelFuc()"></i>
                             <a ng-click="showLogFuc(jobHistory)" href="" ng-bind="jobHistory.taskId"></a>

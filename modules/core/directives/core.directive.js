@@ -72,8 +72,6 @@
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
-                    if(toState.title)
-                    document.title = toState.title + " - JobScheduler";
                 });
 
                 // handle errors

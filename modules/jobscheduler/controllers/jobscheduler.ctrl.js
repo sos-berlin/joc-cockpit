@@ -155,7 +155,7 @@
         }
 
         vm.loadAgents = function (state) {
-            vm.isLoading = false;
+           // vm.isLoading = false;
             JobSchedulerService.getAgentClusterP({
                 state: state,
                 jobschedulerId: vm.schedulerIds.selected
@@ -211,6 +211,7 @@
             if (toState.name == 'app.resources.agentClusters') {
                 vm.state = 'agent';
                 vm.filter.state = $stateParams.type || 'all';
+                vm.isLoading = false;
                 if (vm.filter.state === 'all') {
                     vm.loadAgents();
                 } else {
@@ -367,7 +368,7 @@
         vm.editSchedule = function (schedule) {
             vm._schedule = schedule;
             var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/add-schedule.html',
+                templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
             });
@@ -427,8 +428,8 @@
 
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', '$interval', '$state', '$timeout'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, $interval, $state, $timeout) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', '$interval', '$state', '$timeout','$uibModal'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, $interval, $state, $timeout,$uibModal) {
         var vm = $scope;
         var bgColorArray = [];
 
@@ -438,6 +439,8 @@
                 vm.agentClusters = result.agentClusters;
                 var agentArray = [];
                 var agentArray1 = [];
+                vm.YAxisDomain = [0,3];
+                //vm.YAxisDomain[0] = 0;
                 angular.forEach(result.agentClusters, function (value) {
 
                     var numTask = 0;
@@ -446,7 +449,11 @@
                             numTask = numTask + value1.runningTasks;
                     });
                     agentArray.push([value.path.substring(value.path.lastIndexOf('/') + 1), numTask]);
-
+                    //if(!vm.YAxisDomain[1]){
+                    //    vm.YAxisDomain[1]=Math.ceil(numTask+1);
+                    //}else if(numTask>vm.YAxisDomain[1]){
+                    //    vm.YAxisDomain[1]=Math.ceil(numTask+1);
+                    //}
                     if (value.state._text == "all_agents_are_running") {
                         value.state._text = "label.healthyAgentCluster";
                         bgColorArray.push('#7ab97a');
@@ -646,54 +653,70 @@
             //console.log("objectType " + objectType + " action " + action + " object " + host + port);
             if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
                 JobSchedulerService.terminate(host, port, vm.schedulerIds.selected).then(function (res) {
-                    success('stopped');
+                    success('stopped',host,port);
                 }, function (err) {
 
                 });
             } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'restart') {
                 JobSchedulerService.restart(host, port, vm.schedulerIds.selected).then(function (res) {
-                    success('running');
+                    success('running',host,port);
                 }, function (err) {
 
                 });
             } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abortAndRestart') {
                 JobSchedulerService.abortAndRestart(host, port, vm.schedulerIds.selected).then(function (res) {
-                    success('running');
+                    success('running',host,port);
                 }, function (err) {
 
                 });
 
-            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
+            }else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestart') {
+                JobSchedulerService.terminate(host, port, vm.schedulerIds.selected).then(function (res) {
+                     JobSchedulerService.restart(host, port, vm.schedulerIds.selected).then(function (res) {
+                    success('running',host,port);
+                }, function (err) {
+
+                });
+                }, function (err) {
+
+                });
+
+            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
+                vm.getTimeout(host, port);
+
+
+            }
+            else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
                 JobSchedulerService.pause(host, port, vm.schedulerIds.selected).then(function (res) {
-                    success('paused');
+                    success('paused',host,port);
                 }, function (err) {
 
                 });
 
             } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
                 JobSchedulerService.continue(host, port, vm.schedulerIds.selected).then(function (res) {
-                    success('running');
+                    success('running',host,port);
                 }, function (err) {
 
                 });
 
             } else if (objectType == 'cluster' && action == 'terminate') {
                 JobSchedulerService.terminateCluster({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-                    clusterSuccess('stopped');
+                    clusterSuccess('stopped',host,port);
                 }, function (err) {
 
                 });
 
             } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
                 JobSchedulerService.terminateFailsafeCluster({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-                    clusterSuccess('stopped');
+                    clusterSuccess('stopped',host,port);
                 }, function (err) {
 
                 });
 
             } else if (objectType == 'cluster' && action == 'restart') {
                 JobSchedulerService.restartCluster({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-                    clusterSuccess('running');
+                    clusterSuccess('running',host,port);
                 }, function (err) {
 
                 });
@@ -701,12 +724,7 @@
             }
 
 
-            function success(state) {
-                //console.log("Here02 " + host + port);
-                states[host + port] = state;
-                //console.log("Here02 states " + states[host + port]);
 
-            }
 
             function clusterSuccess(state) {
 
@@ -725,14 +743,12 @@
 
                 function drawForRemainings() {
                     if (vm.clusterStatusData.members.masters.length == 0) {
-                        test();
                         determineClusterStatus();
                         return;
                     }
                     angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                         states[master.host + master.port] = state;
                         if (index == vm.clusterStatusData.members.masters.length - 1) {
-                            test();
                             determineClusterStatus();
                         }
                     })
@@ -740,6 +756,12 @@
             }
         };
 
+          function success(state,host,port) {
+                //console.log("Here02 " + host + port);
+                states[host + port] = state;
+                //console.log("Here02 states " + states[host + port]);
+
+            }
 
         /*-------------Menu active function call-------------------*/
         vm.terminate = function () {
@@ -758,21 +780,45 @@
             });
         }
 
+        vm.criterion={};
+        vm.criterion.timeout=60;
+        vm.getTimeout = function (host, port) {
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/get-timeout-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm
+            });
+            modalInstance.result.then(function () {
+                 JobSchedulerService.terminateWithin(host, port, vm.schedulerIds.selected,vm.criterion.timeout).then(function (res) {
+                     JobSchedulerService.restartWithin(host, port, vm.schedulerIds.selected,vm.criterion.timeout).then(function (res) {
+                    success('running',host,port);
+                }, function (err) {
+
+                });
+                }, function (err) {
+
+                });
+            }, function () {
+
+            });
+        };
+
     }
 
 
     DailyPlanCtrl.$inject = ['$scope', 'JobSchedulerService', '$timeout', '$log', 'ganttUtils', 'GanttObjectModel', 'gettextCatalog', 'ganttDebounce',
-        'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'JobService'];
+        'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'JobService', 'DailyPlanService'];
     function DailyPlanCtrl($scope, JobSchedulerService, $timeout, $log, utils, ObjectModel, gettextCatalog, debounce, moment, orderBy, $uibModal, SavedFilter, toasty,
-                           OrderService, JobService) {
+                           OrderService, JobService, DailyPlanService) {
 
         var vm = $scope;
 
         vm.pageSize = 10;
         vm.currentPage = 1;
         vm.isCellOpen = true;
-        vm.isLoading = true;
-        vm.isLoading1 = true;
+        vm.isLoading = false;
+
         vm.filter = {};
         vm.filter.range = "today";
         vm.filter.sortBy = "name";
@@ -786,6 +832,7 @@
         vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
         vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
         vm.dataSource = 'Demo';
+
         setDateRange();
 
         function setDateRange(range) {
@@ -807,78 +854,37 @@
             vm.filter.to = to;
         }
 
-        vm.getPlans = function (dateRange) {
-            filterData(dateRange);
+        vm.getPlans = function () {
+            filterData();
         }
 
         vm.toggleSource = function () {
 
         }
 
-        var objectModel;
-        var dataToRemove;
+        vm.exportToExcel = function () {
+            $('#exportToExcelBtn').attr("disabled", true);
+            var pageSizeTemp = angular.copy(vm.pageSize);
+            var currentPageTemp = angular.copy(vm.currentPage);
 
-        // Event handler
-        var logScrollEvent = function (left, date, direction) {
-            if (date !== undefined) {
-                $log.info('[Event] api.on.scroll: ' + left + ', ' + (date === undefined ? 'undefined' : date.format()) + ', ' + direction);
-            }
-        };
-
-        // Event handler
-        var logDataEvent = function (eventName) {
-            $log.info('[Event] ' + eventName);
-        };
-
-        // Event handler
-        var logTaskEvent = function (eventName, task) {
-            $log.info('[Event] ' + eventName + ': ' + task.model.name);
-        };
-
-        // Event handler
-        var logRowEvent = function (eventName, row) {
-            $log.info('[Event] ' + eventName + ': ' + row.model.name);
-        };
-
-        // Event handler
-        var logTimespanEvent = function (eventName, timespan) {
-            $log.info('[Event] ' + eventName + ': ' + timespan.model.name);
-        };
-
-        // Event handler
-        var logLabelsEvent = function (eventName, width) {
-            $log.info('[Event] ' + eventName + ': ' + width);
-        };
-
-        // Event handler
-        var logColumnsGenerateEvent = function (columns, headers) {
-            $log.info('[Event] ' + 'columns.on.generate' + ': ' + columns.length + ' column(s), ' + headers.length + ' header(s)');
-        };
-
-        // Event handler
-        var logRowsFilterEvent = function (rows, filteredRows) {
-            $log.info('[Event] rows.on.filter: ' + filteredRows.length + '/' + rows.length + ' rows displayed.');
-        };
-
-        // Event handler
-        var logTasksFilterEvent = function (tasks, filteredTasks) {
-            $log.info('[Event] tasks.on.filter: ' + filteredTasks.length + '/' + tasks.length + ' tasks displayed.');
-        };
-
-        // Event handler
-        var logReadyEvent = function () {
-            $log.info('[Event] core.on.ready');
-        };
-
-        // Event utility function
-        var addEventName = function (eventName, func) {
-            return function (data) {
-                return func(eventName, data);
-            };
+            vm.pageSize = vm.plans.length;
+            vm.currentPage = 1;
+            $timeout(function () {
+                $('#dailyPlanTableId').table2excel({
+                    exclude: ".noExl",
+                    filename: "jobscheduler-jobchain",
+                    fileext: ".xlsx",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+                vm.pageSize = pageSizeTemp;
+                vm.currentPage = currentPageTemp;
+                 $('#exportToExcelBtn').attr("disabled",false);
+            }, 800);
         };
 
 
-        // angular-gantt options
         var toDate = new Date();
         toDate.setDate(toDate.getDate() + 1);
         $scope.options = {
@@ -890,7 +896,7 @@
             maxHeight: window.innerHeight - 300,
             width: false,
             zoom: 1,
-            treeTableColumns: ['model.name','model.orderId', 'model.status'],
+            treeTableColumns: ['model.name', 'model.orderId', 'model.status'],
             columnsHeaders: {
                 'model.name': gettextCatalog.getString('label.processesPlanned'),
                 'model.orderId': gettextCatalog.getString('label.orderId'),
@@ -901,7 +907,6 @@
                 'model.orderId': 'gantt-column-from',
                 'model.status': 'gantt-column-to'
             },
-            treeHeaderContent: gettextCatalog.getString('label.processedPlans'),
             columnsHeaderContents: {
                 'model.name': '{{getHeader()}}',
                 'mode.lorderId': '{{getHeader()}}',
@@ -919,209 +924,17 @@
             draw: false,
             readOnly: false,
             groupDisplayMode: 'group',
-            filterTask: '',
-            filterRow: '',
             shrinkToFit: true,
-            timeFrames: {
-                'day': {
-                    start: moment('8:00', 'HH:mm'),
-                    end: moment('20:00', 'HH:mm'),
-                    color: '#a88add',
-                    working: true,
-                    default: true
-                },
-                'noon': {
-                    start: moment('12:00', 'HH:mm'),
-                    end: moment('13:30', 'HH:mm'),
-                    working: false,
-                    default: true
-                },
-                'closed': {
-                    working: false,
-                    default: true
-                },
-                'weekend': {
-                    working: false
-                },
-                'holiday': {
-                    working: false,
-                    color: 'red',
-                    classes: ['gantt-timeframe-holiday']
-                }
-            },
-            dateFrames: {
-                'weekend': {
-                    evaluator: function (date) {
-                        return date.isoWeekday() === 6 || date.isoWeekday() === 7;
-                    },
-                    targets: ['weekend']
-                },
-                '11-november': {
-                    evaluator: function (date) {
-                        date = new Date(date);
-                        return date.getTime() === new Date().getTime();
-                    },
-                    targets: ['holiday']
-                }
-            },
-            timeFramesWorkingMode: 'hidden',
-            timeFramesNonWorkingMode: 'visible',
             columnMagnet: '15 minutes',
-            timeFramesMagnet: true,
-            dependencies: {
-                enabled: false,
-                conflictChecker: false
-            },
             targetDataAddRowIndex: undefined,
-            canDraw: function (event) {
-                var isLeftMouseButton = event.button === 0 || event.button === 1;
-                return $scope.options.draw && !$scope.options.readOnly && isLeftMouseButton;
-            },
-            drawTaskFactory: function () {
-                return {
-                    id: utils.randomUuid(),  // Unique id of the task.
-                    name: 'Drawn task', // Name shown on top of each task.
-                    color: '#AA8833' // Color of the task in HEX format (Optional).
-                };
-            },
             api: function (api) {
-                // API Object is used to control methods and events from angular-gantt.
-                $scope.api = api;
-
                 api.core.on.ready($scope, function () {
-                    // Log various events to console
-                    api.scroll.on.scroll($scope, logScrollEvent);
-                    api.core.on.ready($scope, logReadyEvent);
-
-                    api.data.on.remove($scope, addEventName('data.on.remove', logDataEvent));
-                    api.data.on.load($scope, addEventName('data.on.load', logDataEvent));
-                    api.data.on.clear($scope, addEventName('data.on.clear', logDataEvent));
-                    api.data.on.change($scope, addEventName('data.on.change', logDataEvent));
-
-                    api.tasks.on.add($scope, addEventName('tasks.on.add', logTaskEvent));
-                    api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent));
-                    api.tasks.on.rowChange($scope, addEventName('tasks.on.rowChange', logTaskEvent));
-                    api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent));
-
-                    if (api.tasks.on.moveBegin) {
-                        api.tasks.on.moveBegin($scope, addEventName('tasks.on.moveBegin', logTaskEvent));
-                        //api.tasks.on.move($scope, addEventName('tasks.on.move', logTaskEvent));
-                        api.tasks.on.moveEnd($scope, addEventName('tasks.on.moveEnd', logTaskEvent));
-
-                        api.tasks.on.resizeBegin($scope, addEventName('tasks.on.resizeBegin', logTaskEvent));
-                        //api.tasks.on.resize($scope, addEventName('tasks.on.resize', logTaskEvent));
-                        api.tasks.on.resizeEnd($scope, addEventName('tasks.on.resizeEnd', logTaskEvent));
-                    }
-
-                    if (api.tasks.on.drawBegin) {
-                        api.tasks.on.drawBegin($scope, addEventName('tasks.on.drawBegin', logTaskEvent));
-                        //api.tasks.on.draw($scope, addEventName('tasks.on.draw', logTaskEvent));
-                        api.tasks.on.drawEnd($scope, addEventName('tasks.on.drawEnd', logTaskEvent));
-                    }
-
-                    api.rows.on.add($scope, addEventName('rows.on.add', logRowEvent));
-                    api.rows.on.change($scope, addEventName('rows.on.change', logRowEvent));
-                    api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
-                    api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
-
-                    api.side.on.resizeBegin($scope, addEventName('labels.on.resizeBegin', logLabelsEvent));
-                    //api.side.on.resize($scope, addEventName('labels.on.resize', logLabelsEvent));
-                    api.side.on.resizeEnd($scope, addEventName('labels.on.resizeEnd', logLabelsEvent));
-
-                    api.timespans.on.add($scope, addEventName('timespans.on.add', logTimespanEvent));
-                    api.columns.on.generate($scope, logColumnsGenerateEvent);
-
-                    api.rows.on.filter($scope, logRowsFilterEvent);
-                    api.tasks.on.filter($scope, logTasksFilterEvent);
-
-                    api.data.on.change($scope, function (newData) {
-                        //if (dataToRemove === undefined) {
-                        //    dataToRemove = [
-                        //        {'id': newData[1].id}, // Remove Kickoff row
-                        //        {
-                        //            'id': newData[0].id, 'tasks': [
-                        //            {'id': newData[0].tasks[0].id},
-                        //        ]
-                        //        }
-                        //    ];
-                        //}
-                    });
-
-                    // When gantt is ready, load data.
-                    // `data` attribute could have been used too.
                     $scope.load();
-
-                    // Add some DOM events
-                    api.directives.on.new($scope, function (directiveName, directiveScope, element) {
-                        if (directiveName === 'ganttTask') {
-                            element.bind('click', function (event) {
-                                event.stopPropagation();
-                                logTaskEvent('task-click', directiveScope.task);
-                            });
-                            element.bind('mousedown touchstart', function (event) {
-                                event.stopPropagation();
-                                $scope.live.row = directiveScope.task.row.model;
-                                if (directiveScope.task.originalModel !== undefined) {
-                                    $scope.live.task = directiveScope.task.originalModel;
-                                } else {
-                                    $scope.live.task = directiveScope.task.model;
-                                }
-                                $scope.$digest();
-                            });
-                        } else if (directiveName === 'ganttRow') {
-                            element.bind('click', function (event) {
-                                event.stopPropagation();
-                                logRowEvent('row-click', directiveScope.row);
-                            });
-                            element.bind('mousedown touchstart', function (event) {
-                                event.stopPropagation();
-                                $scope.live.row = directiveScope.row.model;
-                                $scope.$digest();
-                            });
-                        } else if (directiveName === 'ganttRowLabel') {
-                            element.bind('click', function () {
-                                logRowEvent('row-label-click', directiveScope.row);
-                            });
-                            element.bind('mousedown touchstart', function () {
-                                $scope.live.row = directiveScope.row.model;
-                                $scope.$digest();
-                            });
-                        }
-                    });
-
-                    api.tasks.on.rowChange($scope, function (task) {
-                        $scope.live.row = task.row.model;
-                    });
-
-                    objectModel = new ObjectModel(api);
                 });
             }
         };
 
-        $scope.handleTaskIconClick = function (taskModel) {
-            alert('Icon from ' + taskModel.name + ' task has been clicked.');
-        };
 
-        $scope.handleRowIconClick = function (rowModel) {
-            alert('Icon from ' + rowModel.name + ' row has been clicked.');
-        };
-
-        $scope.expandAll = function () {
-            $scope.api.tree.expandAll();
-        };
-
-        $scope.collapseAll = function () {
-            $scope.api.tree.collapseAll();
-        };
-
-        $scope.$watch('options.sideMode', function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                $scope.api.side.setWidth(undefined);
-                $timeout(function () {
-                    $scope.api.columns.refresh();
-                });
-            }
-        });
 
         $scope.canAutoWidth = function (scale) {
             if (scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/)) {
@@ -1134,114 +947,33 @@
             if (!widthEnabled && $scope.canAutoWidth(scale)) {
                 return undefined;
             }
-
             if (scale.match(/.*?week.*?/)) {
                 return 150 * zoom;
             }
-
             if (scale.match(/.*?month.*?/)) {
                 return 300 * zoom;
             }
-
             if (scale.match(/.*?quarter.*?/)) {
                 return 500 * zoom;
             }
-
             if (scale.match(/.*?year.*?/)) {
                 return 800 * zoom;
             }
-
             return 40 * zoom;
         };
 
-        // Reload data action
+
+
         $scope.load = function () {
-            //$scope.data = JobSchedulerService.getSampleData();
+            DailyPlanService.getPlans().then(function(res){
+                vm.temp = res.planItems;
+                 filterData();
+            },function(err){
 
+            })
 
-            if (vm.dataSource == 'Demo') {
-                vm.temp = OrderService.getDailyPlanData();
-                filterData();
-            } else {
-                OrderService.get().then(function (res) {
-
-                    res.orders = res.orders.splice(0, 20);
-                    vm.temp = res.orders;
-                    angular.forEach(vm.temp, function (value, index) {
-                        value.nextStartTime = new Date();
-                        value.nextStartTime.setMinutes(value.nextStartTime.getMinutes() + 30);
-
-                    });
-                    JobService.get({compact: false}).then(function (res) {
-                        res.jobs = res.jobs.splice(0, 20);
-                        angular.forEach(res.jobs, function (value, index) {
-                            //if (value.nextStartTime) {
-                            console.log("Job is having next start time");
-                            value.nextStartTime = new Date();
-                            value.nextStartTime.setMinutes(value.nextStartTime.getMinutes() + 30);
-                            vm.temp.push(value);
-                            //  }
-
-
-                        });
-                        filterData();
-                    }, function (err) {
-
-                    })
-
-
-                })
-            }
-
-
-            dataToRemove = undefined;
-
-            $scope.timespans = JobSchedulerService.getSampleTimespans();
         };
 
-        $scope.reload = function () {
-            $scope.load();
-        };
-
-        // Remove data action
-        $scope.remove = function () {
-            $scope.api.data.remove(dataToRemove);
-            $scope.api.dependencies.refresh();
-        };
-
-        // Clear data action
-        $scope.clear = function () {
-            $scope.data = [];
-        };
-
-        // Add data to target row index
-        $scope.addOverlapTaskToTargetRowIndex = function () {
-            var targetDataAddRowIndex = parseInt($scope.options.targetDataAddRowIndex);
-
-            if (targetDataAddRowIndex) {
-                var targetRow = $scope.data[$scope.options.targetDataAddRowIndex];
-
-                if (targetRow && targetRow.tasks && targetRow.tasks.length > 0) {
-                    var firstTaskInRow = targetRow.tasks[0];
-                    var copiedColor = firstTaskInRow.color;
-                    var firstTaskEndDate = firstTaskInRow.to.toDate();
-                    var overlappingFromDate = new Date(firstTaskEndDate);
-
-                    overlappingFromDate.setDate(overlappingFromDate.getDate() - 1);
-
-                    var overlappingToDate = new Date(overlappingFromDate);
-
-                    overlappingToDate.setDate(overlappingToDate.getDate() + 7);
-
-                    targetRow.tasks.push({
-                        'name': 'Overlapping',
-                        'from': overlappingFromDate,
-                        'to': overlappingToDate,
-                        'color': copiedColor
-                    });
-                }
-            }
-        };
 
         vm.sortBy = function (propertyName) {
             vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
@@ -1258,87 +990,6 @@
             prepareGanttData(vm.plans);
         };
 
-
-        // Visual two way binding.
-        $scope.live = {};
-
-        var debounceValue = 1000;
-
-        var listenTaskJson = debounce(function (taskJson) {
-            if (taskJson !== undefined) {
-                var task = angular.fromJson(taskJson);
-                objectModel.cleanTask(task);
-                var model = $scope.live.task;
-                angular.extend(model, task);
-            }
-        }, debounceValue);
-        $scope.$watch('live.taskJson', listenTaskJson);
-
-        var listenRowJson = debounce(function (rowJson) {
-            if (rowJson !== undefined) {
-                var row = angular.fromJson(rowJson);
-                objectModel.cleanRow(row);
-                var tasks = row.tasks;
-
-                delete row.tasks;
-                delete row.drawTask;
-
-                var rowModel = $scope.live.row;
-
-                angular.extend(rowModel, row);
-
-                var newTasks = {};
-                var i, l;
-
-                if (tasks !== undefined) {
-                    for (i = 0, l = tasks.length; i < l; i++) {
-                        objectModel.cleanTask(tasks[i]);
-                    }
-
-                    for (i = 0, l = tasks.length; i < l; i++) {
-                        newTasks[tasks[i].id] = tasks[i];
-                    }
-
-                    if (rowModel.tasks === undefined) {
-                        rowModel.tasks = [];
-                    }
-                    for (i = rowModel.tasks.length - 1; i >= 0; i--) {
-                        var existingTask = rowModel.tasks[i];
-                        var newTask = newTasks[existingTask.id];
-                        if (newTask === undefined) {
-                            rowModel.tasks.splice(i, 1);
-                        } else {
-                            objectModel.cleanTask(newTask);
-                            angular.extend(existingTask, newTask);
-                            delete newTasks[existingTask.id];
-                        }
-                    }
-                } else {
-                    delete rowModel.tasks;
-                }
-
-                angular.forEach(newTasks, function (newTask) {
-                    rowModel.tasks.push(newTask);
-                });
-            }
-        }, debounceValue);
-        $scope.$watch('live.rowJson', listenRowJson);
-
-        $scope.$watchCollection('live.task', function (task) {
-            $scope.live.taskJson = angular.toJson(task, true);
-            $scope.live.rowJson = angular.toJson($scope.live.row, true);
-        });
-
-        $scope.$watchCollection('live.row', function (row) {
-            $scope.live.rowJson = angular.toJson(row, true);
-            if (row !== undefined && row.tasks !== undefined && row.tasks.indexOf($scope.live.task) < 0) {
-                $scope.live.task = row.tasks[0];
-            }
-        });
-
-        $scope.$watchCollection('live.row.tasks', function () {
-            $scope.live.rowJson = angular.toJson($scope.live.row, true);
-        });
 
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
@@ -1487,32 +1138,26 @@
                             }
                         }
 
-
-                        if (flag && value.state && !value.name && res.processingState._text) {
-                            if (value.state.indexOf(res.processingState._text) === -1) {
-                                flag = false;
-                            }
-                        }
-
-                        if (flag && value.state && value.name && res.processingState._text) {
-                            if (value.state.indexOf(res.processingState._text) === -1) {
+                        if (flag && value.state && res.state._text) {
+                            if (value.state.indexOf(res.state._text) === -1) {
                                 flag = false;
                             }
                         }
 
 
-                        if (value.processPlanned && res.name) {
-                            if (!res.name.match(value.name)) {
+                        if (value.processPlanned && res.job != "NULL") {
+                            if (!res.job.match(value.processPlanned)) {
                                 flag = false;
                             }
                         }
 
-                        if (flag && value.processPlanned && !res.name && res.jobChain) {
-                            if (!res.jobChain.match(value.jobChain)) {
+                        if (value.processPlanned && res.jobChain && res.job == "NULL") {
+                            if (!res.jobChain.match(value.processPlanned)) {
                                 flag = false;
                             }
                         }
-                        if (flag && value.fromDate && res.nextStartTime) {
+
+                        if (flag && value.fromDate && res.plannedStartTime) {
 
                             if (value.fromTime) {
                                 value.fromDate = new Date(value.fromDate);
@@ -1521,23 +1166,26 @@
                                 value.fromDate.setMinutes(value.fromTime.getMinutes());
                                 value.fromDate.setSeconds(value.fromTime.getSeconds());
                             }
-                            var time1 = moment(value.fromDate).diff(moment(res.nextStartTime));
-                            var time2 = moment(res.nextStartTime).diff(moment(value.toDate));
+                            var time1 = moment(value.fromDate).diff(moment(res.plannedStartTime));
+                            var time2 = moment(res.plannedStartTime).diff(moment(value.toDate));
                             if (time1 >= 0 && time2 <= 0) {
                                 flag = false;
                             }
                         }
 
 
-                        if (flag)
+                        if (flag) {
                             data.push(res);
+                        }
+
+
                     });
                 }
             });
         }
 
-        function filterData(dateRange) {
-            console.log("Filtering " + JSON.stringify(vm.savedDailyPlanFilter));
+        function filterData() {
+            console.log("Filtering 01" + JSON.stringify(vm.savedDailyPlanFilter)+" Range "+vm.range);
             var data = [];
             if (!vm.savedDailyPlanFilter.selected) {
                 data = vm.temp;
@@ -1547,7 +1195,7 @@
             var to = new Date();
             var from = new Date();
 
-            if (dateRange) {
+            if (vm.range=='dateRange') {
                 from = vm.filter.from;
                 to = vm.filter.to;
             } else {
@@ -1570,28 +1218,23 @@
             var data2 = [];
 
             angular.forEach(data, function (value, index) {
-                console.log("Filter for state " + vm.filter.status);
-                var flag = true;
-                if (new Date(value.nextStartTime) < from || new Date(value.nextStartTime) > to) {
 
+                var flag = true;
+                if (new Date(value.plannedStartTime) < from || new Date(value.plannedStartTime) > to) {
                     flag = false;
                 }
 
-                if (vm.filter.status && vm.filter.status != 'all' && !value.name && value.processingState._text) {
-                    console.log("Found " + value.processingState._text);
-                    if (vm.filter.status.indexOf(value.processingState._text) === -1) {
-                        console.log("Not matched ");
+                if (vm.filter.status && vm.filter.status != 'all' && value.state._text) {
+
+                    if (vm.filter.status == "WAITING" && value.state._text.indexOf("PLANNED") === -1) {
                         flag = false;
-                    } else {
-                        console.log("Matched ");
+                    } else if (vm.filter.status == "LATE" && !value.late) {
+                        flag = false;
+                    } else if (vm.filter.status == "EXECUTED" && value.state._text.indexOf("SUCCESSFUL")===-1 && value.state._text.indexOf("FAILED")===-1) {
+                        flag = false;
                     }
                 }
 
-                if (vm.filter.status && vm.filter.status != 'all' && value.name && value.state._text) {
-                    if (vm.filter.status.indexOf(value.state._text) === -1) {
-                        flag = false;
-                    }
-                }
                 if (flag) {
                     data2.push(value);
                 }
@@ -1599,6 +1242,7 @@
 
             vm.plans = data2;
             prepareGanttData(data2);
+            vm.isLoading = true;
             console.log("Data " + vm.data.length);
         }
 
@@ -1610,48 +1254,44 @@
                 orders[index] = {};
                 orders[index].tasks = [];
                 orders[index].tasks[0] = {};
-                if (order.name) {
-                    orders[index].name = order.name;
-                    vm.plans[index].processedPlan = order.name;
-                    orders[index].tasks[0].name = order.name;
+                if (order.job != "NULL") {
+                    orders[index].name = order.job;
                     orders[index].orderId = '-';
-                    orders[index].status = order.state._text;
-                    vm.plans[index].status = order.state._text;
-                    if (order.state._text == 'EXECUTED') {
-                        orders[index].tasks[0].color = "#7ab97a";
-                    } else if (order.state._text == 'LATE') {
-                        orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
-                    }
                 } else {
                     orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
-                    vm.plans[index].processedPlan = orders[index].name;
-                    orders[index].tasks[0].name = order.orderId;
                     orders[index].orderId = order.orderId;
-                    orders[index].status = order.processingState._text;
-                    vm.plans[index].status = order.processingState._text;
-                    if (order.processingState._text == 'EXECUTED') {
-                        orders[index].tasks[0].color = "#7ab97a";
-                    } else if (order.processingState._text == 'LATE') {
-                        orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
-                    }
                 }
-                orders[index].tasks[0].from = new Date(order.nextStartTime);
-                if (!minNextStartTime || minNextStartTime > order.nextStartTime) {
-                    minNextStartTime = new Date(order.nextStartTime);
+
+                vm.plans[index].processedPlanned = orders[index].name;
+                orders[index].tasks[0].name = orders[index].name;
+                orders[index].status = order.state._text;
+                vm.plans[index].status = order.state._text;
+                if (order.state._text == 'SUCCESSFUL') {
+                    orders[index].tasks[0].color = "#7ab97a";
+                } else if (order.state._text == 'FAILED') {
+                    orders[index].tasks[0].color = "#e86680";
                 }
-                orders[index].tasks[0].to = new Date(order.nextStartTime);
-                orders[index].tasks[0].to.setMinutes(orders[index].tasks[0].to.getMinutes() + 30);
+                else if (order.late) {
+                    orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
+                }
 
 
+                orders[index].tasks[0].from = new Date(order.plannedStartTime);
+                if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
+                    minNextStartTime = new Date(order.plannedStartTime);
+                }
+                orders[index].tasks[0].to = new Date(order.expectedEndTime);
             })
 
-            if(minNextStartTime){
+            if (minNextStartTime) {
                 minNextStartTime.setMinutes(0);
                 minNextStartTime.setHours(0);
-                $scope.options.fromDate=minNextStartTime;
-            }
+                $scope.options.fromDate = minNextStartTime;
+                console.log("Smallest from01 " + minNextStartTime);
 
-            vm.data = orders;
+            }
+            vm.data = orderBy(orders,'plannedStartTime');
+
         }
 
         vm.tree = [];

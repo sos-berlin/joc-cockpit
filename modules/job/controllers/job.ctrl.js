@@ -8,8 +8,8 @@
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl);
 
-    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "$state", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter","toasty", "gettextCatalog"];
-    function JobChainCtrl($scope, JobChainService, OrderService, $state, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,toasty, gettextCatalog) {
+    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "$state", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter","toasty", "gettextCatalog", "$timeout"];
+    function JobChainCtrl($scope, JobChainService, OrderService, $state, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,toasty, gettextCatalog, $timeout) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -22,6 +22,28 @@
 
         vm.savedJobChainFilter = JSON.parse(SavedFilter.jobChainFilters) || {};
         vm.savedJobChainFilter.list = vm.savedJobChainFilter.list || [];
+
+        vm.exportToExcel = function () {
+            $('#exportToExcelBtn').attr("disabled",true);
+            var pageSizeTemp = angular.copy(vm.pageSize);
+            var currentPageTemp = angular.copy(vm.currentPage);
+
+            vm.pageSize =  vm.jobChains.length;
+            vm.currentPage = 1;
+            $timeout(function () {
+                $('#jobChainTableId').table2excel({
+                    exclude: ".noExl",
+                    filename: "jobscheduler-jobchain",
+                    fileext: ".xlsx",
+					exclude_img: false,
+					exclude_links: false,
+					exclude_inputs: false
+                });
+                vm.pageSize = pageSizeTemp;
+                vm.currentPage = currentPageTemp;
+                 $('#exportToExcelBtn').attr("disabled",false);
+            }, 800);
+        };
 
         /**--------------- sorting and pagination -------------------*/
         vm.pageChange = function () {
@@ -44,7 +66,7 @@
 
         vm.init = function () {
             vm.isLoading = false;
-            JobChainService.getJobChainsP({jobschedulerId: vm.schedulerIds.selected}).then(function (result) {
+            JobChainService.getJobChainsP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (result) {
                 angular.forEach(result.jobChains, function (value) {
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
                 });
@@ -132,19 +154,13 @@
             $state.go('app.jobChainDetails.overview');
         };
 
-        //These variables MUST be set as a minimum for the calendar to work
-        vm.calendarView = 'month';
-        vm.viewDate = new Date();
-        vm.events = [];
-        vm.isCellOpen = true;
 
         vm.viewCalendar = function (jobChain) {
             vm._jobChain = jobChain;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg'
+                scope: vm
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');
@@ -167,7 +183,7 @@
         }
 
         vm.addOrder = function (jobChain) {
-            ScheduleService.getSchedulesP({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+            ScheduleService.getSchedulesP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (res) {
                 vm.schedules = res.schedules;
             });
             vm._jobChain = jobChain;
@@ -394,8 +410,10 @@
     }
 
 
-    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService", "gettextCatalog","FileSaver","Blob"];
-    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService, gettextCatalog,FileSaver,Blob) {
+    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
+        "gettextCatalog", "$timeout","FileSaver","Blob","$state","$window"];
+    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
+                     gettextCatalog, $timeout,FileSaver,Blob,$state,$window) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -407,6 +425,28 @@
 
         vm.savedJobFilter = JSON.parse(SavedFilter.jobFilters) || [];
         vm.savedJobFilter.list = vm.savedJobFilter.list || [];
+
+        vm.exportToExcel = function () {
+            $('#exportToExcelBtn').attr("disabled",true);
+            var pageSizeTemp = angular.copy(vm.pageSize);
+            var currentPageTemp = angular.copy(vm.currentPage);
+
+            vm.pageSize =  vm.jobs.length;
+            vm.currentPage = 1;
+            $timeout(function () {
+                $('#jobTableId').table2excel({
+                    exclude: ".noExl",
+                    filename: "jobscheduler-job",
+                    fileext: ".xlsx",
+					exclude_img: false,
+					exclude_links: false,
+					exclude_inputs: false
+                });
+                vm.pageSize = pageSizeTemp;
+                vm.currentPage = currentPageTemp;
+                 $('#exportToExcelBtn').attr("disabled",false);
+            }, 800);
+        };
 
         /**--------------- sorting and pagination -------------------*/
         vm.pageChange = function () {
@@ -428,11 +468,9 @@
         };
 
 
-
-
         vm.init = function () {
             vm.isLoading = false;
-            JobService.getJobsP({jobschedulerId: vm.schedulerIds.selected}).then(function (result) {
+            JobService.getJobsP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (result) {
                 angular.forEach(result.jobs, function (value) {
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
                 });
@@ -668,6 +706,7 @@
             jobs.jobs.push({job:value.path});
             TaskService.historys(jobs).then(function (res) {
                 vm.taskHistory = res.history;
+                vm.taskHistory=vm.taskHistory.splice(0,10);
                 vm.isLoading1 = true;
             }, function () {
                 vm.isLoading1 = true;
@@ -924,7 +963,7 @@
         }
 
         vm.setRunTime = function (job) {
-            ScheduleService.getSchedulesP({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+            ScheduleService.getSchedulesP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (res) {
                 vm.schedules = res.schedules;
             });
 
@@ -933,7 +972,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-job-run-time-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                size: 'lg'
             });
             modalInstance.result.then(function () {
                 setRunTime(job);
@@ -953,6 +993,12 @@
             watcher2();
             watcher3();
         });
+
+        vm.viewAllHistories = function(){
+            $state.go('app.history');
+            JobService.jobSelected=vm.showTaskPanel.path;
+        }
+
     }
 
 

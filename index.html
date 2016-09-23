@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app" ng-controller="AppCtrl" ng-strict-di>
+<html lang="en" ng-app="app"  ng-strict-di>
 <head>
     <meta charset="utf-8"/>
-    <title ng-bind="selectedScheduler.scheduler.host+':'+selectedScheduler.scheduler.port+'/'+selectedScheduler.scheduler.jobschedulerId"></title>
+    <title>JobScheduler</title>
     <meta name="description" content="opensource, scheduler, sos, jobscheduler"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" type="text/css"/>
     <link rel="stylesheet" href="bower_components/angular-toasty/dist/angular-toasty.css" type="text/css"/>
     <!-- Calendar -->
-    <link href="bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css"
+    <link href="bower_components/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.css"
           rel="stylesheet">
     <link rel="stylesheet" href="bower_components/angularjs-slider/dist/rzslider.min.css" type="text/css"/>
     <!-- table-->
@@ -35,10 +35,20 @@
       }
     </style>
 </head>
+<body ng-controller="AppCtrl" ng-cloak>
+<div ng-spinner-bar class="cssload-loader">
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+    <div class="cssload-side"></div>
+</div>
 
-<body oncontextmenu="return false;" ng-controller="AppCtrl" ng-class="{'ie': isIE,'smart': isSmart}" ng-cloak>
 
-<div ng-spinner-bar class="loader1"></div>
+<!--<div ng-spinner-bar class="loader1"></div>-->
 <div class="app" ui-view></div>
 <toasty></toasty>
 
@@ -54,7 +64,6 @@
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-<script src="bower_components/angular-touch/angular-touch.min.js"></script>
 <script src="bower_components/angular-messages/angular-messages.min.js"></script>
 <!-- router -->
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
@@ -69,7 +78,7 @@
 <script src="bower_components/angular-moment/angular-moment.min.js"></script>
 
 <script src="bower_components/jstz/jstz.js"></script>
-<script src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.min.js"></script>
+<script src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js"></script>
 <!-- angular-bootstrap -->
 <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -88,8 +97,8 @@
 <script src="bower_components/angular-resizable-master/angular-resizable.min.js"></script>
 
 <!-- AngularJS directive for D3 and NVD3 -->
-<script src="bower_components/d3/d3.js"></script>
-<script src="bower_components/nvd3/nv.d3.js"></script>
+<script src="bower_components/d3/d3.min.js"></script>
+<script src="bower_components/nvd3/nv.d3.min.js"></script>
 <script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.min.js"></script>
 
 <script src="bower_components/moment-range/dist/moment-range.min.js"></script>
@@ -100,6 +109,9 @@
 <script src="bower_components/Blob/Blob.js"></script>
 <script src="bower_components/FileSaver/FileSaver.min.js"></script>
 
+<!-- runtime editor js files-->
+<script src="js/xml2json.min.js"></script>
+<script src="js/vkbeautify.js"></script>
 
 <!-- app -->
 <script src="modules/app.js"></script>
@@ -131,10 +143,6 @@
 <script src="modules/order/controllers/order.ctrl.js"></script>
 <script src="modules/order/services/order.service.js"></script>
 <script src="modules/order/directives/order.directive.js"></script>
-
-<!-- runtime editor js files-->
-<script src="js/xml2json.min.js"></script>
-<script src="js/vkbeautify.js"></script>
 
 <!-- endbuild -->
 <script>

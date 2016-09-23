@@ -10,20 +10,20 @@
 
                                 <input class="form-control input-date" ng-model="filter.from"
                                        data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
-                                       bs-datepicker type="text" ng-change="getPlans('dateRange')">
+                                       bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
                                 <input class="form-control input-date" ng-model="filter.to"
                                        data-date-format="yyyy-MM-dd" data-autoclose="1"
                                        placeholder="yyyy-mm-dd"
-                                       bs-datepicker type="text" ng-change="getPlans('dateRange')">
+                                       bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
 
                         <div class="btn-group m-l-sm">
 
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="getPlans()">Today
+                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans('period')">Today
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="getPlans()"
+                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="range='period';getPlans('period')"
                                     translate>button.next24
                             </button>
                         </div>
@@ -75,9 +75,9 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('processedPlan')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('processedPlanned')" translate>label.name</a>
                                 <a class="dropdown-item" href ng-click="mainSortBy('orderId')" translate>label.orderId</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('nextStartTime')"
+                                <a class="dropdown-item" href ng-click="mainSortBy('plannedStartTime')"
                                    translate>label.plannedStart</a>
                                 <a class="dropdown-item" href ng-click="mainSortBy('status')"
                                    translate>label.status</a>
@@ -124,14 +124,10 @@
         </div>
     </div>
 </div>
-</div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
 
-
         <div class="hide" ng-class="{'show': isLoading }">
-
-
             <div class="hide m-t-sm" ng-class="{'show': pageView=='grid'}">
                 <div class="box p-a">
                     <div class="hide" ng-class="{show:data.length>0}">
@@ -141,25 +137,17 @@
                          daily="options.daily"
                          current-date="options.currentDate"
                          current-date-value="options.currentDateValue"
-                         filter-task="{'name': options.filterTask}"
-                         filter-row="{'name': options.filterRow}"
                          sort-mode="options.sortMode"
                          view-scale="options.scale"
                          column-width="getColumnWidth(options.width, options.scale, options.zoom)"
                          auto-expand="options.autoExpand"
                          task-out-of-range="options.taskOutOfRange"
                          from-date="options.fromDate"
-                         to-date="options.toDate"
                          allow-side-resizing="options.allowSideResizing"
                          task-content="options.taskContentEnabled ? options.taskContent : undefined"
                          row-content="options.rowContentEnabled ? options.rowContent : undefined"
                          headers="options.width && options.shortHeaders || options.longHeaders"
                          max-height="options.maxHeight"
-                         time-frames="options.timeFrames"
-                         date-frames="options.dateFrames"
-                         time-frames-working-mode="options.timeFramesWorkingMode"
-                         time-frames-non-working-mode="options.timeFramesNonWorkingMode"
-                         time-frames-magnet="options.timeFramesMagnet"
                          api="options.api"
                          shrink-to-fit="option.shrinkToFit"
                          column-magnet="options.columnMagnet">
@@ -172,16 +160,7 @@
                                      contents="options.columnsContents"
                                      header-contents="options.columnsHeaderContents">
                         </gantt-table>
-                        <gantt-groups
-                                enabled="options.groupDisplayMode === 'group' || options.groupDisplayMode === 'overview' || options.groupDisplayMode === 'promote'"
-                                display="options.groupDisplayMode"></gantt-groups>
                         <gantt-tooltips></gantt-tooltips>
-                        <gantt-bounds></gantt-bounds>
-                        <gantt-progress></gantt-progress>
-                        <gantt-sortable></gantt-sortable>
-                        <gantt-movable enabled="!options.readOnly"></gantt-movable>
-
-                        <gantt-overlap></gantt-overlap>
                     </div>
                     </div>
                     <div class="hide" ng-class="{show:!data || data.length==0}">
@@ -191,18 +170,11 @@
                 </div>
             </div>
         </div>
-        <div>
-            <div class="hide box p-a " ng-class="{'show': pageView=='list'}" context-menu="menuOptions">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered ">
+        <div class="hide box p-a " ng-class="{'show': pageView=='list'}" context-menu="menuOptions">
+            <div class="table-responsive">
+                    <table class="table table-hover table-bordered " id="dailyPlanTableId">
                         <thead>
                         <tr>
-                            <th>
-                                <label class="md-check">
-                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()">
-                                    <i class="primary"></i>
-                                </label>
-                            </th>
 
                             <th ng-click="sortBy('processedPlan')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
 
@@ -218,10 +190,23 @@
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                             <th ng-click="sortBy('plannedStart')"><a><span translate>label.plannedStart</span>
-                                <i ng-show="propertyName == 'plannedStart' && !reverse"
+                            <th ng-click="sortBy('status')"><a><span translate>label.status</span>
+                                <i ng-show="propertyName == 'status' && !reverse"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'plannedStart' && reverse"
+                                <i ng-show="propertyName == 'status' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+
+                             <th ng-click="sortBy('exitCode')"><a><span translate>label.executionResult</span>
+                                <i ng-show="propertyName == 'exitCode' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'exitCode' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                             <th ng-click="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>
+                                <i ng-show="propertyName == 'plannedStartTime' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'plannedStartTime' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
@@ -260,45 +245,29 @@
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                            <th ng-click="sortBy('status')"><a><span translate>label.status</span>
-                                <i ng-show="propertyName == 'status' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'status' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
-
-
-
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                         <tr>
-                            <td>
-                                <label class="md-check">
-                                    <input type="checkbox" data-checklist-model="object.orders"
-                                           data-checklist-value="order"><i class="primary"></i>
-                                </label>
-                            </td>
-                            <td class="hide" ng-class="{show:!plan.name}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></td>
-                            <td class="hide" ng-class="{show:plan.name}" ng-bind="plan.name"></td>
+
+                            <td class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></td>
+                            <td class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job.substring(plan.job.lastIndexOf('/')+1,plan.job.length)"></td>
                             <td><span ng-bind="plan.orderId"></span></td>
-                            <td><span ng-bind="plan.nextStartTime| stringToDate"></span></td>
-                            <td><span ng-bind="plan.expectedEnd| stringToDate"></span></td>
-                            <td><span ng-bind="plan.nextStartTime| duration:plan.expectedEnd"></span></td>
+                            <td><span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span></td>
+                             <td><span ng-bind="plan.exitCode"></span></td>
+                            <td><span ng-bind="plan.plannedStartTime| stringToDate"></span></td>
+                            <td><span ng-bind="plan.expectedEndTime| stringToDate"></span></td>
+                            <td><span ng-bind="plan.plannedStartTime| duration:plan.expectedEndTime"></span></td>
 
-                            <td><span ng-bind="plan.start| stringToDate"></span></td>
-                            <td><span ng-bind="plan.end| stringToDate"></span></td>
-                            <td><span ng-bind="plan.start| duration:plan.end"></span></td>
+                            <td><span ng-bind="plan.startTime| stringToDate"></span></td>
+                            <td><span ng-bind="plan.endTime| stringToDate"></span></td>
+                            <td><span ng-bind="plan.startTime| duration:plan.endTime"></span></td>
 
 
-                            <td ng-show="!plan.name"><span class="text-c label"
-                                                           ng-class="bgColorFunction(plan.processingState.severity)"
-                                                           ng-bind="plan.processingState._text"></span></td>
 
-                            <td ng-show=" plan.name"><span class=" text-c label"
-                                                           ng-class="bgColorFunction(plan.state.severity)"
-                                                           ng-bind="plan.state._text"></span></td>
+
+
+
 
 
 
@@ -329,26 +298,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="hide text-center m-t text-uppercase text-orange"
-                     ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
-                </div>
+            <div class="hide text-center m-t text-uppercase text-orange"
+                 ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
             </div>
         </div>
-        <div ng-if="temp.length==0" class="text-center m-t h6 text-uppercase" translate>
+        <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
             message.noPlanFound
         </div>
-
-
-    </div>
-    <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
-        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-    </div>
-    <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
     </div>
 </div>
 
-</div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">

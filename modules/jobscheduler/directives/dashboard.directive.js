@@ -383,6 +383,8 @@
                                 '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor-terminate-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-restart-' + supervisor.host + ':' + supervisor.port + '" translate>button.restart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-abortAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
                                 '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor-pause-' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor-continue-' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                                 '</div>' +
@@ -462,6 +464,8 @@
                                     '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
                                     '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
@@ -561,6 +565,8 @@
                                 '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
                                 '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                 '</div></div>' +

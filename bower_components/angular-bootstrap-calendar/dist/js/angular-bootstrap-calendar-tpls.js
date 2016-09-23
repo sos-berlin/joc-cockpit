@@ -140,7 +140,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
-
 	var map = {
 		"./calendar.html": 14,
 		"./calendarDayView.html": 15,
@@ -218,7 +217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 22 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"cal-year-box\">\n  <div ng-repeat=\"rowOffset in [0, 4, 8] track by rowOffset\">\n    <div class=\"row cal-before-eventlist\">\n      <div\n        class=\"span3 col-md-3 col-xs-6 cal-cell {{ day.cssClass }}\"\n        ng-repeat=\"month in vm.view | calendarLimitTo:4:rowOffset track by $index\"\n        ng-init=\"monthIndex = vm.view.indexOf(month)\"\n        ng-click=\"vm.monthClicked(month, false, $event)\"\n        ng-class=\"{pointer: month.events.length > 0, 'cal-day-today': month.isToday}\"\n        mwl-droppable\n        on-drop=\"vm.handleEventDrop(dropData.event, month.date)\">\n\n        <span\n          class=\"pull-right\"\n          data-cal-date\n          ng-click=\"vm.calendarCtrl.dateClicked(month.date)\"\n          ng-bind=\"month.label\">\n        </span>\n\n        <small\n          class=\"cal-events-num badge badge-important pull-left\"\n          ng-show=\"month.badgeTotal > 0\"\n          ng-bind=\"month.badgeTotal\">\n        </small>\n\n        <div\n          class=\"cal-day-tick\"\n          ng-show=\"monthIndex === vm.openMonthIndex && vm.view[vm.openMonthIndex].events.length > 0 && !vm.slideBoxDisabled\">\n          <i class=\"glyphicon glyphicon-chevron-up\"></i>\n          <i class=\"fa fa-chevron-up\"></i>\n        </div>\n\n      </div>\n    </div>\n\n    <mwl-calendar-slide-box\n      is-open=\"vm.openRowIndex === $index && vm.view[vm.openMonthIndex].events.length > 0 && !vm.slideBoxDisabled\"\n      events=\"vm.view[vm.openMonthIndex].events\"\n      on-event-click=\"vm.onEventClick\"\n      edit-event-html=\"vm.editEventHtml\"\n      on-edit-event-click=\"vm.onEditEventClick\"\n      delete-event-html=\"vm.deleteEventHtml\"\n      on-delete-event-click=\"vm.onDeleteEventClick\">\n    </mwl-calendar-slide-box>\n\n  </div>\n\n</div>\n";
+        module.exports = "<div class=\"cal-year-box\">\n  <div ng-repeat=\"rowOffset in [0, 4, 8] track by rowOffset\">\n    <div class=\"row cal-before-eventlist\">\n      <div\n        class=\"span3 col-md-3 col-xs-6 cal-cell {{ day.cssClass }}\"\n        ng-repeat=\"month in vm.view | calendarLimitTo:4:rowOffset track by $index\"\n        ng-init=\"monthIndex = vm.view.indexOf(month)\"\n        ng-click=\"vm.monthClicked(month, false, $event)\"\n        ng-class=\"{pointer: month.events.length > 0, 'cal-day-today': month.isToday}\"\n        mwl-droppable\n        on-drop=\"vm.handleEventDrop(dropData.event, month.date)\">\n\n        <div\n          class=\"month-name\"\n          data-cal-date\n          ng-click=\"vm.calendarCtrl.dateClicked(month.date)\"\n          ng-bind=\"month.label\">\n        </div>\n        <div\n        class=\"cal-row-fluid cal-row-head\"\n>        <div\n          class=\"cal-cell1\"\n          ng-repeat=\"day in vm.weekDays track by $index\"\n          ng-bind=\"day\">\n        </div>\n        </div>\n\n        <div\n        class=\"cal-month-box\">\n        <div\n        ng-repeat=\"rowOffset in month.monthOffsets track by rowOffset\">\n        <div\n        class=\"cal-row-fluid cal-before-eventlist\">\n        <div\n        ng-repeat=\"day in month.monthData | calendarLimitTo:7:rowOffset track by $index\"\n        class=\"cal-cell1 cal-cell {{ day.highlightClass }}\"\n        ng-class=\"{pointer: day.events.length > 0}\">\n        <ng-include src=\"vm.calendarConfig.templates.calendarMonthCell\"></ng-include>\n        </div>\n        </div>\n\n        <mwl-calendar-slide-box\n      is-open=\"vm.openRowIndex === $index && vm.view[vm.openDayIndex].events.length > 0 && !vm.slideBoxDisabled\"\n      events=\"vm.view[vm.openDayIndex].events\"\n      on-event-click=\"vm.onEventClick\"\n      edit-event-html=\"vm.editEventHtml\"\n      on-edit-event-click=\"vm.onEditEventClick\"\n      delete-event-html=\"vm.deleteEventHtml\"\n      on-delete-event-click=\"vm.onDeleteEventClick\">\n    </mwl-calendar-slide-box>\n\n        </div>\n        </div>\n        <small\n          class=\"cal-events-num badge badge-important pull-left\"\n          ng-show=\"month.badgeTotal > 0\"\n          ng-bind=\"month.badgeTotal\">\n        </small>\n\n        <div\n          class=\"cal-day-tick\"\n          ng-show=\"monthIndex === vm.openMonthIndex && vm.view[vm.openMonthIndex].events.length > 0 && !vm.slideBoxDisabled\">\n          <i class=\"glyphicon glyphicon-chevron-up\"></i>\n          <i class=\"fa fa-chevron-up\"></i>\n        </div>\n\n      </div>\n    </div>\n\n    <mwl-calendar-slide-box\n      is-open=\"vm.openRowIndex === $index && vm.view[vm.openMonthIndex].events.length > 0 && !vm.slideBoxDisabled\"\n      events=\"vm.view[vm.openMonthIndex].events\"\n      on-event-click=\"vm.onEventClick\"\n      edit-event-html=\"vm.editEventHtml\"\n      on-edit-event-click=\"vm.onEditEventClick\"\n      delete-event-html=\"vm.deleteEventHtml\"\n      on-delete-event-click=\"vm.onDeleteEventClick\">\n    </mwl-calendar-slide-box>\n\n  </div>\n\n</div>\n";
 
 /***/ },
 /* 23 */
@@ -947,22 +946,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	angular
 	  .module('mwl.calendar')
-	  .controller('MwlCalendarYearCtrl', ["$scope", "moment", "calendarHelper", function($scope, moment, calendarHelper) {
+	  .controller('MwlCalendarYearCtrl', ["$scope", "moment", "calendarHelper", "calendarConfig", function($scope, moment, calendarHelper, calendarConfig) {
 
 	    var vm = this;
+        vm.calendarConfig = calendarConfig;
 	    vm.openMonthIndex = null;
+        vm.openRowIndex = null;
 
 	    $scope.$on('calendar.refreshView', function() {
+          vm.weekDays = calendarHelper.getWeekDayNames();
 	      vm.view = calendarHelper.getYearView(vm.events, vm.viewDate, vm.cellModifier);
+          vm.yearCount = 0;
+          vm.view.forEach(function(month) {
+              var yearMonth = new Date();
+              yearMonth.setMonth(vm.yearCount);
+
+              vm.monthView = calendarHelper.getMonthView(vm.events, yearMonth, vm.cellModifier);
+              var rows = Math.floor(vm.monthView.length / 7);
+              vm.monthOffsets = [];
+              for (var i = 0; i < rows; i++) {
+                vm.monthOffsets.push(i * 7);
+              }
+
+              vm.view[vm.yearCount].monthData = vm.monthView;
+              vm.view[vm.yearCount].monthOffsets = vm.monthOffsets;
+              vm.yearCount++;
+          });
 
 	      //Auto open the calendar to the current day if set
-	      if (vm.cellIsOpen && vm.openMonthIndex === null) {
+	      if (vm.cellIsOpen && vm.openMonthIndex === null && vm.openRowIndex === null) {
 	        vm.openMonthIndex = null;
+            vm.openDayIndex = null;
 	        vm.view.forEach(function(month) {
 	          if (moment(vm.viewDate).startOf('month').isSame(month.date)) {
 	            vm.monthClicked(month, true);
 	          }
 	        });
+            vm.view.forEach(function(day) {
+              if (day.inMonth && moment(vm.viewDate).startOf('day').isSame(day.date)) {
+              vm.dayClicked(day, true);
+            }
+        });
 	      }
 
 	    });
@@ -992,6 +1016,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	    };
+
+        /*vm.dayClicked = function(day, dayClickedFirstRun, $event) {
+
+	      if (!dayClickedFirstRun) {
+	        vm.onTimespanClick({
+	          calendarDate: day.date.toDate(),
+	          calendarCell: day,
+	          $event: $event
+	        });
+	        if ($event && $event.defaultPrevented) {
+	          return;
+	        }
+	      }
+
+	      vm.openRowIndex = null;
+	      var dayIndex = vm.view.indexOf(day);
+	      if (dayIndex === vm.openDayIndex) { //the day has been clicked and is already open
+	        vm.openDayIndex = null; //close the open day
+	        vm.cellIsOpen = false;
+	      } else {
+	        vm.openDayIndex = dayIndex;
+	        vm.openRowIndex = Math.floor(dayIndex / 7);
+	        vm.cellIsOpen = true;
+	      }
+
+	    };*/
+
+        /*vm.highlightEvent = function(event, shouldAddClass) {
+
+	      vm.view.forEach(function(day) {
+	        delete day.highlightClass;
+	        if (shouldAddClass) {
+	          var dayContainsEvent = day.events.indexOf(event) > -1;
+	          if (dayContainsEvent) {
+	            day.highlightClass = 'day-highlight dh-event-' + event.type;
+	          }
+	        }
+	      });
+
+	    };*/
 
 	    vm.handleEventDrop = function(event, newMonthDate) {
 	      var newStart = moment(event.startsAt)
@@ -1772,6 +1836,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
 
 	var angular = __webpack_require__(12);
 

@@ -13,7 +13,6 @@
             'ngResource',
             'angular-toasty',
             'ngSanitize',
-            'ngTouch',
             'gettext',
             'ui.router',
             'mwl.calendar',
@@ -27,7 +26,6 @@
             'ncy-angular-breadcrumb',
             'gantt',
             'gantt.sortable',
-            'gantt.movable',
             'gantt.tooltips',
             'gantt.bounds',
             'gantt.progress',
@@ -38,13 +36,10 @@
             'ngFileSaver'
         ])
         .constant("apiUrl", "http://test.sos-berlin.com:3001/joc/api/")
-       // .constant("apiUrl", "http://uk.sos-berlin.com:8888/rest/")
-        .constant("APIUrl", "http://test.sos-berlin.com:3001/joc/api/")
-        //.constant("APIUrl", "http://uk.sos-berlin.com:8888/rest/")
+        //.constant("apiUrl", "http://uk.sos-berlin.com:8888/rest/")
+        .constant("APIUrl", "http://uk.sos-berlin.com:8888/joc/api/")
         .config(['calendarConfig' ,function (calendarConfig) {
-            calendarConfig.dateFormatter = 'moment'; //use either moment or angular to format dates on the calendar. Default angular. Setting this will override any date formats you have already set.
-            calendarConfig.allDateFormats.moment.date.hour = 'HH:mm'; //this will configure times on the day view to display in 24 hour format rather than the default of 12 hour
-            calendarConfig.allDateFormats.moment.title.day = 'ddd D MMM';
+            calendarConfig.dateFormatter = 'moment';
         }])
         .config(['toastyConfigProvider', function (toastyConfigProvider) {
             toastyConfigProvider.setConfig({
