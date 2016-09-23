@@ -11,13 +11,13 @@
                                 <div class="text" ng-bind="jobChain.processClass || '-'"></div>
                             </div>
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="stopJobs()" translate>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isStoppedJob" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-click="unstopJobs()" translate>
                                     button.unstopJob
                                 </button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="stopNodes()" translate>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isStopped" ng-click="stopNodes()" translate>
                                     button.stopNode
                                 </button>
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-click="skipNodes()" translate>

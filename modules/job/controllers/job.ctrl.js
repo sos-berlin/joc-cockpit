@@ -160,7 +160,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 size: 'lg'
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');

@@ -466,7 +466,7 @@
   "label.expectedEnd": "Expected End",
   "label.sharedFilter": "Shared Filter",
   "label.distributed": "Distributed",
- "label.executionResult":"execution Result",
+ "label.executionResult":"Execution Result",
   "label.timeout":"Timeout",
   "label.enterTimeout":"Enter Timeout",
   "message.oops": "OOPS",

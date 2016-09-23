@@ -131,9 +131,21 @@
         vm.onAdd = function (item) {
             $timeout(function () {
                 vm.selectedNodes.push(item);
-            }, 100);
 
-            console.log("Added " + JSON.stringify(vm.selectedNodes));
+                vm.isStopped = false;
+                vm.isStoppedJob = false;
+                angular.forEach(vm.selectedNodes, function (value) {
+                    console.log(value.state);
+                    if (value.state && value.state._text.toLowerCase() == 'stopped') {
+                        vm.isStopped = true;
+                    }
+                    if (value.job.state && value.job.state._text.toLowerCase() == 'stopped') {
+                        vm.isStoppedJob = true;
+                    }
+                });
+
+
+            }, 50);
         };
 
         vm.onRemove = function (item) {
@@ -141,9 +153,7 @@
                 if (node.name == item.name) {
                     $timeout(function () {
                         vm.selectedNodes.splice(index, 1);
-                    }, 100);
-
-                    console.log("Removed " + JSON.stringify(vm.selectedNodes));
+                    }, 50);
                 }
             })
         };
@@ -193,9 +203,8 @@
 
                     })
                 })
-
-
             })
+            vm.selectedNodes = [];
         };
 
         vm.unstopJobs = function () {
@@ -217,6 +226,7 @@
 
 
             })
+            vm.selectedNodes = [];
         };
 
         vm.skipNodes = function () {
@@ -238,6 +248,7 @@
 
 
             })
+            vm.selectedNodes = [];
         };
 
         vm.stopNodes = function () {
@@ -256,6 +267,7 @@
                     })
                 })
             })
+            vm.selectedNodes = [];
         };
 
         vm.unskipNodes = function () {
@@ -277,6 +289,7 @@
 
 
             })
+            vm.selectedNodes = [];
         };
 
         var splitRegex = new RegExp('(.+):(.+)');
@@ -354,6 +367,7 @@
         vm.onAction = onAction;
 
         function onAction(path, node, action) {
+            vm.selectedNodes = [];
             if (action == 'stop node') {
                 return JobService.stopNode([{jobChain: path, node: node}]);
             } else if (action == 'skip') {
@@ -393,9 +407,24 @@
         var watcher1 = vm.$watchCollection('object.nodes', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.allCheck.checkbox = newNames.length == vm.jobChain.nodes.length;
+
+                vm.isStopped = false;
+                vm.isStoppedJob = false;
+                angular.forEach(newNames, function (value) {
+                    if (value.state && value.state._text.toLowerCase() == 'stopped') {
+                        vm.isStopped = true;
+                    }
+                    if (value.job.state && value.job.state._text.toLowerCase() == 'stopped') {
+                        vm.isStoppedJob = true;
+                    }
+                });
+
+
             } else {
                 vm.allCheck.checkbox = false;
             }
+
+
             vm.selectedNodes = vm.object.nodes;
         });
 
@@ -798,7 +827,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 size: 'lg'
             });
             modalInstance.result.then(function () {
 
@@ -2052,7 +2082,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 size: 'lg'
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');

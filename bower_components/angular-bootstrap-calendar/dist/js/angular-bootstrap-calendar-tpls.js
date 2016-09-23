@@ -958,7 +958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      vm.view = calendarHelper.getYearView(vm.events, vm.viewDate, vm.cellModifier);
           vm.yearCount = 0;
           vm.view.forEach(function(month) {
-              var yearMonth = new Date();
+              var yearMonth = vm.viewDate;
               yearMonth.setMonth(vm.yearCount);
 
               vm.monthView = calendarHelper.getMonthView(vm.events, yearMonth, vm.cellModifier);
