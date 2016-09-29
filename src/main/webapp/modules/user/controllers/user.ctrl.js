@@ -10,9 +10,9 @@
         .controller('UserProfileCtrl', UserProfileCtrl);
 
 
-    LoginCtrl.$inject = ['$scope', 'SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'toasty'];
-    function LoginCtrl($scope, SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,toasty) {
-        var vm = $scope;
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'toasty','gettextCatalog'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,toasty,gettextCatalog) {
+        var vm = this;
         vm.user = {};
         vm.rememberMe = false;
 
@@ -24,7 +24,8 @@
                     getPermissions(response);
                 }else{
                     toasty.error({
-                       msg: res.data.error.message
+                       title: gettextCatalog.getString('message.oops'),
+                       msg: gettextCatalog.getString('message.errorInLoadingScheduleIds')
                     });
                 }
             });
@@ -37,9 +38,9 @@
             UserService.getPermissions(vm.schedulerIds.selected).then(function (permission) {
                 SOSAuth.setUser(response, permission);
                 SOSAuth.save();
-
                 if ($window.sessionStorage.getItem('$SOS$URL') && $window.sessionStorage.getItem('$SOS$URL') != 'null') {
-                    $location.path($window.sessionStorage.getItem('$SOS$URL'));
+
+                    $location.path($window.sessionStorage.getItem('$SOS$URL')).search(JSON.parse($window.sessionStorage.getItem('$SOS$URLPARAMS')));
                 } else {
                     $location.path('/');
                 }
@@ -53,7 +54,7 @@
 
         vm.login = function () {
             if (vm.user.username && vm.user.password) {
-                $('#loginBtn').text("Processing...");
+                $('#loginBtn').text(gettextCatalog.getString("button.processing")+'...');
                 vm.isProcessing = true;
                 SOSAuth.currentUserData = null;
 
@@ -81,9 +82,9 @@
 
     }
 
-    UserProfileCtrl.$inject = ['$scope', '$rootScope', '$window', 'gettextCatalog', "$resource"];
-    function UserProfileCtrl($scope, $rootScope, $window, gettextCatalog, $resource) {
-        var vm = $scope;
+    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource"];
+    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource) {
+        var vm = this;
 
         vm.zones = moment.tz.names();
 
@@ -103,8 +104,9 @@
             $rootScope.locale = vm.locale;
             $window.localStorage.$SOS$LANG = vm.locale.lang;
             // You can change the language during runtime
-            gettextCatalog.setCurrentLanguage(vm.locale.lang);
-            $resource("/modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
+
+            $resource("modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
+               gettextCatalog.setCurrentLanguage(vm.locale.lang);
                gettextCatalog.setStrings(vm.locale.lang, data);
             });
 

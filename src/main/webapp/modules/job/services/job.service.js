@@ -10,8 +10,8 @@
         .service('JobService', JobService)
         .service('TaskService', TaskService);
 
-    JobChainService.$inject = ["$resource", "$q", "apiUrl","SOSAuth"];
-    function JobChainService($resource, $q, apiUrl, SOSAuth) {
+    JobChainService.$inject = ["$resource", "$q", "apiUrl"];
+    function JobChainService($resource, $q, apiUrl) {
         return {
             selectedJobChain:undefined,
             get: function (filter) {
@@ -94,6 +94,16 @@
                     deferred.resolve(err);
                 });
                 return deferred.promise;
+            },
+            tree: function (filter) {
+                var deferred = $q.defer();
+                var JobChain = $resource(apiUrl + 'tree');
+                JobChain.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
             }
         }
     }
@@ -165,6 +175,16 @@
                 var deferred = $q.defer();
                 var Job = $resource(apiUrl + 'jobs/set_run_time');
                 Job.save(jobs,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+            getRunTime: function (jobs) {
+                var deferred = $q.defer();
+                var Order = $resource(apiUrl + 'job/run_time');
+                Order.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
@@ -254,8 +274,8 @@
         }
     }
 
-    TaskService.$inject = ["$resource", "$q", "apiUrl", "SOSAuth"];
-    function TaskService($resource, $q, apiUrl, SOSAuth) {
+    TaskService.$inject = ["$resource", "$q", "apiUrl"];
+    function TaskService($resource, $q, apiUrl) {
         return {
             historys: function (filters) {
                 var deferred = $q.defer();

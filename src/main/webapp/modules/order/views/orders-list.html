@@ -21,7 +21,7 @@
                                             class="primary"></i></label>
 
                                     <div class="text-left m-l-md block-ellipsis" >
-                                        <a href="" uib-tooltip="{{order.title}}" ng-click="showLogFuc(order)" ng-bind="order.orderId"></a></div>
+                                        <a class="primary-text-hover-color" href="" uib-tooltip="{{order.title}}" ng-click="showLogFuc(order)">{{:: order.orderId}}</a></div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-v"></i></a>
@@ -65,12 +65,12 @@
                             </div>
                             <div class="box-footer b-t">
                                 <div>
-                                    <a href class="hide text-left" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
+                                    <a href class="hide text-left primary-text-hover-color" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
                                        ng-class="{'show-block':permission.Order.start}" ng-click="start(order)">
                                         <i class="fa fa-play text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.startNow</span>
                                     </a>
-                                    <a href class="hide text-left" ng-if="order.processingState._text == 'SUSPENDED' "
+                                    <a href class="hide text-left primary-text-hover-color" ng-if="order.processingState._text == 'SUSPENDED' "
                                        ng-class="{'show-block':permission.Order.resume}" ng-click="resumeOrder(order)">
                                         <i class="fa fa-step-forward text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.resume</span>
@@ -80,7 +80,7 @@
                                         <i class="fa fa-pause text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.suspend</span>
                                     </a>
-                                    <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" ng-if="order.historyId" class="hide text-right"
+                                    <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
                                        ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
                                         <i class="fa fa-file-text text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.viewLog</span>
@@ -101,7 +101,7 @@
                         <thead>
                         <tr>
                             <th class="noExl">
-                                <label class="md-check">
+                                <label class="md-check lg-check">
                                     <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
                                         class="primary"></i>
                                 </label>
@@ -171,7 +171,7 @@
                                        ng-click="showPanelFuc(order.path)"></i>
                                     <i class="cursor fa fa-caret-up noExl" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
                                     <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                    <i class="text-muted">{{order.title}}</i></a>
+                                    <i class="text-muted">{{:: order.title}}</i></a>
                                 </td>
                                 <td><span ng-bind="order.path1"></span></td>
                                 <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>

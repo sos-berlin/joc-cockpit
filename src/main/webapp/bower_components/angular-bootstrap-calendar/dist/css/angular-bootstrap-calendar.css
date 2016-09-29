@@ -414,7 +414,7 @@
   background-color: #fafafa;
 }
 .cal-month-day {
-  height: 100px;
+  height: 50px;
 }
 [class*="cal-cell"]:hover,
 .cell-focus,
@@ -426,12 +426,12 @@
 }
 .cal-year-box [class*="span"],
 .cal-month-box [class*="cal-cell"] {
-  min-height: 100px;
+  min-height: 50px;
   border-right: 1px solid #e1e1e1;
   position: relative;
 }
 .cal-year-box [class*="span"] {
-  min-height: 60px;
+  min-height: 50px;
 }
 .cal-year-box .row [class*="col-"]:last-child,
 .cal-month-box .cal-row [class*="cal-cell"]:last-child {
@@ -569,9 +569,4 @@ a.cal-event-week {
   .cal-year-box [class*="span"]:nth-child(2) {
     border-bottom: 1px solid #e1e1e1;
   }
-}
-.month-name {
-  background-color: dodgerblue;
-  text-align: center;
-  margin: 0 -12px;
 }

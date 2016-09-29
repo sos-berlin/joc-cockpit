@@ -80,8 +80,8 @@ module.exports = function (grunt) {
 				files: [
 					{src: ['build/components/angular/angular.js'], dest: 'examples/js/angular.js', filter: 'isFile'},
 					{src: ['build/components/angular-route/angular-route.js'], dest: 'examples/js/angular-route.js', filter: 'isFile'},
-					{src: ['build/components/d3/d3.js'], dest: 'examples/js/d3.js', filter: 'isFile'},
-					{src: ['build/components/nvd3/nv.d3.js'], dest: 'examples/js/nv.d3.js', filter: 'isFile'},
+					{src: ['build/components/d3/d3.min.js'], dest: 'examples/js/d3.min.js', filter: 'isFile'},
+					{src: ['build/components/nvd3/nv.d3.min.js'], dest: 'examples/js/nv.d3.min.js', filter: 'isFile'},
 					{src: ['build/components/nvd3/nv.d3.css'], dest: 'examples/stylesheets/nv.d3.css', filter: 'isFile'},
 					{src: ['build/components/moment/moment.js'], dest: 'examples/js/moment.js', filter: 'isFile'}
 				]

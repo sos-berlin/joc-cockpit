@@ -1305,7 +1305,8 @@
                                     console.log("Found border " + order.state + " " + node.className);
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     var label = document.createElement('div');
-                                    label.innerHTML = '<span>' + order.orderId + '</span>';
+
+                                    label.innerHTML = '<span><i class="fa fa-circle corn-flower-blue" ></i>'+ order.orderId + '</span>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
                                     if (node.offsetTop - container.offsetTop < 80) {

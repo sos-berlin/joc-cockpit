@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                      <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
-                        <div class="btn-group">
+                        <div class="btn-group hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
                                     ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobChains</span>
                             </button>
@@ -23,6 +23,26 @@
                                     uib-btn-radio="'stopped'"
                                     ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.inactive
                             </button>
+                        </div>
+                         <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
+                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobChains</span>
+                                </a>
+                                <a class="btn btn-grey btn-sm" ng-model="filter.state"
+                                        uib-btn-radio="'running'"
+                                        ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                </a>
+                                <a class="btn btn-grey btn-sm" ng-model="filter.state"
+                                        uib-btn-radio="'active'"
+                                        ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()" translate>button.active
+                                </a>
+                                <a class="btn btn-grey btn-sm" ng-model="filter.state"
+                                        uib-btn-radio="'stopped'"
+                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.inactive
+                                </a>
+                            </div>
                         </div>
                         <div class="btn-group dropdown">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
@@ -95,7 +115,8 @@
                                             <input type="checkbox" data-checklist-model="object.jobChains" data-checklist-value="jobChain"><i class="primary"></i>
                                         </label>
                                         <div class="text-left m-l-md block-ellipsis" >
-                                           <i ng-if="jobChain.distributed" class="fa fa-chain-broken"></i> <a href="" uib-tooltip="{{jobChain.title}}" ng-class="{'text-danger':jobChain.state._text.toLowerCase() == 'stopped', 'text-success':jobChain.state._text.toLowerCase() == 'running' }" ng-click="viewOrders(jobChain)" ng-bind="jobChain.name"></a></div>
+                                           <i ng-if="jobChain.distributed" class="fa fa-chain-broken"></i>
+                                            <a href="" class="primary-text-hover-color" uib-tooltip="{{jobChain.title}}" ng-class="{'text-danger':jobChain.state._text.toLowerCase() == 'stopped', 'text-success':jobChain.state._text.toLowerCase() == 'running' }" ng-click="viewOrders(jobChain)" ng-bind="jobChain.name"></a></div>
                                         <div class="btn-group dropdown pull-right abt-dropdown">
                                             <a href class="more-option text-black-lt" data-toggle="dropdown">
                                                 <i class="text fa fa-ellipsis-v"></i></a>
@@ -112,8 +133,8 @@
                                         <span class="text-black _600" ng-bind="jobChain.numOfNodes || 0"></span>
                                         {{'label.jobs' | translate}}
                                     </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs cursor" ng-click="viewOrders(jobChain)">
-                                        <a href=""><span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
+                                    <div class="text-sm  text-left text-muted p-t-xs cursor">
+                                        <a href="" class="primary-text-hover-color"  ng-click="viewOrders(jobChain)"><span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
                                         {{'label.orders' | translate}}</a>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs">
@@ -122,8 +143,8 @@
                                     </div>
                                 </div>
                                 <div class="box-footer b-t" >
-                                    <a href class="hide text-left" ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}" ng-click="addOrder(jobChain);"><i class="fa fa-plus-square-o text-black-lt"></i> <span class="text-black-lt" translate>button.addOrder</span></a>
-                                    <a href class="text-right" ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}" ng-click="viewCalendar(jobChain);"><i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.viewCalendar</span></a>
+                                    <a href class="hide text-left primary-text-hover-color" ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}" ng-click="addOrder(jobChain);"><i class="fa fa-plus-square-o text-black-lt"></i> <span class="text-black-lt" translate>button.addOrder</span></a>
+                                    <a href class="text-right primary-text-hover-color" ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}" ng-click="viewCalendar(jobChain);"><i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.viewCalendar</span></a>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +159,7 @@
                         <thead>
                         <tr>
                             <th class="noExl">
-                                <label class="md-check">
+                                <label class="md-check lg-check">
                                     <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                 </label>
                             </th>
@@ -186,7 +207,7 @@
                                     <input type="checkbox" data-checklist-model="object.jobChains" data-checklist-value="jobChain"><i class="primary"></i>
                                 </label>
                             </td>
-                            <td ><a href ng-click="viewOrders(jobChain)" ng-class="{'text-danger':jobChain.state._text.toLowerCase() == 'stopped'}" ng-bind="jobChain.name"></a>
+                            <td ><a class="primary-text-hover-color" href ng-click="viewOrders(jobChain)" ng-class="{'text-danger':jobChain.state._text.toLowerCase() == 'stopped'}" ng-bind="jobChain.name"></a>
                                 <span ng-if="jobChain.title"> - </span><i class="text-muted">
                                     <span ng-bind-html="jobChain.title"></span></i>
                             </td>
@@ -243,6 +264,7 @@
         </div>
     </div>
 </div>
+
 <script>
 $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),

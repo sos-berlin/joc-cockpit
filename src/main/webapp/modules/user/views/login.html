@@ -11,21 +11,21 @@
                 </div>
                 <div class="m-b text-md text-midnight-blue _600 text-center m-t-md" translate>label.signIn</div>
                 <div class="hide alert alert-danger" ng-class="{'show':loginError}">
-                    <span ng-bind="loginError | translate"></span>
+                    <span ng-bind="lc.loginError | translate"></span>
                 </div>
-                <form method="post" name="loginForm" ng-submit="login()">
+                <form method="post" name="loginForm" ng-submit="lc.login()">
                     <div class="md-form-group">
-                        <input type="text" class="md-input" ng-model="user.username" required>
+                        <input type="text" class="md-input" ng-model="lc.user.username" required>
                         <label class="font14" translate>label.userName</label>
                     </div>
                     <div class="md-form-group">
-                        <input type="password" class="md-input" autocomplete="off" ng-model="user.password" required>
+                        <input type="password" class="md-input" autocomplete="off" ng-model="lc.user.password" required>
                         <label class="font14" translate>label.password</label>
                     </div>
 
                     <div class="m-b-md">
                         <label class="md-check">
-                            <input type="checkbox" ng-model="rememberMe"><i class="primary"></i> {{'label.rememberMe' | translate}}
+                            <input type="checkbox" ng-model="lc.rememberMe"><i class="primary"></i> {{'label.rememberMe' | translate}}
                         </label>
                        <!-- <a href class="text-primary _500 pull-right" translate>button.forgotPassword?</a>-->
                     </div>

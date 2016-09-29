@@ -14,8 +14,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       '../build/components/moment/moment.js',
-      '../build/components/d3/d3.js',
-      '../build/components/nvd3/nv.d3.js',
+      '../build/components/d3/d3.min.js',
+      '../build/components/nvd3/nv.d3.min.js',
       '../build/components/angular/angular.js',
       '../build/components/angular-route/angular-route.js',
       '../build/components/angular-mocks/angular-mocks.js',

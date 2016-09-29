@@ -31,16 +31,42 @@
             // Authenticated
             if (SOSAuth.accessTokenId) {
                 sessionStorage.setItem('$SOS$URL', null);
+                sessionStorage.setItem('$SOS$URLPARAMS', {});
                 deferred.resolve();
             }
             // Not Authenticated
             else {
                 sessionStorage.setItem('$SOS$URL', $location.path());
+                sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
                 deferred.reject('login');
             }
             return deferred.promise;
         };
         checkLoggedin.$inject = ['$q', '$location', 'SOSAuth'];
+
+
+        /**
+         * Check is user logout or not
+         * @param $q
+         * @param SOSAuth
+         * @returns {*}
+         */
+        var checkLogout = function ($q, SOSAuth) {
+            // Initialize a new promise
+            var deferred = $q.defer();
+
+            // Not  Authenticated
+            if (!SOSAuth.accessTokenId) {
+                deferred.resolve();
+            }
+            // Authenticated
+            else {
+                deferred.reject();
+            }
+            return deferred.promise;
+        };
+        checkLogout.$inject = ['$q', 'SOSAuth'];
+
 
 
         $urlRouterProvider.otherwise(function ($injector, $location) {
@@ -53,15 +79,19 @@
             }]);
             return true;
         });
+
         $stateProvider
 
             .state('login', {
                 url: '/login',
                 templateUrl: 'modules/user/views/login.html',
-                controller: 'LoginCtrl',
+                controller: 'LoginCtrl as lc',
                 title: 'Login',
                 ncyBreadcrumb: {
                     skip: true
+                },
+                resolve: {
+                    logout: checkLogout
                 }
             })
             .state('404', {
@@ -92,7 +122,6 @@
                 url: '/dailyPlan',
                 templateUrl: 'modules/jobscheduler/views/daily-plan.html',
                 controller: 'DailyPlanCtrl',
-                title: 'Daily Plan',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.dailyPlan\' | translate}}'
                 }
@@ -101,7 +130,6 @@
                 url: '/jobs',
                 templateUrl: 'modules/job/views/job.html',
                 controller: 'JobCtrl',
-                title: 'Jobs',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.jobs\' | translate}}'
                 }
@@ -110,7 +138,6 @@
                 url: '/jobChain',
                 templateUrl: 'modules/job/views/job-chain.html',
                 controller: 'JobChainCtrl',
-                title: 'Job Chains',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.jobChains\' | translate}}'
                 }
@@ -119,7 +146,6 @@
                 url: '/jobChainDetails',
                 templateUrl: 'modules/order/views/job-chain-details.html',
                 controller: 'JobChainDetailsCtrl',
-                title: 'JobChain detail',
                 ncyBreadcrumb: {
                     label: '{{jobChain.name}}',
                     parent: 'app.jobChain'
@@ -129,7 +155,6 @@
                 url: '/orders',
                 templateUrl: 'modules/order/views/job-chain-orders.html',
                 controller: 'JobChainOrdersCtrl',
-                title: 'Job chain orders',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -138,7 +163,6 @@
                 url: '/overview',
                 templateUrl: 'modules/order/views/job-chain-overview.html',
                 controller: 'JobChainOverviewCtrl',
-                title: 'Job chain overview',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -148,7 +172,6 @@
                 url: '/allOrders',
                 templateUrl: 'modules/order/views/order.html',
                 controller: 'OrderCtrl',
-                title: 'Orders',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.orders\' | translate}}'
                 }
@@ -158,7 +181,6 @@
                 url: '/orders/:name',
                 templateUrl: 'modules/order/views/orders-overview.html',
                 controller: 'OrderOverviewCtrl',
-                 title: 'Order overview',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.orders\' | translate}}',
                     parent: 'app.dashboard'
@@ -169,7 +191,6 @@
                 url: '/order/log/:historyId/:orderId',
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
-                title: 'Order log',
                 ncyBreadcrumb: {
                     label: '{{orderId}}',
                     parent: 'app.history'
@@ -179,7 +200,6 @@
                 url: '/job/log/:taskId',
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
-                 title: 'Job log',
                 ncyBreadcrumb: {
                     label: '{{taskId}}',
                     parent: 'app.history'
@@ -189,7 +209,6 @@
                 url: '/resources',
                 templateUrl: 'modules/jobscheduler/views/resource.html',
                 controller: 'ResourceCtrl',
-                 title: 'Resources',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.resources\' | translate}}'
                 }
@@ -197,7 +216,6 @@
             .state('app.resources.agentClusters', {
                 url: '/agentClusters/:type',
                 templateUrl: 'modules/jobscheduler/views/resource-agents.html',
-                title: 'Agent cluster',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -205,7 +223,6 @@
             .state('app.resources.locks', {
                 url: '/locks',
                 templateUrl: 'modules/jobscheduler/views/resource-locks.html',
-                title: 'Locks',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -213,7 +230,6 @@
             .state('app.resources.processClasses', {
                 url: '/processClasses',
                 templateUrl: 'modules/jobscheduler/views/resource-process-classes.html',
-                title: 'Process Classes',
                 ncyBreadcrumb: {
                     skip: true
                 }
@@ -222,7 +238,6 @@
                 url: '/schedules',
                 templateUrl: 'modules/jobscheduler/views/schedule.html',
                 controller: 'ScheduleCtrl',
-                 title: 'Schedules',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.schedules\' | translate}}'
                 }
@@ -231,7 +246,6 @@
                 url: '/schedule/:name',
                 templateUrl: 'modules/jobscheduler/views/schedule-orders.html',
                 controller: 'ScheduleOrderCtrl',
-                title: 'Schedule orders',
                 ncyBreadcrumb: {
                     label: '{{name}}',
                     parent: 'app.schedules'
@@ -241,7 +255,6 @@
                 url: '/history',
                 templateUrl: 'modules/order/views/history.html',
                 controller: 'HistoryCtrl',
-                title: 'History',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.history\' | translate}}'
                 }
@@ -258,8 +271,7 @@
             .state('app.profile', {
                 url: '/user/profile',
                 templateUrl: 'modules/user/views/profile.html',
-                controller: 'UserProfileCtrl',
-                title: 'Profile',
+                controller: 'UserProfileCtrl as upc',
                 ncyBreadcrumb: {
                    label: '{{ \'breadcrumb.userProfile\' | translate}}'
                 }

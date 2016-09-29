@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
-                        <div class="btn-group hidden-md-down">
+                        <div class="btn-group hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
                                     ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allOrders
                             </button>
@@ -36,6 +36,40 @@
                                        uib-btn-radio="'blacklist'"
                                        ng-class="{'btn-primary': filter.state=='blacklist'}" ng-click="load()" translate>button.blacklist
                             </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+
+                            <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
+                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allOrders
+                            </a>
+                            <a class="dropdown-item" ng-model="filter.state"
+                                       uib-btn-radio="'pending'"
+                                       ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
+                            </a>
+                            <a class="dropdown-item" ng-model="filter.state"
+                                    uib-btn-radio="'running'"
+                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                            </a>
+                            <a class="dropdown-item" ng-model="filter.state"
+                                    uib-btn-radio="'suspended'"
+                                    ng-class="{'btn-primary': filter.state=='suspended'}" ng-click="load()" translate>button.suspended
+                            </a>
+
+                            <a class="dropdown-item" ng-model="filter.state"
+                                    uib-btn-radio="'setback'"
+                                    ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()" translate>button.setback
+                            </a>
+                            <a class="dropdown-item" ng-model="filter.state"
+                                       uib-btn-radio="'waitingForResource'"
+                                       ng-class="{'btn-primary': filter.state=='waitingForResource'}" ng-click="load()" translate>button.waitingForResource
+                            </a>
+                            <a class="dropdown-item" ng-model="filter.state"
+                                       uib-btn-radio="'blacklist'"
+                                       ng-class="{'btn-primary': filter.state=='blacklist'}" ng-click="load()" translate>button.blacklist
+                            </a>
+                            </div>
                         </div>
                         <div class="btn-group dropdown">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
@@ -75,12 +109,12 @@
                     </div>
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
-                                 ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span translate>button.deleteOrder</span></button>
+                                 ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
-                                 ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span translate>button.suspendOrder</span></button>
-                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> <span translate>button.resetOrder</span></button>
+                                 ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span class="hidden-sm-down" translate>button.suspendOrder</span></button>
+                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> <span class="hidden-sm-down" translate>button.resetOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}"
-                                 ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span translate>button.startOrderNow</span></button>
+                                 ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span class="hidden-sm-down" translate>button.startOrderNow</span></button>
                      </div>
                     <toggle-view></toggle-view>
                 </div>
@@ -92,7 +126,7 @@
     <div class="padding p-b-0">
     <div class="row">
         <div class="col-md-12 ">
-            <h5 class=" _300 text-c"><span class="hidden-sm-down"><span ng-bind="filter.state"></span> <span translate>label.orders</span></span></h5>
+            <h5 class="text-c"><span class="hidden-sm-down"><span ng-bind="filter.state | translate"></span> <span translate>label.orders</span></span></h5>
         </div>
     </div>
     <div class="m-t-sm">

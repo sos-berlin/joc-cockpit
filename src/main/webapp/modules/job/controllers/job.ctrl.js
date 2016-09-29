@@ -8,8 +8,8 @@
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl);
 
-    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "$state", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter","toasty", "gettextCatalog", "$timeout"];
-    function JobChainCtrl($scope, JobChainService, OrderService, $state, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,toasty, gettextCatalog, $timeout) {
+    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter","toasty", "gettextCatalog", "$timeout", "DailyPlanService"];
+    function JobChainCtrl($scope, JobChainService, OrderService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,toasty, gettextCatalog, $timeout, DailyPlanService) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -19,6 +19,7 @@
 
         vm.pageSize = 10;
         vm.currentPage = 1;
+        var promise1;
 
         vm.savedJobChainFilter = JSON.parse(SavedFilter.jobChainFilters) || {};
         vm.savedJobChainFilter.list = vm.savedJobChainFilter.list || [];
@@ -30,7 +31,7 @@
 
             vm.pageSize =  vm.jobChains.length;
             vm.currentPage = 1;
-            $timeout(function () {
+           promise1=  $timeout(function () {
                 $('#jobChainTableId').table2excel({
                     exclude: ".noExl",
                     filename: "jobscheduler-jobchain",
@@ -108,7 +109,7 @@
             checkbox: false
         };
 
-        var watcher1 = vm.$watchCollection('object.jobChains', function (newNames) {
+        var watcher1 = $scope.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.allCheck.checkbox = newNames.length == vm.jobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
                 vm.isStopped = false;
@@ -129,12 +130,12 @@
             }
         });
 
-        var watcher2 = vm.$watchCollection('filtered', function (newNames) {
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
             if (newNames)
                 vm.object.jobChains = [];
         });
 
-        var watcher3 = vm.$watch('pageSize', function (newNames) {
+        var watcher3 = $scope.$watch('pageSize', function (newNames) {
             if (newNames)
                 vm.object.jobChains = [];
         });
@@ -151,26 +152,39 @@
         vm.viewOrders = function (jobChain) {
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
-            $state.go('app.jobChainDetails.overview');
+            $location.path('/jobChainDetails/overview').search({path: jobChain.path});
         };
-
 
         vm.viewCalendar = function (jobChain) {
             vm._jobChain = jobChain;
+            vm.planItems = [];
+            DailyPlanService.getPlans().then(function (res) {
+                vm.planItemData = res.planItems;
+                vm.planItemData.forEach(function (data) {
+                    var planData = {
+                        plannedStartTime: data.plannedStartTime,
+                        expectedEndTime: data.expectedEndTime
+                    };
+                    vm.planItems.push(planData);
+                });
+                openCalendar();
+            }, function (err) {
+            });
+            vm.object.jobChains = [];
+        };
+
+        function openCalendar() {
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
-                 size: 'lg'
+                size: 'lg'
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');
             }, function () {
-
             });
-            vm.object.jobChains = [];
-
-        };
+        }
 
         function addOrder(order, paramObject) {
             var orders = order;
@@ -403,18 +417,20 @@
 
         };
 
-        vm.$on('$destroy', function () {
+        $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
             watcher3();
+            if(promise1)
+            $timeout.cancel(promise1);
         });
     }
 
 
-    JobCtrl.$inject = ["$scope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
-        "gettextCatalog", "$timeout","FileSaver","Blob","$state","$window"];
-    function JobCtrl($scope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
-                     gettextCatalog, $timeout,FileSaver,Blob,$state,$window) {
+    JobCtrl.$inject = ["$scope","$rootScope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
+        "gettextCatalog", "$timeout","FileSaver","Blob","$state"];
+    function JobCtrl($scope, $rootScope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
+                     gettextCatalog, $timeout,FileSaver,Blob,$state) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -423,6 +439,7 @@
 
         vm.pageSize = 10;
         vm.currentPage = 1;
+        var promise1;
 
         vm.savedJobFilter = JSON.parse(SavedFilter.jobFilters) || [];
         vm.savedJobFilter.list = vm.savedJobFilter.list || [];
@@ -434,7 +451,7 @@
 
             vm.pageSize =  vm.jobs.length;
             vm.currentPage = 1;
-            $timeout(function () {
+          promise1=  $timeout(function () {
                 $('#jobTableId').table2excel({
                     exclude: ".noExl",
                     filename: "jobscheduler-job",
@@ -523,7 +540,7 @@
             checkbox: false
         };
 
-        var watcher1 = vm.$watchCollection('object.jobs', function (newNames) {
+        var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.allCheck.checkbox = newNames.length == vm.jobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
 
@@ -544,12 +561,12 @@
                 vm.allCheck.checkbox = false;
             }
         });
-        var watcher2 = vm.$watchCollection('filtered', function (newNames) {
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
             if (newNames)
                 vm.object.jobs = [];
         });
 
-        var watcher3 = vm.$watch('pageSize', function (newNames) {
+        var watcher3 = $scope.$watch('pageSize', function (newNames) {
             if (newNames)
                 vm.object.jobs = [];
         });
@@ -953,46 +970,69 @@
         function setRunTime(job) {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobs.push({job: job.path});
-            jobs.runtime = 'now +10';
+            jobs.jobs.push({job: job.path, runtime :job.runTime});
             jobs.jobschedulerId = vm.schedulerIds.selected;
             JobService.setRunTime(jobs).then(function (res) {
 
             }, function (err) {
 
             });
+            vm.object.jobs = [];
         }
 
         vm.setRunTime = function (job) {
-            ScheduleService.getSchedulesP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (res) {
-                vm.schedules = res.schedules;
+            vm.order = job;
+            JobService.getRunTime({
+                jobschedulerId: vm.schedulerIds.selected,
+                job: job.path
+            }).then(function (res) {
+                if (res.runTime) {
+                    vm.runTimes = res.runTime;
+                    vm.runTimes.content = vm.runTimes.content.replace(/&lt;/g, '<');
+                    vm.runTimes.content = vm.runTimes.content.replace(/&gt;/g, '>');
+                    vm.xml = vm.runTimes.content;
+                }
+                $rootScope.$broadcast('loadXml');
+
             });
 
-            vm.job = job;
 
             var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/set-job-run-time-dialog.html',
-                controller: 'DialogCtrl',
+                templateUrl: 'modules/core/template/set-run-time-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
                 scope: vm,
-                size: 'lg'
+                size: 'lg',
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 setRunTime(job);
             }, function () {
-
+                vm.object.jobs = [];
             });
 
+
+            ScheduleService.getSchedulesP({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true
+            }).then(function (res) {
+                vm.schedules = res.schedules;
+            });
+
+            vm.zones = moment.tz.names();
         };
+
 
         vm.downloadLog = function(logs){
             var data = new Blob(['file-with-test-log-data'],{type:'text/plain;charset=utf-8'});
             FileSaver.saveAs(data,'job.log');
-        }
+        };
 
-        vm.$on('$destroy', function () {
+        $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
             watcher3();
+            if(promise1)
+            $timeout.cancel(promise1);
         });
 
         vm.viewAllHistories = function(){

@@ -19,33 +19,33 @@
     <div class="left-sidebar-btn resize-cursor"><i  class="material-icons md-24" ng-click="hidePanel()">&#xe5d4;</i></div>
     <div class="order-panel" style="margin-top: -10px;">
         <div class="all">
-            <span class="text-black-lt _300"><a id="allorders_id" href ng-click="setFilter('all')" translate>label.allOrders</a></span>
-            <a ng-click="setFilter('all')" class="pull-right text" ng-bind="snapshot.orders.running+snapshot.orders.suspended+snapshot.orders.setback+snapshot.orders.waitingForResource+snapshot.orders.pending"></a>
+            <span class="text-black-lt _300"><a id="allorders_id" href ng-click="setFilter('all')" class="primary-text-hover-color" translate>label.allOrders</a></span>
+            <a ng-click="setFilter('all')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.running+snapshot.orders.suspended+snapshot.orders.setback+snapshot.orders.waitingForResource+snapshot.orders.pending"></a>
         </div>
         <div class="pending">
-            <span class="text-black-lt _300"><a href ng-click="setFilter('pending')" translate>label.ordersPending</a></span>
-             <a ng-click="setFilter('pending')" class="pull-right text" ng-bind="snapshot.orders.pending"></a>
+            <span class="text-black-lt _300"><a href ng-click="setFilter('pending')" class="primary-text-hover-color" translate>label.ordersPending</a></span>
+             <a ng-click="setFilter('pending')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.pending"></a>
         </div>
         <div class="running">
-            <span class="text-black-lt _300"><a href ng-click="setFilter('running')" translate>label.ordersRunning</a></span>
-            <a ng-click="setFilter('running')" class="pull-right text" ng-bind="snapshot.orders.running"></a>
+            <span class="text-black-lt _300"><a href ng-click="setFilter('running')" class="primary-text-hover-color" translate>label.ordersRunning</a></span>
+            <a ng-click="setFilter('running')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.running"></a>
         </div>
 
         <div class="suspended">
-            <span class="text-black-lt _300"><a href ng-click="setFilter('suspended')" translate>label.ordersSuspended</a></span>
-            <a ng-click="setFilter('suspended')" class="pull-right text" ng-bind="snapshot.orders.suspended"></a>
+            <span class="text-black-lt _300"><a href ng-click="setFilter('suspended')" class="primary-text-hover-color" translate>label.ordersSuspended</a></span>
+            <a ng-click="setFilter('suspended')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.suspended"></a>
         </div>
         <div class="queue">
-            <span class="text-black-lt _300"><a href ng-click="setFilter('waitingForResource')" translate>label.ordersWaitingForResource</a></span>
-            <a ng-click="setFilter('waitingForResource')" class="pull-right text" ng-bind="snapshot.orders.waitingForResource"></a>
+            <span class="text-black-lt _300"><a href ng-click="setFilter('waitingForResource')" class="primary-text-hover-color" translate>label.ordersWaitingForResource</a></span>
+            <a ng-click="setFilter('waitingForResource')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.waitingForResource"></a>
         </div>
         <div class="setback">
-            <span class="text-black-lt _300"><a href ng-click="setFilter('setback')" translate>label.ordersSetback</a></span>
-            <a ng-click="setFilter('setback')" class="pull-right text" ng-bind="snapshot.orders.setback"></a>
+            <span class="text-black-lt _300"><a href ng-click="setFilter('setback')" class="primary-text-hover-color" translate>label.ordersSetback</a></span>
+            <a ng-click="setFilter('setback')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.setback"></a>
         </div>
         <div class="blacklist">
-            <span class="text-black-lt _300"><a href ng-click="setFilter('blacklist')" translate>label.ordersBlacklist</a></span>
-            <a ng-click="setFilter('blacklist')" class="pull-right text" ng-bind="snapshot.orders.blacklist"></a>
+            <span class="text-black-lt _300"><a href ng-click="setFilter('blacklist')" class="primary-text-hover-color" translate>label.ordersBlacklist</a></span>
+            <a ng-click="setFilter('blacklist')" class="pull-right text primary-text-hover-color" ng-bind="snapshot.orders.blacklist"></a>
         </div>
     </div>
 </div>

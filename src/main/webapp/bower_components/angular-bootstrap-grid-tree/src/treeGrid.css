@@ -13,49 +13,54 @@
 
 .tree-grid .level-2 .indented {
 	position : relative;
-	left     : 20px;
+	left     : 16px;
 }
 
 .tree-grid .level-3 .indented {
 	position : relative;
-	left     : 40px;
+	left     : 32px;
 }
 
 .tree-grid .level-4 .indented {
 	position : relative;
-	left     : 60px;
+	left     : 48px;
 }
 
 .tree-grid .level-5 .indented {
 	position : relative;
-	left     : 80px;
+	left     : 64px;
 }
 
 .tree-grid .level-6 .indented {
 	position : relative;
-	left     : 100px;
+	left     : 80px;
 }
 
 .tree-grid .level-7 .indented {
 	position : relative;
-	left     : 120px;
+	left     : 96px;
 }
 
 .tree-grid .level-8 .indented {
 	position : relative;
-	left     : 140px;
+	left     : 112px;
 }
 
 .tree-grid .level-9 .indented {
 	position : relative;
-	left     : 160px;
+	left     : 128px;
 }
-
+.tree-grid .level-10 .indented {
+	position : relative;
+	left     : 144px;
+}
 .tree-grid .tree-icon,
 .tree-label {
 	cursor : pointer;
 }
-
+.tree-grid .tree-icon:hover{
+	color: #0086b0;
+}
 table.tree-grid {
 	max-height : 500px;
 	overflow-y : scroll;

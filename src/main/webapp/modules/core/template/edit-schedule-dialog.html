@@ -1,46 +1,28 @@
-<div>
-    <form name="form" ng-submit="ok()" novalidate>
-        <div class="modal-header">
-            <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img
-                    src="images/close-button.png"></span></button>
+<form name="form" ng-submit="ok()" novalidate>
+    <div class="modal-header">
+            <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true">
+                <img src="images/close-button.png"></span></button>
             <h4 class="modal-title">
-                <span translate>label.setRunTimeOf</span> {{order.orderId}}
-                <span ng-if="order.title">-</span>
-                <span class="text text-muted">{{order.title}}</span>
+                <span class="text-c" translate>label.update</span> :
+                <span>{{schedule.name}}</span>
+                <span ng-if="schedule.title">-</span>
+                <span class="text text-muted">{{schedule.title}}</span>
             </h4>
         </div>
-        <div class="modal-body p-a" style="min-height: 300px;max-height: 620px; overflow: auto">
-            <div ng-hide="editor.hidePervious">
+    <div class="modal-body p-a" style="min-height: 300px;">
+
+            <div ng-hide="editor.hidePervious || editor.nextPage">
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-sm pull-right btn-grey m-b"
-                                ng-click="editor.hidePervious = true;editor.create=true;editor.edit=false;" translate>
-                            button.addNewRuntime
+                        <button type="button" class="btn btn-sm pull-right btn-grey m-b" ng-click="createNewRunTime();" translate>button.addNewRuntime
                         </button>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-4" translate>label.chooseRunTime</label>
-
-                            <div class="col-md-8" ng-init="order.at = 'now'">
-                                <label class="md-check w-sm">
-                                    <input type="radio" name="radio" ng-model="order.at" value="now">
-                                    <i class="primary"></i> <span translate>label.runTime</span>
-                                </label>
-                                <label class="md-check">
-                                    <input type="radio" name="radio" ng-model="order.at" value="later">
-                                    <i class="primary"></i> <span translate>label.schedule</span>
-                                </label>
-                            </div>
+                        <div class="row">
+                            <label class="col-sm-12" translate>label.schedule</label>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-12" ng-if="order.at == 'later'">
-                                <select class="form-control" ng-model="order.runTime"
-                                        ng-options="schedule.name as schedule.name for schedule in schedules">
-                                    <option value="" translate>label.selectASchedule</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-12" ng-if="order.at == 'now'">
+                            <div class="col-sm-12">
                                 <div class="table-responsive">
                                     <table class="table table-hover table-bordered ">
                                         <thead>
@@ -51,117 +33,182 @@
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList">
                                         <tr>
-                                            <td>{{$index +1}}</td>
+                                            <td width="15%">{{$index +1}}</td>
                                             <td>
-                                                <a href=""
-                                                   ng-click="editRunTime(data.xml);editor.hidePervious = true;editor.create=false;editor.edit=true;">{{data.runTime}}</a>
+                                                <a href="" ng-click="editRunTime(data);">{{data.runTime}}</a>
                                             </td>
                                         </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center text-uppercase text-orange " ng-if="!runTimeList">
-                                    <a href ng-click="editor.hidePervious = true;editor.create=true;editor.edit=false;"
+                                <div class="text-center text-uppercase text-orange " ng-if="runtimeList && runtimeList.length==0">
+                                    <a href ng-click="createNewRunTime();"
                                        translate>button.addNewRuntime</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)"></textarea>
+                        <textarea class="form-control" rows="12" ng-model="xml" ng-blur="textEditor(xml)"></textarea>
                     </div>
                 </div>
             </div>
-            <div ng-show="editor.hidePervious">
+            <div ng-show="editor.hidePervious && !editor.nextPage">
                 <div ng-hide="editor.hideEvery">
-                    <div style="margin-top: 100px">
-                        <label class="col-sm-offset-2 col-sm-2 form-control-label" translate>label.every</label>
-
-                        <div class="col-sm-6">
-                            <select class="form-control" ng-model="run_time.every">
-                                <option value="weekDays" translate>label.weekDays</option>
-                                <option value="monthDays" translate>label.monthDays</option>
-                                <option value="yearDays" translate>label.yearDays</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div ng-show="editor.hideEvery">
-                    <div class="row m-b-sm">
-                        <label class="col-sm-12" ng-if="editor.create">
-                            <span class="text-primary text-u-l" translate>label.create</span>
-                            <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
-                        </label>
-                        <label class="col-sm-12" ng-if="editor.update">
-                            <span class="text-primary text-u-l" translate>label.edit</span>
-                            <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
-                        </label>
-                    </div>
-                    <div ng-show="run_time.every == 'weekDays'">
-                        <div class="b-b">
+                       <div class="b-b">
                             <ul class="nav nav-tabs">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href data-toggle="tab" data-target="#tab1"
-                                       ng-click="run_time.tab = 'weekDays'" translate>tab.weekDays</a>
+                                    <a class="nav-link active" href data-toggle="tab" data-target="#schTab1" translate>tab.schedule</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab2"
-                                       ng-click="run_time.tab = 'specificWeekDays'" translate>label.specificWeekDays</a>
+                                    <a class="nav-link" href data-toggle="tab" data-target="#schTab2" translate>tab.runtime</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
-                            <div class="tab-pane animated fadeIn active " id="tab1">
+                            <div class="tab-pane animated fadeIn active" id="schTab1">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 form-control-label" translate>label.title</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" ng-model="sch._title">
+                                    </div>
+                                </div>
+                                <div class="form-group row" ng-class="{ 'has-error' : (form.substitue.$invalid && form.substitue.$dirty) || error.scheduleRequired }">
+                                    <label class="col-sm-3 form-control-label" translate>label.substitute</label>
+                                    <div class="col-sm-6">
+                                        <select class="form-control" name="substitue" ng-model="sch._substitute" ng-change="error.scheduleRequired=false"
+                                                ng-options="schedule.path as schedule.path for schedule in schedules">
+                                            <option value="" translate>label.selectASchedule</option>
+                                        </select>
+                                        <div class="help-block text-danger" ng-if="error.scheduleRequired">
+                                            <div translate>message.scheduleError</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" ng-class="{'has-error': (error.validFromRequired)}">
+                                    <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control input-date" ng-focus="error.validFromRequired=false;error.validDate=false" name="date1" ng-model="from.date" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                                        <input  class="form-control input-time" ng-model="from.time" ng-focus="error.validDate=false" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+                                        <div class="help-block text-danger" ng-if="error.validFromRequired">
+                                           <div translate>message.validFromError</div>
+                                       </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row"  ng-class="{'has-error': (error.validDate || error.validToRequired)}">
+                                    <label class="col-sm-3 form-control-label" translate>label.validTo</label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control input-date" ng-focus="error.validToRequired=false;error.validDate=false" name="date2" ng-model="to.date" data-date-format="yyyy-MM-dd" data-autoclose="1" data-min-date="{{from.date}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                                        <input class="form-control input-time" ng-model="to.time" ng-focus="error.validDate=false" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+                                        <div class="help-block text-danger" ng-if="error.validToRequired">
+                                           <div translate>message.validToError</div>
+                                       </div>
+                                        <div class="help-block text-danger" ng-if="error.validDate">
+                                           <div translate>message.validDate</div>
+                                       </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || error.scheduleRequired || error.validFromRequired || error.validDate || error.validToRequired"
+                                                ng-click="saveScheduleDetail('done')" translate>button.done
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane animated fadeIn" id="schTab2">
+                                <div style="margin-bottom: 156px">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 form-control-label" translate>label.every</label>
+
+                                        <div class="col-sm-6">
+                                            <select class="form-control" ng-model="runTime.every">
+                                                <option value="weekDays" translate>label.weekDays</option>
+                                                <option value="monthDays" translate>label.monthDays</option>
+                                                <option value="yearDays" translate>label.yearDays</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div ng-show="editor.hideEvery">
+                    <div class="row m-b-sm">
+                        <label class="col-sm-12" ng-show="editor.create">
+                            <span class="text-primary text-u-l" translate>label.create</span>
+                            <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
+                        </label>
+                        <label class="col-sm-12" ng-show="editor.update">
+                            <span class="text-primary text-u-l" translate>label.edit</span>
+                            <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
+                        </label>
+                    </div>
+                    <div ng-show="runTime.every == 'weekDays'">
+                        <div class="b-b">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" href data-toggle="tab" data-target="#tab1" ng-class="{'active':runTime.tab == 'weekDays'}"
+                                       ng-click="runTime.tab = 'weekDays'" translate>tab.weekDays</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href data-toggle="tab" data-target="#tab2" ng-class="{'active':runTime.tab == 'specificWeekDays'}"
+                                       ng-click="runTime.tab = 'specificWeekDays'" translate>label.specificWeekDays</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
+                            <div class="tab-pane animated fadeIn" id="tab1" ng-class="{'active':runTime.tab == 'weekDays'}">
                                 <div class="form-group row">
                                     <label class="col-sm-3" translate>label.weekDays</label>
                                     <div class="col-sm-9">
                                         <label class="md-check w">
-                                            <input type="checkbox" ng-model="run_time.all" ng-click="checkAllWeek()">
+                                            <input type="checkbox" ng-model="runTime.all" ng-click="checkAllWeek()">
                                             <i class="primary"></i> <span translate>label.everyDay</span>
                                         </label><br>
                                         <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
+                                            <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'1'">
                                             <i class="primary"></i> <span translate>label.monday</span>
                                         </label>
                                         <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
+                                            <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'2'">
                                             <i class="primary"></i> <span translate>label.tuesday</span>
                                         </label>
                                         <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
+                                            <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'3'">
                                             <i class="primary"></i> <span translate>label.wednesday</span>
                                         </label>
                                         <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
+                                            <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'4'">
                                             <i class="primary"></i> <span translate>label.thursday</span>
                                         </label>
                                         <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
+                                            <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'5'">
                                             <i class="primary"></i> <span translate>label.friday</span>
                                         </label>
                                         <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
+                                            <input type="checkbox" data-checklist-model="runTime.days"
                                                    data-checklist-value="'6'">
                                             <i class="primary"></i> <span translate>label.saturday</span>
                                         </label>
                                         <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="run_time.weekdays.day._day"
-                                                   data-checklist-value="'7'">
+                                            <input type="checkbox" data-checklist-model="runTime.days"
+                                                   data-checklist-value="'0'">
                                             <i class="primary"></i> <span translate>label.sunday</span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane animated fadeIn " id="tab2">
+                            <div class="tab-pane animated fadeIn" id="tab2" ng-class="{'active':runTime.tab == 'specificWeekDays'}">
                                 <div class="form-group row">
                                     <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="run_time.monthdays.weekdays._day">
+                                        <select class="form-control" ng-model="runTime.specificWeekDay">
                                             <option value="monday">{{'label.monday' | translate}}</option>
                                             <option value="tuesday">{{'label.tuesday' | translate}}</option>
                                             <option value="wednesday">{{'label.wednesday' | translate}}</option>
@@ -175,7 +222,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3" translate>label.dayNumber</label>
                                     <div class="col-sm-6">
-                                        <select class="form-control" ng-model="run_time.monthdays.weekdays._which">
+                                        <select class="form-control" ng-model="runTime.which">
                                             <option value="1" translate>label.first</option>
                                             <option value="2" translate>label.second</option>
                                             <option value="3" translate>label.third</option>
@@ -190,13 +237,13 @@
                             </div>
                         </div>
                     </div>
-                    <div ng-if="run_time.every == 'monthDays'">
+                    <div ng-show="runTime.every == 'monthDays'">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.countFromTheLastDay</label>
 
                             <div class="col-sm-6">
                                 <label class="md-check">
-                                    <input type="checkbox" ng-model="run_time.isUltimos">
+                                    <input type="checkbox" ng-model="runTime.isUltimos">
                                     <i class="primary"></i>
                                 </label>
                             </div>
@@ -272,25 +319,25 @@
                                         <td ng-class="{'primary': getSelectedMonthDays('30')}"><a
                                                 ng-click="selectMonthDays('30')">30</a></td>
                                         <td ng-class="{'primary': getSelectedMonthDays('31')}"
-                                            ng-if="!run_time.isUltimos"><a ng-click="selectMonthDays('31')">31</a></td>
+                                            ng-if="!runTime.isUltimos"><a ng-click="selectMonthDays('31')">31</a></td>
                                         <td colspan="3" ng-class="{'primary': getSelectedMonthDays('0')}"
-                                            ng-if="run_time.isUltimos"><a ng-click="selectMonthDays('0')">Last Day</a>
+                                            ng-if="runTime.isUltimos"><a ng-click="selectMonthDays('0')">Last Day</a>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
                     </div>
-                    <div ng-if="run_time.every == 'yearDays'">
+                    <div ng-show="runTime.every == 'yearDays'">
                         <div class="form-group row">
                             <label class="col-sm-3 form-control-label" translate>label.month</label>
 
                             <div class="col-sm-2">
-                                <input class="form-control" placeholder="YYYY" ng-model="run_time.yeardays.month"
+                                <input class="form-control" placeholder="YYYY" ng-model="runTime.yeardays.month"
                                        type="text">
                             </div>
                             <div class="col-sm-2">
-                                <input class="form-control" placeholder="MM" ng-model="run_time.yeardays.year"
+                                <input class="form-control" placeholder="MM" ng-model="runTime.yeardays.year"
                                        type="text">
                             </div>
                             <div class="col-sm-6 m-t">
@@ -374,8 +421,8 @@
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.repeatInterval</label>
 
-                        <div class="col-sm-6" ng-init="run_time.frequency = 'single_start'">
-                            <select class="form-control" ng-model="run_time.frequency">
+                        <div class="col-sm-6" ng-init="runTime.frequency = 'single_start'">
+                            <select class="form-control" ng-model="runTime.frequency" ng-change="changeFrequency()">
                                 <option value="single_start" translate>label.singleStart</option>
                                 <option value="repeat" translate>label.repeatStartEnd</option>
                                 <option value="absolute_repeat" translate>label.absoluteRepeatEndEnd</option>
@@ -383,47 +430,46 @@
                         </div>
                     </div>
 
-                    <div ng-if="run_time.every != 'monthDays'">
-                        <div class="form-group row" ng-show="run_time.frequency=='single_start'">
+                    <div class="form-group row" ng-show="runTime.frequency=='single_start'">
                             <label class="col-sm-3 form-control-label" translate>label.startTime</label>
 
                             <div class="col-sm-2">
-                                <input class="form-control input-time" ng-model="run_time.weekdays.day.period._single_start"
+                                <input class="form-control input-time" ng-model="runTime.period._single_start"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
                                        data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
-                        </div>
-                        <div class="form-group row" ng-show="run_time.frequency=='repeat'">
+                    </div>
+                    <div class="form-group row" ng-show="runTime.frequency=='repeat'">
                             <label class="col-sm-3 form-control-label" translate>label.repeatTime</label>
 
                             <div class="col-sm-2">
-                                <input class="form-control input-time" ng-model="run_time.weekdays.day.period._repeat"
+                                <input class="form-control input-time" ng-model="runTime.period._repeat"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
                                        data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
-                        </div>
-                        <div class="form-group row"
-                             ng-show="run_time.frequency=='absolute_repeat'">
+                    </div>
+                    <div class="form-group row"
+                             ng-show="runTime.frequency=='absolute_repeat'">
                             <label class="col-sm-3 form-control-label" translate>label.interval</label>
 
                             <div class="col-sm-2">
-                                <input class="form-control input-time" ng-model="run_time.weekdays.day.period._absolute_repeat"
+                                <input class="form-control input-time" ng-model="runTime.period._absolute_repeat"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
                                        data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
-                        </div>
-                        <div class="form-group row" ng-hide="run_time.frequency=='single_start'"
+                    </div>
+                    <div class="form-group row" ng-hide="runTime.frequency=='single_start'"
                              ng-class="{'has-error': (form.time1.$invalid || form.time2.$invalid)}">
                             <label class="col-sm-3 form-control-label" translate>label.begin</label>
                             <div class="col-sm-2">
                                 <input class="form-control input-time" name="time1"
-                                       ng-model="run_time.weekdays.day.period._begin"
+                                       ng-model="runTime.period._begin"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
                                        data-autoclose="1" placeholder="{{'label.begin' | translate}}" bs-timepicker
                                        data-length="1"
@@ -432,75 +478,19 @@
                             <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
                             <div class="col-sm-2">
                                 <input class="form-control input-time" name="time2"
-                                       ng-model="run_time.weekdays.day.period._end"
+                                       ng-model="runTime.period._end"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
                                        data-autoclose="1" placeholder="{{'label.end' | translate}}"
-                                       data-min-time="{{run_time.weekdays.day.period._begin}}" bs-timepicker data-length="1"
+                                       data-min-time="{{runTime.period._begin}}" bs-timepicker data-length="1"
                                        data-minute-step="1" data-arrow-behavior="picker" type="text">
                             </div>
-                        </div>
                     </div>
-                    <div ng-if="run_time.every != 'weekDays'">
-                        <div class="form-group row" ng-show="run_time.frequency=='single_start'">
-                            <label class="col-sm-3 form-control-label" translate>label.startTime</label>
 
-                            <div class="col-sm-2">
-                                <input class="form-control input-time" ng-model="run_time.monthdays.day.period._single_start"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
-                                       data-minute-step="1"
-                                       data-arrow-behavior="picker" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-show="run_time.frequency=='repeat'">
-                            <label class="col-sm-3 form-control-label" translate>label.repeatTime</label>
 
-                            <div class="col-sm-2">
-                                <input class="form-control input-time" ng-model="run_time.monthdays.day.period._repeat"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
-                                       data-minute-step="1"
-                                       data-arrow-behavior="picker" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group row"
-                             ng-show="run_time.frequency=='absolute_repeat'">
-                            <label class="col-sm-3 form-control-label" translate>label.interval</label>
-
-                            <div class="col-sm-2">
-                                <input class="form-control input-time" ng-model="run_time.monthdays.day.period._absolute_repeat"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
-                                       data-minute-step="1"
-                                       data-arrow-behavior="picker" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-hide="run_time.frequency=='single_start'"
-                             ng-class="{'has-error': (form.time1.$invalid || form.time2.$invalid)}">
-                            <label class="col-sm-3 form-control-label" translate>label.begin</label>
-                            <div class="col-sm-2">
-                                <input class="form-control input-time" name="time1"
-                                       ng-model="run_time.monthdays.day.period._begin"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="{{'label.begin' | translate}}" bs-timepicker
-                                       data-length="1"
-                                       data-minute-step="1" data-arrow-behavior="picker" type="text">
-                            </div>
-                            <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
-                            <div class="col-sm-2">
-                                <input class="form-control input-time" name="time2"
-                                       ng-model="run_time.monthdays.day.period._end"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="{{'label.end' | translate}}"
-                                       data-min-time="{{run_time.monthdays.day.period._begin}}" bs-timepicker data-length="1"
-                                       data-minute-step="1" data-arrow-behavior="picker" type="text">
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.onHoliday</label>
-                        <div class="col-sm-6" ng-init="run_time.period._when_holiday = 'suppress'">
-                            <select class="form-control" ng-model="run_time.period._when_holiday">
+                        <div class="col-sm-6" ng-init="runTime.period._when_holiday = 'suppress'">
+                            <select class="form-control" ng-model="runTime.period._when_holiday">
                                 <option value="{{k}}" ng-repeat="(k,v) in editor.when_holiday_options" translate>
                                     {{v}}
                                 </option>
@@ -508,7 +498,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
+                    <div class="form-group row" ng-hide="runTime.tab == 'specificWeekDays'">
                         <label class="col-sm-3">{{'label.monthRange' | translate}}
                             <a href>
                                 <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showMonthRange"
@@ -519,208 +509,271 @@
                         </label>
                         <div class="col-sm-9" ng-show="showMonthRange">
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" ng-model="runTime.allMonth" ng-click="checkAllMonth()">
+                                <i class="primary"></i> <span translate>label.everyMonth</span>
+                            </label><br>
+                            <label class="md-check m-t-sm w">
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'1'">
                                 <i class="primary"></i> <span translate>label.january</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'2'">
                                 <i class="primary"></i> <span translate>label.february</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'3'">
                                 <i class="primary"></i> <span translate>label.march</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'4'">
                                 <i class="primary"></i> <span translate>label.april</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'5'">
                                 <i class="primary"></i> <span translate>label.may</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'6'">
                                 <i class="primary"></i> <span translate>label.june</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'7'">
                                 <i class="primary"></i> <span translate>label.july</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'8'">
                                 <i class="primary"></i> <span translate>label.august</span>
                             </label>
                             <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'9'">
                                 <i class="primary"></i> <span translate>label.september</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'10'">
                                 <i class="primary"></i> <span translate>label.october</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'11'">
                                 <i class="primary"></i> <span translate>label.november</span>
                             </label>
                             <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.month._month"
+                                <input type="checkbox" data-checklist-model="runTime.months"
                                        data-checklist-value="'12'">
                                 <i class="primary"></i> <span translate>label.december</span>
                             </label>
                         </div>
                     </div>
-                    <div class="row m-b-sm">
-                        <label class="col-sm-12">{{'label.nonWorkingDays' | translate}}
-                            <a href>
-                                <i class="cursor fa fa-caret-up m-l-xs" ng-hide="nonWorkingDay"
-                                   ng-click="nonWorkingDay=true"></i>
-                                <i class="cursor fa fa-caret-down m-l-xs" ng-show="nonWorkingDay"
-                                   ng-click="nonWorkingDay=false"></i>
-                            </a>
-                        </label>
-                    </div>
-                    <div class="form-group row" ng-show="nonWorkingDay">
-                        <label class="col-sm-3" translate>label.date</label>
 
-                        <div class="col-sm-6">
-                            <input class="form-control input-date" ng-model="run_time.holidays.holiday._date"
-                                   data-date-format="yyyy-MM-dd"
-                                   data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text"
-                                   style="width: 30%; background-position: 95% 8px;">
-                        </div>
-                    </div>
-                    <div class="form-group row" ng-show="nonWorkingDay">
-                        <label class="col-sm-3" translate>label.weekDays</label>
-                        <div class="col-sm-9">
-                            <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'1'">
-                                <i class="primary"></i> <span translate>label.monday</span>
-                            </label>
-                            <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'2'">
-                                <i class="primary"></i> <span translate>label.tuesday</span>
-                            </label>
-                            <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'3'">
-                                <i class="primary"></i> <span translate>label.wednesday</span>
-                            </label>
-                            <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'4'">
-                                <i class="primary"></i> <span translate>label.thursday</span>
-                            </label>
-                            <label class="md-check m-t-sm w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'5'">
-                                <i class="primary"></i> <span translate>label.friday</span>
-                            </label>
-                            <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'6'">
-                                <i class="primary"></i> <span translate>label.saturday</span>
-                            </label>
-                            <label class="md-check w">
-                                <input type="checkbox" data-checklist-model="run_time.holidays.weekdays.day._day"
-                                       data-checklist-value="'7'">
-                                <i class="primary"></i> <span translate>label.sunday</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group row" ng-show="nonWorkingDay">
-                        <label class="col-sm-3 form-control-label" translate>label.fromHotFolder</label>
-
-                        <div class="col-sm-6">
-                            <input type="text" class="form-control" ng-model="run_time.holidays.livefile">
-                        </div>
-                    </div>
-                    <div class="m-t row" ng-show="periodList.length>0">
+                    <div class="m-t-md row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                     <tr>
-                                        <th translate>label.weekDays</th>
+                                        <th translate>label.srNo</th>
+                                        <th translate>label.every</th>
+                                        <th translate>label.repeatInterval</th>
                                         <th translate>label.begin</th>
                                         <th translate>label.end</th>
-                                        <th translate>label.repeatInterval</th>
-                                        <th translate>label.time</th>
                                         <th translate>label.onHoliday</th>
-                                        <th></th>
+                                        <th translate>label.action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="period in periodList">
-                                        <td >{{getWeekDays(period.weekdays.day._day)}}</td>
-                                        <td>{{period.weekdays.day.period._begin  | date:'HH:mm:ss'}}</td>
-                                        <td>{{period.weekdays.day.period._end  | date:'HH:mm:ss'}}</td>
+                                    <tr ng-repeat="period in periodList track by $index">
+                                        <td>{{$index+1}}</td>
                                         <td>
-                                              <span ng-if="period.frequency == 'single_start'" translate>label.singleStart</span>
-                                              <span ng-if="period.frequency == 'repeat'" translate>label.repeatStartEnd</span>
-                                              <span ng-if="period.frequency == 'absolute_repeat'" translate>label.absoluteRepeatEndEnd</span>
-                                        </td>
-                                        <td>
-                                            {{period.weekdays.day.period._single_start | date:'HH:mm:ss'}}
-                                            {{period.weekdays.day.period._absolute_repeat | date:'HH:mm:ss'}}
-                                            {{period.weekdays.day.period._repeat | date:'HH:mm:ss'}}
-                                        </td>
-                                        <td>
-                                            <span ng-repeat="p in period">
-                                                <span ng-if="p._when_holiday=='previous_non_holiday'" translate>previous non holiday</span>
-                                                <span ng-if="p._when_holiday=='next_non_holiday'" translate>next non holiday</span>
-                                                <span ng-if="p._when_holiday=='suppress'" translate>suppress execution (default)</span>
-                                                <span ng-if="p._when_holiday=='ignore_holiday'" translate>ignore holiday</span>
+                                            <span ng-if="period.every == 'weekDays'">
+                                                <span ng-if="period.tab == 'weekDays'" translate>label.weekDays</span>
+                                                <span ng-if="period.tab == 'specificWeekDays'" translate>label.specificWeekDays</span>
                                             </span>
+                                            <span ng-if="period.every == 'monthDays'">
+                                                <span ng-if="period.isUltimos" translate>label.ultimos</span>
+                                                <span ng-if="!period.isUltimos" translate>label.monthDays</span>
+                                            </span>
+
                                         </td>
                                         <td>
-                                            <a><i ng-click="editPeriod(period, $index)" class="fa fa-pencil text-muted m-r-sm"></i></a>
-                                            <a><i ng-click="removePeriod($index)" class="fa fa-times text-muted"></i></a>
+                                            <span ng-if="period.period._single_start" translate>label.singleStart</span>
+                                            <span ng-if="period.period._repeat" translate>label.repeatStartEnd</span>
+                                            <span ng-if="period.period._absolute_repeat" translate>label.absoluteRepeatEndEnd</span>
+                                                <i class="text-muted">at</i>
+                                            <span ng-if="period.period._single_start">{{period.period._single_start}}</span>
+                                            <span ng-if="period.period._repeat">{{period.period._repeat || '-'}}</span>
+                                            <span ng-if="period.period._absolute_repeat">{{period.period._absolute_repeat || '-'}}</span>
+                                        </td>
+                                        <td>{{period.period._begin  || '-'}}</td>
+                                        <td>{{period.period._end || '-'}}</td>
+                                        <td>
+                                            <span ng-if="period.period._when_holiday=='previous_non_holiday'" translate>previous non holiday</span>
+                                            <span ng-if="period.period._when_holiday=='next_non_holiday'" translate>next non holiday</span>
+                                            <span ng-if="period.period._when_holiday=='suppress'" translate>suppress execution (default)</span>
+                                            <span ng-if="period.period._when_holiday=='ignore_holiday'" translate>ignore holiday</span>
+                                        </td>
+                                        <td>
+                                            <a><i ng-click="editPeriod(period, $index)" class="fa fa-pencil m-r-sm"></i></a>
+                                            <a><i ng-click="removePeriod(period,$index)" class="fa fa-times "></i></a>
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+
+
                     </div>
+
                 </div>
             </div>
+            <div ng-show="editor.nextPage">
+                <div class="form-group row">
+                    <div class="col-sm-3 form-control-label" translate>label.timeZone</div>
+                    <div class="col-sm-6">
+                        <select class="form-control"  ng-model="runTime1.timeZone">
+                            <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row m-b-sm">
+                        <label class="col-sm-12">{{'label.nonWorkingDays' | translate}}</label>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3" translate>label.date</label>
+                        <div class="col-sm-6">
+                            <input class="form-control input-date" ng-model="holidayDate"
+                                   data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text"
+                                   style="width: 30%; background-position: 95% 8px;">
+                            <button type="button" class="btn btn-xs m-l-sm" ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
+                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-offset-3 col-sm-3">
+                        <table class="table table-bordered" style="min-height: 100px; width: 87%">
+                            <tbody>
+                            <tr ng-repeat="date in holidayDates track by $index">
+                                <td>{{date  | date:'yyyy-MM-dd' || '-'}}
+
+                                    <a class="pull-right" ng-click="removeHolidayDate($index)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3" translate>label.weekDays</label>
+                    <div class="col-sm-9">
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'1'">
+                            <i class="primary"></i> <span translate>label.monday</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'2'">
+                            <i class="primary"></i> <span translate>label.tuesday</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'3'">
+                            <i class="primary"></i> <span translate>label.wednesday</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'4'">
+                            <i class="primary"></i> <span translate>label.thursday</span>
+                        </label>
+                        <label class="md-check m-t-sm w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'5'">
+                            <i class="primary"></i> <span translate>label.friday</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'6'">
+                            <i class="primary"></i> <span translate>label.saturday</span>
+                        </label>
+                        <label class="md-check w">
+                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                   data-checklist-value="'0'">
+                            <i class="primary"></i> <span translate>label.sunday</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 form-control-label" translate>label.fromHotFolder</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" ng-model="liveFile">
+                    </div>
+                    <div class="col-sm-1">
+                         <button type="button" class="btn btn-xs" style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-offset-3 col-sm-6">
+                        <table class="table table-bordered" style="min-height: 100px;">
+                            <tbody>
+                            <tr ng-repeat="file in calendarFiles track by $index">
+                                <td>{{file}}
+                                    <a class="pull-right" ng-click="removeCalendarFile($index)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="modal-footer text-left">
-            <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm" translate>button.submit
-            </button>
-            <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
-                    translate>button.cancel
-            </button>
-            <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
-                    ng-click="editor.hideEvery =true" translate>button.addRuntime
-            </button>
-            <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="editor.hidePervious = false" translate>button.back
-            </button>
-            <button ng-if="editor.hidePervious" ng-hide="!editor.hideEvery" type="button" class="btn btn-primary btn-sm"
-                    ng-disabled="form.$invalid" ng-click="addPeriod();" translate>button.addPeriod
-            </button>
-            <button ng-if="editor.hidePervious" ng-hide="!editor.hideEvery" type="button" class="btn orange btn-sm"
-                    ng-disabled="form.$invalid" ng-click="createRunTime();editor.hidePervious = false;editor.hideEvery =false" translate>
-                button.createRuntime
-            </button>
-            <button ng-if="editor.hidePervious" ng-hide="!editor.hideEvery" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="editor.hideEvery = false" translate>button.back
-            </button>
-        </div>
-    </form>
-</div>
+    <div class="modal-footer text-left">
+        <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm" translate>button.submit
+        </button>
+        <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
+                translate>button.cancel
+        </button>
+        <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
+                ng-disabled="form.$invalid || error.scheduleRequired || error.validFromRequired || error.validDate || error.validToRequired"
+                ng-click="saveScheduleDetail()" translate>button.next
+        </button>
+        <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button"
+                class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.back
+        </button>
+        <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button" class="btn btn-sm m-l-sm"
+                ng-click="cancel()"
+                translate>button.cancel
+        </button>
+        <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+                class="btn btn-primary btn-sm"
+                ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();" translate>button.addPeriod
+        </button>
+        <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+                class="btn orange btn-sm"
+                ng-click="next()" translate>button.next
+        </button>
+        <button ng-if="editor.hidePervious && editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+                class="btn btn-primary btn-sm" ng-click="createRunTime();">
+            <span ng-if="editor.update" translate>button.updateRuntime</span>
+            <span ng-if="editor.create" translate>button.createRuntime</span>
+        </button>
+        <button ng-if="editor.nextPage" type="button"
+                class="btn btn-grey btn-sm m-l-sm" ng-click="prev()" translate>button.prev
+        </button>
+        <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+                class="btn btn-grey btn-sm m-l-sm" ng-click="editor.hideEvery = false;" translate>button.back
+        </button>
+    </div>
+</form>
+
 

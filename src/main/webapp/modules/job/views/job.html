@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobs.length>0}">
-                        <div class="btn-group">
+                        <div class="btn-group hidden-btn-group">
                             <button id="jobs" class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
                                     ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobs
                             </button>
@@ -27,6 +27,30 @@
                                     uib-btn-radio="'queued'"
                                     ng-class="{'btn-primary': filter.state=='queued'}" ng-click="load()" translate>button.waitingForResource
                             </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
+                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobs
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.state"
+                                           uib-btn-radio="'pending'"
+                                           ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.state"
+                                        uib-btn-radio="'running'"
+                                        ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.state"
+                                        uib-btn-radio="'stopped'"
+                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.stopped
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.state"
+                                        uib-btn-radio="'queued'"
+                                        ng-class="{'btn-primary': filter.state=='queued'}" ng-click="load()" translate>button.waitingForResource
+                                </a>
+                            </div>
                         </div>
                         <div class="btn-group dropdown">
                              <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">{{'label.sortBy' | translate}}
@@ -105,7 +129,7 @@
                                     </label>
 
                                     <div class="text-left m-l-md block-ellipsis" >
-                                        <a href="" uib-tooltip="{{job.title}}"  ng-class="{'text-u-l':!job.isOrderJob}"  ng-click="showTaskFuc(job)" ng-bind="job.name"></a>
+                                        <a href="" uib-tooltip="{{job.title}}" class="primary-text-hover-color"  ng-class="{'text-u-l':!job.isOrderJob}"  ng-click="showTaskFuc(job)" ng-bind="job.name"></a>
                                     </div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
@@ -131,7 +155,7 @@
                                 <div class="box-footer b-t">
                                     <div>
                                         <a href class="text-left text-hover-color" ng-if="job.state._text.toLowerCase() !='stopped' && permission.Job.stop" ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
-                                        <a href class="text-left" ng-if="job.state._text.toLowerCase() =='stopped'  && permission.Job.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
+                                        <a href class="text-left primary-text-hover-color" ng-if="job.state._text.toLowerCase() =='stopped'  && permission.Job.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +171,7 @@
                         <thead>
                             <tr>
                                 <th class="noExl">
-                                    <label class="md-check">
+                                    <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                     </label>
                                 </th>
@@ -216,7 +240,7 @@
                                 </label>
                             </td>
                             <td><a href="" ng-click="showTaskFuc(job)">
-                                <span class="text-dark" ng-class="{'text-u-l':!job.isOrderJob}" ng-bind="job.name"></span> <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
+                              <span class="text-dark" ng-class="{'text-u-l':!job.isOrderJob}" ng-bind="job.name"></span> <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
                             </a>
 <!--                            <a href="" ng-click="hideTaskPanel()" ng-show="showTaskPanel == job">
                                 <i class="fa fa-angle-up cursor"></i>
@@ -225,9 +249,9 @@
                             </td>
                             <td ng-bind="job.path1"></td>
                             <td><span class="text-c label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span></td>
-                            <td><a ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains || 0"></a></td>
+                            <td><a class="primary-text-hover-color" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains || 0"></a></td>
                             <td ng-bind="job.estimatedDuration || '-'"> </td>
-                            <td><a ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a></td>
+                            <td><a class="primary-text-hover-color" ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a></td>
                             <td ng-bind="job.ordersSummary.suspended || '-'"></td>
                             <td ng-bind="job.ordersSummary.queued || '-'"></td>
                             <td ng-bind="job.ordersSummary.setback || '-'"></td>

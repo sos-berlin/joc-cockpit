@@ -155,7 +155,7 @@
                     //angularjs specific
                     objectequality: '@',  //$watch(watchExpression, listener, objectEquality)
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -309,7 +309,7 @@
                     //angularjs specific
                     objectequality: '@',  //$watch(watchExpression, listener, objectEquality)
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -473,7 +473,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -670,7 +670,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -810,7 +810,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -952,7 +952,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -1094,7 +1094,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -1198,7 +1198,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -1358,7 +1358,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -1559,7 +1559,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
                 },
                 controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs){
@@ -1726,7 +1726,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@',
 
 
@@ -1930,7 +1930,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -2040,7 +2040,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -2121,7 +2121,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },
@@ -2217,7 +2217,7 @@
                     //angularjs specific
                     objectequality: '@',
 
-                    //d3.js specific
+                    //d3.min.js specific
                     transitionduration: '@'
 
                 },

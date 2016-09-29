@@ -9,7 +9,7 @@
         .service('ResourceService', ResourceService)
         .service('ScheduleService', ScheduleService)
         .service('JobSchedulerService', JobSchedulerService)
-     .service('DailyPlanService', DailyPlanService);
+        .service('DailyPlanService', DailyPlanService);
 
     ResourceService.$inject = ["$resource", "$q", "apiUrl"];
     function ResourceService($resource, $q, apiUrl) {
@@ -124,6 +124,16 @@
             setRunTime: function (filter) {
                 var deferred = $q.defer();
                 var Schedule = $resource(apiUrl + 'schedule/set_run_time');
+                Schedule.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+            getRunTime: function (filter) {
+                var deferred = $q.defer();
+                var Schedule = $resource(apiUrl + 'schedule/run_time');
                 Schedule.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -392,12 +402,6 @@
                 }, function (err) {
                     deferred.resolve(err);
                 });
-                return deferred.promise;
-            },
-            getPlans: function(filter){
-                console.log("Get plans with filter "+filter.range);
-                var deferred = $q.defer();
-                deferred.resolve({});
                 return deferred.promise;
             },
             getSampleTimespans: function () {

@@ -41,10 +41,11 @@
         <div class="calendar-body">
             <mwl-calendar
                     events="events"
+                    plan-items="planItems"
                     view="calendarView"
                     view-date="viewDate"
                     view-title="calendarTitle"
-                    cell-is-open="vm.isCellOpen"
+                    cell-is-open="true"
                     on-view-change-click="vm.viewChangeClicked(calendarNextView)">
             </mwl-calendar>
         </div>

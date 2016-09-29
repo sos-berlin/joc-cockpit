@@ -32,9 +32,9 @@ angular
           datetime: 'MMM D, h:mm a'
         },
         title: {
-          day: 'dddd D MMMM, YYYY',
+          day: 'ddd D MMM, YYYY',
           week: 'Week {week} of {year}',
-          month: 'MMMM YYYY',
+          month: 'MMM YYYY',
           year: 'YYYY'
         }
       }
@@ -45,7 +45,7 @@ angular
     get titleFormats() {
       return this.allDateFormats[this.dateFormatter].title;
     },
-    dateFormatter: 'angular',
+    dateFormatter: 'moment',
     displayEventEndTimes: false,
     showTimesOnWeekView: false,
     displayAllMonthEvents: false,

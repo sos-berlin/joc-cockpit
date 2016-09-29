@@ -48,12 +48,13 @@
                 $window.localStorage.$SOS$ZONE = jstz().timezone_name;
             }
             if (!$window.localStorage.$SOS$DATEFORMAT) {
-                $window.localStorage.$SOS$DATEFORMAT = 'hh:mm A | DD.MM.YYYY';
+                $window.localStorage.$SOS$DATEFORMAT = 'DD.MM.YYYY HH:mm:ss';
             }
 
-            gettextCatalog.setCurrentLanguage($rootScope.locale.lang);
-            $resource("/modules/i18n/language_" + $rootScope.locale.lang + ".json").get(function (data) {
+
+            $resource("modules/i18n/language_" + $rootScope.locale.lang + ".json").get(function (data) {
                gettextCatalog.setStrings($rootScope.locale.lang, data);
+                gettextCatalog.setCurrentLanguage($rootScope.locale.lang);
             });
 
         }]);

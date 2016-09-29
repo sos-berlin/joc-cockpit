@@ -1,6 +1,6 @@
 
 <div class="navbar box-shadow-z0 p-l-0 p-r-md">
-    <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hidden-md-up m-a-0 m-l">
+    <a data-toggle="collapse" data-target="#navbar1" class="navbar-item pull-right hidden-dropdown m-a-0 m-l">
         <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
@@ -18,7 +18,7 @@
                 <letter-avatar shape="round" width="30" height="30" data="{{username}}"></letter-avatar>
               </span>
               <span class="text-left p-l-xs">
-                    <span class="_500 " ng-bind="username"></span>
+                    <span class="_500 text-u-c" ng-bind="username"></span>
                     <i class="fa fa-caret-down p-l-xs"></i>
               </span>
             </a>
@@ -37,11 +37,11 @@
     <!-- / navbar right -->
 
     <!-- navbar collapse -->
-    <div class="collapse navbar-toggleable-sm" id="navbar1">
+    <div class="collapse navbar-toggleable-md" id="navbar1">
         <!-- search form -->
         <form class="navbar-form form-inline pull-right navbar-item m-r" role="search">
             <div class="l-h">
-                <input type="search" data-ng-model="filterString" placeholder="{{'placeholder.search'| translate}}">
+                <input type="search" ng-model-options="{ debounce: 100 }" ng-model="filterString" placeholder="{{'placeholder.search'| translate}}">
             </div>
         </form>
         <!-- / search form -->
@@ -51,7 +51,7 @@
                 <a class="nav-link" ui-sref="app.dashboard" ui-sref-active="active">
                     <span class="nav-text">
                          <i class="fa fa-dashboard text-white"></i>
-                        <span id="dashboard_id" class="text-sm text-white" translate>label.dashboard</span>
+                        <span id="dashboard_id" class="font11 text-white text-u-c _600" translate>label.dashboard</span>
                     </span>
                 </a>
             </li>
@@ -59,7 +59,7 @@
                 <a class="nav-link" ui-sref="app.dailyPlan" ui-sref-active="active">
                     <span class="nav-text">
                          <img src="images/daily_plan.png">
-                        <span id="dailyPlan_id" class="text-sm text-white" translate>label.dailyPlan</span>
+                        <span id="dailyPlan_id" class="font11 text-white text-u-c _600" translate>label.dailyPlan</span>
                     </span>
                 </a>
             </li>
@@ -67,7 +67,7 @@
                 <a class="nav-link" ui-sref="app.jobChain" ui-sref-active-eq="active">
                     <span class="nav-text ">
                         <i class="fa fa-chain text-white"></i>
-                        <span id="jobChain_id" class="text-sm text-white" translate>label.jobChains</span>
+                        <span id="jobChain_id" class="font11 text-white text-u-c _600" translate>label.jobChains</span>
                     </span>
                 </a>
             </li>
@@ -75,7 +75,7 @@
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
                     <span class="nav-text ">
                         <i class="fa fa-list-ul text-white"></i>
-                        <span id="orders_id" class="text-sm text-white" translate>label.orders</span>
+                        <span id="orders_id" class="font11 text-white text-u-c _600" translate>label.orders</span>
                     </span>
                 </a>
             </li>
@@ -83,7 +83,7 @@
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
                     <span class="nav-text ">
                         <i class="fa fa-tasks text-white"></i>
-                        <span id="jobs_id" class="text-sm text-white" translate>label.jobs</span>
+                        <span id="jobs_id" class="font11 text-white text-u-c _600" translate>label.jobs</span>
                     </span>
                 </a>
             </li>
@@ -91,7 +91,7 @@
                 <a class="nav-link" ui-sref="app.resources.agentClusters" ui-sref-active-eq="active">
                     <span class="nav-text" >
                         <img src="images/resources.png">
-                        <span class="text-sm text-white" translate>label.resources</span>
+                        <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                     </span>
                 </a>
 
@@ -100,7 +100,7 @@
                 <a class="nav-link" ui-sref="app.schedules" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-calendar text-white"></i>
-                        <span class="text-sm text-white" translate>label.schedules</span>
+                        <span class="font11 text-white text-u-c _600" translate>label.schedules</span>
                     </span>
                 </a>
             </li>
@@ -108,7 +108,7 @@
                 <a class="nav-link" ui-sref="app.history" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-history text-white"></i>
-                        <span class="text-sm text-white" translate>label.history</span>
+                        <span class="font11 text-white text-u-c _600" translate>label.history</span>
                     </span>
                 </a>
             </li>

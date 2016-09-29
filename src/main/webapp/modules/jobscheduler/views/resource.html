@@ -6,37 +6,74 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="btn-group" ng-if="state=='lock'">
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                ng-class="{'btn-primary': filter.state=='all'}" translate>button.allLocks
-                        </button>
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'available'"
-                                ng-class="{'btn-primary': filter.state=='available'}" translate>button.free
-                        </button>
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                uib-btn-radio="'occupied'"
-                                ng-class="{'btn-primary': filter.state=='occupied'}" translate>button.locked
-                        </button>
+                    <div class="hide" ng-class="{'show-block':state=='lock'}">
+                        <div class="btn-group hidden-btn-group">
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
+                                    ng-class="{'btn-primary': filter.state=='all'}" translate>button.allLocks
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'available'"
+                                    ng-class="{'btn-primary': filter.state=='available'}" translate>button.free
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'occupied'"
+                                    ng-class="{'btn-primary': filter.state=='occupied'}" translate>button.locked
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
+                                            ng-class="{'btn-primary': filter.state=='all'}" translate>button.allLocks
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'available'"
+                                            ng-class="{'btn-primary': filter.state=='available'}" translate>button.free
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.state"
+                                            uib-btn-radio="'occupied'"
+                                            ng-class="{'btn-primary': filter.state=='occupied'}" translate>button.locked
+                                    </a>
+                                </div>
+                        </div>
                     </div>
-                    <div class="hide btn-group" ng-class="{'show-block':state=='agent'}">
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster</span>
-                        </button>
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                uib-btn-radio="'healthy'"
-                                ng-class="{'btn-primary': filter.state=='healthy'}" ng-click="loadAgents(0)" translate>button.healthyAgentCluster</span>
-                        </button>
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                uib-btn-radio="'unhealthy'"
-                                ng-class="{'btn-primary': filter.state=='unhealthy'}" ng-click="loadAgents(1)" translate>button.unhealthyAgentCluster</span>
-                        </button>
-                        <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                uib-btn-radio="'unreachable'"
-                                ng-class="{'btn-primary': filter.state=='unreachable'}" ng-click="loadAgents(2)" translate>button.unreachableAgentCluster</span>
-                        </button>
+                    <div class="hide" ng-class="{'show-block':state=='agent'}">
+                        <div class="btn-group hidden-btn-group">
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
+                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents(-1)" translate>button.allAgentCluster</span>
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'healthy'"
+                                    ng-class="{'btn-primary': filter.state=='healthy'}" ng-click="loadAgents(0)" translate>button.healthyAgentCluster</span>
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'unhealthy'"
+                                    ng-class="{'btn-primary': filter.state=='unhealthy'}" ng-click="loadAgents(1)" translate>button.unhealthyAgentCluster</span>
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                    uib-btn-radio="'unreachable'"
+                                    ng-class="{'btn-primary': filter.state=='unreachable'}" ng-click="loadAgents(2)" translate>button.unreachableAgentCluster</span>
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
+                                            ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster</span>
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.state"
+                                            uib-btn-radio="'healthy'"
+                                            ng-class="{'btn-primary': filter.state=='healthy'}" ng-click="loadAgents(0)" translate>button.healthyAgentCluster</span>
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.state"
+                                            uib-btn-radio="'unhealthy'"
+                                            ng-class="{'btn-primary': filter.state=='unhealthy'}" ng-click="loadAgents(1)" translate>button.unhealthyAgentCluster</span>
+                                    </a>
+                                <a class="dropdown-item" ng-model="filter.state"
+                                            uib-btn-radio="'unreachable'"
+                                            ng-class="{'btn-primary': filter.state=='unreachable'}" ng-click="loadAgents(2)" translate>button.unreachableAgentCluster</span>
+                                    </a>
+                                </div>
+                        </div>
                     </div>
-
-
                     <div class="btn-group dropdown">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
@@ -70,7 +107,7 @@
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                      <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentClusters">
-                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.agentClusters</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.agentClusters</span></span>
                         </a>
                     </li>
                      <li class="nav-item dropdown-separator">
@@ -78,7 +115,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.locks">
-                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.locks</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.locks</span></span>
                         </a>
                     </li>
                      <li class="nav-item dropdown-separator">
@@ -86,7 +123,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.processClasses">
-                            <span class="nav-text text-dark p-b-sm"><span class="text-sm" translate>label.processClasses</span></span>
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.processClasses</span></span>
                         </a>
                     </li>
                  </ul>

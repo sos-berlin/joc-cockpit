@@ -14,7 +14,7 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row m-t-sm">
-            <div class=" col-xxl-4 col-lg-5 col-md-6 col-sm-12" >
+            <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" >
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box" style="max-height: 294px">
@@ -84,7 +84,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xxl-8 col-lg-7 col-md-6 col-sm-12">
+            <div class="col-xxl-8 col-lg-7 col-md-12 col-sm-12">
                  <div class="row" >
                     <div class="col-md-12" >
                         <div class=" box" >
@@ -154,32 +154,28 @@
             <div class="col-sm-12">
                 <div class="box">
                     <div class="box-header b-b">
-                        <h3 class="m-t-xs" translate>label.todayPlan</h3>
+                        <h3 class="m-t-xs" translate>label.dailyPlanOverview</h3>
                     </div>
                     <div class="box-tool">
-                        <ul class="nav">
-                            <li class="nav-item inline ">
-                                <a class="btn btn-grey btn-sm " translate>button.thisHour
-                                </a>
-                            </li>
-                            <li class="nav-item inline">
-                                <a class="btn  btn-sm m-l-xs" translate>button.next12</a>
-                            </li>
-                            <li class="nav-item inline">
-                                <a class="btn  btn-sm m-l-xs " translate>button.next24
-                                </a>
-                            </li>
-                            <li class="nav-item inline">
-                                <a class=" btn  btn-sm m-l-xs " translate>button.next7
-                                </a>
-                            </li>
-                            <li class="nav-item inline">
-                                <button class="btn btn-sm btn-default m-l-xs grey" translate>button.enterCriteria</button>
-                            </li>
-                        </ul>
+                        <div class="btn-group m-l-sm">
+                            <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
+                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans()">Today
+                            </button>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.range"
+                                    uib-btn-radio="'next-24-hours'"
+                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="range='period';getPlans()"
+                                    translate>button.next24
+                            </button>
+                        </div>
                     </div>
                     <div class="box-body">
-                        //TODO
+                        <div class="hide" ng-class="{'show': totalPlanData > 0}">
+                            <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
+                                    late-error="lateError" executed="executed" error="error" total="totalPlanData"></daily-plan-overview>
+                        </div>
+                        <div class="hide text-center m-t text-uppercase text-orange"
+                            ng-class="{'show': totalPlanData == 0}" translate>message.noDataMatched
+                        </div>
                     </div>
                 </div>
             </div>

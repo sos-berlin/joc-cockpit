@@ -13,7 +13,7 @@
     SOSAuth.$inject = ['$window'];
     function SOSAuth($window) {
 
-        var props = ['accessTokenId', 'currentUserData','jobChain','order','agent','permission','scheduleIds'];
+        var props = ['accessTokenId', 'currentUserData','jobChain','permission','scheduleIds'];
 
         var propsPrefix = '$SOS$';
 
@@ -45,6 +45,8 @@
         SOSAuth.prototype.clearUser = function () {
             this.accessTokenId = null;
             this.currentUserData = null;
+            this.permission = null;
+            this.scheduleIds = null;
 
         };
 
@@ -52,20 +54,6 @@
              this.jobChain = jobChain;
               var self =this;
               var prop = 'jobChain';
-             save($window.sessionStorage, prop, self[prop]);
-        };
-
-        SOSAuth.prototype.setAgent = function (agents) {
-             this.agent = agents;
-              var self =this;
-              var prop = 'agent';
-             save($window.sessionStorage, prop, self[prop]);
-        };
-
-        SOSAuth.prototype.setOrder = function (order) {
-             this.order = JSON.stringify(order);
-              var self =this;
-              var prop = 'order';
              save($window.sessionStorage, prop, self[prop]);
         };
 
@@ -136,8 +124,8 @@
         };
     }
 
-    UserService.$inject = ["$resource","$q","SOSAuth", "APIUrl", "$http", "Base64"];
-    function UserService($resource,$q, SOSAuth, APIUrl, $http, Base64) {
+    UserService.$inject = ["$resource","$q","SOSAuth", "APIUrl", "$http", "Base64", "$location"];
+    function UserService($resource,$q, SOSAuth, APIUrl, $http, Base64, $location) {
 
         return {
 
@@ -145,15 +133,17 @@
              * Logout user
              */
             logout: function () {
-                var deferred = $q.defer();
-                var Logout = $resource(APIUrl + 'security/logout');
 
-                Logout.save(function (res) {
+               var Logout = $resource(APIUrl + 'security/logout');
+
+                Logout.save(function () {
                     SOSAuth.clearUser();
                     SOSAuth.clearStorage();
-                    deferred.resolve(res);
-                }, function (error) {
-                    deferred.reject(error);
+                     $location.path('/login');
+                }, function () {
+                    SOSAuth.clearUser();
+                    SOSAuth.clearStorage();
+                     $location.path('/login');
                 });
 
             },

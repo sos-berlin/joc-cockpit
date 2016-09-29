@@ -28,17 +28,17 @@
                    <div class="row m-t">
                        <div class="col-sm-2 text-dark form-control-label" translate>label.language</div>
                        <div class="col-sm-3">
-                          <select class="form-control w-xl" ng-model="perferences.locale" ng-change="setLocale()"  ng-options="locale as locale.name for locale in locales"></select>
+                          <select class="form-control w-xl" ng-model="upc.perferences.locale" ng-change="upc.setLocale()"  ng-options="locale as locale.name for locale in upc.locales"></select>
                        </div>
                    </div>
                    <div class="row m-t-sm">
                        <div class="col-sm-2 text-dark form-control-label" translate>label.timeZone</div>
                        <div class="col-sm-3">
-                           <select class="form-control w-xl"  ng-model="perferences.zone" ng-change="setTimeZone()">
-                                <option value="{{timezone}}">local ({{timezone}})</option>
+                           <select class="form-control w-xl"  ng-model="upc.perferences.zone" ng-change="upc.setTimeZone()">
+                                <option value="{{upc.timezone}}">local ({{upc.timezone}})</option>
                                 <option value="{{selectedJobScheduler.timeZone}}">JobScheduler ({{selectedJobScheduler.timeZone}})</option>
                                 <option>-----------------------------</option>
-                                <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
+                                <option ng-repeat="zone in upc.zones" value="{{zone}}">{{zone}}</option>
                            </select>
                        </div>
                    </div>
@@ -46,10 +46,11 @@
                        <div class="col-sm-2 text-dark form-control-label" translate>label.dateTimeFormat</div>
                        <div class="col-sm-10">
 
-                           <select class="form-control w-xl" ng-model="perferences.dateFormat" ng-change="setDateFormat()">
-                               <option value="hh:mm A | DD.MM.YYYY">Default (hh:mm A | DD.MM.YYYY)</option>
+                           <select class="form-control w-xl" ng-model="upc.perferences.dateFormat" ng-change="upc.setDateFormat()">
+                               <option value="DD.MM.YYYY HH:mm:ss">Default (DD.MM.YYYY HH:mm:ss)</option>
                                <option>---------------------------------------------------</option>
                                <option value="HH:mm | DD.MM.YYYY">HH:mm | DD.MM.YYYY</option>
+                               <option value="hh:mm A | DD.MM.YYYY">hh:mm A | DD.MM.YYYY</option>
                                <option value="YYYY/DD/MM HH:mm">YYYY/DD/MM HH:mm</option>
                                <option value="YYYY/DD/MM hh:mm A">YYYY/DD/MM hh:mm A</option>
                                <option value="YYYY/DD/MM HH:mm:ss">YYYY/DD/MM HH:mm:ss</option>
@@ -98,12 +99,12 @@
                                <option value="MM/DD/YYYY HH:mm">MM/DD/YYYY HH:mm</option>
                                <option value="MM/DD/YYYY hh:mm A">MM/DD/YYYY hh:mm A</option>
                                <option value="MM/DD/YYYY HH:mm:ss">MM/DD/YYYY HH:mm:ss</option>
-                               <option value="MM-DD-YYYY hh:mm:ss A">MM-DD-YYYY hh:mm:ss A</option>
+                               <option value="MM/DD/YYYY hh:mm:ss A">MM/DD/YYYY hh:mm:ss A</option>
 
                                <option value="MMM/DD/YYYY HH:mm">MMM/DD/YYYY HH:mm</option>
                                <option value="MMM/DD/YYYY hh:mm A">MMM/DD/YYYY hh:mm A</option>
                                <option value="MMM/DD/YYYY HH:mm:ss">MMM/DD/YYYY HH:mm:ss</option>
-                               <option value="MMM-DD-YYYY hh:mm:ss A">MMM-DD-YYYY hh:mm:ss A</option>
+                               <option value="MMM/DD/YYYY hh:mm:ss A">MMM/DD/YYYY hh:mm:ss A</option>
 
                                <option value="MM-DD-YYYY HH:mm">MM-DD-YYYY HH:mm</option>
                                <option value="MM-DD-YYYY hh:mm A">MM-DD-YYYY hh:mm A</option>

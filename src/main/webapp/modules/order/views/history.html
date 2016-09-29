@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div ng-class="{'hide':(object.historys.length>0 || object.jobHistorys.length>0)}">
-                         <div class="btn-group m-l-sm">
+                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': filter.date=='all'}" translate>button.all
                             </button>
@@ -24,7 +24,27 @@
                                     ng-class="{'btn-primary': filter.date=='lastweak'}" translate>button.lastWeak
                             </button>
                         </div>
-                        <div class="btn-group m-l-sm">
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                        ng-class="{'btn-primary': filter.date=='all'}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastHour'"
+                                        ng-class="{'btn-primary': filter.date=='lastHour'}" translate>button.last1
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.date" uib-btn-radio="'halfDay'" ng-click="loadHistory()"
+                                        ng-class="{'btn-primary': filter.date=='halfDay'}" translate>button.last12
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'fullDay'"
+                                        ng-class="{'btn-primary': filter.date=='fullDay'}" translate>button.last24
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastweak'"
+                                        ng-class="{'btn-primary': filter.date=='lastweak'}" translate>button.lastWeak
+                                </a>
+                            </div>
+                        </div>
+<!--                        <div class="btn-group m-l-sm">
                             <button id="jobs" class="btn btn-grey btn-sm" ng-model="filter.type" uib-btn-radio="'jobChain'"
                                     ng-class="{'btn-primary': filter.type=='jobChain'}" translate>button.jobChain
                             </button>
@@ -32,7 +52,7 @@
                                     uib-btn-radio="'job'"
                                     ng-class="{'btn-primary': filter.type=='job'}" ng-click="jobHistory()" translate>button.job
                             </button>
-                        </div>
+                        </div>-->
                         <div class="btn-group dropdown m-r-sm" ng-show="filter.type == 'jobChain'">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedHistoryFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
@@ -67,6 +87,28 @@
 </div>
 <div class="scroll-y max-ht">
 <div class="padding p-b-0" >
+            <div class="row m-b">
+             <div class="col-md-12">
+                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                     <li class="nav-item">
+                        <a class="nav-link" ng-class="{'active': filter.type=='jobChain'}" ng-model="filter.type"
+                                    uib-btn-radio="'jobChain'">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.jobChain</span></span>
+                        </a>
+                    </li>
+                     <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ng-class="{'active': filter.type=='job'}" ng-model="filter.type"
+                                    uib-btn-radio="'job'" ng-click="jobHistory()">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.job</span></span>
+                        </a>
+                    </li>
+                 </ul>
+
+            </div>
+         </div>
     <div class="hide"  ng-class="{'show': isLoading}">
         <div class="m-t-sm box p-a" ng-show="filter.type == 'jobChain'" >
 
@@ -75,7 +117,7 @@
                     <thead>
                         <tr>
                            <th class="noExl">
-                               <label class="md-check">
+                               <label class="md-check lg-check">
                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                </label>
                            </th>
@@ -217,7 +259,7 @@
                     <thead>
                         <tr>
                            <th class="noExl">
-                               <label class="md-check">
+                               <label class="md-check lg-check">
                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                </label>
                            </th>

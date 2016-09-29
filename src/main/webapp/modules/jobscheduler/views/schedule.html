@@ -67,7 +67,7 @@
                                             class="primary"></i></label>
 
                                     <div class="text-left m-l-md block-ellipsis" >
-                                         <a href="#/schedule/{{schedule.name}}" uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></a>
+                                         <a class="primary-text-hover-color" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></a>
                                         <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                     </div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -90,8 +90,8 @@
                             </div>
                             <div class="box-footer b-t">
                                 <div>
-                                    <a href class="text-left" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
-                                    <a href class="pull-right" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
+                                    <a href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
+                                    <a href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                         <thead>
                         <tr>
                             <th>
-                                <label class="md-check">
+                                <label class="md-check lg-check">
                                     <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                 </label>
                             </th>
@@ -166,7 +166,7 @@
                                     <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
                                 </label>
                             </td>
-                            <td ><a href="#/schedule/{{schedule.name}}">{{schedule.name}}</a>
+                            <td ><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}">{{schedule.name}}</a>
                                 <span ng-if="schedule.title">-</span>
                                 <i class="text-muted" ng-bind-html="schedule.title"></i>
                             </td>

@@ -17,7 +17,6 @@
                                        bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
 
                         <div class="btn-group m-l-sm">
-
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans('period')">Today
                             </button>
@@ -47,22 +46,22 @@
 
                         </div>
                         <div class="btn-group dropdown">
-                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span
-                                    translate>label.sortBy</span> <span
-                                    class="text-primary">
+                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">
+                                <span translate>label.sortBy</span>
+                                <span class="text-primary">
                                 <span ng-show="filter.sortBy =='processedPlan'">
                                     {{'label.name' | translate}}
-                                 <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='orderId'">
                                     {{'label.orderId' | translate}}
                                   <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='nextStartTime'">
+                                <span ng-show="filter.sortBy =='plannedStartTime'">
                                     {{'label.planned' | translate}}
-                               <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='status'">
@@ -75,12 +74,10 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('processedPlanned')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('processedPlan')" translate>label.name</a>
                                 <a class="dropdown-item" href ng-click="mainSortBy('orderId')" translate>label.orderId</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('plannedStartTime')"
-                                   translate>label.plannedStart</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('status')"
-                                   translate>label.status</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('plannedStartTime')" translate>label.plannedStart</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('status')" translate>label.status</a>
                             </div>
                         </div>
 
@@ -106,16 +103,6 @@
                                 </a></div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
-
-
-<!--                        <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">
-                                <span class="text-primary" ng-bind="dataSource"></span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-click="dataSource='Demo';load('Demo')" >Demo</a>
-                                <a class="dropdown-item" ng-click="dataSource='From API';load('From API')">From API</a>
-                        </div>-->
                     </div>
 
                     <toggle-view></toggle-view>
@@ -190,10 +177,10 @@
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                            <th ng-click="sortBy('status')"><a><span translate>label.status</span>
-                                <i ng-show="propertyName == 'status' && !reverse"
+                            <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                                <i ng-show="propertyName == 'state._text' && !reverse"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'status' && reverse"
+                                <i ng-show="propertyName == 'state._text' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
@@ -210,10 +197,10 @@
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                            <th ng-click="sortBy('expectedEnd')"><a><span translate>label.expectedEnd</span>
-                                <i ng-show="propertyName == 'expectedEnd' && !reverse"
+                            <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
+                                <i ng-show="propertyName == 'expectedEndTime' && !reverse"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'expectedEnd' && reverse"
+                                <i ng-show="propertyName == 'expectedEndTime' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
@@ -224,24 +211,24 @@
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                            <th ng-click="sortBy('start')"><a><span translate>label.start</span>
-                                <i ng-show="propertyName == 'start' && !reverse"
+                            <th ng-click="sortBy('startTime')"><a><span translate>label.start</span>
+                                <i ng-show="propertyName == 'startTime' && !reverse"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'start' && reverse"
+                                <i ng-show="propertyName == 'startTime' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                             <th ng-click="sortBy('end')"><a><span translate>label.end</span>
-                                <i ng-show="propertyName == 'end' && !reverse"
+                             <th ng-click="sortBy('endTime')"><a><span translate>label.end</span>
+                                <i ng-show="propertyName == 'endTime' && !reverse"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'end' && reverse"
+                                <i ng-show="propertyName == 'endTime' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
-                             <th ng-click="sortBy('duration')"><a><span translate>label.duration</span>
-                                <i ng-show="propertyName == 'duration' && !reverse"
+                             <th ng-click="sortBy('duration1')"><a><span translate>label.duration</span>
+                                <i ng-show="propertyName == 'duration1' && !reverse"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'duration' && reverse"
+                                <i ng-show="propertyName == 'duration1' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
 
@@ -249,29 +236,19 @@
                         </thead>
                         <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                         <tr>
-
-                            <td class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></td>
-                            <td class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job.substring(plan.job.lastIndexOf('/')+1,plan.job.length)"></td>
+                            <td>
+                            <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></span>
+                            <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job.substring(plan.job.lastIndexOf('/')+1,plan.job.length)"></span>
+                            </td>
                             <td><span ng-bind="plan.orderId"></span></td>
                             <td><span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span></td>
-                             <td><span ng-bind="plan.exitCode"></span></td>
-                            <td><span ng-bind="plan.plannedStartTime| stringToDate"></span></td>
-                            <td><span ng-bind="plan.expectedEndTime| stringToDate"></span></td>
-                            <td><span ng-bind="plan.plannedStartTime| duration:plan.expectedEndTime"></span></td>
-
-                            <td><span ng-bind="plan.startTime| stringToDate"></span></td>
-                            <td><span ng-bind="plan.endTime| stringToDate"></span></td>
-                            <td><span ng-bind="plan.startTime| duration:plan.endTime"></span></td>
-
-
-
-
-
-
-
-
-
-
+                            <td><span ng-bind="plan.exitCode"></span></td>
+                            <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
+                            <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
+                            <td><span ng-bind="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
+                            <td><span ng-bind="plan.startTime | stringToDate"></span></td>
+                            <td><span ng-bind="plan.endTime | stringToDate"></span></td>
+                            <td><span ng-bind="plan.startTime | duration:plan.endTime"></span></td>
 
                         </tr>
 

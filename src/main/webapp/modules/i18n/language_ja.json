@@ -604,8 +604,39 @@
    "label.processName": "Process Name",
    "label.timeout": "Timeout",
    "label.enterTimeout": "Enter Timeout",
-   "message.nonNumericValue": "Non-numeric value"
+   "message.nonNumericValue": "Non-numeric value",
+   "button.processing": "Processing",
+   "button.overview": "Overview",
+   "button.done": "Done",
+   "button.ok": "Ok",
+   "label.ultimos": "Ultimos",
+   "label.fitToScreen": "Fit to Screen",
+   "label.addSubstituteFor": "Add substitute for",
+   "label.enterFolder": "Folder",
+   "label.enterScheduleName": "Schedule Name",
+   "message.scheduleError": "Substitute schedule is required ",
+   "message.validFromError": "Valid from is required ",
+   "message.validToError": "Valid to is required ",
+   "message.validDate": "Valid from must be older than the valid to",
+   "WAITINGFORRESOURCE": "waitingforresource",
+   "WAITING_FOR_LOCK": "waiting_for_lock",
+   "WAITING_FOR_PROCESS": "waiting_for_process",
+   "WAITING_FOR_AGENT": "waiting_for_agent",
+   "WAITING_FOR_TASK": "waiting_for_task",
+   "AD_HOC": "ad_hoc",
+   "FILE_ORDER": "file_order",
+   "ERROR_IN_CONFIGURATION_FILE": "error_in_configuration_file",
+   "CHANGED_FILE_NOT_LOADED": "changed_file_not_loaded",
+   "REMOVING_DELAYED": "removing_delayed",
+   "RESOURCE_IS_MISSING": "resource_is_missing",
+   "REPLACEMENT_IS_STANDING_BY": "replacement_is_standing_by",
+   "OK": "ok",
+   "LOADED": "loaded",
+   "NOT_IN_PERIOD": "not_in_period",
+   "tab.schedule": "Schedule",
+   "tab.runtime": "Run Time"
 }
+
 
 
 
