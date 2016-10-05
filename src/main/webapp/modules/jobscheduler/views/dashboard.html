@@ -73,7 +73,6 @@
                                         showXAxis="true"
                                         showYAxis="true"
                                         margin="{bottom:60, right: 30, top:20}"
-
                                         forceY="{{YAxisDomain}}"
                                         noData="{{'message.noDataAvailable' | translate}}"
                                         showValues="true">
@@ -117,29 +116,29 @@
                                 <div class="box-body" >
                                     <div class="text-center row">
                                         <div class="col-xs-2">
-                                            <div class="text-sm" translate>label.pending</div>
+                                            <div class="" translate>label.pending</div>
                                             <a id ="pending-id" href="#/orders/pending" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
-                                            <div class="text-sm" translate>label.running</div>
+                                            <div class="" translate>label.running</div>
                                             <a id ="running-id" href="#/orders/running" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
                                         </div>
 
                                         <div class="col-xs-2">
-                                            <div class="text-sm " translate>label.suspended</div>
+                                            <div class=" " translate>label.suspended</div>
                                             <a id ="suspended-id" href="#/orders/suspended" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
                                         </div>
 
                                         <div class="col-xs-2">
-                                            <div class="text-sm " translate>label.setback</div>
+                                            <div class=" " translate>label.setback</div>
                                             <a id ="setback-id" href="#/orders/setback" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
-                                            <div class="text-sm " translate>label.waitingForResource</div>
+                                            <div class=" " translate>label.waitingForResource</div>
                                             <a id ="waitingForResource-id" href="#/orders/waitingForResource" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
-                                            <div class="text-sm " translate>label.blacklist</div>
+                                            <div class=" " translate>label.blacklist</div>
                                             <a id ="blacklist-id" href="#/orders/blacklist" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
                                         </div>
                                     </div>
@@ -159,7 +158,7 @@
                     <div class="box-tool">
                         <div class="btn-group m-l-sm">
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans()">Today
+                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans()" translate>button.today
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-24-hours'"
@@ -168,7 +167,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="box-body">
+                    <div class="box-body p-a">
                         <div class="hide" ng-class="{'show': totalPlanData > 0}">
                             <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
                                     late-error="lateError" executed="executed" error="error" total="totalPlanData"></daily-plan-overview>

@@ -13,7 +13,7 @@
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
-        vm.filter.sortBy = "name";
+       // vm.filter.sortBy = "name";
 
         vm.object = {};
 
@@ -58,18 +58,194 @@
             vm.jobChains = orderBy(vm.jobChains, vm.propertyName, vm.reverse);
         };
 
+
         vm.mainSortBy = function (propertyName) {
             vm.object.jobChains = [];
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
+
             vm.jobChains = orderBy(vm.jobChains, vm.filter.sortBy, vm.sortReverse);
         };
+
+        vm.tree =[];
+
+        vm.expanding_property = {
+            field: "name",
+            sortable : true,
+            filterable : true
+        };
+
+        vm.hidePanel = function () {
+            $('#rightPanel').addClass('m-l-0 fade-in');
+            $('#rightPanel .parent .child').removeClass('col-lg-4').addClass('col-lg-3');
+            $('#rightPanel .parent .child').removeClass('col-xxl-3').addClass('col-xxl-2');
+            $('#leftPanel').hide();
+            $('.sidebar-btn').show();
+        };
+
+
+
+        vm.showLeftPanel = function () {
+            $('#rightPanel').removeClass('fade-in m-l-0');
+            $('#rightPanel .parent .child').addClass('col-lg-4').removeClass('col-lg-3');
+            $('#rightPanel .parent .child').addClass('col-xxl-3').removeClass('col-xxl-2');
+            $('#leftPanel').show();
+            $('.sidebar-btn').hide();
+
+        };
+        vm.my_tree = {};
+        vm.branchs = [];
+
+        vm.treeHandler =function(data) {
+           if (data.expanded) {
+               data.jobChains = [];
+               angular.forEach(vm.jobChains, function (value) {
+                   if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                       data.jobChains.push(value);
+                   }
+               });
+
+               if(data.jobChains.length>0) {
+                   vm.branchs = [];
+                   vm.branchs.push(data);
+               }
+           }
+        };
+
+
+        vm.expandNode = function(data) {
+            vm.branchs = [];
+            function recursive(data) {
+                data.expanded = !0;
+
+                data.jobChains = [];
+                angular.forEach(vm.jobChains, function (value) {
+                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                        data.jobChains.push(value);
+                    }
+                });
+
+                if (data.jobChains.length > 0) {
+                    vm.branchs.push(data);
+                }
+                angular.forEach(data.folders, function (a) {
+                    a.expanded = !0;
+
+                    a.jobChains = [];
+                    angular.forEach(vm.jobChains, function (value) {
+                        if (a.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                            a.jobChains.push(value);
+                        }
+                    });
+                    if (a.jobChains.length > 0) {
+                        vm.branchs.push(a);
+                    }
+
+                    if (a.folders.length > 0) {
+
+                        angular.forEach(a.folders, function (value) {
+                            recursive(value);
+                        });
+                    }
+                });
+            }
+
+            recursive(data);
+        };
+        vm.collapseNode = function(data){
+
+            function recursive(data) {
+                data.expanded = !1;
+                angular.forEach(data.folders, function (a) {
+                    a.expanded = !1;
+                    if(a.folders.length>0) {
+                        angular.forEach(a.folders, function (value) {
+                            recursive(value);
+                        });
+                    }
+                });
+            }
+            recursive(data);
+        };
+
+        function traverseTree(data) {
+
+            if (!data.jobChains) {
+                data.jobChains = [];
+                angular.forEach(vm.jobChains, function (value) {
+                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                        data.jobChains.push(value);
+                    }
+                });
+            }
+            if(data.jobChains.length>0){
+                 vm.branchs.push(data);
+            }
+            if (data.folders.length > 0) {
+                angular.forEach(data.folders, function (value) {
+
+                    traverseTree(value);
+                });
+
+            }
+        }
+
+        vm.expandAll = function() {
+            vm.branchs =[];
+            angular.forEach(vm.tree, function (value) {
+                traverseTree(value);
+            });
+        };
+
+
+        function checkExpand(data) {
+
+            data.jobChains = [];
+            angular.forEach(vm.jobChains, function (value) {
+                if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                    data.jobChains.push(value);
+                }
+            });
+             if(data.jobChains.length>0){
+                 vm.branchs.push(data);
+            }
+            if (data.folders.length > 0) {
+
+                angular.forEach(data.folders, function (value) {
+                    if (value.expanded)
+                        checkExpand(value);
+                });
+            }
+        }
+
+        function filteredTreeData(){
+            vm.branchs =[];
+            angular.forEach(vm.tree, function (value) {
+                if (value.expanded)
+                    checkExpand(value);
+            });
+        }
+
+
+        JobChainService.tree({jobschedulerId: vm.schedulerIds.selected, compact:true,types:['JOBCHAIN']}).then(function(res){
+
+            if(res.folders.length>1){
+                 vm.tree = res.folders;
+            }else{
+                 vm.tree = res.folders[0].folders;
+            }
+            vm.isLoading = true;
+             vm.init();
+        }, function(err){
+
+        });
+
 
         vm.init = function () {
             vm.isLoading = false;
             JobChainService.getJobChainsP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (result) {
                 angular.forEach(result.jobChains, function (value) {
-                    value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                    value.path1 = value.path.substring(0, value.path.lastIndexOf('/'));
                 });
                 vm.jobChains = result.jobChains;
                 vm.isLoading = true;
@@ -83,9 +259,10 @@
                 vm.isError = true;
             });
         };
-        vm.init();
+
 
         vm.load = function () {
+
             if(vm.savedJobChainFilter.selected){
                 filterData();
                 vm.data = [];
@@ -102,6 +279,7 @@
                 });
                 vm.jobChains = vm.data;
             }
+            filteredTreeData();
         };
 
         /**--------------- Checkbox functions -------------*/
@@ -331,6 +509,7 @@
                 SavedFilter.setJobChain(vm.savedJobChainFilter);
                 SavedFilter.save();
                 filterData();
+                filteredTreeData();
             }, function () {
 
             });
@@ -369,6 +548,7 @@
                 SavedFilter.setJobChain(vm.savedJobChainFilter);
                 SavedFilter.save();
                 filterData();
+                filteredTreeData();
             }, function () {
                 vm.filterName = undefined;
             });
@@ -390,6 +570,7 @@
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
             filterData();
+             filteredTreeData();
         };
 
         vm.checkFilterName = function () {
@@ -414,6 +595,7 @@
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
             filterData();
+            filteredTreeData();
 
         };
 
@@ -434,7 +616,7 @@
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
-        vm.filter.sortBy = "name";
+        //  vm.filter.sortBy = "name";
         vm.object = {};
 
         vm.pageSize = 10;
@@ -445,24 +627,24 @@
         vm.savedJobFilter.list = vm.savedJobFilter.list || [];
 
         vm.exportToExcel = function () {
-            $('#exportToExcelBtn').attr("disabled",true);
+            $('#exportToExcelBtn').attr("disabled", true);
             var pageSizeTemp = angular.copy(vm.pageSize);
             var currentPageTemp = angular.copy(vm.currentPage);
 
-            vm.pageSize =  vm.jobs.length;
+            vm.pageSize = vm.jobs.length;
             vm.currentPage = 1;
-          promise1=  $timeout(function () {
+            promise1 = $timeout(function () {
                 $('#jobTableId').table2excel({
                     exclude: ".noExl",
                     filename: "jobscheduler-job",
                     fileext: ".xlsx",
-					exclude_img: false,
-					exclude_links: false,
-					exclude_inputs: false
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
                 });
                 vm.pageSize = pageSizeTemp;
                 vm.currentPage = currentPageTemp;
-                 $('#exportToExcelBtn').attr("disabled",false);
+                $('#exportToExcelBtn').attr("disabled", false);
             }, 800);
         };
 
@@ -485,12 +667,140 @@
             vm.jobs = orderBy(vm.jobs, vm.filter.sortBy, vm.sortReverse);
         };
 
+        vm.tree = [];
+
+        vm.expanding_property = {
+            field: "name",
+            sortable: true,
+            filterable: true
+        };
+
+
+        $scope.my_tree = {};
+
+        vm.treeHandler = function (data) {
+            data.jobs = [];
+            angular.forEach(vm.jobs, function (value) {
+                if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                    data.jobs.push(value);
+                }
+            });
+
+        };
+
+        vm.expandNode = function (data) {
+
+            function recursive(data) {
+                data.expanded = !0;
+
+                data.jobs = [];
+                angular.forEach(vm.jobs, function (value) {
+                    if (value.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                        data.jobs.push(value);
+                    }
+                });
+
+                angular.forEach(data.folders, function (a) {
+                    a.expanded = !0;
+
+                        a.jobs = [];
+                        angular.forEach(vm.jobs, function (value) {
+                            if (a.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                                a.jobs.push(value);
+                            }
+                        });
+
+                    if (a.folders.length > 0) {
+
+                        angular.forEach(a.folders, function (value) {
+                            recursive(value);
+                        });
+                    }
+                });
+            }
+
+            recursive(data);
+        };
+        vm.collapseNode = function (data) {
+
+            function recursive(data) {
+                data.expanded = !1;
+                angular.forEach(data.folders, function (a) {
+                    a.expanded = !1;
+                    if (a.folders.length > 0) {
+                        angular.forEach(a.folders, function (value) {
+                            recursive(value);
+                        });
+                    }
+                });
+            }
+
+            recursive(data);
+        };
+
+        function traverseTree(data) {
+            if (!data.jobs) {
+                data.jobs = [];
+                angular.forEach(vm.jobs, function (value) {
+                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                        data.jobs.push(value);
+                    }
+                });
+            }
+            if (data.folders.length > 0) {
+                angular.forEach(data.folders, function (value) {
+                    traverseTree(value);
+                });
+            }
+        }
+
+        vm.expandAll = function () {
+            angular.forEach(vm.tree, function (value) {
+                traverseTree(value);
+            });
+        };
+
+        function checkExpand(data) {
+            data.jobs = [];
+            angular.forEach(vm.jobs, function (value) {
+                if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                    data.jobs.push(value);
+                }
+            });
+
+            if (data.folders.length > 0) {
+                angular.forEach(data.folders, function (value) {
+                    if (value.expanded)
+                        checkExpand(value);
+                });
+            }
+        }
+
+        function filteredTreeData(){
+            angular.forEach(vm.tree, function (value) {
+                if (value.expanded)
+                    checkExpand(value);
+            });
+        }
+
+        JobService.tree({jobschedulerId: vm.schedulerIds.selected, compact: true, types: ['JOB']}).then(function (res) {
+
+            if(res.folders.length>1){
+                 vm.tree = res.folders;
+            }else{
+                 vm.tree = res.folders[0].folders;
+            }
+            vm.isLoading = true;
+            vm.init();
+        }, function (err) {
+
+        });
 
         vm.init = function () {
             vm.isLoading = false;
-            JobService.getJobsP({jobschedulerId: vm.schedulerIds.selected, compact:true}).then(function (result) {
+            JobService.getJobsP({jobschedulerId: vm.schedulerIds.selected, compact: true}).then(function (result) {
                 angular.forEach(result.jobs, function (value) {
-                    value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                    value.path1 = value.path.substring(0, value.path.lastIndexOf('/'));
                 });
                 vm.jobs = result.jobs;
 
@@ -504,7 +814,7 @@
                 vm.isError = true;
             });
         };
-        vm.init();
+
 
         vm.load = function () {
             vm.object.jobs = [];
@@ -525,6 +835,7 @@
                 vm.jobs = vm.data;
             }
             vm.hideTaskPanel();
+             filteredTreeData();
         };
 
         vm.getQueueOrders = function (job) {
@@ -623,6 +934,7 @@
                 SavedFilter.setJob(vm.savedJobFilter);
                 SavedFilter.save();
                 filterData();
+                filteredTreeData();
             }, function () {
 
             });
@@ -660,6 +972,8 @@
                 vm.filterName = undefined;
                 SavedFilter.setJob(vm.savedJobFilter);
                 SavedFilter.save();
+                filterData();
+                filteredTreeData();
             }, function () {
                 vm.filterName = undefined;
             });
@@ -669,7 +983,7 @@
             angular.forEach(vm.savedJobFilter.list, function (value, index) {
                 if (value.name == vm.jobFilter.name) {
                     toasty.success({
-                        title: value.name + ' '+ gettextCatalog.getString('message.filterDeleteSuccessfully'),
+                        title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
                         msg: ''
                     });
                     vm.savedJobFilter.list.splice(index, 1);
@@ -681,6 +995,7 @@
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
             filterData();
+            filteredTreeData();
         };
 
         vm.checkFilterName = function () {
@@ -705,6 +1020,7 @@
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
             filterData();
+            filteredTreeData();
 
         };
 
@@ -721,10 +1037,10 @@
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
-            jobs.jobs.push({job:value.path});
+            jobs.jobs.push({job: value.path});
             TaskService.historys(jobs).then(function (res) {
                 vm.taskHistory = res.history;
-                vm.taskHistory=vm.taskHistory.splice(0,10);
+                vm.taskHistory = vm.taskHistory.splice(0, 10);
                 vm.isLoading1 = true;
             }, function () {
                 vm.isLoading1 = true;
@@ -735,8 +1051,11 @@
 
         };
 
-        vm.taskLog = function(){
-            TaskService.log({taskId: vm.showTaskPanel.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+        vm.taskLog = function () {
+            TaskService.log({
+                taskId: vm.showTaskPanel.taskId,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
                 vm.log = res.log;
             });
         };
@@ -884,7 +1203,7 @@
 
         vm.end = function (task) {
 
-            TaskService.end({taskId:task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+            TaskService.end({taskId: task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
 
             }, function (err) {
 
@@ -898,7 +1217,7 @@
             });
         };
         vm.terminateTask = function (task) {
-            TaskService.terminate({taskId:task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+            TaskService.terminate({taskId: task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
 
             }, function (err) {
 
@@ -914,7 +1233,7 @@
 
             });
         };
-        vm.killAllTask = function () {
+        vm.killAllTask = function (job) {
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
@@ -970,7 +1289,7 @@
         function setRunTime(job) {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobs.push({job: job.path, runtime :job.runTime});
+            jobs.jobs.push({job: job.path, runtime: job.runTime});
             jobs.jobschedulerId = vm.schedulerIds.selected;
             JobService.setRunTime(jobs).then(function (res) {
 
@@ -1022,22 +1341,22 @@
         };
 
 
-        vm.downloadLog = function(logs){
-            var data = new Blob(['file-with-test-log-data'],{type:'text/plain;charset=utf-8'});
-            FileSaver.saveAs(data,'job.log');
+        vm.downloadLog = function (logs) {
+            var data = new Blob(['file-with-test-log-data'], {type: 'text/plain;charset=utf-8'});
+            FileSaver.saveAs(data, 'job.log');
         };
 
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
             watcher3();
-            if(promise1)
-            $timeout.cancel(promise1);
+            if (promise1)
+                $timeout.cancel(promise1);
         });
 
-        vm.viewAllHistories = function(){
+        vm.viewAllHistories = function () {
             $state.go('app.history');
-            JobService.jobSelected=vm.showTaskPanel.path;
+            JobService.jobSelected = vm.showTaskPanel.path;
         }
 
     }

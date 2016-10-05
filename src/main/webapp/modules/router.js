@@ -24,25 +24,25 @@
          * @param SOSAuth
          * @returns {*}
          */
-        var checkLoggedin = function ($q, $location, SOSAuth) {
+        var checkLoggedin = function ($q, $location, SOSAuth, $window) {
             // Initialize a new promise
             var deferred = $q.defer();
 
             // Authenticated
             if (SOSAuth.accessTokenId) {
-                sessionStorage.setItem('$SOS$URL', null);
-                sessionStorage.setItem('$SOS$URLPARAMS', {});
+                $window.sessionStorage.setItem('$SOS$URL', null);
+                $window.sessionStorage.setItem('$SOS$URLPARAMS', {});
                 deferred.resolve();
             }
             // Not Authenticated
             else {
-                sessionStorage.setItem('$SOS$URL', $location.path());
-                sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
+                $window.sessionStorage.setItem('$SOS$URL', $location.path());
+                $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
                 deferred.reject('login');
             }
             return deferred.promise;
         };
-        checkLoggedin.$inject = ['$q', '$location', 'SOSAuth'];
+        checkLoggedin.$inject = ['$q', '$location', 'SOSAuth', '$window'];
 
 
         /**

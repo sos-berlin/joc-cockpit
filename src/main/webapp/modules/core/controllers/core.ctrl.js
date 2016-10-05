@@ -86,9 +86,10 @@
             var topHeaderHt = $('.top-header-bar').height() || 16;
             var subHeaderHt = 58;
 
-            var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt)) + 'px';
+            var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
 
-            $('.max-ht').css('height', ht);
+            $('.max-ht').css('height', ht+ 'px');
+            $('.max-tree-ht').css('min-height', ht-18+'px');
         };
 
         function checkNavHeader(){
@@ -212,7 +213,7 @@
         vm.type = object.type;
         if (object.type == 'jobChain') {
             JobChainService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
-                if(res) {
+                if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
@@ -223,7 +224,7 @@
         }
         else if (object.type == 'job') {
             JobService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
-                if(res) {
+                if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
@@ -234,7 +235,7 @@
             });
         } else if (object.type == 'order') {
             OrderService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
-                if(res) {
+                if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
@@ -246,7 +247,7 @@
         }
         else if (object.type == 'schedule') {
             ScheduleService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
-                if(res) {
+                if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
@@ -257,8 +258,20 @@
             });
         }
         else if (object.type == 'lock') {
-            ResourceService.getConfiguration(vm.schedulerIds.selected).then(function (res) {
-                if(res) {
+            ResourceService.getLockConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+                if (res) {
+                    vm.configuration = res.configuration;
+                    vm.html = $.parseHTML(res.configuration.content.html);
+                    vm.html = vm.html[0].textContent;
+                }
+
+            }, function (err) {
+
+            });
+        }
+        else if (object.type == 'processClass') {
+            ResourceService.getProcessClassConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+                if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;

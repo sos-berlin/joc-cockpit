@@ -24,20 +24,6 @@
                                     ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()" translate>button.setback
                             </button>
                         </div>
-                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button id="permanent_id" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'permanent'"
-                                    ng-class="{'btn-primary': filter.state=='permanent'}" ng-click="load1()" translate>button.permanent
-                            </button>
-                            <button id="adhoc_id" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'ad_hoc'"
-                                    ng-class="{'btn-primary': filter.state=='ad_hoc'}" ng-click="load1()" translate>button.adhoc
-                            </button>
-                            <button id="fileorder_id" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'file_order'"
-                                    ng-class="{'btn-primary': filter.state=='file_order'}" ng-click="load()" translate>button.fileOrder
-                            </button>
-                        </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
@@ -55,23 +41,6 @@
                                 <a class="dropdown-item" ng-model="filter.state"
                                         uib-btn-radio="'setback'"
                                         ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()" translate>button.setback
-                                </a>
-                            </div>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.type</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                 <a class="dropdown-item" ng-model="filter.state"
-                                    uib-btn-radio="'permanent'"
-                                    ng-class="{'btn-primary': filter.state=='permanent'}" ng-click="load1()" translate>button.permanent
-                                </a>
-                                <a class="dropdown-item" ng-model="filter.state"
-                                        uib-btn-radio="'ad_hoc'"
-                                        ng-class="{'btn-primary': filter.state=='ad_hoc'}" ng-click="load1()" translate>button.adhoc
-                                </a>
-                                <a class="dropdown-item" ng-model="filter.state"
-                                        uib-btn-radio="'file_order'"
-                                        ng-class="{'btn-primary': filter.state=='file_order'}" ng-click="load()" translate>button.fileOrder
                                 </a>
                             </div>
                         </div>

@@ -69,6 +69,7 @@
                 // hide the spinner bar on rounte change success(after the content loaded)
                 $rootScope.$on('$stateChangeSuccess', function (event, toState) {
                     element.addClass('hide'); // hide spinner bar
+
                     $('body, html').animate({
                         scrollTop: 0
                     }, 1000);
@@ -77,6 +78,7 @@
 
                 // handle errors
                 $rootScope.$on('$stateNotFound', function () {
+
                     element.addClass('hide'); // hide spinner bar
                 });
 

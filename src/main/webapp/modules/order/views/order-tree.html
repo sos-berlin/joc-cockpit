@@ -1,0 +1,100 @@
+<div class="row">
+    <table class="table tree-grid folder-tree-grid">
+        <tbody>
+        <tr ng-repeat="row in filtered = (tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions) track by row.branch.uid"
+            ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
+            <td style="padding-top: 2px !important;padding-bottom: 2px !important;">
+                <a class="" ng-click="user_clicks_branch(row.branch)">
+                    <i ng-if="!row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder"></i>
+                    <i ng-if="row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder-open"></i>
+                </a>
+                <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || row.branch[expandingProperty] || '/'}}</span>
+                <span class="indented tree-label"  ng-click="expandNode({branch:row.branch})"> <i class="text-xs m-l-sm fa fa-expand m-r-xs"></i> </span>
+                <span class="indented tree-label"  ng-click="collapseNode({branch:row.branch})"> <i class="text-xs fa fa-compress"></i></span>
+                <div class="row m-l-sm" ng-class="'level-' + {{ row.level }}" ng-if="row.branch.orders && row.branch.expanded">
+                    <div class="indented col-xxl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12" ng-repeat="order in row.branch.orders | orderBy:filter.sortBy:reverse">
+                        <div class="box card" ng-class="{'light-bg':showLogPanel == order}">
+                            <div class="box-body">
+                                <div>
+                                    <label class="md-check pos-abt">
+                                        <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i
+                                            class="primary"></i></label>
+
+                                    <div class="text-left m-l-md block-ellipsis" >
+                                        <a class="primary-text-hover-color" href="" uib-tooltip="{{order.title}}" ng-click="showLogFuc({order:order})">{{order.orderId}}</a></div>
+                                    <div class="btn-group dropdown pull-right abt-dropdown ">
+                                        <a href class=" more-option text-black-lt" data-toggle="dropdown">
+                                            <i class="text fa fa-ellipsis-v"></i></a>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more">
+                                            <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text.toLowerCase() == 'pending' || order.processingState._text.toLowerCase() == 'setback') && permission.Order.start"
+                                               ng-click="start({order:order})" translate>button.startOrderNow</a>
+                                             <a href class="dropdown-item" ng-if="(order.processingState._text.toLowerCase() == 'pending' || order.processingState._text.toLowerCase() == 'setback') && permission.Order.start"
+                                               ng-click="startOrder({order:order})" translate>button.startOrderat</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text.toLowerCase() == 'suspended' || order.processingState._text.toLowerCase() == 'pending') && permission.Order.update"
+                                               ng-click="setOrderState({order:order})" translate>button.setOrderState</a>
+                                            <a href class="dropdown-item"
+                                               ng-if="(order.processingState._text.toLowerCase() == 'suspended' || order.processingState._text.toLowerCase() == 'pending') && permission.Order.update"
+                                               ng-click="setRunTime({order:order})" translate>button.setRunTime</a>
+                                            <a href class="dropdown-item bg-hover-color"
+                                               ng-if="(order.processingState._text.toLowerCase() != 'suspended' && order.processingState._text.toLowerCase() != 'blacklist') && permission.Order.suspend"
+                                               ng-click="suspendOrder({order:order})" translate>button.suspendOrder</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text.toLowerCase() == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrder({order:order})" translate>button.resumeOrder</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text.toLowerCase() == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrderWithParam({order:order})" translate>button.resumeOrderParametrized</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text.toLowerCase() == 'suspended') && permission.Order.resume"
+                                               ng-click="resumeOrderNextstate({order:order})" translate>button.resumeOrderFromNextState</a>
+                                            <a href class="dropdown-item" ng-if="(order.processingState._text.toLowerCase() != 'blacklist') && permission.Order.update"
+                                               ng-click="resetOrder({order:order})" translate>button.resetOrder</a>
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text.toLowerCase() == 'setback' && permission.Order.removeSetback "
+                                               ng-click="removeOrder({order:order})" translate>button.removeOrder</a>
+                                            <a href class="dropdown-item" ng-if="order.processingState._text.toLowerCase() != 'blacklist'"
+                                               ng-click="viewCalendar({order:order})" translate>button.showCalendar</a>
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text.toLowerCase() == 'blacklist' && permission.Order.delete.permanent"
+                                               ng-click="deleteOrder({order:order})" translate>button.deleteOrder</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-left text-muted p-t-sm">
+                                    <span translate>label.state </span>:
+                                    <span ng-class="colorFunction({severity: order.processingState.severity})" ng-bind="order.processingState._text | translate"></span>
+                                </div>
+                            </div>
+                            <div class="box-footer b-t">
+                                <div>
+                                    <a href class="hide text-left primary-text-hover-color" ng-if="(order.processingState._text.toLowerCase() == 'pending' || order.processingState._text.toLowerCase() == 'setback') "
+                                       ng-class="{'show-block':permission.Order.start}" ng-click="start({order:order})">
+                                        <i class="fa fa-play text-black-lt"></i>
+                                        <span class="text-black-lt" translate>button.startNow</span>
+                                    </a>
+                                    <a href class="hide text-left primary-text-hover-color" ng-if="order.processingState._text.toLowerCase() == 'suspended' "
+                                       ng-class="{'show-block':permission.Order.resume}" ng-click="resumeOrder({order:order})">
+                                        <i class="fa fa-step-forward text-black-lt"></i>
+                                        <span class="text-black-lt" translate>button.resume</span>
+                                    </a>
+                                    <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text.toLowerCase() != 'running'}" ng-if="(order.processingState._text.toLowerCase() && order.processingState._text.toLowerCase() != 'suspended' && order.processingState._text.toLowerCase() != 'blacklist') && permission.Order.suspend"
+                                       ng-click="suspendOrder({order:order})">
+                                        <i class="fa fa-pause text-black-lt"></i>
+                                        <span class="text-black-lt" translate>button.suspend</span>
+                                    </a>
+                                    <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
+                                       ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
+                                        <i class="fa fa-file-text text-black-lt"></i>
+                                        <span class="text-black-lt" translate>button.viewLog</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="row.branch.orders.length==0 && row.branch.folders.length==0" class="indented text-xs p-t-xs p-l-sm text-u-c"><span class="m-l-sm text-muted" translate>message.noOrdersFound</span></div>
+                </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="text-center text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && tree_rows.length !==0)}" translate>message.noDataMatched</div>
+</div>

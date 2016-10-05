@@ -5,18 +5,18 @@
 (function () {
     'use strict';
     angular.module('app')
-        .factory('CoreService', CoreService)
-        .factory('SavedFilter', SavedFilter);
+        .service('CoreService', CoreService)
+        .service('SavedFilter', SavedFilter);
 
     CoreService.$inject = ['$window'];
     function CoreService($window) {
 
-        if ($window.localStorage.$SOS$VIEW) {
-            var _view = $window.localStorage.$SOS$VIEW;
-        } else {
+      //  if ($window.localStorage.$SOS$VIEW) {
+      //      var _view = $window.localStorage.$SOS$VIEW;
+      //  } else {
             var _view = 'grid';
-            $window.localStorage.$SOS$VIEW = 'grid';
-        }
+            //$window.localStorage.$SOS$VIEW = 'grid';
+      //  }
 
         if ($window.localStorage.$SOS$SIDEVIEW == 'true' || $window.localStorage.$SOS$SIDEVIEW == true) {
             var _sideView = $window.localStorage.$SOS$SIDEVIEW;
@@ -34,7 +34,7 @@
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             },
             setView: function (view) {
-                $window.localStorage.$SOS$VIEW = view;
+               // $window.localStorage.$SOS$VIEW = view;
                 _view = view;
             },
             getView: function () {

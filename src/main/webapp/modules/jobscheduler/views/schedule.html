@@ -76,6 +76,8 @@
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
                                             <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                            <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
+                                            <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                         </div>
                                     </div>
                                 </div>

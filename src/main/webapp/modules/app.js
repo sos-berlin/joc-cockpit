@@ -29,8 +29,8 @@
             'gantt.table',
             'ngFileSaver'
         ])
-        //.constant("apiUrl", "http://test.sos-berlin.com:3001/joc/api/")
-        .constant("apiUrl", "http://uk.sos-berlin.com:8888/joc/api/")
+        .constant("apiUrl", "http://test.sos-berlin.com:3001/joc/api/")
+        //.constant("apiUrl", "http://uk.sos-berlin.com:8888/joc/api/")
         .constant("APIUrl", "http://uk.sos-berlin.com:8888/joc/api/")
         .config(['calendarConfig' ,function (calendarConfig) {
             calendarConfig.dateFormatter = 'moment';

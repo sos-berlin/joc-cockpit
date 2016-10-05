@@ -11,7 +11,7 @@
                 </div>
                 <div class="m-b text-md text-midnight-blue _600 text-center m-t-md" translate>label.signIn</div>
                 <div class="hide alert alert-danger" ng-class="{'show':loginError}">
-                    <span ng-bind="lc.loginError | translate"></span>
+                    <span ng-bind="loginError | translate"></span>
                 </div>
                 <form method="post" name="loginForm" ng-submit="lc.login()">
                     <div class="md-form-group">

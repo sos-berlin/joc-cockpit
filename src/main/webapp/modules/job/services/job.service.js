@@ -183,8 +183,8 @@
             },
             getRunTime: function (jobs) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'job/run_time');
-                Order.save(jobs,function (res) {
+                var Job = $resource(apiUrl + 'job/run_time');
+                Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
@@ -223,8 +223,8 @@
             },
             getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
-                var JobChain = $resource(apiUrl + 'job/configuration');
-                JobChain.save({job:path,  jobschedulerId: jobschedulerId},function (res) {
+                var Job = $resource(apiUrl + 'job/configuration');
+                Job.save({job:path,  jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
@@ -233,8 +233,8 @@
             },
             getQueueOrders: function (jobs) {
                 var deferred = $q.defer();
-                var JobChain = $resource(apiUrl + 'job/order_queue');
-                JobChain.save(jobs,function (res) {
+                var Job = $resource(apiUrl + 'job/order_queue');
+                Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
@@ -265,6 +265,16 @@
                 var deferred = $q.defer();
                 var Job = $resource(apiUrl + 'job_chain_nodes/activate');
                 Job.save(nodes,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+            tree: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource(apiUrl + 'tree');
+                Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);

@@ -6,8 +6,8 @@
     'use strict';
 
     angular.module('app')
-        .factory('SOSAuth', SOSAuth)
-        .factory('Base64', Base64)
+        .service('SOSAuth', SOSAuth)
+        .service('Base64', Base64)
         .service('UserService', UserService);
 
     SOSAuth.$inject = ['$window'];
@@ -47,7 +47,8 @@
             this.currentUserData = null;
             this.permission = null;
             this.scheduleIds = null;
-
+            $window.sessionStorage.setItem('$SOS$URL', null);
+            $window.sessionStorage.setItem('$SOS$URLPARAMS', {});
         };
 
          SOSAuth.prototype.setJobChain = function (jobChain) {

@@ -229,8 +229,17 @@
                     deferred.resolve(err);
                 });
                 return deferred.promise;
+            },
+            tree: function (filter) {
+                var deferred = $q.defer();
+                var Tree = $resource(apiUrl + 'tree');
+                Tree.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
             }
-
 
         }
     }

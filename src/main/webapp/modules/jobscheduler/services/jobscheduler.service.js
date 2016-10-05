@@ -54,10 +54,20 @@
                 });
                 return deferred.promise;
             },
-            getConfiguration: function (jobschedulerId) {
+            getLockConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource(apiUrl + 'lock/configuration');
-                JobChain.save({jobschedulerId: jobschedulerId},function (res) {
+                JobChain.save({path: path, jobschedulerId: jobschedulerId},function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.resolve(err);
+                });
+                return deferred.promise;
+            },
+            getProcessClassConfiguration: function (path, jobschedulerId) {
+                var deferred = $q.defer();
+                var JobChain = $resource(apiUrl + 'lock/configuration');
+                JobChain.save({path: path,jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);

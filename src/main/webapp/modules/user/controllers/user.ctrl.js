@@ -99,11 +99,9 @@
 
 
         vm.setLocale = function () {
-            // set the current lang
             vm.locale = vm.perferences.locale;
             $rootScope.locale = vm.locale;
             $window.localStorage.$SOS$LANG = vm.locale.lang;
-            // You can change the language during runtime
 
             $resource("modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
                gettextCatalog.setCurrentLanguage(vm.locale.lang);
@@ -114,7 +112,6 @@
         };
 
         vm.setTimeZone = function () {
-            // set the current time zone
             $window.localStorage.$SOS$ZONE = vm.perferences.zone;
             $rootScope.$broadcast('reloadDate');
         };

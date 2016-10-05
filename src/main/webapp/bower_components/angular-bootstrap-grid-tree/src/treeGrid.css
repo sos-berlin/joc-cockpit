@@ -59,9 +59,6 @@
 	cursor : pointer;
 }
 .tree-grid .tree-icon:hover{
-	color: #0086b0;
+	color: #3a3a3a;
 }
-table.tree-grid {
-	max-height : 500px;
-	overflow-y : scroll;
-}
+

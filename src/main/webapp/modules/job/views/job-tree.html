@@ -1,0 +1,62 @@
+<div class="row">
+    <table class="table tree-grid folder-tree-grid">
+        <tbody>
+        <tr ng-repeat="row in filtered = (tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions) track by row.branch.uid"
+            ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
+            <td>
+                <a class="" ng-click="user_clicks_branch(row.branch)">
+                    <i ng-if="!row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder"></i>
+                    <i ng-if="row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder-open"></i>
+                </a>
+                <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || row.branch[expandingProperty] || '/'}}</span>
+                <span class="indented tree-label"  ng-click="expandNode({branch:row.branch})"> <i class="text-xs m-l-sm fa fa-expand m-r-xs"></i> </span>
+                <span class="indented tree-label"  ng-click="collapseNode({branch:row.branch})"> <i class="text-xs fa fa-compress"></i></span>
+                <div class="row m-l-sm" ng-class="'level-' + {{ row.level }}" ng-if="row.branch.jobs && row.branch.expanded">
+                    <div class="indented col-xxl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12" ng-repeat="job in row.branch.jobs | orderBy:filter.sortBy:reverse">
+                       <div class="box card" ng-class="{'light-bg':showTaskPanel == job}">
+                                <div class="box-body">
+                                    <label class="md-check pos-abt">
+                                        <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
+                                    </label>
+
+                                    <div class="text-left m-l-md block-ellipsis" >
+                                        <a href="" uib-tooltip="{{job.title}}" class="primary-text-hover-color"  ng-class="{'text-u-l':!job.isOrderJob}"  ng-click="showTaskFuc({job:job})" ng-bind="job.name"></a>
+                                    </div>
+                                    <div class="btn-group dropdown pull-right abt-dropdown ">
+                                        <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
+                                                class="text fa fa-ellipsis-v"></i></a>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more">
+                                            <a href="#/showConfiguration?type=job&path={{job.path}}/{{job.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration}" translate>button.showConfiguration</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="job.state._text.toLowerCase() !='stopped' && permission.Job.stop" ng-click="stop({job:job})" translate>button.stop</a>
+                                            <a class="dropdown-item" ng-if="job.state._text.toLowerCase() =='stopped' && permission.Job.unstop" ng-click="unstop({job:job})" translate>button.unstop</a>
+                                            <a class="dropdown-item" ng-click="start({job:job})" ng-if="!job.isOrderJob  && permission.Job.start" translate>button.startTask</a>
+                                            <a class="dropdown-item" ng-click="startAt({job:job})" ng-if="!job.isOrderJob  && permission.Job.start" translate>button.startTaskat</a>
+                                            <a class="dropdown-item" ng-if="!job.isOrderJob" ng-click="setRunTime({job:job})" translate>button.setRunTime</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killAllTask({job:job})" translate>button.killAllTaskImmediately</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name == 'linux' || selectedJobScheduler.os.name == 'unix') && permission.Job.terminate" ng-click="terminateAllTask({job:job})" translate>button.terminateAllTasks</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name == 'linux' || selectedJobScheduler.os.name == 'unix') && permission.Job.terminate" ng-click="terminateAllTaskWithTimeout({job:job})" translate>button.terminateAllTasksWithTimeout</a>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-left text-muted p-t-sm" ><span class="text-black _600 cursor" ng-click="showTaskFuc({job:job, flag:true})" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></span> {{'label.runningTask' | translate}}</div>
+                                    <div class="text-sm text-left text-muted p-t-xs">
+                                        <span translate>label.status </span>:
+                                        <span class="text-c" ng-class="colorFunction({severity:job.state.severity})" ng-bind="job.state._text  | translate" ></span>
+                                    </div>
+                                </div>
+                                <div class="box-footer b-t">
+                                    <div>
+                                        <a href class="text-left text-hover-color" ng-if="job.state._text.toLowerCase() !='stopped' && permission.Job.stop" ng-click="stop({job:job})"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
+                                        <a href class="text-left primary-text-hover-color" ng-if="job.state._text.toLowerCase() =='stopped'  && permission.Job.unstop" ng-click="unstop({job:job})"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div ng-if="row.branch.jobs.length==0 && row.branch.folders.length==0" class="indented text-xs p-t-xs p-l-sm text-u-c"><span class="m-l-sm text-muted" translate>message.noJobsFound</span></div>
+                </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="text-center text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && tree_rows.length !==0)}" translate>message.noDataMatched</div>
+</div>

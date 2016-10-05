@@ -7,43 +7,59 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
-
-                                <input class="form-control input-date" ng-model="filter.from"
-                                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
-                                       bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
-                                <input class="form-control input-date" ng-model="filter.to"
-                                       data-date-format="yyyy-MM-dd" data-autoclose="1"
-                                       placeholder="yyyy-mm-dd"
-                                       bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
-
-                        <div class="btn-group m-l-sm">
+                        <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans('period')">Today
+                                    ng-class="{'btn-primary': filter.range=='today'}"
+                                    ng-click="range='period';getPlans('period')" translate>button.today
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="range='period';getPlans('period')"
+                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}"
+                                    ng-click="range='period';getPlans('period')"
                                     translate>button.next24
                             </button>
                         </div>
-
-
-                        <div class="btn-group m-l-sm">
-
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="filter.range" uib-btn-radio="'today'"
+                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans('period')" translate>button.today
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.range" uib-btn-radio="'next-24-hours'"
+                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="range='period';getPlans('period')" translate>button.next24
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.status=='all'}" ng-click="getPlans()">All
+                                    ng-class="{'btn-primary': filter.status=='all'}" ng-click="getPlans()" translate>button.all
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'WAITING'"
-                                    ng-class="{'btn-primary': filter.status=='WAITING'}" ng-click="getPlans()">Waiting
+                                    ng-class="{'btn-primary': filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'LATE'"
-                                    ng-class="{'btn-primary': filter.status=='LATE'}" ng-click="getPlans()">Late
+                                    ng-class="{'btn-primary': filter.status=='LATE'}" ng-click="getPlans()" translate>button.late
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'EXECUTED'"
-                                    ng-class="{'btn-primary': filter.status=='EXECUTED'}" ng-click="getPlans()">Executed
+                                    ng-class="{'btn-primary': filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.executed
                             </button>
-
-
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'all'"
+                                   ng-class="{'btn-primary': filter.status=='all'}" ng-click="getPlans()" translate>button.all
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'WAITING'"
+                                   ng-class="{'btn-primary': filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'LATE'"
+                                   ng-class="{'btn-primary': filter.status=='LATE'}" ng-click="getPlans()" translate>button.late
+                                </a>
+                                <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'EXECUTED'"
+                                   ng-class="{'btn-primary': filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.executed
+                                </a>
+                            </div>
                         </div>
                         <div class="btn-group dropdown">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">
@@ -113,9 +129,31 @@
 </div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
+        <div class="row m-b-sm">
+            <div class="col-md-12 text-right">
+                <span class="m-r-sm" translate>label.from</span>
+                <input class="form-control input-date" style="width: 115px;background-position: 91px"
+                       ng-model="filter.from"
+                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
+                       bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
+                <input class="form-control input-time" ng-model="filter.from" data-time-format="HH:mm:ss"
+                       data-autoclose="1"
+                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 100px;background-position: 75px"
+                       ng-change="range='dateRange';getPlans('dateRange')">
+                <span class="m-l-sm m-r-sm" translate>label.to</span>
+                <input class="form-control input-date" style="width: 115px;background-position: 91px"
+                       ng-model="filter.to"
+                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
+                       bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
+                <input class="form-control input-time" ng-model="filter.to" data-time-format="HH:mm:ss"
+                       data-autoclose="1"
+                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 100px;background-position: 75px"
+                       ng-change="range='dateRange';getPlans('dateRange')">
 
-        <div class="hide" ng-class="{'show': isLoading }">
-            <div class="hide m-t-sm" ng-class="{'show': pageView=='grid'}">
+            </div>
+        </div>
+        <div class="hide p-t-xs" ng-class="{'show': isLoading }">
+            <div class="hide" ng-class="{'show': pageView=='grid'}">
                 <div class="box p-a">
                     <div class="hide" ng-class="{show:data.length>0}">
                            <div gantt
@@ -156,127 +194,127 @@
 
                 </div>
             </div>
-        </div>
-        <div class="hide box p-a " ng-class="{'show': pageView=='list'}" context-menu="menuOptions">
-            <div class="table-responsive">
-                    <table class="table table-hover table-bordered " id="dailyPlanTableId">
-                        <thead>
-                        <tr>
+            <div class="hide box p-a " ng-class="{'show': pageView=='list'}" context-menu="menuOptions">
+                <div class="table-responsive">
+                        <table class="table table-hover table-bordered " id="dailyPlanTableId">
+                            <thead>
+                            <tr>
 
-                            <th ng-click="sortBy('processedPlan')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
+                                <th ng-click="sortBy('processedPlan')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
 
-                                <i ng-show="propertyName == 'processedPlan' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'processedPlan' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
-                            <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
-                                <i ng-show="propertyName == 'orderId' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'orderId' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                    <i ng-show="propertyName == 'processedPlan' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'processedPlan' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
+                                    <i ng-show="propertyName == 'orderId' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'orderId' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                            <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
-                                <i ng-show="propertyName == 'state._text' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'state._text' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                                    <i ng-show="propertyName == 'state._text' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'state._text' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                             <th ng-click="sortBy('exitCode')"><a><span translate>label.executionResult</span>
-                                <i ng-show="propertyName == 'exitCode' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'exitCode' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
-                             <th ng-click="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>
-                                <i ng-show="propertyName == 'plannedStartTime' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'plannedStartTime' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                 <th ng-click="sortBy('exitCode')"><a><span translate>label.executionResult</span>
+                                    <i ng-show="propertyName == 'exitCode' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'exitCode' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                 <th ng-click="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>
+                                    <i ng-show="propertyName == 'plannedStartTime' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'plannedStartTime' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                            <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
-                                <i ng-show="propertyName == 'expectedEndTime' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'expectedEndTime' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
+                                    <i ng-show="propertyName == 'expectedEndTime' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'expectedEndTime' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                            <th ng-click="sortBy('duration')"><a><span translate>label.duration</span>
-                                <i ng-show="propertyName == 'duration' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'duration' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                <th ng-click="sortBy('duration')"><a><span translate>label.duration</span>
+                                    <i ng-show="propertyName == 'duration' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'duration' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                            <th ng-click="sortBy('startTime')"><a><span translate>label.start</span>
-                                <i ng-show="propertyName == 'startTime' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'startTime' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                <th ng-click="sortBy('startTime')"><a><span translate>label.start</span>
+                                    <i ng-show="propertyName == 'startTime' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'startTime' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                             <th ng-click="sortBy('endTime')"><a><span translate>label.end</span>
-                                <i ng-show="propertyName == 'endTime' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'endTime' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                 <th ng-click="sortBy('endTime')"><a><span translate>label.end</span>
+                                    <i ng-show="propertyName == 'endTime' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'endTime' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                             <th ng-click="sortBy('duration1')"><a><span translate>label.duration</span>
-                                <i ng-show="propertyName == 'duration1' && !reverse"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'duration1' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                            </th>
+                                 <th ng-click="sortBy('duration1')"><a><span translate>label.duration</span>
+                                    <i ng-show="propertyName == 'duration1' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'duration1' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
 
-                        </tr>
-                        </thead>
-                        <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
-                        <tr>
-                            <td>
-                            <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></span>
-                            <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job.substring(plan.job.lastIndexOf('/')+1,plan.job.length)"></span>
-                            </td>
-                            <td><span ng-bind="plan.orderId"></span></td>
-                            <td><span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span></td>
-                            <td><span ng-bind="plan.exitCode"></span></td>
-                            <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
-                            <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
-                            <td><span ng-bind="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
-                            <td><span ng-bind="plan.startTime | stringToDate"></span></td>
-                            <td><span ng-bind="plan.endTime | stringToDate"></span></td>
-                            <td><span ng-bind="plan.startTime | duration:plan.endTime"></span></td>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
+                            <tr>
+                                <td>
+                                <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></span>
+                                <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job.substring(plan.job.lastIndexOf('/')+1,plan.job.length)"></span>
+                                </td>
+                                <td><span ng-bind="plan.orderId"></span></td>
+                                <td><span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span></td>
+                                <td><span ng-bind="plan.exitCode"></span></td>
+                                <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
+                                <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
+                                <td><span ng-bind="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
+                                <td><span ng-bind="plan.startTime | stringToDate"></span></td>
+                                <td><span ng-bind="plan.endTime | stringToDate"></span></td>
+                                <td><span ng-bind="plan.startTime | duration:plan.endTime"></span></td>
 
-                        </tr>
+                            </tr>
 
-                        </tbody>
-                    </table>
-                    <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length"
-                        ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()"
-                        class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false"
-                        previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="filtered.length > 10">
-                        <div class="btn-group m-r-xxs">
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
-                                    ng-class="{'primary': pageSize=='10'}">10
-                            </button>
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
-                                    ng-class="{'primary': pageSize=='25'}">25
-                            </button>
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
-                                    ng-class="{'primary': pageSize=='50'}">50
-                            </button>
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
-                                    ng-class="{'primary': pageSize=='100'}">100
-                            </button>
+                            </tbody>
+                        </table>
+                        <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length"
+                            ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()"
+                            class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false"
+                            previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                        <div class="pull-right" ng-show="filtered.length > 10">
+                            <div class="btn-group m-r-xxs">
+                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                                        ng-class="{'primary': pageSize=='10'}">10
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                                        ng-class="{'primary': pageSize=='25'}">25
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                                        ng-class="{'primary': pageSize=='50'}">50
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                                        ng-class="{'primary': pageSize=='100'}">100
+                                </button>
+                            </div>
                         </div>
                     </div>
+                <div class="hide text-center m-t text-uppercase text-orange"
+                     ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
                 </div>
-            <div class="hide text-center m-t text-uppercase text-orange"
-                 ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
             </div>
         </div>
         <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>

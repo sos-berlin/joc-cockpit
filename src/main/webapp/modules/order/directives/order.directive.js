@@ -171,8 +171,6 @@
                     var orderLeft = left;
 
 
-
-
                     angular.forEach(scope.jobChain.fileOrderSources, function (orderSource, index) {
                         if (index == 0) {
                             orderLeft = margin + avatarW;
@@ -188,7 +186,7 @@
                         }
 
 
-                    })
+                    });
 
                     if (scope.jobChain.fileOrderSources && scope.jobChain.fileOrderSources.length > 0) {
 
@@ -567,7 +565,7 @@
                 'onAction': '&',
                 'orders': '='
             },
-            controller: ['$scope', '$timeout', 'orderByFilter', function ($scope, $timeout, orderBy) {
+            controller: ['$scope', '$window', function ($scope, $window) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.distance = 250;
@@ -1291,7 +1289,31 @@
 
 
 
-
+                            function colorFunction(d) {
+                                if (d == 0) {
+                                    return 'green';
+                                } else if (d == 1) {
+                                    return 'gold';
+                                } else if (d == 2) {
+                                    return 'crimson';
+                                } else if (d == 3) {
+                                    return 'dimgrey';
+                                }
+                                else if (d == 4) {
+                                    return 'text-dark';
+                                } else if (d == 5) {
+                                    return 'dark-orange';
+                                }
+                                else if (d == 6) {
+                                    return 'corn-flower-blue';
+                                }
+                                else if (d == 7) {
+                                    return 'dark-magenta';
+                                }
+                                else if (d == 8) {
+                                    return 'chocolate';
+                                }
+                            }
 
                     function addLabel(){
                          console.log("Add label01");
@@ -1305,11 +1327,15 @@
                                     console.log("Found border " + order.state + " " + node.className);
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     var label = document.createElement('div');
+                                    var color ='';
+                                    if(order.processingState.severity>-1){
+                                        color = colorFunction(order.processingState.severity);
+                                    }
 
-                                    label.innerHTML = '<span><i class="fa fa-circle corn-flower-blue" ></i>'+ order.orderId + '</span>';
+                                    label.innerHTML = '<span><i class="text-xs fa fa-circle '+color+'"></i> '+ order.orderId + ' <span class="text-primary text-xs">'+ moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT); + '</span></span>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
-                                    if (node.offsetTop - container.offsetTop < 80) {
+                                    if (node.offsetTop - container.offsetTop < 75) {
                                         container.style.setProperty('top', container.offsetTop - container.firstChild.clientHeight + 'px');
                                     }
 
@@ -1326,30 +1352,19 @@
                                     mainContainer.appendChild(label);
                                     label.style.setProperty('top', node.offsetTop - label.clientHeight + 'px');
                                     label.style.setProperty('height', 'auto');
-                                    label.style.setProperty('max-height', '60px');
+                                    label.style.setProperty('max-height', '80px');
+                                    label.style.setProperty('overflow', 'auto');
+                                    label.style.setProperty('overflow-x', 'auto');
 
                                 }
-
 
                             }
 
                         })
 
-
                     }
 
-
-
-
-
-
-
-
-                        //console.log("Orders " + JSON.stringify(res));
-
-
                 }
-
 
             }]
         }

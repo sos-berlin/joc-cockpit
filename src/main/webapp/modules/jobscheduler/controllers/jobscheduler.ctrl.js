@@ -51,7 +51,7 @@
 
         vm.expanding_property = {
             field: "AgentClusterName",
-            displayName: "Agent Cluster Name",
+            displayName: gettextCatalog.getString('label.agentClusterName'),
             sortable: true,
             filterable: true,
             cellTemplate: "<span>{{row.branch[expandingProperty.field].substring(row.branch[expandingProperty.field].lastIndexOf('/')+1,row.branch[expandingProperty.field].lastIndexOf('&'))}}</span>"
@@ -59,6 +59,7 @@
         vm.col_defs = [
             {
                 field: "Status",
+                displayName: gettextCatalog.getString('label.status'),
                 sortable: true,
                 cellTemplate: "<span class='text-u-c label b-{{row.branch[col.field]}}'>{{ row.branch[col.field]}}</span>"
             },
@@ -955,8 +956,7 @@
 
             });
         };
-
-        /*----------------- Daily plan overview -----------------*/
+ /*----------------- Daily plan overview -----------------*/
         vm.filter = {};
         vm.filter.range = "today";
         getDailyPlans();
@@ -1063,6 +1063,7 @@
 
         var vm = $scope;
 
+        vm.todayDate = new Date();
         vm.pageSize = 10;
         vm.currentPage = 1;
         vm.isCellOpen = true;
@@ -1493,10 +1494,11 @@
             console.log("Data " + vm.data.length);
         }
 
-        var minNextStartTime;
-
         function prepareGanttData(data2) {
+            var minNextStartTime;
             var orders = [];
+            data2 = orderBy(data2, 'plannedStartTime', false);
+
             angular.forEach(data2, function (order, index) {
                 orders[index] = {};
                 orders[index].tasks = [];
@@ -1522,7 +1524,6 @@
                     orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
                 }
 
-
                 orders[index].tasks[0].from = new Date(order.plannedStartTime);
 
                 if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
@@ -1540,17 +1541,13 @@
 
             }
             vm.data = orderBy(orders, 'plannedStartTime');
-         
-          promise2=   $timeout(function () {
-               $('#div').animate({
-                scrollLeft: $("#gantt-current-date-line").offset().left
-            }, 800);
-            }, 5000);
 
-
-        
-
- }
+            promise2 = $timeout(function () {
+                $('#div').animate({
+                    scrollLeft: $("#gantt-current-date-line").offset().left
+                }, 800);
+            }, 4500);
+        }
 
 
         vm.tree = [];

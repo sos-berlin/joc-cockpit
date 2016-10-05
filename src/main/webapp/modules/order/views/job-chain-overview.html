@@ -7,8 +7,7 @@
                         <div class="text-right ">
                             <div class="pull-left text-left">
                                 <span translate>label.runningOn</span>
-
-                                <div class="text" ng-bind="jobChain.processClass || '-'"></div>
+                                <div class="font14" ng-bind="jobChain.processClass || '-'"></div>
                             </div>
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isStoppedJob" ng-click="stopJobs()" translate>
@@ -57,9 +56,8 @@
                                                     <tr>
                                                         <th class="noExl">
                                                             <label class="md-check">
-                                                                <input type="checkbox" ng-model="allOrdersCheck.orders"
-                                                                       ng-click="checkAllOrders()"><i
-                                                                    class="primary"></i>
+                                                                <input type="checkbox" ng-model="allOrdersCheck.orders" ng-click="checkAllOrders()">
+                                                                <i class="primary"></i>
                                                             </label>
                                                         </th>
                                                         <th ng-click="reverseSort=!reverseSort"><a><span translate>label.orderId</span>
@@ -70,21 +68,19 @@
                                                         </th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody  >
+                                                    <tbody>
 
                                                     <tr ng-repeat="order in orders | orderBy: 'orderId':reverseSort">
                                                         <td class="noExl">
                                                             <label class="md-check">
-                                                                <input type="checkbox"
-                                                                       data-checklist-model="obj.orders"
-                                                                       data-checklist-value="order"><i
-                                                                    class="primary"></i>
+                                                                <input type="checkbox" data-checklist-model="obj.orders" data-checklist-value="order">
+                                                                <i class="primary"></i>
                                                             </label>
                                                         </td>
                                                         <td>
                                                             <span class="text-dark">{{order.orderId}}</span>
-                                                                <span ng-if="order.title">-</span>
-                                                                <i class="text-muted">{{order.title}}</i>
+                                                            <span ng-if="order.title">-</span>
+                                                            <i class="text-muted">{{order.title}}</i>
                                                         </td>
                                                     </tr>
                                                     </tbody>
@@ -163,7 +159,8 @@
 
                                     <div ng-repeat="order in node.orders | limitTo : 2:0">
                                         <a href="" ng-click="showTaskFuc(order)">
-                                            <span class="text-sm" ng-bind="order.orderId">  </span></a>
+                                            <span class="text-sm" ng-bind="order.orderId">  </span>
+                                        </a>
                                     </div>
 
                                     <i class="cursor text-xs"
@@ -194,7 +191,7 @@
                                                href="#/showConfiguration?type=job&path={{node.job.path}}" translate>button.showConfiguration</a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="node.job.state._text.toLowerCase() != 'stopped'"
-                                               ng-click="stopJob(jobChain)"
+                                               ng-click="stopJob(node)"
                                                translate>button.stopJob</a>
                                             <a class="dropdown-item" ng-if="node.job.state._text.toLowerCase() == 'stopped'"
                                                ng-click="unstopJob(node)" translate>button.unstopJob</a>
