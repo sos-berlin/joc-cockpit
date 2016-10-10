@@ -13,8 +13,8 @@
         .controller('RuntimeEditorDialogCtrl', RuntimeEditorDialogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$window', 'SOSAuth'];
-    function AppCtrl($scope, $window,  SOSAuth) {
+    AppCtrl.$inject = ['$scope','$rootScope', '$window', 'SOSAuth', '$resource'];
+    function AppCtrl($scope, $rootScope, $window,  SOSAuth, $resource) {
         var vm = $scope;
         vm.schedulerIds = {};
 
@@ -80,16 +80,29 @@
             }
         };
 
+        function loadConfigFile(){
+            $resource("config.json").get(function (data) {
+               $rootScope.configData =data;
+            });
+        }
+
+        loadConfigFile();
+
         vm.calculateHeight = function () {
-            var headerHt = $('.app-header').height() || 64;
-            var footerHt = $('.app-footer').height() || 30;
-            var topHeaderHt = $('.top-header-bar').height() || 16;
-            var subHeaderHt = 58;
+            if(window.innerHeight>474) {
+                var headerHt = $('.app-header').height() || 60;
+                var footerHt = $('.app-footer').height() || 30;
+                var topHeaderHt = $('.top-header-bar').height() || 16;
+                var subHeaderHt = 58;
 
-            var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
+                var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
 
-            $('.max-ht').css('height', ht+ 'px');
-            $('.max-tree-ht').css('min-height', ht-18+'px');
+                $('.max-ht').css('height', ht + 'px');
+                $('.max-tree-ht').css('height', ht +'px');
+            }else{
+                $('.max-ht').css('height', 'auto');
+                $('.max-tree-ht').css('height', 'auto');
+            }
         };
 
         function checkNavHeader(){

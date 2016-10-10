@@ -125,8 +125,8 @@
         };
     }
 
-    UserService.$inject = ["$resource","$q","SOSAuth", "APIUrl", "$http", "Base64", "$location"];
-    function UserService($resource,$q, SOSAuth, APIUrl, $http, Base64, $location) {
+    UserService.$inject = ["$resource","$q","SOSAuth", "apiUrl", "$http", "Base64", "$location"];
+    function UserService($resource,$q, SOSAuth, apiUrl, $http, Base64, $location) {
 
         return {
 
@@ -135,7 +135,7 @@
              */
             logout: function () {
 
-               var Logout = $resource(APIUrl + 'security/logout');
+               var Logout = $resource(apiUrl + 'security/logout');
 
                 Logout.save(function () {
                     SOSAuth.clearUser();
@@ -152,7 +152,7 @@
             authenticate: function (username, password) {
                 var deferred = $q.defer();
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + Base64.encode(username + ':' + password);
-                $http.post(APIUrl + 'security/login').then(function(res){
+                $http.post(apiUrl + 'security/login').then(function(res){
                     deferred.resolve(res.data);
                 }, function(err){
                      deferred.reject(err);
@@ -162,7 +162,7 @@
             },
             getPermissions: function (id) {
                 var deferred = $q.defer();
-                var Permission = $resource(APIUrl + 'security/joc_cockpit_permissions');
+                var Permission = $resource(apiUrl + 'security/joc_cockpit_permissions');
 
                 Permission.save({jobschedulerId:id},function (res) {
                     deferred.resolve(res);

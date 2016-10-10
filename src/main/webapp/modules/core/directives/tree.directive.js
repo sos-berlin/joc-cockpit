@@ -20,38 +20,10 @@
                 onClick: "&",
                 expandNode: "&",
                 collapseNode: "&",
-                onView: '&',
-                viewCalendar: '&',
                 viewOrders: '&',
-                addOrder: '&',
-                stopJob: '&',
-                unstopJob: '&',
-                start: '&',
-                stop: '&',
-                unstop: '&',
-                startAt: '&',
-                setRunTime: '&',
-                showTaskFuc: '&',
-                killAllTask: '&',
-                terminateAllTask: '&',
-                terminateAllTaskWithTimeout: '&',
-                colorFunction: '&',
-
-                startOrder: '&',
-                setOrderState: '&',
-                suspendOrder: '&',
-                resumeOrder: '&',
-                resumeOrderWithParam: '&',
-                resumeOrderNextstate: '&',
-                resetOrder: '&',
-                removeOrder: '&',
-                deleteOrder: '&',
-
                 initialSelection: "@",
                 treeControl: "=",
                 expandTo: "=",
-                permission: "=",
-                object: "=",
                 filter: "=",
                 reverse: "="
             },
@@ -59,7 +31,6 @@
 
                 var e, f, g, h, i, j, k, l, m, n, o, p;
                 if (e = function (a) {
-                        console.log("ERROR:" + a)
                     }, d.iconExpand = d.iconExpand ? d.iconExpand : "fa fa-plus", d.iconCollapse = d.iconCollapse ? d.iconCollapse : "fa fa-minus", d.iconLeaf = d.iconLeaf ? d.iconLeaf : "icon-file", d.sortedAsc = d.sortedAsc ? d.sortedAsc : "m-t-xs fa fa-caret-up", d.sortedDesc = d.sortedDesc ? d.sortedDesc : "icon-file m-t-xs fa fa-caret-down", d.expandLevel = d.expandLevel ? d.expandLevel : "0", h = parseInt(d.expandLevel, 10), !b.treeData)return void alert("No data was defined for the tree, please define treeData!");
                 var q = function () {
                     if (d.expandOn)f = b.expandOn, b.expandingProperty = b.expandOn; else if (b.treeData.length) {

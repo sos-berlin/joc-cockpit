@@ -411,7 +411,8 @@
                 <div class="col-md-12">
                     <div  class="box white">
                         <div class="box-header">
-                            <span class="text">{{showLogPanel.jobChain}} - <i class="text-sm text-muted">{{showLogPanel.orderId}}</i></span>
+                            <span class="text" ng-if="showLogPanel.jobChain">{{showLogPanel.jobChain}} - <i class="text-sm text-muted">{{showLogPanel.orderId}}</i></span>
+                            <span class="text" ng-if="showLogPanel.job">{{showLogPanel.job}} - <i class="text-sm text-muted">{{showLogPanel.taskId}}</i></span>
                         </div>
                         <div class="box-tool">
                             <ul class="nav text-muted text-md">
@@ -445,14 +446,46 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
-                <div class="form-group row" ng-show="filter.type == 'jobChain'">
-                   <div class="col-sm-12">
-                       <input type="text" class="form-control" placeholder="Name of Job chain" ng-model="filterString1">
-                   </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
+                    </div>
+                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
                 </div>
-                <tree-grid tree-data="tree" on-click="selectValue(branch)"></tree-grid>
+                <div class="row" ng-if="paths.length>0">
+                    <div class="col-sm-10">
+                        <table class="table table-bordered" style="min-height: 100px;">
+                            <tbody>
+                            <tr ng-repeat="path in paths track by $index">
+                                <td>{{path}}
+                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
+                            class="text-primary font14" translate>button.expandAll</span> ]</a>
+                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
+                        ]</a>
+                    <tree
+                            tree-data="tree"
+                            tree-control="filter_tree"
+                            expand-to="expand_to"
+                            icon-leaf     = "fa fa-folder-o"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
             </div>
             <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
                 <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
             </div>
         </div>

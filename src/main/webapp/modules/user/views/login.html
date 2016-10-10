@@ -10,8 +10,8 @@
                     </div>
                 </div>
                 <div class="m-b text-md text-midnight-blue _600 text-center m-t-md" translate>label.signIn</div>
-                <div class="hide alert alert-danger" ng-class="{'show':loginError}">
-                    <span ng-bind="loginError | translate"></span>
+                <div class="hide alert alert-danger" ng-class="{'show':lc.loginError}">
+                    <span ng-bind="lc.loginError | translate"></span>
                 </div>
                 <form method="post" name="loginForm" ng-submit="lc.login()">
                     <div class="md-form-group">
@@ -25,7 +25,9 @@
 
                     <div class="m-b-md">
                         <label class="md-check">
-                            <input type="checkbox" ng-model="lc.rememberMe"><i class="primary"></i> {{'label.rememberMe' | translate}}
+                            <input type="checkbox" ng-model="lc.rememberMe">
+                            <i class="primary"></i>
+                            {{'label.rememberMe' | translate}}
                         </label>
                        <!-- <a href class="text-primary _500 pull-right" translate>button.forgotPassword?</a>-->
                     </div>

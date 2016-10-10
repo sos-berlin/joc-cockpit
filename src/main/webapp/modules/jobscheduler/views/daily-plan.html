@@ -118,7 +118,7 @@
                                                        class="fa fa-times-circle-o remove"></i>
                                 </a></div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length==0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                     </div>
 
                     <toggle-view></toggle-view>
@@ -130,26 +130,27 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row m-b-sm">
-            <div class="col-md-12 text-right">
+            <div class="col-md-12">
+                <div class="pull-right">
                 <span class="m-r-sm" translate>label.from</span>
-                <input class="form-control input-date" style="width: 115px;background-position: 91px"
+                <input class="form-control input-date" style="width: 125px;background-position: 100px"
                        ng-model="filter.from"
                        data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
                        bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
                 <input class="form-control input-time" ng-model="filter.from" data-time-format="HH:mm:ss"
                        data-autoclose="1"
-                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 100px;background-position: 75px"
+                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="range='dateRange';getPlans('dateRange')">
                 <span class="m-l-sm m-r-sm" translate>label.to</span>
-                <input class="form-control input-date" style="width: 115px;background-position: 91px"
+                <input class="form-control input-date" style="width: 125px;background-position: 100px"
                        ng-model="filter.to"
-                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
+                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" data-min-date="{{filter.from}}"
                        bs-datepicker type="text" ng-change="range='dateRange';getPlans('dateRange')">
                 <input class="form-control input-time" ng-model="filter.to" data-time-format="HH:mm:ss"
                        data-autoclose="1"
-                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 100px;background-position: 75px"
+                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="range='dateRange';getPlans('dateRange')">
-
+                </div>
             </div>
         </div>
         <div class="hide p-t-xs" ng-class="{'show': isLoading }">
@@ -168,6 +169,7 @@
                          auto-expand="options.autoExpand"
                          task-out-of-range="options.taskOutOfRange"
                          from-date="options.fromDate"
+                         to-date="options.toDate"
                          allow-side-resizing="options.allowSideResizing"
                          task-content="options.taskContentEnabled ? options.taskContent : undefined"
                          row-content="options.rowContentEnabled ? options.rowContent : undefined"

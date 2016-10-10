@@ -53,6 +53,7 @@
         }
 
         vm.login = function () {
+
             if (vm.user.username && vm.user.password) {
                 $('#loginBtn').text(gettextCatalog.getString("button.processing")+'...');
                 vm.isProcessing = true;

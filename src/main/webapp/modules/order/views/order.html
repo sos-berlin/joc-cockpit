@@ -79,7 +79,7 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                      </div>
 
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
@@ -100,23 +100,57 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="m-t-sm">
-            <div class="hide-block sidebar-btn resize-cursor">
-                <i  class="material-icons" ng-click="showLeftPanel()">&#xe5d4;</i>
-            </div>
-            <aside id="leftPanel" class="hidden-sm-down">
-                <pie-chart-component></pie-chart-component>
-            </aside>
-            <div id="rightPanel">
-               <div ui-include="'modules/order/views/orders-list.html'"></div>
-            </div>
+            <div ui-include="'modules/order/views/orders-list.html'"></div>
         </div>
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 150
-        });
-    });
-</script>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="height: 550px; overflow: auto">
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
+                    </div>
+                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
+                </div>
+                <div class="row" ng-if="paths.length>0">
+                    <div class="col-sm-10">
+                        <table class="table table-bordered" style="min-height: 100px;">
+                            <tbody>
+                            <tr ng-repeat="path in paths track by $index">
+                                <td>{{path}}
+                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
+                            class="text-primary font14" translate>button.expandAll</span> ]</a>
+                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
+                        ]</a>
+                    <tree
+                            tree-data="filterTree"
+                            tree-control="filter_tree"
+                            expand-to="expand_to"
+                            icon-leaf     = "fa fa-folder-o"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

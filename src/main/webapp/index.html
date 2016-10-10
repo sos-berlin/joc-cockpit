@@ -37,16 +37,7 @@
     </style>
 </head>
 <body ng-controller="AppCtrl" ng-cloak>
-<div ng-spinner-bar class="cssload-loader">
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-    <div class="cssload-side"></div>
-</div>
+<div ng-spinner-bar class="loading-img"></div>
 
 <!--<div ng-spinner-bar class="loader1"></div>-->
 <div class="app" ui-view></div>
@@ -118,6 +109,7 @@
 <script src="modules/app.js"></script>
 <script src="modules/router.js"></script>
 <script src="modules/i18n/translations.js"></script>
+
 
 <!-- core module-->
 <script src="modules/core/controllers/core.ctrl.js"></script>

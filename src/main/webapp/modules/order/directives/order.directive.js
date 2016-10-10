@@ -491,7 +491,7 @@
 
                         });
                         height = window.innerHeight - 300;
-                        //console.log("Height .. " + height);
+                        /*console.log("height .. " + height);*/
                         rectangleTemplate = '<div id="mainContainer"  style="position: relative;min-height: ' + height + 'px; height: ' + height + 'px;width: 100%;overflow: auto;" ><div id="zoomCn">' + rectangleTemplate + '</div></div>';
                         var compiledHtml = $compile(rectangleTemplate)(scope);
                         element.append(compiledHtml);
@@ -578,7 +578,6 @@
                 var btnId;
                 var jobChainPath;
                 var mainContainer;
-
 
                 vm.drawConnections = function () {
                     jobChainPath = vm.jobChain.path;
@@ -1198,7 +1197,7 @@
                                 span.textContent = res.job.processClass;
                             } else {
                                 pSpan.className = pSpan.className.replace("show", "hide");
-                                span.textContent = 'Test server';
+                                span.textContent = '--';
                             }
 
 
@@ -1316,9 +1315,9 @@
                             }
 
                     function addLabel(){
-                         console.log("Add label01");
+                        console.log("Add label01");
 
-                             angular.forEach(vm.orders, function (order, index) {
+                        angular.forEach(vm.orders, function (order, index) {
                             console.log("Order state " + order.state + " path " + order.path);
                             var node = document.getElementById(order.state);
 
@@ -1332,7 +1331,7 @@
                                         color = colorFunction(order.processingState.severity);
                                     }
 
-                                    label.innerHTML = '<span><i class="text-xs fa fa-circle '+color+'"></i> '+ order.orderId + ' <span class="text-primary text-xs">'+ moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT); + '</span></span>';
+                                    label.innerHTML = '<span class="text-sm"><i class="text-xs fa fa-circle '+color+'"></i> '+ order.orderId + ' <span class="text-primary text-xs">'+ moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT); + '</span></span>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
                                     if (node.offsetTop - container.offsetTop < 75) {
@@ -1342,20 +1341,23 @@
                                     container.appendChild(label);
                                 } else if (node.className.indexOf('border-grey') > -1) {
                                     node.className = node.className.replace(/border-.*/, 'border-green');
+                                    var color ='';
+                                    if(order.processingState.severity>-1){
+                                        color = colorFunction(order.processingState.severity);
+                                    }
                                     var label = document.createElement('div');
                                     label.setAttribute('id', 'lbl-order-' + order.state);
                                     label.style.setProperty('position', 'absolute');
                                     label.style.setProperty('width', node.clientWidth + 'px');
                                     label.style.setProperty('margin-bottom', '5px');
                                     label.style.setProperty('left', node.offsetLeft + 'px');
-                                    label.innerHTML = '<div><span>' + order.orderId + '</span></div>';
+                                    label.innerHTML = '<div><span class="text-sm"><i class="text-xs fa fa-circle '+color+'"></i> '+ order.orderId +' <span class="text-primary text-xs">'+ moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT); + '</span></div>';
                                     mainContainer.appendChild(label);
                                     label.style.setProperty('top', node.offsetTop - label.clientHeight + 'px');
                                     label.style.setProperty('height', 'auto');
                                     label.style.setProperty('max-height', '80px');
                                     label.style.setProperty('overflow', 'auto');
                                     label.style.setProperty('overflow-x', 'auto');
-
                                 }
 
                             }

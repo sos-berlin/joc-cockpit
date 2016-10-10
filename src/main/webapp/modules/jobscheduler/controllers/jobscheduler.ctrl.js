@@ -1081,9 +1081,8 @@
         vm.savedIgnoreList = JSON.parse(SavedFilter.ignoreList) || {};
         vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
         vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
-        vm.dataSource = 'Demo';
 
-        var promise1, promise2;
+        var promise1;
 
         setDateRange();
 
@@ -1106,7 +1105,10 @@
             vm.filter.to = to;
         }
 
-        vm.getPlans = function () {
+        vm.getPlans = function (obj) {
+            if(obj !='period') {
+                vm.filter.range = undefined;
+            }
             filterData();
         };
 
@@ -1116,12 +1118,7 @@
 
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
-            var pageSizeTemp = angular.copy(vm.pageSize);
-            var currentPageTemp = angular.copy(vm.currentPage);
 
-            vm.pageSize = vm.plans.length;
-            vm.currentPage = 1;
-            promise1 = $timeout(function () {
                 $('#dailyPlanTableId').table2excel({
                     exclude: ".noExl",
                     filename: "jobscheduler-jobchain",
@@ -1130,15 +1127,12 @@
                     exclude_links: false,
                     exclude_inputs: false
                 });
-                vm.pageSize = pageSizeTemp;
-                vm.currentPage = currentPageTemp;
+
                 $('#exportToExcelBtn').attr("disabled", false);
-            }, 800);
         };
 
 
-        var toDate = new Date();
-        toDate.setDate(toDate.getDate() + 1);
+
         $scope.options = {
             mode: 'custom',
             scale: 'hour',
@@ -1166,7 +1160,6 @@
             },
             autoExpand: 'none',
             taskOutOfRange: 'truncate',
-            toDate: toDate,
             rowContent: '<i class="fa fa-align-justify"></i> {{row.model.orderId}}',
             taskContent: '<i class="fa fa-tasks"></i> {{task.model.orderId}}',
             allowSideResizing: true,
@@ -1433,7 +1426,6 @@
         }
 
         function filterData() {
-            console.log("Filtering 01" + JSON.stringify(vm.savedDailyPlanFilter) + " Range " + vm.range);
             var data = [];
             if (!vm.savedDailyPlanFilter.selected) {
                 data = vm.temp;
@@ -1537,16 +1529,19 @@
                 minNextStartTime.setMinutes(0);
                 minNextStartTime.setHours(0);
                 $scope.options.fromDate = minNextStartTime;
-                console.log("Smallest from01 " + minNextStartTime);
+                var toDate=new Date(minNextStartTime).setHours(23);
+                $scope.options.toDate = toDate;
+                
+                
 
             }
             vm.data = orderBy(orders, 'plannedStartTime');
 
-            promise2 = $timeout(function () {
+            promise1 = $timeout(function () {
                 $('#div').animate({
                     scrollLeft: $("#gantt-current-date-line").offset().left
                 }, 800);
-            }, 4500);
+            }, 4000);
         }
 
 
@@ -1633,8 +1628,7 @@
         $scope.$on('$destroy', function () {
             if (promise1)
                 $timeout.cancel(promise1);
-            if (promise2)
-                $timeout.cancel(promise2);
+
         });
 
 

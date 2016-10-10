@@ -8,9 +8,6 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allOrders
-                            </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                        uib-btn-radio="'pending'"
                                        ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
@@ -40,10 +37,6 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-
-                            <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allOrders
-                            </a>
                             <a class="dropdown-item" ng-model="filter.state"
                                        uib-btn-radio="'pending'"
                                        ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
@@ -106,7 +99,8 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                     </div>
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
                                  ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
@@ -122,16 +116,66 @@
         </div>
     </div>
 </div>
+
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
-    <div class="row">
-        <div class="col-md-12 ">
-            <h5 class="text-c"><span class="hidden-sm-down"><span ng-bind="filter.state | translate"></span> <span translate>label.orders</span></span></h5>
+<!--        <div class="row">
+            <div class="col-md-12 ">
+                <h5 class="text-c"><span class="hidden-sm-down"><span ng-bind="filter.state | translate"></span> <span translate>label.orders</span></span></h5>
+            </div>
+        </div>-->
+        <div class="m-t-sm">
+            <div ui-include="'modules/order/views/orders-list.html'"></div>
         </div>
-    </div>
-    <div class="m-t-sm">
-        <div ui-include="'modules/order/views/orders-list.html'"></div>
-    </div>
     </div>
 </div>
 
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="height: 550px; overflow: auto">
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
+                    </div>
+                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
+                </div>
+                <div class="row" ng-if="paths.length>0">
+                    <div class="col-sm-10">
+                        <table class="table table-bordered" style="min-height: 100px;">
+                            <tbody>
+                            <tr ng-repeat="path in paths track by $index">
+                                <td>{{path}}
+                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
+                            class="text-primary font14" translate>button.expandAll</span> ]</a>
+                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
+                        ]</a>
+                    <tree
+                            tree-data="filterTree"
+                            tree-control="filter_tree"
+                            expand-to="expand_to"
+                            icon-leaf     = "fa fa-folder-o"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

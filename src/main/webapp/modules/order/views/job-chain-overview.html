@@ -13,16 +13,16 @@
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isStoppedJob" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="unstopJobs()" translate>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnStoppedJob" ng-click="unstopJobs()" translate>
                                     button.unstopJob
                                 </button>
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isStopped" ng-click="stopNodes()" translate>
                                     button.stopNode
                                 </button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="skipNodes()" translate>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isSkippedNode" ng-click="skipNodes()" translate>
                                     button.skipNode
                                 </button>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="unskipNodes()" translate>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnSkippedNode" ng-click="unskipNodes()" translate>
                                     button.proceedNode
                                 </button>
                             </div>
@@ -31,7 +31,7 @@
                             <div ng-class="{'hide':selectedNodes.length>0}">
                                 <div class="inline" ng-show="pageView=='grid'">
                                     <div class="inline">
-                                        <label class="md-check">
+                                        <label class="md-check" ng-init="fitToScreen = false">
                                             <input data-ng-model="fitToScreen" type="checkbox"><i
                                                 class="primary"></i>
                                             <span translate>label.fitToScreen</span>
@@ -159,7 +159,10 @@
 
                                     <div ng-repeat="order in node.orders | limitTo : 2:0">
                                         <a href="" ng-click="showTaskFuc(order)">
-                                            <span class="text-sm" ng-bind="order.orderId">  </span>
+                                            <span class="text-sm">
+                                                <i class="text-xs fa fa-circle" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
+                                                <span class="text-primary text-xs">{{order.nextStartTime | stringToDate}}</span>
+                                            </span>
                                         </a>
                                     </div>
 

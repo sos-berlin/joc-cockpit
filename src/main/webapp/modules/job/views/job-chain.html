@@ -10,7 +10,7 @@
                         <div class="btn-group hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
                                     ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>
-                                button.allJobChains</span>
+                                button.allJobChains
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'running'"
@@ -34,7 +34,7 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobChains</span>
+                                   ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobChains
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
                                    uib-btn-radio="'running'"
@@ -100,7 +100,7 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><img
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img
                                 src="images/share.png" class="p-b-xs"></button>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
@@ -126,13 +126,14 @@
                 </div>
                 <aside id="leftPanel" class="leftTreePanel max-tree-ht">
                     <div>
-                        <a class="text m-r-xs resize-cursor"><i class="material-icons" ng-click="hidePanel()">menu</i></a>
-                        <a class="text m-r-xs " ng-click="my_tree.expand_all();expandAll()">[ <span
-                                class="text-primary font14" translate>button.expandAll</span> ]</a>
-                        <a class="text" ng-click="my_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
-                            ]</a>
-                        <tree
-                                tree-data="tree"
+                        <a class="text m-r-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                        <a class="text" ng-click="my_tree.expand_all();expandAll();">[ <span
+                                class="text-primary font14" translate>button.expandAll</span> ]
+                        </a>
+                        <a class="text" ng-click="my_tree.collapse_all();">[ <span class="text-primary font14" translate>button.collapseAll</span>
+                            ]
+                        </a>
+                        <tree tree-data="tree"
                                 tree-control="my_tree"
                                 expand-to="expand_to"
                                 view-orders="viewOrders(jobChain)"
@@ -145,13 +146,13 @@
                         </tree>
                     </div>
                 </aside>
-                <div id="rightPanel">
+                <div id="rightPanel1">
                     <div class="row parent">
                         <div ng-repeat="branch in branchs">
-                            <div class="col-md-12" ng-if="branch.path" style="margin-bottom: 10px">
-                                <span class="text"><i class="fa fa-folder-open"></i> {{::branch.path}}</span>
+                            <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
+                                <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
                             </div>
-                            <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12"
+                            <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                                  ng-repeat="jobChain in branch.jobChains | orderBy:filter.sortBy:reverse">
                                 <div class="box card">
                                     <div class="box-body">
@@ -240,7 +241,7 @@
 
                 </div>
             </div>
-            <div class="hide m-t-sm box padding" ng-class="{'show': pageView=='list'}">
+            <div class="hide m-t-sm box p-a" ng-class="{'show': pageView=='list'}">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="jobChainTableId">
                         <thead>
@@ -324,7 +325,7 @@
                                 <span ng-if="jobChain.title"> - </span><i class="text-muted">
                                     <span ng-bind-html="jobChain.title"></span></i>
                             </td>
-                            <td ng-bind="jobChain.path1"></td>
+                            <td ng-bind="jobChain.path"></td>
                             <td><span class="text-c label" ng-class="bgColorFunction(jobChain.state.severity)"
                                       ng-bind="jobChain.state._text  | translate"></span></td>
                             <td ng-bind="jobChain.numOfNodes || 0"></td>
@@ -397,6 +398,55 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="height: 550px; overflow: auto">
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
+                    </div>
+                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
+                </div>
+                <div class="row" ng-if="paths.length>0">
+                    <div class="col-sm-10">
+                        <table class="table table-bordered" style="min-height: 100px;">
+                            <tbody>
+                            <tr ng-repeat="path in paths track by $index">
+                                <td>{{path}}
+                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
+                            class="text-primary font14" translate>button.expandAll</span> ]</a>
+                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
+                        ]</a>
+                    <tree
+                            tree-data="filterTree"
+                            tree-control="filter_tree"
+                            expand-to="expand_to"
+                            icon-leaf     = "fa fa-folder-o"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 $('.table-responsive').on('shown.bs.dropdown', function (e) {
@@ -411,5 +461,10 @@ $('.table-responsive').on('shown.bs.dropdown', function (e) {
 
   $('.table-responsive').on('hide.bs.dropdown', function () {
     $(this).css("padding-bottom", 0);
-  })
+  });
+        $(document).ready(function () {
+        $('.leftTreePanel').stickySidebar({
+            sidebarTopMargin: 150
+        });
+    });
 </script>
