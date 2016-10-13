@@ -351,7 +351,7 @@
                             '</div>' +
                             '</div>';
                         }
-                        if (scope.errorNodes.indexOf(item.errorNode) < 0) {
+                        if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
                         }
                         //console.log("Here name " + JSON.stringify(coords[index]));

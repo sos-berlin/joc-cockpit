@@ -29,7 +29,6 @@
             'gantt.table',
             'ngFileSaver'
         ])
-
         .constant("apiUrl", "joc/api/")
         .config(['calendarConfig' ,function (calendarConfig) {
             calendarConfig.dateFormatter = 'moment';

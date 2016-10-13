@@ -24,6 +24,11 @@
         vm.savedJobChainFilter = JSON.parse(SavedFilter.jobChainFilters) || {};
         vm.savedJobChainFilter.list = vm.savedJobChainFilter.list || [];
 
+        console.log(vm.savedJobChainFilter)
+
+        vm.reset=function(){
+            vm.object.jobChains=[];
+        }
 
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled",true);
@@ -1397,6 +1402,10 @@
 
             });
         };
+
+        vm.reset=function(){
+            vm.object.jobs=[];
+        }
 
 
         vm.end = function (task) {

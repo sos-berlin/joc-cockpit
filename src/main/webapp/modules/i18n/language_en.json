@@ -136,7 +136,7 @@
   "button.terminateAndRestartWithin": "Terminate and Restart Within",
   "button.expandAll": "Expand All",
   "button.collapseAll": "Collapse All",
-
+   "button.reset": "Reset",
   "breadcrumb.dashboard": "Dashboard",
   "breadcrumb.jobs": "Jobs",
   "breadcrumb.orders": "Orders",

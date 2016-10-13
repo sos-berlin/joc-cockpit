@@ -8,6 +8,7 @@
                     </div>
                     <div ng-class="{'hide':(object.historys.length>0 || object.jobHistorys.length>0)}">
                          <div class="btn-group m-l-sm hidden-btn-group">
+
                             <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': filter.date=='all'}" translate>button.all
                             </button>
@@ -78,6 +79,7 @@
                         <button class="btn btn-grey btn-sm " id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                     </div>
                     <div class="hide" ng-class="{'show-block':(object.historys.length>0 || object.jobHistorys.length>0)}">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()" translate>button.reset</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="addToIgnorelist()" translate>button.addToIgnoreList</button>
                     </div>
                 </div>
@@ -431,7 +433,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div ng-bind-html="logs.html"></div>
+                                    <div ng-bind-html="logs"></div>
                                 </div>
                             </div>
                         </div>

@@ -147,8 +147,8 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', '$state', 'toasty'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, $state, toasty) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', '$state', 'toasty','SOSAuth'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, $state, toasty,SOSAuth) {
         var vm = $scope;
 
         vm.currentTime = moment();

@@ -13,7 +13,7 @@
                     <span ng-click="collapseNode({branch:row.branch})"> <i class="text-xs fa fa-compress"></i></span>
                 </span>
                 <div class="m-l-sm" ng-class="'level-' + {{ row.level }}" ng-if="row.branch.orders && row.branch.expanded">
-                    <div class="indented p-l-sm" ng-repeat="order in row.branch.orders">
+                    <div class="indented p-l-sm p-t-xs" ng-repeat="order in row.branch.orders">
                          <a class="m-l-sm primary-text-hover-color" ><i class="fa fa-list-ul"></i> {{::order.orderId}}</a>
                     </div>
                     <div ng-if="row.branch.orders.length==0 && row.branch.folders.length==0" class="indented p-l-sm"><a class="m-l-sm" translate>message.noOrdersFound</a></div>

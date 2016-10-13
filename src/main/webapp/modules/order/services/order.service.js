@@ -8,8 +8,8 @@
     angular.module('app')
         .service('OrderService', OrderService);
 
-    OrderService.$inject = ["$resource", "$q", "apiUrl"];
-    function OrderService($resource, $q, apiUrl) {
+    OrderService.$inject = ["$resource", "$q", "apiUrl","$http"];
+    function OrderService($resource, $q, apiUrl,$http) {
         return {
             jobSelected:undefined,
             get: function (filter) {
@@ -66,13 +66,16 @@
                 return deferred.promise;
             },
             log: function (filter) {
+                console.log("Logs......");
                 var deferred = $q.defer();
-                var Orders = $resource(apiUrl + 'order/log');
-                Orders.save(filter, function (res) {
+                $http.post(apiUrl + 'order/log',filter,{transformResponse:function(data,header,status){
+                     return data;
+                }}).then(function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.resolve(err);
-                });
+                })
+
                 return deferred.promise;
             },
             getSnapshot: function (filter) {
@@ -88,6 +91,7 @@
             },
             getConfiguration: function (path,jobschedulerId) {
                 var deferred = $q.defer();
+
                 var Configuration = $resource(apiUrl + 'order/configuration');
                 Configuration.save({order: path,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);

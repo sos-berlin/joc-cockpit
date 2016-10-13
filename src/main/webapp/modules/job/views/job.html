@@ -89,11 +89,12 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
 
 
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobs.length>0}">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()"  translate>button.reset</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isOrderJob" ng-if="permission.Job.start" translate>button.startTask</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.stop" ng-click="stopAll();" translate>button.stop</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.unstop" ng-click="unStopAll()" translate>button.unstop</button>

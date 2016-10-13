@@ -118,7 +118,7 @@
                                                        class="fa fa-times-circle-o remove"></i>
                                 </a></div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length==0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="filtered.length==0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                     </div>
 
                     <toggle-view></toggle-view>
@@ -175,6 +175,7 @@
                          row-content="options.rowContentEnabled ? options.rowContent : undefined"
                          headers="options.width && options.shortHeaders || options.longHeaders"
                          max-height="options.maxHeight"
+                         to-date="options.toDate"
                          api="options.api"
                          shrink-to-fit="option.shrinkToFit"
                          column-magnet="options.columnMagnet">

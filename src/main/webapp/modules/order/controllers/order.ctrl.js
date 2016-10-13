@@ -113,6 +113,11 @@
             }, 50);
         };
 
+        vm.reset = function(){
+            vm.object.nodes=[];
+            vm.selectedNodes=[];
+        }
+
         vm.onRemove = function (item) {
             angular.forEach(vm.selectedNodes, function (node, index) {
                 if (node.name == item.name) {
@@ -532,7 +537,7 @@
                     return 1;
 
                 })
-                res.orders = res.orders.slice(0, 10);
+
                 vm.orders = res.orders;
 
                 angular.forEach(vm.jobChain.nodes, function (node, index) {
@@ -1142,6 +1147,10 @@
         vm.isLoading = false;
 
         vm.object = {};
+
+        vm.reset = function(){
+            vm.object.orders=[];
+        }
 
         vm.savedOrderFilter = JSON.parse(SavedFilter.orderFilters) || {};
         vm.savedOrderFilter.list = vm.savedOrderFilter.list || [];
@@ -2690,7 +2699,7 @@ vm.filter.state = $stateParams.name;
 
         vm.isLoading1 = true;
         vm.showLogFuc = function (value) {
-            if (value.historyId) {
+            if (!value.historyId) {
                 vm.isLoading1 = false;
                 var orders = {};
                 orders.jobschedulerId = $scope.schedulerIds.selected;
@@ -2700,7 +2709,12 @@ vm.filter.state = $stateParams.name;
 
 
                 OrderService.log(orders).then(function (res) {
-                    vm.logs = res.log;
+                     var logs = JSON.parse(JSON.stringify( res));
+                    console.log("logs "+JSON.stringify( logs));
+                    logs=logs.data.substring(logs.data.indexOf("plain")+8);
+                    logs = logs.substring(0,logs.indexOf("}"));
+                    logs=logs.replace(/"/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\\n/g,'<br>');
+                    vm.logs = logs;
                     vm.showLogPanel = value;
 
                     vm.isLoading1 = true;
@@ -3069,7 +3083,12 @@ vm.filter.state = $stateParams.name;
                 orders.orderId = value.orderId;
                 orders.historyId = value.historyId;
                 OrderService.log(orders).then(function (res) {
-                    vm.logs = res.log;
+
+                    var logs = JSON.parse(JSON.stringify( res));
+                    logs=logs.data.substring(logs.data.indexOf("plain")+8);
+                    logs = logs.substring(0,logs.indexOf("}"));
+                    logs=logs.replace(/"/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\\n/g,'<br>');
+                    vm.logs = logs;
                     vm.isLoading1 = false;
                 }, function () {
                     vm.isError = true;
@@ -3412,7 +3431,6 @@ vm.filter.state = $stateParams.name;
 
         contextmenu();
 
-
         vm.addToIgnorelist = function () {
             if (vm.filter.type == 'jobChain') {
                 angular.forEach(vm.object.historys, function (res) {
@@ -3435,6 +3453,10 @@ vm.filter.state = $stateParams.name;
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
             SavedFilter.save();
         };
+
+         vm.reset=function(){
+            vm.object.historys=[];
+        }
 
         vm.addOrderToIgnoreList = function (name) {
             vm.savedIgnoreList.orders.push(name);

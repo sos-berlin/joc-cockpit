@@ -100,10 +100,12 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img
                                 src="images/share.png" class="p-b-xs"></button>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
+                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><i
+                                class="fa fa-stop"></i> <span translate>button.reset</span></button>
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped"
                                 ng-class="{'show-block':permission.JobChain.stop}" ng-click="stopAll()"><i
                                 class="fa fa-stop"></i> <span translate>button.stop</span></button>

@@ -10,6 +10,9 @@
                                 <div class="font14" ng-bind="jobChain.processClass || '-'"></div>
                             </div>
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
+                                 <button class="btn btn-grey btn-sm m-l-sm"  ng-click="reset()" translate>
+                                    button.reset
+                                </button>
                                 <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isStoppedJob" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>

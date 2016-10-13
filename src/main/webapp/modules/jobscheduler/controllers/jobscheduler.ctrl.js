@@ -388,6 +388,10 @@
             });
         };
 
+        vm.reset=function(){
+            vm.object.schedules=[];
+        }
+
         vm.setRunTime = function (schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
@@ -1488,6 +1492,7 @@
 
         function prepareGanttData(data2) {
             var minNextStartTime;
+             var maxEndTime;
             var orders = [];
             data2 = orderBy(data2, 'plannedStartTime', false);
 
@@ -1521,6 +1526,9 @@
                 if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
                     minNextStartTime = new Date(order.plannedStartTime);
                 }
+                 if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
+                    maxEndTime = new Date(order.expectedEndTime);
+                }
                 orders[index].tasks[0].to = new Date(order.expectedEndTime);
 
             });
@@ -1529,10 +1537,17 @@
                 minNextStartTime.setMinutes(0);
                 minNextStartTime.setHours(0);
                 $scope.options.fromDate = minNextStartTime;
-                var toDate=new Date(minNextStartTime).setHours(23);
-                $scope.options.toDate = toDate;
-                
-                
+                var to =  new Date(minNextStartTime);
+                to.setHours(23);
+                if(maxEndTime>to){
+                    $scope.options.toDate = maxEndTime;
+                }else{
+                    $scope.options.toDate = to;
+                }
+
+                console.log("Smallest from01 " + minNextStartTime);
+                console.log("Smallest to01 " + to);
+
 
             }
             vm.data = orderBy(orders, 'plannedStartTime');
