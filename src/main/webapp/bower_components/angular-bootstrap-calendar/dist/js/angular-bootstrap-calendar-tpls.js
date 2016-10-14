@@ -134,9 +134,6 @@
                 var n = r(v.viewDate), l = !0;
                 m.clone().startOf(v.view).isSame(n.clone().startOf(v.view)) && !m.isSame(n) && v.view === u && (l = !1), m = n, u = v.view, l && t(function () {
                     e.$broadcast("calendar.refreshView")
-<<<<<<< HEAD
-                })
-=======
                 });
                 if(v.view == 'year'){
                    var f = 0;
@@ -149,7 +146,6 @@
                         v.yearView.push(v.monthView), v.offsets.push(v.monthOffsets), f++
                     }
                 }
->>>>>>> 3900aa02923215d7ed29d7b339490c1994ea5a18
             }
 
             var v = this;
@@ -166,28 +162,12 @@
                 e.$watchGroup(["vm.viewDate", "vm.view", "vm.cellIsOpen", function () {
                     return r.locale() + l.id
                 }], function () {
-<<<<<<< HEAD
-                    n ? c() : (n = !0, e.$watch("vm.events", c, !0))
-=======
                     //n ? c() : (n = !0, e.$watch("vm.events", c, !0))
                     n ? c() : (n = !0, e.$watch("vm.planItems", c, !0))
->>>>>>> 3900aa02923215d7ed29d7b339490c1994ea5a18
                 })
             })["catch"](function (e) {
                 n.error("Could not load all calendar templates", e)
             });
-<<<<<<< HEAD
-            var f = 0;
-            for (v.yearView = [], v.offsets = []; 12 > f;) {
-                var p = new Date;
-                p.setMonth(f), v.monthView = o.getMonthView(v.events, p, v.cellModifier, v.planItems);
-                var w = Math.floor(v.monthView.length / 7);
-                v.monthOffsets = [];
-                for (var h = 0; w > h; h++)v.monthOffsets.push(7 * h);
-                v.yearView.push(v.monthView), v.offsets.push(v.monthOffsets), f++
-            }
-=======
->>>>>>> 3900aa02923215d7ed29d7b339490c1994ea5a18
         }]).directive("mwlCalendar", ["calendarConfig", function (e) {
             return {
                 templateUrl: e.templates.calendar,
@@ -1081,12 +1061,9 @@
     }, function (e, n, t) {
         "use strict";
         var a = t(12), i = t(50);
-<<<<<<< HEAD
-=======
         i.locale('en_gb', {
             week: {dow: 1}
         });
->>>>>>> 3900aa02923215d7ed29d7b339490c1994ea5a18
         a.module("mwl.calendar").constant("moment", i)
     }, function (e, n) {
         e.exports = t
