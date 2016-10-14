@@ -6,7 +6,8 @@
     'use strict';
     angular.module('app')
         .service('CoreService', CoreService)
-        .service('SavedFilter', SavedFilter);
+        .service('SavedFilter', SavedFilter)
+    .service('PollingService', PollingService);
 
     CoreService.$inject = ['$window'];
     function CoreService($window) {
@@ -121,4 +122,16 @@
     }
 
 
+    PollingService.$inject=['$resource'];
+    function PollingService($resource){
+
+       function PollingService(){
+              var self =this;
+            $resource('poll_config.json').get(function(res){
+                self.config = res;
+        });
+       }
+
+        return new PollingService();
+    }
 })();

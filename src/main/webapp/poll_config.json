@@ -1,0 +1,31 @@
+{
+  "dashboard":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "dailyPlan":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "jobChains":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "orders":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "jobs":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "resources":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "history":{
+    "polling":"true",
+    "interval":"600"
+  }
+
+}

@@ -1137,8 +1137,10 @@
         };
     }
 
-    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "CoreService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog", "FileSaver", "Blob"];
-    function OrderCtrl($scope, $rootScope, OrderService, CoreService, orderBy, $uibModal, SavedFilter, toasty, gettextCatalog, FileSaver, Blob) {
+    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "CoreService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog", "FileSaver", "Blob",
+        "$interval","PollingService","$timeout"];
+    function OrderCtrl($scope, $rootScope, OrderService, CoreService, orderBy, $uibModal, SavedFilter, toasty, gettextCatalog, FileSaver, Blob
+        ,$interval,PollingService,$timeout) {
         var vm = $scope;
 
         vm.filter = {};
@@ -1368,19 +1370,23 @@
                 compact: true
             }).then(function (result) {
                 vm.orders = result.orders;
+                getVolatile();
                 vm.isLoading = true;
-                OrderService.get({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    vm.temp = angular.merge(result.orders, res.orders);
-                    filterData();
-                }, function () {
-                    vm.isLoading = true;
-                    vm.isError = true;
-                });
+
             });
         };
 
         vm.init();
 
+        function  getVolatile(){
+             OrderService.get({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                    vm.temp = angular.merge(vm.orders, res.orders);
+                    filterData();
+                }, function () {
+                    vm.isLoading = true;
+                    vm.isError = true;
+                });
+        }
 
         vm.load = function () {
             filterTreeData();
@@ -1717,6 +1723,38 @@
             });
 
         };
+
+        var t;
+        startPolling();
+
+        function startPolling() {
+
+            t = $timeout(function () {
+
+                if (PollingService.config.orders.polling) {
+                    poll();
+                }
+            }, 5000)
+        }
+
+        var interval;
+
+        function poll() {
+            interval=$interval(function () {
+                if (vm.pageView == 'list') {
+                    getVolatile();
+                } else {
+
+                }
+            }, PollingService.config.orders.interval * 1000)
+        }
+
+        $scope.$on('$destroy', function () {
+            $interval.cancel(interval);
+            $timeout.cancel(t);
+
+        });
+
     }
 
     OrderOverviewCtrl.$inject = ["$scope", "OrderService", "$stateParams", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "FileSaver"];
@@ -2665,6 +2703,8 @@ vm.filter.state = $stateParams.name;
         };
 
         vm.viewCalendar = function (order) {
+            vm._jobChain = order;
+            vm._jobChain.name = order.orderId;
             vm.planItems = [];
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -2760,9 +2800,9 @@ vm.filter.state = $stateParams.name;
     }
 
     HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "toasty", "$timeout", "gettextCatalog", "FileSaver",
-        "Blob", "JobService", "JobChainService"];
+        "Blob", "JobService", "JobChainService","$interval","PollingService"];
     function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, toasty, $timeout, gettextCatalog, FileSaver,
-                         Blob, JobService, JobChainService) {
+                         Blob, JobService, JobChainService,$interval,PollingService) {
         var vm = $scope;
         vm.isLoading = false;
         vm.filter = {};
@@ -3544,14 +3584,39 @@ vm.filter.state = $stateParams.name;
             }
         };
 
+        var t;
+        startPolling();
+
+        function startPolling() {
+
+            t = $timeout(function () {
+
+                if (PollingService.config.history.polling) {
+                    poll();
+                }
+            }, 5000)
+        }
+
+        var interval;
+
+        function poll() {
+            interval=$interval(function () {
+                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+            }, PollingService.config.history.interval * 1000)
+        }
+
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
             watcher3();
             watcher4();
             watcher5();
-            if (promise1)
-                $timeout.cancel(promise1);
+            if (promise1){
+                 $timeout.cancel(promise1);
+            }
+             $interval.cancel(interval);
+            $timeout.cancel(t);
+
         });
 
         vm.downloadLog = function (logs) {

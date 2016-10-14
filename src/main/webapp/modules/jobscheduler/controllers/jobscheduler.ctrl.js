@@ -12,14 +12,14 @@
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
 
-    ResourceCtrl.$inject = ["$scope", 'JobSchedulerService', '$stateParams', "ResourceService", "orderByFilter", "gettextCatalog"];
-    function ResourceCtrl($scope, JobSchedulerService, $stateParams, ResourceService, orderBy, gettextCatalog) {
+    ResourceCtrl.$inject = ["$scope", 'JobSchedulerService', '$stateParams', "ResourceService", "orderByFilter", "gettextCatalog","ScheduleService","$interval","PollingService","$timeout"];
+    function ResourceCtrl($scope, JobSchedulerService, $stateParams, ResourceService, orderBy, gettextCatalog,ScheduleService,$interval,PollingService,$timeout) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
         vm.filter.sortBy = "name";
 
-
+vm.object = {};
         vm.pageSize = 10;
         vm.currentPage = 1;
 
@@ -31,20 +31,26 @@
             }
             else if (vm.state = 'locks') {
                 vm.locks = orderBy(vm.locks, vm.propertyName, vm.reverse);
-            } else {
+            } else if(vm.state='processClass') {
                 vm.processClasses = orderBy(vm.processClasses, vm.propertyName, vm.reverse);
+            } else  {
+                vm.object.schedules = [];
+                vm.schedules = orderBy(vm.schedules, vm.propertyName, vm.reverse);
             }
         };
 
         vm.mainSortBy = function (propertyName) {
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
-            if (vm.state = 'agent')
+            if (vm.state == 'agent')
                 vm.tree_data = orderBy(vm.tree_data, vm.filter.sortBy, vm.sortReverse);
-            else if (vm.state = 'locks') {
+            else if (vm.state == 'locks') {
                 vm.locks = orderBy(vm.locks, vm.filter.sortBy, vm.sortReverse);
-            } else {
+            } else if(vm.state=='processClass') {
                 vm.processClasses = orderBy(vm.processClasses, vm.filter.sortBy, vm.sortReverse);
+            }else{
+                 vm.object.schedules = [];
+                vm.schedules = orderBy(vm.schedules, vm.filter.sortBy, vm.sortReverse);
             }
         };
         vm.tree_data = [];
@@ -221,6 +227,172 @@
             });
         };
 
+         vm.loadSchedules = function (filter) {
+            vm.isLoading = false;
+            ScheduleService.getSchedulesP(filter).then(function (result) {
+                vm.schedules = result.schedules;
+                vm.temp = result.schedules;
+                vm.isLoading = true;
+                ScheduleService.get(filter).then(function (res) {
+                    angular.merge(result.schedules, res.schedules)
+                });
+            }, function () {
+                vm.isLoading = true;
+                vm.isError = true;
+            });
+        };
+
+        vm.load = function () {
+            vm.data = [];
+            angular.forEach(vm.temp, function (value) {
+                if (value.state._text == vm.filter.state || vm.filter.state == 'all')
+                    vm.data.push(value);
+            });
+            vm.schedules = vm.data;
+        };
+
+        vm.allCheck = {
+            checkbox: false
+        };
+
+        var watcher1 = $scope.$watchCollection('object.schedules', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.allCheck.checkbox = newNames.length == vm.schedules.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
+            } else {
+                vm.allCheck.checkbox = false;
+            }
+        });
+
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
+            if (newNames)
+                vm.object.schedules = [];
+        });
+
+
+        var watcher3 = $scope.$watch('pageSize', function (newNames) {
+            if (newNames)
+                vm.object.schedules = [];
+        });
+
+        vm.checkAll = function () {
+            if (vm.allCheck.checkbox) {
+                vm.object.schedules = vm.schedules.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
+            } else {
+                vm.object.schedules = [];
+            }
+        };
+
+        function substitute(schedule) {
+            ScheduleService.substitute(schedule, $scope.schedulerIds.selected).then(function (res) {
+
+            });
+        }
+
+        vm.substitute = function (schedule) {
+            vm.sch = {};
+            vm.sch.folder = '/';
+
+            vm.sch._valid_from = moment().set({hour:0,minute:0,second:0,millisecond:0}).format('YYYY-MM-DD HH:mm:ss');
+            vm.sch._valid_to = moment().set({hour:23,minute:59,second:59,millisecond:0}).format('YYYY-MM-DD HH:mm:ss');
+            vm.sch._substitute = schedule.path;
+            vm.schedule = schedule;
+
+            //console.log(schedule);
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/add-substitute-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                substitute(schedule);
+            }, function () {
+
+            });
+            ScheduleService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                schedule: schedule.path
+            }).then(function (res) {
+                if (res.runTime) {
+                    vm.runTimes = res.runTime;
+                    vm.runTimes.content = vm.runTimes.content.replace(/&lt;/g, '<');
+                    vm.runTimes.content = vm.runTimes.content.replace(/&gt;/g, '>');
+                    vm.xml = vm.runTimes.content;
+                }
+                $rootScope.$broadcast('loadXml');
+
+            });
+            vm.zones = moment.tz.names();
+        };
+
+        vm.substituteAll = function () {
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/substitute-all-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm
+            });
+            modalInstance.result.then(function () {
+                angular.forEach(vm.object.schedules, function (value) {
+                    substitute(value);
+                });
+            }, function () {
+                vm.object.schedules = [];
+            });
+        };
+
+        vm.reset=function(){
+            vm.object.schedules=[];
+        }
+
+        vm.setRunTime = function (schedule) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            schedules.schedule = schedule.path;
+            schedules.runTime = schedule.runTime;
+            ScheduleService.setRunTime(schedules).then(function (result) {
+                vm.schedules = result.schedules;
+            }, function () {
+                vm.isError = true;
+            });
+
+        };
+
+        vm.editSchedule = function (schedule) {
+
+            vm.sch = {};
+            vm.schedule = schedule;
+            vm.sch._title = schedule.title;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-schedule-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+                setRunTime(schedule);
+            }, function () {
+                vm.object.schedules = [];
+            });
+            ScheduleService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                schedule: schedule.path
+            }).then(function (res) {
+                if (res.runTime) {
+                    vm.runTimes = res.runTime;
+                    vm.runTimes.content = vm.runTimes.content.replace(/&lt;/g, '<');
+                    vm.runTimes.content = vm.runTimes.content.replace(/&gt;/g, '>');
+                    vm.xml = vm.runTimes.content;
+                }
+                $rootScope.$broadcast('loadXml');
+
+            });
+            vm.zones = moment.tz.names();
+        };
+
 
         $scope.$on('$stateChangeSuccess', function (event, toState) {
             vm.state = '';
@@ -232,10 +404,51 @@
             } else if (toState.name == 'app.resources.locks') {
                 vm.state = 'lock';
                 vm.loadLocks();
-            } else {
+            } else if(toState.name == 'app.resources.processClass') {
                 vm.state = 'processClass';
                 vm.loadProcessClass();
+            }else{
+                vm.state='schedules';
+                vm.loadSchedules({jobschedulerId: $scope.schedulerIds.selected});
             }
+
+        });
+
+         var t;
+        startPolling();
+
+        function startPolling() {
+
+            t = $timeout(function () {
+
+                if (PollingService.config.orders.polling) {
+                    poll();
+                }
+            }, 5000)
+        }
+
+        var interval;
+
+        function poll() {
+            interval=$interval(function () {
+                if ( vm.state =='agent') {
+                 vm.loadAgents();
+            } else if ( vm.state == 'lock') {
+                vm.loadLocks();
+            } else if(vm.state == 'processClass') {
+                vm.loadProcessClass();
+            }else{
+                vm.loadSchedules({jobschedulerId: $scope.schedulerIds.selected});
+            }
+            }, PollingService.config.resources.interval * 1000)
+        }
+
+        $scope.$on('$destroy', function () {
+             watcher1();
+            watcher2();
+            watcher3();
+            $interval.cancel(interval);
+            $timeout.cancel(t);
 
         });
     }
@@ -592,10 +805,12 @@
         };
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', '$interval', '$state', '$uibModal', 'DailyPlanService', 'moment'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, $interval, $state, $uibModal, DailyPlanService, moment) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', '$interval', '$state', '$uibModal', 'DailyPlanService', 'moment','PollingService','$timeout'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, $interval, $state, $uibModal, DailyPlanService, moment,PollingService,$timeout) {
         var vm = $scope;
         var bgColorArray = [];
+
+
 
 
         vm.getAgentCluster = function () {
@@ -752,9 +967,9 @@
         };
 
 
-        vm.interval = $interval(function () {
-            vm.loadOrderSnapshot(undefined, $scope.schedulerIds.selected);
-        }, 60000);
+        //vm.interval = $interval(function () {
+        //    vm.loadOrderSnapshot(undefined, $scope.schedulerIds.selected);
+        //}, 60000);
 
         $scope.$on('elementClick.directive', function (angularEvent, event) {
 
@@ -999,6 +1214,9 @@
 
             var data = [];
 
+            if(!vm.planItemData){
+                return;
+            }
             vm.planItemData.forEach(function (value, index) {
                 var flag = true;
                 if (new Date(value.plannedStartTime) < from || new Date(value.plannedStartTime) > to) {
@@ -1053,17 +1271,40 @@
             filterData();
         };
 
+        startPolling();
+
+        function startPolling(){
+
+           var t=  $timeout(function(){
+                console.log("Polling "+PollingService.config.dashboard.polling);
+                if(PollingService.config.dashboard.polling){
+                poll();
+            }
+            },5000)
+        }
+
+        var interval;
+
+        function poll(){
+              interval=  $interval(function(){
+                  vm.loadOrderSnapshot();
+                    vm.getAgentCluster();
+                  getDailyPlans();
+                },PollingService.config.dashboard.interval*1000)
+
+        }
+
         $scope.$on('$destroy', function () {
             // Make sure that the interval is destroyed too
-            $interval.cancel(vm.interval);
+            $interval.cancel(interval);
         });
 
 
     }
 
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'DailyPlanService'];
-    function DailyPlanCtrl($scope,  $timeout, gettextCatalog, moment, orderBy, $uibModal, SavedFilter, toasty, OrderService, DailyPlanService) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'DailyPlanService','$interval','PollingService'];
+    function DailyPlanCtrl($scope,  $timeout, gettextCatalog, moment, orderBy, $uibModal, SavedFilter, toasty, OrderService, DailyPlanService,$interval,PollingService) {
 
         var vm = $scope;
 
@@ -1490,12 +1731,13 @@
             console.log("Data " + vm.data.length);
         }
 
+
         function prepareGanttData(data2) {
+
             var minNextStartTime;
              var maxEndTime;
             var orders = [];
             data2 = orderBy(data2, 'plannedStartTime', false);
-
             angular.forEach(data2, function (order, index) {
                 orders[index] = {};
                 orders[index].tasks = [];
@@ -1550,6 +1792,7 @@
 
 
             }
+             console.log("Task 0 "+JSON.stringify(orders[0]));
             vm.data = orderBy(orders, 'plannedStartTime');
 
             promise1 = $timeout(function () {
@@ -1639,8 +1882,31 @@
         }
 
         contextmenu();
+        var t;
+        startPolling();
+
+        function startPolling(){
+
+           t=  $timeout(function(){
+                console.log("Polling "+PollingService.config.dailyPlan.polling);
+                if(PollingService.config.dailyPlan.polling){
+                poll();
+            }
+            },5000)
+        }
+
+        var interval;
+
+        function poll(){
+              interval=  $interval(function(){
+                 vm.load();
+                },PollingService.config.dailyPlan.interval*1000)
+
+        }
 
         $scope.$on('$destroy', function () {
+             $interval.cancel(interval);
+            $timeout.cancel(t);
             if (promise1)
                 $timeout.cancel(promise1);
 

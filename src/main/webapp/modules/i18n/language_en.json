@@ -140,7 +140,7 @@
   "breadcrumb.dashboard": "Dashboard",
   "breadcrumb.jobs": "Jobs",
   "breadcrumb.orders": "Orders",
-  "breadcrumb.jobChains": "Job chains",
+  "breadcrumb.jobChains": "Job Chains",
   "breadcrumb.dailyPlan": "Daily Plan",
   "breadcrumb.resources": "Resources",
   "breadcrumb.userProfile": "User Profile",
@@ -592,5 +592,5 @@
   "tab.weekDays": "WeekDays",
   "tab.schedule": "Schedule",
   "tab.runtime": "Run Time",
-  "tooltip.exportInXLS": "Export in xlsx"
+  "tooltip.exportInXLS": "export xlsx"
 }

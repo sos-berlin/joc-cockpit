@@ -4,14 +4,15 @@
 
         <div class="hide m-t-xs" ng-class="{'show': pageView=='grid'}">
             <div class="hide-block sidebar-btn resize-cursor">
-                <i class="material-icons" ng-click="showLeftPanel()">&#xe5d4;</i>
+                <i class="fa fa-angle-double-right fa-lg p-l-xs" ng-click="showLeftPanel()"></i>
             </div>
             <aside id="leftPanel" class="leftTreePanel max-tree-ht">
                 <div>
-                    <a class="text m-r-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+
                     <a class="text m-r-xs " ng-click="my_tree.expand_all();expandAll()">[ <span
                             class="text-primary font14" translate>button.expandAll</span> ]</a>
                     <a class="text" ng-click="my_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>]</a>
+                    <a class="text m-r-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
                     <tree
                             tree-data="tree"
                             tree-control="my_tree"

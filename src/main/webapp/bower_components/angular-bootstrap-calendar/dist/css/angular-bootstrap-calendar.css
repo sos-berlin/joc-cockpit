@@ -550,7 +550,7 @@ a.cal-event-week {
   color: #151515;
 }
 .badge-important {
-  background-color: #b94a48;
+  background-color: red;
 }
 .pointer {
   cursor: pointer;

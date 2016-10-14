@@ -234,6 +234,13 @@
                     skip: true
                 }
             })
+            .state('app.resources.schedules', {
+                url: '/schedules',
+                templateUrl: 'modules/jobscheduler/views/resource-schedules.html',
+                ncyBreadcrumb: {
+                    skip: true
+                }
+            })
             .state('app.schedules', {
                 url: '/schedules',
                 templateUrl: 'modules/jobscheduler/views/schedule.html',

@@ -6,6 +6,7 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
+
                     <div class="hide" ng-class="{'show-block':state=='lock'}">
                         <div class="btn-group hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
@@ -53,6 +54,7 @@
                                     ng-class="{'btn-primary': filter.state=='unreachable'}" ng-click="loadAgents(2)" translate>button.unreachableAgentCluster</span>
                             </button>
                         </div>
+
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                 <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
@@ -74,6 +76,27 @@
                                 </div>
                         </div>
                     </div>
+
+                     <div class="hide" ng-class="{'show-block':state=='schedules'}">
+                            <div class="inline" ng-class="{'hide':object.schedules.length>0}">
+
+                        <div class="btn-group">
+                                <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
+                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allSchedules</span>
+                                </button>
+                                <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                        uib-btn-radio="'active'"
+                                        ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()" translate>button.active
+                                </button>
+                                <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                                        uib-btn-radio="'stopped'"
+                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.inactive
+                                </button>
+                        </div>
+
+
+                    </div>
+                        </div>
                     <div class="btn-group dropdown">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
@@ -82,16 +105,22 @@
                                         <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
-                                    <span ng-show="filter.sortBy =='startedAt'">
+                                    <span ng-show="filter.sortBy =='startedAt' && state!='schedules'">
                                          {{'label.date' | translate}}
                                       <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                         <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    </span>
+                                    <span ng-show="filter.sortBy =='nextStartTime' && state=='schedules'">
+                                    {{'label.nextStart' | translate}}
+                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="mainSortBy('name')" translate>label.name</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('startedAt')" translate>label.date</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('startedAt')" ng-show="state=='schedules'" translate>label.date</a>
+                                <a class="dropdown-item" href ng-click="mainSortBy('nextStartTime')" ng-show="state=='schedules'" translate>label.nextStart</a>
                             </div>
                     </div>
                     <toggle-view></toggle-view>
@@ -124,6 +153,14 @@
                     <li class="nav-item">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.processClasses">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
+                        </a>
+                    </li>
+                      <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.schedules">
+                            <span class="nav-text text-dark p-b-sm"><span class="" translate>label.schedules</span></span>
                         </a>
                     </li>
                  </ul>

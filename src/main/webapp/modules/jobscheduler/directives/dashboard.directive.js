@@ -3,8 +3,8 @@
     angular.module('app')
         .directive('clusterStatusView', clusterStatusView)
         .directive('dailyPlanOverview', dailyPlanOverview);
-    clusterStatusView.$inject = ["$compile", "$filter", "$sce"];
-    function clusterStatusView($compile, $filter, $sce) {
+    clusterStatusView.$inject = ["$compile", "$filter", "$sce","PollingService"];
+    function clusterStatusView($compile, $filter, $sce,PollingService) {
         return {
             restrict: 'E',
             link: function (scope, elem, attrs) {
@@ -907,15 +907,29 @@
 
 
                 }
-
-                var refreshInterval = $interval(function () {
+ var t;
+                startPolling();
+                function startPolling(){
+                    console.log("In dashboard ");
+                    t=$timeout(function(){
+                        if(PollingService.config.dashboard.polling){
+                            poll();
+                        }
+                    },5000)
+                }
+               var interval;
+                function poll(){
+                    console.log("In dashboard 02");
+                   interval=  $interval(function () {
                     if (vm.getSupervisor) {
                         vm.getSupervisor(true);
                     }
-                }, 300000);
+                }, PollingService.config.dashboard.interval*1000);
 
+                }
                 vm.$on("$destroy", function () {
-                    $interval.cancel(refreshInterval);
+                    $interval.cancel(interval);
+                    $timeout.cancel(t);
                 })
 
 
