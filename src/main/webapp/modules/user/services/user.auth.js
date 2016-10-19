@@ -13,7 +13,7 @@
                         if (config.method == 'POST') {
                             var temp = config.url.substring(config.url.lastIndexOf('api') + 4);
                             if ($rootScope.configData[temp]) {
-                                config.url = 'http://uk.sos-berlin.com:8888/joc/api/' + temp;
+                                config.url = './api/' + temp;
                             }
                             else {
                                 config.url = 'http://test.sos-berlin.com:3001/joc/api/' + temp;
