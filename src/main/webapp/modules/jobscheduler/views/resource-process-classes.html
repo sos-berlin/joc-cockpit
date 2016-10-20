@@ -5,7 +5,7 @@
                 <div class="box card">
                     <div class="box-body">
                         <div>
-                            <a class="text-left primary-text-hover-color" href="#/showConfiguration?type=processClass&path={{processClass.path}}/{{processClass.name}}" >
+                            <a class="text-left primary-text-hover-color" ng-click="showConfiguration('processClass',processClass.path,processClass.name)" >
                                 <i class="fa fa-stop text-sm"></i>
                                 <span class="text" ng-bind="processClass.name"></span>
                             </a>
@@ -15,8 +15,9 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && processClasses.length !==0)}" translate>label.noDataMatched</div>
         </div>
+        <div ng-if="isLoading && processClasses.length==0" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
+        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && processClasses.length !==0)}" translate>message.noDataMatched</div>
     </div>
     <div class="m-t-sm box p-a" ng-show="pageView=='list'">
         <div class="table-responsive">
@@ -51,7 +52,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="processClass in filtered = (processClasses | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
-                    <td><a class="primary-text-hover-color" href="#/showConfiguration?type=processClass&path={{processClass.path}}/{{processClass.name}}" ng-bind="processClass.name"></a></td>
+                    <td><a class="primary-text-hover-color" ng-click="showConfiguration('processClass',processClass.path,processClass.name)" ng-bind="processClass.name"></a></td>
                     <td ng-bind="processClass.path"></td>
                     <td ng-bind="processClass.maxProcesses"></td>
                     <td ng-bind="processClass.numOfProcesses"></td>
@@ -76,8 +77,8 @@
                 </div>
             </div>
         </div>
+        <div ng-if="isLoading && processClasses.length==0" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
+        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && processClasses.length !==0)}" translate>message.noDataMatched</div>
     </div>
-    <div ng-if="isLoading && processClasses.length==0" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
-    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && locks.length !==0)}" translate>message.noDataMatched</div>
 </div>
 <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>

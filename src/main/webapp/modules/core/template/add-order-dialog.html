@@ -51,7 +51,7 @@
                 <label class="col-sm-3 form-control-label" translate>label.endStep</label>
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="order.endstate"
-                            ng-options="node.name as node.name for node in _jobChain.endNodes">
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
                         <option value="" translate>label.chooseEndStep</option>
                     </select>
                 </div>

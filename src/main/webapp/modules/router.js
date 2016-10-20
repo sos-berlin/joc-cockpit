@@ -192,7 +192,7 @@
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
                 ncyBreadcrumb: {
-                    label: '{{orderId}}',
+                    label: '{{ \'breadcrumb.orderLogs\' | translate}}',
                     parent: 'app.history'
                 }
             })
@@ -201,7 +201,7 @@
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
                 ncyBreadcrumb: {
-                    label: '{{taskId}}',
+                    label: '{{ \'breadcrumb.taskLogs\' | translate}}',
                     parent: 'app.history'
                 }
             })
@@ -217,36 +217,32 @@
                 url: '/agentClusters/:type',
                 templateUrl: 'modules/jobscheduler/views/resource-agents.html',
                 ncyBreadcrumb: {
-                    skip: true
+                    label: '{{ \'breadcrumb.agents\' | translate}}',
+                    parent: 'app.resources'
                 }
             })
             .state('app.resources.locks', {
                 url: '/locks',
                 templateUrl: 'modules/jobscheduler/views/resource-locks.html',
                 ncyBreadcrumb: {
-                    skip: true
+                     label: '{{ \'breadcrumb.locks\' | translate}}',
+                    parent: 'app.resources'
                 }
             })
             .state('app.resources.processClasses', {
                 url: '/processClasses',
                 templateUrl: 'modules/jobscheduler/views/resource-process-classes.html',
                 ncyBreadcrumb: {
-                    skip: true
+                     label: '{{ \'breadcrumb.processClasses\' | translate}}',
+                    parent: 'app.resources'
                 }
             })
             .state('app.resources.schedules', {
                 url: '/schedules',
                 templateUrl: 'modules/jobscheduler/views/resource-schedules.html',
                 ncyBreadcrumb: {
-                    skip: true
-                }
-            })
-            .state('app.schedules', {
-                url: '/schedules',
-                templateUrl: 'modules/jobscheduler/views/schedule.html',
-                controller: 'ScheduleCtrl',
-                ncyBreadcrumb: {
-                    label: '{{ \'breadcrumb.schedules\' | translate}}'
+                    label: '{{ \'breadcrumb.schedules\' | translate}}',
+                    parent: 'app.resources'
                 }
             })
             .state('app.schedule-orders', {
@@ -255,7 +251,7 @@
                 controller: 'ScheduleOrderCtrl',
                 ncyBreadcrumb: {
                     label: '{{name}}',
-                    parent: 'app.schedules'
+                    parent: 'app.resources.schedules'
                 }
             })
             .state('app.history', {

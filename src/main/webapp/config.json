@@ -1,4 +1,6 @@
 {
+  "WEB_SERVER_URL":"http://uk.sos-berlin.com:8888/joc/api/",
+  "MOCK_URL":"http://test.sos-berlin.com:3001/joc/api/",
   "security/login":true,
   "security/joc_cockpit_permissions":true,
   "security/logout":true,

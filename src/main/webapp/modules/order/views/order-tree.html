@@ -1,5 +1,5 @@
- <div class="">
-    <table class="tree-grid folder-tree-grid" style="min-width: 300px; text-align: left">
+ <div class="max-tree-ht">
+    <table class="tree-grid folder-tree-grid pull-left">
         <tbody>
         <tr ng-repeat="row in filtered = (tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions) track by row.branch.uid"
             ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
@@ -14,7 +14,7 @@
                 </span>
                 <div class="m-l-sm" ng-class="'level-' + {{ row.level }}" ng-if="row.branch.orders && row.branch.expanded">
                     <div class="indented p-l-sm p-t-xs" ng-repeat="order in row.branch.orders">
-                         <a class="m-l-sm primary-text-hover-color" ><i class="fa fa-list-ul"></i> {{::order.orderId}}</a>
+                         <a class="m-l-sm primary-text-hover-color" ><img src="images/order.png" width="15" style="margin-top: -2px"> {{::order.orderId}}</a>
                     </div>
                     <div ng-if="row.branch.orders.length==0 && row.branch.folders.length==0" class="indented p-l-sm"><a class="m-l-sm" translate>message.noOrdersFound</a></div>
                 </div>

@@ -100,12 +100,12 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img
-                                src="images/share.png" class="p-b-xs"></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()">
+                            <img src="images/share.png" class="p-b-xs"></button>
+                         <toggle-view></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><i
-                                class="fa fa-stop"></i> <span translate>button.reset</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><span translate>button.reset</span></button>
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped"
                                 ng-class="{'show-block':permission.JobChain.stop}" ng-click="stopAll()"><i
                                 class="fa fa-stop"></i> <span translate>button.stop</span></button>
@@ -113,7 +113,7 @@
                                 ng-class="{'show-block':permission.JobChain.unstop}" ng-click="unstopAll()"><i
                                 class="fa fa-play"></i> <span translate>button.unstop</span></button>
                     </div>
-                    <toggle-view></toggle-view>
+
                 </div>
             </div>
         </div>
@@ -124,31 +124,32 @@
         <div class="hide" ng-class="{'show': isLoading}">
             <div class="hide m-t-xs" ng-class="{'show': pageView=='grid'}">
                 <div class="hide-block sidebar-btn resize-cursor">
-                    <i class="fa fa-angle-double-right fa-lg p-l-xs" ng-click="showLeftPanel()"></i>
+                    <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
                 </div>
-                <aside id="leftPanel" class="leftTreePanel max-tree-ht">
+                <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
                     <div>
-
-                        <a class="text" ng-click="my_tree.expand_all();expandAll();">[ <span
-                                class="text-primary font14" translate>button.expandAll</span> ]
-                        </a>
-                        <a class="text" ng-click="my_tree.collapse_all();">[ <span class="text-primary font14" translate>button.collapseAll</span>
-                            ]
-                        </a>
-                        <a class="text m-r-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();expandAll();" >
+                            <i class="fa fa-angle-down fa-lg"></i>
+                            <span translate>button.expandAll</span>
+                        </button>
+                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
+                            <i class="fa fa-angle-up fa-lg"></i>
+                            <span translate>button.collapseAll</span>
+                        </button>
+                        <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
                         <tree tree-data="tree"
                                 tree-control="my_tree"
                                 expand-to="expand_to"
                                 view-orders="viewOrders(jobChain)"
                                 expand-on="expanding_property"
-                                on-select="treeHandler(branch)"
+                                on-select="treeHandler1(branch)"
                                 on-click="treeHandler(branch)"
                                 expand-node="expandNode(branch)"
                                 collapse-node="collapseNode(branch)"
                                 template-url="modules/job/views/job-chain-tree.html">
                         </tree>
                     </div>
-                </aside>
+                </div>
                 <div id="rightPanel1">
                     <div class="row parent">
                         <div ng-repeat="branch in branchs">
@@ -175,8 +176,7 @@
                                                     <i class="text fa fa-ellipsis-v"></i></a>
 
                                                 <div class="dropdown-menu dropdown-ac dropdown-more">
-                                                    <a target="_blank"
-                                                       href="#/showConfiguration?type=jobChain&path={{jobChain.path}}/{{jobChain.name}}"
+                                                    <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                                        class="hide dropdown-item"
                                                        ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
                                                        translate>button.showConfiguration</a>
@@ -231,16 +231,14 @@
                             </div>
 
                             <div ng-if="branch.jobChains.length==0 && branch.folders.length==0"
-                                 class="m-t m-l text-u-c"><span class="text-orange"
-                                                                translate>message.noJobChainsFound</span>
+                                 class="text-center text-u-c">
+                                <span class="text-orange" translate>message.noJobChainsFound</span>
                             </div>
                         </div>
                     </div>
-                    <div class="text-center text-uppercase hide text-orange"
-                         ng-class="{'show': (filtered.length===0 && tree_rows.length !==0)}"
+                    <div class="text-center text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && tree_rows.length !==0)}"
                          translate>message.noDataMatched
                     </div>
-
 
                 </div>
             </div>
@@ -342,8 +340,7 @@
                                     <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                         <i class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a target="_blank"
-                                           href="#/showConfiguration?type=jobChain&path={{jobChain.path}}/{{jobChain.name}}"
+                                        <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                            class="hide dropdown-item"
                                            ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
                                            translate>button.showConfiguration</a>
@@ -405,35 +402,21 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
-                <div class="form-group row">
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
-                    </div>
-                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
-                </div>
-                <div class="row" ng-if="paths.length>0">
-                    <div class="col-sm-10">
-                        <table class="table table-bordered" style="min-height: 100px;">
-                            <tbody>
-                            <tr ng-repeat="path in paths track by $index">
-                                <td>{{path}}
-                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
                 <div>
-                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
-                            class="text-primary font14" translate>button.expandAll</span> ]</a>
-                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
-                        ]</a>
+                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" >
+                        <i class="fa fa-angle-down fa-lg"></i>
+                        <span translate>button.expandAll</span>
+                    </button>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
+                       <i class="fa fa-angle-up fa-lgo"></i>
+                        <span translate>button.collapseAll</span>
+                    </button>
                     <tree
-                            tree-data="filterTree"
+                            tree-data="filterTree1"
                             tree-control="filter_tree"
                             expand-to="expand_to"
-                            icon-leaf     = "fa fa-folder-o"
+                            object="object"
+                            icon-leaf     = "fa fa-folder"
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"
                             expand-on="expanding_property"
@@ -465,9 +448,9 @@ $('.table-responsive').on('shown.bs.dropdown', function (e) {
   $('.table-responsive').on('hide.bs.dropdown', function () {
     $(this).css("padding-bottom", 0);
   });
-        $(document).ready(function () {
-        $('.leftTreePanel').stickySidebar({
+  $(document).ready(function () {
+      $('#leftPanel').stickySidebar({
             sidebarTopMargin: 150
         });
-    });
+  });
 </script>

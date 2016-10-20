@@ -128,23 +128,31 @@
             }
 
             function c() {
-                d[v.view] && a.isDefined(i.viewTitle) && (v.viewTitle = d[v.view](v.viewDate)), v.events = v.events.filter(s).map(function (e, n) {
+                d[v.view] && a.isDefined(i.viewTitle) && (v.viewTitle = d[v.view](v.viewDate))/*, v.events = v.events.filter(s).map(function (e, n) {
                     return Object.defineProperty(e, "$id", {enumerable: !1, configurable: !0, value: n}), e
-                });
+                })*/;
                 var n = r(v.viewDate), l = !0;
                 m.clone().startOf(v.view).isSame(n.clone().startOf(v.view)) && !m.isSame(n) && v.view === u && (l = !1), m = n, u = v.view, l && t(function () {
                     e.$broadcast("calendar.refreshView")
                 });
-                if(v.view == 'year'){
-                   var f = 0;
-                    for (v.yearView = [], v.offsets = []; 12 > f;) {
-                        var p = new Date;
-                        p.setMonth(f), v.monthView = o.getMonthView(v.events, p, v.cellModifier, v.planItems);
-                        var w = Math.floor(v.monthView.length / 7);
-                        v.monthOffsets = [];
-                        for (var h = 0; w > h; h++)v.monthOffsets.push(7 * h);
-                        v.yearView.push(v.monthView), v.offsets.push(v.monthOffsets), f++
-                    }
+            }
+
+            function yearView() {
+                d[v.view] && a.isDefined(i.viewTitle) && (v.viewTitle = d[v.view](v.viewDate))/*, v.events = v.events.filter(s).map(function (e, n) {
+                    return Object.defineProperty(e, "$id", {enumerable: !1, configurable: !0, value: n}), e
+                })*/;
+                var n = r(v.viewDate), l = !0;
+                m.clone().startOf(v.view).isSame(n.clone().startOf(v.view)) && !m.isSame(n) && v.view === u && (l = !1), m = n, u = v.view, l && t(function () {
+                    e.$broadcast("calendar.refreshView")
+                });
+                var f = 0;
+                for (v.yearView = [], v.offsets = []; 12 > f;) {
+                    var p = new Date;
+                    p.setMonth(f), v.monthView = o.getMonthView(v.events, p, v.cellModifier, v.planItems);
+                    var w = Math.floor(v.monthView.length / 7);
+                    v.monthOffsets = [];
+                    for (var h = 0; w > h; h++)v.monthOffsets.push(7 * h);
+                    v.yearView.push(v.monthView), v.offsets.push(v.monthOffsets), f++
                 }
             }
 
@@ -163,7 +171,7 @@
                     return r.locale() + l.id
                 }], function () {
                     //n ? c() : (n = !0, e.$watch("vm.events", c, !0))
-                    n ? c() : (n = !0, e.$watch("vm.planItems", c, !0))
+                    n ? c() : (n = !0, e.$watch("vm.planItems", yearView, !0))
                 })
             })["catch"](function (e) {
                 n.error("Could not load all calendar templates", e)
@@ -879,6 +887,7 @@
 
             function c(e, n, t) {
                 return e.filter(function (e) {
+                    console.log("e " + e);
                     return s(e, n, t)
                 })
             }
@@ -915,10 +924,10 @@
 
             function p(e, n, t, r) {
                 var d, o = a(n).startOf("month"), s = o.clone().startOf("week"), v = a(n).endOf("month").endOf("week");
-                d = i.displayAllMonthEvents ? c(e, s, v) : c(e, o, o.clone().endOf("month"));
+                /*d = i.displayAllMonthEvents ? c(e, s, v) : c(e, o, o.clone().endOf("month"));*/
                 for (var u = [], f = a().startOf("day"); s.isBefore(v);) {
                     var p = s.month() === a(n).month(), w = [];
-                    (p || i.displayAllMonthEvents) && (w = c(d, s, s.clone().endOf("day")));
+                    /*(p || i.displayAllMonthEvents) && (w = c(d, s, s.clone().endOf("day")));*/
                     var h = !1, y = l("date")(new Date(s.clone()), "dd-MM-yyyy");
                     r.forEach(function (e) {
                         var n = l("date")(e.plannedStartTime, "dd-MM-yyyy");
@@ -932,9 +941,9 @@
                         isPast: f.isAfter(s),
                         isToday: f.isSame(s),
                         isFuture: f.isBefore(s),
-                        isWeekend: [0, 6].indexOf(s.day()) > -1,
+                        isWeekend: [0, 6].indexOf(s.day()) > -1/*,
                         events: w,
-                        badgeTotal: m(w)
+                        badgeTotal: m(w)*/
                     };
                     t({calendarCell: g}), u.push(g), s.add(1, "day")
                 }

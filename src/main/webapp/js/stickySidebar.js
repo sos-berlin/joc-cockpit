@@ -1,1 +1,23 @@
-!function(a){a.fn.stickySidebar=function(b){var c=a.extend({headerSelector:"header",navSelector:"nav",contentSelector:"#content",footerSelector:"footer",sidebarTopMargin:20,footerThreshold:40},b),d=function(){var b=a(this),d=a(window).height(),f=(a(window).width(),a(document).height()),g=a(c.headerSelector).outerHeight(),h=a(c.navSelector).outerHeight(),i=b.outerHeight(),j=a(c.contentSelector).outerHeight(),k=a(c.footerSelector).outerHeight(),l=a(window).scrollTop(),n=g+h,o=f-(i+k+c.footerThreshold);if(j>i&&d>i)if(l<n)b.removeClass("sticky");else if(l>=n&&l<o)b.addClass("sticky").css("top",c.sidebarTopMargin);else{var p=o-l;b.addClass("sticky").css("top",p)}};return this.each(function(){a(window).on("scroll",a.proxy(d,this)),a(window).on("resize",a.proxy(d,this)),a.proxy(d,this)()})}}(jQuery);
+!function (a) {
+    a.fn.stickySidebar = function (b) {
+        var c = a.extend({
+            subHeaderSelector: ".sub-header",
+            sidebarTopMargin: 20
+        }, b), d = function () {
+            var b = a(this), y = a(c.subHeaderSelector).height();
+
+            if (y!=95){
+                if(y==121){
+                     b.addClass("sticky").css("top", 216)
+                }else
+                b.addClass("sticky").css("top", c.sidebarTopMargin);
+            }
+            else {
+                b.addClass("sticky").css("top", 190)
+            }
+        };
+        return this.each(function () {
+            a(window).on("scroll", a.proxy(d, this)), a(window).on("resize", a.proxy(d, this)), a.proxy(d, this)()
+        })
+    }
+}(jQuery);

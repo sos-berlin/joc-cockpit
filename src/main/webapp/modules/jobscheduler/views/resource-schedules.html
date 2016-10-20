@@ -1,6 +1,6 @@
 <div class="hide" ng-class="{'show': isLoading && permission.JobschedulerMasterCluster.view.clusterStatus}">
      <div class="hide row" ng-class="{'show': pageView=='grid'}">
-                <div>
+         <div>
                     <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"  ng-repeat="schedule in filtered = (schedules | filter: filterString:strict)">
                         <div class="box card">
                             <div class="box-body">
@@ -19,7 +19,7 @@
                                                 class="text fa fa-ellipsis-v"></i></a>
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                                            <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                            <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                             <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
                                             <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                         </div>
@@ -43,8 +43,10 @@
                         </div>
                     </div>
                 </div>
-             </div>
-            <div class="box p-a" ng-show="pageView=='list'">
+         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && schedules.length !==0)}" translate>message.noDataMatched</div>
+         <div ng-if="isLoading && schedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
+     </div>
+    <div class="box p-a" ng-show="pageView=='list'">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered  ">
                         <thead>
@@ -128,7 +130,7 @@
                                 <div class="btn-group dropdown">
                                 <a class="more-option-h" href data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                    <a href="#/showConfiguration?type=schedule&path={{schedule.path}}/{{schedule.name}}" target="_blank" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                    <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                     <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
                                     <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                 </div>
@@ -138,7 +140,7 @@
                         </tbody>
                     </table>
                     <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="filtered.length > 10">
+                <div class="pull-right" ng-show="filtered.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
                                     ng-class="{'primary': pageSize=='10'}" >10
@@ -155,9 +157,10 @@
                         </div>
                     </div>
                 </div>
-            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && schedules.length !==0)}" translate>message.noDataMatched</div>
-                 <div ng-if="isLoading && schedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noDataFound</div>
-        </div>
+
+      <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && schedules.length !==0)}" translate>message.noDataMatched</div>
+      <div ng-if="isLoading && schedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
+    </div>
 
 </div>
 <div ng-if="!isLoading" class="text-center m-t-lg">

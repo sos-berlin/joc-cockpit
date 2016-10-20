@@ -1,6 +1,6 @@
 
-<div class="">
-    <table class="tree-grid folder-tree-grid" style="min-width: 300px; text-align: left">
+<div class="max-tree-ht">
+    <table class="tree-grid folder-tree-grid pull-left">
         <tbody>
         <tr ng-repeat="row in filtered = (tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions) track by row.branch.uid"
             ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">

@@ -14,20 +14,29 @@
 <div class="scroll-y max-ht" >
     <div class="padding p-b-0">
         <div class="row">
-            <div class="col-md-3 ">
-                 <h5 class=" _300 m-t-xs"><i class="fa fa-file"></i> <span translate>label.logs</span></h5>
+            <div class="col-md-6 ">
+                 <h5 class=" _300 m-t-sm">
+                     <span ng-if="orderId">{{jobChain}} - <i class="text-muted">{{orderId}}</i></span>
+                     <span ng-if="taskId">{{job}} - <i class="text-muted">{{taskId}}</i></span>
+                 </h5>
             </div>
-            <div class="col-md-9 ">
-                <a class="pull-right text-u-l m-l m-t-xs" ng-click="advanceFilter()" translate>button.advancedSearch</a>
-                <input type="text" class="form-control inline w pull-right search-box" placeholder="{{'placeholder.search' | translate}}">
-                <button class="btn btn-default grey btn-sm pull-right m-r" ng-click="advanceFilter()" translate>button.modifyLogView</button>
+            <div class="col-md-6 ">
+                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()"><i class="fa fa-print"></i></button>
+                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()"><i class="fa fa-save"></i></button>
+                <input type="text" class="form-control inline w pull-right search-box" placeholder="{{'placeholder.search' | translate}}" ng-model="search">
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="box white">
-                    <div class="box-body m-t p-t-0 p-b-xs">
-                       <div ng-bind-html="logs.html"></div>
+                    <div class="box-body m-t-sm p-a p-b-xs">
+                       <pre class="log">
+                           <div style="margin-top: -60px;">
+                               <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
+                                   <span ng-class="logClass(log)">{{log}}</span>
+                               </div>
+                           </div>
+                       </pre>
                    </div>
                 </div>
             </div>

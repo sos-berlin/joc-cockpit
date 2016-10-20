@@ -3,8 +3,8 @@
     angular.module('app')
         .directive('clusterStatusView', clusterStatusView)
         .directive('dailyPlanOverview', dailyPlanOverview);
-    clusterStatusView.$inject = ["$compile", "$filter", "$sce","PollingService"];
-    function clusterStatusView($compile, $filter, $sce,PollingService) {
+    clusterStatusView.$inject = ["$compile", "$filter", "$sce","$rootScope"];
+    function clusterStatusView($compile, $filter, $sce,$rootScope) {
         return {
             restrict: 'E',
             link: function (scope, elem, attrs) {
@@ -907,34 +907,32 @@
 
 
                 }
- var t;
+
                 startPolling();
-                function startPolling(){
-                    console.log("In dashboard ");
-                    t=$timeout(function(){
-                        if(PollingService.config.dashboard.polling){
-                            poll();
-                        }
-                    },5000)
-                }
-               var interval;
-                function poll(){
-                    console.log("In dashboard 02");
-                   interval=  $interval(function () {
-                    if (vm.getSupervisor) {
-                        vm.getSupervisor(true);
+                function startPolling() {
+
+                    if ($rootScope.config.dashboard.polling) {
+                        poll();
                     }
-                }, PollingService.config.dashboard.interval*1000);
 
                 }
+
+                var interval;
+
+                function poll() {
+                    console.log("In dashboard 02");
+                    interval = $interval(function () {
+                        if (vm.getSupervisor) {
+                            vm.getSupervisor(true);
+                        }
+                    }, $rootScope.config.dashboard.interval * 1000);
+
+                }
+
                 vm.$on("$destroy", function () {
                     $interval.cancel(interval);
-                    $timeout.cancel(t);
-                })
 
-
-                $(window).resize(function () {
-                })
+                });
 
             }]
         }

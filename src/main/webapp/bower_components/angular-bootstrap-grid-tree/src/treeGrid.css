@@ -62,3 +62,6 @@
 	color: #3a3a3a;
 }
 
+.tree-grid tr:hover{
+	background: #0086b0;
+}

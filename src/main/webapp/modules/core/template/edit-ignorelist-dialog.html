@@ -11,46 +11,24 @@
                        <table class="table table-hover table-bordered " >
                         <thead>
                         <tr>
- <!--                           <th>
-                                <label class="md-check">
-                                   <input type="checkbox" ng-model="checkAllIgnoreList.checkbox" ng-click="checkAllIgnoreList()"><i class="primary"></i>
-                               </label>
-
-                            </th>-->
                             <th translate>label.orderJobJobChainName</th>
                             <th translate>label.action</th>
                         </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="order in savedIgnoreList.orders">
-<!--                                <td>
-                                    <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="object.ignorLists" data-checklist-value="order"><i class="primary"></i>
-                                    </label>
-                                </td>-->
-
                                 <td>{{order}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeOrderIgnoreList(order)" translate>button.remove</a>
                                 </td>
                             </tr>
                             <tr ng-repeat="jobChain in savedIgnoreList.jobChains">
-<!--                                <td>
-                                    <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="object.ignorLists" data-checklist-value="jobChain"><i class="primary"></i>
-                                    </label>
-                                </td>-->
                                 <td>{{jobChain}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeJobChainIgnoreList(jobChain)" translate>button.remove</a>
                                 </td>
                             </tr>
                             <tr ng-repeat="job in savedIgnoreList.jobs">
-<!--                                <td>
-                                    <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="object.ignorLists" data-checklist-value="job"><i class="primary"></i>
-                                    </label>
-                                </td>-->
                                 <td>{{job}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeJobIgnoreList(job)" translate>button.remove</a>

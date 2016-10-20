@@ -4,28 +4,32 @@
 
         <div class="hide m-t-xs" ng-class="{'show': pageView=='grid'}">
             <div class="hide-block sidebar-btn resize-cursor">
-                <i class="fa fa-angle-double-right fa-lg p-l-xs" ng-click="showLeftPanel()"></i>
+                <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
             </div>
-            <aside id="leftPanel" class="leftTreePanel max-tree-ht">
+            <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
                 <div>
-
-                    <a class="text m-r-xs " ng-click="my_tree.expand_all();expandAll()">[ <span
-                            class="text-primary font14" translate>button.expandAll</span> ]</a>
-                    <a class="text" ng-click="my_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>]</a>
-                    <a class="text m-r-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                    <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();expandAll();" >
+                        <i class="fa fa-angle-down fa-lg"></i>
+                        <span translate>button.expandAll</span>
+                    </button>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
+                        <i class="fa fa-angle-up fa-lg"></i>
+                        <span translate>button.collapseAll</span>
+                    </button>
+                    <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
                     <tree
                             tree-data="tree"
                             tree-control="my_tree"
                             expand-to="expand_to"
                             expand-on="expanding_property"
-                            on-select="treeHandler(branch)"
+                            on-select="treeHandler1(branch)"
                             on-click="treeHandler(branch)"
                             expand-node="expandNode(branch)"
                             collapse-node="collapseNode(branch)"
                             template-url="modules/order/views/order-tree.html">
                     </tree>
                 </div>
-            </aside>
+            </div>
             <div id="rightPanel1">
                 <div class="row parent">
                     <div ng-repeat="branch in branchs">
@@ -34,7 +38,7 @@
                         </div>
                         <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
                              ng-repeat="order in branch.orders | orderBy:filter.sortBy:reverse">
-                            <div class="box card" ng-class="{'light-bg':showLogPanel == order}">
+                            <div class="box card" >
                             <div class="box-body">
                                 <div>
                                     <label class="md-check pos-abt">
@@ -42,12 +46,12 @@
                                             class="primary"></i></label>
 
                                     <div class="text-left m-l-md block-ellipsis" >
-                                        <a class="primary-text-hover-color" href="" uib-tooltip="{{order.title}}" ng-click="showLogFuc(order)">{{order.orderId}}</a></div>
+                                        <a class=""  uib-tooltip="{{order.title}}" >{{order.orderId}}</a></div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-v"></i></a>
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                                            <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                            <a ng-click="showConfiguration('order',order.path,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                             <a href class="dropdown-item"
                                                ng-if="(order.processingState._text.toLowerCase() == 'pending' || order.processingState._text.toLowerCase() == 'setback') && permission.Order.start"
                                                ng-click="start(order)" translate>button.startOrderNow</a>
@@ -111,7 +115,7 @@
                         </div>
                         </div>
                         <div ng-if="branch.orders.length==0 && branch.folders.length==0"
-                             class="m-t m-l text-u-c">
+                             class="text-center text-u-c">
                             <span class="text-orange" translate>message.noOrdersFound</span>
                         </div>
                     </div>
@@ -125,7 +129,7 @@
             </div>
         </div>
         <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
-                <div class="table-responsive">
+                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                     <table class="table table-hover table-bordered " id="orderTableId">
                         <thead>
                         <tr>
@@ -216,7 +220,7 @@
                                         <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                             <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                             <a ng-click="showConfiguration('order',order.path,order.orderId)"  class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                             <a href class="dropdown-item"
                                                ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                ng-click="start(order)" translate>button.startOrderNow</a>
@@ -297,7 +301,7 @@
                 </div>
                 <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>message.noDataMatched</div>
             <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
-            </div>
+        </div>
 
     </div>
     <div class="hide " ng-class="{'show': isLoading}" >
@@ -328,24 +332,30 @@
                             </li>
                           </ul>
                         </div>
-                         <div class="tab-content p-a m-b-md">
+                         <div class="tab-content p-a">
                           <div class="tab-pane animated fadeIn active " id="tab1">
                               <div class="row">
                                   <div class="col-md-12">
-                                      <button type="button" class="btn btn-default btn-sm pull-right m-l-sm"><i class="fa fa-print"></i></button>
-                                      <button type="button" class="btn btn-default btn-sm pull-right m-l-sm" ng-click="downloadLog()"><i class="fa fa-save"></i></button>
-                                      <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search'| translate}}">
+                                      <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()"><i class="fa fa-print"></i></button>
+                                      <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()"><i class="fa fa-save"></i></button>
+                                      <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search'| translate}}" ng-model="search">
                                   </div>
                               </div>
                               <div class="row">
-                                  <div class="col-md-12">
-                                     <div ng-bind-html="logs"></div>
+                                  <div class="row">
+                                      <pre class="log m-t m-b-0 m-r" resizable r-directions="['bottom']" r-height="250">
+                                          <div class="p-a p-t-0 p-b-0" style="margin-top: -65px">
+                                              <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
+                                                  <span ng-class="logClass(log)">{{log}}</span>
+                                              </div>
+                                          </div>
+                                      </pre>
                                   </div>
                               </div>
                           </div>
                           <div class="tab-pane animated fadeIn " id="tab2">
                               <div class="row">
-                                  <div class="table-responsive">
+                                  <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                     <table class="table table-striped table-bordered " >
                                         <thead>
                                         <tr>
@@ -372,7 +382,7 @@
                           </div>
                           <div class="tab-pane animated fadeIn " id="tab3">
                               <div class="row">
-                                  <div class="table-responsive">
+                                  <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                     <table class="table table-striped table-bordered " >
                                         <thead>
                                         <tr>
@@ -433,9 +443,9 @@
     $(this).css("padding-bottom", 0);
   });
 
-    $(document).ready(function () {
-        $('.leftTreePanel').stickySidebar({
+  $(document).ready(function () {
+      $('#leftPanel').stickySidebar({
             sidebarTopMargin: 150
         });
-    });
+  });
 </script>

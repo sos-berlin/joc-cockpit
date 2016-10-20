@@ -38,6 +38,10 @@
             this.permission = JSON.stringify(permission);
         };
 
+        SOSAuth.prototype.setPermission = function (permission) {
+            this.permission = JSON.stringify(permission);
+        };
+
         SOSAuth.prototype.setIds = function (scheduleIds) {
             this.scheduleIds = JSON.stringify(scheduleIds);
         };
@@ -125,8 +129,8 @@
         };
     }
 
-    UserService.$inject = ["$resource","$q","SOSAuth", "apiUrl", "$http", "Base64", "$location"];
-    function UserService($resource,$q, SOSAuth, apiUrl, $http, Base64, $location) {
+    UserService.$inject = ["$resource","$q","SOSAuth", "$http", "Base64", "$location"];
+    function UserService($resource,$q, SOSAuth, $http, Base64, $location) {
 
         return {
 
@@ -135,7 +139,7 @@
              */
             logout: function () {
 
-               var Logout = $resource(apiUrl + 'security/logout');
+               var Logout = $resource('security/logout');
 
                 Logout.save(function () {
                     SOSAuth.clearUser();
@@ -152,7 +156,7 @@
             authenticate: function (username, password) {
                 var deferred = $q.defer();
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + Base64.encode(username + ':' + password);
-                $http.post(apiUrl + 'security/login').then(function(res){
+                $http.post('security/login').then(function(res){
                     deferred.resolve(res.data);
                 }, function(err){
                      deferred.reject(err);
@@ -162,7 +166,7 @@
             },
             getPermissions: function (id) {
                 var deferred = $q.defer();
-                var Permission = $resource(apiUrl + 'security/joc_cockpit_permissions');
+                var Permission = $resource('security/joc_cockpit_permissions');
 
                 Permission.save({jobschedulerId:id},function (res) {
                     deferred.resolve(res);

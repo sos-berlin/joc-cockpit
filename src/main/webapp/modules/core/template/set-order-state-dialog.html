@@ -3,7 +3,7 @@
           <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title">
             <span translate>label.setOrderStateOf </span>
-            {{order.orderId}}
+            &nbsp;{{order.orderId}} <i ng-if="order.title">-</i> <span class="text-muted text">{{order.title}}</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
@@ -17,7 +17,7 @@
 
                     <div class="col-sm-6">
                         <select class="form-control" ng-model="order.state"
-                                ng-options="node.name as node.name for node in order.nodes">
+                                ng-options="node.name as node.name for node in _jobChain.nodes">
                             <option value="" translate>label.chooseStartingStep</option>
                         </select>
                     </div>
@@ -27,7 +27,7 @@
 
                     <div class="col-sm-6">
                         <select class="form-control" ng-model="order.endState"
-                                ng-options="node.name as node.name for node in order.endNodes">
+                                ng-options="node.name as node.name for node in _jobChain.nodes">
                             <option value="" translate>label.chooseEndStep</option>
                         </select>
                     </div>

@@ -1,6 +1,6 @@
 <div class="m-t-sm">
     <div class="hide-block sidebar-btn resize-cursor">
-        <i  class="material-icons" ng-click="showLeftPanel()">&#xe5d4;</i>
+        <i  class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
     </div>
     <aside id="leftPanel" class="hidden-sm-down">
         <pie-chart-component></pie-chart-component>
@@ -10,7 +10,7 @@
                 <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
                     <div class="hide m-t-xs" ng-class="{'show': pageView=='grid'}">
                         <div class="row">
-                            <div class="col-xxl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 " ng-repeat="order in filtered = (orders | filter: filterString:strict)" >
+                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 " ng-repeat="order in filtered = (orders | filter: filterString:strict)" >
                                     <div class="box card" ng-class="{'light-bg':showLogPanel == order}">
                             <div class="box-body">
                                 <div>
@@ -24,7 +24,7 @@
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-v"></i></a>
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                                            <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                            <a ng-click="showConfiguration('order',order.path,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                             <a href class="dropdown-item"
                                                ng-if="(order.processingState._text.toLowerCase() == 'pending' || order.processingState._text.toLowerCase() == 'setback') && permission.Order.start"
                                                ng-click="start(order)" translate>button.startOrderNow</a>
@@ -182,7 +182,7 @@
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                                         <a target="_blank" href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                                         <a ng-click="showConfiguration('order',order.path,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                            ng-click="start(order)" translate>button.startOrderNow</a>
@@ -389,8 +389,7 @@
 <script>
     $(document).ready(function() {
         $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 170,
-            footerThreshold: 100
+            sidebarTopMargin: 170
         });
     });
 </script>

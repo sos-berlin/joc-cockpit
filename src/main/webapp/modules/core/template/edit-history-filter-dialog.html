@@ -8,7 +8,7 @@
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                <label class="col-sm-3 form-control-label" translate>label.filterName</label>
                <div class=" col-sm-6">
-                   <input type="text" required class="form-control" placeholder="Name" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" ng-blur="checkFilterName()">
+                   <input type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" ng-blur="checkFilterName()">
                    <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
                        <div ng-message="required" translate>message.requiredError</div>
                        <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -22,12 +22,12 @@
             <div class="form-group row" ng-show="filter.type == 'jobChain'">
                <label class="col-sm-3 form-control-label" translate>label.orderName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="Name of order or regex or choose from tree " ng-model="historyFilter.regex">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.orderRegexAndChooseTree' | translate}}" ng-disabled="historyFilter.paths.length>0" ng-model="historyFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="historyFilter.paths.length>0">
-                <div class="col-sm-offset-3 col-sm-9">
+                <div class="col-sm-offset-3 col-sm-9" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in historyFilter.paths track by $index">
                             <span class="">{{path}}</span>
                     </div>
@@ -36,22 +36,38 @@
             <div class="form-group row" ng-show="filter.type == 'job'">
                <label class="col-sm-3 form-control-label" translate>label.jobName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="Name of order or regex" ng-model="historyFilter.job">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.jobRegex' | translate}}" ng-model="historyFilter.job">
                </div>
             </div>
+
+            <div class="form-group row m-t-sm" >
+           <label class="col-sm-3 form-control-label" translate>label.processPlanned</label>
+           <div class=" col-sm-6">
+            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="jobFilter.planned"
+                   ng-disabled="historyFilter.fromDate ||historyFilter.fromTime || historyFilter.toDate ||historyFilter.toTime" ng-blur="checkPlanned()">
+                <div class="help-block text-danger" ng-if="!validPlanned">
+                  <div translate>message.invalid</div>
+               </div>
+           </div>
+        </div>
             <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>label.form</label>
 
                 <div class="col-sm-8">
-                         <input class="form-control input-date" ng-model="historyFilter.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" data-max-date="{{historyFilter.toDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                         <input class="form-control input-date" ng-model="historyFilter.fromDate" ng-disabled="historyFilter.planned"
+                                data-date-format="yyyy-MM-dd" data-autoclose="1" data-max-date="{{historyFilter.toDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
 
-                <input  class="form-control input-time" ng-model="historyFilter.fromTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
+                <input  class="form-control input-time" ng-model="historyFilter.fromTime" ng-disabled="historyFilter.planned"
+                        data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>label.to</label>
                 <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="historyFilter.toDate" data-date-format="yyyy-MM-dd" data-autoclose="1" data-min-date="{{historyFilter.fromDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
-                <input class="form-control input-time" ng-model="historyFilter.toTime" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
+                    <input class="form-control input-date" ng-model="historyFilter.toDate" ng-disabled="historyFilter.planned"
+                           data-date-format="yyyy-MM-dd" data-autoclose="1"
+                           data-min-date="{{historyFilter.fromDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
+                <input class="form-control input-time" ng-model="historyFilter.toTime" ng-disabled="historyFilter.planned"
+                       data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
 
             </div>
             <div class="form-group row">
@@ -86,7 +102,7 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique"
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique || !validPlanned"
                         translate>button.updateFilter
                 </button>
                 <button type="button" class="btn btn-default orange btn-sm m-l-sm" ng-click="ok();deleteFilter()"

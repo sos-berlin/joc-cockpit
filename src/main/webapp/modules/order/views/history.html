@@ -341,7 +341,7 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a class="dropdown-item" target="_blank" href="#/job/log/{{jobHistory.taskId}}" translate>button.showLogInNewTab</a>
+                                        <a class="dropdown-item" target="_blank" href="#/job/log/{{jobHistory.taskId}}?job={{jobHistory.job}}" translate>button.showLogInNewTab</a>
                                         <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
                                     </div>
                                 </div>
@@ -411,7 +411,7 @@
         <div class="hide " ng-class="{'show': isLoading}" >
             <div class="row" ng-show="showLogPanel" >
                 <div class="col-md-12">
-                    <div  class="box white">
+                    <div  class="box white" >
                         <div class="box-header">
                             <span class="text" ng-if="showLogPanel.jobChain">{{showLogPanel.jobChain}} - <i class="text-sm text-muted">{{showLogPanel.orderId}}</i></span>
                             <span class="text" ng-if="showLogPanel.job">{{showLogPanel.job}} - <i class="text-sm text-muted">{{showLogPanel.taskId}}</i></span>
@@ -426,57 +426,47 @@
                         <div class="box-body b-t">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm"><i class="fa fa-print"></i></button>
+                                    <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()"><i class="fa fa-print"></i></button>
                                     <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog(logs)"><i class="fa fa-save"></i></button>
-                                    <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search' | translate}}">
+                                    <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search' | translate}}" ng-model="search">
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div ng-bind-html="logs"></div>
-                                </div>
+                            <div class="row" >
+                                <pre class="log m-a" resizable r-directions="['bottom']" r-height="250">
+                                    <div style="margin-top: -65px">
+                                        <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
+                                            <span ng-class="logClass(log)">{{log}}</span>
+                                        </div>
+                                    </div>
+                                </pre>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
            </div>
-        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
-                <div class="form-group row">
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
-                    </div>
-                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
-                </div>
-                <div class="row" ng-if="paths.length>0">
-                    <div class="col-sm-10">
-                        <table class="table table-bordered" style="min-height: 100px;">
-                            <tbody>
-                            <tr ng-repeat="path in paths track by $index">
-                                <td>{{path}}
-                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
                 <div>
-                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
-                            class="text-primary font14" translate>button.expandAll</span> ]</a>
-                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
-                        ]</a>
+                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();expandAll();" >
+                        <i class="fa fa-angle-down fa-lg"></i>
+                        <span translate>button.expandAll</span>
+                    </button>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
+                       <i class="fa fa-angle-up fa-lg"></i>
+                        <span translate>button.collapseAll</span>
+                    </button>
                     <tree
                             tree-data="tree"
                             tree-control="filter_tree"
                             expand-to="expand_to"
-                            icon-leaf     = "fa fa-folder-o"
+                            object="object"
+                            icon-leaf     = "fa fa-folder"
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"
                             expand-on="expanding_property"

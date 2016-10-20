@@ -22,6 +22,8 @@
             name: 'JobScheduler'
         };
 
+        var left = screen.width / 2 - 390, top = screen.height / 2 - 340, newWindow;
+
         vm.goBack = function () {
             $window.history.back();
         };
@@ -80,16 +82,24 @@
             }
         };
 
-        function loadConfigFile(){
+        function loadConfigFile() {
             $resource("config.json").get(function (data) {
-               $rootScope.configData =data;
+                $rootScope.configData = data;
             });
         }
 
+        function pollingConfigFile(){
+            $resource('poll_config.json').get(function(res){
+                $rootScope.config = res;
+        });
+       }
+
         loadConfigFile();
+        pollingConfigFile();
+
 
         vm.calculateHeight = function () {
-            if(window.innerHeight>474) {
+            if (window.innerHeight > 474) {
                 var headerHt = $('.app-header').height() || 60;
                 var footerHt = $('.app-footer').height() || 30;
                 var topHeaderHt = $('.top-header-bar').height() || 16;
@@ -98,15 +108,15 @@
                 var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
 
                 $('.max-ht').css('height', ht + 'px');
-                $('.max-tree-ht').css('height', ht +'px');
-            }else{
+                $('.max-tree-ht').css('height', ht -42 + 'px');
+            } else {
                 $('.max-ht').css('height', 'auto');
                 $('.max-tree-ht').css('height', 'auto');
             }
         };
 
-        function checkNavHeader(){
-            if($('#navbar1').hasClass('in')){
+        function checkNavHeader() {
+            if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
                 $('a.navbar-item').addClass('collapsed');
             }
@@ -116,7 +126,6 @@
             vm.calculateHeight();
             checkNavHeader();
         });
-
 
 
         vm.username = SOSAuth.currentUserData;
@@ -141,10 +150,27 @@
             }
         }
 
+        $window.onunload = refreshParent;
+        function refreshParent() {
+            if (newWindow) {
+                newWindow.close();
+            }
+        }
+
+        vm.print = function(){
+            $window.print();
+        };
+
+        vm.showConfiguration = function (type, path, name) {
+            refreshParent();
+            var url = '#/showConfiguration?type=' + type + '&path=' + path;
+            newWindow = $window.open(url, name+ " - Configuration", "top=" + top + ",left=" + left);
+        };
 
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
         });
+
     }
 
     HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', '$state', 'toasty','SOSAuth'];
@@ -180,13 +206,26 @@
 
         vm.getScheduleDetail(vm.schedulerIds.selected);
 
+
+        function getPermissions(jobScheduler) {
+
+            UserService.getPermissions(jobScheduler).then(function (permission) {
+                SOSAuth.setPermission(permission);
+                SOSAuth.save();
+                $state.reload();
+            }, function (err) {
+
+            });
+        }
+
         vm.changeScheduler = function (jobScheduler) {
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res && !res.data) {
+
                         SOSAuth.setIds(res);
                         SOSAuth.save();
-                        $state.reload();
+                         getPermissions(jobScheduler);
                     } else {
                         toasty.error({
                             title: gettextCatalog.getString('message.oops'),
@@ -201,6 +240,7 @@
 
             })
         };
+
 
         $scope.$on('$stateChangeSuccess', function () {
             vm.filterString = '';
@@ -305,6 +345,12 @@
         vm.events = [];
         vm.isCellOpen = true;
         vm.ok = function () {
+            if(vm.paramObject)
+            angular.forEach(vm.paramObject.params, function(value, index){
+                if (!(value.name && value.value)) {
+                    vm.paramObject.params.splice(index, 1);
+                }
+            });
             $uibModalInstance.close('ok');
         };
         vm.cancel = function () {
@@ -830,8 +876,6 @@
 
             run_time = _xml.run_time || _xml.schedule || {};
             vm.runTime1.timeZone = run_time._time_zone;
-
-            console.log(run_time);
 
             if (run_time._substitute) {
                 vm.sch._substitute = run_time._substitute;

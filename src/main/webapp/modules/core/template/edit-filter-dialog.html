@@ -3,12 +3,11 @@
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate>label.editFilters</h4>
     </div>
-     <form name="form" novalidate>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-sm-12">
-                   <div class="table-responsive">
-                       <table class="table table-hover table-bordered " >
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " >
                         <thead>
                         <tr>
                             <th translate>label.srNo</th>
@@ -16,20 +15,23 @@
                             <th translate>label.action</th>
                         </tr>
                         </thead>
-                        <tbody ng-repeat="filter in filters">
-                            <tr>
-                                <td width="15%">{{$index+1}}</td>
-                                <td>{{filter.name}}</td>
+                        <tbody >
+                            <tr class="start-on-hover" ng-repeat="filter in filters.list">
+                                <td width="12%">{{$index+1}}</td>
+                                <td>
+                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite == filter.name" href="" class="fa fa-star text-primary fa-lg m-r-xs"></a>
+                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name" href="" ng-click="favorite(filter.name)" class="fa fa-star-o fa-lg m-r-xs"></a>
+                                    {{filter.name}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-primary" ng-click="ok();editFilter(filter)" translate>button.edit</a>
                                 </td>
                             </tr>
 
                         </tbody>
-                      </table>
-                   </div>
+                    </table>
                 </div>
+
             </div>
         </div>
-     </form>
+    </div>
 </div>

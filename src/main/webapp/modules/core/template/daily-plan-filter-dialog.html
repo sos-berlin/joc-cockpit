@@ -8,7 +8,7 @@
         <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
            <label class="col-sm-3 form-control-label" translate>label.filterName</label>
            <div class=" col-sm-6">
-                <input type="text" required class="form-control" placeholder="Name" name="filterName" ng-maxlength="25" ng-model="dailyPlanFilter.name" ng-blur="checkFilterName()">
+                <input type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="dailyPlanFilter.name" ng-blur="checkFilterName()">
                <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
                    <div ng-message="required" translate>message.requiredError</div>
                    <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -23,16 +23,35 @@
         <div class="form-group row" >
                <label class="col-sm-3 form-control-label" translate>label.orderName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="Name of order or regex" ng-model="dailyPlanFilter.regex">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.regex' | translate}}" ng-model="dailyPlanFilter.regex">
                </div>
         </div>
 
         <div class="form-group row" >
             <label class="col-sm-3 form-control-label" translate>label.processName</label>
             <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="Name of planned process or choose from tree " ng-model="dailyPlanFilter.processPlanned">
-               </div>
+                   <input type="text" class="form-control" ng-disabled="dailyPlanFilter.paths.length>0" placeholder="{{'placeholder.dailyPlannedNameField' | translate}}" ng-model="dailyPlanFilter.processPlanned">
             </div>
+            <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row" ng-if="dailyPlanFilter.paths.length>0">
+            <div class="col-sm-offset-3 col-sm-9" style="max-height: 140px; overflow: auto">
+                <div ng-repeat="path in dailyPlanFilter.paths track by $index">
+                    <span class="">{{path}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row m-t-sm" >
+           <label class="col-sm-3 form-control-label" translate>label.processPlanned</label>
+           <div class=" col-sm-6">
+            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="dailyPlanFilter.planned"
+                   ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime" ng-blur="checkPlanned()">
+                <div class="help-block text-danger" ng-if="!validPlanned">
+                  <div translate>message.invalid</div>
+               </div>
+           </div>
+
+        </div>
         <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>label.from</label>
 
@@ -53,20 +72,16 @@
 
                 <div class="col-sm-9">
                     <label class="md-check w-sm">
-                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'PLANNED'">
-                        <i class="primary"></i><span translate>label.planned</span>
+                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'waiting'">
+                        <i class="primary"></i><span translate>label.waiting</span>
                     </label>
                     <label class="md-check w-sm">
-                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'SUCCESSFUL'">
-                        <i class="primary"></i><span translate>label.successful</span>
+                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'late'">
+                        <i class="primary"></i><span translate>label.late</span>
                     </label>
                     <label class="md-check w-sm">
-                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'FAILED'">
-                        <i class="primary"></i><span translate>label.failed</span>
-                    </label>
-                     <label class="md-check w-sm">
-                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'INCOMPLETE'">
-                        <i class="primary"></i><span translate>label.incomplete</span>
+                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state" data-checklist-value="'executed'">
+                        <i class="primary"></i><span translate>label.executed</span>
                     </label>
 
                 </div>
@@ -85,7 +100,7 @@
             <div class="b-t"></div>
         </div>
         <div class="form-group m-t m-b-xs">
-            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter</button>
+            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique  || !validPlanned" translate>button.saveFilter</button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>
     </div>

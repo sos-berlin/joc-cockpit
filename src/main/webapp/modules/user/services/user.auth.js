@@ -11,12 +11,12 @@
                 return {
                     request: function (config) {
                         if (config.method == 'POST') {
-                            var temp = config.url.substring(config.url.lastIndexOf('api') + 4);
-                            if ($rootScope.configData[temp]) {
-                                config.url = './api/' + temp;
+
+                            if ($rootScope.configData[config.url]) {
+                                config.url = $rootScope.configData['WEB_SERVER_URL']+ config.url;
                             }
                             else {
-                                config.url = 'http://test.sos-berlin.com:3001/joc/api/' + temp;
+                                config.url = $rootScope.configData['MOCK_URL']+ config.url;
                             }
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
@@ -29,7 +29,7 @@
 
                     },
                     responseError: function (rejection) {
-                          if (rejection.status == 440) {
+                          if ($location.path()!='/login' && (rejection.status == 440 || rejection.status == 401)) {
                             toasty.error({
                                 title: 'Login Timeout!',
                                 msg: 'Your session has expired and must log in again.'
@@ -41,7 +41,7 @@
                         return $q.reject(rejection);
                     },
                     response: function (response) {
-                        if (response.status == 440) {
+                        if ($location.path()!='/login' && (response.status == 440 || response.status == 401)) {
                             toasty.error({
                                 title: 'Login Timeout!',
                                 msg: "Your session has expired and must log in again."

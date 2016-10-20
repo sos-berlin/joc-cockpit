@@ -18,7 +18,7 @@
                 <letter-avatar shape="round" width="30" height="30" data="{{username}}"></letter-avatar>
               </span>
               <span class="text-left p-l-xs">
-                    <span class="_500 text-u-c" ng-bind="username"></span>
+                    <span class="_500" ng-bind="username"></span>
                     <i class="fa fa-caret-down p-l-xs"></i>
               </span>
             </a>
@@ -74,7 +74,7 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
                     <span class="nav-text ">
-                        <i class="fa fa-list-ul text-white"></i>
+                        <img src="images/order1.png" width="19" height="18" class="m-b-xs">
                         <span id="orders_id" class="font11 text-white text-u-c _600" translate>label.orders</span>
                     </span>
                 </a>
@@ -82,17 +82,20 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
                     <span class="nav-text ">
-                        <i class="fa fa-tasks text-white"></i>
+                        <img src="images/job1.png" width="22" height="19" class="m-b-xs">
                         <span id="jobs_id" class="font11 text-white text-u-c _600" translate>label.jobs</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ui-sref="app.resources.agentClusters" ui-sref-active-eq="active">
+                <a class="nav-link"  ui-sref="app.resources.agentClusters" ui-sref-active-eq="active">
                     <span class="nav-text" >
                         <img src="images/resources.png">
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                     </span>
+                    <span class="hide" ui-sref="app.resources.locks"></span>
+                    <span class="hide" ui-sref="app.resources.processClasses"></span>
+                    <span class="hide" ui-sref="app.resources.schedules"></span>
                 </a>
 
             </li>

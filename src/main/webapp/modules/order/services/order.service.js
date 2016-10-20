@@ -8,14 +8,14 @@
     angular.module('app')
         .service('OrderService', OrderService);
 
-    OrderService.$inject = ["$resource", "$q", "apiUrl","$http"];
-    function OrderService($resource, $q, apiUrl,$http) {
+    OrderService.$inject = ["$resource", "$q", "$http"];
+    function OrderService($resource, $q, $http) {
         return {
             jobSelected:undefined,
             get: function (filter) {
 
                 var deferred = $q.defer();
-                var Orders = $resource(apiUrl + 'orders');
+                var Orders = $resource('orders');
                 Orders.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -32,7 +32,7 @@
             getOrdersP: function (filter) {
 
                 var deferred = $q.defer();
-                var Orders = $resource(apiUrl + 'orders/p');
+                var Orders = $resource('orders/p');
                 Orders.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -45,7 +45,7 @@
                 var deferred = $q.defer();
                 var jobChains = [];
                 jobChains.job_chain = jobChain;
-                var Orders = $resource(apiUrl + 'orders/p');
+                var Orders = $resource('orders/p');
                 Orders.save({orders: jobChains,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -57,7 +57,7 @@
                 var deferred = $q.defer();
                 var jobChains = [];
                 jobChains.job_chain = jobChain;
-                var Orders = $resource(apiUrl + 'orders');
+                var Orders = $resource('orders');
                 Orders.save({orders: jobChains,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -68,7 +68,7 @@
             log: function (filter) {
                 console.log("Logs......");
                 var deferred = $q.defer();
-                $http.post(apiUrl + 'order/log',filter,{transformResponse:function(data,header,status){
+                $http.post('order/log',filter,{transformResponse:function(data,header,status){
                      return data;
                 }}).then(function (res) {
                     deferred.resolve(res);
@@ -81,7 +81,7 @@
             getSnapshot: function (filter) {
                 var deferred = $q.defer();
 
-                var Snapshot = $resource(apiUrl + 'orders/overview/snapshot');
+                var Snapshot = $resource('orders/overview/snapshot');
                 Snapshot.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -92,7 +92,7 @@
             getConfiguration: function (path,jobschedulerId) {
                 var deferred = $q.defer();
 
-                var Configuration = $resource(apiUrl + 'order/configuration');
+                var Configuration = $resource('order/configuration');
                 Configuration.save({order: path,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -102,7 +102,7 @@
             },
             setOrderState: function (orders) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/set_state');
+                var Order = $resource('orders/set_state');
                 Order.save(orders, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -112,7 +112,7 @@
             },
             setRunTime: function (orders) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/set_run_time');
+                var Order = $resource('orders/set_run_time');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -122,7 +122,7 @@
             },
             startOrder: function (orders) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/start');
+                var Order = $resource('orders/start');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -133,7 +133,7 @@
             suspendOrder: function (orders) {
 
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/suspend');
+                var Order = $resource('orders/suspend');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -144,7 +144,7 @@
             resumeOrder: function (orders) {
 
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/resume');
+                var Order = $resource('orders/resume');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -155,7 +155,7 @@
             resetOrder: function (orders) {
 
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/reset');
+                var Order = $resource('orders/reset');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -166,7 +166,7 @@
             removeOrder: function (orders) {
 
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/remove');
+                var Order = $resource('orders/remove');
                 Order.save(orders, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -176,7 +176,7 @@
             },
             deleteOrder: function (orders) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/delete');
+                var Order = $resource('orders/delete');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -186,7 +186,7 @@
             },
             addOrder: function (orders) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'orders/add');
+                var Order = $resource('orders/add');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -196,7 +196,7 @@
             },
             getRunTime: function (orders) {
                 var deferred = $q.defer();
-                var Order = $resource(apiUrl + 'order/run_time');
+                var Order = $resource('order/run_time');
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -206,7 +206,7 @@
             },
             historys: function (filter) {
                 var deferred = $q.defer();
-                var History = $resource(apiUrl + 'orders/history');
+                var History = $resource('orders/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -216,7 +216,7 @@
             },
             histories: function (filter) {
                 var deferred = $q.defer();
-                var History = $resource(apiUrl + 'orders/history');
+                var History = $resource('orders/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -226,7 +226,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
-                var History = $resource(apiUrl + 'order/history');
+                var History = $resource('order/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -236,7 +236,7 @@
             },
             tree: function (filter) {
                 var deferred = $q.defer();
-                var Tree = $resource(apiUrl + 'tree');
+                var Tree = $resource('tree');
                 Tree.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

@@ -100,8 +100,10 @@
                             </div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
-                     </div>
+                       <toggle-view></toggle-view>
+                    </div>
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
+                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()" translate>button.reset</button>
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
                                  ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
@@ -110,7 +112,7 @@
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}"
                                  ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span class="hidden-sm-down" translate>button.startOrderNow</span></button>
                      </div>
-                    <toggle-view></toggle-view>
+
                 </div>
             </div>
         </div>
@@ -134,35 +136,21 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
-                <div class="form-group row">
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" placeholder="Add path" ng-model="jobFilterPath" readonly>
-                    </div>
-                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="addPath(jobFilterPath)"><i class="fa fa-plus fa-lg"></i></a></div>
-                </div>
-                <div class="row" ng-if="paths.length>0">
-                    <div class="col-sm-10">
-                        <table class="table table-bordered" style="min-height: 100px;">
-                            <tbody>
-                            <tr ng-repeat="path in paths track by $index">
-                                <td>{{path}}
-                                    <a class="pull-right" ng-click="removePath($index)"><i class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
                 <div>
-                    <a class="text m-r-xs " ng-click="filter_tree.expand_all();">[ <span
-                            class="text-primary font14" translate>button.expandAll</span> ]</a>
-                    <a class="text" ng-click="filter_tree.collapse_all()">[ <span class="text-primary font14" translate>button.collapseAll</span>
-                        ]</a>
+                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" >
+                        <i class="fa fa-angle-down fa-lg"></i>
+                        <span translate>button.expandAll</span>
+                    </button>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
+                       <i class="fa fa-angle-up fa-lg"></i>
+                        <span translate>button.collapseAll</span>
+                    </button>
                     <tree
-                            tree-data="filterTree"
+                            tree-data="filterTree1"
                             tree-control="filter_tree"
                             expand-to="expand_to"
-                            icon-leaf     = "fa fa-folder-o"
+                            object="object"
+                            icon-leaf     = "fa fa-folder"
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"
                             expand-on="expanding_property"
