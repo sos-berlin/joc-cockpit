@@ -43,7 +43,7 @@
             <div class="form-group row m-t-sm" >
            <label class="col-sm-3 form-control-label" translate>label.processPlanned</label>
            <div class=" col-sm-6">
-            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.dailyPlannedNameField' | translate}}" ng-model="historyFilter.planned"
+            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="historyFilter.planned"
                    ng-disabled="historyFilter.fromDate ||historyFilter.fromTime || historyFilter.toDate ||historyFilter.toTime" ng-blur="checkPlanned()">
                 <div class="help-block text-danger" ng-if="!validPlanned">
                   <div translate>message.invalid</div>
@@ -73,15 +73,15 @@
                 <label class="col-sm-3 " translate>label.status</label>
 
                 <div class="col-sm-9">
-                    <label class="md-check w-sm">
+                    <label class="md-check w">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'incomplete'">
                         <i class="primary"></i><span translate>label.incomplete</span>
                     </label>
-                    <label class="md-check w-sm">
+                    <label class="md-check w">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'successful'">
                         <i class="primary"></i><span translate>label.success</span>
                     </label>
-                    <label class="md-check w-sm">
+                    <label class="md-check">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'failed'">
                         <i class="primary"></i><span translate>label.failed</span>
                     </label>

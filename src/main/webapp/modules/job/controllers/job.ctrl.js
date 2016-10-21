@@ -386,7 +386,8 @@
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
-                size: 'lg'
+                size: 'lg',
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
             }, function () {
@@ -444,7 +445,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-order-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 addOrder(vm.order, vm.paramObject);
@@ -614,7 +616,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/jobchain-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 vm.savedJobChainFilter.list.push(vm.jobChainFilter);
@@ -635,7 +638,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -653,7 +657,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-jobchain-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.savedJobChainFilter.list, function (value, index) {
@@ -689,6 +694,8 @@
             });
             if (vm.savedJobChainFilter.list.length == 0) {
                 vm.savedJobChainFilter = {};
+            }else if (vm.savedJobChainFilter.selected == vm.jobChainFilter.name) {
+                vm.savedJobChainFilter.selected = undefined;
             }
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
@@ -697,7 +704,7 @@
 
         vm.favorite = function(filter) {
             vm.savedJobChainFilter.favorite = filter;
-            //vm.savedJobChainFilter.selected = filter;
+            vm.savedJobChainFilter.selected = filter;
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
             vm.load();
@@ -1190,38 +1197,41 @@
                           var fromDate;
                         var toDate;
                          if (flag && value.planned && res.startedAt) {
-                           if (/^\s*(now\+)(\d+)\s*$/i.test(value.planned)) {
-                               fromDate = new Date();
-                               toDate = new Date();
-                               var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
-                               toDate.setSeconds(toDate.getSeconds()+seconds);
-                        } else if (/^\s*(Today)\s*$/i.test(value.planned)) {
-                               fromDate = new Date();
+                             if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value.planned)) {
+                                 fromDate = new Date();
+                                 toDate = new Date();
+                                 var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
+                                 toDate.setSeconds(toDate.getSeconds() + seconds);
+                             } else if (/^\s*(Today)\s*$/i.test(value.planned)) {
+                                 fromDate = new Date();
 
-                               fromDate.setHours(0);
-                               fromDate.setMinutes(0);
-                               toDate = new Date();
-                               toDate.setHours(23);
-                               toDate.setMinutes(59);
-                        } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
-                               var time=/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
-                               fromDate = new Date();
-                               if(/(pm)/i.test(time[3]) && parseInt(time[1])!=12){
-                                   fromDate.setHours(parseInt(time[1])+12);
-                               }else{
-                                   fromDate.setHours(parseInt(time[1]));
-                               }
+                                 fromDate.setHours(0);
+                                 fromDate.setMinutes(0);
+                                 toDate = new Date();
+                                 toDate.setHours(23);
+                                 toDate.setMinutes(59);
+                             } else if (/^\s*(now)\s*$/i.test(value.planned)) {
+                                 fromDate = new Date();
+                                 toDate = new Date();
+                             } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
+                                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
+                                 fromDate = new Date();
+                                 if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                                     fromDate.setHours(parseInt(time[1]) + 12);
+                                 } else {
+                                     fromDate.setHours(parseInt(time[1]));
+                                 }
 
-                               fromDate.setMinutes(parseInt(time[2]));
-                               toDate = new Date();
-                                if(/(pm)/i.test(time[6]) && parseInt(time[4])!=12){
-                                   toDate.setHours(parseInt(time[4])+12);
-                               }else{
-                                   toDate.setHours(parseInt(time[4]));
-                               }
-                               toDate.setMinutes(parseInt(time[5]));
-                        }
-                        }
+                                 fromDate.setMinutes(parseInt(time[2]));
+                                 toDate = new Date();
+                                 if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                                     toDate.setHours(parseInt(time[4]) + 12);
+                                 } else {
+                                     toDate.setHours(parseInt(time[4]));
+                                 }
+                                 toDate.setMinutes(parseInt(time[5]));
+                             }
+                         }
 
                           if (flag && value.fromDate && res.startedAt) {
                             if (value.fromTime) {
@@ -1301,7 +1311,7 @@
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.jobFilter.planned|| /^\s*$/i.test(vm.jobFilter.planned) || /^\s*(now\+)(\d+)\s*$/i.test(vm.jobFilter.planned) || /^\s*(Today)\s*$/i.test(vm.jobFilter.planned)
+            if (!vm.jobFilter.planned|| /^\s*$/i.test(vm.jobFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.jobFilter.planned) || /^\s*(now)\s*$/i.test(vm.jobFilter.planned) || /^\s*(Today)\s*$/i.test(vm.jobFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.jobFilter.planned)) {
             } else {
                 vm.validPlanned = false;
@@ -1314,7 +1324,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/job-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 if (vm.jobFilter.radio == 'current') {
@@ -1341,11 +1352,12 @@
         };
 
         vm.editFilters = function () {
-            vm.filters = vm.savedJobFilter.list;
+            vm.filters = vm.savedJobFilter;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -1363,7 +1375,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-job-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.savedJobFilter.list, function (value, index) {
@@ -1400,6 +1413,8 @@
             });
             if (vm.savedJobFilter.list.length == 0) {
                 vm.savedJobFilter = {};
+            }else if (vm.savedJobFilter.selected == vm.jobFilter.name) {
+                vm.savedJobFilter.selected = undefined;
             }
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
@@ -1408,7 +1423,7 @@
 
         vm.favorite = function(filter) {
             vm.savedJobFilter.favorite = filter;
-            //vm.savedJobFilter.selected = filter;
+            vm.savedJobFilter.selected = filter;
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
             vm.load();
@@ -1590,7 +1605,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/start-job-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 startAt(job);

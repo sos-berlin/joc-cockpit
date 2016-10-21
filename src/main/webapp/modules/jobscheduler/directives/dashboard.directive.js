@@ -911,7 +911,7 @@
                 startPolling();
                 function startPolling() {
 
-                    if ($rootScope.config.dashboard.polling) {
+                    if ($rootScope.config.jobSchedulerMasterClusterStatus.polling) {
                         poll();
                     }
 
@@ -925,7 +925,7 @@
                         if (vm.getSupervisor) {
                             vm.getSupervisor(true);
                         }
-                    }, $rootScope.config.dashboard.interval * 1000);
+                    }, $rootScope.config.jobSchedulerMasterClusterStatus.interval * 1000);
 
                 }
 

@@ -194,6 +194,15 @@
             });
         };
 
+       function loadAgentsV() {
+            JobSchedulerService.getAgentCluster({
+                jobschedulerId: $scope.schedulerIds.selected
+            }).then(function (result) {
+                 vm.tree_data = prepareDataForTreegrid(vm.temp, result);
+                 angular.merge(vm.tree_data ,  result);
+            });
+        }
+
 
         vm.loadLocks = function () {
             vm.isLoading = false;
@@ -209,6 +218,14 @@
                 vm.isError = true;
             });
         };
+
+        function loadLocksV() {
+            ResourceService.get({
+                jobschedulerId: $scope.schedulerIds.selected
+            }).then(function (result) {
+                angular.merge(vm.locks ,  result);
+            });
+        }
 
 
         vm.loadProcessClass = function () {
@@ -226,13 +243,23 @@
             });
         };
 
+        function loadProcessClassV() {
+
+            ResourceService.getProcessClass({
+                jobschedulerId: $scope.schedulerIds.selected
+            }).then(function (result) {
+                angular.merge(vm.processClasses ,  result);
+
+            });
+        }
+
         vm.loadSchedules = function () {
             vm.isLoading = false;
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm.schedules = result.schedules;
                 vm.isLoading = true;
                 ScheduleService.get({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    vm.temp = angular.merge(result.schedules, res.schedules)
+                    vm.scheduleTemp = angular.merge(result.schedules, res.schedules)
                 });
             }, function () {
                 vm.isLoading = true;
@@ -240,9 +267,18 @@
             });
         };
 
+        function loadSchedulesV() {
+
+            ScheduleService.get({
+                jobschedulerId: $scope.schedulerIds.selected
+            }).then(function (result) {
+                angular.merge(vm.sechules, result);
+            });
+        }
+
         vm.load = function () {
             vm.data = [];
-            angular.forEach(vm.temp, function (value) {
+            angular.forEach(vm.scheduleTemp, function (value) {
                 if (value.state._text == vm.filter.state || vm.filter.state == 'all')
                     vm.data.push(value);
             });
@@ -305,7 +341,6 @@
             vm.sch._substitute = schedule.path;
             vm.schedule = schedule;
 
-            //console.log(schedule);
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -339,7 +374,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/substitute-all-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.object.schedules, function (value) {
@@ -403,60 +439,84 @@
 
 
         $scope.$on('$stateChangeSuccess', function (event, toState) {
-            console.log(toState.name);
+
             vm.state = '';
+
             if (toState.name == 'app.resources.agentClusters') {
                 vm.state = 'agent';
                 vm.filter.state = $stateParams.type || 'all';
                 vm.isLoading = false;
+                if(!vm.temp)
                 vm.loadAgents();
             } else if (toState.name == 'app.resources.locks') {
                 vm.state = 'lock';
+                if(!vm.locks)
                 vm.loadLocks();
             } else if (toState.name == 'app.resources.processClasses') {
                 vm.state = 'processClass';
+                if(!vm.processClasses)
                 vm.loadProcessClass();
             } else {
                 vm.state = 'schedules';
+                if(!vm.schedules)
                 vm.loadSchedules();
             }
+             startPolling();
 
         });
 
 
-        startPolling();
+        var interval1, interval2, interval3, interval4;
+
+        function poll1() {
+            interval1 = $interval(function () {
+                loadAgentsV();
+            }, $rootScope.config.agentCluster.interval * 1000)
+        }
+        function poll2() {
+            interval2 = $interval(function () {
+                loadLocksV();
+            }, $rootScope.config.locks.interval * 1000)
+        }
+        function poll3() {
+            interval3 = $interval(function () {
+                loadProcessClassV();
+            }, $rootScope.config.processClass.interval * 1000)
+        }
+        function poll4() {
+            interval4 = $interval(function () {
+                loadSchedulesV();
+            }, $rootScope.config.schedules.interval * 1000)
+        }
 
         function startPolling() {
-
-                if ($rootScope.config.orders.polling) {
-                    poll();
-                }
-
+            console.log(vm.state)
+            $interval.cancel(interval1);
+                $interval.cancel(interval2);
+                $interval.cancel(interval3);
+                $interval.cancel(interval4);
+            if (vm.state == 'agent') {
+                if ($rootScope.config.agentCluster.polling)
+                    poll1();
+            } else if (vm.state == 'lock') {
+                if ($rootScope.config.locks.polling)
+                    poll2();
+            } else if (vm.state == 'processClass') {
+                if ($rootScope.config.processClass.polling)
+                    poll3();
+            } else {
+                if ($rootScope.config.schedules.polling)
+                    poll4();
+            }
         }
-
-        var interval;
-
-        function poll() {
-            interval = $interval(function () {
-                if (vm.state == 'agent') {
-                    vm.loadAgents();
-                } else if (vm.state == 'lock') {
-                    vm.loadLocks();
-                } else if (vm.state == 'processClass') {
-                    vm.loadProcessClass();
-                } else {
-                    vm.loadSchedules({jobschedulerId: $scope.schedulerIds.selected});
-                }
-            }, $rootScope.config.resources.interval * 1000)
-        }
-
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
             watcher3();
-            if (interval)
-                $interval.cancel(interval);
-
+            $interval.cancel(interval1);
+            $interval.cancel(interval2);
+            $interval.cancel(interval3);
+            $interval.cancel(interval4);
 
         });
     }
@@ -955,7 +1015,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 JobSchedulerService.terminateWithin(host, port, $scope.schedulerIds.selected, vm.criterion.timeout).then(function (res) {
@@ -1070,30 +1131,48 @@
         startPolling();
 
         function startPolling() {
-            if ($rootScope.config.dashboard.polling) {
-                poll();
+            if ($rootScope.config.agentClusterStatus.polling) {
+                poll1();
+            }
+            if ($rootScope.config.orderOverviewWidget.polling) {
+                poll2();
+            }
+            if ($rootScope.config.dailyPlanWidget.polling) {
+                poll3();
             }
         }
 
-        var interval;
+        var interval1,interval2,interval3;
 
-        function poll() {
-            interval = $interval(function () {
-                vm.loadOrderSnapshot();
+        function poll1() {
+            interval1 = $interval(function () {
                 vm.getAgentCluster();
+
+            }, $rootScope.config.agentClusterStatus.interval * 1000)
+        }
+        function poll2() {
+            interval2 = $interval(function () {
+                vm.loadOrderSnapshot();
+            }, $rootScope.config.orderOverviewWidget.interval * 1000)
+        }
+        function poll3() {
+            interval3 = $interval(function () {
                 getDailyPlans();
-            }, $rootScope.config.dashboard.interval * 1000)
+            }, $rootScope.config.dailyPlanWidget.interval * 1000)
         }
 
         $scope.$on('$destroy', function () {
-            $interval.cancel(interval);
+            $interval.cancel(interval1);
+            $interval.cancel(interval2);
+            $interval.cancel(interval3);
+
         });
 
 
     }
 
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'DailyPlanService', '$interval', '$rootScope',];
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'DailyPlanService', '$interval', '$rootScope','JobChainService'];
     function DailyPlanCtrl($scope, $timeout, gettextCatalog, moment, orderBy, $uibModal, SavedFilter, toasty, OrderService, DailyPlanService, $interval, $rootScope, JobChainService) {
 
         var vm = $scope;
@@ -1114,9 +1193,12 @@
         vm.object = {};
         vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
         vm.savedDailyPlanFilter.list = vm.savedDailyPlanFilter.list || [];
+        vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.favorite;
+
         vm.savedIgnoreList = JSON.parse(SavedFilter.ignoreList) || {};
         vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
         vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
+
 
         var promise1;
         vm.tree = [];
@@ -1143,7 +1225,6 @@
         }
 
         vm.getPlans = function () {
-            console.log("range "+vm.range);
             if(vm.range !='period') {
                 vm.filter.range = undefined;
             }
@@ -1299,7 +1380,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/daily-plan-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 if (vm.savedDailyPlanFilter.shared) {
@@ -1310,6 +1392,9 @@
 
                     vm.savedDailyPlanFilter.list.push(vm.dailyPlanFilter);
                     vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+                    if(vm.savedDailyPlanFilter.list.length==1){
+                        vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
+                    }
                     SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
                     SavedFilter.save();
                 }
@@ -1322,11 +1407,12 @@
         };
 
         vm.editFilters = function () {
-            vm.filters = vm.savedDailyPlanFilter.list;
+            vm.filters = vm.savedDailyPlanFilter;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -1338,6 +1424,8 @@
         vm.editFilter = function (filter) {
             vm.filterName = filter.name;
             vm.dailyPlanFilter = angular.copy(filter);
+            vm.paths = vm.dailyPlanFilter.paths;
+            vm.object.paths = vm.paths;
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
@@ -1350,10 +1438,19 @@
                         vm.savedDailyPlanFilter.list[index] = vm.dailyPlanFilter;
                     }
                 });
-                vm.filterName = undefined;
+
+                if (vm.savedDailyPlanFilter.selected == vm.filterName) {
+                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+                    filterData();
+                }
+                if (vm.savedDailyPlanFilter.favorite == vm.filterName) {
+                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
+                }
+
+
                 SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
                 SavedFilter.save();
-                filterData();
+                vm.filterName = undefined;
             }, function () {
                 vm.filterName = undefined;
             });
@@ -1376,6 +1473,14 @@
             }
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
+        };
+
+        vm.favorite = function(filter) {
+            vm.savedDailyPlanFilter.favorite = filter;
+            vm.savedDailyPlanFilter.selected = filter;
+            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+            SavedFilter.save();
+            vm.load();
         };
 
         vm.checkFilterName = function () {
@@ -1416,12 +1521,21 @@
                             }
                         }
 
+
                         if (flag && value.state && res.state._text) {
-                            if (value.state.indexOf(res.state._text) === -1) {
+                            var state;
+                            if(res.state._text == "PLANNED"){
+                                state = "WAITING";
+                            }else if(res.state._text == "SUCCESSFUL" || res.state._text == "FAILED"){
+                                state = "EXECUTED";
+                            }
+                            if(res.late){
+                                state = "LATE";
+                            }
+                            if (value.state.indexOf(state) === -1) {
                                 flag = false;
                             }
                         }
-
 
                         if (value.processPlanned && res.job && res.job != "NULL") {
                             if (!res.job.match(value.processPlanned)) {
@@ -1439,38 +1553,40 @@
                         var toDate;
 
                          if (flag && value.planned && res.plannedStartTime) {
-                           if (/^\s*(now\+)(\d+)\s*$/i.test(value.planned)) {
-                               fromDate = new Date();
-                               toDate = new Date();
-                               var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
-                               toDate.setSeconds(toDate.getSeconds()+seconds);
-                        } else if (/^\s*(Today)\s*$/i.test(value.planned)) {
-                               fromDate = new Date();
+                             if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value.planned)) {
+                                 fromDate = new Date();
+                                 toDate = new Date();
+                                 var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
+                                 toDate.setSeconds(toDate.getSeconds() + seconds);
+                             } else if (/^\s*(Today)\s*$/i.test(value.planned)) {
+                                 fromDate = new Date();
+                                 fromDate.setHours(0);
+                                 fromDate.setMinutes(0);
+                                 toDate = new Date();
+                                 toDate.setHours(23);
+                                 toDate.setMinutes(59);
+                             } else if (/^\s*(now)\s*$/i.test(value.planned)) {
+                                 fromDate = new Date();
+                                 toDate = new Date();
+                             } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
+                                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
+                                 fromDate = new Date();
+                                 if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                                     fromDate.setHours(parseInt(time[1]) + 12);
+                                 } else {
+                                     fromDate.setHours(parseInt(time[1]));
+                                 }
 
-                               fromDate.setHours(0);
-                               fromDate.setMinutes(0);
-                               toDate = new Date();
-                               toDate.setHours(23);
-                               toDate.setMinutes(59);
-                        } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
-                               var time=/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
-                               fromDate = new Date();
-                               if(/(pm)/i.test(time[3]) && parseInt(time[1])!=12){
-                                   fromDate.setHours(parseInt(time[1])+12);
-                               }else{
-                                   fromDate.setHours(parseInt(time[1]));
-                               }
-
-                               fromDate.setMinutes(parseInt(time[2]));
-                               toDate = new Date();
-                                if(/(pm)/i.test(time[6]) && parseInt(time[4])!=12){
-                                   toDate.setHours(parseInt(time[4])+12);
-                               }else{
-                                   toDate.setHours(parseInt(time[4]));
-                               }
-                               toDate.setMinutes(parseInt(time[5]));
-                        }
-                        }
+                                 fromDate.setMinutes(parseInt(time[2]));
+                                 toDate = new Date();
+                                 if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                                     toDate.setHours(parseInt(time[4]) + 12);
+                                 } else {
+                                     toDate.setHours(parseInt(time[4]));
+                                 }
+                                 toDate.setMinutes(parseInt(time[5]));
+                             }
+                         }
 
                           if (flag && value.fromDate && res.plannedStartTime) {
                             if (value.fromTime) {
@@ -1646,16 +1762,18 @@
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.dailyPlanFilter.planned|| /^\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now\+)(\d+)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(Today)\s*$/i.test(vm.dailyPlanFilter.planned)
+            if (!vm.dailyPlanFilter.planned|| /^\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(Today)\s*$/i.test(vm.dailyPlanFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.dailyPlanFilter.planned)) {
             } else {
                 vm.validPlanned = false;
             }
-        }
+        };
 
         vm.filter_tree = {};
-        vm.tree = [];
 
+        vm.expanding_property = {
+            field: "name"
+        };
         vm.getTreeStructure = function () {
 
             $('#treeModal').modal('show');
@@ -1696,12 +1814,7 @@
         });
 
         vm.addJobChainPaths = function () {
-            vm.orderFilter.paths = vm.paths;
-        };
-
-        vm.selectValue = function (data) {
-            vm.filterString1 = data.JobChain;
-            vm.dailyPlanFilter.name = vm.filterString1;
+            vm.dailyPlanFilter.paths = vm.paths;
         };
 
 
@@ -1726,10 +1839,9 @@
         startPolling();
 
         function startPolling() {
-
             if ($rootScope.config.dailyPlan.polling) {
-                    poll();
-                }
+                poll();
+            }
         }
 
         var interval;
@@ -1746,6 +1858,7 @@
             $interval.cancel(interval);
             if (promise1)
                 $timeout.cancel(promise1);
+            watcher();
 
         });
 

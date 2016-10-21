@@ -5,7 +5,7 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
     <div class="modal-body p-a">
-       <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+        <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
            <label class="col-sm-3 form-control-label" translate>label.enterTimeout</label>
            <div class=" col-sm-6">
                 <input type="number" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" ng-blur="checkFilterName()">
@@ -13,10 +13,8 @@
                    <div ng-message="required" translate>message.requiredError</div>
                     <div ng-message="number" translate>message.nonNumericValue</div>
                </div>
-
            </div>
         </div>
-
         <div class="form-group m-t m-b-xs">
             <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submit</button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>

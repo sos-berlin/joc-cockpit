@@ -543,6 +543,7 @@
   "message.invalid": "Invalid Input",
   "message.errorInLoadingScheduleIds": "Error in fetching Scheduler Ids",
   "message.scheduleMutuallyExclusive": "The schedule attribute and the other run times are mutually exclusive",
+  "message.errorInFetchingJobschedulerInformation": "Error In Fetching JobScheduler Information",
   "placeholder.nameOfOrdersRegexOrChooseFolderFromTree": "Name of orders, regex or choose folder from tree",
   "placeholder.chooseStartingStep": "Choose Starting step",
   "placeholder.newOrderEndState": "New Order End State",

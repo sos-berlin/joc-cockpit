@@ -10,8 +10,8 @@
         .controller('UserProfileCtrl', UserProfileCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'toasty','gettextCatalog'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,toasty,gettextCatalog) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'gettextCatalog'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,gettextCatalog) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
@@ -23,20 +23,17 @@
                     SOSAuth.save();
                     getPermissions(response);
                 }else{
-                    toasty.error({
-                       title: gettextCatalog.getString('message.oops'),
-                       msg: gettextCatalog.getString('message.errorInLoadingScheduleIds')
-                    });
+                    $location.path('/error');
                 }
             });
         }
 
-        function getPermissions(response) {
+        function getPermissions() {
 
             vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
 
             UserService.getPermissions(vm.schedulerIds.selected).then(function (permission) {
-                SOSAuth.setUser(response, permission);
+                SOSAuth.setPermission(permission);
                 SOSAuth.save();
                 if ($window.sessionStorage.getItem('$SOS$URL') && $window.sessionStorage.getItem('$SOS$URL') != 'null') {
 
@@ -66,7 +63,9 @@
                         if (response && response.isAuthenticated) {
                             SOSAuth.accessTokenId = response.accessToken;
                             SOSAuth.rememberMe = vm.rememberMe;
-                             getSchedulerIds(response);
+                            SOSAuth.setUser(response);
+                            SOSAuth.save();
+                             getSchedulerIds();
 
                         } else {
                             vm.loginError = 'message.loginError';
@@ -103,12 +102,10 @@
             vm.locale = vm.perferences.locale;
             $rootScope.locale = vm.locale;
             $window.localStorage.$SOS$LANG = vm.locale.lang;
-
             $resource("modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
-               gettextCatalog.setCurrentLanguage(vm.locale.lang);
-               gettextCatalog.setStrings(vm.locale.lang, data);
+                gettextCatalog.setCurrentLanguage(vm.locale.lang);
+                gettextCatalog.setStrings(vm.locale.lang, data);
             });
-
 
         };
 
@@ -117,12 +114,12 @@
             $rootScope.$broadcast('reloadDate');
         };
 
-        vm.setDateFormat = function(){
+        vm.setDateFormat = function () {
             $window.localStorage.$SOS$DATEFORMAT = vm.perferences.dateFormat;
             $rootScope.$broadcast('reloadDate');
         };
 
-    }
 
+    }
 
 })();

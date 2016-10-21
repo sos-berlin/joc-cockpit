@@ -35,6 +35,7 @@
         SOSAuth.prototype.setUser = function (userData, permission) {
             this.accessTokenId = userData.accessToken;
             this.currentUserData = userData.user;
+            if(permission)
             this.permission = JSON.stringify(permission);
         };
 

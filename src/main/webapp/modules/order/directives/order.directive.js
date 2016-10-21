@@ -6,8 +6,7 @@
     'use strict';
     angular.module('app')
         .directive('pieChartComponent', pieChartComponent)
-        .directive('flowDiagram', flowDiagram)
-        .directive('orderFlowDiagram', orderFlowDiagram);
+        .directive('flowDiagram', flowDiagram);
 
     function pieChartComponent() {
         return {
@@ -125,9 +124,9 @@
     }
 
 
-    flowDiagram.$inject = ["$compile", "$rootScope"];
+    flowDiagram.$inject = ["$compile"];
 
-    function flowDiagram($compile, $rootScope) {
+    function flowDiagram($compile) {
         return {
             restrict: 'E',
             transclude: true,
@@ -500,8 +499,8 @@
                             var top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
                             rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
-                            var rect = document.getElementById('lbStart');
-                            var top = rect.style.getPropertyValue('top');
+                            rect = document.getElementById('lbStart');
+                            top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
                             rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
                             angular.forEach(scope.jobChain.nodes, function (item, index) {
@@ -515,7 +514,7 @@
                                     }
 
                                 }
-                            })
+                            });
                             angular.forEach(scope.jobChain.endNodes, function (endNode, sIndex) {
                                 rect = document.getElementById(endNode.name);
                                 if (rect) {
@@ -533,7 +532,7 @@
                                 if (scope.jobChain.endNodes.length - 1 == sIndex) {
                                     scope.drawConnections();
                                 }
-                            })
+                            });
 
                             angular.forEach(scope.jobChain.fileOrderSources, function (orderSource, index) {
 
@@ -550,9 +549,7 @@
                             scope.drawConnections();
                         }
 
-
                     }
-
 
                 }
             },
@@ -565,7 +562,7 @@
                 'onAction': '&',
                 'orders': '='
             },
-            controller: ['$scope', '$window', function ($scope, $window) {
+            controller: ['$scope', '$rootScope', '$window','$interval', function ($scope, $window,$rootScope,$interval) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.distance = 250;
@@ -653,7 +650,6 @@
                             })
 
                         }
-
 
                         var x1 = div1.offsetLeft;
                         var y1 = div1.offsetTop;
@@ -1288,7 +1284,7 @@
 
 
 
-                            function colorFunction(d) {
+                    function colorFunction(d) {
                                 if (d == 0) {
                                     return 'green';
                                 } else if (d == 1) {
@@ -1368,185 +1364,31 @@
 
                 }
 
-            }]
-        }
-    }
 
-
-    orderFlowDiagram.$inject = ["$compile"];
-
-    function orderFlowDiagram($compile) {
-        return {
-            restrict: 'E',
-            transclude: true,
-            link: function (scope, element, attrs, model) {
-                var left = 0;
-                var distance = 300;
-                scope.width = window.outerWidth;
-                scope.height = window.outerHeight;
-
-
-                //console.log("Items " + scope.items.length + " " + scope.width);
-                var rectW = 200;
-                var rectH = 130;
-                var avatarW = 45;
-                var margin = distance - rectW + avatarW;
-                var rectangleTemplate = '';
-                var top = 50;
-                var avatarTop = rectH / 2 - avatarW / 2 + top;
-                angular.forEach(scope.items, function (item, index) {
-                    left = distance * index + margin;
-                    if (index == 0) {
-                        rectangleTemplate = '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '">Start </span>';
-                        left = margin;
-                    }
-
-                    rectangleTemplate = rectangleTemplate +
-                    '<div id="' + item.node + '" style="position:absolute;left:' + left + 'px;top:' + top + 'px"  class="order-detail-rect" >' +
-                    '<div><span class="md-check md-check1" >' +
-                    '<input type="checkbox"  id="chk' + item.node + '">' +
-                    '<i class="ch-purple"></i>' +
-                    '<span ><i class="fa fa-file"></i></span><span class="p-l-sm _500">' + item.name + '</span></span>' +
-                    '<span class="pull-right"><span class="p-r-sm">[Tasks 2 of 2]</span><i class="fa fa-info-circle text"></i></span></div>'
-                    + '<div class="text-left text-muted p-t-sm  "><span>' + 'Start time: 03:30 ' + '</span></div>' +
-                    '<div class="text-left text-muted p-t-sm p-b-sm "><i class="fa fa-server "></i><span class="p-l-sm ">' + item.host + '</span>' +
-                    '<span class="p-l-md"><i class="fa fa-lock"></i><span class="p-l-sm">' + item.batch + '</span></span></div>' +
-                    '<div class="row" style="margin-left: -10px;margin-right: -10px;margin-top: -2px">' +
-                    '<div>' +
-                    '<button class="col-xs-6 btn btn-default btn-sm" ng-click="startJob()"> <i class="fa fa-play"></i> Start</button>' +
-                    '<button class="col-xs-6 btn btn-default btn-sm text-hover-color" ng-click="stopJob()"><i class="fa fa-step-forward"></i> Stop</button>' +
-                    '</div>' +
-                    '</div>'
-                    + '</div>';
-
-
-                    if (index == scope.items.length - 1) {
-                        left = distance * (index + 1) + margin;
-                        rectangleTemplate = rectangleTemplate + '<span id="end" class="avatar w-32 primary text-white" style="position: absolute;left: ' + left + 'px;top: ' +
-                        avatarTop + 'px' + '">End </span>';
-                        rectangleTemplate = '<div id="mainContainer" style="position: relative; height: 300px;width: 100%;overflow: auto" >' + rectangleTemplate + '</div>';
-                        var compiledHtml = $compile(rectangleTemplate)(scope);
-                        element.append(compiledHtml);
-
-                    }
-                })
-            },
-            scope: {
-                items: '=',
-                'onAdd': '&',
-                'onRemove': '&',
-                'onStartJob': '&',
-                'onStopJob': '&'
-            },
-            controller: ['$scope', '$timeout', function ($scope, $timeout) {
-                var vm = $scope;
-                vm.left = 0;
-                vm.distance = 250;
-                vm.object = {};
-
-
-                $timeout(function () {
-                    var mainContainer = document.getElementById('mainContainer');
-
-                    angular.forEach(vm.items, function (item, index) {
-
-                        var div1 = document.getElementById(item.node);
-                        var div2 = document.getElementById(item.next_node);
-                        if (!div1) {
-                            return;
+                startPolling();
+                function startPolling() {
+                    if ($rootScope.config.jobChainsWorkflow.polling) {
+                            poll();
                         }
-                        var x1 = div1.offsetLeft;
-                        var y1 = div1.offsetTop;
-                        if (index === vm.items.length - 1) {
-                            //console.log("End node");
-                            var endNode = document.getElementById('end');
-                            var node = document.createElement('div');
-                            node.setAttribute('class', 'h-line next-link');
-                            node.style.setProperty('top', y1 + div1.clientHeight / 2 + 'px');
-                            node.style.setProperty('left', x1 + div1.clientWidth + 'px');
-                            node.style.setProperty('width', endNode.offsetLeft - div1.offsetLeft - div1.clientWidth + 'px');
-                            mainContainer.appendChild(node);
-                        }
-                        if (!div2) {
-                            return;
-                        }
-                        var x1 = div1.offsetLeft;
-                        var y1 = div1.offsetTop;
-                        var x2 = div2.offsetLeft;
-                        var y2 = div2.offsetTop;
-
-                        if (index == 0) {
-                            var avatar = document.getElementById('start');
-                            var node = document.createElement('div');
-                            //console.log("Id " + 'l' + vm.items[index].node);
-                            node.setAttribute('id', 'l' + vm.items[index].node);
-                            node.setAttribute('class', 'h-line next-link');
-                            node.style.setProperty('top', y1 + div2.clientHeight / 2 + 'px');
-                            node.style.setProperty('left', avatar.offsetLeft + avatar.clientWidth + 'px');
-                            node.style.setProperty('width', div1.offsetLeft - avatar.offsetLeft - avatar.clientWidth + 'px');
-                            node.style.setProperty('height', '2px');
-                            mainContainer.appendChild(node);
-                        }
-                        var node = document.createElement('div');
-                        //console.log("Id " + 'l' + vm.items[index + 1].node);
-                        node.setAttribute('id', 'l' + vm.items[index + 1].node);
-                        node.setAttribute('class', 'h-line next-link');
-                        node.style.setProperty('top', y1 + div2.clientHeight / 2 + 'px');
-                        node.style.setProperty('left', x1 + div1.clientWidth + 'px');
-                        node.style.setProperty('width', x2 - x1 - div1.clientWidth + 'px');
-                        node.style.setProperty('height', '2px');
-                        mainContainer.appendChild(node);
-
-
-                        var chk = document.querySelector('#chk' + item.node);
-                        chk.addEventListener('change', function () {
-                            //console.log("It's here");
-                            if (chk.checked) {
-                                //console.log("It's checked");
-                                vm.onAdd({$item: item});
-                            } else {
-                                //console.log("It's unchecked");
-                                vm.onRemove({$item: item})
-                            }
-                        })
-
-                    })
-                }, 200);
-
-                vm.startJob = function () {
-                    vm.onStartJob();
-                };
-
-                vm.stopJob = function () {
-                    vm.onStopJob();
-                };
-                vm.$on('refreshOrderFlow', function () {
-                    //console.log("On refresh flow diagram");
-                    updateProgress('job_node01');
-                });
-
-                function updateProgress(state) {
-                    var matched = false;
-                    angular.forEach(vm.items, function (item, index) {
-                        if (matched) {
-                            return;
-                        }
-                        //console.log("Node " + state + " item.node " + item.node);
-                        if (item.node == state) {
-                            //console.log("Matched");
-                            matched = true;
-                        }
-                        var node = document.getElementById(item.node);
-                        node.style.setProperty('border-top', '4px solid green');
-                        //console.log("Progress " + 'l' + item.node);
-                        var link = document.getElementById('l' + item.node);
-                        link.style.setProperty('border-top', '2px solid green');
-
-                    })
                 }
 
+                var interval;
+
+                function poll() {
+                    interval = $interval(function () {
+                       console.log('updated workflow...................');
+                    }, $rootScope.config.jobChainsWorkflow.interval * 1000)
+                }
+
+                vm.$on('$destroy', function () {
+                    if (interval)
+                    $interval.cancel(interval);
+
+                });
 
             }]
         }
     }
+
+
 })();

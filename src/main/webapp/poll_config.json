@@ -1,13 +1,45 @@
 {
-  "dashboard":{
+  "agentClusterStatus":{
     "polling":"true",
     "interval":"600"
+  },
+  "jobSchedulerMasterClusterStatus":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "orderOverviewWidget":{
+    "polling":"true",
+    "interval":"30"
+  },
+  "dailyPlanWidget":{
+    "polling":"true",
+    "interval":"60"
   },
   "dailyPlan":{
     "polling":"true",
     "interval":"600"
   },
+  "agentCluster":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "locks":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "processClass":{
+    "polling":"true",
+    "interval":"600"
+  },
+  "schedules":{
+    "polling":"true",
+    "interval":"600"
+  },
   "jobChains":{
+    "polling":"true",
+    "interval":"600"
+  },
+ "jobChainsWorkflow":{
     "polling":"true",
     "interval":"600"
   },
@@ -19,13 +51,8 @@
     "polling":"true",
     "interval":"600"
   },
-  "resources":{
-    "polling":"true",
-    "interval":"600"
-  },
   "history":{
-    "polling":"true",
+    "polling":"false",
     "interval":"600"
   }
-
 }

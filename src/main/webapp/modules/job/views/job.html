@@ -335,7 +335,7 @@
             </div>
          </div>
          <div class="hide " ng-class="{'show': isLoading}" >
-        <div class="row" ng-show="showTaskPanel" >
+        <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
             <div class="col-md-12 hide" ng-class="{'show':isLoading1}">
                 <div class="box white" id="scrollToTask">
                     <div class="box-header">

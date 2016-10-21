@@ -102,6 +102,15 @@
                     skip: true
                 }
             })
+            .state('error', {
+                url: '/error',
+                templateUrl: 'modules/core/views/error.html',
+                controller:'HeaderCtrl',
+                title: 'Error',
+                ncyBreadcrumb: {
+                    skip: true
+                }
+            })
             .state('app', {
                 abstract: true,
                 url: '',

@@ -518,8 +518,7 @@
         }
 
         vm.getJobChainOrders = getOrders;
-/*        function getOrders(filter) {
-
+/*     function getOrders(filter) {
             return OrderService.get(filter);
         }*/
 
@@ -535,7 +534,6 @@
                         return -1;
                     }
                     return 1;
-
                 });
 
                 vm.orders = res.orders;
@@ -645,7 +643,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/start-order-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 startAt(vm.order, vm.paramObject);
@@ -691,7 +690,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-order-state-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 setOrderState(order);
@@ -762,7 +762,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/resume-order-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 resumeOrderWithParam(order, vm.paramObject);
@@ -839,7 +840,8 @@
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
-                size: 'lg'
+                size: 'lg',
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');
@@ -979,7 +981,8 @@
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
-                size: 'lg'
+                size: 'lg',
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');
@@ -1040,7 +1043,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-order-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 addOrder(vm.order, vm.paramObject);
@@ -1470,16 +1474,15 @@
                         if (index == 0) {
                             res.startedAt = new Date();
                         }
-                        console.log("startedAt " + res.startedAt + " value " + value.planned);
+
                         if (value.regex && res.orderId) {
                             if (!res.orderId.match(value.regex)) {
-                                console.log("regex " + value.regex);
                                 flag = false;
                             }
                         }
 
                         if (flag && value.paths && value.paths.length > 0) {
-                            console.log("Path " + value.paths);
+
                             for (var i = 0; i < value.paths.length; i++) {
                                 var x = res.path.substring(0, res.path.lastIndexOf('/'));
                                 flag = false;
@@ -1496,7 +1499,7 @@
                         }
 
                         if (flag && value.processingState && res.processingState) {
-                            console.log("processingState " + value.processingState);
+
                             if (value.processingState.indexOf(res.processingState._text) === -1) {
                                 flag = false;
                             }
@@ -1509,7 +1512,7 @@
                         var fromDate;
                         var toDate;
                         if (flag && value.planned && res.startedAt) {
-                            if (/^\s*(now\+)(\d+)\s*$/i.test(value.planned)) {
+                            if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value.planned)) {
                                 fromDate = new Date();
                                 toDate = new Date();
                                 var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
@@ -1522,8 +1525,11 @@
                                 toDate = new Date();
                                 toDate.setHours(23);
                                 toDate.setMinutes(59);
+                            } else if (/^\s*(now)\s*$/i.test(value.planned)) {
+                                fromDate = new Date();
+                                toDate = new Date();
                             } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
-                                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
+                                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned);
                                 fromDate = new Date();
                                 if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
                                     fromDate.setHours(parseInt(time[1]) + 12);
@@ -1626,7 +1632,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/order-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 console.log("here " + JSON.stringify(vm.orderFilter));
@@ -1656,19 +1663,20 @@
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.orderFilter.planned|| /^\s*$/i.test(vm.orderFilter.planned) || /^\s*(now\+)(\d+)\s*$/i.test(vm.orderFilter.planned) || /^\s*(Today)\s*$/i.test(vm.orderFilter.planned)
+            if (!vm.orderFilter.planned|| /^\s*$/i.test(vm.orderFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.orderFilter.planned) || /^\s*(now)\s*$/i.test(vm.orderFilter.planned) || /^\s*(Today)\s*$/i.test(vm.orderFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.orderFilter.planned)) {
             } else {
                 vm.validPlanned = false;
             }
-        }
+        };
 
         vm.editFilters = function () {
-            vm.filters = vm.savedOrderFilter.list;
+            vm.filters = vm.savedOrderFilter;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -1686,7 +1694,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-order-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.savedOrderFilter.list, function (value, index) {
@@ -1722,6 +1731,8 @@
             });
             if (vm.savedOrderFilter.list.length == 0) {
                 vm.savedOrderFilter = {};
+            }else if (vm.savedOrderFilter.selected == vm.orderFilter.name) {
+                vm.savedOrderFilter.selected = undefined;
             }
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
@@ -1730,7 +1741,7 @@
 
         vm.favorite = function(filter) {
             vm.savedOrderFilter.favorite = filter;
-            //vm.savedOrderFilter.selected = filter;
+            vm.savedOrderFilter.selected = filter;
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
             vm.load();
@@ -2287,7 +2298,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/order-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 vm.savedOrderFilter.list.push(vm.orderFilter);
@@ -2304,11 +2316,12 @@
         };
 
         vm.editFilters = function () {
-            vm.filters = vm.savedOrderFilter.list;
+            vm.filters = vm.savedOrderFilter;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -2326,7 +2339,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-order-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.savedOrderFilter.list, function (value, index) {
@@ -2363,6 +2377,8 @@
             });
             if (vm.savedOrderFilter.list.length == 0) {
                 vm.savedOrderFilter = {};
+            }else if (vm.savedOrderFilter.selected == vm.orderFilter.name) {
+                vm.savedOrderFilter.selected = undefined;
             }
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
@@ -2371,7 +2387,7 @@
 
         vm.favorite = function(filter) {
             vm.savedOrderFilter.favorite = filter;
-            //vm.savedOrderFilter.selected = filter;
+            vm.savedOrderFilter.selected = filter;
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
             vm.load();
@@ -2653,7 +2669,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/start-order-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 startAt(vm.order, vm.paramObject);
@@ -2698,7 +2715,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-order-state-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 setOrderState(order);
@@ -2840,7 +2858,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/resume-order-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 resumeOrderWithParam(order, vm.paramObject);
@@ -2919,7 +2938,8 @@
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
-                size: 'lg'
+                size: 'lg',
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 console.log('>>>>');
@@ -3102,14 +3122,13 @@
                             var fromDate;
                             var toDate;
                             if (flag && value.planned && res.startTime && res.endTime) {
-                                if (/^\s*(now\+)(\d+)\s*$/i.test(value.planned)) {
+                                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value.planned)) {
                                     console.log("Matched now " + /^\s*(now\+)(\d+)\s*$/i.exec(value.planned));
                                     fromDate = new Date();
                                     toDate = new Date();
                                     var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
                                     toDate.setSeconds(toDate.getSeconds() + seconds);
                                 } else if (/^\s*(Today)\s*$/i.test(value.planned)) {
-                                    console.log("Matched today " + /^\s*(Today)\s*$/i.exec(value.planned));
                                     fromDate = new Date();
 
                                     fromDate.setHours(0);
@@ -3117,7 +3136,11 @@
                                     toDate = new Date();
                                     toDate.setHours(23);
                                     toDate.setMinutes(59);
-                                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
+                                } else if (/^\s*(now)\s*$/i.test(value.planned)) {
+                                    fromDate = new Date();
+                                    toDate = new Date();
+                                }
+                                else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
                                     console.log("Matched time range " + /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned));
                                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
                                     fromDate = new Date();
@@ -3254,21 +3277,22 @@
                              var fromDate;
                             var toDate;
                             if (flag && value.planned && res.startTime && res.endTime) {
-                                if (/^\s*(now\+)(\d+)\s*$/i.test(value.planned)) {
+                                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value.planned)) {
                                     console.log("Matched now " + /^\s*(now\+)(\d+)\s*$/i.exec(value.planned));
                                     fromDate = new Date();
                                     toDate = new Date();
                                     var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(value.planned)[2]);
                                     toDate.setSeconds(toDate.getSeconds() + seconds);
                                 } else if (/^\s*(Today)\s*$/i.test(value.planned)) {
-                                    console.log("Matched today " + /^\s*(Today)\s*$/i.exec(value.planned));
                                     fromDate = new Date();
-
                                     fromDate.setHours(0);
                                     fromDate.setMinutes(0);
                                     toDate = new Date();
                                     toDate.setHours(23);
                                     toDate.setMinutes(59);
+                                }  else if (/^\s*(now)\s*$/i.test(value.planned)) {
+                                    fromDate = new Date();
+                                    toDate = new Date();
                                 } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(value.planned)) {
                                     console.log("Matched time range " + /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned));
                                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(value.planned)
@@ -3515,10 +3539,10 @@
         vm.reset = function () {
             vm.object = {};
         };
- vm.validPlanned = true;
+       vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.historyFilter.planned|| /^\s*$/i.test(vm.historyFilter.planned) || /^\s*(now\+)(\d+)\s*$/i.test(vm.historyFilter.planned) || /^\s*(Today)\s*$/i.test(vm.historyFilter.planned)
+            if (!vm.historyFilter.planned|| /^\s*$/i.test(vm.historyFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.historyFilter.planned) || /^\s*(now)\s*$/i.test(vm.historyFilter.planned) || /^\s*(Today)\s*$/i.test(vm.historyFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.historyFilter.planned)) {
             } else {
                 vm.validPlanned = false;
@@ -3534,7 +3558,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/history-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
                 if (vm.filter.type == 'jobChain') {
@@ -3567,14 +3592,15 @@
 
         vm.editFilters = function () {
             if (vm.filter.type == 'jobChain') {
-                vm.filters = vm.savedHistoryFilter.list;
+                vm.filters = vm.savedHistoryFilter;
             } else {
-                vm.filters = vm.savedJobHistoryFilter.list;
+                vm.filters = vm.savedJobHistoryFilter;
             }
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -3593,7 +3619,8 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-history-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm
+                scope: vm,
+                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -3654,6 +3681,8 @@
                 });
                 if (vm.savedHistoryFilter.list.length == 0) {
                     vm.savedHistoryFilter = {};
+                }else if (vm.savedHistoryFilter.selected == vm.historyFilter.name) {
+                    vm.savedHistoryFilter.selected = undefined;
                 }
                 vm.historyFilterObj.order = vm.savedHistoryFilter;
                 filterData();
@@ -3670,6 +3699,8 @@
                 });
                 if (vm.savedJobHistoryFilter.list.length == 0) {
                     vm.savedJobHistoryFilter = {};
+                }else if (vm.savedJobHistoryFilter.selected == vm.historyFilter.name) {
+                    vm.savedJobHistoryFilter.selected = undefined;
                 }
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
                 filterJobData();
@@ -3681,12 +3712,12 @@
          vm.favorite = function(filter) {
              if (vm.filter.type == 'jobChain') {
                  vm.savedHistoryFilter.favorite = filter;
-                 //vm.savedHistoryFilter.selected = filter;
+                 vm.savedHistoryFilter.selected = filter;
                  vm.historyFilterObj.order = vm.savedHistoryFilter;
                  filterData();
              } else {
                  vm.savedJobHistoryFilter.favorite = filter;
-                 //vm.savedJobHistoryFilter.selected = filter;
+                 vm.savedJobHistoryFilter.selected = filter;
                  vm.historyFilterObj.job = vm.savedJobHistoryFilter;
                  filterJobData();
              }
@@ -3865,7 +3896,8 @@
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-ignorelist-dialog.html',
                     controller: 'DialogCtrl',
-                    scope: vm
+                    scope: vm,
+                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
 

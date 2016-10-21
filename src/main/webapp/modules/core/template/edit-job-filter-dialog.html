@@ -37,29 +37,29 @@
                 <label class="col-sm-3 " translate>label.jobState</label>
                 <div class="col-md-9">
                     <div>
-                        <label class="md-check w-sm">
+                        <label class="md-check w">
                             <input type="radio" name="radio" ng-model="jobFilter.radio" value="current">
                             <i class="primary"></i> <span translate>label.current</span>
                         </label>
-                        <label class="md-check w-sm">
+                        <label class="md-check w">
                             <input type="radio" name="radio" ng-model="jobFilter.radio" value="planned">
                             <i class="primary"></i> <span translate>label.planned</span>
                         </label>
                     </div>
                     <div ng-show="jobFilter.radio == 'current'">
-                        <label class="md-check m-t w-sm">
+                        <label class="md-check m-t w">
                             <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'pending'">
                             <i class="primary"></i> <span translate>label.pending</span>
                         </label>
-                        <label class="md-check w-sm">
+                        <label class="md-check w">
                             <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'running'" >
                             <i class="primary"></i> <span translate>label.running</span>
                         </label>
-                        <label class="md-check w-sm">
+                        <label class="md-check">
                             <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'stopped'" >
                             <i class="primary"></i> <span translate>label.stopped</span>
                         </label>
-                        <label class="md-check m-t w-sm">
+                        <label class="md-check m-t w">
                             <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'queued'" >
                             <i class="primary"></i><span translate>label.waitingForResource</span>
                         </label>
