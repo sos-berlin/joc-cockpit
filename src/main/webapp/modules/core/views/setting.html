@@ -1,0 +1,102 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                    <button class="btn btn-sm btn-grey " ngclipboard data-clipboard-action="copy" data-clipboard-target="#log" ng-disabled="!clientLogFilter.state" translate>button.copyToClipboard</button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="redirectToNewTab()" ng-disabled="!clientLogFilter.state" translate>button.openInNewTab</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="row m-t-sm">
+            <div class="col-sm-12">
+                <h5 translate>label.modifyLogViewingCriteria</h5>
+            </div>
+            <div class="col-sm-12">
+                <div class="box p-a">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                        <label class="col-lg-2 col-sm-3 form-control-label" translate>label.keywords</label>
+
+                        <div class="col-sm-6">
+                            <input type="text" required class="form-control" placeholder="{{'placeholder.enterKeywords' | translate}}"
+                                   ng-model="clientLogFilter.keyword">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-lg-2 col-sm-3 " translate>label.statuses</label>
+                        <div class=" col-sm-9" >
+                            <div>
+                                 <label class="md-check w-sm">
+                                    <input type="checkbox" data-checklist-model="clientLogFilter.status"
+                                           data-checklist-value="'warn'">
+                                    <i class="primary"></i><span translate>label.warn</span>
+                                </label>
+                                <label class="md-check w-sm">
+                                    <input type="checkbox" data-checklist-model="clientLogFilter.status"
+                                           data-checklist-value="'error'">
+                                    <i class="primary"></i><span translate>label.error</span>
+                                </label>
+                                <label class="md-check w-sm">
+                                    <input type="checkbox" data-checklist-model="clientLogFilter.status"
+                                           data-checklist-value="'info'">
+                                    <i class="primary"></i><span translate>label.info</span>
+                                </label>
+                                <label class="md-check w-sm">
+                                    <input type="checkbox" data-checklist-model="clientLogFilter.status"
+                                           data-checklist-value="'debug'">
+                                    <i class="primary"></i><span translate>label.debug</span>
+                                </label>
+                                <label class="md-check w-sm">
+                                    <input type="checkbox" data-checklist-model="clientLogFilter.status"
+                                           data-checklist-value="'debug2'">
+                                    <i class="primary"></i><span translate>label.debug2</span>
+                                </label>
+                                <label class="md-check w-sm">
+                                    <input type="checkbox" data-checklist-model="clientLogFilter.status"
+                                           data-checklist-value="'debug3'">
+                                    <i class="primary"></i><span translate>label.debug3</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-lg-2 col-sm-3 " translate>label.state</label>
+                        <div class=" col-sm-9" >
+                            <div>
+                                <label class="md-check w-sm">
+                                    <input type="checkbox" ng-model="clientLogFilter.state">
+                                    <i class="primary"></i><span ng-if="clientLogFilter.state" translate>label.on</span><span ng-if="!clientLogFilter.state" translate>label.off</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <h5 translate>label.logs</h5>
+            </div>
+            <div class="col-md-12">
+                <div class="box p-a" id="log">
+                    <span ng-repeat="log in clientLogs | filter:logFilter track by $index">
+                        <span style="font-family:'Courier New';color: #009933;white-space:nowrap;" ng-class="{'log_error':log.level=='error'}" >{{log.logTime | date:'yyyy-MM-dd hh:mm:ss:sss'}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
+                        <span>
+                            <pre ng-if="log.level=='error'" style="background: white">{{log.message | json}}</pre>
+                            <pre ng-if="log.level!='error'" style="display:inline;background: white">{{log.message}}</pre>
+                        </span>
+                        <br>
+                    </span>
+                    <div ng-if="clientLogs.length==0" class="text-center m-t h6 text-uppercase" translate>message.nologsToViewEnableIt</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

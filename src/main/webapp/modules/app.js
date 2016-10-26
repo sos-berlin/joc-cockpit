@@ -27,9 +27,21 @@
             'gantt',
             'gantt.tooltips',
             'gantt.table',
-            'ngFileSaver'
+            'ngFileSaver',
+            'ngIdle',
+            'ngclipboard'
         ])
-        .config(['calendarConfig' ,function (calendarConfig) {
+        .run(['$resource', '$rootScope', function ($resource, $rootScope) {
+            $rootScope.clientLogs=[];
+            $resource("config.json").get(function (data) {
+                $rootScope.configData = data;
+            });
+            $resource('poll_config.json').get(function (res) {
+                $rootScope.config = res;
+            });
+
+        }])
+        .config(['calendarConfig', function (calendarConfig) {
             calendarConfig.dateFormatter = 'moment';
         }])
         .config(['toastyConfigProvider', function (toastyConfigProvider) {
@@ -38,5 +50,23 @@
                 position: 'top-center',
                 limit: 1
             });
+        }])
+        .config(["IdleProvider", "KeepaliveProvider",function (IdleProvider, KeepaliveProvider) {
+            // configure Idle settings
+            IdleProvider.timeout(60); // in seconds
+            KeepaliveProvider.interval(5); // in seconds
+
+        }])
+        .config(['$provide', function ($provide) {
+            $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
+                return function (exception, cause) {
+                    TraceKit.report(exception);
+                    console.log(exception);
+                    $delegate(exception, cause);
+                };
+            }]);
         }]);
+
+
+
 })();

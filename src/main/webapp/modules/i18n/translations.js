@@ -1,14 +1,10 @@
 /**
  * Created by sourabhagrawal on 07/09/16.
  */
-
 (function () {
     'use strict';
     angular.module('app')
-
-
         .run(["$rootScope", "gettextCatalog", "$window", "$resource", function ($rootScope, gettextCatalog, $window, $resource) {
-
             $rootScope.locales = {
                 'de': {
                     lang: 'de',
@@ -20,7 +16,6 @@
                     country: 'US',
                     name: gettextCatalog.getString('English')
                 },
-
                 'fr': {
                     lang: 'fr',
                     country: 'FR',
@@ -31,13 +26,9 @@
                     country: 'JA',
                     name: gettextCatalog.getString('Japanese')
                 }
-
             };
-
             var lang = $window.localStorage.$SOS$LANG || navigator.language || navigator.userLanguage;
-
             $rootScope.locale = $rootScope.locales[lang];
-
             if ($rootScope.locale === undefined) {
                 $rootScope.locale = $rootScope.locales[lang];
                 if ($rootScope.locale === undefined) {
@@ -50,14 +41,9 @@
             if (!$window.localStorage.$SOS$DATEFORMAT) {
                 $window.localStorage.$SOS$DATEFORMAT = 'DD.MM.YYYY HH:mm:ss';
             }
-
-
             $resource("modules/i18n/language_" + $rootScope.locale.lang + ".json").get(function (data) {
-               gettextCatalog.setStrings($rootScope.locale.lang, data);
+                gettextCatalog.setStrings($rootScope.locale.lang, data);
                 gettextCatalog.setCurrentLanguage($rootScope.locale.lang);
             });
-
         }]);
-
-
 })();

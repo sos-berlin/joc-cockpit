@@ -34,12 +34,9 @@
                 var tWidth = 0;
 
                 function refresh(data) {
-                    console.log("Here");
                     $("#clusterStatusContainer").remove();
                     template = mainTemplate;
                     if (data) {
-                        console.log("Here data ");
-
                         init();
                         prepareData();
                     } else {
@@ -68,23 +65,17 @@
                     }
 
                     if (!scope.clusterStatusData || !scope.clusterStatusData.members || !scope.clusterStatusData.members.masters) {
-                        console.log("Not found ");
                         return;
                     }
 
                     scope.startToCheck();
                     angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-                        //console.log(index);
-                        // console.log("Master "+master.supervisor.jobschedulerId);
-
 
                         if (!master.supervisor && index == scope.clusterStatusData.members.masters.length - 1) {
-                            //console.log("No supervisor and last index");
                             removeSupervised();
                             return;
                         }
                         if (!master.supervisor) {
-                            //console.log("No supervisor");
                             return;
                         }
 
@@ -109,14 +100,12 @@
                         if (index == scope.clusterStatusData.members.masters.length - 1) {
                             var cSupervisor = {};
                             //scope.clusterStatusData.supervisors[1]=angular.copy(scope.clusterStatusData.supervisors[0],cSupervisor);
-                            // console.log("Data11 " + JSON.stringify(scope.clusterStatusData));
                             removeSupervised();
                         }
                     })
 
 
                     function removeSupervised() {
-                        //console.log(scope.clusterStatusData.supervisors.length <= 0);
                         if (scope.clusterStatusData.supervisors.length <= 0) {
                             getTemporaryData();
 
@@ -141,7 +130,6 @@
                                     refreshSupervisorState(supervisor);
                                 }
                                 if (index == scope.clusterStatusData.supervisors.length - 1) {
-                                    //console.log("Now " + JSON.stringify(scope.clusterStatusData));
                                     getTemporaryData(refresh);
 
 
@@ -156,8 +144,9 @@
 
 
                     function getTemporaryData(refresh) {
-
+                           //console.log("In get temporary data");
                         scope.onRefresh().then(function (res) {
+
                             if (scope.clusterStatusData.supervisors.length <= 0) {
                                 getTemporaryData2(res, refresh);
                             }
@@ -184,19 +173,20 @@
                             })
 
                         }, function (err) {
-
+                             getTemporaryData2(undefined, refresh);
+                                   console.log("Error in getting refresh");
                         })
 
                     }
 
                     function getTemporaryData2(res, refresh) {
-                        //console.log("temporary data2");
-                        if (scope.clusterStatusData.members.masters.length == 0 && !refresh) {
+
+                        if ((scope.clusterStatusData.members.masters.length == 0 && !refresh) || !res) {
                             drawFlow();
                         }
 
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-                            //console.log("For master " + master.host);
+
                             angular.forEach(res.masters, function (nMaster, rIndex) {
                                 if (nMaster.host == master.host && nMaster.port == master.port) {
                                     master.state = nMaster.state;
@@ -214,7 +204,7 @@
 
                     scope.refreshMasterState = refreshMasterState;
                     function refreshMasterState(master) {
-                        //console.log("Refreshing master " + master.state.text);
+
 
                         var span = document.getElementById('sp' + master.host + master.port);
                         if (master.state && span) {
@@ -265,7 +255,7 @@
                         if (supervisor.data.jobscheduler.state) {
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
                             var anchors = document.querySelectorAll("a[id^='__']");
-                            //console.log("Supervisor state " + supervisor.data.jobscheduler.state._text);
+
                             angular.forEach(anchors, function (anchor, index) {
                                 if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
                                     var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
@@ -293,7 +283,7 @@
                                             connectLink(supervisor.host, supervisor.port);
 
                                         } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
-                                            //console.log("Unreachable ....");
+
                                             disconnectLink(supervisor.host, supervisor.port);
                                         }
 
@@ -309,7 +299,7 @@
                         var links = document.querySelectorAll("div[id*='&&" + host + port + "']");
 
                         angular.forEach(links, function (link, index) {
-                            //console.log("Link " + link.id);
+
                             link.style.setProperty('border', '1px solid #eb8814');
                         })
                     }
@@ -319,7 +309,7 @@
                         var links = document.querySelectorAll("div[id*='&&" + host + port + "']");
 
                         angular.forEach(links, function (link, index) {
-                            //console.log("Link " + link.id);
+
                             link.style.setProperty('border', '1px solid #D9D9D9');
                         })
                     }
@@ -344,7 +334,7 @@
 
                             var c = "cluster-rect";
                             if (new Date().getTime() - new Date(supervisor.data.jobscheduler.surveyDate).getTime() < 2000) {
-                                //console.log("Difference is greater than 2 second");
+
                                 c = c + " yellow-border";
                             }
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
@@ -354,10 +344,10 @@
                             var sClassRunning = 'text-success';
 
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
-                                console.log("Class supervisor " + sClassRunning);
+
                                 sClassRunning = 'text-danger';
                             } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
-                                //console.log("Class supervisor " + sClassRunning);
+
                                 sClassRunning = 'text-black-lt';
 
                             }
@@ -365,10 +355,10 @@
                             var pauseClass = 'show';
                             var continueClass = 'hide';
                             var disableClass = '';
-                            if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'paused') {
+                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'paused') {
                                 pauseClass = 'hide';
                                 continueClass = 'show';
-                            } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
+                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
                                 disableClass = 'disable-link';
                             }
 
@@ -413,7 +403,7 @@
 
 
                                 if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
-                                    //console.log("Difference is greater than 2 second");
+
                                     c = c + " yellow-border";
                                 }
                                 var classRunning = 'text-success';
@@ -421,16 +411,16 @@
                                 var disableClass = '';
 
 
-                                //console.log("Master state01 " + master.state.text);
+
                                 if (master.state && master.state.text == 'stopped') {
                                     classRunning = 'text-danger';
-                                    //console.log("Class 01 " + classRunning);
+
                                 } else if (master.state && master.state.text != 'running') {
                                     classRunning = 'text-black-lt';
-                                    //console.log("Class 02 " + classRunning);
+
                                 }
 
-                                if (master.state.text == 'stopped') {
+                                if (master.state && master.state.text == 'stopped') {
                                     disableClass = 'disable-link';
                                 }
 
@@ -439,7 +429,7 @@
                                     '<br>Started at : ' + $filter('date')(master.startedAt, 'dd-MMM-yy HH:mm:ss') + '<br> Survey Date: ' + $filter('date')(master.surveyDate, 'dd-MMM-yy HH:mm:ss'));
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
-                                if (master.state.text == 'paused') {
+                                if (master.state && master.state.text == 'paused') {
                                     pauseClass = 'hide';
                                     continueClass = 'show';
                                 }
@@ -521,7 +511,7 @@
                                 c = "cluster-rect";
                             }
                             if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
-                                //console.log("Difference is greater than 2 second");
+
                                 c = c + " yellow-border";
                             }
                             var name = '';
@@ -605,7 +595,7 @@
                         top = top - rHeight / 2;
 
                         if (new Date().getTime() - new Date(scope.clusterStatusData.database.surveyDate).getTime() < 2000) {
-                            //console.log("Difference is greater than 2 second");
+
                             c = c + " yellow-border";
                         }
 
@@ -676,7 +666,7 @@
                     var anchors = document.querySelectorAll("a[id^='__']");
                     angular.forEach(anchors, function (anchor, index) {
                         anchor.addEventListener('click', function () {
-                            //console.log("It's here 01" + anchor.id);
+
                             if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
                                 var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
                                 vm.onOperation({
@@ -770,7 +760,7 @@
                             }
 
                             if (dLTop < dTop) {
-                                //console.log("DLTop is lesser ");
+
 
                                 databaseRect.style.setProperty('height', databaseRect.offsetHeight + 10 + 'px');
                                 databaseRect.style.setProperty('top', databaseRect.offsetTop - 10 + 'px');
@@ -795,10 +785,10 @@
                             clusterStatusContainer.appendChild(node);
 
                             var lNoConnection = '#D9D9D9';
-                            //console.log("Line not connected 01" + supervisor.data.jobscheduler.state.text);
+
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
                                 lNoConnection = '#eb8814';
-                                //console.log("Line not connected " + lNoConnection);
+
 
                             }
                             var node = document.createElement('div');
@@ -841,11 +831,11 @@
                     })
 
                     function drawForRemainings() {
-                        //console.log("Drawing for remainings 01");
+
                         if (!vm.clusterStatusData.members) {
                             return;
                         }
-                        //console.log("Drawing for remainings 02");
+
                         angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                             var masterRect = document.getElementById(master.host + master.port);
                             if (masterRect) {
@@ -900,7 +890,7 @@
                     }
 
                     vm.action = function (item, action, object) {
-                        //console.log("Type " + item + " action " + action + " object " + JSON.stringify(object));
+
                         vm.onOperation({item: item, action: action, object: object});
 
                     }
@@ -920,7 +910,7 @@
                 var interval;
 
                 function poll() {
-                    console.log("In dashboard 02");
+
                     interval = $interval(function () {
                         if (vm.getSupervisor) {
                             vm.getSupervisor(true);

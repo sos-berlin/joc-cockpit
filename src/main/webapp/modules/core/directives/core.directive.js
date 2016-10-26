@@ -48,7 +48,7 @@
             link: function (scope, element) {
                 // by default hide the spinner bar
                 element.addClass('hide'); // hide spinner bar by default
-
+                var startTime,endTime;
                 // display the spinner bar whenever the route changes(the content part started loading)
                 $rootScope.$on('$stateChangeStart', function (event, toState) {
                     element.removeClass('hide'); // show spinner bar
@@ -63,7 +63,15 @@
                     }else if(toState.url === '/allOrders') {
                         SOSAuth.jobChain = undefined;
                     }
-
+                    if($rootScope.clientLogFilter.state) {
+                        startTime = new Date();
+                        var info = {
+                            message: 'START LOADING ' + toState.url,
+                            logTime: startTime,
+                            level: 'debug2'
+                        };
+                        $rootScope.clientLogs.push(info);
+                    }
                 });
 
                 // hide the spinner bar on rounte change success(after the content loaded)
@@ -74,6 +82,15 @@
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
+                    if($rootScope.clientLogFilter.state) {
+                        endTime = new Date();
+                        var info = {
+                            message: 'ELAPSED TIME FOR UPDATE ' + toState.url + ' ' + ((endTime.getTime() - startTime.getTime()) / 1000) + 's',
+                            logTime: endTime,
+                            level: 'debug2'
+                        };
+                        $rootScope.clientLogs.push(info);
+                    }
                 });
 
                 // handle errors
@@ -82,13 +99,33 @@
                     element.addClass('hide'); // hide spinner bar
                 });
 
+                $rootScope.$on('$viewContentLoading', function () {
+                    var date = new Date();
+                    if(endTime && endTime.getTime()<date.getTime()) {
+                        var info = {
+                            message: 'ELAPSED TIME FOR UPDATE CONTENT ' +  ((date.getTime() - endTime.getTime()) / 1000) + 's',
+                            logTime: date,
+                            level: 'debug2'
+                        };
+                        $rootScope.clientLogs.push(info);
+                    }
+                });
+
                 // handle errors
                 $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
                     element.addClass('hide'); // hide spinner bar
                      if (error === "login") {
                         $state.go("login");
+                     }else {
+                         if($rootScope.clientLogFilter.state) {
+                             var error = {
+                                 message: 'ERROR ON LOADING : ' + toState.url,
+                                 logTime: new Date(),
+                                 level: 'error'
+                             };
+                             $rootScope.clientLogs.push(error);
+                         }
                      }
-                    console.log(error)
                 });
             }
         };

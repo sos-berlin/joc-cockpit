@@ -20,7 +20,7 @@
                 Lock.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -30,7 +30,7 @@
                 Lock.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -40,7 +40,7 @@
                 ProcessClass.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -50,7 +50,7 @@
                 ProcessClass.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -60,7 +60,7 @@
                 Configuration.save({lock: path, jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -70,7 +70,7 @@
                 Configuration.save({processClass: path,jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }
@@ -87,7 +87,7 @@
                 Schedule.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -97,7 +97,7 @@
                 Schedule.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -107,7 +107,7 @@
                 Schedule.save({schedule:schedule,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -117,7 +117,7 @@
                 Schedule.save({jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -127,7 +127,7 @@
                 Schedule.save({schedule : path,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -137,7 +137,7 @@
                 Schedule.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -147,7 +147,7 @@
                 Schedule.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }
@@ -165,17 +165,17 @@
                 Schedule.save(function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
             switchSchedulerId: function (jobschedulerId) {
                 var deferred = $q.defer();
                 var Schedule = $resource('jobscheduler/switch');
-                Schedule.save(jobschedulerId,function (res) {
+                Schedule.save({jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -185,7 +185,7 @@
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -195,7 +195,7 @@
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -205,7 +205,7 @@
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -215,7 +215,7 @@
                 JobChain.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -225,7 +225,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -240,10 +240,10 @@
                         resP.jobscheduler.os.distribution = 'Linux release 7.2.1511';
                         deferred.resolve(resP);
                     }, function (err) {
-                        deferred.resolve(err);
+                        deferred.resolve(resP);
                     });
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -255,7 +255,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -266,7 +266,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -278,7 +278,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -288,7 +288,7 @@
                 JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -298,7 +298,7 @@
                 JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -309,7 +309,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -319,7 +319,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -330,7 +330,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -340,7 +340,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -350,7 +350,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -360,7 +360,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -370,7 +370,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -380,7 +380,7 @@
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -390,7 +390,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -400,7 +400,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -410,7 +410,7 @@
                 JobScheduler.save(jobschedulerId,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -438,7 +438,7 @@
                 Plan.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }

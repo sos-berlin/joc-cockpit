@@ -111,6 +111,15 @@
                     skip: true
                 }
             })
+            .state('client-logs', {
+                url: '/client-logs',
+                templateUrl: 'modules/core/views/client-logs.html',
+                controller:'ClientLogCtrl',
+                title: 'JobScheduler-Logging',
+                ncyBreadcrumb: {
+                    skip: true
+                }
+            })
             .state('app', {
                 abstract: true,
                 url: '',
@@ -125,6 +134,13 @@
                 controller: 'DashboardCtrl',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.dashboard\' | translate}}'
+                }
+            })
+            .state('app.setting', {
+                url: '/setting',
+                templateUrl: 'modules/core/views/setting.html',
+                ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.setting\' | translate}}'
                 }
             })
             .state('app.dailyPlan', {
@@ -269,14 +285,6 @@
                 controller: 'HistoryCtrl',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.history\' | translate}}'
-                }
-            })
-            .state('configuration', {
-                url: '/showConfiguration',
-                templateUrl: 'modules/core/views/show-configuration.html',
-                controller: 'ConfigurationCtrl',
-                ncyBreadcrumb: {
-                    skip: true
                 }
             })
 

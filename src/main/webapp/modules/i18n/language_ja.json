@@ -583,8 +583,6 @@
    "message.validToError": "Valid to is required ",
    "message.validDate": "Valid from must be older than the valid to",
    "message.noPlanFound": "no plans found",
-   "message.noJobHistoryFound": "no job history found",
-   "message.noOrderHistoryFound": "no order history found",
    "message.nonNumericValue": "Non-numeric value",
    "message.filterDeleteSuccessfully": " view deleted successfully",
    "message.noProcessClassesFound": "no process classes found",
@@ -621,8 +619,28 @@
    "tooltip.useDefault": "Use as default filter",
    "tab.schedule": "Schedule",
    "tab.weekDays": "WeekDays",
-   "tab.runtime": "Run Time"
+   "tab.runtime": "Run Time",
+   "button.setting": "Setting",
+   "button.openInNewTab": "Open in new tab",
+   "button.copyToClipboard": "Copy to clipboard",
+   "breadcrumb.setting": "Log Settings",
+   "label.statuses": "Statuses",
+   "label.keywords": "Keywords",
+   "label.on": "On",
+   "label.off": "Off",
+   "label.warn": "Warn",
+   "label.error": "Error",
+   "label.info": "Info",
+   "label.debug": "Debug",
+   "label.debug2": "Debug2",
+   "label.debug3": "Debug3",
+   "label.agentClusterName": "AgentCluster Name",
+   "label.modifyLogViewingCriteria": "Modify Log Viewing Criteria",
+   "message.noAgentClusterFound": "no agentCluster found",
+   "message.nologsToViewEnableIt": "No logs to view..!! Enable logging",
+   "placeholder.enterKeywords": "Enter keywords to view only their scrolling log"
 }
+
 
 
 

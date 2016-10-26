@@ -11,18 +11,18 @@
     CoreService.$inject = ['$window'];
     function CoreService($window) {
 
-      //  if ($window.localStorage.$SOS$VIEW) {
-      //      var _view = $window.localStorage.$SOS$VIEW;
-      //  } else {
+        if ($window.sessionStorage.$SOS$VIEW) {
+            var _view = $window.sessionStorage.$SOS$VIEW;
+        } else {
             var _view = 'grid';
-            //$window.localStorage.$SOS$VIEW = 'grid';
-      //  }
+            $window.sessionStorage.$SOS$VIEW = 'grid';
+        }
 
-        if ($window.localStorage.$SOS$SIDEVIEW == 'true' || $window.localStorage.$SOS$SIDEVIEW == true) {
-            var _sideView = $window.localStorage.$SOS$SIDEVIEW;
+        if ($window.sessionStorage.$SOS$SIDEVIEW == 'true' || $window.sessionStorage.$SOS$SIDEVIEW == true) {
+            var _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
         } else {
             var _sideView = false;
-            $window.localStorage.$SOS$SIDEVIEW = false;
+            $window.sessionStorage.$SOS$SIDEVIEW = false;
         }
 
 
@@ -34,14 +34,14 @@
                 return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
             },
             setView: function (view) {
-               // $window.localStorage.$SOS$VIEW = view;
+                $window.sessionStorage.$SOS$VIEW = view;
                 _view = view;
             },
             getView: function () {
                 return _view;
             },
             setSideView: function (view) {
-                $window.localStorage.$SOS$SIDEVIEW = view;
+                $window.sessionStorage.$SOS$SIDEVIEW = view;
                 _sideView = view;
             },
             getSideView: function () {
@@ -54,7 +54,7 @@
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
 
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters','ignoreList','dailyPlanFilters'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters', 'ignoreList', 'dailyPlanFilters'];
 
         var propsPrefix = '$SOS$';
 
@@ -119,6 +119,5 @@
             return $window.localStorage[key] || null;
         }
     }
-
 
 })();

@@ -117,6 +117,49 @@
         ];
 
 
+        function prepareDataForTreeWithPermanent(res) {
+            var agentsData = [];
+            angular.forEach(res.agentClusters, function (value, index) {
+
+                var clusterObj = {
+                    "AgentClusterName": value.path + '&' + (value.state._text === "all_agents_are_running" ? "healthy" : value.state._text === "only_some_agents_are_running" ? "unhealthy" : "unreachable"),
+                    "Status": value.state._text === "all_agents_are_running" ? "healthy" : value.state._text === "only_some_agents_are_running" ? "unhealthy" : "unreachable",
+                    "URL": '-',
+                    "TotalAgents": value.numOfAgents.any,
+                    "RunningAgent": value.numOfAgents.running,
+                    "NotReachable": value.numOfAgents.any - value.numOfAgents.running,
+                    "SchedulingType": value._type,
+                    "LastUpdateTime": value.surveyDate,
+                    "MaxProcess": value.maxProcesses,
+                    "RunningTasks": 0,
+                    "children": []
+                };
+
+                angular.forEach(value.agents, function (agent, index1) {
+                    if (value.agents[index1].runningTasks)
+                        clusterObj.RunningTasks = clusterObj.RunningTasks + value.agents[index1].runningTasks;
+
+                    var agentObj = {
+                        "AgentClusterName": agent.host + '&' + (value.agents[index1].state._text === "running" ? "healthy" : "unreachable"),
+                        "Status": value.agents[index1].state._text === "running" ? "healthy" : "unreachable",
+                        "URL": value.agents[index1].url,
+                        "TotalAgents": "-",
+                        "RunningAgent": "-",
+                        "NotReachable": "-",
+                        "SchedulingType": "-",
+                        "LastUpdateTime": value.agents[index1].surveyDate,
+                        "MaxProcess": "-",
+                        "RunningTasks": value.agents[index1].runningTasks
+                    };
+                    clusterObj.children.push(agentObj);
+                });
+
+                agentsData.push(clusterObj);
+
+            });
+            return agentsData;
+        }
+
         function prepareDataForTreegrid(res, result) {
             var agentsData = [];
             angular.forEach(res.agentClusters, function (value, index) {
@@ -181,12 +224,14 @@
             JobSchedulerService.getAgentClusterP({
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (res) {
+                vm.temp =res;
+                vm.tree_data = prepareDataForTreeWithPermanent(res);
+                vm.isLoading = true;
                 JobSchedulerService.getAgentCluster({
                     jobschedulerId: $scope.schedulerIds.selected
                 }).then(function (result) {
                     vm.tree_data = prepareDataForTreegrid(res, result);
-                    vm.temp = angular.copy(vm.tree_data);
-                    vm.isLoading = true;
+
                 });
             }, function () {
                 vm.isLoading = true;
@@ -199,7 +244,6 @@
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (result) {
                  vm.tree_data = prepareDataForTreegrid(vm.temp, result);
-                 angular.merge(vm.tree_data ,  result);
             });
         }
 
@@ -445,9 +489,11 @@
             if (toState.name == 'app.resources.agentClusters') {
                 vm.state = 'agent';
                 vm.filter.state = $stateParams.type || 'all';
-                vm.isLoading = false;
-                if(!vm.temp)
-                vm.loadAgents();
+
+                if(!vm.temp) {
+                    vm.isLoading = false;
+                    vm.loadAgents();
+                }
             } else if (toState.name == 'app.resources.locks') {
                 vm.state = 'lock';
                 if(!vm.locks)
@@ -675,12 +721,21 @@
 
         vm.getAgentCluster = function () {
             JobSchedulerService.getAgentCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
-                vm.agentClusters = result.agentClusters;
-                var agentArray = [];
-                var agentArray1 = [];
-                vm.YAxisDomain = [0, 3];
-                //vm.YAxisDomain[0] = 0;
-                angular.forEach(result.agentClusters, function (value) {
+                prepareAgentClusterData(result);
+            }, function (err) {
+                JobSchedulerService.getAgentClusterP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+                    prepareAgentClusterData(result);
+                });
+            });
+        };
+
+        function prepareAgentClusterData(result) {
+            vm.agentClusters = result.agentClusters;
+            var agentArray = [];
+            var agentArray1 = [];
+            vm.YAxisDomain = [0, 3];
+            //vm.YAxisDomain[0] = 0;
+            angular.forEach(result.agentClusters, function (value) {
 
                     var numTask = 0;
                     angular.forEach(value.agents, function (value1) {
@@ -711,14 +766,13 @@
 
                 vm.agentClusterData = agentArray1;
 
-                vm.agentStatusChart = [
-                    {
-                        "key": "Agents",
-                        "values": agentArray
-                    }
-                ];
-            });
-        };
+            vm.agentStatusChart = [
+                {
+                    "key": "Agents",
+                    "values": agentArray
+                }
+            ];
+        }
 
 
         vm.xFunction = function () {
@@ -789,13 +843,11 @@
 
         vm.getClusterMembers = getClusterMembers;
         function getClusterMembers() {
-
             return JobSchedulerService.getClusterMembers({jobschedulerId: $scope.schedulerIds.selected});
         }
 
 
         determineClusterStatus();
-
         function determineClusterStatus() {
             vm.clusterStatus = 'stopped';
             vm.getClusterMembers().then(function (res) {
@@ -1142,7 +1194,7 @@
             }
         }
 
-        var interval1,interval2,interval3;
+        var interval1, interval2, interval3;
 
         function poll1() {
             interval1 = $interval(function () {
@@ -1150,11 +1202,13 @@
 
             }, $rootScope.config.agentClusterStatus.interval * 1000)
         }
+
         function poll2() {
             interval2 = $interval(function () {
                 vm.loadOrderSnapshot();
             }, $rootScope.config.orderOverviewWidget.interval * 1000)
         }
+
         function poll3() {
             interval3 = $interval(function () {
                 getDailyPlans();

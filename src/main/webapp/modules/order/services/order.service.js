@@ -19,7 +19,7 @@
                 Orders.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -36,7 +36,7 @@
                 Orders.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -49,7 +49,7 @@
                 Orders.save({orders: jobChains,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -61,20 +61,20 @@
                 Orders.save({orders: jobChains,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
             log: function (filter) {
-                console.log("Logs......");
+
                 var deferred = $q.defer();
                 $http.post('order/log',filter,{transformResponse:function(data,header,status){
                      return data;
                 }}).then(function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
-                })
+                    deferred.reject(err);
+                });
 
                 return deferred.promise;
             },
@@ -85,7 +85,7 @@
                 Snapshot.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -96,7 +96,7 @@
                 Configuration.save({order: path,jobschedulerId:jobschedulerId}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -106,7 +106,7 @@
                 Order.save(orders, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -116,7 +116,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -126,7 +126,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -137,7 +137,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -148,7 +148,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -159,7 +159,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -170,7 +170,7 @@
                 Order.save(orders, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -180,7 +180,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -190,7 +190,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -200,7 +200,7 @@
                 Order.save(orders,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -210,7 +210,7 @@
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -220,7 +220,7 @@
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -230,7 +230,7 @@
                 History.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -240,7 +240,7 @@
                 Tree.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }

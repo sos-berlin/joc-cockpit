@@ -18,7 +18,7 @@
                 <letter-avatar shape="round" width="30" height="30" data="{{username}}"></letter-avatar>
               </span>
               <span class="text-left p-l-xs">
-                    <span class="_500" ng-bind="username"></span>
+                    <span class="_500 text-md" ng-bind="username"></span>
                     <i class="fa fa-caret-down p-l-xs"></i>
               </span>
             </a>
@@ -26,6 +26,10 @@
                 <a class="dropdown-item" ui-sref="app.profile">
                     <s class="fa fa-user"></s>
                     {{'button.profile' | translate}}
+                </a>
+                <a class="dropdown-item" ui-sref="app.setting">
+                    <i class="fa fa-cog"></i>
+                    {{'button.setting' | translate}}
                 </a>
                 <a class="dropdown-item" ng-click="logout()">
                     <i class="fa fa-sign-out"></i>
@@ -50,7 +54,7 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.dashboard" ui-sref-active="active">
                     <span class="nav-text">
-                         <i class="fa fa-dashboard text-white"></i>
+                         <i class="fa fa-dashboard text-white dashboard-icon" ></i>
                         <span id="dashboard_id" class="font11 text-white text-u-c _600" translate>label.dashboard</span>
                     </span>
                 </a>
@@ -58,7 +62,7 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.dailyPlan" ui-sref-active="active">
                     <span class="nav-text">
-                         <img src="images/daily_plan.png">
+                         <img src="images/daily_plan.png" width="15" height="16">
                         <span id="dailyPlan_id" class="font11 text-white text-u-c _600" translate>label.dailyPlan</span>
                     </span>
                 </a>
@@ -66,7 +70,7 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.jobChain" ui-sref-active-eq="active">
                     <span class="nav-text ">
-                        <i class="fa fa-chain text-white"></i>
+                        <i class="fa fa-chain text-white jobchain-icon"></i>
                         <span id="jobChain_id" class="font11 text-white text-u-c _600" translate>label.jobChains</span>
                     </span>
                 </a>
@@ -74,7 +78,7 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
                     <span class="nav-text ">
-                        <img src="images/order1.png" width="19" height="18" class="m-b-xs">
+                        <img src="images/order1.png" width="18" height="22" class="order-icon">
                         <span id="orders_id" class="font11 text-white text-u-c _600" translate>label.orders</span>
                     </span>
                 </a>
@@ -82,7 +86,7 @@
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
                     <span class="nav-text ">
-                        <img src="images/job1.png" width="22" height="19" class="m-b-xs">
+                        <img src="images/job1.png" width="22" height="21" class="job-icon">
                         <span id="jobs_id" class="font11 text-white text-u-c _600" translate>label.jobs</span>
                     </span>
                 </a>
@@ -102,7 +106,7 @@
             <li class="nav-item" ng-if="permission.History.view">
                 <a class="nav-link" ui-sref="app.history" ui-sref-active="active">
                     <span class="nav-text">
-                        <i class="fa fa-history text-white"></i>
+                        <i class="fa fa-history text-white history-icon"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.history</span>
                     </span>
                 </a>

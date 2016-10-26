@@ -10,11 +10,12 @@
         .controller('HeaderCtrl', HeaderCtrl)
         .controller('ConfigurationCtrl', ConfigurationCtrl)
         .controller('DialogCtrl', DialogCtrl)
-        .controller('RuntimeEditorDialogCtrl', RuntimeEditorDialogCtrl);
+        .controller('RuntimeEditorDialogCtrl', RuntimeEditorDialogCtrl)
+        .controller('ClientLogCtrl', ClientLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope','$rootScope', '$window', 'SOSAuth', '$resource'];
-    function AppCtrl($scope, $rootScope, $window,  SOSAuth, $resource) {
+    AppCtrl.$inject = ['$scope', '$rootScope','$window', 'SOSAuth', '$uibModal'];
+    function AppCtrl($scope, $rootScope, $window,  SOSAuth, $uibModal) {
         var vm = $scope;
         vm.schedulerIds = {};
 
@@ -22,11 +23,48 @@
             name: 'JobScheduler'
         };
 
-        var left = screen.width / 2 - 390, top = screen.height / 2 - 340, newWindow;
-
         vm.goBack = function () {
             $window.history.back();
         };
+
+        /**
+         * Exception Logging Service, currently only used by the $exceptionHandler
+         * it preserves the default behaviour ( logging to the console) but
+         * also posts the error server side after generating a stacktrace.
+         */
+        TraceKit.report.subscribe(function (errorReport) {
+            if($rootScope.clientLogFilter) {
+                var error = {
+                    message: errorReport,
+                    logTime: new Date(),
+                    level: 'error'
+                };
+                $rootScope.clientLogs.push(error)
+            }
+        });
+       if ($window.sessionStorage.clientLogFilter) {
+            $rootScope.clientLogFilter = JSON.parse($window.sessionStorage.clientLogFilter);
+        } else {
+            $rootScope.clientLogFilter = {};
+            $rootScope.clientLogFilter.state = true;
+            $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
+            $window.sessionStorage.clientLogFilter = JSON.stringify(vm.clientLogFilter);
+        }
+
+        vm.logFilter = function (log) {
+            return $rootScope.clientLogFilter.status.indexOf(log.level) !== -1;
+        };
+        vm.redirectToNewTab = function () {
+            $window.open('#/client-logs', '_blank');
+        };
+
+        var watcher = vm.$watchCollection('clientLogFilter', function (newNames, oldValues) {
+            if (newNames && oldValues) {
+                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+            }
+        });
+
+
 
         vm.selectedScheduler = {};
 
@@ -39,19 +77,15 @@
                 return 'crimson';
             } else if (d == 3) {
                 return 'dimgrey';
-            }
-            else if (d == 4) {
+            } else if (d == 4) {
                 return 'text-dark';
             } else if (d == 5) {
                 return 'dark-orange';
-            }
-            else if (d == 6) {
+            } else if (d == 6) {
                 return 'corn-flower-blue';
-            }
-            else if (d == 7) {
+            } else if (d == 7) {
                 return 'dark-magenta';
-            }
-            else if (d == 8) {
+            } else if (d == 8) {
                 return 'chocolate';
             }
         };
@@ -65,38 +99,18 @@
                 return 'bg-crimson';
             } else if (d == 3) {
                 return 'bg-dimgrey';
-            }
-            else if (d == 4) {
+            } else if (d == 4) {
                 return 'bg-transparent';
             } else if (d == 5) {
                 return 'bg-dark-orange';
-            }
-            else if (d == 6) {
+            } else if (d == 6) {
                 return 'bg-corn-flower-blue';
-            }
-            else if (d == 7) {
+            } else if (d == 7) {
                 return 'bg-dark-magenta';
-            }
-            else if (d == 8) {
+            } else if (d == 8) {
                 return 'bg-chocolate';
             }
         };
-
-        function loadConfigFile() {
-            $resource("config.json").get(function (data) {
-                $rootScope.configData = data;
-            });
-        }
-
-        function pollingConfigFile(){
-            $resource('poll_config.json').get(function(res){
-                $rootScope.config = res;
-        });
-       }
-
-        loadConfigFile();
-        pollingConfigFile();
-
 
         vm.calculateHeight = function () {
             if (window.innerHeight > 474) {
@@ -104,11 +118,9 @@
                 var footerHt = $('.app-footer').height() || 30;
                 var topHeaderHt = $('.top-header-bar').height() || 16;
                 var subHeaderHt = 58;
-
                 var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
-
                 $('.max-ht').css('height', ht + 'px');
-                $('.max-tree-ht').css('height', ht -42 + 'px');
+                $('.max-tree-ht').css('height', ht - 42 + 'px');
             } else {
                 $('.max-ht').css('height', 'auto');
                 $('.max-tree-ht').css('height', 'auto');
@@ -126,7 +138,6 @@
             vm.calculateHeight();
             checkNavHeader();
         });
-
 
         vm.username = SOSAuth.currentUserData;
         setPermission();
@@ -150,37 +161,50 @@
             }
         }
 
-        $window.onunload = refreshParent;
-        function refreshParent() {
-            if (newWindow) {
-                newWindow.close();
-            }
-        }
-
-        vm.print = function(){
+        vm.print = function () {
             $window.print();
         };
-
         vm.showConfiguration = function (type, path, name) {
-            refreshParent();
-            var url = '#/showConfiguration?type=' + type + '&path=' + path;
-            newWindow = $window.open(url, name+ " - Configuration", "top=" + top + ",left=" + left);
+            vm.type = type;
+            vm.path = path;
+            $uibModal.open({
+                templateUrl: 'modules/core/template/show-configuration.html',
+                controller: 'ConfigurationCtrl',
+                scope: vm,
+                size: 'lg'
+            });
         };
 
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
         });
 
+        $scope.$on('$destroy', function () {
+            watcher();
+        });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', '$state', 'toasty','SOSAuth'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, $state, toasty,SOSAuth) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', '$state', 'toasty','SOSAuth','Idle','$rootScope', '$location','gettextCatalog', '$window'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, $state, toasty,SOSAuth,Idle, $rootScope, $location, gettextCatalog, $window) {
         var vm = $scope;
+        toasty.clear();
+        Idle.setIdle($rootScope.configData.IdleTimeOut * 60);
+        if($rootScope.clientLogFilter.state) {
+            var info = {
+                message: 'BROWSER SESSION TIMEOUT AFTER ' + $rootScope.configData.IdleTimeOut + 'min OF USER IDLE',
+                logTime: new Date(),
+                level: 'info'
+            };
+            $rootScope.clientLogs.push(info);
+        }
+
+        Idle.watch();
 
         vm.currentTime = moment();
         var interval = $interval(function () {
             vm.currentTime = moment();
-        }, 15000);
+            $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
+        }, 1000);
 
         $scope.$on('reloadDate', function () {
             vm.currentTime = moment();
@@ -190,22 +214,24 @@
         });
 
         vm.logout = function () {
-            UserService.logout();
+            UserService.logout().then(function () {
+                SOSAuth.clearUser();
+                SOSAuth.clearStorage();
+                $location.path('/login');
+            });
+
         };
 
         vm.getScheduleDetail = function (id) {
-            JobSchedulerService.get({jobschedulerId: id}).then(function (res) {
+            JobSchedulerService.getJobSchedulerP({jobschedulerId: id}).then(function (res) {
                 vm.selectedJobScheduler = res.jobscheduler;
                 vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
                 if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                     document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
-            }, function (err) {
-
             })
         };
 
         vm.getScheduleDetail(vm.schedulerIds.selected);
-
 
         function getPermissions(jobScheduler) {
 
@@ -213,8 +239,6 @@
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
                 $state.reload();
-            }, function (err) {
-
             });
         }
 
@@ -222,24 +246,43 @@
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res && !res.data) {
-
+                        res.selected = jobScheduler;
                         SOSAuth.setIds(res);
                         SOSAuth.save();
-                         getPermissions(jobScheduler);
+                        if($rootScope.clientLogFilter.state) {
+                            var debug = {
+                                message: 'JOBSCHEDULER CHANGE TO ' + jobScheduler,
+                                logTime: new Date(),
+                                level: 'debug3'
+                            };
+                            $rootScope.clientLogs.push(debug);
+                        }
+                        getPermissions(jobScheduler);
                     } else {
                         toasty.error({
                             title: gettextCatalog.getString('message.oops'),
-                            msg: gettextCatalog.getString('message.errorInLoadingScheduleIds')
+                            msg: gettextCatalog.getString('message.errorInLoadingScheduleIds'),
+                            timeout: 0
                         });
                     }
                 });
-
-
-
-            }, function (err) {
-
             })
         };
+
+
+        $scope.$on('IdleEnd', function () {
+            Idle.watch(); //  Reset the idle timer
+        });
+
+        $scope.$on('IdleTimeout', function () {
+            var debug = {
+                message: 'Browser session timeout',
+                logTime: new Date(),
+                level: 'debug'
+            };
+            $rootScope.clientLogs.push(debug);
+            vm.logout();
+        });
 
 
         $scope.$on('$stateChangeSuccess', function () {
@@ -250,22 +293,22 @@
 
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
+            Idle.unwatch();
         });
     }
 
-    ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$location", "SOSAuth"];
-    function ConfigurationCtrl($scope, JobService, JobChainService, OrderService, ScheduleService, ResourceService, $location, SOSAuth) {
+    ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$uibModalInstance"];
+    function ConfigurationCtrl($scope, JobService, JobChainService, OrderService, ScheduleService, ResourceService, $uibModalInstance) {
         var vm = $scope;
-        if (SOSAuth.scheduleIds) {
-            vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-        }
+        vm.ok = function () {
+            $uibModalInstance.close('ok');
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
 
-
-        var object = $location.search();
-        document.title = object.path.substring(object.path.lastIndexOf('/') + 1) + " - JobScheduler";
-        vm.type = object.type;
-        if (object.type == 'jobChain') {
-            JobChainService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+        if (vm.type == 'jobChain') {
+            JobChainService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
@@ -275,62 +318,52 @@
 
             });
         }
-        else if (object.type == 'job') {
-            JobService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+        else if (vm.type == 'job') {
+            JobService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
                 }
-
-            }, function (err) {
 
             });
-        } else if (object.type == 'order') {
-            OrderService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+        } else if (vm.type == 'order') {
+            OrderService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
                 }
-
-            }, function (err) {
 
             });
         }
-        else if (object.type == 'schedule') {
-            ScheduleService.getConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+        else if (vm.type == 'schedule') {
+            ScheduleService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
                 }
-
-            }, function (err) {
 
             });
         }
-        else if (object.type == 'lock') {
-            ResourceService.getLockConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+        else if (vm.type == 'lock') {
+            ResourceService.getLockConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
                 }
-
-            }, function (err) {
 
             });
         }
-        else if (object.type == 'processClass') {
-            ResourceService.getProcessClassConfiguration(object.path, vm.schedulerIds.selected).then(function (res) {
+        else if (vm.type == 'processClass') {
+            ResourceService.getProcessClassConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);
                     vm.html = vm.html[0].textContent;
                 }
-
-            }, function (err) {
 
             });
         }
@@ -396,7 +429,8 @@
             } catch (e) {
                 toasty.error({
                     title: 'Invalid xml',
-                    msg: e
+                    msg: e,
+                    timeout: 0
                 });
             }
         };
@@ -863,10 +897,10 @@
                 }
 
             } catch (e) {
-                console.log(e);
                 toasty.error({
                     title: 'Invalid xml',
-                    msg: e
+                    msg: e,
+                    timeout: 0
                 });
             }
 
@@ -3594,4 +3628,15 @@
         });
 
     }
+
+    ClientLogCtrl.$inject = ['$scope', '$window', '$interval'];
+    function ClientLogCtrl($scope, $window, $interval) {
+        var interval = $interval(function () {
+            $scope.clientLogs = JSON.parse($window.localStorage.clientLogs);
+        }, 500);
+         $scope.$on('$destroy', function () {
+             $interval.cancel(interval);
+         });
+    }
+
 })();

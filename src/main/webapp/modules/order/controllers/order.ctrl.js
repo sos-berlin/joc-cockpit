@@ -921,7 +921,8 @@
         } else {
             toasty.error({
                 title: gettextCatalog.getString('message.oops'),
-                msg: gettextCatalog.getString('message.incorrectJobChainPath')
+                msg: gettextCatalog.getString('message.incorrectJobChainPath'),
+                timeout: 0
             });
             vm.goBack();
         }

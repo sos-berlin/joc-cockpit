@@ -3,19 +3,19 @@
     <div class="w-full text-right top-header-bar white">
         <span class="m-r-sm" ><span translate>label.time</span>: <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
         <span class="m-r-sm" ><span translate>label.jobSchedulerStartTime</span>: <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate"></span></span>
-        <div class="btn-group dropdown">
-            <a class="nav-link " data-toggle="dropdown">
-                <span translate>label.id</span>: <span class="_600 text-orange" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
+        <span class="dropdown">
+            <a data-toggle="dropdown">
+                <span translate>label.id</span>:
+                <span class="_500 text-orange font14" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
             </a>
             <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
                 <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler)">
                     <span><i class="fa fa-circle text-muted text-xs" ng-class="{'text-success':schedulerIds.selected == jobScheduler}"></i> {{jobScheduler}}</span>
                 </a>
             </div>
-        </div>
+        </span>
 
     </div>
-    <div style="width: 100%; background: #e8e8e8; height: 1px"></div>
     <div class="app-header navbar-md white box-shadow bg-blue-color" >
         <div ui-include="'modules/core/views/header.html'"></div>
     </div>

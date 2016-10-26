@@ -130,8 +130,8 @@
         };
     }
 
-    UserService.$inject = ["$resource","$q","SOSAuth", "$http", "Base64", "$location"];
-    function UserService($resource,$q, SOSAuth, $http, Base64, $location) {
+    UserService.$inject = ["$resource","$q", "$http", "Base64"];
+    function UserService($resource,$q, $http, Base64) {
 
         return {
 
@@ -139,28 +139,25 @@
              * Logout user
              */
             logout: function () {
+                var deferred = $q.defer();
+                var Logout = $resource('security/logout');
 
-               var Logout = $resource('security/logout');
+                Logout.save(function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
 
-                Logout.save(function () {
-                    SOSAuth.clearUser();
-                    SOSAuth.clearStorage();
-                     $location.path('/login');
-                }, function () {
-                    SOSAuth.clearUser();
-                    SOSAuth.clearStorage();
-                     $location.path('/login');
                 });
-
+                return deferred.promise;
             },
 
             authenticate: function (username, password) {
                 var deferred = $q.defer();
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + Base64.encode(username + ':' + password);
-                $http.post('security/login').then(function(res){
+                $http.post('security/login').then(function (res) {
                     deferred.resolve(res.data);
-                }, function(err){
-                     deferred.reject(err);
+                }, function (err) {
+                    deferred.reject(err);
                 });
 
                 return deferred.promise;
@@ -169,7 +166,7 @@
                 var deferred = $q.defer();
                 var Permission = $resource('security/joc_cockpit_permissions');
 
-                Permission.save({jobschedulerId:id},function (res) {
+                Permission.save({jobschedulerId: id}, function (res) {
                     deferred.resolve(res);
                 }, function (error) {
                     deferred.reject(error);

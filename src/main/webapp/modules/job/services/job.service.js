@@ -20,7 +20,7 @@
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -30,7 +30,7 @@
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -40,7 +40,7 @@
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -50,7 +50,7 @@
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -61,7 +61,7 @@
                 JobChain.save(jobChains, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -71,7 +71,7 @@
                 JobChain.save(jobChains,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -81,7 +81,7 @@
                 JobChain.save({jobChain : path, jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -91,7 +91,7 @@
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -101,7 +101,7 @@
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }
@@ -117,7 +117,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -127,7 +127,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -137,7 +137,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -147,7 +147,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -157,7 +157,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -167,7 +167,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -177,7 +177,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -187,7 +187,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -197,7 +197,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -207,7 +207,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -217,7 +217,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -227,7 +227,7 @@
                 Job.save({job:path,  jobschedulerId: jobschedulerId},function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -237,7 +237,7 @@
                 Job.save(jobs,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -247,7 +247,7 @@
                 Job.save(nodes,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -257,7 +257,7 @@
                 Job.save(nodes,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -267,7 +267,7 @@
                 Job.save(nodes,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -277,7 +277,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }
@@ -293,7 +293,7 @@
                 Job.save(filters,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -303,7 +303,7 @@
                 Job.save(tasks,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -313,7 +313,7 @@
                 Job.save(tasks,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -323,7 +323,7 @@
                 Job.save(tasks,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -333,7 +333,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -344,7 +344,7 @@
                 }}).then(function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -354,7 +354,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }
@@ -365,7 +365,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -375,7 +375,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             },
@@ -385,7 +385,7 @@
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
-                    deferred.resolve(err);
+                    deferred.reject(err);
                 });
                 return deferred.promise;
             }
