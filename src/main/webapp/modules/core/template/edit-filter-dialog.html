@@ -20,7 +20,7 @@
                                 <td width="12%">{{$index+1}}</td>
                                 <td>
                                     <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite == filter.name" href="" class="fa fa-star text-primary fa-lg m-r-xs"></a>
-                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name" href="" ng-click="favorite(filter.name)" class="fa fa-star-o fa-lg m-r-xs"></a>
+                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name" href="" ng-click="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
                                     {{filter.name}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-primary" ng-click="ok();editFilter(filter)" translate>button.edit</a>

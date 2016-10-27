@@ -33,17 +33,7 @@
                     <input type="text" class="form-control" placeholder="{{'placeholder.regex' | translate}}"
                            ng-model="dailyPlanFilter.regex">
                 </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.processName</label>
-
-                <div class=" col-sm-6">
-                    <input type="text" class="form-control" ng-disabled="dailyPlanFilter.paths.length>0"
-                           placeholder="{{'placeholder.dailyPlannedNameField' | translate}}"
-                           ng-model="dailyPlanFilter.processPlanned">
-                </div>
-                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
+                         <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
                         class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="dailyPlanFilter.paths.length>0">
@@ -53,6 +43,17 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>label.processName</label>
+
+                <div class=" col-sm-6">
+                    <input type="text" class="form-control"
+                           placeholder="{{'placeholder.dailyPlannedNameField' | translate}}"
+                           ng-model="dailyPlanFilter.processPlanned">
+                </div>
+
+            </div>
+
 
             <div class="form-group row " ng-class="{'m-b-sm': dailyPlanFilter.radio == 'planned' }">
             <label class="col-sm-3 " translate>label.orderState</label>

@@ -57,7 +57,7 @@
             getLockConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var Configuration = $resource('lock/configuration');
-                Configuration.save({lock: path, jobschedulerId: jobschedulerId},function (res) {
+                Configuration.save({lock: path, jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -67,7 +67,7 @@
             getProcessClassConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var Configuration = $resource('process_class/configuration');
-                Configuration.save({processClass: path,jobschedulerId: jobschedulerId},function (res) {
+                Configuration.save({processClass: path,jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -124,7 +124,7 @@
             getConfiguration: function (path,jobschedulerId) {
                 var deferred = $q.defer();
                 var Schedule = $resource('schedule/configuration');
-                Schedule.save({schedule : path,jobschedulerId:jobschedulerId},function (res) {
+                Schedule.save({schedule : path,jobschedulerId:jobschedulerId,mime:['HTML'] },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

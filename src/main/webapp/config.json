@@ -35,6 +35,7 @@
   "jobscheduler/continue":false,
   "orders":false,
   "orders/p":false,
+  "orders/history":false,
   "orders/overview/summary":false,
   "orders/overview/snapshot":false,
   "orders/start":false,

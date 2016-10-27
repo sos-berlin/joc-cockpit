@@ -23,10 +23,13 @@
 
     stringToDate.$inject =['$window'];
     function stringToDate($window) {
-        return function (date) {
+        return function (date,timeZone) {
             if(!date) return '-';
+           // if(timeZone == $window.localStorage.$SOS$ZONE){
+             //   return moment(date).format($window.localStorage.$SOS$DATEFORMAT);
 
-            return moment(date).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                 return moment(date).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+
         }
     }
 

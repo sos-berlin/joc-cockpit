@@ -68,7 +68,7 @@
             log: function (filter) {
 
                 var deferred = $q.defer();
-                $http.post('order/log',filter,{transformResponse:function(data,header,status){
+                $http.post('order/log',filter,{transformResponse:function(data){
                      return data;
                 }}).then(function (res) {
                     deferred.resolve(res);
@@ -93,7 +93,7 @@
                 var deferred = $q.defer();
 
                 var Configuration = $resource('order/configuration');
-                Configuration.save({order: path,jobschedulerId:jobschedulerId}, function (res) {
+                Configuration.save({order: path,jobschedulerId:jobschedulerId,mime:['HTML'] }, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

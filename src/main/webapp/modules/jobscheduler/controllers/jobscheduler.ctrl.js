@@ -254,7 +254,7 @@
                 vm.locks = result.locks;
                 vm.isLoading = true;
                 ResourceService.get({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    vm.locks = angular.merge(result.locks, res.locks);
+                    vm.locks = angular.merge(res.locks, result.locks);
 
                 });
             }, function () {
@@ -278,7 +278,7 @@
                 vm.processClasses = result.processClasses;
                 vm.isLoading = true;
                 ResourceService.getProcessClass({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    vm.processClasses = angular.merge(result.processClasses, res.processClasses);
+                    vm.processClasses = angular.merge(res.processClasses, result.processClasses);
 
                 });
             }, function () {
@@ -720,12 +720,15 @@
 
 
         vm.getAgentCluster = function () {
-            JobSchedulerService.getAgentCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+            JobSchedulerService.getAgentClusterP({jobschedulerId: $scope.schedulerIds.selected, compact:true}).then(function (result) {
                 prepareAgentClusterData(result);
-            }, function (err) {
-                JobSchedulerService.getAgentClusterP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
-                    prepareAgentClusterData(result);
+                JobSchedulerService.getAgentCluster({jobschedulerId: $scope.schedulerIds.selected, compact:true}).then(function (res) {
+
+                    prepareAgentClusterData(res);
+
                 });
+            }, function (err) {
+
             });
         };
 
@@ -735,8 +738,9 @@
             var agentArray1 = [];
             vm.YAxisDomain = [0, 3];
             //vm.YAxisDomain[0] = 0;
-            angular.forEach(result.agentClusters, function (value) {
 
+
+            angular.forEach(result.agentClusters, function (value) {
                     var numTask = 0;
                     angular.forEach(value.agents, function (value1) {
                         if (value1.runningTasks)
@@ -748,10 +752,10 @@
                     //}else if(numTask>vm.YAxisDomain[1]){
                     //    vm.YAxisDomain[1]=Math.ceil(numTask+1);
                     //}
-                    if (value.state._text == "all_agents_are_running") {
+                    if (value.state._text.toLowerCase() == "all_agents_are_running") {
                         value.state._text = "label.healthyAgentCluster";
                         bgColorArray.push('#7ab97a');
-                    } else if (value.state._text == "all_agents_are_unreachable") {
+                    } else if (value.state._text.toLowerCase() == "all_agents_are_unreachable") {
                         value.state._text = "label.unreachableAgentCluster";
                         bgColorArray.push('#e86680');
                     } else {
@@ -852,7 +856,7 @@
             vm.clusterStatus = 'stopped';
             vm.getClusterMembers().then(function (res) {
                 angular.forEach(res.masters, function (master, index) {
-                    if (master.state._text == 'running') {
+                    if (master.state._text == 'RUNNING') {
                         vm.clusterStatus = 'running';
                     }
                 })
@@ -894,9 +898,9 @@
                 angular.forEach(vm.agentClusters, function (value) {
                     if (event.point[0] == value.path.substring(value.path.lastIndexOf('/') + 1)) {
 
-                        if (value.state._text == "all_agents_are_running") {
+                        if (value.state._text.toLowerCase() == "all_agents_are_running") {
                             key = 'healthy';
-                        } else if (value.state._text == "only_some_agents_are_running") {
+                        } else if (value.state._text.toLowerCase() == "only_some_agents_are_running") {
                             key = 'unhealthy';
                         } else {
                             key = 'unreachable';
@@ -1058,7 +1062,7 @@
             JobSchedulerService.terminateFailSafe({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
 
             });
-        }
+        };
 
         vm.criterion = {};
         vm.criterion.timeout = 60;

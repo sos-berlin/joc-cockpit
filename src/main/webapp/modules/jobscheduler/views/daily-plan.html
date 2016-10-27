@@ -31,8 +31,8 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.status=='all'}" ng-click="getPlans()" translate>button.all
+                            <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': filter.status=='ALL'}" ng-click="getPlans()" translate>button.all
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.status" uib-btn-radio="'WAITING'"
                                     ng-class="{'btn-primary': filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
@@ -47,8 +47,8 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': filter.status=='all'}" ng-click="getPlans()" translate>button.all
+                                <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'ALL'"
+                                   ng-class="{'btn-primary': filter.status=='ALL'}" ng-click="getPlans()" translate>button.all
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.status" uib-btn-radio="'WAITING'"
                                    ng-class="{'btn-primary': filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
@@ -111,7 +111,7 @@
                                 <div class="dropdown-divider" ng-if="savedDailyPlanFilter.length>0"></div>
                                 <a class="dropdown-item"
                                    ng-class="{orange: savedDailyPlanFilter.selected == filter.name}"
-                                   ng-click="changeFilter(filter.name)"
+                                   ng-click="changeFilter(filter)"
                                    ng-repeat="filter in savedDailyPlanFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
                                                        ng-if="savedDailyPlanFilter.selected == filter.name"
@@ -157,44 +157,47 @@
             <div class="hide" ng-class="{'show': pageView=='grid'}">
                 <div class="box p-a">
                     <div class="hide" ng-class="{show:data.length>0}">
-                           <div gantt
-                         data="data"
-                         show-side="options.labelsEnabled"
-                         daily="options.daily"
-                         current-date="options.currentDate"
-                         current-date-value="options.currentDateValue"
-                         sort-mode="options.sortMode"
-                         view-scale="options.scale"
-                         column-width="getColumnWidth(options.width, options.scale, options.zoom)"
-                         auto-expand="options.autoExpand"
-                         task-out-of-range="options.taskOutOfRange"
-                         from-date="options.fromDate"
-                         to-date="options.toDate"
-                         allow-side-resizing="options.allowSideResizing"
-                         task-content="options.taskContentEnabled ? options.taskContent : undefined"
-                         row-content="options.rowContentEnabled ? options.rowContent : undefined"
-                         headers="options.width && options.shortHeaders || options.longHeaders"
-                         max-height="options.maxHeight"
-                         to-date="options.toDate"
-                         api="options.api"
-                         shrink-to-fit="option.shrinkToFit"
-                         column-magnet="options.columnMagnet">
+                         <div gantt
+                             data="data"
+                             show-side="options.labelsEnabled"
+                             daily="options.daily"
+                             current-date="options.currentDate"
+                             current-date-value="options.currentDateValue"
+                             sort-mode="options.sortMode"
+                             view-scale="options.scale"
+                             column-width="getColumnWidth(options.width, options.scale, options.zoom)"
+                             auto-expand="options.autoExpand"
+                             task-out-of-range="options.taskOutOfRange"
+                             from-date="options.fromDate"
+                             to-date="options.toDate"
+                             allow-side-resizing="options.allowSideResizing"
+                             task-content="options.taskContentEnabled ? options.taskContent : undefined"
+                             row-content="options.rowContentEnabled ? options.rowContent : undefined"
+                             headers="options.width && options.shortHeaders || options.longHeaders"
+                             max-height="options.maxHeight"
+                             to-date="options.toDate"
+                             api="options.api"
+                             shrink-to-fit="option.shrinkToFit"
+                             column-magnet="options.columnMagnet">
 
-                        <gantt-table enabled="options.sideMode === 'Table' || options.sideMode === 'TreeTable'"
-                                     columns="options.treeTableColumns "
-                                     headers="options.columnsHeaders"
-                                     classes="options.columnsClasses"
-                                     formatters="options.columnsFormatters"
-                                     contents="options.columnsContents"
-                                     header-contents="options.columnsHeaderContents">
-                        </gantt-table>
-                        <gantt-tooltips></gantt-tooltips>
-                    </div>
-                    </div>
-                    <div class="hide" ng-class="{show:!data || data.length==0}">
-                       <div class="text-center m-t text-uppercase text-orange" translate>message.noDataMatched</div>
+                            <gantt-table enabled="options.sideMode === 'Table' || options.sideMode === 'TreeTable'"
+                                         columns="options.treeTableColumns "
+                                         headers="options.columnsHeaders"
+                                         classes="options.columnsClasses"
+                                         formatters="options.columnsFormatters"
+                                         contents="options.columnsContents"
+                                         header-contents="options.columnsHeaderContents">
+                            </gantt-table>
+                            <gantt-tooltips></gantt-tooltips>
+                        </div>
                     </div>
 
+                    <div class="hide text-center m-t text-uppercase text-orange"
+                         ng-class="{'show': (temp.length>0 && (data.length ==0))}" translate>message.noDataMatched
+                    </div>
+                    <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
+                        message.noPlanFound
+                    </div>
                 </div>
             </div>
             <div class="hide box p-a " ng-class="{'show': pageView=='list'}" context-menu="menuOptions">
@@ -318,11 +321,13 @@
                 <div class="hide text-center m-t text-uppercase text-orange"
                      ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
                 </div>
+                <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
+                    message.noPlanFound
+                </div>
             </div>
+
         </div>
-        <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
-            message.noPlanFound
-        </div>
+
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>

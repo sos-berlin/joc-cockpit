@@ -12,17 +12,17 @@
                             <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': filter.date=='all'}" translate>button.all
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastHour'"
-                                    ng-class="{'btn-primary': filter.date=='lastHour'}" translate>button.last1
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'1h'"
+                                    ng-class="{'btn-primary': filter.date=='1h'}" translate>button.last1
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'halfDay'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': filter.date=='halfDay'}" translate>button.last12
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" uib-btn-radio="'12h'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': filter.date=='12h'}" translate>button.last12
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'fullDay'"
-                                    ng-class="{'btn-primary': filter.date=='fullDay'}" translate>button.last24
+                            <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'1d'"
+                                    ng-class="{'btn-primary': filter.date=='1d'}" translate>button.last24
                             </button>
-                             <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastweak'"
-                                    ng-class="{'btn-primary': filter.date=='lastweak'}" translate>button.lastWeak
+                             <button class="btn btn-grey btn-sm" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'1w'"
+                                    ng-class="{'btn-primary': filter.date=='1w'}" translate>button.lastWeak
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
@@ -31,36 +31,27 @@
                                 <a class="dropdown-item" ng-model="filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                         ng-class="{'btn-primary': filter.date=='all'}" translate>button.all
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastHour'"
-                                        ng-class="{'btn-primary': filter.date=='lastHour'}" translate>button.last1
+                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'1h'"
+                                        ng-class="{'btn-primary': filter.date=='1h'}" translate>button.last1
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.date" uib-btn-radio="'halfDay'" ng-click="loadHistory()"
-                                        ng-class="{'btn-primary': filter.date=='halfDay'}" translate>button.last12
+                                <a class="dropdown-item" ng-model="filter.date" uib-btn-radio="'12h'" ng-click="loadHistory()"
+                                        ng-class="{'btn-primary': filter.date=='12h'}" translate>button.last12
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'fullDay'"
-                                        ng-class="{'btn-primary': filter.date=='fullDay'}" translate>button.last24
+                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'1d'"
+                                        ng-class="{'btn-primary': filter.date=='1d'}" translate>button.last24
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'lastweak'"
-                                        ng-class="{'btn-primary': filter.date=='lastweak'}" translate>button.lastWeak
+                                <a class="dropdown-item" ng-model="filter.date" ng-click="loadHistory()" uib-btn-radio="'1w'"
+                                        ng-class="{'btn-primary': filter.date=='1w'}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>
-<!--                        <div class="btn-group m-l-sm">
-                            <button id="jobs" class="btn btn-grey btn-sm" ng-model="filter.type" uib-btn-radio="'jobChain'"
-                                    ng-class="{'btn-primary': filter.type=='jobChain'}" translate>button.jobChain
-                            </button>
-                            <button id="stopped" class="btn btn-grey btn-sm" ng-model="filter.type"
-                                    uib-btn-radio="'job'"
-                                    ng-class="{'btn-primary': filter.type=='job'}" ng-click="jobHistory()" translate>button.job
-                            </button>
-                        </div>-->
                         <div class="btn-group dropdown m-r-sm" ng-show="filter.type == 'jobChain'">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedHistoryFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedHistoryFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedHistoryFilter.list.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedHistoryFilter.list track by $index">
+                                <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedHistoryFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
                                 </a>
                             </div>
@@ -71,7 +62,7 @@
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobHistoryFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedJobHistoryFilter.list.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedJobHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedJobHistoryFilter.list track by $index">
+                                <a class="dropdown-item" ng-class="{orange: savedJobHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedJobHistoryFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
                                 </a>
                             </div>

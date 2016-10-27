@@ -8,23 +8,23 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>
                                 button.allJobChains
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'running'"
-                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>
+                                    uib-btn-radio="'RUNNING'"
+                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>
                                 button.running
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'active'"
-                                    ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()" translate>
+                                    uib-btn-radio="'ACTIVE'"
+                                    ng-class="{'btn-primary': filter.state=='ACTIVE'}" ng-click="load()" translate>
                                 button.active
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'stopped'"
-                                    ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>
+                                    uib-btn-radio="'STOPPED'"
+                                    ng-class="{'btn-primary': filter.state=='STOPPED'}" ng-click="load()" translate>
                                 button.inactive
                             </button>
                         </div>
@@ -33,20 +33,20 @@
                                 label.status
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobChains
+                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'ALL'"
+                                   ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allJobChains
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                   uib-btn-radio="'running'"
-                                   ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                   uib-btn-radio="'RUNNING'"
+                                   ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                   uib-btn-radio="'active'"
-                                   ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()" translate>button.active
+                                   uib-btn-radio="'ACTIVE'"
+                                   ng-class="{'btn-primary': filter.state=='ACTIVE'}" ng-click="load()" translate>button.active
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                   uib-btn-radio="'stopped'"
-                                   ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.inactive
+                                   uib-btn-radio="'STOPPED'"
+                                   ng-class="{'btn-primary': filter.state=='STOPPED'}" ng-click="load()" translate>button.inactive
                                 </a>
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                                 <div class="dropdown-divider" ng-if="savedJobChainFilter.list.length>0"></div>
                                 <a class="dropdown-item"
                                    ng-class="{orange: savedJobChainFilter.selected == filter.name}"
-                                   ng-click="changeFilter(filter.name)"
+                                   ng-click="changeFilter(filter)"
                                    ng-repeat="filter in savedJobChainFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
                                                        ng-if="savedJobChainFilter.selected == filter.name"
@@ -169,7 +169,7 @@
                                             <div class="text-left m-l-md block-ellipsis">
                                                 <i ng-if="jobChain.distributed" class="fa fa-chain-broken"></i>
                                                 <a href="" class="primary-text-hover-color" uib-tooltip="{{jobChain.title}}"
-                                                   ng-class="{'text-danger':jobChain.state._text.toLowerCase() == 'stopped', 'text-success':jobChain.state._text.toLowerCase() == 'running' }"
+                                                   ng-class="{'text-danger':jobChain.state._text == 'STOPPED', 'text-success':jobChain.state._text == 'running' }"
                                                    ng-click="viewOrders(jobChain)" ng-bind="jobChain.name"></a></div>
                                             <div class="btn-group dropdown pull-right abt-dropdown">
                                                 <a href class="more-option text-black-lt" data-toggle="dropdown">
@@ -178,21 +178,21 @@
                                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                                     <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                                        class="hide dropdown-item"
-                                                       ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                                       ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                        translate>button.showConfiguration</a>
                                                     <a class="dropdown-item"
-                                                       ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                                       ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                        ng-click="viewCalendar(jobChain);" translate>button.viewCalendar</a>
                                                     <a class="hide dropdown-item"
-                                                       ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                                       ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                        ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                                     <a class="hide dropdown-item bg-hover-color"
-                                                       ng-if="jobChain.state._text.toLowerCase() != 'stopped'"
-                                                       ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                                       ng-if="jobChain.state._text != 'STOPPED'"
+                                                       ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                        ng-click="stopJob(jobChain)" translate>button.stopJobChain</a>
                                                     <a class="hide dropdown-item"
-                                                       ng-if="jobChain.state._text.toLowerCase() == 'stopped'"
-                                                       ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                                       ng-if="jobChain.state._text == 'STOPPED'"
+                                                       ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                        ng-click="unstopJob(jobChain)" translate>button.unstopJobChain</a>
                                                 </div>
                                             </div>
@@ -215,13 +215,13 @@
                                     </div>
                                     <div class="box-footer b-t">
                                         <a href class="hide text-left primary-text-hover-color"
-                                           ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="addOrder(jobChain);">
                                             <i class="fa fa-plus-square-o text-black-lt"></i> <span class="text-black-lt"
                                                                                                     translate>button.addOrder</span>
                                         </a>
                                         <a href class="text-right primary-text-hover-color"
-                                           ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="viewCalendar(jobChain);">
                                             <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt"
                                                                                                translate>button.viewCalendar</span>
@@ -318,7 +318,7 @@
                                 </label>
                             </td>
                             <td><a class="primary-text-hover-color" href ng-click="viewOrders(jobChain)"
-                                   ng-class="{'text-danger':jobChain.state._text.toLowerCase() == 'stopped'}"
+                                   ng-class="{'text-danger':jobChain.state._text == 'STOPPED'}"
                                    ng-bind="jobChain.name"></a>
                                 <span ng-if="jobChain.title"> - </span><i class="text-muted">
                                     <span ng-bind-html="jobChain.title"></span></i>
@@ -339,21 +339,21 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                         <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                            class="hide dropdown-item"
-                                           ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            translate>button.showConfiguration</a>
                                         <a class="dropdown-item"
-                                           ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="viewCalendar(jobChain);" translate>button.viewCalendar</a>
                                         <a class="hide dropdown-item"
-                                           ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                         <a class="hide dropdown-item bg-hover-color"
-                                           ng-if="jobChain.state._text.toLowerCase() != 'stopped'"
-                                           ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-if="jobChain.state._text != 'STOPPED'"
+                                           ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="stopJob(jobChain)" translate>button.stopJobChain</a>
                                         <a class="hide dropdown-item"
-                                           ng-if="jobChain.state._text.toLowerCase() == 'stopped'"
-                                           ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text.toLowerCase() == 'under_construction' || jobChain.state._text.toLowerCase() == 'not_initialized')}"
+                                           ng-if="jobChain.state._text == 'STOPPED'"
+                                           ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="unstopJob(jobChain)" translate>button.unstopJobChain</a>
                                     </div>
                                 </div>

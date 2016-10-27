@@ -78,7 +78,7 @@
             getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/configuration');
-                JobChain.save({jobChain : path, jobschedulerId: jobschedulerId},function (res) {
+                JobChain.save({jobChain : path, jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -224,7 +224,7 @@
             getConfiguration: function (path, jobschedulerId) {
                 var deferred = $q.defer();
                 var Job = $resource('job/configuration');
-                Job.save({job:path,  jobschedulerId: jobschedulerId},function (res) {
+                Job.save({job:path,  jobschedulerId: jobschedulerId,mime:['HTML'] },function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

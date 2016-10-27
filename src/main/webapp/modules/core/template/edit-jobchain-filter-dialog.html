@@ -22,7 +22,7 @@
             <div class="form-group row">
                <label class="col-sm-3 form-control-label" translate>label.jobChainName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" ng-disabled="jobChainFilter.paths.length>0" placeholder="{{'placeholder.jobChainRegexAndChooseTree' | translate}} " ng-model="jobChainFilter.regex">
+                   <input type="text" class="form-control"  placeholder="{{'placeholder.jobChainRegexAndChooseTree' | translate}} " ng-model="jobChainFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href=""  ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
@@ -44,17 +44,17 @@
                 <div class=" col-md-9">
 
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'running'">
+                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'RUNNING'">
                         <i class="primary"></i>
                         <span translate>label.running</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'active'">
+                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'ACTIVE'">
                         <i class="primary"></i>
                         <span translate>label.active</span>
                     </label>
                     <label class="md-check">
-                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'stopped'">
+                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'STOPPED'">
                         <i class="primary"></i>
                         <span translate>label.stopped</span>
                     </label>

@@ -8,47 +8,47 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobs.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button id="jobs" class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                    ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobs
+                            <button id="jobs" class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allJobs
                             </button>
                             <button id="pending" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                       uib-btn-radio="'pending'"
-                                       ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
+                                       uib-btn-radio="'PENDING'"
+                                       ng-class="{'btn-primary': filter.state=='PENDING'}" ng-click="load()" translate>button.pending
                             </button>
                             <button id="running" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'running'"
-                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                    uib-btn-radio="'RUNNING'"
+                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
                             </button>
                             <button id="stopped" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'stopped'"
-                                    ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.stopped
+                                    uib-btn-radio="'STOPPED'"
+                                    ng-class="{'btn-primary': filter.state=='STOPPED'}" ng-click="load()" translate>button.stopped
                             </button>
                             <button id="queued" class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'queued'"
-                                    ng-class="{'btn-primary': filter.state=='queued'}" ng-click="load()" translate>button.waitingForResource
+                                    uib-btn-radio="'QUEUED'"
+                                    ng-class="{'btn-primary': filter.state=='QUEUED'}" ng-click="load()" translate>button.waitingForResource
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
-                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allJobs
+                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'ALL'"
+                                        ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allJobs
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                           uib-btn-radio="'pending'"
-                                           ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
+                                           uib-btn-radio="'PENDING'"
+                                           ng-class="{'btn-primary': filter.state=='PENDING'}" ng-click="load()" translate>button.pending
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                        uib-btn-radio="'running'"
-                                        ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                        uib-btn-radio="'RUNNING'"
+                                        ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                        uib-btn-radio="'stopped'"
-                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.stopped
+                                        uib-btn-radio="'STOPPED'"
+                                        ng-class="{'btn-primary': filter.state=='STOPPED'}" ng-click="load()" translate>button.stopped
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
-                                        uib-btn-radio="'queued'"
-                                        ng-class="{'btn-primary': filter.state=='queued'}" ng-click="load()" translate>button.waitingForResource
+                                        uib-btn-radio="'QUEUED'"
+                                        ng-class="{'btn-primary': filter.state=='QUEUED'}" ng-click="load()" translate>button.waitingForResource
                                 </a>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                                 <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedJobFilter.list.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedJobFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedJobFilter.list track by $index">
+                                <a class="dropdown-item" ng-class="{orange: savedJobFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedJobFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
                                 </a>
                             </div>
@@ -161,8 +161,8 @@
                                                     class="text fa fa-ellipsis-v"></i></a>
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
                                                 <a ng-click="showConfiguration('job',job.path,job.name)" class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration}" translate>button.showConfiguration</a>
-                                                <a class="dropdown-item bg-hover-color" ng-if="job.state._text.toLowerCase() !='stopped' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
-                                                <a class="dropdown-item" ng-if="job.state._text.toLowerCase() =='stopped' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
+                                                <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
+                                                <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
                                                 <a class="dropdown-item" ng-click="start(job)" ng-if="!job.isOrderJob  && permission.Job.start" translate>button.startTask</a>
                                                 <a class="dropdown-item" ng-click="startAt(job)" ng-if="!job.isOrderJob  && permission.Job.start" translate>button.startTaskat</a>
                                                 <a class="dropdown-item" ng-if="!job.isOrderJob" ng-click="setRunTime(job)" translate>button.setRunTime</a>
@@ -179,8 +179,8 @@
                                     </div>
                                     <div class="box-footer b-t">
                                         <div>
-                                            <a href class="text-left text-hover-color" ng-if="job.state._text.toLowerCase() !='stopped' && permission.Job.stop" ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
-                                            <a href class="text-left primary-text-hover-color" ng-if="job.state._text.toLowerCase() =='stopped'  && permission.Job.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
+                                            <a href class="text-left text-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
+                                            <a href class="text-left primary-text-hover-color" ng-if="job.state._text =='STOPPED'  && permission.Job.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
                                         </div>
                                     </div>
                                 </div>
@@ -282,9 +282,9 @@
                             <td><a class="primary-text-hover-color" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains || 0"></a></td>
                             <td ng-bind="job.estimatedDuration || '-'"> </td>
                             <td><a class="primary-text-hover-color" ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a></td>
-                            <td ng-bind="job.ordersSummary.suspended || '-'"></td>
-                            <td ng-bind="job.ordersSummary.queued || '-'"></td>
-                            <td ng-bind="job.ordersSummary.setback || '-'"></td>
+                            <td ng-bind="job.ordersSummary.suspended"></td>
+                            <td ng-bind="job.ordersSummary.queued"></td>
+                            <td ng-bind="job.ordersSummary.setback"></td>
 
                             <td class="noExl">
                                 <div class="btn-group dropdown">
@@ -292,8 +292,8 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                         <a ng-click="showConfiguration('job',job.path,job.name)"  class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration}" translate>button.showConfiguration</a>
-                                        <a class="dropdown-item bg-hover-color" ng-if="job.state._text.toLowerCase() !='stopped' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
-                                        <a class="dropdown-item" ng-if="job.state._text.toLowerCase() =='stopped' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
+                                        <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
+                                        <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
                                         <a class="dropdown-item" ng-click="start(job)" ng-if="!job.isOrderJob  && permission.Job.start" translate>button.startTask</a>
                                         <a class="dropdown-item" ng-click="startAt(job)" ng-if="!job.isOrderJob  && permission.Job.start" translate>button.startTaskat</a>
                                         <a class="dropdown-item" ng-if="!job.isOrderJob" ng-click="setRunTime(job)" translate>button.setRunTime</a>

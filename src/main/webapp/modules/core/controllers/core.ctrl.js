@@ -207,13 +207,13 @@
         }, 1000);
 
         $scope.$on('reloadDate', function () {
-            vm.currentTime = moment();
             var date = new Date(vm.selectedJobScheduler.startedAt);
             date.setSeconds(date.getSeconds() + 1);
             vm.selectedJobScheduler.startedAt = date;
         });
 
         vm.logout = function () {
+            $window.localStorage.clientLogs={};
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
@@ -308,7 +308,7 @@
         };
 
         if (vm.type == 'jobChain') {
-            JobChainService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
+            JobChainService.getConfiguration(vm.path, vm.schedulerIds.selected ).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
                     vm.html = $.parseHTML(res.configuration.content.html);

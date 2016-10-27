@@ -22,7 +22,7 @@
             <div class="form-group row" ng-show="filter.type == 'jobChain'">
                <label class="col-sm-3 form-control-label" translate>label.orderName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="{{'placeholder.orderRegexAndChooseTree' | translate}}" ng-disabled="historyFilter.paths.length>0" ng-model="historyFilter.regex">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.orderRegexAndChooseTree' | translate}}" ng-model="historyFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
@@ -36,7 +36,7 @@
             <div class="form-group row" ng-show="filter.type == 'job'">
                <label class="col-sm-3 form-control-label" translate>label.jobName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="{{'placeholder.jobRegex' | translate}}" ng-model="historyFilter.job">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.jobRegex' | translate}}" ng-model="historyFilter.regex">
                </div>
             </div>
 
@@ -74,15 +74,15 @@
 
                 <div class="col-sm-9">
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'incomplete'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'INCOMPLETE'">
                         <i class="primary"></i><span translate>label.incomplete</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'successful'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'SUCCESSFUL'">
                         <i class="primary"></i><span translate>label.success</span>
                     </label>
                     <label class="md-check">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'failed'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'FAILED'">
                         <i class="primary"></i><span translate>label.failed</span>
                     </label>
                 </div>

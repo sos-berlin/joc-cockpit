@@ -9,13 +9,13 @@
 
                     <div class="hide" ng-class="{'show-block':state=='lock'}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'" ng-click="loadLocks()"
                                     ng-class="{'btn-primary': filter.state=='all'}" translate>button.allLocks
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'available'"
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'available'" ng-click="loadLocks()"
                                     ng-class="{'btn-primary': filter.state=='available'}" translate>button.free
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                            <button class="btn btn-grey btn-sm" ng-model="filter.state" ng-click="loadLocks()"
                                     uib-btn-radio="'occupied'"
                                     ng-class="{'btn-primary': filter.state=='occupied'}" translate>button.locked
                             </button>
@@ -23,14 +23,14 @@
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                 <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
+                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'" ng-click="loadLocks()"
                                             ng-class="{'btn-primary': filter.state=='all'}" translate>button.allLocks
                                     </a>
-                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'available'"
+                                    <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'available'" ng-click="loadLocks()"
                                             ng-class="{'btn-primary': filter.state=='available'}" translate>button.free
                                     </a>
                                     <a class="dropdown-item" ng-model="filter.state"
-                                            uib-btn-radio="'occupied'"
+                                            uib-btn-radio="'occupied'" ng-click="loadLocks()"
                                             ng-class="{'btn-primary': filter.state=='occupied'}" translate>button.locked
                                     </a>
                                 </div>
@@ -59,7 +59,7 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                 <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                     <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'all'"
-                                            ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents()" translate>button.allAgentCluster</span>
+                                            ng-class="{'btn-primary': filter.state=='all'}" ng-click="loadAgents(-1)" translate>button.allAgentCluster</span>
                                     </a>
                                     <a class="dropdown-item" ng-model="filter.state"
                                             uib-btn-radio="'healthy'"
@@ -78,25 +78,38 @@
                     </div>
 
                      <div class="hide" ng-class="{'show-block':state=='schedules'}">
-                            <div class="inline" ng-class="{'hide':object.schedules.length>0}">
-
-                        <div class="btn-group">
-                                <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'all'"
-                                        ng-class="{'btn-primary': filter.state=='all'}" ng-click="load()" translate>button.allSchedules</span>
+                         <div class="inline" ng-class="{'hide':object.schedules.length>0}">
+                             <div class="btn-group hidden-btn-group">
+                                <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'ALL'"
+                                        ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allSchedules</span>
                                 </button>
                                 <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                        uib-btn-radio="'active'"
-                                        ng-class="{'btn-primary': filter.state=='active'}" ng-click="load()" translate>button.active
+                                        uib-btn-radio="'ACTIVE'"
+                                        ng-class="{'btn-primary': filter.state=='ACTIVE'}" ng-click="load()" translate>button.active
                                 </button>
                                 <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                        uib-btn-radio="'stopped'"
-                                        ng-class="{'btn-primary': filter.state=='stopped'}" ng-click="load()" translate>button.inactive
+                                        uib-btn-radio="'INACTIVE'"
+                                        ng-class="{'btn-primary': filter.state=='INACTIVE'}" ng-click="load()" translate>button.inactive
                                 </button>
-                        </div>
-
-
-                    </div>
-                        </div>
+                            </div>
+                             <div class="btn-group dropdown hidden-dropdown">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'ALL'"
+                                                ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allSchedules</span>
+                                        </a>
+                                        <a class="dropdown-item" ng-model="filter.state"
+                                                uib-btn-radio="'ACTIVE'"
+                                                ng-class="{'btn-primary': filter.state=='ACTIVE'}" ng-click="load()" translate>button.active</span>
+                                        </a>
+                                        <a class="dropdown-item" ng-model="filter.state"
+                                                uib-btn-radio="'INACTIVE'"
+                                                ng-class="{'btn-primary': filter.state=='INACTIVE'}" ng-click="load()" translate>button.inactive</span>
+                                        </a>
+                                    </div>
+                             </div>
+                         </div>
+                     </div>
                     <div class="btn-group dropdown">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">

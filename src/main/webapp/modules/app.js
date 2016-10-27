@@ -53,7 +53,8 @@
         }])
         .config(["IdleProvider", "KeepaliveProvider",function (IdleProvider, KeepaliveProvider) {
             // configure Idle settings
-            IdleProvider.timeout(60); // in seconds
+            IdleProvider.idle(30 * 60);
+            IdleProvider.timeout(10); // in seconds
             KeepaliveProvider.interval(5); // in seconds
 
         }])
@@ -61,7 +62,6 @@
             $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
                 return function (exception, cause) {
                     TraceKit.report(exception);
-                    console.log(exception);
                     $delegate(exception, cause);
                 };
             }]);

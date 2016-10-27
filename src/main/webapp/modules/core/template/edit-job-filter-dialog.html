@@ -22,7 +22,7 @@
             <div class="form-group row">
                <label class="col-sm-3 form-control-label" translate>label.jobName</label>
                <div class=" col-sm-6">
-                   <input type="text" class="form-control" ng-disabled="jobFilter.paths.length>0" placeholder="{{'placeholder.jobRegexAndChooseTree' | translate}}" ng-model="jobFilter.regex">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.jobRegexAndChooseTree' | translate}}" ng-model="jobFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
@@ -48,34 +48,34 @@
                     </div>
                     <div ng-show="jobFilter.radio == 'current'">
                         <label class="md-check m-t w">
-                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'pending'">
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'PENDING'">
                             <i class="primary"></i> <span translate>label.pending</span>
                         </label>
                         <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'running'" >
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'RUNNING'" >
                             <i class="primary"></i> <span translate>label.running</span>
                         </label>
                         <label class="md-check">
-                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'stopped'" >
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'STOPPED'" >
                             <i class="primary"></i> <span translate>label.stopped</span>
                         </label>
                         <label class="md-check m-t w">
-                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'queued'" >
+                            <input type="checkbox" data-checklist-model="jobFilter.state" data-checklist-value="'QUEUED'" >
                             <i class="primary"></i><span translate>label.waitingForResource</span>
                         </label>
                     </div>
                 </div>
             </div>
-<div class="form-group row m-t-sm" ng-show="jobFilter.radio == 'planned'">
-           <label class="col-sm-3 form-control-label" translate>label.jobPlanned</label>
-           <div class=" col-sm-6">
-            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="jobFilter.planned"
-                   ng-disabled="jobFilter.fromDate ||jobFilter.fromTime || jobFilter.toDate ||jobFilter.toTime" ng-blur="checkPlanned()">
-                <div class="help-block text-danger" ng-if="!validPlanned">
-                  <div translate>message.invalid</div>
+            <div class="form-group row m-t-sm" ng-show="jobFilter.radio == 'planned'">
+               <label class="col-sm-3 form-control-label" translate>label.jobPlanned</label>
+               <div class=" col-sm-6">
+                <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="jobFilter.planned"
+                       ng-disabled="jobFilter.fromDate ||jobFilter.fromTime || jobFilter.toDate ||jobFilter.toTime" ng-blur="checkPlanned()">
+                    <div class="help-block text-danger" ng-if="!validPlanned">
+                      <div translate>message.invalid</div>
+                   </div>
                </div>
-           </div>
-        </div>
+            </div>
             <div class="form-group row" ng-show="jobFilter.radio == 'planned'">
                 <label class="col-sm-3 form-control-label" translate>label.form</label>
                 <div class="col-sm-8">

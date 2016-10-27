@@ -30,7 +30,7 @@
                 <div class=" col-sm-6">
                     <input type="text" class="form-control"
                            placeholder="{{'placeholder.jobRegexAndChooseTree' | translate}}"
-                           ng-disabled="jobFilter.paths.length>0" ng-model="jobFilter.regex">
+                           ng-model="jobFilter.regex">
                 </div>
                 <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
                         class="fa fa-folder-o fa-lg"></i></a></div>
@@ -59,22 +59,22 @@
                     <div ng-show="jobFilter.radio == 'current'">
                         <label class="md-check m-t  w">
                             <input type="checkbox" data-checklist-model="jobFilter.state"
-                                   data-checklist-value="'pending'">
+                                   data-checklist-value="'PENDING'">
                             <i class="primary"></i><span translate>label.pending</span>
                         </label>
                         <label class="md-check  w">
                             <input type="checkbox" data-checklist-model="jobFilter.state"
-                                   data-checklist-value="'running'">
+                                   data-checklist-value="'RUNNING'">
                             <i class="primary"></i><span translate>label.running</span>
                         </label>
                         <label class="md-check ">
                             <input type="checkbox" data-checklist-model="jobFilter.state"
-                                   data-checklist-value="'stopped'">
+                                   data-checklist-value="'STOOPED'">
                             <i class="primary"></i><span translate>label.stopped</span>
                         </label>
                         <label class="md-check m-t w">
                             <input type="checkbox" data-checklist-model="jobFilter.state"
-                                   data-checklist-value="'queued'">
+                                   data-checklist-value="'QUEUED'">
                             <i class="primary"></i><span translate>label.waitingForResource</span>
                         </label>
                     </div>

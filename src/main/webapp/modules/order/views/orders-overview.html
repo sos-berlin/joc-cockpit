@@ -9,58 +9,58 @@
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                       uib-btn-radio="'pending'"
-                                       ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
+                                       uib-btn-radio="'PENDING'"
+                                       ng-class="{'btn-primary': filter.state=='PENDING'}" ng-click="load()" translate>button.pending
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'running'"
-                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                    uib-btn-radio="'RUNNING'"
+                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'suspended'"
-                                    ng-class="{'btn-primary': filter.state=='suspended'}" ng-click="load()" translate>button.suspended
+                                    uib-btn-radio="'SUSPENDED'"
+                                    ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="load()" translate>button.suspended
                             </button>
 
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                    uib-btn-radio="'setback'"
-                                    ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()" translate>button.setback
+                                    uib-btn-radio="'SETBACK'"
+                                    ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="load()" translate>button.setback
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                       uib-btn-radio="'waitingForResource'"
-                                       ng-class="{'btn-primary': filter.state=='waitingForResource'}" ng-click="load()" translate>button.waitingForResource
+                                       uib-btn-radio="'WAITINGFORRESOURCE'"
+                                       ng-class="{'btn-primary': filter.state=='WAITINGFORRESOURCE'}" ng-click="load()" translate>button.waitingForResource
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
-                                       uib-btn-radio="'blacklist'"
-                                       ng-class="{'btn-primary': filter.state=='blacklist'}" ng-click="load()" translate>button.blacklist
+                                       uib-btn-radio="'BLACKLIST'"
+                                       ng-class="{'btn-primary': filter.state=='BLACKLIST'}" ng-click="load()" translate>button.blacklist
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item" ng-model="filter.state"
-                                       uib-btn-radio="'pending'"
-                                       ng-class="{'btn-primary': filter.state=='pending'}" ng-click="load()" translate>button.pending
+                                       uib-btn-radio="'PENDING'"
+                                       ng-class="{'btn-primary': filter.state=='PENDING'}" ng-click="load()" translate>button.pending
                             </a>
                             <a class="dropdown-item" ng-model="filter.state"
-                                    uib-btn-radio="'running'"
-                                    ng-class="{'btn-primary': filter.state=='running'}" ng-click="load()" translate>button.running
+                                    uib-btn-radio="'RUNNING'"
+                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
                             </a>
                             <a class="dropdown-item" ng-model="filter.state"
-                                    uib-btn-radio="'suspended'"
-                                    ng-class="{'btn-primary': filter.state=='suspended'}" ng-click="load()" translate>button.suspended
+                                    uib-btn-radio="'SUSPENDED'"
+                                    ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="load()" translate>button.suspended
                             </a>
 
                             <a class="dropdown-item" ng-model="filter.state"
-                                    uib-btn-radio="'setback'"
-                                    ng-class="{'btn-primary': filter.state=='setback'}" ng-click="load()" translate>button.setback
+                                    uib-btn-radio="'SETBACK'"
+                                    ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="load()" translate>button.setback
                             </a>
                             <a class="dropdown-item" ng-model="filter.state"
-                                       uib-btn-radio="'waitingForResource'"
-                                       ng-class="{'btn-primary': filter.state=='waitingForResource'}" ng-click="load()" translate>button.waitingForResource
+                                       uib-btn-radio="'WAITINGFORRESOURCE'"
+                                       ng-class="{'btn-primary': filter.state=='WAITINGFORRESOURCE'}" ng-click="load()" translate>button.waitingForResource
                             </a>
                             <a class="dropdown-item" ng-model="filter.state"
-                                       uib-btn-radio="'blacklist'"
-                                       ng-class="{'btn-primary': filter.state=='blacklist'}" ng-click="load()" translate>button.blacklist
+                                       uib-btn-radio="'BLACKLIST'"
+                                       ng-class="{'btn-primary': filter.state=='BLACKLIST'}" ng-click="load()" translate>button.blacklist
                             </a>
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                                 <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" ng-click="editFilters()" ng-if="savedOrderFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedOrderFilter.list.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.name}" ng-click="changeFilter(filter.name)" ng-repeat="filter in savedOrderFilter.list track by $index">
+                                <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedOrderFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
                                 </a>
                             </div>

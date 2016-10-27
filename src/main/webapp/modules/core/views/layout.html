@@ -2,7 +2,7 @@
 <div id="content" class="app-content " role="main" ng-controller="HeaderCtrl">
     <div class="w-full text-right top-header-bar white">
         <span class="m-r-sm" ><span translate>label.time</span>: <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
-        <span class="m-r-sm" ><span translate>label.jobSchedulerStartTime</span>: <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate"></span></span>
+        <span class="m-r-sm" ><span translate>label.jobSchedulerStartTime</span>: <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span></span>
         <span class="dropdown">
             <a data-toggle="dropdown">
                 <span translate>label.id</span>:

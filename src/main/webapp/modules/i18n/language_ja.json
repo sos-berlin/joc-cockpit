@@ -638,8 +638,13 @@
    "label.modifyLogViewingCriteria": "Modify Log Viewing Criteria",
    "message.noAgentClusterFound": "no agentCluster found",
    "message.nologsToViewEnableIt": "No logs to view..!! Enable logging",
-   "placeholder.enterKeywords": "Enter keywords to view only their scrolling log"
+   "placeholder.enterKeywords": "Enter keywords to view only their scrolling log",
+   "label.logEnabled": "Log Enabled",
+   "message.noJobHistoryFound": "no job history found",
+   "message.noOrderHistoryFound": "no order history found",
+   "SETBACK": "setback"
 }
+
 
 
 

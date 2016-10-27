@@ -157,6 +157,7 @@
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
                                             var span = document.getElementById('sp' + master.host + master.port);
                                             master.state = nMaster.state;
+                                            
 
                                             if (master.state && refresh) {
 
@@ -190,6 +191,7 @@
                             angular.forEach(res.masters, function (nMaster, rIndex) {
                                 if (nMaster.host == master.host && nMaster.port == master.port) {
                                     master.state = nMaster.state;
+                                     
                                     if (master.state && refresh) {
                                         refreshMasterState(master);
                                     }
@@ -215,21 +217,21 @@
                                 if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
                                     var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
                                     if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
-                                        if (master.state.text == 'stopped' || master.state.text == 'waiting_for_response') {
-                                            var cls = master.state.text == 'stopped' ? " text-danger" : " text-warn";
+                                        if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response') {
+                                            var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
                                             span.className = span.className.replace(/text-.+/, cls);
                                             anchor.className = anchor.className.replace('hide', 'show') + " disable-link";
                                             connectLink(master.host, master.port);
-                                        } else if (master.state.text == 'waiting_for_activation') {
+                                        } else if (master.state._text.toLowerCase() == 'waiting_for_activation') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             connectLink(master.host, master.port);
                                         }
-                                        else if (master.state.text == 'running') {
+                                        else if (master.state._text.toLowerCase() == 'running') {
                                             span.className = span.className.replace(/text-.+/, "text-success");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             connectLink(master.host, master.port);
-                                        } else if (master.state.text == 'paused') {
+                                        } else if (master.state._text.toLowerCase() == 'paused') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
                                             if (results[2] == 'pause') {
                                                 anchor.className = anchor.className.replace('show', 'hide');
@@ -238,7 +240,7 @@
                                             }
                                             connectLink(master.host, master.port);
 
-                                        } else if (master.state.text == 'unreachable') {
+                                        } else if (master.state._text.toLowerCase() == 'unreachable') {
                                             disconnectLink(master.host, master.port);
 
                                         }
@@ -412,15 +414,15 @@
 
 
 
-                                if (master.state && master.state.text == 'stopped') {
+                                if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     classRunning = 'text-danger';
 
-                                } else if (master.state && master.state.text != 'running') {
+                                } else if (master.state && master.state._text.toLowerCase() != 'running') {
                                     classRunning = 'text-black-lt';
 
                                 }
 
-                                if (master.state && master.state.text == 'stopped') {
+                                if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     disableClass = 'disable-link';
                                 }
 
@@ -429,7 +431,7 @@
                                     '<br>Started at : ' + $filter('date')(master.startedAt, 'dd-MMM-yy HH:mm:ss') + '<br> Survey Date: ' + $filter('date')(master.surveyDate, 'dd-MMM-yy HH:mm:ss'));
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
-                                if (master.state && master.state.text == 'paused') {
+                                if (master.state && master.state._text.toLowerCase() == 'paused') {
                                     pauseClass = 'hide';
                                     continueClass = 'show';
                                 }
@@ -455,8 +457,8 @@
                                     '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestart-' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestartWithin-' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
                                     '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
@@ -499,7 +501,7 @@
                     function drawFlowForRemainings(zeroSupervisor) {
 
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-
+                            if(master){
                             var c = "cluster-rect";
                             if (zeroSupervisor && index == 0) {
                                 mLeft = mLeft + margin;
@@ -516,7 +518,7 @@
                             }
                             var name = '';
                             if (master.clusterType && master.clusterType.type == 'passive') {
-                                if (master.state && master.state.text == 'running') {
+                                if (master.state && master.state._text.toLowerCase() == 'running') {
                                     name = 'JobScheduler JS' + (master.clusterType.precedence + 1);
                                 } else {
                                     name = 'JobScheduler JS' + (master.clusterType.precedence + 1);
@@ -528,20 +530,20 @@
                             }
 
                             var classRunning = 'text-success';
-                            if (master.state && master.state.text == 'stopped') {
+                            if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                 classRunning = 'text-danger';
-                            } else if (master.state && master.state.text != 'running') {
+                            } else if (master.state && master.state._text.toLowerCase() != 'running') {
                                 classRunning = 'text-black-lt';
                             }
 
                             var pauseClass = 'show';
                             var continueClass = 'hide';
                             var disableClass = '';
-                            if (master.state.text == 'paused') {
+                            if (master.state._text.toLowerCase() == 'paused') {
                                 pauseClass = 'hide';
                                 continueClass = 'show';
                             }
-                            if (master.state.text == 'stopped') {
+                            if (master.state._text.toLowerCase() == 'stopped') {
                                 disableClass = 'disable-link';
                             }
 
@@ -556,8 +558,8 @@
                                 '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestart-' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestartWithin-' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
                                 '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                 '</div></div>' +
@@ -585,7 +587,7 @@
 
                             }
 
-
+                        }
                         })
                     }
 
@@ -693,7 +695,7 @@
                             }
                             angular.forEach(supervisor.masters, function (master, index) {
                                 if (master.host == host && master.port == port) {
-                                    master.state.text = 'waiting_for_response';
+                                    master.state._text = 'waiting_for_response';
                                     vm.refreshMasterState(master);
                                 }
                             })
@@ -701,7 +703,7 @@
 
                         angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                             if (master.host == host && master.port == port) {
-                                master.state.text = 'waiting_for_response';
+                                master.state._text = 'waiting_for_response';
                                 vm.refreshMasterState(master);
                             }
                         })
