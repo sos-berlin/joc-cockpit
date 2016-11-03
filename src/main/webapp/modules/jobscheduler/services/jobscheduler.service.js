@@ -111,6 +111,16 @@
                 });
                 return deferred.promise;
             },
+            getSchedule: function (schedule,jobschedulerId) {
+                var deferred = $q.defer();
+                var Schedule = $resource('schedule');
+                Schedule.save({schedule:schedule,jobschedulerId:jobschedulerId},function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             substitute: function (substitute,jobschedulerId) {
                 var deferred = $q.defer();
                 var Schedule = $resource('schedules/substitute');

@@ -303,14 +303,15 @@
             vm.totalSubNodes = 0;
 
             vm.jobChain = JSON.parse(SOSAuth.jobChain);
-            console.log("Job Chain " + JSON.stringify(vm.jobChain));
+
             angular.forEach(vm.jobChain.nodes, function (node) {
                 if (vm.jobChain.nodes[0]) {
                     vm.jobChain.nodes[0].padding = 0;
                 }
                 getPadding(node);
-                showOrders();
+
             });
+            showOrders();
             if (vm.totalSubNodes > 0) {
                 vm.totalLineWidth = vm.totalNodes + vm.totalSubNodes;
             } else {

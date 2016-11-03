@@ -43,7 +43,7 @@
     <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
 
         <div class="hide m-l-xs m-t-xs " ng-class="{'show': pageView=='grid'}" >
-            <div class="row ">
+            <div class="row">
                 <div>
                     <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 " ng-repeat="order in filtered = (orders | filter: filterString:strict)" >
                         <div class="box card">
@@ -124,8 +124,10 @@
                     </div>
                 </div>
             </div>
-         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>message.noDataMatched</div>
-
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>message.noDataMatched</div>
+            <div ng-if="orders.length==0" class="text-center text-u-c">
+                <span class="text-orange" translate>message.noOrdersFound</span>
+            </div>
         </div>
 
         <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
@@ -300,7 +302,9 @@
                     </div>
                 </div>
                 <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>message.noDataMatched</div>
-
+                <div ng-if="orders.length==0" class="text-center text-u-c">
+                    <span class="text-orange" translate>message.noOrdersFound</span>
+                </div>
             </div>
 
        </div>

@@ -130,7 +130,7 @@
         return {
             restrict: 'E',
             transclude: true,
-            link: function (scope, element, attrs, model) {
+            link: function (scope, element) {
 
                 scope.$watch("jobChain", function (data) {
                     //console.log("Normal watch called01 " + data);
@@ -554,7 +554,7 @@
                 }
             },
             scope: {
-                jobChain: '=',
+                'jobChain' : '=',
                 'onAdd': '&',
                 'onRemove': '&',
                 'showErrorNodes': '=',
@@ -650,10 +650,6 @@
                             })
 
                         }
-
-                        var x1 = div1.offsetLeft;
-                        var y1 = div1.offsetTop;
-
 
                         var x1 = div1.offsetLeft;
                         var y1 = div1.offsetTop;
@@ -1171,8 +1167,7 @@
                     //console.log("For index " + index);
                     var node = vm.jobChain.nodes[index];
                     if (node.job && node.job.path) {
-                        vm.getJobInfo({filter: {compact: false, job: node.job.path}}).then(function (res) {
-
+                        vm.getJobInfo({filter: {compact: true, job: node.job.path}}).then(function (res) {
 
                             // //console.log("Name " + node.name);
                             var span = document.getElementById('lk' + node.name);
@@ -1221,17 +1216,17 @@
                     if (vm.showErrorNodes) {
                         angular.forEach(errorElms, function (elm, index) {
                             elm.style.setProperty('display', 'block');
-                        })
+                        });
                         angular.forEach(errorNodes, function (elm, index) {
                             elm.style.setProperty('display', 'block');
-                        })
+                        });
                     } else {
                         angular.forEach(errorElms, function (elm, index) {
                             elm.style.setProperty('display', 'none');
-                        })
+                        });
                         angular.forEach(errorNodes, function (elm, index) {
                             elm.style.setProperty('display', 'none');
-                        })
+                        });
                     }
 
 
@@ -1367,7 +1362,7 @@
 
                 startPolling();
                 function startPolling() {
-                    if ($rootScope.config.jobChainsWorkflow.polling) {
+                    if ($rootScope.config && $rootScope.config.jobChainsWorkflow.polling) {
                             poll();
                         }
                 }

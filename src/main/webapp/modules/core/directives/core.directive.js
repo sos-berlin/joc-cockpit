@@ -59,6 +59,7 @@
                     }
                     else if (toState.url === '/resources') {
                         $state.go('app.resources.agentClusters');
+                        event.preventDefault();
                     }else if(toState.url === '/allOrders') {
                         SOSAuth.jobChain = undefined;
                     }

@@ -493,7 +493,6 @@
                     vm.loadSchedules();
             }
             startPolling();
-
         });
 
 
@@ -594,7 +593,7 @@
                     vm.orders = angular.merge(result.orders, res.orders);
                 });
             }, function () {
-                vm.isLoading = true;
+
                 vm.isError = true;
             });
         }
@@ -611,8 +610,14 @@
 
         ScheduleService.getScheduleP(vm.path, $scope.schedulerIds.selected).then(function (result) {
             vm.schedule = result.schedule;
+            vm.isLoading = true;
+            ScheduleService.getSchedule(vm.path, $scope.schedulerIds.selected).then(function (result) {
+                vm.schedule = angular.merge(vm.schedule, result.schedule);
+            });
+            if(vm.schedule.usedByOrders && vm.schedule.usedByOrders.length>0)
             loadOrders(vm.schedule.usedByOrders);
         }, function () {
+            vm.isLoading = true;
             vm.isError = true;
         });
 

@@ -53,7 +53,7 @@
 
                 scope.$watch("clusterStatusData", function (data) {
                     refresh(data);
-                })
+                });
 
 
                 function prepareData() {
@@ -102,7 +102,7 @@
                             //scope.clusterStatusData.supervisors[1]=angular.copy(scope.clusterStatusData.supervisors[0],cSupervisor);
                             removeSupervised();
                         }
-                    })
+                    });
 
 
                     function removeSupervised() {
@@ -186,6 +186,7 @@
                             drawFlow();
                         }
 
+                        if(res)
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
 
                             angular.forEach(res.masters, function (nMaster, rIndex) {
@@ -539,11 +540,11 @@
                             var pauseClass = 'show';
                             var continueClass = 'hide';
                             var disableClass = '';
-                            if (master.state._text.toLowerCase() == 'paused') {
+                            if (master.state && master.state._text.toLowerCase() == 'paused') {
                                 pauseClass = 'hide';
                                 continueClass = 'show';
                             }
-                            if (master.state._text.toLowerCase() == 'stopped') {
+                            if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                 disableClass = 'disable-link';
                             }
 
