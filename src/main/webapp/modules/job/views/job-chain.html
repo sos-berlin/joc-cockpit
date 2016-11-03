@@ -280,6 +280,13 @@
                                 <i ng-show="propertyName == 'processClass' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
+                            <th ng-click="sortBy('jobChain.ordersSummary.pending')"><a><span
+                                    translate>label.orderPending</span>
+                                <i ng-show="propertyName == 'jobChain.ordersSummary.pending' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'jobChain.ordersSummary.pending' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
                             <th ng-click="sortBy('jobChain.ordersSummary.running')"><a><span
                                     translate>label.orderRunning</span>
                                 <i ng-show="propertyName == 'jobChain.ordersSummary.running' && !reverse"
@@ -306,6 +313,13 @@
                                 <i ng-show="propertyName == 'jobChain.ordersSummary.setback' && reverse"
                                    class="fa fa-caret-up "></i></a>
                             </th>
+                            <th ng-click="sortBy('jobChain.ordersSummary.blacklist')"><a><span
+                                    translate>label.orderBlacklist</span>
+                                <i ng-show="propertyName == 'jobChain.ordersSummary.blacklist' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName == 'jobChain.ordersSummary.blacklist' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
                             <th class="noExl"></th>
                         </tr>
                         </thead>
@@ -328,10 +342,12 @@
                                       ng-bind="jobChain.state._text  | translate"></span></td>
                             <td ng-bind="jobChain.numOfNodes || 0"></td>
                             <td ng-bind="jobChain.processClass || '-'"></td>
+                            <td ng-bind="jobChain.ordersSummary.pending"></td>
                             <td ng-bind="jobChain.ordersSummary.running"></td>
                             <td ng-bind="jobChain.ordersSummary.suspended"></td>
                             <td ng-bind="jobChain.ordersSummary.waitingForResource"></td>
                             <td ng-bind="jobChain.ordersSummary.setback"></td>
+                            <td ng-bind="jobChain.ordersSummary.blacklist"></td>
                             <td class="noExl">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">

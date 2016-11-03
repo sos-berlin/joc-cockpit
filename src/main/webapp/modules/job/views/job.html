@@ -241,6 +241,13 @@
                                     <i ng-show="propertyName == 'numOfRunningTasks' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
+                                <th ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
+                                    <i ng-show="propertyName == 'ordersSummary.pending' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'ordersSummary.pending' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+
                                 <th ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
                                     <i ng-show="propertyName == 'ordersSummary.suspended' && !reverse"
                                        class="fa fa-caret-down "></i>
@@ -251,12 +258,6 @@
                                     <i ng-show="propertyName == 'ordersSummary.waitingForResource' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'ordersSummary.waitingForResource' && reverse"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                <th ng-click="sortBy('ordersSummary.setback')" ><a><span translate>label.orderSetbacks</span>
-                                    <i ng-show="propertyName == 'ordersSummary.setback' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'ordersSummary.setback' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
                                 <th class="noExl"></th>
@@ -282,9 +283,9 @@
                             <td><a class="primary-text-hover-color" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains || 0"></a></td>
                             <td ng-bind="job.estimatedDuration || '-'"> </td>
                             <td><a class="primary-text-hover-color" ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a></td>
+                            <td ng-bind="job.ordersSummary.pending"></td>
                             <td ng-bind="job.ordersSummary.suspended"></td>
                             <td ng-bind="job.ordersSummary.queued"></td>
-                            <td ng-bind="job.ordersSummary.setback"></td>
 
                             <td class="noExl">
                                 <div class="btn-group dropdown">

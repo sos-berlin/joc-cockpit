@@ -57,9 +57,8 @@
                         $state.go('app.jobChainDetails.orders');
                         event.preventDefault();
                     }
-                     else if (toState.url === '/resources') {
+                    else if (toState.url === '/resources') {
                         $state.go('app.resources.agentClusters');
-                        event.preventDefault();
                     }else if(toState.url === '/allOrders') {
                         SOSAuth.jobChain = undefined;
                     }
@@ -95,7 +94,6 @@
 
                 // handle errors
                 $rootScope.$on('$stateNotFound', function () {
-
                     element.addClass('hide'); // hide spinner bar
                 });
 

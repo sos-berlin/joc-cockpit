@@ -23,12 +23,7 @@
                 });
                 return deferred.promise;
             },
-            getSimulated: function (res) {
 
-                var deferred = $q.defer();
-                deferred.resolve(res);
-                return deferred.promise;
-            },
             getOrdersP: function (filter) {
 
                 var deferred = $q.defer();
@@ -46,7 +41,7 @@
                 var jobChains = [];
                 jobChains.job_chain = jobChain;
                 var Orders = $resource('orders/p');
-                Orders.save({orders: jobChains,jobschedulerId:jobschedulerId}, function (res) {
+                Orders.save({orders: jobChains,jobschedulerId:jobschedulerId,compact:true}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -58,7 +53,7 @@
                 var jobChains = [];
                 jobChains.job_chain = jobChain;
                 var Orders = $resource('orders');
-                Orders.save({orders: jobChains,jobschedulerId:jobschedulerId}, function (res) {
+                Orders.save({orders: jobChains,jobschedulerId:jobschedulerId,compact:true}, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

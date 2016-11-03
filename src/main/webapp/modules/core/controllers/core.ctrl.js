@@ -217,7 +217,7 @@
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
-                $location.path('/login');
+                $location.path('/login').search({});
             });
 
         };

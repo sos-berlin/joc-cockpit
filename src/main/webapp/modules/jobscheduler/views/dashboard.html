@@ -34,9 +34,8 @@
                                                 showLabels="true"
                                                 labelType="percent"
                                                 noData="{{'message.noDataAvailable' | translate}}"
-                                                color="colorFunction()"
-                                                useInteractiveGuideLine="true">
-                                            <svg height="295" cursor="pointer"></svg>
+                                                color="colorFunction()">
+                                            <svg height="295"></svg>
                                         </nvd3-pie-chart>
                                     </div>
                                     <div class="col-xs-7" ng-hide="agentClusterData.length==0">
@@ -69,14 +68,16 @@
                                         id="agentClusterStatus"
                                         width="550"
                                         height="235"
+                                        yAxisTickFormat="yAxisTickFormatFunction()"
+                                        valueFormat="valueFormatFunction()"
                                         interactive="true"
                                         showXAxis="true"
                                         showYAxis="true"
-                                        margin="{bottom:60, right: 30, top:20}"
+                                        margin="{bottom:70, right: 25,left: 40, top:20}"
                                         forceY="{{YAxisDomain}}"
                                         noData="{{'message.noDataAvailable' | translate}}"
                                         showValues="true">
-                                    <svg cursor="pointer"></svg>
+                                    <svg></svg>
                                 </nvd3-discrete-bar-chart>
                             </div>
                         </div>
@@ -117,29 +118,29 @@
                                     <div class="text-center row">
                                         <div class="col-xs-2">
                                             <div class="" translate>label.pending</div>
-                                            <a id ="pending-id" href="#/orders/pending" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
+                                            <a id ="pending-id" href="#/orders/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
                                             <div class="" translate>label.running</div>
-                                            <a id ="running-id" href="#/orders/running" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
+                                            <a id ="running-id" href="#/orders/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
                                         </div>
 
                                         <div class="col-xs-2">
                                             <div class=" " translate>label.suspended</div>
-                                            <a id ="suspended-id" href="#/orders/suspended" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
+                                            <a id ="suspended-id" href="#/orders/SUSPENDED" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
                                         </div>
 
                                         <div class="col-xs-2">
                                             <div class=" " translate>label.setback</div>
-                                            <a id ="setback-id" href="#/orders/setback" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
+                                            <a id ="setback-id" href="#/orders/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
                                             <div class=" " translate>label.waitingForResource</div>
-                                            <a id ="waitingForResource-id" href="#/orders/waitingForResource" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
+                                            <a id ="waitingForResource-id" href="#/orders/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
                                         </div>
                                         <div class="col-xs-2">
                                             <div class=" " translate>label.blacklist</div>
-                                            <a id ="blacklist-id" href="#/orders/blacklist" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
+                                            <a id ="blacklist-id" href="#/orders/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
                                         </div>
                                     </div>
                                 </div>
@@ -158,11 +159,11 @@
                     <div class="box-tool">
                         <div class="btn-group m-l-sm">
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="range='period';getPlans()" translate>button.today
+                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="getDailyPlans()" translate>button.today
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="range='period';getPlans()"
+                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="getDailyPlans()"
                                     translate>button.next24
                             </button>
                         </div>
