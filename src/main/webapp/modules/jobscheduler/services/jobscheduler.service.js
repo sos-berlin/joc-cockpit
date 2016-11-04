@@ -168,6 +168,7 @@
 
     JobSchedulerService.$inject=["$resource", "$q"];
     function JobSchedulerService($resource,$q){
+       var clusterMembers;
         return{
             getSchedulerIds: function () {
                 var deferred = $q.defer();
@@ -270,14 +271,20 @@
                 return deferred.promise;
             },
 
-            getClusterMembers: function (jobschedulerId) {
+             getClusterMembers: function (jobschedulerId) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/cluster/members');
+                if(clusterMembers){
+                     deferred.resolve(clusterMembers);
+                }else{
+                   var JobScheduler = $resource('jobscheduler/cluster/members');
                 JobScheduler.save(jobschedulerId,function (res) {
+                    clusterMembers=res;
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
+                }
+
                 return deferred.promise;
             },
 
