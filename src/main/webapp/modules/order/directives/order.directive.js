@@ -8,7 +8,8 @@
         .directive('pieChartComponent', pieChartComponent)
         .directive('flowDiagram', flowDiagram);
 
-    function pieChartComponent() {
+    pieChartComponent.$inject =['$rootScope'];
+    function pieChartComponent($rootScope) {
         return {
             restrict: 'E',
             templateUrl: 'modules/order/views/pie-chart.html',
@@ -16,7 +17,7 @@
                 width: '@',
                 height: '@'
             },
-            controller: ['OrderService', '$scope', '$rootScope', 'CoreService', 'SOSAuth', function (OrderService, $scope, $rootScope, CoreService, SOSAuth) {
+            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth','$interval', function (OrderService, $scope, CoreService, SOSAuth, $interval) {
                 var vm = $scope;
                 var ordersData = [];
 
@@ -119,14 +120,38 @@
                 if (!CoreService.getSideView()) {
                     vm.hidePanel();
                 }
+
+
+                startPolling();
+
+                function startPolling() {
+                    if ($rootScope.config.orderOverviewWidget.polling) {
+                        poll();
+                    }
+                }
+
+                var interval;
+
+
+                function poll() {
+                    interval = $interval(function () {
+                        getSnapshot();
+                    }, $rootScope.config.orderOverviewWidget.interval * 1000)
+                }
+
+                $scope.$on('$destroy', function () {
+                    $interval.cancel(interval);
+                });
+
+
             }]
         };
     }
 
 
-    flowDiagram.$inject = ["$compile"];
+    flowDiagram.$inject = ["$compile", "$rootScope", "$window"];
 
-    function flowDiagram($compile) {
+    function flowDiagram($compile, $rootScope, $window) {
         return {
             restrict: 'E',
             transclude: true,
@@ -141,7 +166,6 @@
                 });
                 function draw() {
                     var left = 0;
-                    var distance = 250;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
 
@@ -174,10 +198,10 @@
                         if (index == 0) {
                             orderLeft = margin + avatarW;
                             rectangleTemplate = rectangleTemplate +
-                            '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
-                            '<table class="table table-hover table-bordered"><thead > <tr>' +
-                            '<th> <span translate>Sr. </span> </th><th> <span translate>Directory </span> </th>' +
-                            '<th> <span translate>Regex</span> </th></tr></thead>'
+                                '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
+                                '<table class="table table-hover table-bordered"><thead > <tr>' +
+                                '<th> <span translate>Sr. </span> </th><th> <span translate>Directory </span> </th>' +
+                                '<th> <span translate>Regex</span> </th></tr></thead>'
                         }
                         rectangleTemplate = rectangleTemplate + '<tbody> <tr> <td>' + parseInt(index + 1) + ' </td><td>' + orderSource.directory + ' </td><td>' + orderSource.regex + ' </td></tr>';
                         if (index == scope.jobChain.fileOrderSources.length - 1) {
@@ -201,8 +225,8 @@
                             var startTop = avatarTop - 25;
                             var startLeft = avatarW / 2 - "Start".length * 3;
                             rectangleTemplate = rectangleTemplate + '<span id="lbStart" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
-                            + '" translate>label.start</span>' +
-                            '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
+                                + '" translate>label.start</span>' +
+                                '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
                         }
 
@@ -278,9 +302,9 @@
                                 jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
                                 jobName = '<span><i class="fa fa-file1"></i><span class="">' + jobName + '</span></span>';
                                 host = '<div class="text-left text-muted p-t-xs ">' +
-                                '<span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                '<span id="' + 'plk' + item.name + '" class="pull-right show"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                '</div>';
+                                    '<span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                    '<span id="' + 'plk' + item.name + '" class="pull-right show"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                    '</div>';
                                 lock = '<div class="text-left text-muted p-t-xs "><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></div>';
                             } else if (item.jobChain) {
                                 jobName = '<span><i class="fa fa-list"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
@@ -330,25 +354,25 @@
                             }
 
                             rectangleTemplate = rectangleTemplate +
-                            '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect ' + rectCls + '" >' +
-                            '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
-                            '<input type="checkbox"  id="' + chkId + '">' +
-                            '<i class="ch-purple"></i>' +
-                            '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
-                            '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
-                            '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                            '<a target="_blank" href="#/showConfiguration?type=job&path=' + item.job.path + '" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
-                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
-                            '</div></div></div>'
-                            + '<div class="text-left text-muted p-t-sm ">' + jobName +
-                            '</div>' +
-                            host +
-                            '</div >' +
-                            '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> <span translate>' + op1 + '</span></a>' +
-                            '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
-                            '</div>' +
-                            '</div>';
+                                '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect ' + rectCls + '" >' +
+                                '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
+                                '<input type="checkbox"  id="' + chkId + '">' +
+                                '<i class="ch-purple"></i>' +
+                                '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
+                                '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
+                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                                '<a target="_blank" href="#/showConfiguration?type=job&path=' + item.job.path + '" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
+                                '</div></div></div>'
+                                + '<div class="text-left text-muted p-t-sm ">' + jobName +
+                                '</div>' +
+                                host +
+                                '</div >' +
+                                '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
+                                '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> <span translate>' + op1 + '</span></a>' +
+                                '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
+                                '</div>' +
+                                '</div>';
                         }
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
@@ -387,26 +411,26 @@
                                     var btnId4 = 'btn4' + item.name.replace(':', '__');
                                     var statusCls;
                                     rectangleTemplate = rectangleTemplate +
-                                    '<div id="' + item.name + '" style="position:absolute;left:' + coords[scope.errorNodeIndex].left + 'px;top:' + coords[scope.errorNodeIndex].top + 'px"  class="rect error-node" >' +
-                                    '<div><div><span class="md-check md-check1" style="padding-left: 20px;">' +
-                                    '<input type="checkbox"  id="' + chkId + '">' +
-                                    '<i class="ch-purple"></i>' +
-                                    '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
-                                    '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
-                                    '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a target="_blank" href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
-                                    '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
-                                    '</div></div></div>'
-                                    + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
-                                    '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
-                                    '<span id="' + 'pc' + item.name + '" class="p-l-sm"></span></span>' +
-                                    '<span class="show" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                    '</div>' + '</div>' +
-                                    '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                    '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> {{\'button.stopNode\' | translate}}</a>' +
-                                    '<a href class=" pull-right " id="' + btnId2 + '" > <i class="fa fa-step-forward"></i> {{\'button.skipNode\' | translate}}</a>' +
-                                    '</div>' +
-                                    '</div>';
+                                        '<div id="' + item.name + '" style="position:absolute;left:' + coords[scope.errorNodeIndex].left + 'px;top:' + coords[scope.errorNodeIndex].top + 'px"  class="rect error-node" >' +
+                                        '<div><div><span class="md-check md-check1" style="padding-left: 20px;">' +
+                                        '<input type="checkbox"  id="' + chkId + '">' +
+                                        '<i class="ch-purple"></i>' +
+                                        '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
+                                        '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
+                                        '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                                        '<a target="_blank" href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                        '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
+                                        '</div></div></div>'
+                                        + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
+                                        '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
+                                        '<span id="' + 'pc' + item.name + '" class="p-l-sm"></span></span>' +
+                                        '<span class="show" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                        '</div>' + '</div>' +
+                                        '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
+                                        '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> {{\'button.stopNode\' | translate}}</a>' +
+                                        '<a href class=" pull-right " id="' + btnId2 + '" > <i class="fa fa-step-forward"></i> {{\'button.skipNode\' | translate}}</a>' +
+                                        '</div>' +
+                                        '</div>';
                                 }
 
                                 if (i == scope.jobChain.nodes.length - 1) {
@@ -459,18 +483,18 @@
                                 var labelLeft = coords[length].left + avatarW / 2 - endNode.name.length * 3;
 
                                 rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-danger error-node" ' +
-                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
-                                '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
-                                'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + coords[length].top + 'px' + '"> </span>';
+                                    'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
+                                    '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
+                                    'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + coords[length].top + 'px' + '"> </span>';
 
                             } else {
                                 coords[length].top = avatarTop;
                                 var labelTop = avatarTop - 25;
                                 var labelLeft = coords[length].left + avatarW / 2 - endNode.name.length * 3;
                                 rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-success" ' +
-                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
-                                '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
-                                'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + avatarTop + 'px' + '"> </span>';
+                                    'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
+                                    '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
+                                    'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + avatarTop + 'px' + '"> </span>';
                             }
 
                             if (index == scope.jobChain.endNodes.length - 1) {
@@ -498,16 +522,16 @@
                             var rect = document.getElementById('start');
                             var top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
-                            rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
+                            rect.style['top'] = top - maxUTop + iTop + 'px';
                             rect = document.getElementById('lbStart');
                             top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
-                            rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
+                            rect.style['top'] = top - maxUTop + iTop + 'px';
                             angular.forEach(scope.jobChain.nodes, function (item, index) {
                                 rect = document.getElementById(item.name);
                                 top = rect.style.getPropertyValue('top');
                                 top = parseInt(top.substring(0, top.length - 2));
-                                rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
+                                rect.style['top'] = top - maxUTop + iTop + 'px';
                                 if (index == scope.jobChain.nodes.length - 1) {
                                     if (!scope.jobChain.nodes || scope.jobChain.nodes.length == 0) {
                                         scope.drawConnections();
@@ -520,13 +544,13 @@
                                 if (rect) {
                                     top = rect.style.getPropertyValue('top');
                                     top = parseInt(top.substring(0, top.length - 2));
-                                    rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
+                                    rect.style['top'] = top - maxUTop + iTop + 'px';
                                 }
                                 rect = document.getElementById('lb' + endNode.name);
                                 if (rect) {
                                     top = rect.style.getPropertyValue('top');
                                     top = parseInt(top.substring(0, top.length - 2));
-                                    rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
+                                    rect.style['top'] = top - maxUTop + iTop + 'px';
                                 }
 
                                 if (scope.jobChain.endNodes.length - 1 == sIndex) {
@@ -540,7 +564,7 @@
                                 if (rect) {
                                     top = rect.style.getPropertyValue('top');
                                     top = parseInt(top.substring(0, top.length - 2));
-                                    rect.style.setProperty('top', +top - maxUTop + iTop + 'px');
+                                    rect.style['top'] = top - maxUTop + iTop + 'px';
                                 }
                             })
 
@@ -554,7 +578,7 @@
                 }
             },
             scope: {
-                'jobChain' : '=',
+                'jobChain': '=',
                 'onAdd': '&',
                 'onRemove': '&',
                 'showErrorNodes': '=',
@@ -562,10 +586,9 @@
                 'onAction': '&',
                 'orders': '='
             },
-            controller: ['$scope', '$rootScope', '$window','$interval', function ($scope, $window,$rootScope,$interval) {
+            controller: ['$scope', '$interval', function ($scope, $interval) {
                 var vm = $scope;
                 vm.left = 0;
-                vm.distance = 250;
                 vm.object = {};
                 var splitRegex = new RegExp('(.+):(.+)');
                 var pDiv;
@@ -604,28 +627,28 @@
                         node = document.createElement('div');
                         node.setAttribute('class', 'h-line next-link');
                         //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                        node.style.setProperty('top', top + 'px');
-                        node.style.setProperty('left', left + 'px');
-                        node.style.setProperty('width', '2px');
-                        node.style.setProperty('height', height + 2+'px');
+                        node.style['top'] = top + 'px';
+                        node.style['left'] = left + 'px';
+                        node.style['width'] = '2px';
+                        node.style['height'] = height + 2 + 'px';
                         mainContainer.appendChild(node);
 
                         node = document.createElement('div');
                         node.setAttribute('class', 'h-line next-link');
                         //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                        node.style.setProperty('top', top + height + 'px');
-                        node.style.setProperty('left', div2.offsetLeft + div2.clientWidth / 2 + 'px');
-                        node.style.setProperty('width', left - div2.offsetLeft - div2.clientWidth / 2 +1+ 'px');
-                        node.style.setProperty('height', '2px');
+                        node.style['top'] = top + height + 'px';
+                        node.style['left'] = div2.offsetLeft + div2.clientWidth / 2 + 'px';
+                        node.style['width'] = left - div2.offsetLeft - div2.clientWidth / 2 + 1 + 'px';
+                        node.style['height'] = '2px';
                         mainContainer.appendChild(node);
 
                         node = document.createElement('div');
                         node.setAttribute('class', 'h-line next-link');
                         //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                        node.style.setProperty('top', top + height + 'px');
-                        node.style.setProperty('left', div2.offsetLeft + div2.clientWidth / 2 + 'px');
-                        node.style.setProperty('width', 2 + 'px');
-                        node.style.setProperty('height', div2.offsetTop - top - height + 'px');
+                        node.style['top'] = top + height + 'px';
+                        node.style['left'] = div2.offsetLeft + div2.clientWidth / 2 + 'px';
+                        node.style['width'] = 2 + 'px';
+                        node.style['height'] = div2.offsetTop - top - height + 'px';
                         mainContainer.appendChild(node);
 
 
@@ -667,10 +690,10 @@
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
                             //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                            node.style.setProperty('top', y1 + div1.clientHeight / 2 + vm.borderTop + 'px');
-                            node.style.setProperty('left', 32 + 'px');
-                            node.style.setProperty('width', div1.offsetLeft - avatar.offsetLeft - 32 + 'px');
-                            node.style.setProperty('height', '2px');
+                            node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
+                            node.style['left'] = 32 + 'px';
+                            node.style['width'] = div1.offsetLeft - avatar.offsetLeft - 32 + 'px';
+                            node.style['height'] = '2px';
                             mainContainer.appendChild(node);
                         }
 
@@ -678,33 +701,33 @@
                             var height = 30;
                             var width = 40;
                             var top = div1.offsetTop - height;
-                            var left = div1.offsetLeft + div1.clientWidth / 2 + width / 2
+                            var left = div1.offsetLeft + div1.clientWidth / 2 + width / 2;
 
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
-                            node.style.setProperty('top', top + 'px');
-                            node.style.setProperty('left', left + 'px');
-                            node.style.setProperty('width', '2px');
-                            node.style.setProperty('height', height + 'px');
+                            node.style['top'] = top + 'px';
+                            node.style['left'] = left + 'px';
+                            node.style['width'] = '2px';
+                            node.style['height'] = height + 'px';
                             mainContainer.appendChild(node);
 
 
                             left = left - width;
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
-                            node.style.setProperty('top', top + 'px');
-                            node.style.setProperty('left', left + 'px');
-                            node.style.setProperty('width', width + 'px');
-                            node.style.setProperty('height', '2px');
+                            node.style['top'] = top + 'px';
+                            node.style['left'] = left + 'px';
+                            node.style['width'] = width + 'px';
+                            node.style['height'] = '2px';
                             mainContainer.appendChild(node);
 
 
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
-                            node.style.setProperty('top', top + 'px');
-                            node.style.setProperty('left', left + 'px');
-                            node.style.setProperty('width', '2px');
-                            node.style.setProperty('height', height + 'px');
+                            node.style['top'] = top + 'px';
+                            node.style['left'] = left + 'px';
+                            node.style['width'] = '2px';
+                            node.style['height'] = height + 'px';
                             mainContainer.appendChild(node);
 
                             node = document.createElement('i');
@@ -713,9 +736,9 @@
                             mainContainer.appendChild(node);
 
                             var i = document.getElementById('chevron');
-                            i.style.setProperty('position', 'absolute');
-                            i.style.setProperty('top', top + height - vm.borderTop - i.clientHeight / 2 + 'px');
-                            i.style.setProperty('left', left - i.clientWidth / 2 + 'px');
+                            i.style['position'] = 'absolute';
+                            i.style['top'] = top + height - vm.borderTop - i.clientHeight / 2 + 'px';
+                            i.style['left'] = left - i.clientWidth / 2 + 'px';
 
 
                         }
@@ -731,10 +754,10 @@
                                     width = vm.margin / 2;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
 
                                     top = div1.offsetTop + div1.clientHeight / 2;
@@ -742,20 +765,20 @@
                                     height = pDiv.offsetTop + pDiv.clientHeight / 2 - top;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', '2px');
-                                    node.style.setProperty('height', height + 'px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
                                     mainContainer.appendChild(node);
 
 
                                     width = left - pDiv.offsetLeft - pDiv.clientWidth;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
                                 } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
                                     console.log("Previous is above for " + item.name);
@@ -764,10 +787,10 @@
                                     var width = vm.margin / 2;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
 
                                     left = left + vm.margin / 2;
@@ -775,10 +798,10 @@
 
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', '2px');
-                                    node.style.setProperty('height', height + 'px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
                                     mainContainer.appendChild(node);
 
                                     top = top + height;
@@ -787,10 +810,10 @@
 
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
                                 }
 
@@ -804,10 +827,10 @@
 
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
 
 
@@ -815,10 +838,10 @@
 
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', '2px');
-                                    node.style.setProperty('height', height + 'px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
                                     mainContainer.appendChild(node);
 
                                     top = top + height;
@@ -826,10 +849,10 @@
                                     width = div2.offsetLeft - vm.margin / 2 - left + vm.border / 2;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
 
                                 } else if (div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
@@ -840,10 +863,10 @@
                                     var height = 1;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
 
                                     left = left + width;
@@ -851,20 +874,20 @@
                                     height = div2.offsetTop + div2.clientHeight / 2 - top;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', '2px');
-                                    node.style.setProperty('height', height + 'px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
                                     mainContainer.appendChild(node);
 
                                     top = top + height;
                                     width = div1.offsetLeft - left;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'h-line next-link');
-                                    node.style.setProperty('top', top + 'px');
-                                    node.style.setProperty('left', left + 'px');
-                                    node.style.setProperty('width', width + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
 
 
@@ -881,10 +904,10 @@
                                         console.log("Drawing next for " + item.name + " " + item.nextNode);
                                         node = document.createElement('div');
                                         node.setAttribute('class', 'h-line next-link');
-                                        node.style.setProperty('top', y1 + div1.clientHeight / 2 + vm.borderTop + 'px');
-                                        node.style.setProperty('left', x1 + div1.clientWidth + 'px');
-                                        node.style.setProperty('width', x2 - x1 - div1.clientWidth + 'px');
-                                        node.style.setProperty('height', '2px');
+                                        node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
+                                        node.style['left'] = x1 + div1.clientWidth + 'px';
+                                        node.style['width'] = x2 - x1 - div1.clientWidth + 'px';
+                                        node.style['height'] = '2px';
                                         mainContainer.appendChild(node);
                                     }
 
@@ -909,47 +932,47 @@
                                 if (splitted) {
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'error-link');
-                                    node.style.setProperty('top', div1.offsetTop + div1.clientHeight + vm.borderTop + 'px');
-                                    node.style.setProperty('left', div1.offsetLeft + div1.clientWidth / 2 + 'px');
-                                    node.style.setProperty('width', '2px');
-                                    node.style.setProperty('border-left', '2px dashed #f44455');
-                                    node.style.setProperty('height', vm.splitMargin / 2 + 'px');
+                                    node.style['top'] = div1.offsetTop + div1.clientHeight + vm.borderTop + 'px';
+                                    node.style['left'] = div1.offsetLeft + div1.clientWidth / 2 + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['border-left'] = '2px dashed #f44455';
+                                    node.style['height'] = vm.splitMargin / 2 + 'px';
                                     mainContainer.appendChild(node);
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'error-link');
-                                    node.style.setProperty('top', div1.offsetTop + div1.clientHeight + vm.splitMargin / 2 + vm.borderTop + 'px');
-                                    node.style.setProperty('left', div1.offsetLeft + div1.clientWidth / 2 + 'px');
-                                    node.style.setProperty('border-top', '2px dashed #f44455');
-                                    node.style.setProperty('width', div1.clientWidth / 2 + vm.margin / 2 + vm.hSpace + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = div1.offsetTop + div1.clientHeight + vm.splitMargin / 2 + vm.borderTop + 'px';
+                                    node.style['left'] = div1.offsetLeft + div1.clientWidth / 2 + 'px';
+                                    node.style['border-top'] = '2px dashed #f44455';
+                                    node.style['width'] = div1.clientWidth / 2 + vm.margin / 2 + vm.hSpace + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'error-link');
-                                    node.style.setProperty('top', div1.offsetTop + div1.clientHeight + vm.splitMargin / 2 + vm.borderTop + 'px');
-                                    node.style.setProperty('left', div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace + 'px');
-                                    node.style.setProperty('width', '2px');
-                                    node.style.setProperty('height', errorNode.offsetTop + errorNode.clientHeight / 2 - (div1.offsetTop + div1.clientHeight + 5 * vm.borderTop ) + 'px');
-                                    node.style.setProperty('border-left', '2px dashed #f44455');
+                                    node.style['top'] = div1.offsetTop + div1.clientHeight + vm.splitMargin / 2 + vm.borderTop + 'px';
+                                    node.style['left'] = div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = errorNode.offsetTop + errorNode.clientHeight / 2 - (div1.offsetTop + div1.clientHeight + 5 * vm.borderTop ) + 'px';
+                                    node.style['border-left'] = '2px dashed #f44455';
                                     mainContainer.appendChild(node);
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'error-link');
-                                    node.style.setProperty('top', errorNode.offsetTop + errorNode.clientHeight / 2 + 'px');
-                                    node.style.setProperty('left', div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace + 'px');
-                                    node.style.setProperty('border-top', '2px dashed #f44455');
-                                    node.style.setProperty('width', errorNode.offsetLeft - (div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace) + 'px');
-                                    node.style.setProperty('height', '2px');
+                                    node.style['top'] = errorNode.offsetTop + errorNode.clientHeight / 2 + 'px';
+                                    node.style['left'] = div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace + 'px';
+                                    node.style['border-top'] = '2px dashed #f44455';
+                                    node.style['width'] = errorNode.offsetLeft - (div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace) + 'px';
+                                    node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
                                 } else {
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'error-link');
-                                    node.style.setProperty('border-left', '2px dashed #f44455');
-                                    node.style.setProperty('top', y1 + div1.clientHeight + 5 + 'px');
-                                    node.style.setProperty('left', x1 + div1.clientWidth / 2 + 'px');
-                                    node.style.setProperty('width', '2px');
+                                    node.style['border-left'] = '2px dashed #f44455';
+                                    node.style['top'] = y1 + div1.clientHeight + 5 + 'px';
+                                    node.style['left'] = x1 + div1.clientWidth / 2 + 'px';
+                                    node.style['width'] = '2px';
                                     if (errorNode.offsetLeft == div1.offsetLeft) {
-                                        node.style.setProperty('height', errorNode.offsetTop - (div1.offsetTop + div1.clientHeight + 5) + 'px');
+                                        node.style['height'] = errorNode.offsetTop - (div1.offsetTop + div1.clientHeight + 5) + 'px';
                                     } else {
-                                        node.style.setProperty('height', errorNode.offsetTop + errorNode.clientHeight / 2 - (y1 + div1.clientHeight + 5) + 'px');
+                                        node.style['height'] = errorNode.offsetTop + errorNode.clientHeight / 2 - (y1 + div1.clientHeight + 5) + 'px';
                                     }
 
                                     mainContainer.appendChild(node);
@@ -961,11 +984,11 @@
                                     if (width > 0) {
                                         node = document.createElement('div');
                                         node.setAttribute('class', 'error-link');
-                                        node.style.setProperty('border-top', '2px dashed #f44455');
-                                        node.style.setProperty('top', errorNode.offsetTop + errorNode.clientHeight / 2 + 'px');
-                                        node.style.setProperty('left', left + 'px');
-                                        node.style.setProperty('width', width + 'px');
-                                        node.style.setProperty('height', '2px');
+                                        node.style['border-top'] = '2px dashed #f44455';
+                                        node.style['top'] = errorNode.offsetTop + errorNode.clientHeight / 2 + 'px';
+                                        node.style['left'] = left + 'px';
+                                        node.style['width'] = width + 'px';
+                                        node.style['height'] = '2px';
                                         mainContainer.appendChild(node);
                                     }
                                 }
@@ -977,11 +1000,11 @@
                             //console.log("Final error node");
                             node = document.createElement('div');
                             node.setAttribute('class', 'error-link');
-                            node.style.setProperty('border-top', '2px dashed #f44455');
-                            node.style.setProperty('top', errorNode.offsetTop + errorNode.clientHeight / 2 + 'px');
-                            node.style.setProperty('left', errorNode.offsetLeft + errorNode.clientWidth + 'px');
-                            node.style.setProperty('width', finalErrorNode.offsetLeft - (div1.offsetLeft + div1.clientWidth) + 'px');
-                            node.style.setProperty('height', '2px');
+                            node.style['border-top'] = '2px dashed #f44455';
+                            node.style['top'] = errorNode.offsetTop + errorNode.clientHeight / 2 + 'px';
+                            node.style['left'] = errorNode.offsetLeft + errorNode.clientWidth + 'px';
+                            node.style['width'] = finalErrorNode.offsetLeft - (div1.offsetLeft + div1.clientWidth) + 'px';
+                            node.style['height'] = '2px';
                             mainContainer.appendChild(node);
 
                         }
@@ -1205,8 +1228,6 @@
                 }
 
                 vm.$watch("showErrorNodes", toggleErrorNodes);
-                var w = 230;
-                var h = 117;
 
                 function toggleErrorNodes() {
                     console.log("Show error nodes " + vm.showErrorNodes);
@@ -1214,28 +1235,25 @@
                     var errorNodes = document.getElementsByClassName("error-node");
                     //console.log("Length " + errorElms.length);
                     if (vm.showErrorNodes) {
-                        angular.forEach(errorElms, function (elm, index) {
-                            elm.style.setProperty('display', 'block');
+                        angular.forEach(errorElms, function (elm) {
+                            elm.style['display'] = 'block';
                         });
-                        angular.forEach(errorNodes, function (elm, index) {
-                            elm.style.setProperty('display', 'block');
+                        angular.forEach(errorNodes, function (elm) {
+                            elm.style['display'] = 'block';
                         });
                     } else {
-                        angular.forEach(errorElms, function (elm, index) {
-                            elm.style.setProperty('display', 'none');
+                        angular.forEach(errorElms, function (elm) {
+                            elm.style['display'] = 'none';
                         });
-                        angular.forEach(errorNodes, function (elm, index) {
-                            elm.style.setProperty('display', 'none');
+                        angular.forEach(errorNodes, function (elm) {
+                            elm.style['display'] = 'none';
                         });
                     }
-
-
                 }
 
-
                 vm.$watchCollection('orders', function () {
-                    console.log("Orders "+JSON.stringify(vm.orders));
-                    if(!vm.orders ){
+                    console.log("Orders " + JSON.stringify(vm.orders));
+                    if (!vm.orders) {
                         return;
                     }
                     getOrders();
@@ -1249,63 +1267,60 @@
                     filter.orders[0] = {};
                     filter.orders[0].jobChain = vm.jobChain.path;
                     var orderMargin = 10;
-                    var nodeCount=0;
-                    var labelCount=0;
+                    var nodeCount = 0;
+                    var labelCount = 0;
 
-                        var nodes = document.getElementsByClassName("border-green");
+                    var nodes = document.getElementsByClassName("border-green");
 
-                    if(!nodes || nodes.length==0){
-                         addLabel();
-                    }else{
-
+                    if (!nodes || nodes.length == 0) {
+                        addLabel();
+                    } else {
                         angular.forEach(vm.jobChain.nodes, function (node, index) {
                             nodeCount++;
-                            var  rect = document.getElementById(node.name);
-                            var label = document.getElementById('lbl-order-' +node.name);
-                            if(rect){
-                                 rect.className = rect.className.replace(/border-.*/, 'border-grey');
+                            var rect = document.getElementById(node.name);
+                            var label = document.getElementById('lbl-order-' + node.name);
+                            if (rect) {
+                                rect.className = rect.className.replace(/border-.*/, 'border-grey');
                                 console.log("Set grey border for " + rect.id);
                             }
-                            if(label){
-                                 label.parentNode.removeChild(label);
+                            if (label) {
+                                label.parentNode.removeChild(label);
                             }
 
 
-                              if(vm.jobChain.nodes.length-1==index){
-                                  addLabel();
-                              }
+                            if (vm.jobChain.nodes.length - 1 == index) {
+                                addLabel();
+                            }
                         })
                     }
 
-
-
                     function colorFunction(d) {
-                                if (d == 0) {
-                                    return 'green';
-                                } else if (d == 1) {
-                                    return 'gold';
-                                } else if (d == 2) {
-                                    return 'crimson';
-                                } else if (d == 3) {
-                                    return 'dimgrey';
-                                }
-                                else if (d == 4) {
-                                    return 'text-dark';
-                                } else if (d == 5) {
-                                    return 'dark-orange';
-                                }
-                                else if (d == 6) {
-                                    return 'corn-flower-blue';
-                                }
-                                else if (d == 7) {
-                                    return 'dark-magenta';
-                                }
-                                else if (d == 8) {
-                                    return 'chocolate';
-                                }
-                            }
+                        if (d == 0) {
+                            return 'green';
+                        } else if (d == 1) {
+                            return 'gold';
+                        } else if (d == 2) {
+                            return 'crimson';
+                        } else if (d == 3) {
+                            return 'dimgrey';
+                        }
+                        else if (d == 4) {
+                            return 'text-dark';
+                        } else if (d == 5) {
+                            return 'dark-orange';
+                        }
+                        else if (d == 6) {
+                            return 'corn-flower-blue';
+                        }
+                        else if (d == 7) {
+                            return 'dark-magenta';
+                        }
+                        else if (d == 8) {
+                            return 'chocolate';
+                        }
+                    }
 
-                    function addLabel(){
+                    function addLabel() {
                         console.log("Add label01");
 
                         angular.forEach(vm.orders, function (order, index) {
@@ -1317,38 +1332,40 @@
                                     console.log("Found border " + order.state + " " + node.className);
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     var label = document.createElement('div');
-                                    var color ='';
-                                    if(order.processingState.severity>-1){
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
                                         color = colorFunction(order.processingState.severity);
                                     }
 
-                                    label.innerHTML = '<span class="text-sm"><i class="text-xs fa fa-circle '+color+'"></i> '+ order.orderId + ' <span class="text-primary text-xs">'+ moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT); + '</span></span>';
+                                    label.innerHTML = '<span class="text-sm"><i class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId + ' <span class="text-primary text-xs">' + moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                    +'</span></span>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
                                     if (node.offsetTop - container.offsetTop < 75) {
-                                        container.style.setProperty('top', container.offsetTop - container.firstChild.clientHeight + 'px');
+                                        container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
 
                                     container.appendChild(label);
                                 } else if (node.className.indexOf('border-grey') > -1) {
                                     node.className = node.className.replace(/border-.*/, 'border-green');
-                                    var color ='';
-                                    if(order.processingState.severity>-1){
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
                                         color = colorFunction(order.processingState.severity);
                                     }
                                     var label = document.createElement('div');
                                     label.setAttribute('id', 'lbl-order-' + order.state);
-                                    label.style.setProperty('position', 'absolute');
-                                    label.style.setProperty('width', node.clientWidth + 'px');
-                                    label.style.setProperty('margin-bottom', '5px');
-                                    label.style.setProperty('left', node.offsetLeft + 'px');
-                                    label.innerHTML = '<div><span class="text-sm"><i class="text-xs fa fa-circle '+color+'"></i> '+ order.orderId +' <span class="text-primary text-xs">'+ moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT); + '</span></div>';
+                                    label.style['position'] = 'absolute';
+                                    label.style['width'] = node.clientWidth + 'px';
+                                    label.style['margin-bottom'] = '5px';
+                                    label.style['left'] = node.offsetLeft + 'px';
+                                    label.innerHTML = '<div><span class="text-sm"><i class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId + ' <span class="text-primary text-xs">' + moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                    +'</span></div>';
                                     mainContainer.appendChild(label);
-                                    label.style.setProperty('top', node.offsetTop - label.clientHeight + 'px');
-                                    label.style.setProperty('height', 'auto');
-                                    label.style.setProperty('max-height', '80px');
-                                    label.style.setProperty('overflow', 'auto');
-                                    label.style.setProperty('overflow-x', 'auto');
+                                    label.style['top'] = node.offsetTop - label.clientHeight + 'px';
+                                    label.style['height'] = 'auto';
+                                    label.style['max-height'] = '80px';
+                                    label.style['overflow'] = 'auto';
+                                    label.style['overflow-x'] = 'auto';
                                 }
 
                             }
@@ -1362,22 +1379,23 @@
 
                 startPolling();
                 function startPolling() {
-                    if ($rootScope.config && $rootScope.config.jobChainsWorkflow.polling) {
-                            poll();
-                        }
+                    if ($rootScope.config.jobChainsWorkflow.polling) {
+                        poll();
+                    }
                 }
 
                 var interval;
 
                 function poll() {
                     interval = $interval(function () {
-                       console.log('updated workflow...................');
+                        //TODO
+                        console.log('updated workflow...................');
                     }, $rootScope.config.jobChainsWorkflow.interval * 1000)
                 }
 
                 vm.$on('$destroy', function () {
                     if (interval)
-                    $interval.cancel(interval);
+                        $interval.cancel(interval);
 
                 });
 

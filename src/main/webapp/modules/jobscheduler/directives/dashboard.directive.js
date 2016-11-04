@@ -370,9 +370,9 @@
                                 ' <div class="cluster-rect" uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
                                 'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
                                 '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
-                                '<div class="font14  text-left  p-t-sm p-l-sm "><span>' + supervisor.jobschedulerId +
+                                '<div class="text-left  p-t-sm p-l-sm "><span>' + supervisor.jobschedulerId +
                                 '</span> <div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option text-muted" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
+                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor-terminate-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-restart-' + supervisor.host + ':' + supervisor.port + '" translate>button.restart</a>' +
@@ -384,9 +384,9 @@
                                 '</div>' +
                                 '</div></div>' +
 
-                                '<div class="font14  text-left p-t-xs p-l-sm "><i class="fa fa-' + supervisor.data.jobscheduler.os.name + '">' + '</i><span class="p-l-sm">' + supervisor.data.jobscheduler.version +
+                                '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm">' + supervisor.data.jobscheduler.version +
                                 '</span></div>' +
-                                '<div class="font14  text-left text-muted p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
+                                '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
                                 '</div> ';
 
@@ -450,10 +450,10 @@
 
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                     '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '"></span>' +
-                                    '<div class="font14  text-left  p-t-sm p-l-sm ">' +
+                                    '<div class="text-left  p-t-sm p-l-sm ">' +
                                     '<span>' + name +
                                     '</span>' + '<div class="btn-group dropdown pull-right" >' +
-                                    '<a href class=" more-option text-muted" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
+                                    '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
@@ -464,8 +464,8 @@
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
                                     '</div> </div>' +
-                                    '<div class="font14  text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name + '"></i><span class="p-l-sm">' + master.version +
-                                    '</span></div><div class="font14  text-left p-t-xs p-l-sm">' + master.host + ':' + master.port + '(' + precedence + ')' + '</div>' +
+                                    '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
+                                    '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port + '(' + precedence + ')' + '</div>' +
 
                                     '</div>';
 
@@ -553,8 +553,8 @@
                             var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
                                 'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                 '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
-                                '<div class="font14  text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option text-muted" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
+                                '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
+                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
@@ -565,8 +565,8 @@
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                 '</div></div>' +
                                 '</span></div>' +
-                                '<div class="font14  text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name + '"></i><span class="p-l-sm">' + master.version +
-                                '</span></div><div class="font14  text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
+                                '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
+                                '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
 
                                 '</div>';
 
@@ -615,9 +615,9 @@
 
                             'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
-                            '<div class="font14  text-left  p-t-sm p-l-sm "><span>Database ' + scope.clusterStatusData.database.database.dbms +
+                            '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm">Database ' + scope.clusterStatusData.database.database.dbms +
                             '</span></div>' +
-                            '<div class="font14  text-left p-t-sm p-l-sm ">' +
+                            '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' +
                             '<span >' + scope.clusterStatusData.database.database.version +
                             '</span></div>' +
 
@@ -846,9 +846,10 @@
                             }
                             var vMargin = vm.vMargin;
 
-
-                            var mLeft = masterRect.offsetLeft;
-                            var mTop = masterRect.offsetTop;
+                                        if (masterRect) {
+                                            var mLeft = masterRect.offsetLeft;
+                                            var mTop = masterRect.offsetTop;
+                                        }
 
                             var databaseRect = document.getElementById('database');
                             if (!databaseRect) {
@@ -857,7 +858,9 @@
                             dTop = databaseRect.offsetTop;
                             dLeft = databaseRect.offsetLeft;
                             var offset = 20;
-                            sWidth = masterRect.offsetWidth;
+                            if (masterRect) {
+                                sWidth = masterRect.offsetWidth;
+                            }
                             dLLeft = mLeft + sWidth / 2;
                             if (dLTop == 0) {
                                 dLTop = mTop - vMargin / 2;

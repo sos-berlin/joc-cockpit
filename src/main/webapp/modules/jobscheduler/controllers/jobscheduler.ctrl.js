@@ -1250,7 +1250,7 @@
         vm.filter = {};
         vm.filter.range = "today";
         vm.filter.sortBy = "name";
-        vm.filter.status = 'all';
+        vm.filter.status = 'ALL';
         vm.range = 'period';
         vm.showPanel = '';
         vm.showLogPanel = undefined;
@@ -1276,7 +1276,11 @@
         vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
         vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
 
-        setDateRange();
+        var watcher = $scope.$watch('pageView', function (newName) {
+            if (newName) {
+                vm.pageView = newName;
+            }
+        });
 
         function setDateRange(range) {
             var from = new Date();
@@ -1297,11 +1301,13 @@
             vm.filter.to = to;
         }
 
+        setDateRange();
+
         vm.getPlans = function () {
             if (vm.range != 'period') {
                 vm.filter.range = undefined;
             }
-            filterData();
+            vm.load();
         };
 
 
@@ -1321,7 +1327,7 @@
         };
 
 
-        $scope.options = {
+        vm.options = {
             mode: 'custom',
             scale: 'hour',
             sortMode: undefined,
@@ -1361,21 +1367,21 @@
             columnMagnet: '15 minutes',
             targetDataAddRowIndex: undefined,
             api: function (api) {
-                api.core.on.ready($scope, function () {
-                    $scope.load();
+                api.core.on.ready(vm, function () {
+                    vm.load();
                 });
             }
         };
 
-        $scope.canAutoWidth = function (scale) {
+        vm.canAutoWidth = function (scale) {
             if (scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/)) {
                 return false;
             }
             return true;
         };
 
-        $scope.getColumnWidth = function (widthEnabled, scale, zoom) {
-            if (!widthEnabled && $scope.canAutoWidth(scale)) {
+        vm.getColumnWidth = function (widthEnabled, scale, zoom) {
+            if (!widthEnabled && vm.canAutoWidth(scale)) {
                 return undefined;
             }
             if (scale.match(/.*?week.*?/)) {
@@ -1393,371 +1399,95 @@
             return 40 * zoom;
         };
 
+        function applySavedFilter(obj) {
 
-        $scope.load = function () {
-            DailyPlanService.getPlans({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                vm.temp = res.planItems;
-                filterData();
-            }, function (err) {
+            if (selectedFiltered) {
 
-            })
-        };
+                if (selectedFiltered.regex)
+                    obj.regex = selectedFiltered.regex;
 
-
-        vm.sortBy = function (propertyName) {
-            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
-            vm.propertyName = propertyName;
-            vm.plans = orderBy(vm.plans, vm.propertyName, vm.reverse);
-            prepareGanttData(vm.plans);
-
-        };
-
-        vm.mainSortBy = function (propertyName) {
-            vm.sortReverse = !vm.sortReverse;
-            vm.filter.sortBy = propertyName;
-            vm.plans = orderBy(vm.plans, vm.filter.sortBy, vm.sortReverse);
-            prepareGanttData(vm.plans);
-        };
-
-
-        vm.showPanel = '';
-        vm.showPanelFuc = function (value) {
-            vm.showPanel = value;
-            vm.hidePanel = !vm.hidePanel;
-        };
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
-
-        vm.showLogFuc = function (plan) {
-            vm.showLogPanel = plan;
-            var filter = [];
-            filter[0] = {};
-            filter[0].jobChain = plan.jobChain;
-            filter[0].orderId = plan.orderId;
-            OrderService.histories(filter).then(function (res) {
-                vm.histories = res.history;
-            }, function (err) {
-
-            });
-            vm.steps = [];
-        };
-
-        vm.applyFilter = function () {
-            vm.dailyPlanFilter = {};
-            vm.isUnique = true;
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/daily-plan-filter-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-
-                vm.savedDailyPlanFilter.list.push(vm.dailyPlanFilter);
-
-                if (vm.savedDailyPlanFilter.list.length == 1) {
-                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
-                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
-                    vm.loadPlanData();
-                }
-                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-                SavedFilter.save();
-
-            }, function () {
-
-            });
-        };
-
-        vm.editFilters = function () {
-            vm.filters = vm.savedDailyPlanFilter;
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/edit-filter-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm
-            });
-        };
-
-        vm.editFilter = function (filter) {
-            vm.filterName = filter.name;
-            vm.dailyPlanFilter = angular.copy(filter);
-            vm.paths = vm.dailyPlanFilter.paths;
-            vm.object.paths = vm.paths;
-            vm.isUnique = true;
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm
-            });
-            modalInstance.result.then(function () {
-                angular.forEach(vm.savedDailyPlanFilter.list, function (value, index) {
-                    if (value.name == filter.name) {
-                        vm.savedDailyPlanFilter.list[index] = vm.dailyPlanFilter;
+                if (selectedFiltered.state && selectedFiltered.state.length>0) {
+                    obj.state =[];
+                    if (selectedFiltered.state.indexOf('WAITING') !== -1) {
+                        obj.state.push("PLANNED");
+                    } else if (selectedFiltered.state.indexOf('EXECUTED') !== -1) {
+                         obj.state.push("SUCCESSFUL");
+                         obj.state.push("FAILED");
                     }
-                });
-
-                if (vm.savedDailyPlanFilter.selected == vm.filterName) {
-                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
-                    selectedFiltered = vm.dailyPlanFilter;
-                    vm.loadPlanData();
-                }
-                if (vm.savedDailyPlanFilter.favorite == vm.filterName) {
-                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
-                }
-
-
-                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-                SavedFilter.save();
-                vm.filterName = undefined;
-            }, function () {
-                vm.filterName = undefined;
-            });
-        };
-
-        vm.deleteFilter = function () {
-            angular.forEach(vm.savedDailyPlanFilter.list, function (value, index) {
-                if (value.name == vm.dailyPlanFilter.name) {
-                    toasty.success({
-                        title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
-                        msg: ''
-                    });
-                    vm.savedDailyPlanFilter.list.splice(index, 1);
-                }
-            });
-            if (vm.savedDailyPlanFilter.list.length == 0) {
-                vm.savedDailyPlanFilter = {};
-                selectedFiltered = undefined;
-            } else if (vm.savedDailyPlanFilter.selected == vm.dailyPlanFilter.name) {
-                vm.savedDailyPlanFilter.selected = undefined;
-                selectedFiltered = undefined;
-                vm.loadPlanData();
-            }
-            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-            SavedFilter.save();
-        };
-
-        vm.favorite = function (filter) {
-            vm.savedDailyPlanFilter.favorite = filter;
-            vm.savedDailyPlanFilter.selected = filter;
-            selectedFiltered = undefined;
-            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-            SavedFilter.save();
-            vm.loadPlanData();
-        };
-
-        vm.checkFilterName = function () {
-            vm.isUnique = true;
-
-            angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
-                if (!vm.filterName) {
-                    if (vm.dailyPlanFilter.name == value.name) {
-                        vm.isUnique = false;
+                    if (selectedFiltered.state.indexOf('LATE') !== -1) {
+                        obj.late =true;
                     }
-                } else {
-                    if (value.name != vm.filterName) {
-                        if (vm.dailyPlanFilter.name == value.name) {
-                            vm.isUnique = false;
+
+                }
+
+                var fromDate;
+                var toDate;
+
+                if (selectedFiltered.planned) {
+                    if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
+                        fromDate = new Date();
+                        toDate = new Date();
+                        var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
+                        toDate.setSeconds(toDate.getSeconds() + seconds);
+                    } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
+                        fromDate = new Date();
+                        fromDate.setHours(0);
+                        fromDate.setMinutes(0);
+                        toDate = new Date();
+                        toDate.setHours(23);
+                        toDate.setMinutes(59);
+                    } else if (/^\s*(now)\s*$/i.test(selectedFiltered.planned)) {
+                        fromDate = new Date();
+                        toDate = new Date();
+                    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(selectedFiltered.planned)) {
+                        var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered.planned)
+                        fromDate = new Date();
+                        if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                            fromDate.setHours(parseInt(time[1]) + 12);
+                        } else {
+                            fromDate.setHours(parseInt(time[1]));
                         }
+
+                        fromDate.setMinutes(parseInt(time[2]));
+                        toDate = new Date();
+                        if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                            toDate.setHours(parseInt(time[4]) + 12);
+                        } else {
+                            toDate.setHours(parseInt(time[4]));
+                        }
+                        toDate.setMinutes(parseInt(time[5]));
                     }
                 }
-            });
-        };
 
-        vm.changeFilter = function (filter) {
-            if (filter)
-                vm.savedDailyPlanFilter.selected = filter.name;
-            else
-                vm.savedDailyPlanFilter.selected = filter;
-            selectedFiltered = filter;
-            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-            SavedFilter.save();
-            vm.loadPlanData();
-        };
-
-        function applySavedFilter(data) {
-
-                if (selectedFiltered) {
-                    angular.forEach(vm.temp, function (res) {
-                        var flag = true;
-
-                        if (selectedFiltered.regex && res.orderId) {
-                            if (!res.orderId.match(selectedFiltered.regex)) {
-                                flag = false;
-                            }
-                        }
-
-
-                        if (flag && selectedFiltered.state && res.state._text) {
-                            var state;
-                            if (res.state._text == "PLANNED") {
-                                state = "WAITING";
-                            } else if (res.state._text == "SUCCESSFUL" || res.state._text == "FAILED") {
-                                state = "EXECUTED";
-                            }
-                            if (res.late) {
-                                state = "LATE";
-                            }
-                            if (selectedFiltered.state.indexOf(state) === -1) {
-                                flag = false;
-                            }
-                        }
-
-                        if (selectedFiltered.processPlanned && res.job && res.job != "NULL") {
-                            if (!res.job.match(selectedFiltered.processPlanned)) {
-                                flag = false;
-                            }
-                        }
-
-                        if (selectedFiltered.processPlanned && res.jobChain && res.job == "NULL") {
-                            if (!res.jobChain.match(selectedFiltered.processPlanned)) {
-                                flag = false;
-                            }
-                        }
-
-                        var fromDate;
-                        var toDate;
-
-                        if (flag && selectedFiltered.planned && res.plannedStartTime) {
-                            if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
-                                fromDate = new Date();
-                                toDate = new Date();
-                                var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
-                                toDate.setSeconds(toDate.getSeconds() + seconds);
-                            } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
-                                fromDate = new Date();
-                                fromDate.setHours(0);
-                                fromDate.setMinutes(0);
-                                toDate = new Date();
-                                toDate.setHours(23);
-                                toDate.setMinutes(59);
-                            } else if (/^\s*(now)\s*$/i.test(selectedFiltered.planned)) {
-                                fromDate = new Date();
-                                toDate = new Date();
-                            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(selectedFiltered.planned)) {
-                                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered.planned)
-                                fromDate = new Date();
-                                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                                    fromDate.setHours(parseInt(time[1]) + 12);
-                                } else {
-                                    fromDate.setHours(parseInt(time[1]));
-                                }
-
-                                fromDate.setMinutes(parseInt(time[2]));
-                                toDate = new Date();
-                                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                                    toDate.setHours(parseInt(time[4]) + 12);
-                                } else {
-                                    toDate.setHours(parseInt(time[4]));
-                                }
-                                toDate.setMinutes(parseInt(time[5]));
-                            }
-                        }
-
-                        if (flag && selectedFiltered.fromDate && res.plannedStartTime) {
-                            if (selectedFiltered.fromTime) {
-                                fromDate = new Date(selectedFiltered.fromDate);
-                                selectedFiltered.fromTime = new Date(selectedFiltered.fromTime);
-                                fromDate.setHours(selectedFiltered.fromTime.getHours());
-                                fromDate.setMinutes(selectedFiltered.fromTime.getMinutes());
-                                fromDate.setSeconds(selectedFiltered.fromTime.getSeconds());
-                            }
-                        }
-
-                        if (flag && selectedFiltered.toDate && res.plannedStartTime) {
-                            if (selectedFiltered.toTime) {
-                                toDate = new Date(selectedFiltered.toDate);
-                                selectedFiltered.toTime = new Date(selectedFiltered.toTime);
-                                toDate.setHours(selectedFiltered.toTime.getHours());
-                                toDate.setMinutes(selectedFiltered.toTime.getMinutes());
-                                toDate.setSeconds(selectedFiltered.toTime.getSeconds());
-                            }
-                        }
-
-
-                        if (fromDate && toDate) {
-                            console.log("from date " + fromDate + "toDate " + toDate);
-                            if (fromDate > new Date(moment(res.plannedStartTime)) || toDate < new Date(moment(res.plannedStartTime))) {
-                                flag = false;
-                            }
-                        }
-
-
-                        if (flag) {
-                            data.push(res);
-                        }
-
-
-                    });
+                if (selectedFiltered.fromDate) {
+                    if (selectedFiltered.fromTime) {
+                        fromDate = new Date(selectedFiltered.fromDate);
+                        selectedFiltered.fromTime = new Date(selectedFiltered.fromTime);
+                        fromDate.setHours(selectedFiltered.fromTime.getHours());
+                        fromDate.setMinutes(selectedFiltered.fromTime.getMinutes());
+                        fromDate.setSeconds(selectedFiltered.fromTime.getSeconds());
+                    }
                 }
 
-        }
+                if (selectedFiltered.toDate) {
+                    if (selectedFiltered.toTime) {
+                        toDate = new Date(selectedFiltered.toDate);
+                        selectedFiltered.toTime = new Date(selectedFiltered.toTime);
+                        toDate.setHours(selectedFiltered.toTime.getHours());
+                        toDate.setMinutes(selectedFiltered.toTime.getMinutes());
+                        toDate.setSeconds(selectedFiltered.toTime.getSeconds());
+                    }
+                }
 
-        function filterData() {
-            var data = [];
-            if (!vm.savedDailyPlanFilter.selected) {
-                data = vm.temp;
-            } else {
-                applySavedFilter(data);
-            }
-            var to = new Date();
-            var from = new Date();
 
-            if (vm.range == 'dateRange') {
-                from = vm.filter.from;
-                to = vm.filter.to;
-            } else {
-                if (vm.filter.range == 'today') {
-                    from.setHours(0);
-                    from.setMinutes(0);
-                    from.setSeconds(0);
-                    to.setHours(0);
-                    to.setMinutes(0);
-                    to.setSeconds(0);
-                    to.setDate(to.getDate() + 1);
-                    setDateRange('today');
-                } else if (vm.filter.range == 'next-24-hours') {
-                    to.setDate(to.getDate() + 1);
-                    setDateRange('next-24-hours');
+                if (fromDate && toDate) {
+                   obj.dateFrom= fromDate;
+                   obj.dateTo= toDate;
                 }
             }
+            return obj;
 
-
-            var data2 = [];
-
-            angular.forEach(data, function (value) {
-
-                var flag = true;
-                if (new Date(value.plannedStartTime) < from || new Date(value.plannedStartTime) > to) {
-                    flag = false;
-                }
-
-                if (vm.filter.status && vm.filter.status != 'all' && value.state._text) {
-
-                    if (vm.filter.status == "WAITING" && value.state._text.indexOf("PLANNED") === -1) {
-                        flag = false;
-                    } else if (vm.filter.status == "LATE" && !value.late) {
-                        flag = false;
-                    } else if (vm.filter.status == "EXECUTED" && value.state._text.indexOf("SUCCESSFUL") === -1 && value.state._text.indexOf("FAILED") === -1) {
-                        flag = false;
-                    }
-                }
-
-                if (flag) {
-                    data2.push(value);
-                }
-            });
-
-            vm.plans = data2;
-            prepareGanttData(data2);
-            vm.isLoading = true;
-            console.log("Data " + vm.data.length);
         }
-
-        vm.loadPlanData = function(){
-            filterData();
-        }
-
 
         function prepareGanttData(data2) {
 
@@ -1805,29 +1535,196 @@
             if (minNextStartTime) {
                 minNextStartTime.setMinutes(0);
                 minNextStartTime.setHours(0);
-                $scope.options.fromDate = minNextStartTime;
+                vm.options.fromDate = minNextStartTime;
                 var to = new Date(minNextStartTime);
                 to.setHours(23);
                 if (maxEndTime > to) {
-                    $scope.options.toDate = maxEndTime;
+                    vm.options.toDate = maxEndTime;
                 } else {
-                    $scope.options.toDate = to;
+                    vm.options.toDate = to;
                 }
-
-                console.log("Smallest from01 " + minNextStartTime);
-                console.log("Smallest to01 " + to);
-
-
             }
-            console.log("Task 0 " + JSON.stringify(orders[0]));
+
             vm.data = orderBy(orders, 'plannedStartTime');
 
             promise1 = $timeout(function () {
                 $('#div').animate({
                     scrollLeft: $("#gantt-current-date-line").offset().left
-                }, 800);
+                }, 500);
             }, 4000);
         }
+
+        vm.load = function () {
+            var obj = {};
+            obj.jobschedulerId= vm.schedulerIds.selected;
+            obj.dateFrom= vm.filter.from;
+            obj.toFrom= vm.filter.to;
+
+            if(vm.filter.status !='ALL'){
+                obj.state =[];
+                obj.state.push(vm.filter.status);
+            }
+
+            obj = applySavedFilter(obj);
+
+            DailyPlanService.getPlans(obj).then(function (res) {
+                vm.plans = res.planItems;
+
+                if(vm.pageView=='grid')
+                prepareGanttData(vm.plans);
+                vm.isLoading = true;
+            }, function (err) {
+                 vm.isLoading = true;
+            })
+        };
+
+         /**--------------- filter, sorting and pagination -------------------*/
+        vm.sortBy = function (propertyName) {
+            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
+            vm.propertyName = propertyName;
+            vm.plans = orderBy(vm.plans, vm.propertyName, vm.reverse);
+            prepareGanttData(vm.plans);
+
+        };
+
+        vm.mainSortBy = function (propertyName) {
+            vm.sortReverse = !vm.sortReverse;
+            vm.filter.sortBy = propertyName;
+            vm.plans = orderBy(vm.plans, vm.filter.sortBy, vm.sortReverse);
+            prepareGanttData(vm.plans);
+        };
+
+
+        vm.applyFilter = function () {
+            vm.dailyPlanFilter = {};
+            vm.isUnique = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/daily-plan-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+                vm.savedDailyPlanFilter.list.push(vm.dailyPlanFilter);
+
+                if (vm.savedDailyPlanFilter.list.length == 1) {
+                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
+                    vm.load();
+                }
+                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+                SavedFilter.save();
+
+            }, function () {
+
+            });
+        };
+
+        vm.editFilters = function () {
+            vm.filters = vm.savedDailyPlanFilter;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm
+            });
+        };
+
+        vm.editFilter = function (filter) {
+            vm.filterName = filter.name;
+            vm.dailyPlanFilter = angular.copy(filter);
+            vm.paths = vm.dailyPlanFilter.paths;
+            vm.object.paths = vm.paths;
+            vm.isUnique = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm
+            });
+            modalInstance.result.then(function () {
+                angular.forEach(vm.savedDailyPlanFilter.list, function (value, index) {
+                    if (value.name == filter.name) {
+                        vm.savedDailyPlanFilter.list[index] = vm.dailyPlanFilter;
+                    }
+                });
+
+                if (vm.savedDailyPlanFilter.selected == vm.filterName) {
+                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+                    selectedFiltered = vm.dailyPlanFilter;
+                    vm.load();
+                }
+                if (vm.savedDailyPlanFilter.favorite == vm.filterName) {
+                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
+                }
+
+
+                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+                SavedFilter.save();
+                vm.filterName = undefined;
+            }, function () {
+                vm.filterName = undefined;
+            });
+        };
+
+        vm.deleteFilter = function () {
+            angular.forEach(vm.savedDailyPlanFilter.list, function (value, index) {
+                if (value.name == vm.dailyPlanFilter.name) {
+                    toasty.success({
+                        title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
+                        msg: ''
+                    });
+                    vm.savedDailyPlanFilter.list.splice(index, 1);
+                }
+            });
+            if (vm.savedDailyPlanFilter.list.length == 0) {
+                vm.savedDailyPlanFilter = {};
+                selectedFiltered = undefined;
+            } else if (vm.savedDailyPlanFilter.selected == vm.dailyPlanFilter.name) {
+                vm.savedDailyPlanFilter.selected = undefined;
+                selectedFiltered = undefined;
+                vm.load();
+            }
+            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+            SavedFilter.save();
+        };
+
+        vm.favorite = function (filter) {
+            vm.savedDailyPlanFilter.favorite = filter;
+            vm.savedDailyPlanFilter.selected = filter;
+            selectedFiltered = undefined;
+            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+            SavedFilter.save();
+            vm.load();
+        };
+
+        vm.checkFilterName = function () {
+            vm.isUnique = true;
+
+            angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
+                if (!vm.filterName) {
+                    if (vm.dailyPlanFilter.name == value.name) {
+                        vm.isUnique = false;
+                    }
+                } else {
+                    if (value.name != vm.filterName) {
+                        if (vm.dailyPlanFilter.name == value.name) {
+                            vm.isUnique = false;
+                        }
+                    }
+                }
+            });
+        };
+
+        vm.changeFilter = function (filter) {
+            if (filter)
+                vm.savedDailyPlanFilter.selected = filter.name;
+            else
+                vm.savedDailyPlanFilter.selected = filter;
+            selectedFiltered = filter;
+            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+            SavedFilter.save();
+            vm.load();
+        };
 
         vm.validPlanned = true;
         vm.checkPlanned = function () {
@@ -1840,7 +1737,7 @@
         };
 
         vm.filter_tree = {};
-
+         vm.object.paths = [];
         vm.expanding_property = {
             field: "name"
         };
@@ -1876,7 +1773,7 @@
             });
         };
 
-        vm.object.paths = [];
+
         var watcher = $scope.$watchCollection('object.paths', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.paths = newNames;
@@ -1888,24 +1785,6 @@
         };
 
 
-        function contextmenu() {
-            vm.menuOptions = [
-                [gettextCatalog.getString('button.editIgnoreList'), function () {
-                    vm.editIgnoreList();
-                }],
-                [gettextCatalog.getString('button.disableIgnoreList'), function () {
-                    vm.enableDisableIgnoreList(false);
-                }, vm.savedIgnoreList.isEnable],
-                [gettextCatalog.getString('button.enableIgnoreList'), function () {
-                    vm.enableDisableIgnoreList(true);
-                }, vm.savedIgnoreList.isEnable],
-                [gettextCatalog.getString('button.resetIgnoreList'), function () {
-                    vm.resetIgnoreList();
-                }]
-            ];
-        }
-
-        contextmenu();
         startPolling();
 
         function startPolling() {
@@ -1918,7 +1797,7 @@
 
         function poll() {
             interval = $interval(function () {
-                vm.loadPlanData();
+                vm.load();
             }, $rootScope.config.dailyPlan.interval * 1000)
 
         }

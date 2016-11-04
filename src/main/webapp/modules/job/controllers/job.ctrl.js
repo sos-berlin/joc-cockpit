@@ -27,7 +27,7 @@
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
-        var selectedFiltered;
+        var selectedFiltered, isFilterChange = true;
 
         vm.savedJobChainFilter = JSON.parse(SavedFilter.jobChainFilters) || {};
         vm.savedJobChainFilter.list = vm.savedJobChainFilter.list || [];
@@ -43,13 +43,16 @@
         var watcher = $scope.$watch('pageView', function (newName) {
             if (newName) {
                 vm.pageView = newName;
-                if (vm.pageView == 'list')
-                    vm.init();
+                if (vm.pageView == 'list') {
+                    if (!vm.jobChains || isFilterChange)
+                        vm.init();
+                }
                 else {
 
-                    if (vm.tree.length == 0)
+                    if (!vm.filterTree)
                         initTree();
                     else
+                    if(isFilterChange)
                         filterTreeData();
                 }
             }
@@ -87,9 +90,11 @@
                 });
                 vm.tree = data;
             } else {
+                if(isFilterChange)
                 vm.tree = angular.copy(vm.filterTree);
             }
             filteredTreeData();
+             isFilterChange = false;
         }
 
         /**
@@ -131,19 +136,19 @@
 
             JobChainService.getJobChainsP(obj).then(function (result) {
                 vm.jobChains = result.jobChains;
-                startTraverseTree();
-                volatileInformation(obj);
+
+                volatileInformation(obj, true);
             }, function () {
                 vm.isError = true;
             });
 
+        };
             function startTraverseTree() {
+                vm.branchs = [];
                 angular.forEach(vm.tree, function (value) {
                     traverseTree(value);
                 });
             }
-        };
-
         function traverseTree(data) {
             data.jobChains = [];
             data.folders = orderBy(data.folders, 'name');
@@ -153,7 +158,6 @@
                     data.jobChains.push(value);
                 }
             });
-            data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
 
             if (data.jobChains.length > 0) {
                 vm.branchs.push(data);
@@ -217,6 +221,11 @@
                 } else {
                     data.jobChains = object;
                 }
+                 data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
+                if (data.jobChains.length > 0) {
+                     vm.branchs = [];
+                     vm.branchs.push(data);
+                }
             });
         }
 
@@ -226,10 +235,6 @@
             if (data.expanded) {
                 data.jobChains = [];
                 expandFolderData(data);
-                if (data.jobChains.length > 0) {
-                    vm.branchs = [];
-                    vm.branchs.push(data);
-                }
             }
         };
 
@@ -249,17 +254,13 @@
 
                 data.jobChains = [];
                 expandFolderData(data);
-                if (data.jobChains.length > 0) {
-                    vm.branchs.push(data);
-                }
+
                 angular.forEach(data.folders, function (a) {
                     a.expanded = !0;
 
                     a.jobChains = [];
                     expandFolderData(a);
-                    if (a.jobChains.length > 0) {
-                        vm.branchs.push(a);
-                    }
+
                     if (a.folders.length > 0) {
                         angular.forEach(a.folders, function (value) {
                             recursive(value);
@@ -337,7 +338,7 @@
             });
         }
 
-        function mergeJobChainData(object) {
+        function mergeJobChainData(object, flag) {
 
             if (selectedFiltered) {
                 var data = [];
@@ -356,9 +357,12 @@
             } else {
                 vm.jobChains = object;
             }
+            if(flag){
+                startTraverseTree();
+            }
         }
 
-        function volatileInformation(obj) {
+        function volatileInformation(obj, flag) {
             if (vm.filter.state != 'ALL') {
                 obj.state = [];
                 obj.state.push(vm.filter.state);
@@ -368,7 +372,7 @@
             }
             JobChainService.get(obj).then(function (res) {
                 var object = angular.merge(res.jobChains, vm.jobChains);
-                mergeJobChainData(res.jobChains);
+                mergeJobChainData(res.jobChains, flag);
             });
         }
 
@@ -376,6 +380,7 @@
          * Function to initialized list view data
          */
         vm.init = function () {
+            isFilterChange = false;
             vm.isLoading = false;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -403,7 +408,7 @@
             if (vm.pageView == 'list')
                 vm.init();
             else {
-                if (vm.tree.length == 0)
+                if (vm.filterTree.length == 0)
                     initTree();
                 else
                     filterTreeData();
@@ -667,6 +672,7 @@
                     vm.savedJobChainFilter.favorite = vm.jobChainFilter.name;
                     vm.savedJobChainFilter.selected = vm.jobChainFilter.name;
                     selectedFiltered = vm.jobChainFilter;
+                    isFilterChange = true;
                     vm.load();
                 }
                 SavedFilter.setJobChain(vm.savedJobChainFilter);
@@ -708,6 +714,7 @@
                 if (vm.savedJobChainFilter.selected == vm.filterName) {
                     vm.savedJobChainFilter.selected = vm.jobChainFilter.name;
                     selectedFiltered = vm.jobChainFilter;
+                    isFilterChange = true;
                     vm.load();
                 }
                 if (vm.savedJobChainFilter.favorite == vm.filterName) {
@@ -737,6 +744,7 @@
             } else if (vm.savedJobChainFilter.selected == vm.jobChainFilter.name) {
                 vm.savedJobChainFilter.selected = undefined;
                 selectedFiltered = undefined;
+                isFilterChange = true;
                 vm.load();
             }
             SavedFilter.setJobChain(vm.savedJobChainFilter);
@@ -750,6 +758,7 @@
             selectedFiltered = filter;
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
+            isFilterChange = true;
             vm.load();
         };
 
@@ -806,6 +815,7 @@
             selectedFiltered = filter;
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
+            isFilterChange = true;
             vm.load();
         };
 
@@ -890,7 +900,7 @@
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
-        var selectedFiltered;
+        var selectedFiltered, isFilterChange = true;
 
         vm.expanding_property = {
             field: "name"
@@ -909,15 +919,18 @@
         }
 
         var watcher = $scope.$watch('pageView', function (newName) {
+
             if (newName) {
                 vm.pageView = newName;
-                if (vm.pageView == 'list')
-                    vm.init();
+                if (vm.pageView == 'list') {
+                    if (!vm.jobs || isFilterChange)
+                        vm.init();
+                }
                 else {
-
-                    if (vm.tree.length == 0)
+                    if (!vm.filterTree)
                         initTree();
                     else
+                    if(isFilterChange)
                         filterTreeData();
                 }
             }
@@ -967,9 +980,11 @@
                 });
                 vm.tree = data;
             } else {
+                if(isFilterChange)
                 vm.tree = angular.copy(vm.filterTree);
             }
-
+             filteredTreeData();
+             isFilterChange = false;
         }
 
         /**
@@ -992,30 +1007,53 @@
                 filterTreeData();
                 vm.isLoading = true;
             }, function (err) {
-
+                vm.isLoading = true;
             });
         }
 
+          /**
+         * Expand all tree data
+         */
         vm.expandAll = function () {
+            vm.branchs = [];
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            if (selectedFiltered) {
+                obj.regex = selectedFiltered.regex;
+                obj.folders = [];
+                angular.forEach(selectedFiltered.paths, function (res) {
+                    obj.folders.push({folder: res});
+                });
+            }
+
+            JobService.getJobsP(obj).then(function (result) {
+                vm.jobs = result.jobs;
+
+                volatileInformation(obj, true);
+            }, function () {
+                vm.isError = true;
+            });
+
+        };
+        function startTraverseTree() {
             vm.branchs = [];
             angular.forEach(vm.tree, function (value) {
                 traverseTree(value);
             });
-        };
+        }
         function traverseTree(data) {
             data.jobs = [];
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(vm.jobs, function (value) {
-
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
                     data.jobs.push(value);
                 }
             });
-            data.jobs = orderBy(data.jobs, vm.filter.sortBy);
-
             if (data.jobs.length > 0) {
                 vm.branchs.push(data);
             }
+
             if (data.folders.length > 0) {
                 angular.forEach(data.folders, function (value) {
                     traverseTree(value);
@@ -1059,7 +1097,11 @@
                 vm.loading = false;
 
                 data.jobs = object;
-
+                data.jobs = orderBy(data.jobs, vm.filter.sortBy);
+                if (data.jobs.length > 0) {
+                     vm.branchs = [];
+                     vm.branchs.push(data);
+                }
             });
         }
 
@@ -1076,12 +1118,6 @@
             if (data.expanded) {
                 data.jobs = [];
                 expandFolderData(data);
-
-                if (data.jobs.length > 0) {
-                    vm.branchs = [];
-                    vm.branchs.push(data);
-
-                }
             }
 
         };
@@ -1094,18 +1130,12 @@
 
                 data.jobs = [];
                 expandFolderData(data);
-
-                if (data.jobs.length > 0) {
-                    vm.branchs.push(data);
-                }
                 angular.forEach(data.folders, function (a) {
                     a.expanded = !0;
 
                     a.jobs = [];
                     expandFolderData(data);
-                    if (a.jobs.length > 0) {
-                        vm.branchs.push(a);
-                    }
+
                     if (a.folders.length > 0) {
                         angular.forEach(a.folders, function (value) {
                             recursive(value);
@@ -1250,12 +1280,12 @@
 
             if (fromDate && toDate) {
                 obj.dateFrom= fromDate;
-                obj.toFrom= toDate;
+                obj.dateTo= toDate;
             }
 
              return obj;
         }
-        function volatileInformation(obj) {
+        function volatileInformation(obj,flag) {
             if (vm.filter.state != 'ALL') {
                 obj.state = [];
                 obj.state.push(vm.filter.state);
@@ -1263,7 +1293,10 @@
             if (selectedFiltered)
                 obj = parseDate(obj);
             JobService.get(obj).then(function (res) {
-                vm.temp = angular.merge(vm.jobs, res.jobs);
+                vm.jobs = angular.merge(vm.jobs, res.jobs);
+                if(flag){
+                    startTraverseTree();
+                }
             });
         }
 
@@ -1271,6 +1304,7 @@
          * Function to initialized list view data
          */
         vm.init = function () {
+            isFilterChange = false;
             vm.isLoading = false;
              var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -1298,7 +1332,7 @@
             if (vm.pageView == 'list')
                 vm.init();
             else {
-                if (vm.tree.length == 0)
+                if (vm.filterTree.length == 0)
                     initTree();
                 else
                     filterTreeData();
@@ -1429,6 +1463,7 @@
                 }
                 SavedFilter.setJob(vm.savedJobFilter);
                 SavedFilter.save();
+                isFilterChange = true;
                 vm.load();
             }, function () {
 
@@ -1472,6 +1507,7 @@
 
                 if (vm.savedJobFilter.selected == vm.filterName) {
                     vm.savedJobFilter.selected = vm.jobFilter.name;
+                    isFilterChange = true;
                     vm.load();
                 }
                 if (vm.savedJobFilter.favorite == vm.filterName) {
@@ -1502,6 +1538,7 @@
             }
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
+            isFilterChange = true;
             vm.load();
         };
 
@@ -1510,6 +1547,7 @@
             vm.savedJobFilter.selected = filter;
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
+            isFilterChange = true;
             vm.load();
         };
 
@@ -1567,6 +1605,7 @@
 
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
+            isFilterChange = true;
             vm.load();
 
         };
