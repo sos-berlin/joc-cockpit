@@ -412,6 +412,7 @@
   "label.preferences": "Preferences",
   "label.language": "Language",
   "label.timeZone": "Time Zone",
+  "label.remainingSessionTime": "Remaining Session Time",
   "label.dateTimeFormat": "Date Time Format",
   "label.date": "Date",
   "label.anyDate": "Any Date",

@@ -73,6 +73,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            tree: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('tree');
+                Job.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }
@@ -162,13 +172,12 @@
                 return deferred.promise;
             }
 
-
         }
     }
 
     JobSchedulerService.$inject=["$resource", "$q"];
     function JobSchedulerService($resource,$q){
-       var clusterMembers;
+        var clusterMembers;
         return{
             getSchedulerIds: function () {
                 var deferred = $q.defer();
@@ -190,7 +199,7 @@
                 });
                 return deferred.promise;
             },
-             get: function (jobschedulerId) {
+            get: function (jobschedulerId) {
                 var deferred = $q.defer();
                 var JobChain = $resource('jobscheduler');
                 JobChain.save(jobschedulerId,function (res) {
@@ -271,7 +280,7 @@
                 return deferred.promise;
             },
 
-             getClusterMembers: function (jobschedulerId) {
+            getClusterMembers: function (jobschedulerId) {
                 var deferred = $q.defer();
                 if(clusterMembers){
                      deferred.resolve(clusterMembers);

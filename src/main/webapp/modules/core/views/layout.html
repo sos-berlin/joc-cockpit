@@ -1,7 +1,8 @@
 <!-- content -->
-<div id="content" class="app-content " role="main" ng-controller="HeaderCtrl">
+<div id="content" class="app-content " role="main" ng-controller="HeaderCtrl" ng-click="refreshSession()">
     <div class="w-full text-right top-header-bar white">
         <span class="m-r-sm" ><span translate>label.time</span>: <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
+        <span class="m-r-sm" ><span translate>label.remainingSessionTime</span>: <span class="text-primary" ng-bind="remainingSessionTime"></span></span>
         <span class="m-r-sm" ><span translate>label.jobSchedulerStartTime</span>: <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span></span>
         <span class="dropdown">
             <a data-toggle="dropdown">
@@ -9,7 +10,7 @@
                 <span class="_500 text-orange font14" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
             </a>
             <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
-                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler)">
+                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler);$event.stopPropagation()">
                     <span><i class="fa fa-circle text-muted text-xs" ng-class="{'text-success':schedulerIds.selected == jobScheduler}"></i> {{jobScheduler}}</span>
                 </a>
             </div>

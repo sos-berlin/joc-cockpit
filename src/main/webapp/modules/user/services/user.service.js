@@ -13,7 +13,7 @@
     SOSAuth.$inject = ['$window'];
     function SOSAuth($window) {
 
-        var props = ['accessTokenId', 'currentUserData','jobChain','permission','scheduleIds'];
+        var props = ['accessTokenId', 'currentUserData','sessionTimeout','jobChain','permission','scheduleIds'];
 
         var propsPrefix = '$SOS$';
 
@@ -35,6 +35,7 @@
         SOSAuth.prototype.setUser = function (userData, permission) {
             this.accessTokenId = userData.accessToken;
             this.currentUserData = userData.user;
+            this.sessionTimeout = userData.sessionTimeout;
             if(permission)
             this.permission = JSON.stringify(permission);
         };
@@ -50,6 +51,7 @@
         SOSAuth.prototype.clearUser = function () {
             this.accessTokenId = null;
             this.currentUserData = null;
+            this.sessionTimeout = null;
             this.permission = null;
             this.scheduleIds = null;
             $window.sessionStorage.setItem('$SOS$URL', null);
@@ -150,7 +152,18 @@
                 });
                 return deferred.promise;
             },
+            touch: function () {
+               var deferred = $q.defer();
+                var Touch = $resource('touch');
 
+                Touch.save({}, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
             authenticate: function (username, password) {
                 var deferred = $q.defer();
                 $http.defaults.headers.common['Authorization'] = 'Basic ' + Base64.encode(username + ':' + password);

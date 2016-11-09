@@ -24,7 +24,7 @@
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-v"></i></a>
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                                                <a ng-click="showConfiguration('order',order.path,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                                <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                             <a href class="dropdown-item"
                                                ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                ng-click="start(order)" translate>button.startOrderNow</a>
@@ -86,9 +86,10 @@
                                 </div>
                             </div>
                         </div>
-                                </div>
+                            </div>
                         </div>
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>message.noDataMatched</div>
+                         <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
                     </div>
                     <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
                             <div class="table-responsive">
@@ -107,10 +108,10 @@
                                             <i ng-show="propertyName == 'orderId' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
-                                        <th ng-click="sortBy('path')"><a><span translate>label.pathJobChain</span>
-                                            <i ng-show="propertyName == 'path' && !reverse"
+                                        <th ng-click="sortBy('jobChain')"><a><span translate>label.pathJobChain</span>
+                                            <i ng-show="propertyName == 'jobChain' && !reverse"
                                                class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'path' && reverse"
+                                            <i ng-show="propertyName == 'jobChain' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
                                         <th ng-click="sortBy('processingState._text')"><a><span translate>label.processingStatus</span>
@@ -168,7 +169,7 @@
                                                 <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                                 <i class="text-muted">{{:: order.title}}</i></a>
                                             </td>
-                                            <td><span ng-bind="order.path1"></span></td>
+                                            <td><span ng-bind="order.jobChain"></span></td>
                                             <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                             </td>
@@ -182,7 +183,7 @@
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                                        <a ng-click="showConfiguration('order',order.path,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                            ng-click="start(order)" translate>button.startOrderNow</a>
@@ -263,7 +264,7 @@
                             </div>
                             <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && orders.length !==0)}" translate>message.noDataMatched</div>
                         <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
-                        </div>
+                    </div>
 
                 </div>
                 <div class="hide " ng-class="{'show': isLoading}" >

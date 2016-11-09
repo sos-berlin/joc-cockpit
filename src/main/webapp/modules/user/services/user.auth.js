@@ -13,12 +13,8 @@
                     request: function (config) {
                         if (config.method == 'POST') {
 
-                            if ($rootScope.configData[config.url]) {
-                                config.url = $rootScope.configData['WEB_SERVER_URL']+ config.url;
-                            }
-                            else {
-                                config.url = $rootScope.configData['MOCK_URL']+ config.url;
-                            }
+                            config.url = $rootScope.configData['WEB_SERVER_URL']+ config.url;
+
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,
@@ -59,8 +55,12 @@
                                 };
                                 $rootScope.clientLogs.push(error);
                             }
-
-
+                        if(rejection.data.error)
+                           toasty.error({
+                                title: rejection.data.error.code || rejection.status,
+                                msg: rejection.data.error.message || 'API expection',
+                                timeout: 0
+                            });
                         return $q.reject(rejection);
                     },
                     response: function (response) {

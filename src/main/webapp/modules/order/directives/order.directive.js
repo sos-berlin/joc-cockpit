@@ -125,7 +125,7 @@
                 startPolling();
 
                 function startPolling() {
-                    if ($rootScope.config.orderOverviewWidget.polling) {
+                    if ($rootScope.config.orderOverviewWidget.polling == 'true') {
                         poll();
                     }
                 }
@@ -361,7 +361,7 @@
                                 '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
                                 '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a target="_blank" href="#/showConfiguration?type=job&path=' + item.job.path + '" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                '<a ng-click="showConfiguration(\'job\',\''+ item.job.path+'\')" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
                                 '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
                                 '</div></div></div>'
                                 + '<div class="text-left text-muted p-t-sm ">' + jobName +
@@ -1379,7 +1379,7 @@
 
                 startPolling();
                 function startPolling() {
-                    if ($rootScope.config.jobChainsWorkflow.polling) {
+                    if ($rootScope.config.jobChainsWorkflow.polling == 'true') {
                         poll();
                     }
                 }

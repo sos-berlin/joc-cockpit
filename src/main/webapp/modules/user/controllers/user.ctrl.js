@@ -25,6 +25,9 @@
                 }else{
                     $location.path('/error');
                 }
+            }, function(err){
+                 console.log(err);
+                 $location.path('/error');
             });
         }
 

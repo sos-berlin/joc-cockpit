@@ -96,13 +96,13 @@
                             <div class="box-header b-b">
                                 <h3 translate>label.masterClusterStatus</h3>
                             </div>
-                            <div class="box-tool">
+                            <div class="box-tool" ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'">
                                 <div class="btn-group dropdown pull-right">
                                     <button class="btn btn-sm grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
-                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart" ng-click="clusterAction('cluster','restart')" ng-class="{'disable-link':clusterStatus=='stopped'}" translate>button.restart</a>
-                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate" ng-click="clusterAction('cluster','terminate')" ng-class="{'disable-link':clusterStatus=='stopped'}" translate>button.terminate</a>
-                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminateFailSafe" ng-click="clusterAction('cluster','terminateFailsafe')" ng-class="{'disable-link':clusterStatus=='stopped'}" translate>button.terminateFailsafe</a>
+                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart" ng-click="clusterAction('cluster','restart')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.restart</a>
+                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate" ng-click="clusterAction('cluster','terminate')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminate</a>
+                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminateFailSafe && selectedJobScheduler.clusterType._type.toLowerCase() == 'passive'" ng-click="clusterAction('cluster','terminateFailsafe')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminateFailsafe</a>
                                     </div>
                                 </div>
                             </div>

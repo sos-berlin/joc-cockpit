@@ -1,3 +1,30 @@
+<!--<div class="hide-block sidebar-btn resize-cursor">
+    <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
+</div>
+<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
+    <div>
+        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();expandAll();" >
+            <i class="fa fa-angle-down fa-lg"></i>
+            <span translate>button.expandAll</span>
+        </button>
+        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
+            <i class="fa fa-angle-up fa-lg"></i>
+            <span translate>button.collapseAll</span>
+        </button>
+        <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+        <tree tree-data="treeProcess"
+              tree-control="my_tree"
+              expand-to="expand_to"
+              expand-on="expanding_schedule_property"
+              on-select="treeHandler1(branch)"
+              on-click="treeHandler(branch)"
+              expand-node="expandNode(branch)"
+              collapse-node="collapseNode(branch)"
+              template-url="modules/jobscheduler/views/process-class-tree.html">
+        </tree>
+    </div>
+</div>
+<div id="rightPanel1">-->
 <div class="hide" ng-class="{'show': isLoading}">
     <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
         <div>
@@ -82,3 +109,12 @@
     </div>
 </div>
 <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
+<!--</div>-->
+<script>
+
+      $(document).ready(function () {
+      $('#leftPanel').stickySidebar({
+            sidebarTopMargin: 190
+        });
+  });
+</script>

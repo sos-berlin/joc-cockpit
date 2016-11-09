@@ -31,7 +31,7 @@
                     <i class="fa fa-cog"></i>
                     {{'button.setting' | translate}}
                 </a>
-                <a class="dropdown-item" ng-click="logout()">
+                <a class="dropdown-item" ng-click="logout();$event.stopPropagation()">
                     <i class="fa fa-sign-out"></i>
                     {{'button.signOut' | translate}}
                 </a>

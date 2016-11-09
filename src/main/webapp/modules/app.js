@@ -28,7 +28,6 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-            'ngIdle',
             'ngclipboard'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
@@ -50,13 +49,6 @@
                 position: 'top-center',
                 limit: 1
             });
-        }])
-        .config(["IdleProvider", "KeepaliveProvider",function (IdleProvider, KeepaliveProvider) {
-            // configure Idle settings
-            IdleProvider.idle(30 * 60);
-            IdleProvider.timeout(10); // in seconds
-            KeepaliveProvider.interval(5); // in seconds
-
         }])
         .config(['$provide', function ($provide) {
             $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {

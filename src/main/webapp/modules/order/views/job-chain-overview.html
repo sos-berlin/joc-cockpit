@@ -194,8 +194,7 @@
                                         </button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28"
                                              role="menu">
-                                            <a class="dropdown-item" target="_blank"
-                                               href="#/showConfiguration?type=job&path={{node.job.path}}" translate>button.showConfiguration</a>
+                                            <a class="dropdown-item" ng-click="showConfiguration('job',node.job.path,node.job.name)" translate>button.showConfiguration</a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="node.job.state._text.toLowerCase() != 'stopped'"
                                                ng-click="stopJob(node)"

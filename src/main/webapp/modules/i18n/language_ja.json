@@ -644,7 +644,8 @@
    "tab.schedule": "Schedule",
    "tab.runtime": "Run Time",
    "tooltip.exportInXLS": "export xlsx",
-   "tooltip.useDefault": "Use as default view"
+   "tooltip.useDefault": "Use as default view",
+   "label.remainingSessionTime": "Remaining Session Time"
 }
 
 

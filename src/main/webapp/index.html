@@ -106,8 +106,6 @@
 <!-- runtime editor js files-->
 <script src="js/xml2json.min.js"></script>
 <script src="js/vkbeautify.js"></script>
-<script src="js/angular-idle.min.js"></script>
-
 
 <!-- app -->
 <script src="modules/app.js"></script>
@@ -149,6 +147,11 @@
         $('.modal-backdrop').remove();
     });
 
+    window.setTimeout(function() {
+        var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
+        $('body').append($fakeFrame);
+        $fakeFrame.remove();
+    }, 3000);
 </script>
 
 </body>

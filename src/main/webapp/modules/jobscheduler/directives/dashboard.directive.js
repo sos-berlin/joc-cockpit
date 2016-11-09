@@ -3,6 +3,7 @@
     angular.module('app')
         .directive('clusterStatusView', clusterStatusView)
         .directive('dailyPlanOverview', dailyPlanOverview);
+
     clusterStatusView.$inject = ["$compile", "$filter", "$sce","$rootScope"];
     function clusterStatusView($compile, $filter, $sce,$rootScope) {
         return {
@@ -27,7 +28,7 @@
                     supervisedMasters = [];
                 }
 
-                var mainTemplate = '<div class="text-center center-align" id="clusterStatusContainer" style="position: relative; height: 330px;width: 100%;overflow: auto;"> ';
+                var mainTemplate = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 330px;width: 100%;overflow: auto;"> ';
 
                 var template = mainTemplate;
 
@@ -43,7 +44,7 @@
                         if (!scope.clusterStatusData) {
                             $("#clusterStatusContainer").remove();
                             template = mainTemplate;
-                            template += '<div style="position: absolute;top: 50%;left: 40%;" class="_600 text-u-c" translate>message.noDataAvailable</div>';
+                            template += '<div style="position: absolute;top: 50%;left: 40%;" class="h6 text-u-c" translate>message.noDataAvailable</div>';
                             template = template + '</div>';
                             template = $compile(template)(scope);
                             elem.append(template);
@@ -60,9 +61,9 @@
 
 
                     var supervisors = [];
-                    if (!scope.clusterStatusData.supervisors) {
-                        scope.clusterStatusData.supervisors = [];
-                    }
+
+                    scope.clusterStatusData.supervisors = scope.clusterStatusData.supervisors || [];
+
 
                     if (!scope.clusterStatusData || !scope.clusterStatusData.members || !scope.clusterStatusData.members.masters) {
                         return;
@@ -146,7 +147,6 @@
                     function getTemporaryData(refresh) {
                            //console.log("In get temporary data");
                         scope.onRefresh().then(function (res) {
-
                             if (scope.clusterStatusData.supervisors.length <= 0) {
                                 getTemporaryData2(res, refresh);
                             }
@@ -375,7 +375,6 @@
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor-terminate-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-restart-' + supervisor.host + ':' + supervisor.port + '" translate>button.restart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-abortAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
@@ -456,7 +455,6 @@
                                     '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestart-' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestartWithin-' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
@@ -503,6 +501,7 @@
 
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
                             if(master){
+
                             var c = "cluster-rect";
                             if (zeroSupervisor && index == 0) {
                                 mLeft = mLeft + margin;
@@ -557,7 +556,6 @@
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-restart-' + master.host + ':' + master.port + '" translate>button.restart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestart-' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestartWithin-' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
@@ -907,7 +905,7 @@
                 startPolling();
                 function startPolling() {
 
-                    if ($rootScope.config.jobSchedulerMasterClusterStatus.polling) {
+                    if ($rootScope.config.jobSchedulerMasterClusterStatus.polling == 'true') {
                         poll();
                     }
 

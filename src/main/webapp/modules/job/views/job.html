@@ -279,7 +279,7 @@
                             </a>-->
                             </td>
                             <td ng-bind="job.path"></td>
-                            <td><span class="text-c label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span></td>
+                            <td><span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span></td>
                             <td><a class="primary-text-hover-color" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains || 0"></a></td>
                             <td ng-bind="job.estimatedDuration || '-'"> </td>
                             <td><a class="primary-text-hover-color" ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a></td>
