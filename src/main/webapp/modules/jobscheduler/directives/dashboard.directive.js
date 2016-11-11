@@ -4,8 +4,10 @@
         .directive('clusterStatusView', clusterStatusView)
         .directive('dailyPlanOverview', dailyPlanOverview);
 
+
     clusterStatusView.$inject = ["$compile", "$filter", "$sce","$rootScope"];
     function clusterStatusView($compile, $filter, $sce,$rootScope) {
+
         return {
             restrict: 'E',
             link: function (scope, elem, attrs) {
@@ -16,6 +18,7 @@
                 var mLeft = 0;
                 var top = 0;
                 var supervisedMasters = [];
+                var lastId;
                 init();
                 function init() {
                     rWidth = 200;
@@ -365,6 +368,7 @@
                                 disableClass = 'disable-link';
                             }
 
+                            lastId = supervisor.host + supervisor.port;
                             template = template +
 
                                 ' <div class="cluster-rect" uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
@@ -444,7 +448,7 @@
                                     precedence = 'Backup';
                                     name = 'JobScheduler JS' + master.clusterType.precedence;
                                 }
-
+                                lastId=master.host + master.port;
                                 masterTemplate = '<div  uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
 
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
@@ -500,6 +504,7 @@
                     function drawFlowForRemainings(zeroSupervisor) {
 
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
+
                             if(master){
 
                             var c = "cluster-rect";
@@ -547,6 +552,8 @@
                                 disableClass = 'disable-link';
                             }
 
+                                lastId=master.host + master.port;
+
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Started at : ' + $filter('date')(master.startedAt, 'dd-MMM-yy HH:mm:ss') + '<br> Survey Date: ' + $filter('date')(master.surveyDate, 'dd-MMM-yy HH:mm:ss'));
                             var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
@@ -593,13 +600,12 @@
                     function drawFlowForDatabase() {
                         var c = "cluster-rect";
                         mLeft = mLeft + margin + rWidth;
-                        top = top - rHeight / 2;
+                        var dTop = top - rHeight / 2 -10;
 
                         if (new Date().getTime() - new Date(scope.clusterStatusData.database.surveyDate).getTime() < 2000) {
 
                             c = c + " yellow-border";
                         }
-
 
                         var classRunning = 'text-success';
                         if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text.toLowerCase() == 'stopped') {
@@ -611,7 +617,7 @@
 
                         var masterTemplate = '<div uib-popover-html="popoverTemplate1" popover-placement="left" popover-trigger="mouseenter" ' +
 
-                            'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + 'database' + '" class="' + c + '"   >' +
+                            'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
                             '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm">Database ' + scope.clusterStatusData.database.database.dbms +
                             '</span></div>' +
@@ -625,8 +631,64 @@
                         template = template + '<div   id="masterContainer">' + masterTemplate + '</div></div>';
                         template = $compile(template)(scope);
                         elem.append(template);
+                        alignToCenter();
+
+                    }
 
 
+                    function alignToCenter(){
+                        var containerCt=$("#divClusterStatusWidget").height()/2;
+                        var containerHCt=$("#divClusterStatusWidget").width()/2;
+                        var diagramHCt = (parseInt(document.getElementById('database').style.left.replace('px',''))+$("#database").width()-margin)/2;
+                        var diagramCt = (document.getElementById(lastId).offsetTop+document.getElementById(lastId).clientHeight+vMargin/2)/2;
+                        if(containerCt>diagramCt || containerHCt > diagramHCt){
+                            var diff =  (containerCt-diagramCt);
+                            var diffH=(containerHCt-diagramHCt);
+                            angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, sIndex) {
+                                if(diff>0){
+                                    document.getElementById(supervisor.host+supervisor.port).style.top=
+                                    parseInt(document.getElementById(supervisor.host+supervisor.port).style.top.replace('px',''))+diff+'px';
+                                }
+                                if(diffH>0){
+                                    document.getElementById(supervisor.host+supervisor.port).style.left=
+                                    parseInt(document.getElementById(supervisor.host+supervisor.port).style.left.replace('px',''))+diffH+'px';
+                                }
+
+                                angular.forEach(supervisor.masters, function (master, index) {
+                                     if(diff>0){
+                                          document.getElementById(master.host+master.port).style.top=
+                                    parseInt(document.getElementById(master.host+master.port).style.top.replace('px',''))+diff+'px';
+                                     }
+                                    if(diffH>0){
+                                         document.getElementById(master.host+master.port).style.left=
+                                    parseInt(document.getElementById(master.host+master.port).style.left.replace('px',''))+diff+'px';
+                                    }
+
+                                })
+                            })
+
+                            angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
+                                if(diff>0){
+                                   document.getElementById(master.host+master.port).style.top=
+                                    parseInt(document.getElementById(master.host+master.port).style.top.replace('px',''))+diff+'px';
+                                }
+                                if(diffH>0){
+                                    document.getElementById(master.host+master.port).style.left=
+                                    parseInt(document.getElementById(master.host+master.port).style.left.replace('px',''))+diff+'px';
+                                }
+
+                            })
+                            if(diff>0){
+                                document.getElementById('database').style.top=
+                                    parseInt(document.getElementById('database').style.top.replace('px',''))+diff+'px';
+                            }
+                            if(diffH>0){
+
+                                document.getElementById('database').style.left=
+                                    parseInt(document.getElementById('database').style.left.replace('px',''))+diffH+'px';
+                            }
+
+                        }
                     }
 
 

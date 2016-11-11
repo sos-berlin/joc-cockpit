@@ -121,18 +121,19 @@
             </div>
                 <div ng-if="pageView=='grid'">
                     <div class="p-t-sm" >
-                        <flow-diagram job-chain="jobChain" on-add="onAdd($item)"
+                        <flow-diagram job-chain="jobChain"
+                                      on-add="onAdd($item)"
                                       on-remove="onRemove($item)"
                                       show-error-nodes="showErrorNodes"
                                       get-job-info="getJobInfo(filter)"
                                       on-action="onAction(path,node,action)"
+                                      show-configuration="showConfiguration(type,path,name)"
                                       orders="obj.orders"
                                 >
                         </flow-diagram>
                     </div>
                 </div>
                 <div class="hide m-t" ng-class="{'show': pageView=='list'}">
-                    <!-- <tree-grid tree-data="tree_data"></tree-grid>-->
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered  ">
                             <thead>
@@ -178,7 +179,7 @@
                                        ng-click="hidePanelFuc()">Show Less<br></i>
                                     <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
                                     <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
-                                       ng-class="[colorFunction(node.state.severity),{'text-success':node.orders && node.orders.length>0}]"></i>
+                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'?node.state.severity:node.job.state.severity)]"></i>
                                     {{node.name}} </a>
 
                                 </td>
@@ -207,10 +208,10 @@
                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'stopped'"
                                                ng-click="unskipNode(node)" translate>button.unstopNode</a>
                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() != 'skipped'"
-                                               ng-click="unskipNode(node)"
+                                               ng-click="skipNode(node)"
                                                translate>button.skipNode</a>
                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'skipped'"
-                                               ng-click="skipNode(node)" translate>button.unskipNode</a>
+                                               ng-click="unskipNode(node)" translate>button.unskipNode</a>
                                         </div>
                                     </div>
                                 </td>

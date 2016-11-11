@@ -126,7 +126,7 @@
             }
         };
 
-        function checkNavHeader() {
+         vm.checkNavHeader = function() {
             if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
                 $('a.navbar-item').addClass('collapsed');
@@ -135,7 +135,7 @@
 
         $(window).resize(function () {
             vm.calculateHeight();
-            checkNavHeader();
+            vm.checkNavHeader();
         });
 
         vm.username = SOSAuth.currentUserData;
@@ -211,6 +211,7 @@
             }
             if(count<-10){
                 vm.logout();
+                $state.reload();
             }
 
             $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
@@ -221,7 +222,7 @@
                 if (res && res.ok)
                     count = parseInt(SOSAuth.sessionTimeout / 1000);
             });
-        }
+        };
         vm.refreshSession();
 
         $scope.$on('reloadDate', function () {
@@ -261,7 +262,7 @@
                 }
             }
 
-        };
+        }
         $scope.$on('reloadScheduleDetail', function (event, res) {
             getScheduleDetail(res);
         });
@@ -305,6 +306,7 @@
 
         $scope.$on('$stateChangeSuccess', function () {
             vm.filterString = '';
+            vm.checkNavHeader();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
         });
@@ -328,9 +330,7 @@
             JobChainService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                    vm.html = res.configuration.content.html.replace(/&lt;/g, '');
-                    vm.html = res.configuration.content.html.replace(/&gt;/g, '');
-                    vm.html = $sce.trustAsHtml(vm.html);
+                    vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
             }, function (err) {
 
@@ -340,9 +340,7 @@
             JobService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                    vm.html = res.configuration.content.html.replace(/&lt;/g, '');
-                    vm.html = res.configuration.content.html.replace(/&gt;/g, '');
-                    vm.html = $sce.trustAsHtml(vm.html);
+                    vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });
@@ -350,9 +348,7 @@
             OrderService.getConfiguration(vm.path, vm.name, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                    vm.html = res.configuration.content.html.replace(/&lt;/g, '');
-                    vm.html = res.configuration.content.html.replace(/&gt;/g, '');
-                    vm.html = $sce.trustAsHtml(vm.html);
+                   vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });
@@ -361,9 +357,7 @@
             ScheduleService.getConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                    vm.html = res.configuration.content.html.replace(/&lt;/g, '');
-                    vm.html = res.configuration.content.html.replace(/&gt;/g, '');
-                    vm.html = $sce.trustAsHtml(vm.html);
+                    vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });
@@ -372,9 +366,7 @@
             ResourceService.getLockConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                   vm.html = res.configuration.content.html.replace(/&lt;/g, '');
-                    vm.html = res.configuration.content.html.replace(/&gt;/g, '');
-                    vm.html = $sce.trustAsHtml(vm.html);
+                   vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });
@@ -383,9 +375,7 @@
             ResourceService.getProcessClassConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                   vm.html = res.configuration.content.html.replace(/&lt;/g, '');
-                    vm.html = res.configuration.content.html.replace(/&gt;/g, '');
-                    vm.html = $sce.trustAsHtml(vm.html);
+                    vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });

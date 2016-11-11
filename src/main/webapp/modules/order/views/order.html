@@ -44,7 +44,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="btn-group dropdown">
+                        <div class="btn-group dropdown" ng-class="{'disable-link':pageView=='grid'}">
                             <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span  ng-show="filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}
@@ -84,7 +84,7 @@
                     </div>
 
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
-                          <button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()" translate>button.reset</button>
+                          <!--<button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()" translate>button.reset</button>-->
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
                                  ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"

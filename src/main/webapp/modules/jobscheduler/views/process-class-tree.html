@@ -1,28 +1,26 @@
-
 <div class="max-tree-ht">
     <table class="tree-grid folder-tree-grid pull-left">
         <tbody>
-        <tr ng-repeat="row in filtered = (tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions) track by row.branch.uid"
+        <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions track by row.branch.uid"
             ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
             <td>
                 <a class="inline" ng-click="user_clicks_branch(row.branch)">
                     <i ng-if="!row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder"></i>
                     <i ng-if="row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder-open"></i>
                 </a>
-                <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || '-'}}
-                    <span ng-click="expandNode({branch:row.branch})"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
-                    <span ng-click="collapseNode({branch:row.branch})"> <i class="text-xs fa fa-compress"></i></span>
+                <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || '/'}}
+                    <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
+                    <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()"> <i class="text-xs fa fa-compress"></i></span>
                 </span>
                 <div class="m-l-sm" ng-class="'level-' + {{ row.level }}" ng-if="row.branch.processClasses && row.branch.expanded">
-                    <div class="indented p-l-sm p-t-xs" ng-repeat="processClass in row.branch.processClasses">
+                    <div class="indented p-t-xs" ng-repeat="processClass in row.branch.processClasses">
                          <a href="" class="m-l-sm primary-text-hover-color"><i class="fa fa-calendar"></i> {{::processClass.name}}</a>
                     </div>
-                    <div ng-if="row.branch.processClasses.length==0 && row.branch.folders.length==0" class="indented p-l-sm"><a class="m-l-sm" translate>message.noProcessClassesFound</a></div>
+                    <div ng-if="row.branch.processClasses.length==0 && row.branch.folders.length==0" class="indented "><a class="m-l-sm" translate>message.noProcessClassesFound</a></div>
                 </div>
 
             </td>
         </tr>
         </tbody>
     </table>
-    <div class="text-center text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && tree_rows.length !==0)}" translate>message.noDataMatched</div>
 </div>

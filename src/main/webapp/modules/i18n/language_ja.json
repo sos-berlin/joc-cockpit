@@ -645,7 +645,15 @@
    "tab.runtime": "Run Time",
    "tooltip.exportInXLS": "export xlsx",
    "tooltip.useDefault": "Use as default view",
-   "label.remainingSessionTime": "Remaining Session Time"
+   "label.remainingSessionTime": "Remaining Session Time",
+   "label.directory": "Directory",
+   "label.sr": "Sr. No",
+   "label.regex": "Regex",
+   "button.terminateAllTasks": "Terminate All Tasks",
+   "button.terminateAllTasksWithTimeout": "Terminate All Tasks With Timeout",
+   "button.unstopNode": "Unstop Node",
+   "button.unsipNode": "Unskip Node",
+   "button.close": "Close"
 }
 
 

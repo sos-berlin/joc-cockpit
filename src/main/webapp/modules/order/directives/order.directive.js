@@ -200,8 +200,8 @@
                             rectangleTemplate = rectangleTemplate +
                                 '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
                                 '<table class="table table-hover table-bordered"><thead > <tr>' +
-                                '<th> <span translate>Sr. </span> </th><th> <span translate>Directory </span> </th>' +
-                                '<th> <span translate>Regex</span> </th></tr></thead>'
+                                '<th> <span translate>label.sr </span> </th><th> <span translate>label.directory </span> </th>' +
+                                '<th> <span translate>label.regex</span> </th></tr></thead>'
                         }
                         rectangleTemplate = rectangleTemplate + '<tbody> <tr> <td>' + parseInt(index + 1) + ' </td><td>' + orderSource.directory + ' </td><td>' + orderSource.regex + ' </td></tr>';
                         if (index == scope.jobChain.fileOrderSources.length - 1) {
@@ -361,7 +361,7 @@
                                 '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
                                 '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a ng-click="showConfiguration(\'job\',\''+ item.job.path+'\')" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                '<a id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
                                 '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
                                 '</div></div></div>'
                                 + '<div class="text-left text-muted p-t-sm ">' + jobName +
@@ -418,7 +418,7 @@
                                         '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
                                         '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
                                         '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                        '<a target="_blank" href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                        '<a href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
                                         '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
                                         '</div></div></div>'
                                         + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
@@ -584,9 +584,10 @@
                 'showErrorNodes': '=',
                 'getJobInfo': '&',
                 'onAction': '&',
+                'showConfiguration': '&',
                 'orders': '='
             },
-            controller: ['$scope', '$interval', function ($scope, $interval) {
+            controller: ['$scope', '$interval','gettextCatalog', function ($scope, $interval,gettextCatalog) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.object = {};
@@ -1028,33 +1029,31 @@
                         var btnId1 = '#btn1' + item.name.replace(':', '__');
 
                         var btn1 = document.querySelector(btnId1);
-                        btn1.addEventListener('click', function () {
-
-                            console.log("It's clicked02 " + btn1.id.replace('__', ':') + "&" + btn1.textContent.trim());
+                        btn1.addEventListener('click', function (e) {
 
                             if (item.job.path) {
-                                if (btn1.textContent.trim() == 'Stop Node') {
+                                if (btn1.textContent.trim() == gettextCatalog.getString('button.stopNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'stop node'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn1.innerHTML = '<i class="fa fa-play"></i> Proceed Node';
+                                        btn1.innerHTML = '<i class="fa fa-play"></i> '+gettextCatalog.getString('button.proceedNode');
                                         div1.className = div1.className.replace(/border-.*/, 'border-red');
                                         btn1.className = btn1.className.replace('text-hover-color', '');
-                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> Skip Node';
+                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> '+gettextCatalog.getString('button.skipNode');
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
-                                } else if (btn1.textContent.trim() == 'Proceed Node') {
+                                } else if (btn1.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'unstop node'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn1.innerHTML = '<i class="fa fa-stop"></i> Stop Node';
+                                        btn1.innerHTML = '<i class="fa fa-stop"></i> '+gettextCatalog.getString('button.stopNode');
                                         div1.className = div1.className.replace(/border-.*/, 'border-grey');
                                         btn1.className = btn1.className + " text-hover-color";
                                     }, function (err) {
@@ -1070,34 +1069,32 @@
                         var btnId2 = '#btn2' + item.name.replace(':', '__');
 
                         var btn2 = document.querySelector(btnId2);
-                        btn2.addEventListener('click', function () {
-
-                            //console.log("It's clicked03 " + btn2.id.replace('__', ':') + "&" + btn2.textContent.trim());
+                        btn2.addEventListener('click', function (e) {
 
                             if (item.job.path) {
-                                if (btn2.textContent.trim() == 'Skip Node') {
+                                if (btn2.textContent.trim() == gettextCatalog.getString('button.skipNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'skip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-play"></i> Proceed Node';
+                                        btn2.innerHTML = '<i class="fa fa-play"></i> '+gettextCatalog.getString('button.proceedNode');
                                         btn2.className = btn2.className.replace('text-hover-color', '');
                                         div1.className = div1.className.replace(/border-.*/, 'border-red');
-                                        btn1.innerHTML = '<i class="fa fa-stop"></i> Stop Node';
+                                        btn1.innerHTML = '<i class="fa fa-stop"></i> '+gettextCatalog.getString('button.stopNode');
                                         btn1.className = btn1.className + " text-hover-color";
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
-                                } else if (btn2.textContent.trim() == 'Proceed Node') {
+                                } else if (btn2.textContent.trim() == pgettextCatalog.getString('button.proceedNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'unskip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-play"></i> Skip Node';
+                                        btn2.innerHTML = '<i class="fa fa-play"></i> '+gettextCatalog.getString('button.skipNode');
                                         div1.className = div1.className.replace(/border-.*/, 'border-red');
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
@@ -1112,32 +1109,30 @@
                         var btnId = '#btn3' + item.name.replace(':', '__');
 
                         var btn3 = document.querySelector(btnId);
-                        btn3.addEventListener('click', function () {
-
-                            console.log("It's clicked04 " + btn3.id.replace('__', ':') + "&" + btn3.textContent.trim());
+                        btn3.addEventListener('click', function (e) {
 
                             if (item.job.path) {
-                                if (btn3.textContent.trim() == 'Stop Job') {
+                                if (btn3.textContent.trim() == gettextCatalog.getString('button.stopJob')) {
                                     vm.onAction({
                                         path: item.job.path,
                                         node: item.name,
                                         action: 'stop job'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn3.innerHTML = 'Unstop Job';
+                                        btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
                                         div1.className = div1.className.replace(/border-.*/, 'border-red');
                                         btn3.className = btn3.className.replace('bg-hover-color', '');
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
-                                } else if (btn3.textContent.trim() == 'Unstop Job') {
+                                } else if (btn3.textContent.trim() == gettextCatalog.getString('button.unstopJob')) {
                                     vm.onAction({
                                         path: item.job.path,
                                         node: item.name,
                                         action: 'unstop job'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn3.innerHTML = 'Stop Job';
+                                        btn3.innerHTML = gettextCatalog.getString('button.stopJob');
                                         div1.className = div1.className.replace(/border-.*/, 'border-grey');
                                         btn3.className = btn3.className + " bg-hover-color";
                                     }, function (err) {
@@ -1153,29 +1148,11 @@
                         var btnId4 = '#btn4' + item.name.replace(':', '__');
 
                         var btn4 = document.querySelector(btnId4);
-                        btn4.addEventListener('click', function () {
-
-                            //console.log("It's clicked01 " + btn.id.replace('__', ':') + "&" + btn.textContent.trim());
-
+                        btn4.addEventListener('click', function (e) {
                             if (item.job.path) {
-                                if (btn4.textContent.trim() == 'Show Configuration') {
-                                    vm.onAction({
-                                        path: item.job.path,
-                                        node: item.name,
-                                        action: 'show configuration'
-                                    }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
-
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
-                                    })
-                                }
-
+                                vm.showConfiguration({type:'job', path:item.job.path, name:item.name});
                             }
-
-
                         });
-
 
                         if (vm.jobChain.nodes.length - 1 == index) {
                             getInfo(0);

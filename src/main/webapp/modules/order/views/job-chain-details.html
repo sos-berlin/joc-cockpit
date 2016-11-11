@@ -18,7 +18,7 @@
                             <span class="hidden-sm-down" translate>button.addAnOrder</span>
                         </button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'UNDER_CONSTRUCTION' || jobChain.state._text.toLowerCase() == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.viewCalendar</span></button>
-                        <div class="btn-group dropdown" ng-show="!overview">
+                        <div class="btn-group dropdown" ng-show="!overview" ng-class="{'disable-link':pageView=='grid'}">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span ng-show="filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}

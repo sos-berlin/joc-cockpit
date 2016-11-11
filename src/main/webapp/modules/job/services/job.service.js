@@ -280,14 +280,24 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            history: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('job/history');
+                Job.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }
 
-    TaskService.$inject = ["$resource", "$q", "$http"];
-    function TaskService($resource, $q, $http) {
+    TaskService.$inject = ["$resource", "$q"];
+    function TaskService($resource, $q) {
         return {
-            historys: function (filters) {
+            histories: function (filters) {
                 var deferred = $q.defer();
                 var Job = $resource('tasks/history');
                 Job.save(filters,function (res) {
@@ -339,9 +349,8 @@
             },
             log: function (filter) {
                 var deferred = $q.defer();
-                $http.post('task/log',filter,{transformResponse:function(data,header,status){
-                    return data;
-                }}).then(function (res) {
+                var Job = $resource('task/log');
+                Job.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

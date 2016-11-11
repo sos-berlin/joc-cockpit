@@ -343,19 +343,18 @@
 
                 if (data.locks.length > 0) {
                     data.locks = orderBy(data.locks, vm.filter.sortBy);
-                    vm.branchsL = [];
                     vm.branchsL.push(data);
                 }
             }, function () {
                 if (data.locks.length > 0) {
                     data.locks = orderBy(data.locks, vm.filter.sortBy);
-                    vm.branchsL = [];
                     vm.branchsL.push(data);
                 }
             });
         }
 
         vm.treeHandlerL = function (data) {
+            data.expanded = !data.expanded;
             if (data.expanded) {
                   if(!data.locks || data.locks.length==0)
                 expandFolderDataL(data);
@@ -368,6 +367,7 @@
             data.folders = orderBy(data.folders, 'name');
             if (data.expanded) {
                 data.locks = [];
+                vm.branchsL = [];
                 expandFolderDataL(data);
             }
 
@@ -428,13 +428,6 @@
 
         }
 
-        function filteredTreeData() {
-            vm.branchsL = [];
-            angular.forEach(vm.tree, function (value) {
-                if (value.expanded)
-                    checkExpandL(value);
-            });
-        }
         function checkExpandTreeForUpdatesL(data) {
 
             var obj = {};
@@ -512,7 +505,7 @@
         });
 
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox) {
+            if (vm.allCheck.checkbox && vm.schedules.length>0) {
                 vm.object.schedules = vm.schedules.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
             } else {
                 vm.object.schedules = [];
@@ -745,15 +738,21 @@
             ScheduleService.get(obj).then(function (res) {
                 data.schedules = angular.merge(res.schedules, data.schedules);
 
-                data.schedules = orderBy(data.schedules, vm.filter.sortBy);
+
                 if (data.schedules.length > 0) {
-                     vm.branchs = [];
+                    data.schedules = orderBy(data.schedules, vm.filter.sortBy);
+                     vm.branchs.push(data);
+                }
+            }, function(){
+                 if (data.schedules.length > 0) {
+                    data.schedules = orderBy(data.schedules, vm.filter.sortBy);
                      vm.branchs.push(data);
                 }
             });
         }
 
         vm.treeHandler = function (data) {
+             data.expanded = !data.expanded;
             if (data.expanded) {
                 if(!data.schedules || data.schedules.length==0)
                 expandFolderData(data);
@@ -766,6 +765,7 @@
             data.folders = orderBy(data.folders, 'name');
             if (data.expanded) {
                 data.schedules = [];
+                vm.branchs = [];
                 expandFolderData(data);
             }
 
@@ -828,13 +828,7 @@
 
         }
 
-        function filteredTreeData() {
-            vm.branchs = [];
-            angular.forEach(vm.tree, function (value) {
-                if (value.expanded)
-                    checkExpand(value);
-            });
-        }
+
         function checkExpandTreeForUpdates(data) {
 
             var obj = {};

@@ -50,7 +50,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="btn-group dropdown">
+                        <div class="btn-group dropdown" ng-class="{'disable-link':pageView=='grid' || filtered.length===0}">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span
                                     translate>label.sortBy</span>
                                 <span class="text-primary">
@@ -105,7 +105,7 @@
                          <toggle-view></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><span translate>button.reset</span></button>
+                        <!--<button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><span translate>button.reset</span></button>-->
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped"
                                 ng-class="{'show-block':permission.JobChain.stop}" ng-click="stopAll()"><i
                                 class="fa fa-stop"></i> <span translate>button.stop</span></button>
@@ -152,7 +152,7 @@
                 </div>
                 <div id="rightPanel1">
                     <div class="row parent">
-                        <div ng-repeat="branch in branchs">
+                        <div ng-repeat="branch in branchs track by $index">
                             <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
                                 <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
                             </div>
@@ -463,7 +463,7 @@ $('.table-responsive').on('shown.bs.dropdown', function (e) {
   });
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 150
+            sidebarTopMargin: 155
         });
   });
 </script>
