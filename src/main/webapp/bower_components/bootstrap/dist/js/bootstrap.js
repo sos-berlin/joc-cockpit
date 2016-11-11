@@ -439,6 +439,12 @@ if ("undefined" == typeof jQuery)throw new Error("Bootstrap's JavaScript require
                 key: "show", value: function () {
                     var c = this;
                     if (!this._isTransitioning && !a(this._element).hasClass(o.IN)) {
+                        var top = $('.sticky').css('top');
+                        if(top) {
+                            top = top.substring(0, top.indexOf('p'));
+                            top = parseInt(top) + 111;
+                            $('.sticky').css('top', top);
+                        }
                         var d = void 0, e = void 0;
                         if (this._parent && (d = a.makeArray(a(q.ACTIVES)), d.length || (d = null)), !(d && (e = a(d).data(g), e && e._isTransitioning))) {
                             var i = a.Event(n.SHOW);
@@ -458,6 +464,14 @@ if ("undefined" == typeof jQuery)throw new Error("Bootstrap's JavaScript require
                 }
             }, {
                 key: "hide", value: function () {
+
+                        var top = $('.sticky').css('top');
+                    if(top) {
+                        top = top.substring(0, top.indexOf('p'));
+                        top = parseInt(top) - 111;
+                        $('.sticky').css('top', top);
+                    }
+
                     var c = this;
                     if (!this._isTransitioning && a(this._element).hasClass(o.IN)) {
                         var d = a.Event(n.HIDE);
