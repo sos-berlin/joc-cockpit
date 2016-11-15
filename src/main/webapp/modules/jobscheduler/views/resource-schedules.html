@@ -27,7 +27,7 @@
 <div id="rightPanel1">
     <div class="hide" ng-class="{'show': isLoading && permission.JobschedulerMasterCluster.view.clusterStatus}">
          <div class="hide row" ng-class="{'show': pageView=='grid'}">
-              <div ng-repeat="branch in branchs">
+             <div ng-repeat="branch in branchs">
                   <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
                       <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
                   </div>
@@ -63,6 +63,10 @@
                                         <span translate>label.noOfOrders </span>:
                                         <span class="text-dark" ng-bind="schedule.usedByOrders.length"></span>
                                     </div>
+                                    <div class="text-sm text-left text-muted p-t-sm">
+                                        <span translate>label.noOfJobs </span>:
+                                        <span class="text-dark" ng-bind="schedule.usedByJobs.length"></span>
+                                    </div>
                                 </div>
                                 <div class="box-footer b-t">
                                     <div>
@@ -73,11 +77,9 @@
                             </div>
                         </div>
               </div>
-             <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && branch.schedules.length !==0)}" translate>message.noDataMatched</div>
-             <div ng-if="isLoading && branch.schedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
          </div>
-        <div class="box p-a" ng-show="pageView=='list'">
-                    <div class="table-responsive">
+        <div class="box p-a" ng-show="pageView=='list' && branchs.length>0">
+            <div class="table-responsive" >
                         <table class="table table-hover table-bordered  ">
                             <thead>
                             <tr>
@@ -110,6 +112,12 @@
                                     <i ng-show="propertyName == 'usedByOrders.length' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
+                                <th ng-click="sortBy('usedByJobs.length')"><a><span translate>label.usedByJobs</span>
+                                    <i ng-show="propertyName == 'usedByJobs.length' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'usedByJobs.length' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
                                   <th ng-click="sortBy('validityFrom')"><a><span translate>label.validityFrom</span>
                                     <i ng-show="propertyName == 'validityFrom' && !reverse"
                                        class="fa fa-caret-down "></i>
@@ -128,12 +136,6 @@
                                     <i ng-show="propertyName == 'subsituteBy' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                <th ng-click="sortBy('nextStartTime')"><a><span translate>label.nextStart</span>
-                                    <i ng-show="propertyName == 'nextStartTime' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'nextStartTime' && reverse"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -144,18 +146,17 @@
                                         <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
                                     </label>
                                 </td>
-                                <td ><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}">{{schedule.name}}</a>
+                                <td >{{schedule.name}}
                                     <span ng-if="schedule.title">-</span>
                                     <i class="text-muted" ng-bind-html="schedule.title"></i>
                                 </td>
                                 <td ng-bind="schedule.path"></td>
                                  <td><span class="text-c label" ng-class="bgColorFunction(schedule.state.severity)" ng-bind="schedule.state._text  | translate" ></span></td>
-                                <td><a href="" ng-bind="schedule.usedByOrders.length"></a></td>
-                                <td><a href="" ng-bind="schedule.validityFrom || '-'"></a></td>
-                                <td><a href="" ng-bind="schedule.validityTo || '-'"></a></td>
-                                <td><a href="" ng-bind="schedule.subsituteBy || '-'"></a></td>
-                                <td><a href="" ng-bind="schedule.nextStart || '-'"></a></td>
-
+                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length"></a></td>
+                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a></td>
+                                <td ng-bind="schedule.validityFrom || '-'"></td>
+                                <td ng-bind="schedule.validityTo || '-'"></td>
+                                <td ng-bind="schedule.subsituteBy || '-'"></td>
                                 <td>
                                     <div class="btn-group dropdown">
                                     <a class="more-option-h" href data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a>
@@ -188,9 +189,10 @@
                         </div>
                     </div>
 
-          <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && branch.schedules.length !==0)}" translate>message.noDataMatched</div>
-          <div ng-if="isLoading && branch.schedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
+
+
         </div>
+        <div ng-if="isLoading && branchs.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
     </div>
      <div ng-if="isLoading && tree.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
     <div ng-if="!isLoading" class="text-center m-t-lg">

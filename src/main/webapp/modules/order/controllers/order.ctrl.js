@@ -24,7 +24,23 @@
 
         function loadJobOrderV(obj) {
             OrderService.getJobOrders(obj).then(function (res) {
-                vm.orders = angular.merge(res.orders, vm.orders);
+                 var data =[];
+                 if (vm.orders.length>0) {
+                     angular.forEach(vm.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
+                                 data.push(orders);
+                             }
+                         })
+                     });
+                     vm.orders = data;
+                 }else{
+                     vm.orders = res.orders;
+                 }
                 vm.isLoading = true;
             });
         }
@@ -68,8 +84,8 @@
                 obj.orders= [];
                 obj.orders.push({jobChain:vm.jobChain.path});
                 if (state != 'ALL') {
-                    obj.processingState = [];
-                    obj.processingState.push(state);
+                    obj.processingStates = [];
+                    obj.processingStates.push(state);
                     loadOrders(obj);
                 } else {
                     loadOrders(obj);
@@ -87,7 +103,7 @@
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
             vm.showPanel = value;
-            vm.hidePanel = !vm.hidePanel;
+            vm.hidePanel = true;
         };
         vm.hidePanelFuc = function () {
             vm.showPanel = '';
@@ -597,7 +613,7 @@
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
             vm.showPanel = value;
-            vm.hidePanel = !vm.hidePanel;
+            vm.hidePanel = true;
         };
         vm.hidePanelFuc = function () {
             vm.showPanel = '';
@@ -658,8 +674,14 @@
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain, at :'now'});
 
             OrderService.startOrder(orders).then(function (res) {
-                order.processingState._text = 'RUNNING';
-                order.processingState.severity = '0';
+                var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
             }, function () {
 
             });
@@ -680,7 +702,14 @@
             orders.endState = vm.order.endState;
 
             OrderService.setOrderState(orders).then(function (res) {
-                console.log(res);
+               var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
             }, function () {
 
             });
@@ -709,9 +738,10 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.suspendOrder(orders).then(function (res) {
-                orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+
+                orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -725,9 +755,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.resumeOrder(orders).then(function (res) {
-                  orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                  orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -741,9 +771,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.resumeOrder(orders).then(function (res) {
-                  orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                  orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -758,9 +788,13 @@
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             orders.params.concat(paramObject.params);
             OrderService.resumeOrder(orders).then(function (res) {
-                  orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                 var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -791,9 +825,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.resetOrder(orders).then(function (res) {
-                  orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                  orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -807,9 +841,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.removeOrder(orders).then(function (res) {
-                 orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                 orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -823,9 +857,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.deleteOrder(orders).then(function (res) {
-                  orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                  orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -1085,8 +1119,10 @@
             jobChains.jobschedulerId = $scope.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: vm.jobChain.path});
             JobChainService.stop(jobChains).then(function (res) {
-                vm.jobChain.state._text = 'STOPPED';
-                vm.jobChain.state.severity = 2;
+                jobChains.compact = true;
+                JobChainService.get(jobChains).then(function (res) {
+                    vm.jobChain = angular.merge(vm.jobChain, res.jobChains[0]);
+                });
             }, function (err) {
 
             });
@@ -1098,8 +1134,10 @@
             jobChains.jobschedulerId = $scope.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: vm.jobChain.path});
             JobChainService.unstop(jobChains).then(function (res) {
-                vm.jobChain.state._text = 'RUNNING';
-                vm.jobChain.state.severity = 0;
+                jobChains.compact = true;
+                JobChainService.get(jobChains).then(function (res) {
+                    vm.jobChain = angular.merge(vm.jobChain, res.jobChains[0]);
+                });
             }, function (err) {
 
             });
@@ -1109,21 +1147,34 @@
         /** --------action ------------ **/
 
         vm.deleteAllOrder = function () {
-
             var orders = {};
-            orders.order = [];
+            orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
 
             angular.forEach(vm.object.orders, function (value) {
-                orders.order.push({orderId: value.orderId, jobChain: value.jobChain});
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
 
             OrderService.deleteOrder(orders).then(function (res) {
-                console.log(res);
+                orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
+                             }
+                         })
+                     });
+                      vm.object.orders = [];
+                 });
+
             }, function () {
 
             });
-            vm.object.orders = [];
+
         };
 
         vm.suspendAllOrder = function () {
@@ -1134,24 +1185,27 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.suspendOrder(orders).then(function (res) {
-                 orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                  orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
 
-                 vm.object.orders = [];
+
             }, function () {
 
             });
 
         };
-
         vm.resetAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -1160,43 +1214,48 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.resetOrder(orders).then(function (res) {
-                  orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                     orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                  vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
             }, function () {
 
             });
 
         };
-
         vm.startAllOrder = function () {
             var orders = {};
-            orders.orders = [];
+            orders.order = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
             angular.forEach(vm.object.orders, function (value) {
-                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+                orders.order.push({orderId: value.orderId, jobChain: value.jobChain});
             });
 
             OrderService.startOrder(orders).then(function (res) {
-                 orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                     orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                  vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
             }, function () {
 
             });
@@ -1214,11 +1273,10 @@
         vm.filter.state = "ALL";
         vm.filter.sortBy = "orderId";
         vm.isLoading = false;
-        vm.sortReverse = true;
 
         vm.tree = [];
         vm.my_tree = {};
-        vm.branchs = [];
+
         vm.object = {};
         vm.filter_tree = {};
         vm.filterTree1 = [];
@@ -1241,25 +1299,6 @@
             });
         }
 
-        var watcher = $scope.$watch('pageView', function (newName) {
-            if (newName) {
-                vm.pageView = newName;
-                if (vm.pageView == 'list') {
-                    if (!vm.orders || isFilterChange)
-                    vm.init();
-                }
-                else {
-
-                    if (!vm.filterTree)
-                        initTree();
-                    else {
-                        if(isFilterChange)
-                        filterTreeData();
-                    }
-                }
-
-            }
-        });
 
         vm.expanding_property = {
             field: "name"
@@ -1322,12 +1361,14 @@
                 vm.isLoading = true;
             });
         }
+        initTree();
 
         /**
          * Expand all tree data
          */
         vm.expandAll = function () {
             vm.branchs = [];
+            vm.allOrders = [];
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -1350,6 +1391,7 @@
         };
         function startTraverseTree() {
             vm.branchs = [];
+            vm.allOrders = [];
             angular.forEach(vm.tree, function (value) {
                 traverseTree(value);
             });
@@ -1361,11 +1403,13 @@
             angular.forEach(vm.orders, function (value) {
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
                     data.orders.push(value);
+                    vm.allOrders.push(value);
                 }
             });
             if (data.orders.length > 0) {
 
                 vm.branchs.push(data);
+
             }
             if (data.folders.length > 0) {
                 angular.forEach(data.folders, function (value) {
@@ -1393,37 +1437,59 @@
         }
 
         function volatileFolderData(data, obj) {
-             if(vm.filter.state != 'ALL') {
-                obj.processingState = [];
-                obj.processingState.push(vm.filter.state);
+            if (vm.filter.state != 'ALL') {
+                obj.processingStates = [];
+                obj.processingStates.push(vm.filter.state);
             }
-             if (selectedFiltered)
+            if (selectedFiltered)
                 obj = parseDate(obj);
 
             OrderService.get(obj).then(function (res) {
-                var object = angular.merge(res.orders, data.orders);
+                var data1 = [];
+                if (data.orders.length>0) {
+                    angular.forEach(data.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                                data1.push(orders);
+                            }
+                        })
+                    });
+                    data.orders = data1;
+                } else {
+                    data.orders = res.orders;
+                }
 
-                data.orders = object;
 
                 if (data.orders.length > 0) {
                     data.orders = orderBy(data.orders, vm.filter.sortBy);
-                     vm.branchs.push(data);
+                    vm.branchs.push(data);
+                    angular.forEach(data.orders, function (order) {
+                        vm.allOrders.push(order);
+                    });
                 }
-            },function(){
-                 if (data.orders.length > 0) {
-                     data.orders = orderBy(data.orders, vm.filter.sortBy);
-                     vm.branchs.push(data);
+            }, function () {
+                if (data.orders.length > 0) {
+                    data.orders = orderBy(data.orders, vm.filter.sortBy);
+                    vm.branchs.push(data);
+                      angular.forEach(data.orders, function (order) {
+                        vm.allOrders.push(order);
+                    });
                 }
             });
         }
 
         vm.treeHandler1 = function (data) {
             data.folders = orderBy(data.folders, 'name');
-            if (data.expanded) {
+          //  if (data.expanded) {
                 data.orders = [];
                 vm.branchs = [];
+                vm.allOrders = [];
                 expandFolderData(data);
-            }
+         //   }
         };
         vm.treeHandler = function (data) {
             data.expanded = !data.expanded;
@@ -1431,13 +1497,18 @@
                 if(!data.orders || data.orders.length==0)
                 expandFolderData(data);
                 vm.branchs = [];
+                vm.allOrders = [];
                 vm.branchs.push(data);
+                angular.forEach(data.orders, function (order) {
+                    vm.allOrders.push(order);
+                });
 
             }
         };
 
         vm.expandNode = function (data) {
             vm.branchs = [];
+            vm.allOrders = [];
             function recursive(data) {
                 data.expanded = !0;
                 data.folders = orderBy(data.folders, 'name');
@@ -1488,10 +1559,14 @@
         }
 
         function filteredTreeData() {
-            vm.branchs = [];
+
             angular.forEach(vm.tree, function (value) {
-                if (value.expanded)
+                if (value.expanded){
+                    vm.branchs = [];
+                    vm.allOrders = [];
                     checkExpand(value);
+                }
+
             });
         }
 
@@ -1526,7 +1601,7 @@
             var fromDate;
             var toDate;
             if (selectedFiltered.type) {
-                obj.type = selectedFiltered.type;
+                obj.types = selectedFiltered.type;
             }
             if (selectedFiltered.processingState) {
                 obj.processingState = selectedFiltered.processingState;
@@ -1600,20 +1675,37 @@
 
 
         function volatileInformation(obj, flag) {
-            if(vm.filter.state != 'ALL') {
-                obj.processingState = [];
-                obj.processingState.push(vm.filter.state);
+            if (vm.filter.state != 'ALL') {
+                obj.processingStates = [];
+                obj.processingStates.push(vm.filter.state);
             }
             if (selectedFiltered)
-              obj=  parseDate(obj);
+                obj = parseDate(obj);
             OrderService.get(obj).then(function (res) {
-                vm.orders = angular.merge(res.orders, vm.orders);
-                vm.mainSortBy1(vm.filter.sortBy);
-                if(flag){
+                var data = [];
+                if (vm.orders.length > 0) {
+                    angular.forEach(vm.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                                data.push(orders);
+                            }
+                        })
+                    });
+                    vm.orders = data;
+                } else {
+                    vm.orders = res.orders;
+                }
+
+
+                if (flag) {
                     startTraverseTree();
                 }
-            }, function(){
-                if(flag){
+            }, function () {
+                if (flag) {
                     startTraverseTree();
                 }
             });
@@ -1637,28 +1729,20 @@
             }
             OrderService.getOrdersP(obj).then(function (result) {
                 vm.orders = result.orders;
-
                 vm.isLoading = true;
                   volatileInformation(obj);
             }, function () {
                  volatileInformation(obj);
                 vm.isLoading = true;
-                vm.isError = true;
             });
         };
 
 
         vm.load = function () {
-             if (vm.pageView == 'list')
-                vm.init();
-            else {
                 if (vm.filterTree.length == 0)
                     initTree();
                 else
                     filterTreeData();
-            }
-
-
         };
 
 
@@ -1667,13 +1751,13 @@
             vm.reset();
             vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
             vm.propertyName = propertyName;
-            vm.orders = orderBy(vm.orders, vm.propertyName, vm.reverse);
+            vm.allOrders = orderBy(vm.allOrders, vm.propertyName, vm.reverse);
         };
         vm.mainSortBy1 = function (propertyName) {
             vm.reset();
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
-            vm.orders = orderBy(vm.orders, vm.filter.sortBy, vm.sortReverse);
+            vm.allOrders = orderBy(vm.allOrders, vm.filter.sortBy, vm.sortReverse);
         };
 
 
@@ -1891,19 +1975,33 @@
 
         vm.deleteAllOrder = function () {
             var orders = {};
-            orders.order = [];
+            orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
 
             angular.forEach(vm.object.orders, function (value) {
-                orders.order.push({orderId: value.orderId, jobChain: value.jobChain});
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
 
             OrderService.deleteOrder(orders).then(function (res) {
-                console.log(res);
+                orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
+                             }
+                         })
+                     });
+                      vm.object.orders = [];
+                 });
+
             }, function () {
 
             });
-            vm.object.orders = [];
+
         };
 
         vm.suspendAllOrder = function () {
@@ -1914,17 +2012,21 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.suspendOrder(orders).then(function (res) {
-                 orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                  orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
+
 
             }, function () {
 
@@ -1939,19 +2041,20 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.resetOrder(orders).then(function (res) {
-                 orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-
-                   angular.forEach(res.orders, function (order1) {
-                       console.log(order1)
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order.orderId = order1;
+                     orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
             }, function () {
 
             });
@@ -1966,17 +2069,20 @@
             });
 
             OrderService.startOrder(orders).then(function (res) {
-                 orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                     angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                     orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
             }, function () {
 
             });
@@ -2021,7 +2127,7 @@
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
             vm.showPanel = value;
-            vm.hidePanel = !vm.hidePanel;
+            vm.hidePanel = true;
         };
         vm.hidePanelFuc = function () {
             vm.showPanel = '';
@@ -2046,7 +2152,7 @@
 
 
         $scope.$on('$destroy', function () {
-            watcher();
+            //watcher();
             watcher1();
             if (interval)
                 $interval.cancel(interval);
@@ -2069,7 +2175,7 @@
 
         vm.tree = [];
         vm.my_tree = {};
-        vm.branchs = [];
+
         vm.object = {};
         vm.filter_tree = {};
         vm.filterTree1 = [];
@@ -2092,7 +2198,7 @@
             });
         }
 
-        var watcher = $scope.$watch('pageView', function (newName) {
+/*        var watcher = $scope.$watch('pageView', function (newName) {
             if (newName) {
                 vm.pageView = newName;
                 if (vm.pageView == 'list') {
@@ -2107,7 +2213,7 @@
                         filterTreeData();
                 }
             }
-        });
+        });*/
 
         vm.expanding_property = {
             field: "name"
@@ -2171,12 +2277,14 @@
                 vm.isLoading = true;
             });
         }
+         initTree();
 
         /**
          * Expand all tree data
          */
         vm.expandAll = function () {
             vm.branchs = [];
+            vm.allOrders = [];
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -2210,6 +2318,7 @@
 
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
                     data.orders.push(value);
+                    vm.allOrders.push(data);
                 }
             });
 
@@ -2243,37 +2352,58 @@
 
         function volatileFolderData(data, obj) {
             if (vm.filter.state != 'ALL') {
-                obj.processingState = [];
-                obj.processingState.push(vm.filter.state);
+                obj.processingStates = [];
+                obj.processingStates.push(vm.filter.state);
             }
             if (selectedFiltered)
-               obj= parseDate(obj);
+                obj = parseDate(obj);
 
             OrderService.get(obj).then(function (res) {
-                var object = angular.merge(res.orders, data.orders);
-                data.orders = object;
-
+                var data1 = [];
                 if (data.orders.length > 0) {
-                     data.orders = orderBy(data.orders, vm.filter.sortBy);
-
-                     vm.branchs.push(data);
+                    angular.forEach(data.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                                data1.push(orders);
+                            }
+                        })
+                    });
+                    data.orders = data1;
+                } else {
+                    data.orders = res.orders;
                 }
 
-            },function(){
-                  if (data.orders.length > 0) {
-                       data.orders = orderBy(data.orders, vm.filter.sortBy);
-                     vm.branchs.push(data);
+
+                if (data.orders.length > 0) {
+                    data.orders = orderBy(data.orders, vm.filter.sortBy);
+                    vm.branchs.push(data);
+                    angular.forEach(data.orders, function (order) {
+                        vm.allOrders.push(order);
+                    });
+                }
+            }, function () {
+                if (data.orders.length > 0) {
+                    data.orders = orderBy(data.orders, vm.filter.sortBy);
+                    vm.branchs.push(data);
+                    angular.forEach(data.orders, function (order) {
+                        vm.allOrders.push(order);
+                    });
                 }
             });
         }
 
         vm.treeHandler1 = function (data) {
             data.folders = orderBy(data.folders, 'name');
-            if (data.expanded) {
+           // if (data.expanded) {
                 data.orders = [];
                 vm.branchs = [];
+                vm.allOrders = [];
                 expandFolderData(data);
-            }
+           // }
         };
         vm.treeHandler = function (data) {
             data.expanded = !data.expanded;
@@ -2281,13 +2411,18 @@
                  if(!data.orders || data.orders.length==0)
                 expandFolderData(data);
                 vm.branchs = [];
+                vm.allOrders = [];
                 vm.branchs.push(data);
+                angular.forEach(data.orders, function (a) {
+                    vm.allOrders.push(a);
+                });
 
             }
         };
 
         vm.expandNode = function (data) {
             vm.branchs = [];
+            vm.allOrders = [];
             function recursive(data) {
                 data.expanded = !0;
                 data.folders = orderBy(data.folders, 'name');
@@ -2334,7 +2469,9 @@
             if (data.orders.length > 0) {
                 vm.branchs.push(data);
             }
-
+            angular.forEach(data.orders, function (a) {
+                    vm.allOrders.push(a);
+                });
             angular.forEach(data.folders, function (value) {
                 if (value.expanded)
                     checkExpand(value);
@@ -2342,10 +2479,14 @@
         }
 
         function filteredTreeData() {
-            vm.branchs = [];
+
             angular.forEach(vm.tree, function (value) {
-                if (value.expanded)
-                    checkExpand(value);
+                if (value.expanded){
+                     vm.branchs = [];
+                     vm.allOrders = [];
+                     checkExpand(value);
+                }
+
             });
         }
 
@@ -2381,10 +2522,10 @@
             var fromDate;
             var toDate;
             if (selectedFiltered.type) {
-                obj.type = selectedFiltered.type;
+                obj.types = selectedFiltered.type;
             }
             if (selectedFiltered.processingState) {
-                obj.processingState = selectedFiltered.processingState;
+                obj.processingStates = selectedFiltered.processingState;
             }
             if (selectedFiltered.planned) {
                 if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
@@ -2453,16 +2594,40 @@
         }
 
 
-        function volatileInformation(obj) {
+         function volatileInformation(obj, flag) {
             if (vm.filter.state != 'ALL') {
-                obj.processingState = [];
-                obj.processingState.push(vm.filter.state);
+                obj.processingStates = [];
+                obj.processingStates.push(vm.filter.state);
             }
             if (selectedFiltered)
-              obj=  parseDate(obj);
+                obj = parseDate(obj);
             OrderService.get(obj).then(function (res) {
-                vm.orders = angular.merge(res.orders, vm.orders);
-                vm.mainSortBy1(vm.filter.sortBy);
+                var data = [];
+                if (vm.orders.length > 0) {
+                    angular.forEach(vm.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                                data.push(orders);
+                            }
+                        })
+                    });
+                    vm.orders = data;
+                } else {
+                    vm.orders = res.orders;
+                }
+
+
+                if (flag) {
+                    startTraverseTree();
+                }
+            }, function () {
+                if (flag) {
+                    startTraverseTree();
+                }
             });
         }
 
@@ -2500,14 +2665,14 @@
 
 
         vm.load = function () {
-            if (vm.pageView == 'list')
+/*            if (vm.pageView == 'list')
                 vm.init();
-            else {
+            else {*/
                 if (vm.tree.length == 0)
                     initTree();
                 else
                     filterTreeData();
-            }
+          //  }
         };
 
 
@@ -2516,13 +2681,13 @@
             vm.reset();
             vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
             vm.propertyName = propertyName;
-            vm.orders = orderBy(vm.orders, vm.propertyName, vm.reverse);
+            vm.allOrders = orderBy(vm.allOrders, vm.propertyName, vm.reverse);
         };
         vm.mainSortBy1 = function (propertyName) {
             vm.reset();
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
-            vm.orders = orderBy(vm.orders, vm.filter.sortBy, vm.sortReverse);
+            vm.allOrders = orderBy(vm.allOrders, vm.filter.sortBy, vm.sortReverse);
         };
 
 
@@ -2740,21 +2905,35 @@
 
         /** --------action ------------ **/
 
-        vm.deleteAllOrder = function () {
+                vm.deleteAllOrder = function () {
             var orders = {};
-            orders.order = [];
+            orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
 
             angular.forEach(vm.object.orders, function (value) {
-                orders.order.push({orderId: value.orderId, jobChain: value.jobChain});
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
 
             OrderService.deleteOrder(orders).then(function (res) {
-                console.log(res);
+                orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
+                             }
+                         })
+                     });
+                      vm.object.orders = [];
+                 });
+
             }, function () {
 
             });
-            vm.object.orders = [];
+
         };
 
         vm.suspendAllOrder = function () {
@@ -2766,16 +2945,20 @@
             });
             OrderService.suspendOrder(orders).then(function (res) {
                   orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
+
 
             }, function () {
 
@@ -2790,17 +2973,20 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.resetOrder(orders).then(function (res) {
-                  orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                     orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
             }, function () {
 
             });
@@ -2815,17 +3001,20 @@
             });
 
             OrderService.startOrder(orders).then(function (res) {
-                 orders.compact = true;
-                OrderService.get(orders).then(function (res) {
-                    angular.forEach(res.orders, function (order1) {
-                        angular.forEach(vm.object.orders, function (order) {
-                             if(order.orderId == order1.orderId) {
-                                order = order1;
+                     orders.compact = true;
+                 OrderService.get(orders).then(function (res) {
+                     angular.forEach(vm.object.orders, function (orders) {
+                         if (orders.path.substring(0, 1) != '/') {
+                             orders.path = '/' + orders.path;
+                         }
+                         angular.forEach(res.orders, function (orderData) {
+                             if (orders.path == orderData.path) {
+                                 orders = angular.merge(orders, orderData);
                              }
-                        });
-                    });
-                });
-                vm.object.orders = [];
+                         })
+                     });
+                     vm.object.orders = [];
+                 });
             }, function () {
 
             });
@@ -2870,7 +3059,7 @@
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
             vm.showPanel = value;
-            vm.hidePanel = !vm.hidePanel;
+            vm.hidePanel = true;
         };
         vm.hidePanelFuc = function () {
             vm.showPanel = '';
@@ -2895,7 +3084,7 @@
 
 
         $scope.$on('$destroy', function () {
-            watcher();
+           // watcher();
             watcher1();
             if (interval)
                 $interval.cancel(interval);
@@ -3014,7 +3203,14 @@
                 orders.params.concat(paramObject.params);
             }
             OrderService.startOrder(orders).then(function (res) {
-                console.log(res);
+                var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
             }, function () {
 
             });
@@ -3071,7 +3267,14 @@
             orders.state = vm.order.state;
             orders.endState = vm.order.endState;
             OrderService.setOrderState(orders).then(function (res) {
-                console.log(res);
+                  var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
             }, function () {
 
             });
@@ -3112,7 +3315,14 @@
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, runTime: order.runTime});
 
             OrderService.setRunTime(orders).then(function (res) {
-                console.log(res);
+                  var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
             }, function (err) {
                 console.log(err);
             });
@@ -3171,8 +3381,8 @@
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.suspendOrder(orders).then(function (res) {
                 orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+               OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3186,9 +3396,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.resumeOrder(orders).then(function (res) {
-                orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                 orders.compact=true;
+               OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3202,9 +3412,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.resumeOrder(orders).then(function (res) {
-                orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                 orders.compact=true;
+               OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3219,9 +3429,13 @@
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             orders.params.concat(paramObject.params);
             OrderService.resumeOrder(orders).then(function (res) {
-                orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                var orders = {};
+                orders.orders = [];
+                orders.compact = true;
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3253,8 +3467,8 @@
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.resetOrder(orders).then(function (res) {
                 orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+               OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3268,9 +3482,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.removeOrder(orders).then(function (res) {
-                orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                 orders.compact=true;
+               OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3284,9 +3498,9 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.order.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.deleteOrder(orders).then(function (res) {
-                orders.compact=true;
-               OrderService.getJobOrders(orders).then(function (res) {
-                    order.orders = res.orders;
+                 orders.compact=true;
+               OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
                 });
             }, function () {
 
@@ -3310,7 +3524,7 @@
                     };
                     vm.planItems.push(planData);
                 });
-                //openCalendar();
+
             }, function (err) {
             });
             openCalendar();
@@ -3794,7 +4008,7 @@
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
             vm.showPanel = value;
-            vm.hidePanel = !vm.hidePanel;
+            vm.hidePanel = true;
         };
         vm.hidePanelFuc = function () {
             vm.showPanel = '';
@@ -4350,7 +4564,7 @@
         vm.downloadLog = function () {
             var data = new Blob([vm.logs], {type: 'text/plain;charset=utf-8'});
             FileSaver.saveAs(data, 'history.log');
-        }
+        };
         var object = $location.search();
         vm.loadOrderLog = function () {
 

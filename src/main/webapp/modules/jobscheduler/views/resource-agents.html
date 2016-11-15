@@ -6,13 +6,13 @@
                 <div class="box card">
                     <div class="box-body">
                         <div>
-                            <a class="text-left">
+                            <span class="text-left">
                                 <i class="fa fa-server"></i>
                                 <span class="text"
-                                      ng-bind="cluster.AgentClusterName.substring(cluster.AgentClusterName.lastIndexOf('/')+1,cluster.AgentClusterName.lastIndexOf('&'))"></span>
+                                      ng-bind="cluster.AgentClusterName.substring(0,cluster.AgentClusterName.lastIndexOf('&'))"></span>
                                 <span class="text-sm text-c" ng-bind-template="({{cluster.SchedulingType}})"></span>
                                 <span class="fa fa-circle text-sm {{cluster.Status}}"></span>
-                            </a>
+                            </span>
                         </div>
                         <div class="text-sm  text-left text-muted p-t-sm">
                             <span class="text-black _600" ng-bind="cluster.TotalAgents"></span>
@@ -32,8 +32,8 @@
                  ng-class="{'show': (filtered.length===0 && tree_data.length !==0)}" translate>message.noDataMatched</div>
         </div>
     </div>
-    <div class="m-t-sm box p-a" ng-show="pageView=='list'">
-        <tree-grid id="healthy-id" tree-data="tree_data" tree-control="my_tree" col-defs="col_defs"
+    <div class="m-t-sm box p-a" ng-show="pageView=='list' && tree_data.length >0">
+        <tree-grid id="healthy-id"  tree-data="tree_data" tree-control="my_tree" col-defs="col_defs"
                    icon-leaf="fa fa-server" expand-on="expanding_property"></tree-grid>
     </div>
     <div ng-if="isLoading && tree_data.length==0" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>

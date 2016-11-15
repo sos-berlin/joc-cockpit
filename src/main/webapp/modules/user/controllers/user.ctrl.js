@@ -38,6 +38,7 @@
             UserService.getPermissions(vm.schedulerIds.selected).then(function (permission) {
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
+
                 if ($window.sessionStorage.getItem('$SOS$URL') && $window.sessionStorage.getItem('$SOS$URL') != 'null') {
 
                     $location.path($window.sessionStorage.getItem('$SOS$URL')).search(JSON.parse($window.sessionStorage.getItem('$SOS$URLPARAMS')));
@@ -73,11 +74,11 @@
                         } else {
                             vm.loginError = 'message.loginError';
                         }
-                        $('#loginBtn').text("Sign In");
+                        $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
                         vm.isProcessing = false;
                     }, function (err) {
                         vm.loginError = 'message.loginError';
-                        $('#loginBtn').text("Sign In");
+                        $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
                         vm.isProcessing = false;
                     });
             }

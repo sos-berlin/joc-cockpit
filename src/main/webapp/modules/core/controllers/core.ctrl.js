@@ -184,8 +184,8 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', '$state', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, $state, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window) {
         var vm = $scope;
         toasty.clear();
 
@@ -209,9 +209,11 @@
             } else {
                 vm.remainingSessionTime = s + 's';
             }
-            if(count<-10){
-                vm.logout();
-                $state.reload();
+
+            if(count<-5){
+                $window.sessionStorage.setItem('$SOS$URL', $location.path());
+                $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
+                vm.logout(true);
             }
 
             $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
@@ -231,12 +233,15 @@
             vm.selectedJobScheduler.startedAt = date;
         });
 
-        vm.logout = function () {
+        vm.logout = function (reload) {
             $window.localStorage.clientLogs = {};
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
-                $location.path('/login').search({});
+                 $location.path('/login').search({});
+                if(reload){
+                    $window.location.reload();
+                }
             });
 
         };
@@ -272,7 +277,7 @@
             UserService.getPermissions(jobScheduler).then(function (permission) {
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
-                $state.reload();
+                $window.location.reload();
             });
         }
 

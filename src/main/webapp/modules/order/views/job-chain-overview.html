@@ -177,6 +177,7 @@
                                     <i class="cursor text-xs"
                                        ng-if="showPanel == node.name && node.orders && node.orders.length>2"
                                        ng-click="hidePanelFuc()">Show Less<br></i>
+
                                     <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
                                     <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
                                        ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'?node.state.severity:node.job.state.severity)]"></i>

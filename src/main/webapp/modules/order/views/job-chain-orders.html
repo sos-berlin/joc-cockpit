@@ -92,7 +92,7 @@
                          <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
                     </div>
                     <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
-                            <div class="table-responsive">
+                            <div class="table-responsive" ng-show="orders.length >0">
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>
@@ -108,7 +108,7 @@
                                             <i ng-show="propertyName == 'orderId' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
-                                        <th ng-click="sortBy('jobChain')"><a><span translate>label.pathJobChain</span>
+                                        <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
                                             <i ng-show="propertyName == 'jobChain' && !reverse"
                                                class="fa fa-caret-down "></i>
                                             <i ng-show="propertyName == 'jobChain' && reverse"
@@ -126,25 +126,25 @@
                                             <i ng-show="propertyName == 'state' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
-                                        <th ng-show="filter.state!='pending'"  ng-click="sortBy('startedAt')"><a><span translate>label.startedAt</span>
+                                        <th   ng-click="sortBy('startedAt')"><a><span translate>label.startedAt</span>
                                             <i ng-show="propertyName == 'startedAt' && !reverse"
                                                class="fa fa-caret-down "></i>
                                             <i ng-show="propertyName == 'startedAt' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
-                                        <th  ng-show="filter.state!='pending'" ng-click="sortBy('inProcessSince')"><a><span translate>label.runningSince</span>
+                                        <th  ng-click="sortBy('inProcessSince')"><a><span translate>label.runningSince</span>
                                             <i ng-show="propertyName == 'inProcessSince' && !reverse"
                                                class="fa fa-caret-down "></i>
                                             <i ng-show="propertyName == 'inProcessSince' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
-                                        <th ng-show="filter.state!='pending'" ng-click="sortBy('historyId')"><a><span translate>label.historyId</span>
+                                        <th  ng-click="sortBy('historyId')"><a><span translate>label.historyId</span>
                                             <i ng-show="propertyName == 'historyId' && !reverse"
                                                class="fa fa-caret-down "></i>
                                             <i ng-show="propertyName == 'historyId' && reverse"
                                                class="fa fa-caret-up "></i></a>
                                         </th>
-                                        <th ng-click="sortBy('nextStartTime')" ng-show="filter.state=='pending' || filter.state =='waitingForResource' || filter.state =='all'"><a>
+                                        <th ng-click="sortBy('nextStartTime')"><a>
                                             <span translate>label.nextStartTime</span>
                                             <i ng-show="propertyName == 'nextStartTime' && !reverse"
                                                class="fa fa-caret-down "></i>
@@ -174,10 +174,10 @@
                                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                             </td>
                                             <td><a uib-tooltip="{{order.stateText}}" ng-bind="order.state"></a></td>
-                                            <td ng-show="filter.state!='pending'" ng-bind="order.startedAt | stringToDate"></td>
-                                            <td ng-show="filter.state!='pending'" ng-bind="order.inProcessSince | fromNow"></td>
-                                            <td ng-show="filter.state!='pending'" ng-bind="order.historyId || '-'"></td>
-                                            <td ng-show="filter.state=='pending' || filter.state =='waitingForResource' || filter.state =='all'" class="text-muted" ng-bind="order.nextStartTime | stringToDate"></td>
+                                            <td  ng-bind="order.startedAt | stringToDate"></td>
+                                            <td  ng-bind="order.inProcessSince | fromNow"></td>
+                                            <td  ng-bind="order.historyId || '-'"></td>
+                                            <td  class="text-muted" ng-bind="order.nextStartTime | stringToDate"></td>
                                             <td class="noExl">
                                                 <div class="btn-group dropdown ">
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i

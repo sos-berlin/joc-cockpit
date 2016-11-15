@@ -55,7 +55,7 @@
                                 };
                                 $rootScope.clientLogs.push(error);
                             }
-                        if(rejection.data.error)
+                        if(rejection.data && rejection.data.error)
                            toasty.error({
                                 title: rejection.data.error.code || rejection.status,
                                 msg: rejection.data.error.message || 'API expection',

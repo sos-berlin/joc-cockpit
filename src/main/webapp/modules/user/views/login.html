@@ -5,15 +5,15 @@
                 <div class="navbar m-t">
                     <div class="pull-center">
                         <a class="navbar-brand">
-                            <img src="images/jobscheduler-logo.png" alt=".">
+                            <img src="images/JobScheduler_logo.png" alt="." style="max-height: 90px">
                         </a>
                     </div>
                 </div>
-                <div class="m-b text-md text-midnight-blue _600 text-center m-t-md" translate>label.signIn</div>
+                <div style="margin-top: 65px"></div>
                 <div class="hide alert alert-danger" ng-class="{'show':lc.loginError}">
                     <span ng-bind="lc.loginError | translate"></span>
                 </div>
-                <form method="post" name="loginForm" ng-submit="lc.login()">
+                <form method="post" name="loginForm" ng-submit="lc.login()" class="p-t-sm p-b-sm p-l-xs p-r-xs">
                     <div class="md-form-group">
                         <input type="text" class="md-input" ng-model="lc.user.username" required>
                         <label class="font14" translate>label.userName</label>
@@ -32,7 +32,7 @@
                        <!-- <a href class="text-primary _500 pull-right" translate>button.forgotPassword?</a>-->
                     </div>
                     <button type="submit" class="btn btn-primary btn-block p-x-md"
-                            ng-disabled="loginForm.$invalid && isProcessing" id="loginBtn" translate>button.signIn
+                            ng-disabled="loginForm.$invalid && isProcessing" id="loginBtn" translate>button.logIn
                     </button>
                 </form>
             </div>

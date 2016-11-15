@@ -9,15 +9,17 @@
                     <i ng-if="row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder-open"></i>
                 </a>
                 <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || '/'}}
-                    <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
-                    <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()"> <i class="text-xs fa fa-compress"></i></span>
+                    <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()" ng-if="!row.branch.expanded"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
+                    <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()" ng-if="row.branch.expanded"> <i class="text-xs fa fa-compress"></i></span>
                 </span>
+<!--
                 <div class="m-l-sm" ng-class="'level-' + {{ row.level }}" ng-if="row.branch.processClasses && row.branch.expanded">
                     <div class="indented p-t-xs" ng-repeat="processClass in row.branch.processClasses">
                          <a href="" class="m-l-sm primary-text-hover-color"><i class="fa fa-calendar"></i> {{::processClass.name}}</a>
                     </div>
                     <div ng-if="row.branch.processClasses.length==0 && row.branch.folders.length==0" class="indented "><a class="m-l-sm" translate>message.noProcessClassesFound</a></div>
                 </div>
+-->
 
             </td>
         </tr>

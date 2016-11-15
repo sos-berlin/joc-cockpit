@@ -128,6 +128,11 @@
                                     <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
                                     <i ng-show="sortReverse" class="fa fa-caret-up"></i>
                                     </span>
+                                    <span ng-show="filter.sortBy =='path' && state=='processClass'">
+                                    {{'label.path' | translate}}
+                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    </span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
