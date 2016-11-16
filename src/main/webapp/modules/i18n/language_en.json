@@ -4,6 +4,7 @@
   "button.restart": "Restart",
   "button.abortAndRestart": "Abort and Restart",
   "button.pause": "Pause",
+  "button.continue": "Continue",
   "button.terminateFailsafe": "Terminate failsafe",
   "button.today": "Today",
   "button.thisHour": "This hour",

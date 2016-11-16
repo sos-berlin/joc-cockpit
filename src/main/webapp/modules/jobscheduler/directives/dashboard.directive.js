@@ -128,7 +128,9 @@
                             getTemporaryData(refresh);
                         }
                         angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, index) {
+
                             scope.getSupervisorDetails().then(function (res) {
+
                                 scope.clusterStatusData.supervisors[index].data = res;
                                 if (refresh) {
                                     refreshSupervisorState(supervisor);
@@ -148,9 +150,11 @@
 
 
                     function getTemporaryData(refresh) {
-                           //console.log("In get temporary data");
-                        scope.onRefresh().then(function (res) {
+
+                        scope.onRefresh({refresh:refresh}).then(function (res) {
+
                             if (scope.clusterStatusData.supervisors.length <= 0) {
+
                                 getTemporaryData2(res, refresh);
                             }
 
@@ -211,15 +215,15 @@
                     scope.refreshMasterState = refreshMasterState;
                     function refreshMasterState(master) {
 
-
                         var span = document.getElementById('sp' + master.host + master.port);
                         if (master.state && span) {
 
                             var anchors = document.querySelectorAll("a[id^='__']");
+
                             angular.forEach(anchors, function (anchor, index) {
 
-                                if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
-                                    var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
+                                if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
+                                    var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
                                     if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
                                         if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response') {
                                             var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
@@ -228,15 +232,19 @@
                                             connectLink(master.host, master.port);
                                         } else if (master.state._text.toLowerCase() == 'waiting_for_activation') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
-                                            anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
+                                            anchor.className = anchor.className+' disable-link';
                                             connectLink(master.host, master.port);
                                         }
                                         else if (master.state._text.toLowerCase() == 'running') {
                                             span.className = span.className.replace(/text-.+/, "text-success");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
+                                            if (results[2] == 'continue') {
+                                                anchor.className = anchor.className.replace('show', 'hide');
+                                            }
                                             connectLink(master.host, master.port);
                                         } else if (master.state._text.toLowerCase() == 'paused') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
+                                            anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             if (results[2] == 'pause') {
                                                 anchor.className = anchor.className.replace('show', 'hide');
                                             } else if (results[2] == 'continue') {
@@ -263,8 +271,8 @@
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
-                                if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
-                                    var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
+                                if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
+                                    var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
                                     if (results[1] == 'supervisor' && results[3] == supervisor.host && results[4] == supervisor.port) {
                                         if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
                                             span.className = span.className.replace(/text-.+/, " text-danger");
@@ -378,12 +386,12 @@
                                 '</span> <div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor-terminate-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-abortAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestart-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor-terminateAndRestartWithin-' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor-pause-' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor-continue-' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
+                                '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
+                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                                 '</div>' +
                                 '</div></div>' +
 
@@ -458,12 +466,12 @@
                                     '</span>' + '<div class="btn-group dropdown pull-right" >' +
                                     '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestart-' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestartWithin-' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
-                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                    '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
                                     '</div> </div>' +
                                     '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
@@ -562,12 +570,12 @@
                                 '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master-terminate-' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-abortAndRestart-' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestart-' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master-terminateAndRestartWithin-' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master-pause-' + master.host + ':' + master.port + '" translate>button.pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master-continue-' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                 '</div></div>' +
                                 '</span></div>' +
                                 '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
@@ -730,9 +738,12 @@
                     angular.forEach(anchors, function (anchor, index) {
                         anchor.addEventListener('click', function (e) {
 
-                            console.log(anchor.id);
-                            if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
-                                var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
+
+                            if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
+
+                                var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
+
+
                                 vm.onOperation({
                                     item: results[1],
                                     action: results[2],
@@ -741,6 +752,7 @@
                                 });
                                  console.log(results);
                                 changeToWaiting(results[3], results[4]);
+                                vm.getSupervisor(true);
 
                             }
 

@@ -1566,8 +1566,8 @@
         }
 
         vm.getClusterMembers = getClusterMembers;
-        function getClusterMembers() {
-            return JobSchedulerService.getClusterMembers({jobschedulerId: $scope.schedulerIds.selected});
+        function getClusterMembers(refresh) {
+            return JobSchedulerService.getClusterMembers({jobschedulerId: $scope.schedulerIds.selected},refresh);
         }
         function getDatabase() {
 

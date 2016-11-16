@@ -162,121 +162,89 @@
             })
         };
 
-        var isAllowed = function (status, item, callback) {
-            var allowed = true;
-            angular.forEach(vm.selectedNodes, function (node, index) {
-                if (item == 'job' && node.state._text.toLowerCase() == status) {
-                    allowed = false;
-                } else if (item == 'node' && node.job.state._text.toLowerCase() == status) {
-                    allowed = false;
-                }
-                if (index == vm.selectedNodes.length - 1) {
-                    callback(allowed);
-                }
-            })
-        };
 
         vm.stopJobs = function () {
-            isAllowed('stopped', 'job', function (allowed) {
-                if (!allowed) {
-                    toasty.warning({
-                        title: 'Not allowed!',
-                        msg: ''
-                    });
-                }
+
 
                 angular.forEach(vm.selectedNodes, function (node) {
                     JobService.stop({jobschedulerId: $scope.schedulerIds.selected,jobs:[{job: node.job.path}]}).then(function (res) {
-
+                               $timeout(function(){
+                                    node.job.state._text='STOPPED';
+                        node.job.state.severity=2;
+                               },10);
+                        vm.reset();
                     }, function (err) {
 
                     })
                 })
-            });
-            vm.selectedNodes = [];
         };
 
         vm.unstopJobs = function () {
-            isAllowed('stopped', 'job', function (allowed) {
-                if (!allowed) {
-                    toasty.warning({
-                        title: 'Not allowed!',
-                        msg: ''
-                    });
-                }
 
                 angular.forEach(vm.selectedNodes, function (node) {
                     JobService.unstop({jobschedulerId: $scope.schedulerIds.selected,jobs:[{job: node.job.path}]}).then(function (res) {
-
+$timeout(function(){
+                                    node.job.state._text='PENDING';
+                        node.job.state.severity=1;
+                               },10);
+                        vm.reset();
                     }, function (err) {
 
                     })
                 })
 
 
-            });
-            vm.selectedNodes = [];
+
         };
 
         vm.skipNodes = function () {
-            isAllowed('stopped', 'job', function (allowed) {
-                if (!allowed) {
-                    toasty.warning({
-                        title: 'Not allowed!',
-                        msg: ''
-                    });
-                }
 
                 angular.forEach(vm.selectedNodes, function (node) {
                     JobService.skipNode({jobschedulerId: $scope.schedulerIds.selected,nodes:[{jobChain: vm.jobChain.path, node: node.name}]}).then(function (res) {
-
+$timeout(function(){
+                                    node.state._text='SKIPPED';
+                        node.state.severity=5;
+                               },10);
+                        vm.reset();
                     }, function (err) {
 
                     })
                 })
 
 
-            });
-            vm.selectedNodes = [];
+
+
         };
 
         vm.stopNodes = function () {
-            isAllowed('stopped', 'job', function (allowed) {
-                if (!allowed) {
-                    toasty.warning({
-                        title: 'Not allowed!',
-                        msg: ''
-                    });
-                }
+
                 angular.forEach(vm.selectedNodes, function (node) {
                     JobService.stopNode({jobschedulerId: $scope.schedulerIds.selected,nodes:[{jobChain: vm.jobChain.path, node: node.name}]}).then(function (res) {
-
+$timeout(function(){
+                                    node.state._text='STOPPED';
+                        node.state.severity=2;
+                               },10);
+                        vm.reset();
                     }, function (err) {
 
                     })
                 })
-            });
-            vm.selectedNodes = [];
+
         };
 
         vm.unskipNodes = function () {
-            isAllowed('stopped', 'job', function (allowed) {
-                if (!allowed) {
-                    toasty.warning({
-                        title: 'Not allowed!',
-                        msg: ''
-                    });
-                }
 
                 angular.forEach(vm.selectedNodes, function (node) {
                     JobService.activateNode({jobschedulerId: $scope.schedulerIds.selected,nodes:[{jobChain: vm.jobChain.path, node: node.name}]}).then(function (res) {
-
+$timeout(function(){
+                                    node.state._text='ACTIVE';
+                        node.state.severity=4;
+                               },10);
+                        vm.reset();
                     }, function (err) {
 
                     })
                 })
-            });
-            vm.selectedNodes = [];
         };
 
         var splitRegex = new RegExp('(.+):(.+)');
@@ -331,6 +299,7 @@
         }
 
         function loadJobChain() {
+            console.log("Load job chain");
             if (SOSAuth.jobChain) {
                 vm.totalNodes = 0;
                 vm.totalSubNodes = 0;
@@ -539,8 +508,11 @@
         }
 
         vm.getJobChainOrders = getOrders;
+        vm.shouldPollForOrders = false;
+        vm.orderPollingInterval = 15000;
 
         function showOrders() {
+              console.log("Here");
             var filter = {};
             filter.orders = {};
             filter.orders.jobChain = [];
@@ -548,6 +520,7 @@
             filter.orders.jobChain.push(vm.jobChain.path);
             filter.jobschedulerId = vm.schedulerIds.selected;
             OrderService.get(filter).then(function (res) {
+                 vm.shouldPollForOrders = false;
                 res.orders = orderBy(res.orders, '+processingState._text', false, function (v1, v2) {
                     if (v1.value == 'RUNNING') {
                         return -1;
@@ -558,56 +531,62 @@
                 });
 
                 vm.orders = res.orders;
-
+                var current = false;
                 angular.forEach(vm.jobChain.nodes, function (node) {
                     node.orders = [];
+                    current = false
                     angular.forEach(vm.orders, function (order) {
+                        if(order.startedAt){
+                            vm.shouldPollForOrders = true;
+                        }
                         if (order.state == node.name) {
+                            if( order.startedAt){
+                                node.job.state.severity=0;
+                                node.job.state._text='RUNNING';
+                                 current = true;
+                            }
+
                             node.orders.push(order);
+
                         }
                     })
+                    if(!current && node.job.state.severity==0){
+                       $timeout(function(){
+                    node.job.state.severity=1;
+                           node.job.state._text='PENDING';
+                },10);
+                    }
                 })
-            }, function (err) {
 
+               pollForOrders();
+            }, function (err) {
+                 pollForOrders();
             });
         }
 
-        var jobNumber = -1;
+        var timeout = undefined;
+        function pollForOrders(){
+            console.log("polling 01");
+            $timeout.cancel(timeout);
+            if(vm.shouldPollForOrders){
+                 console.log("polling");
+                timeout=$timeout(function(){
+                    showOrders(true);
+                },vm.orderPollingInterval);
+            }
+        }
+
+        $rootScope.$on('OrderAdded',function(){
+            console.log("Order added");
+            vm.shouldPollForOrders=true;
+            showOrders(true);
+            pollForOrders();
+        })
+
+
         var orders;
 
-        $rootScope.$on('OrderAdded', function (event, args) {
-            startSimulating(args.orderId);
-        });
 
-
-        function startSimulating(orderId) {
-            var obj = {};
-            obj.jobChain = [];
-            obj.jobChain[0] = vm.jobChain.path;
-            obj.jobschedulerId = vm.schedulerIds.selected;
-
-            var promise = $interval(function () {
-                OrderService.get(obj).then(function (res) {
-                    jobNumber++;
-                    if (vm.jobChain && vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
-                        if (jobNumber >= vm.jobChain.nodes.length) {
-                            $interval.cancel(promise);
-                            vm.getOrders = getOrders;
-                        } else {
-
-                            res.orders[0].processingState._text = 'RUNNING';
-                            res.orders[0].orderId = orderId;
-                            res.orders[0].state = vm.jobChain.nodes[jobNumber].name;
-                            orders = res;
-                            vm.getOrders = getOrdersSimulate;
-                            $rootScope.$broadcast('UpdateOrderProgress');
-                        }
-                    }
-
-                });
-            }, 5000);
-
-        }
 
 
         vm.showPanel = '';
@@ -1054,6 +1033,7 @@
             orders.state = order.state;
             orders.title = order.title;
 
+
             if (order.fromDate && order.fromTime) {
                 order.fromDate.setHours(order.fromTime.getHours());
                 order.fromDate.setMinutes(order.fromTime.getMinutes());
@@ -1061,7 +1041,7 @@
             }
 
             if (order.fromDate) {
-                orders.at = moment.utc(order.fromDate).format();
+              orders.at = moment.utc(order.fromDate).format();
             } else {
                 orders.at = 'now';
             }
@@ -1070,14 +1050,15 @@
                 orders.params = paramObject;
             }
             OrderService.addOrder(orders).then(function (res) {
+                vm.object.orders = [];
+            $rootScope.$broadcast('OrderAdded', {orderId: order.orderId});
                 toasty.success = {
                     'title': gettextCatalog.getString('message.addOrderSuccessfully')
                 }
             }, function (err) {
 
             });
-            vm.object.orders = [];
-            $rootScope.$broadcast('OrderAdded', {orderId: order.orderId});
+
         }
 
         vm.addOrder = function () {
@@ -2572,10 +2553,10 @@
                         })
                     });
                     vm.orders = data;
-                    console.log(vm.orders.length)
                 } else {
                     vm.orders = res.orders;
                 }
+
 
                 if (flag) {
                     startTraverseTree();

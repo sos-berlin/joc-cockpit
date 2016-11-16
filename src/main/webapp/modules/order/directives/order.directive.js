@@ -347,7 +347,7 @@
 
                             } else {
                                 if (item.job.state._text.toLowerCase() == "running") {
-                                } else if (item.job.state._text.toLowerCase() == "stopped") {
+                                } else if (item.job.state._text.toLowerCase() == "pending") {
                                 } else if (item.job.state._text.toLowerCase() == "stopped") {
                                     rectCls = "border-red";
                                 }

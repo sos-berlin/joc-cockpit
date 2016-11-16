@@ -280,9 +280,9 @@
                 return deferred.promise;
             },
 
-            getClusterMembers: function (jobschedulerId) {
+            getClusterMembers: function (jobschedulerId,refresh) {
                 var deferred = $q.defer();
-                if(clusterMembers){
+                if(clusterMembers && !refresh){
                      deferred.resolve(clusterMembers);
                 }else{
                    var JobScheduler = $resource('jobscheduler/cluster/members');
