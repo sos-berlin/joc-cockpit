@@ -9,7 +9,7 @@
   },
   "orderOverviewWidget":{
     "polling":"true",
-    "interval":"100"
+    "interval":"10"
   },
   "dailyPlanWidget":{
     "polling":"true",
@@ -41,7 +41,7 @@
   },
  "jobChainsWorkflow":{
     "polling":"true",
-    "interval":"500"
+    "interval":"5"
   },
   "orders":{
     "polling":"true",

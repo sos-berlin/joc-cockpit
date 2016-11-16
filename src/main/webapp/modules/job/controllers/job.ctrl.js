@@ -103,6 +103,7 @@
          */
         vm.expandAll = function () {
             vm.branchs = [];
+            vm.allJobChains = [];
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -113,10 +114,6 @@
                     obj.folders.push({folder: res, recursive: false});
                 });
             }
-            obj.folders = obj.folders  || [];
-                if (obj.folders.length==0){
-                    obj.folders.push({folder: '/', recursive: false});
-                }
 
 
             JobChainService.getJobChainsP(obj).then(function (result) {
@@ -125,12 +122,12 @@
                 volatileInformation(obj, true);
             }, function () {
                 volatileInformation(obj, true);
-                vm.isError = true;
             });
 
         };
         function startTraverseTree() {
             vm.branchs = [];
+            vm.allJobChains = [];
             angular.forEach(vm.tree, function (value) {
                 traverseTree(value);
             });
@@ -143,6 +140,7 @@
 
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
                     data.jobChains.push(value);
+                    vm.allJobChains.push(value);
                 }
             });
 
@@ -226,22 +224,29 @@
                     data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
                     vm.branchs.push(data);
                 }
+                angular.forEach(data.jobChains, function(value){
+                    vm.allJobChains.push(value)
+                })
             }, function () {
                 if (data.jobChains.length > 0) {
                     data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
                     vm.branchs.push(data);
                 }
+                angular.forEach(data.jobChains, function(value){
+                    vm.allJobChains.push(value)
+                })
             });
         }
 
 
         vm.treeHandler1 = function (data) {
             data.folders = orderBy(data.folders, 'name');
-          //  if (data.expanded) {
+
                 data.jobChains = [];
                 vm.branchs = [];
+                vm.allJobChains = [];
                 expandFolderData(data);
-           // }
+
         };
 
         vm.treeHandler = function (data) {
@@ -250,13 +255,18 @@
                 if (!data.jobChains || data.jobChains.length == 0)
                     expandFolderData(data);
                 vm.branchs = [];
+                vm.allJobChains = [];
                 vm.branchs.push(data);
+                angular.forEach(data.jobChains, function(value){
+                    vm.allJobChains.push(value)
+                })
             }
         };
 
 
         vm.expandNode = function (data) {
             vm.branchs = [];
+            vm.allJobChains = [];
             function recursive(data) {
                 data.expanded = !0;
                 data.folders = orderBy(data.folders, 'name');
@@ -304,6 +314,9 @@
             if (data.jobChains.length > 0) {
                 vm.branchs.push(data);
             }
+            angular.forEach(data.jobChains, function(value){
+                    vm.allJobChains.push(value)
+                })
             angular.forEach(data.folders, function (value) {
                 if (value.expanded)
                     checkExpand(value);
@@ -315,6 +328,7 @@
             angular.forEach(vm.tree, function (value) {
                 if (value.expanded){
                     vm.branchs = [];
+                    vm.allJobChains = [];
                     checkExpand(value);
                 }
 
@@ -470,7 +484,7 @@
 
         var watcher1 = $scope.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.jobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
+                vm.allCheck.checkbox = newNames.length == vm.allJobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
@@ -499,7 +513,7 @@
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.jobChains.length > 0) {
-                vm.object.jobChains = vm.jobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
+                vm.object.jobChains = vm.allJobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
             } else {
                 vm.reset();
             }
@@ -725,14 +739,14 @@
             vm.reset();
             vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
             vm.propertyName = propertyName;
-            vm.jobChains = orderBy(vm.jobChains, vm.propertyName, vm.reverse);
+            vm.allJobChains = orderBy(vm.allJobChains, vm.propertyName, vm.reverse);
         };
 
         vm.mainSortBy = function (propertyName) {
             vm.reset();
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
-            vm.jobChains = orderBy(vm.jobChains, vm.filter.sortBy, vm.sortReverse);
+            vm.allJobChains = orderBy(vm.allJobChains, vm.filter.sortBy, vm.sortReverse);
         };
 
 
@@ -1017,25 +1031,6 @@
             });
         }
 
-/*
-        var watcher = $scope.$watch('pageView', function (newName) {
-
-            if (newName) {
-                vm.pageView = newName;
-                if (vm.pageView == 'list') {
-                    if (!vm.jobs || isFilterChange)
-                        vm.init();
-                }
-                else {
-                    if (!vm.filterTree)
-                        initTree();
-                    else if (isFilterChange)
-                        filterTreeData();
-                }
-            }
-        });
-*/
-
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
 
@@ -1111,6 +1106,7 @@
          */
         vm.expandAll = function () {
             vm.branchs = [];
+            vm.allJobs = [];
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -1121,11 +1117,6 @@
                     obj.folders.push({folder: res, recursive: false});
                 });
             }
-             obj.folders = obj.folders  || [];
-                if (obj.folders.length==0){
-                    obj.folders.push({folder: '/', recursive: false});
-                }
-
 
             JobService.getJobsP(obj).then(function (result) {
                 vm.jobs = result.jobs;
@@ -1139,6 +1130,7 @@
 
         function startTraverseTree() {
             vm.branchs = [];
+            vm.allJobs = [];
             angular.forEach(vm.tree, function (value) {
                 traverseTree(value);
             });
@@ -1150,6 +1142,7 @@
             angular.forEach(vm.jobs, function (value) {
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/')) || data.path == value.path.substring(0, value.path.lastIndexOf('/') + 1)) {
                     data.jobs.push(value);
+                    vm.allJobs.push(value);
                 }
             });
             if (data.jobs.length > 0) {
@@ -1210,11 +1203,17 @@
                     data1.jobs = orderBy(data1.jobs, vm.filter.sortBy);
                     vm.branchs.push(data1);
                 }
+                angular.forEach(data1.jobs, function(data){
+                    vm.allJobs.push(data);
+                })
             }, function () {
                 if (data1.jobs.length > 0) {
                     data1.jobs = orderBy(data1.jobs, vm.filter.sortBy);
                     vm.branchs.push(data1);
                 }
+                angular.forEach(data1.jobs, function(data){
+                    vm.allJobs.push(data);
+                })
             });
         }
 
@@ -1224,23 +1223,26 @@
                 if (!data.jobs || data.jobs.length == 0)
                     expandFolderData(data);
                 vm.branchs = [];
+                vm.allJobs = [];
                 vm.branchs.push(data);
-                console.log(data)
+                angular.forEach(data.jobs, function(a){
+                    vm.allJobs.push(a);
+                })
             }
         };
 
         vm.treeHandler1 = function (data) {
             data.folders = orderBy(data.folders, 'name');
-           // if (data.expanded) {
+
                 data.jobs = [];
                 vm.branchs = [];
+                vm.allJobs = [];
                 expandFolderData(data);
-           // }
-
         };
 
         vm.expandNode = function (data) {
             vm.branchs = [];
+            vm.allJobs = [];
             function recursive(data) {
                 data.expanded = !0;
                 data.folders = orderBy(data.folders, 'name');
@@ -1288,7 +1290,9 @@
             if (data.jobs.length > 0) {
                 vm.branchs.push(data);
             }
-
+            angular.forEach(data.jobs, function(a){
+                    vm.allJobs.push(a);
+                })
             angular.forEach(data.folders, function (value) {
                 if (value.expanded)
                     checkExpand(value);
@@ -1301,6 +1305,7 @@
             angular.forEach(vm.tree, function (value) {
                 if (value.expanded) {
                     vm.branchs = [];
+                    vm.allJobs = [];
                     checkExpand(value);
                 }
             });
@@ -1442,44 +1447,12 @@
             });
         }
 
-        /**
-         * Function to initialized list view data
-         */
-        vm.init = function () {
-            isFilterChange = false;
-            vm.isLoading = false;
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.compact = true;
-            if (selectedFiltered) {
-                obj.regex = selectedFiltered.regex;
-                obj.folders = [];
-                angular.forEach(selectedFiltered.paths, function (res) {
-                    obj.folders.push({folder: res, recursive: false});
-                });
-            }
-            JobService.getJobsP(obj).then(function (result) {
-                vm.jobs = result.jobs;
-                volatileInformation(obj);
-                vm.isLoading = true;
-
-            }, function () {
-                volatileInformation(obj);
-                vm.isLoading = true;
-                vm.isError = true;
-            });
-        };
-
 
         vm.load = function () {
-/*            if (vm.pageView == 'list')
-                vm.init();
-            else {*/
                 if (vm.filterTree.length == 0)
                     initTree();
                 else
                     filterTreeData();
-          //  }
         };
 
         vm.getQueueOrders = function (job) {
@@ -1497,7 +1470,7 @@
 
         var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.jobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
+                vm.allCheck.checkbox = newNames.length == vm.allJobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
 
                 vm.isOrderJob = false;
                 vm.isStopped = false;
@@ -1530,8 +1503,8 @@
                 vm.object.jobs = [];
         });
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.jobs.length > 0) {
-                vm.object.jobs = vm.jobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
+            if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
+                vm.object.jobs = vm.allJobs.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
             } else {
                 vm.object.jobs = [];
             }
@@ -1556,14 +1529,14 @@
             vm.object.jobs = [];
             vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
             vm.propertyName = propertyName;
-            vm.jobs = orderBy(vm.jobs, vm.propertyName, vm.reverse);
+            vm.allJobs = orderBy(vm.allJobs, vm.propertyName, vm.reverse);
         };
 
         vm.mainSortBy = function (propertyName) {
             vm.object.jobs = [];
             vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
-            vm.jobs = orderBy(vm.jobs, vm.filter.sortBy, vm.sortReverse);
+            vm.allJobs = orderBy(vm.allJobs, vm.filter.sortBy, vm.sortReverse);
         };
 
 

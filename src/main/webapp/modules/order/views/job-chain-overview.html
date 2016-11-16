@@ -145,6 +145,7 @@
                                     </label>
                                 </th>
                                 <th translate>label.state</th>
+                                 <th translate>label.orders</th>
                                 <th translate>label.jobPath</th>
                                 <th translate>label.jobStatus</th>
                                 <th translate>label.nextNode</th>
@@ -161,12 +162,21 @@
                                     </label>
                                 </td>
                                 <td>
+                                    <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
+                                    <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
+                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'?node.state.severity:node.job.state.severity)]"></i>
+                                    {{node.name}} </a>
 
+                                </td>
+                                <td>
                                     <div ng-repeat="order in node.orders | limitTo : 2:0">
                                         <a href="" ng-click="showTaskFuc(order)">
                                             <span class="text-sm">
                                                 <i class="text-xs fa fa-circle" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
-                                                <span class="text-primary text-xs">{{order.nextStartTime | stringToDate}}</span>
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">Next start {{order.nextStartTime | stringToDate}}
+                                                (-{{undefined | durationFromCurrent:order.nextStartTime }})</span>
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}">Next start never</span>
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.startedAt}">Running since {{order.startedAt | stringToDate}}(+{{order.startedAt | durationFromCurrent:undefined }})</span>
                                             </span>
                                         </a>
                                     </div>
@@ -177,12 +187,6 @@
                                     <i class="cursor text-xs"
                                        ng-if="showPanel == node.name && node.orders && node.orders.length>2"
                                        ng-click="hidePanelFuc()">Show Less<br></i>
-
-                                    <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
-                                    <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
-                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'?node.state.severity:node.job.state.severity)]"></i>
-                                    {{node.name}} </a>
-
                                 </td>
                                 <td ng-bind="node.job.path"></td>
                                 <td><span class="text-c label" ng-class="bgColorFunction(node.job.state.severity)"

@@ -183,15 +183,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div ng-if="branch.jobs.length==0 && branch.folders.length==0"
-                             class="text-center text-u-c">
-                            <span class="text-orange" translate>message.noJobsFound</span>
-                        </div>
                     </div>
                 </div>
                 <div class="m-t-sm box p-a" ng-show="pageView=='list' && branchs.length>0" >
                     <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
-                            <table ng-table="tableParams" class="table table-hover table-bordered  " id="jobTableId">
+                        <table ng-table="tableParams" class="table table-hover table-bordered  " id="jobTableId">
                                 <thead>
                                     <tr>
                                         <th class="noExl">
@@ -257,8 +253,8 @@
                                         <th class="noExl"></th>
                                     </tr>
                                 </thead>
-                                <tbody ng-repeat="branch in branchs ">
-                                <tr ng-repeat="job in filtered = (branch.jobs | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize" ng-class="{'light-bg':showTaskPanel == job}">
+                                <tbody>
+                                <tr ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize" ng-class="{'light-bg':showTaskPanel == job}">
                                     <td class="noExl">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
@@ -267,10 +263,6 @@
                                     <td><a href="" ng-click="showTaskFuc(job)">
                                       <span class="text-dark" ng-class="{'text-u-l':!job.isOrderJob}" ng-bind="job.name"></span> <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
                                     </a>
-        <!--                            <a href="" ng-click="hideTaskPanel()" ng-show="showTaskPanel == job">
-                                        <i class="fa fa-angle-up cursor"></i>
-                                        <span class="text-dark" ng-class="{'text-u-l':!job.isOrderJob}" ng-bind="job.name"></span> <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
-                                    </a>-->
                                     </td>
                                     <td ng-bind="job.path"></td>
                                     <td><span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span></td>
@@ -288,7 +280,7 @@
                                     <td ng-bind="job.ordersSummary.queued"></td>
 
                                     <td class="noExl">
-                                        <div class="btn-group dropdown">
+                                        <div class="btn-group dropdown"  ng-class="{dropup: $index>0?filtered.length<pageSize?$index> filtered.length-5:$index> pageSize-5:false}">
                                             <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                     class="fa fa-ellipsis-h"></i></button>
                                             <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
@@ -308,8 +300,8 @@
                                 </tbody>
 
                             </table>
-                             <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                             <div class="pull-right" ng-show="filtered.length > 10">
+                        <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                        <div class="pull-right" ng-show="filtered.length > 10">
                                 <div class="btn-group  m-r-xxs">
                                     <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
                                             ng-class="{'primary': pageSize=='10'}" >10
@@ -325,7 +317,8 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobs.length !==0)}" translate>message.noDataMatched</div>
+                    </div>
                 </div>
                 <div ng-if="isLoading && branchs.length==0" class="text-center m-t h6 text-uppercase" translate>message.noJobsFound</div>
                 <div class="hide " ng-class="{'show': isLoading}" >

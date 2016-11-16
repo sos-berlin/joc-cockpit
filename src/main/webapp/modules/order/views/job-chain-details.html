@@ -42,6 +42,7 @@
                                 <a class="dropdown-item" href ng-click="mainSortBy2('startedAt')" translate>label.date</a>
                             </div>
                         </div>
+                         <toggle-view ng-show="!overview"></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block' :object.orders.length>0}">
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}" ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i>
@@ -56,7 +57,7 @@
                             <span class="hidden-sm-down" translate>button.startOrderNow</span>
                         </button>
                      </div>
-                    <toggle-view ng-show="!overview"></toggle-view>
+
                 </div>
             </div>
         </div>

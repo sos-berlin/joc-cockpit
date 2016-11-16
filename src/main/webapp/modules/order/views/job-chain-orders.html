@@ -169,7 +169,7 @@
                                                 <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                                 <i class="text-muted">{{:: order.title}}</i></a>
                                             </td>
-                                            <td><span ng-bind="order.jobChain"></span></td>
+                                            <td><a ui-sref="app.jobChain" ng-bind="order.jobChain"></a></td>
                                             <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                             </td>
@@ -388,6 +388,19 @@
 </div>
 
 <script>
+    $('.table-responsive').on('shown.bs.dropdown', function (e) {
+    var $table = $(this),
+        $menu = $(e.target).find('.dropdown-menu'),
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
+  });
+
+  $('.table-responsive').on('hide.bs.dropdown', function () {
+    $(this).css("padding-bottom", 0);
+  });
     $(document).ready(function() {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 170

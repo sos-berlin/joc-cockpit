@@ -112,12 +112,9 @@
                             </div>
                         </div>
                     </div>
-                    <div ng-if="branch.orders.length==0 && branch.folders.length==0" class="text-center text-u-c">
-                        <span class="text-orange" translate>message.noOrdersFound</span>
-                    </div>
                 </div>
             </div>
-        </div>
+
         <div class="hide box p-a " ng-class="{'show': pageView=='list' && allOrders.length >0}">
             <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                 <table class="table table-hover table-bordered " id="orderTableId">
@@ -197,7 +194,7 @@
                                     <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                     <i class="text-muted">{{:: order.title}}</i></a>
                                 </td>
-                                <td><span ng-bind="order.jobChain"></span></td>
+                                <td><a ui-sref="app.jobChain" ng-bind="order.jobChain"></a></td>
                                 <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                     <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                 </td>
@@ -207,10 +204,10 @@
                                 <td ng-bind="order.historyId || '-'"></td>
                                 <td class="text-muted" ng-bind="order.nextStartTime | stringToDate"></td>
                                 <td class="noExl">
-                                    <div class="btn-group dropdown ">
+                                    <div class="btn-group dropdown " ng-class="{dropup: $index>0?filtered.length<pageSize?$index> filtered.length-5:$index> pageSize-5:false}">
                                         <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" id="menu{{$index}}">
                                           <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                             <a href class="dropdown-item"
                                                ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
@@ -293,6 +290,7 @@
             </div>
         </div>
         <div ng-if="isLoading && allOrders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
+        </div>
         <div class="hide " ng-class="{'show': isLoading}" >
             <div class="row hide" ng-show="showLogPanel" ng-class="{'show': pageView=='list'}">
                 <div class="col-md-12 hide" ng-class="{show: isLoading1}">

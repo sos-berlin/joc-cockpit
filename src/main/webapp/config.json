@@ -102,7 +102,5 @@
   "process_classes/p":true,
   "process_class/configuration":true,
   "plan":true,
-  "tree":true,
-  "IdleTimeOut":30
-
+  "tree":true
 }

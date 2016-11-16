@@ -728,8 +728,9 @@
 
                     var anchors = document.querySelectorAll("a[id^='__']");
                     angular.forEach(anchors, function (anchor, index) {
-                        anchor.addEventListener('click', function () {
+                        anchor.addEventListener('click', function (e) {
 
+                            console.log(anchor.id);
                             if (/__(.+)-(.+)-(.+):(\d+)/.test(anchor.id)) {
                                 var results = /__(.+)-(.+)-(.+):(\d+)/.exec(anchor.id);
                                 vm.onOperation({
@@ -738,9 +739,8 @@
                                     host: results[3],
                                     port: results[4]
                                 });
-
+                                 console.log(results);
                                 changeToWaiting(results[3], results[4]);
-
 
                             }
 

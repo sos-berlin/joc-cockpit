@@ -15,7 +15,7 @@
         <tree tree-data="tree"
               tree-control="my_tree"
               expand-to="expand_to"
-              expand-on="expanding_schedule_property"
+              expand-on="expanding_property1"
               on-select="treeHandler1(branch)"
               on-click="treeHandler(branch)"
               expand-node="expandNode(branch)"
@@ -26,7 +26,7 @@
 </div>
 <div id="rightPanel1">
     <div class="hide" ng-class="{'show': isLoading && permission.JobschedulerMasterCluster.view.clusterStatus}">
-         <div class="hide row" ng-class="{'show': pageView=='grid'}">
+        <div class="hide row" ng-class="{'show': pageView=='grid'}">
              <div ng-repeat="branch in branchs">
                   <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
                       <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
@@ -41,7 +41,7 @@
                                                 class="primary"></i></label>
 
                                         <div class="text-left m-l-md block-ellipsis" >
-                                             <a class="primary-text-hover-color" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></a>
+                                             <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
                                             <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                         </div>
                                         <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -61,11 +61,11 @@
                                     </div>
                                      <div class="text-sm text-left text-muted p-t-sm">
                                         <span translate>label.noOfOrders </span>:
-                                        <span class="text-dark" ng-bind="schedule.usedByOrders.length"></span>
+                                        <a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark primary-text-hover-color" ng-bind="schedule.usedByOrders.length || 0"></a>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-sm">
                                         <span translate>label.noOfJobs </span>:
-                                        <span class="text-dark" ng-bind="schedule.usedByJobs.length"></span>
+                                        <a class="text-dark primary-text-hover-color" ng-bind="schedule.usedByJobs.length || 0"></a>
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">
@@ -80,8 +80,8 @@
          </div>
         <div class="box p-a" ng-show="pageView=='list' && branchs.length>0">
             <div class="table-responsive" >
-                        <table class="table table-hover table-bordered  ">
-                            <thead>
+                <table class="table table-hover table-bordered  ">
+                    <thead>
                             <tr>
                                 <th>
                                     <label class="md-check lg-check">
@@ -139,8 +139,8 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="branch in branchs">
-                            <tr ng-repeat="schedule in filtered = (branch.schedules | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize">
+                            <tbody>
+                            <tr ng-repeat="schedule in filtered = (allSchedules | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize">
                                 <td>
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
@@ -152,11 +152,11 @@
                                 </td>
                                 <td ng-bind="schedule.path"></td>
                                  <td><span class="text-c label" ng-class="bgColorFunction(schedule.state.severity)" ng-bind="schedule.state._text  | translate" ></span></td>
-                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length"></a></td>
-                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a></td>
-                                <td ng-bind="schedule.validityFrom || '-'"></td>
-                                <td ng-bind="schedule.validityTo || '-'"></td>
-                                <td ng-bind="schedule.subsituteBy || '-'"></td>
+                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length || 0"></a></td>
+                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length || 0"></a></td>
+                                <td ng-bind="schedule.validityFrom || 'never'"></td>
+                                <td ng-bind="schedule.validityTo || 'never'"></td>
+                                <td ng-bind="schedule.subsituteBy || 'never'"></td>
                                 <td>
                                     <div class="btn-group dropdown">
                                     <a class="more-option-h" href data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a>
@@ -170,8 +170,8 @@
                             </tr>
                             </tbody>
                         </table>
-                        <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="filtered.length > 10">
+                <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                <div class="pull-right" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': pageSize=='10'}" >10
@@ -187,14 +187,11 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-
-
-
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allSchedules.length !==0)}" translate>message.noDataMatched</div>
+            </div>
         </div>
         <div ng-if="isLoading && branchs.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
     </div>
-     <div ng-if="isLoading && tree.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
     <div ng-if="!isLoading" class="text-center m-t-lg">
         <div class="cssload-loading">{{'label.loading' | translate}}...</div>
     </div>

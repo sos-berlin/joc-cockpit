@@ -15,7 +15,7 @@
         <tree tree-data="treeProcess"
               tree-control="my_tree_process"
               expand-to="expand_to"
-              expand-on="expanding_schedule_property"
+              expand-on="expanding_property1"
               on-select="treeHandler1P(branch)"
               on-click="treeHandlerP(branch)"
               expand-node="expandNodeP(branch)"
@@ -25,111 +25,109 @@
     </div>
 </div>
 <div id="rightPanel1">
-<div class="hide" ng-class="{'show': isLoading}">
-    <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
-        <div ng-repeat="branch in branchsP track by $index">
-            <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
-                <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
-            </div>
-            <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 hide" ng-class="{'show': pageView=='grid'}" ng-repeat="processClass in filtered = (branch.processClasses | filter: filterString:strict)  | orderBy: filter.sortBy:sortReverse">
-                <div class="box card">
-                    <div class="box-body">
-                        <div class="text-left block-ellipsis">
-                            <span>
-                                <i class="fa fa-stop text-sm"></i>
-                                <span class="text" ng-bind="processClass.name"></span>
-                            </span>
-                        </div>
-                        <div class="btn-group dropdown pull-right abt-dropdown hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
-                            <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                    class="text fa fa-ellipsis-v"></i></a>
-                            <div class="dropdown-menu dropdown-ac dropdown-more">
-                                <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
+    <div class="hide" ng-class="{'show': isLoading}">
+        <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
+            <div ng-repeat="branch in branchsP track by $index">
+                <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
+                    <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
+                </div>
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 hide" ng-class="{'show': pageView=='grid'}" ng-repeat="processClass in filtered = (branch.processClasses | filter: filterString:strict)  | orderBy: filter.sortBy:sortReverse">
+                    <div class="box card">
+                        <div class="box-body">
+                            <div class="text-left block-ellipsis">
+                                <span>
+                                    <i class="fa fa-stop text-sm"></i>
+                                    <span class="text" ng-bind="processClass.name"></span>
+                                </span>
                             </div>
+                            <div class="btn-group dropdown pull-right abt-dropdown hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
+                                <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
+                                        class="text fa fa-ellipsis-v"></i></a>
+                                <div class="dropdown-menu dropdown-ac dropdown-more">
+                                    <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                </div>
+                            </div>
+                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses || 10"></span> {{'label.maxProcesses' | translate}}</div>
+                            <div class="text-sm  text-left text-muted p-t-xs" ><a class="text-black _600" href="" ng-bind="processClass.numOfProcesses || 0"></a>  {{'label.noOfProcesses' | translate}}</div>
                         </div>
-                        <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses"></span> {{'label.maxProcesses' | translate}}</div>
-                        <div class="text-sm  text-left text-muted p-t-xs" ><a class="text-black _600" href="" ng-bind="processClass.numOfProcesses"></a>  {{'label.noOfProcesses' | translate}}</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="m-t-sm box p-a" ng-show="pageView=='list' && branchsP.length>0">
-        <div class="table-responsive" >
-            <table class="table table-hover table-bordered  ">
-                <thead>
-                <tr>
-                    <th ng-click="sortBy('name')"><a><span translate>label.name</span>
-                        <i ng-show="propertyName == 'name' && !reverse"
-                           class="fa fa-caret-down "></i>
-                        <i ng-show="propertyName == 'name' && reverse"
-                           class="fa fa-caret-up "></i></a>
-                    </th>
-                    <th ng-click="sortBy('path')"><a><span translate>label.path</span>
-                        <i ng-show="propertyName == 'path' && !reverse"
-                           class="fa fa-caret-down "></i>
-                        <i ng-show="propertyName == 'path' && reverse"
-                                   class="fa fa-caret-up "></i></a>
-                    </th>
-                    <th ng-click="sortBy('maxProcesses')"><a><span translate>label.maxProcesses</span>
-                        <i ng-show="propertyName == 'maxProcesses' && !reverse"
-                           class="fa fa-caret-down "></i>
-                        <i ng-show="propertyName == 'maxProcesses' && reverse"
-                           class="fa fa-caret-up "></i></a>
-                    </th>
-                    <th ng-click="sortBy('numOfProcesses')"><a><span translate>label.noOfProcesses</span>
-                        <i ng-show="propertyName == 'numOfProcesses' && !reverse"
-                           class="fa fa-caret-down "></i>
-                        <i ng-show="propertyName == 'numOfProcesses' && reverse"
-                           class="fa fa-caret-up "></i></a>
-                    </th>
-                    <th class="hide"  ng-class="{show:permission.ProcessClass.view.configuration}"></th>
-                </tr>
-                </thead>
-                <tbody ng-repeat="branch in branchsP track by $index">
-                <tr ng-repeat="processClass in filtered = (branch.processClasses | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
-                    <td ng-bind="processClass.name"></td>
-                    <td ng-bind="processClass.path"></td>
-                    <td ng-bind="processClass.maxProcesses"></td>
-                    <td ng-bind="processClass.numOfProcesses"></td>
-                     <td  class="hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
-                            <div class="btn-group dropdown">
-                                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                        <i class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)"
-                                           class="dropdown-item"
-                                           translate>button.showConfiguration</a>
-                                    </div>
-                            </div>
-                        </td>
-                </tr>
-                </tbody>
-            </table>
-            <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-            <div class="pull-right" ng-show="filtered.length > 10">
-                <div class="btn-group m-r-xxs">
-                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
-                            ng-class="{'primary': pageSize=='10'}" >10
-                    </button>
-                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
-                            ng-class="{'primary': pageSize=='25'}" >25
-                    </button>
-                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
-                            ng-class="{'primary': pageSize=='50'}" >50
-                    </button>
-                    <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
-                            ng-class="{'primary': pageSize=='100'}">100
-                    </button>
+        <div class="m-t-sm box p-a" ng-show="pageView=='list' && branchsP.length>0">
+            <div class="table-responsive" >
+                <table class="table table-hover table-bordered  ">
+                    <thead>
+                    <tr>
+                        <th ng-click="sortBy('name')"><a><span translate>label.name</span>
+                            <i ng-show="propertyName == 'name' && !reverse"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyName == 'name' && reverse"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortBy('path')"><a><span translate>label.path</span>
+                            <i ng-show="propertyName == 'path' && !reverse"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyName == 'path' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortBy('maxProcesses')"><a><span translate>label.maxProcesses</span>
+                            <i ng-show="propertyName == 'maxProcesses' && !reverse"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyName == 'maxProcesses' && reverse"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortBy('numOfProcesses')"><a><span translate>label.noOfProcesses</span>
+                            <i ng-show="propertyName == 'numOfProcesses' && !reverse"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyName == 'numOfProcesses' && reverse"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="processClass in filtered = (allProcessClasses | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
+                        <td ng-bind="processClass.name"></td>
+                        <td ng-bind="processClass.path"></td>
+                        <td ng-bind="processClass.maxProcesses || 10"></td>
+                        <td ng-bind="processClass.numOfProcesses || 0"></td>
+                         <td  class="hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
+                             <div class="btn-group dropdown">
+                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                     <i class="fa fa-ellipsis-h"></i></button>
+                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                     <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)"
+                                        class="dropdown-item"
+                                        translate>button.showConfiguration</a>
+                                 </div>
+                             </div>
+                         </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-right" ng-show="filtered.length > 10">
+                    <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                                ng-class="{'primary': pageSize=='10'}" >10
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                                ng-class="{'primary': pageSize=='25'}" >25
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                                ng-class="{'primary': pageSize=='50'}" >50
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                                ng-class="{'primary': pageSize=='100'}">100
+                        </button>
+                    </div>
                 </div>
+                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allProcessClasses.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
-
-
+        <div ng-if="isLoading && branchsP.length==0" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
     </div>
-     <div ng-if="isLoading && branchsP.length==0" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
-</div>
-<div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
+    <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
 <script>
        $('.table-responsive').on('shown.bs.dropdown', function (e) {

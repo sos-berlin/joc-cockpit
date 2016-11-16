@@ -219,10 +219,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div ng-if="branch.jobChains.length==0 && branch.folders.length==0"
-                             class="text-center text-u-c">
-                            <span class="text-orange" translate>message.noJobChainsFound</span>
-                        </div>
                     </div>
                 </div>
                 <div class="hide m-t-sm box p-a" ng-class="{'show': pageView=='list' && branchs.length>0}">
@@ -309,8 +305,8 @@
                                 <th class="noExl"></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="branch in branchs ">
-                            <tr ng-repeat="jobChain in filtered = (branch.jobChains | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | filter:filterString">
+                            <tbody>
+                            <tr ng-repeat="jobChain in filtered = (allJobChains | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | filter:filterString">
                                 <td class="noExl">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.jobChains"
@@ -335,7 +331,7 @@
                                 <td ng-bind="jobChain.ordersSummary.setback"></td>
                                 <td ng-bind="jobChain.ordersSummary.blacklist"></td>
                                 <td class="noExl">
-                                    <div class="btn-group dropdown">
+                                    <div class="btn-group dropdown"  ng-class="{dropup: $index>0?filtered.length<pageSize?$index> filtered.length-5:$index> pageSize-5:false}">
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
@@ -363,7 +359,6 @@
                             </tr>
                             </tbody>
                         </table>
-
                         <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length"
                             ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5"
                             ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
@@ -384,13 +379,14 @@
                                 </button>
                             </div>
                         </div>
+                        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobChains.length !==0)}" translate>message.noDataMatched</div>
                     </div>
                 </div>
                 <div ng-if="isLoading && branchs.length==0" class="text-center m-t h6 text-uppercase"
                      translate>message.noJobChainsFound</div>
-                <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-                    <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-                </div>
+            </div>
+            <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
         </div>
     </div>

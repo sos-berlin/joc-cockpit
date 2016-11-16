@@ -437,6 +437,7 @@ if ("undefined" == typeof jQuery)throw new Error("Bootstrap's JavaScript require
                 }
             }, {
                 key: "show", value: function () {
+
                     var c = this;
                     if (!this._isTransitioning && !a(this._element).hasClass(o.IN)) {
                         var top = $('.sticky').css('top');
@@ -484,6 +485,8 @@ if ("undefined" == typeof jQuery)throw new Error("Bootstrap's JavaScript require
                             return this._element.style[e] = 0, f.supportsTransitionEnd() ? void a(this._element).one(f.TRANSITION_END, h).emulateTransitionEnd(k) : void h()
                         }
                     }
+
+
                 }
             }, {
                 key: "setTransitioning", value: function (b) {

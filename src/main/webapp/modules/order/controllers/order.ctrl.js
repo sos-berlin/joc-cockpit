@@ -1700,7 +1700,6 @@
                     vm.orders = res.orders;
                 }
 
-
                 if (flag) {
                     startTraverseTree();
                 }
@@ -1710,32 +1709,6 @@
                 }
             });
         }
-
-        /**
-         * Function to initialized list view data
-         */
-        vm.init = function () {
-            isFilterChange = false;
-            vm.isLoading = false;
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.compact = true;
-            if (selectedFiltered) {
-                obj.regex = selectedFiltered.regex;
-                obj.folders = [];
-                angular.forEach(selectedFiltered.paths, function (res) {
-                    obj.folders.push({folder: res,recursive: false});
-                });
-            }
-            OrderService.getOrdersP(obj).then(function (result) {
-                vm.orders = result.orders;
-                vm.isLoading = true;
-                  volatileInformation(obj);
-            }, function () {
-                 volatileInformation(obj);
-                vm.isLoading = true;
-            });
-        };
 
 
         vm.load = function () {
@@ -2198,23 +2171,6 @@
             });
         }
 
-/*        var watcher = $scope.$watch('pageView', function (newName) {
-            if (newName) {
-                vm.pageView = newName;
-                if (vm.pageView == 'list') {
-                     if (!vm.orders || isFilterChange)
-                    vm.init();
-                }
-                else {
-                    if (vm.tree.length == 0)
-                        initTree();
-                    else
-                    if(isFilterChange)
-                        filterTreeData();
-                }
-            }
-        });*/
-
         vm.expanding_property = {
             field: "name"
         };
@@ -2315,10 +2271,9 @@
             data.orders = [];
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(vm.orders, function (value) {
-
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
                     data.orders.push(value);
-                    vm.allOrders.push(data);
+                    vm.allOrders.push(value);
                 }
             });
 
@@ -2594,7 +2549,7 @@
         }
 
 
-         function volatileInformation(obj, flag) {
+        function volatileInformation(obj, flag) {
             if (vm.filter.state != 'ALL') {
                 obj.processingStates = [];
                 obj.processingStates.push(vm.filter.state);
@@ -2604,22 +2559,23 @@
             OrderService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.orders.length > 0) {
-                    angular.forEach(vm.orders, function (orders) {
-                        if (orders.path.substring(0, 1) != '/') {
-                            orders.path = '/' + orders.path;
+                    angular.forEach(vm.orders, function (order) {
+                        if (order.jobChain.substring(0, 1) != '/') {
+                            order.jobChain = '/' + order.jobChain;
                         }
-                        angular.forEach(res.orders, function (orderData) {
-                            if (orders.path == orderData.path) {
-                                orders = angular.merge(orders, orderData);
-                                data.push(orders);
+                        angular.forEach(res.orders, function (orderData, index) {
+                            if (order.jobChain == orderData.jobChain && order.orderId == orderData.orderId) {
+                                order = angular.merge(order, orderData);
+                                data.push(order);
+
                             }
                         })
                     });
                     vm.orders = data;
+                    console.log(vm.orders.length)
                 } else {
                     vm.orders = res.orders;
                 }
-
 
                 if (flag) {
                     startTraverseTree();
@@ -2631,48 +2587,14 @@
             });
         }
 
-        /**
-         * Function to initialized list view data
-         */
-        vm.init = function () {
-            isFilterChange = false;
-            vm.isLoading = false;
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.compact = true;
-            if (selectedFiltered) {
-                obj.regex = selectedFiltered.regex;
-                if(selectedFiltered.paths && selectedFiltered.paths.length>0) {
-                    obj.folders = [];
-                    angular.forEach(selectedFiltered.paths, function (res) {
-                        obj.folders.push({folder: res,recursive: false});
-                    });
-                }
-            }
-            OrderService.getOrdersP({
-                jobschedulerId: $scope.schedulerIds.selected,
-                compact: true
-            }).then(function (result) {
-                vm.orders = result.orders;
-                volatileInformation(obj);
-                vm.isLoading = true;
 
-            },function(){
-                  volatileInformation(obj);
-                vm.isLoading = true;
-            });
-        };
 
 
         vm.load = function () {
-/*            if (vm.pageView == 'list')
-                vm.init();
-            else {*/
                 if (vm.tree.length == 0)
                     initTree();
                 else
                     filterTreeData();
-          //  }
         };
 
 
@@ -3115,8 +3037,10 @@
         };
 
         var watcher1 = vm.$watchCollection('object.orders', function (newNames) {
-
             if (newNames && newNames.length > 0) {
+                if(vm.allOrders)
+                vm.allCheck.checkbox = newNames.length == vm.allOrders.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
+                else
                 vm.allCheck.checkbox = newNames.length == vm.orders.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage)).length;
                 $rootScope.suspendSelected = false;
                 $rootScope.deletedSelected = false;
@@ -3144,8 +3068,12 @@
         });
 
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.orders.length>0) {
+            if (vm.allCheck.checkbox) {
+                if (vm.allOrders && vm.allOrders.length>0)
+                vm.object.orders = vm.allOrders.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
+                else if (vm.orders && vm.orders.length>0)
                 vm.object.orders = vm.orders.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
+
             } else {
                 vm.object.orders = [];
             }
