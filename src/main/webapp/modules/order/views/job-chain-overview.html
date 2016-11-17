@@ -17,13 +17,13 @@
                                 <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJob}" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isUnStoppedJob}" ng-click="unstopJobs()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedJob}" ng-click="unstopJobs()" translate>
                                     button.unstopJob
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStopped}" ng-click="stopNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedNode}" ng-click="stopNodes()" translate>
                                     button.stopNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStopped}" ng-click="unskipNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedNode}" ng-click="unstopNodes()" translate>
                                     button.unstopNode
                                 </button>
                                 <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isSkippedNode}" ng-click="skipNodes()" translate>
@@ -133,6 +133,7 @@
                                       on-action="onAction(path,node,action)"
                                       show-configuration="showConfiguration(type,path,name)"
                                       orders="obj.orders"
+                                      get-orders = "getOrders(filter)"
                                 >
                         </flow-diagram>
                     </div>

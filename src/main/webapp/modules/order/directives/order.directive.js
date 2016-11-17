@@ -8,7 +8,7 @@
         .directive('pieChartComponent', pieChartComponent)
         .directive('flowDiagram', flowDiagram);
 
-    pieChartComponent.$inject =['$rootScope'];
+    pieChartComponent.$inject = ['$rootScope'];
     function pieChartComponent($rootScope) {
         return {
             restrict: 'E',
@@ -17,7 +17,7 @@
                 width: '@',
                 height: '@'
             },
-            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth','$interval', function (OrderService, $scope, CoreService, SOSAuth, $interval) {
+            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', '$interval', function (OrderService, $scope, CoreService, SOSAuth, $interval) {
                 var vm = $scope;
                 var ordersData = [];
 
@@ -198,10 +198,10 @@
                         if (index == 0) {
                             orderLeft = margin + avatarW;
                             rectangleTemplate = rectangleTemplate +
-                                '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
-                                '<table class="table table-hover table-bordered"><thead > <tr>' +
-                                '<th> <span translate>label.sr </span> </th><th> <span translate>label.directory </span> </th>' +
-                                '<th> <span translate>label.regex</span> </th></tr></thead>'
+                            '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
+                            '<table class="table table-hover table-bordered" ><thead > <tr>' +
+                            '<th> <span translate>label.sr </span> </th><th> <span translate>label.directory </span> </th>' +
+                            '<th> <span translate>label.regex</span> </th></tr></thead>'
                         }
                         rectangleTemplate = rectangleTemplate + '<tbody> <tr> <td>' + parseInt(index + 1) + ' </td><td>' + orderSource.directory + ' </td><td>' + orderSource.regex + ' </td></tr>';
                         if (index == scope.jobChain.fileOrderSources.length - 1) {
@@ -225,8 +225,8 @@
                             var startTop = avatarTop - 25;
                             var startLeft = avatarW / 2 - "Start".length * 3;
                             rectangleTemplate = rectangleTemplate + '<span id="lbStart" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
-                                + '" translate>label.start</span>' +
-                                '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
+                            + '" translate>label.start</span>' +
+                            '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
                         }
 
@@ -302,9 +302,9 @@
                                 jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
                                 jobName = '<span><i class="fa fa-file1"></i><span class="">' + jobName + '</span></span>';
                                 host = '<div class="text-left text-muted p-t-xs ">' +
-                                    '<span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                    '<span id="' + 'plk' + item.name + '" class="pull-right show"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                    '</div>';
+                                '<span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                '<span id="' + 'plk' + item.name + '" class="pull-right show"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                '</div>';
                                 lock = '<div class="text-left text-muted p-t-xs "><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></div>';
                             } else if (item.jobChain) {
                                 jobName = '<span><i class="fa fa-list"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
@@ -338,7 +338,7 @@
                             if (item.state._text.toLowerCase() != "active") {
                                 if (item.state._text.toLowerCase() == "skipped") {
                                     op2 = "button.proceedNode";
-                                    rectCls = "border-red";
+                                    rectCls = "border-dark-orange";
                                 } else if (item.state._text.toLowerCase() == "stopped") {
                                     op1 = "button.proceedNode";
                                     op1Cls = "";
@@ -350,29 +350,30 @@
                                 } else if (item.job.state._text.toLowerCase() == "pending") {
                                 } else if (item.job.state._text.toLowerCase() == "stopped") {
                                     rectCls = "border-red";
+                                    op3 = "button.unstopJob";
                                 }
                             }
 
                             rectangleTemplate = rectangleTemplate +
-                                '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect ' + rectCls + '" >' +
-                                '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
-                                '<input type="checkbox"  id="' + chkId + '">' +
-                                '<i class="ch-purple"></i>' +
-                                '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
-                                '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
-                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
-                                '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
-                                '</div></div></div>'
-                                + '<div class="text-left text-muted p-t-sm ">' + jobName +
-                                '</div>' +
-                                host +
-                                '</div >' +
-                                '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> <span translate>' + op1 + '</span></a>' +
-                                '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
-                                '</div>' +
-                                '</div>';
+                            '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect ' + rectCls + '" >' +
+                            '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
+                            '<input type="checkbox"  id="' + chkId + '">' +
+                            '<i class="ch-purple"></i>' +
+                            '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
+                            '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
+                            '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                            '<a id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
+                            '</div></div></div>'
+                            + '<div class="text-left text-muted p-t-sm ">' + jobName +
+                            '</div>' +
+                            host +
+                            '</div >' +
+                            '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
+                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> <span translate>' + op1 + '</span></a>' +
+                            '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
+                            '</div>' +
+                            '</div>';
                         }
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
@@ -411,26 +412,26 @@
                                     var btnId4 = 'btn4' + item.name.replace(':', '__');
                                     var statusCls;
                                     rectangleTemplate = rectangleTemplate +
-                                        '<div id="' + item.name + '" style="position:absolute;left:' + coords[scope.errorNodeIndex].left + 'px;top:' + coords[scope.errorNodeIndex].top + 'px"  class="rect error-node" >' +
-                                        '<div><div><span class="md-check md-check1" style="padding-left: 20px;">' +
-                                        '<input type="checkbox"  id="' + chkId + '">' +
-                                        '<i class="ch-purple"></i>' +
-                                        '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
-                                        '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
-                                        '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                        '<a href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
-                                        '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
-                                        '</div></div></div>'
-                                        + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
-                                        '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
-                                        '<span id="' + 'pc' + item.name + '" class="p-l-sm"></span></span>' +
-                                        '<span class="show" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                        '</div>' + '</div>' +
-                                        '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                        '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> {{\'button.stopNode\' | translate}}</a>' +
-                                        '<a href class=" pull-right " id="' + btnId2 + '" > <i class="fa fa-step-forward"></i> {{\'button.skipNode\' | translate}}</a>' +
-                                        '</div>' +
-                                        '</div>';
+                                    '<div id="' + item.name + '" style="position:absolute;left:' + coords[scope.errorNodeIndex].left + 'px;top:' + coords[scope.errorNodeIndex].top + 'px"  class="rect error-node" >' +
+                                    '<div><div><span class="md-check md-check1" style="padding-left: 20px;">' +
+                                    '<input type="checkbox"  id="' + chkId + '">' +
+                                    '<i class="ch-purple"></i>' +
+                                    '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
+                                    '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
+                                    '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                                    '<a href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
+                                    '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
+                                    '</div></div></div>'
+                                    + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
+                                    '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
+                                    '<span id="' + 'pc' + item.name + '" class="p-l-sm"></span></span>' +
+                                    '<span class="show" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                    '</div>' + '</div>' +
+                                    '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
+                                    '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> {{\'button.stopNode\' | translate}}</a>' +
+                                    '<a href class=" pull-right " id="' + btnId2 + '" > <i class="fa fa-step-forward"></i> {{\'button.skipNode\' | translate}}</a>' +
+                                    '</div>' +
+                                    '</div>';
                                 }
 
                                 if (i == scope.jobChain.nodes.length - 1) {
@@ -483,18 +484,18 @@
                                 var labelLeft = coords[length].left + avatarW / 2 - endNode.name.length * 3;
 
                                 rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-danger error-node" ' +
-                                    'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
-                                    '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
-                                    'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + coords[length].top + 'px' + '"> </span>';
+                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
+                                '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
+                                'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + coords[length].top + 'px' + '"> </span>';
 
                             } else {
                                 coords[length].top = avatarTop;
                                 var labelTop = avatarTop - 25;
                                 var labelLeft = coords[length].left + avatarW / 2 - endNode.name.length * 3;
                                 rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-success" ' +
-                                    'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
-                                    '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
-                                    'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + avatarTop + 'px' + '"> </span>';
+                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
+                                '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
+                                'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + avatarTop + 'px' + '"> </span>';
                             }
 
                             if (index == scope.jobChain.endNodes.length - 1) {
@@ -585,9 +586,10 @@
                 'getJobInfo': '&',
                 'onAction': '&',
                 'showConfiguration': '&',
-                'orders': '='
+                'orders': '=',
+                'getOrders':'&'
             },
-            controller: ['$scope', '$interval','gettextCatalog', function ($scope, $interval,gettextCatalog) {
+            controller: ['$scope', '$interval', 'gettextCatalog','$timeout', function ($scope, $interval, gettextCatalog,$timeout) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.object = {};
@@ -599,6 +601,7 @@
                 var btnId;
                 var jobChainPath;
                 var mainContainer;
+                vm.selectedNodes = [];
 
                 vm.drawConnections = function () {
                     jobChainPath = vm.jobChain.path;
@@ -1012,15 +1015,22 @@
 
 
                         chkId = '#chk' + item.name.replace(':', '__');
+
                         var chk = document.querySelector(chkId);
                         chk.addEventListener('change', function () {
                             //console.log("It's here");
                             if (chk.checked) {
                                 //console.log("It's checked");
                                 vm.onAdd({$item: item});
+                                vm.selectedNodes.push(item);
                             } else {
                                 //console.log("It's unchecked");
-                                vm.onRemove({$item: item})
+                                vm.onRemove({$item: item});
+                                angular.forEach(vm.selectedNodes, function (node, index) {
+                                    if (node.name == item.name) {
+                                        vm.selectedNodes.splice(index, 1);
+                                    }
+                                })
                             }
                         });
 
@@ -1039,10 +1049,12 @@
                                         action: 'stop node'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn1.innerHTML = '<i class="fa fa-play"></i> '+gettextCatalog.getString('button.proceedNode');
+                                        btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                                         div1.className = div1.className.replace(/border-.*/, 'border-red');
                                         btn1.className = btn1.className.replace('text-hover-color', '');
-                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> '+gettextCatalog.getString('button.skipNode');
+                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
+                                        item.state._text = 'STOPPED';
+                                        item.state.severity = 2;
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
@@ -1053,9 +1065,11 @@
                                         action: 'unstop node'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn1.innerHTML = '<i class="fa fa-stop"></i> '+gettextCatalog.getString('button.stopNode');
+                                        btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
                                         div1.className = div1.className.replace(/border-.*/, 'border-grey');
                                         btn1.className = btn1.className + " text-hover-color";
+                                        item.state._text = 'ACTIVE';
+                                        item.state.severity = 4;
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     });
@@ -1079,23 +1093,27 @@
                                         action: 'skip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-play"></i> '+gettextCatalog.getString('button.proceedNode');
+                                        btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                                         btn2.className = btn2.className.replace('text-hover-color', '');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-red');
-                                        btn1.innerHTML = '<i class="fa fa-stop"></i> '+gettextCatalog.getString('button.stopNode');
+                                        div1.className = div1.className.replace(/border-.*/, 'border-dark-orange');
+                                        btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
                                         btn1.className = btn1.className + " text-hover-color";
+                                        item.state._text = 'SKIPPED';
+                                        item.state.severity = 5;
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
-                                } else if (btn2.textContent.trim() == pgettextCatalog.getString('button.proceedNode')) {
+                                } else if (btn2.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'unskip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-play"></i> '+gettextCatalog.getString('button.skipNode');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-red');
+                                        btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.skipNode');
+                                        div1.className = div1.className.replace(/border-.*/, '');
+                                        item.state._text = 'ACTIVE';
+                                        item.state.severity = 4;
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     });
@@ -1118,10 +1136,13 @@
                                         node: item.name,
                                         action: 'stop job'
                                     }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
+                                        console.log("Response " + JSON.stringify(res));
                                         btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
                                         div1.className = div1.className.replace(/border-.*/, 'border-red');
                                         btn3.className = btn3.className.replace('bg-hover-color', '');
+                                        item.job.state._text = 'STOPPED';
+                                        item.job.state.severity = 2;
+                                        vm.onAdd({$item: undefined});
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
@@ -1135,6 +1156,8 @@
                                         btn3.innerHTML = gettextCatalog.getString('button.stopJob');
                                         div1.className = div1.className.replace(/border-.*/, 'border-grey');
                                         btn3.className = btn3.className + " bg-hover-color";
+                                        item.job.state._text = 'PENDING';
+                                        item.job.state.severity = 1;
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     });
@@ -1150,7 +1173,7 @@
                         var btn4 = document.querySelector(btnId4);
                         btn4.addEventListener('click', function (e) {
                             if (item.job.path) {
-                                vm.showConfiguration({type:'job', path:item.job.path, name:item.name});
+                                vm.showConfiguration({type: 'job', path: item.job.path, name: item.name});
                             }
                         });
 
@@ -1271,6 +1294,8 @@
                         })
                     }
 
+
+
                     function colorFunction(d) {
                         if (d == 0) {
                             return 'green';
@@ -1299,10 +1324,13 @@
 
                     function addLabel() {
                         console.log("Add label01");
-
+vm.shouldPollForOrders=false;
                         angular.forEach(vm.orders, function (order, index) {
                             console.log("Order state " + order.state + " path " + order.path);
                             var node = document.getElementById(order.state);
+                            if(order.startedAt){
+                                vm.shouldPollForOrders=true;
+                            }
 
                             if (node) {
                                 if (node.className.indexOf('border-green') > -1) {
@@ -1349,9 +1377,38 @@
 
                         })
 
+                        //pollForOrders();
+
                     }
 
                 }
+
+                 vm.shouldPollForOrders = false;
+        vm.orderPollingInterval = 15000;
+
+
+                    var timeout = undefined;
+        function pollForOrders(){
+            console.log("polling 01");
+            $timeout.cancel(timeout);
+            if(true){
+                 console.log("polling");
+                timeout=$timeout(function(){
+                    var filter = {};
+                    filter.orders=[];
+                    angular.forEach(vm.orders,function(order){
+                        filter.orders.push({jobChain:order.jobChain,orderId:order.orderId});
+                    })
+
+                    vm.getOrders({filter:filter}).then(function(res){
+                           console.log("Response 01"+JSON.stringify(res));
+                        $timeout.cancel(timeout);
+                    },function(err){
+
+                    })
+                },vm.orderPollingInterval);
+            }
+        }
 
 
                 startPolling();
@@ -1366,15 +1423,117 @@
                 function poll() {
                     interval = $interval(function () {
                         //TODO
-                        console.log('updated workflow...................');
+                        //console.log('updated workflow...................');
                     }, $rootScope.config.jobChainsWorkflow.interval * 1000)
                 }
 
                 vm.$on('$destroy', function () {
                     if (interval)
                         $interval.cancel(interval);
-
                 });
+
+                vm.$on('bulkOperationCompleted', function (event, args) {
+                    console.log("Bulk operation completed " + JSON.stringify(args));
+                    if (args.operation == 'stopJobs' && args.status == 'success') {
+                        angular.forEach(vm.selectedNodes, function (node) {
+                            var btnId3 = '#btn3' + node.name.replace(':', '__');
+                            var btn3 = document.querySelector(btnId3);
+                            var div1 = document.getElementById(node.name);
+                            btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
+                            div1.className = div1.className.replace(/border-.*/, 'border-red');
+                            btn3.className = btn3.className.replace('bg-hover-color', '');
+                            $timeout(function () {
+                                node.job.state._text = 'STOPPED';
+                                node.job.state.severity = 2;
+                            }, 10);
+                            console.log("Node " + node.name + " state " + node.state._text + " job state " + node.job.state._text);
+                        })
+                    } else if (args.operation == 'unstopJobs' && args.status == 'success') {
+                        angular.forEach(vm.selectedNodes, function (node) {
+                            var btnId3 = '#btn3' + node.name.replace(':', '__');
+                            var btn3 = document.querySelector(btnId3);
+                            var div1 = document.getElementById(node.name);
+                            btn3.innerHTML = gettextCatalog.getString('button.stopJob');
+                            div1.className = div1.className.replace(/border-.*/, 'border-grey');
+                            btn3.className = btn3.className + " bg-hover-color";
+                            $timeout(function () {
+                                node.job.state._text = 'PENDING';
+                                node.job.state.severity = 1;
+                            }, 10);
+
+                        })
+                    }
+                    else if (args.operation == 'stopNodes' && args.status == 'success') {
+                        angular.forEach(vm.selectedNodes, function (node) {
+                            var btnId1 = '#btn1' + node.name.replace(':', '__');
+                            var btnId2 = '#btn2' + node.name.replace(':', '__');
+                            var btn1 = document.querySelector(btnId1);
+                            var btn2 = document.querySelector(btnId2);
+                            var div1 = document.getElementById(node.name);
+                            btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
+                            div1.className = div1.className.replace(/border-.*/, 'border-red');
+                            btn1.className = btn1.className.replace('text-hover-color', '');
+                            btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
+                            $timeout(function () {
+                                node.state._text = 'STOPPED';
+                                node.state.severity = 2;
+                            }, 10);
+                        })
+                    } else if (args.operation == 'unstopNodes' && args.status == 'success') {
+                        angular.forEach(vm.selectedNodes, function (node) {
+                            var btnId1 = '#btn1' + node.name.replace(':', '__');
+                            var btn1 = document.querySelector(btnId1);
+                            var div1 = document.getElementById(node.name);
+                            btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
+                            div1.className = div1.className.replace(/border-.*/, 'border-grey');
+                            btn1.className = btn1.className + " text-hover-color";
+                            $timeout(function () {
+                                node.state._text = 'ACTIVE';
+                                node.state.severity = 4;
+                            }, 10);
+                        })
+
+                    } else if (args.operation == 'skipNodes' && args.status == 'success') {
+                        angular.forEach(vm.selectedNodes, function (node) {
+                            var btnId1 = '#btn1' + node.name.replace(':', '__');
+                            var btnId2 = '#btn2' + node.name.replace(':', '__');
+                            var btn1 = document.querySelector(btnId1);
+                            var btn2 = document.querySelector(btnId2);
+                            var div1 = document.getElementById(node.name);
+                            btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
+                            btn2.className = btn2.className.replace('text-hover-color', '');
+                            div1.className = div1.className.replace(/border-.*/, 'border-red');
+                            btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
+                            btn1.className = btn1.className + " text-hover-color";
+                            $timeout(function () {
+                                node.state._text = 'SKIPPED';
+                                node.state.severity = 5;
+                            }, 10);
+                        })
+                    } else if (args.operation == 'unskipNodes' && args.status == 'success') {
+                        angular.forEach(vm.selectedNodes, function (node) {
+                            var btnId2 = '#btn1' + node.name.replace(':', '__');
+                            var btn2 = document.querySelector(btnId2);
+                            var div1 = document.getElementById(node.name);
+                            btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.skipNode');
+                            div1.className = div1.className.replace(/border-.*/, '');
+                            $timeout(function () {
+                                node.state._text = 'ACTIVE';
+                                node.state.severity = 4;
+                            }, 10);
+                        })
+
+                    }
+
+
+                    angular.forEach(vm.selectedNodes, function (node) {
+                        var chkId = '#chk' + node.name.replace(':', '__');
+                        console.log("chkId " + chkId);
+                        $(chkId).attr("checked", false);
+                    })
+
+
+                })
 
             }]
         }

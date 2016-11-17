@@ -1,5 +1,5 @@
 {
-  "WEB_SERVER_URL":"http://35.154.23.192:4446/joc/api/",
+  "WEB_SERVER_URL":"http://localhost:4450/joc/api/",
   "security/login":true,
   "security/joc_cockpit_permissions":true,
   "security/logout":true,

@@ -129,14 +129,24 @@
 
         vm.onAdd = function (item) {
             promise1 = $timeout(function () {
-                vm.selectedNodes.push(item);
+                console.log("On add 01");
+                if(item){
+                    console.log("On add 02");
+                     vm.selectedNodes.push(item);
+                }
 
-                vm.isStopped = false;
+
+
                 vm.isStoppedJob = false;
+                vm.isStoppedNode = false;
+                vm.isSkippedNode = false;
                 angular.forEach(vm.selectedNodes, function (value) {
-                    console.log(value.state);
+                    console.log(value.name+" state "+value.state._text+" job state "+value.job.state._text);
                     if (value.state && value.state._text == 'STOPPED') {
-                        vm.isStopped = true;
+                        vm.isStoppedNode = true;
+                    }
+                     if (value.state && value.state._text == 'SKIPPED') {
+                        vm.isSkippedNode = true;
                     }
                     if (value.job.state && value.job.state._text == 'STOPPED') {
                         vm.isStoppedJob = true;
@@ -163,6 +173,9 @@
         };
 
 
+        function bulkOperationCompleted(operation,status){
+            $rootScope.$broadcast('bulkOperationCompleted',{operation:operation,status:status})
+        }
         vm.stopJobs = function () {
 
 
@@ -173,8 +186,9 @@
                         node.job.state.severity=2;
                                },10);
                         vm.reset();
+                        bulkOperationCompleted('stopJobs','success');
                     }, function (err) {
-
+bulkOperationCompleted('stop','error');
                     })
                 })
         };
@@ -188,8 +202,9 @@ $timeout(function(){
                         node.job.state.severity=1;
                                },10);
                         vm.reset();
+                        bulkOperationCompleted('unstopJobs','success');
                     }, function (err) {
-
+bulkOperationCompleted('unstopJobs','error');
                     })
                 })
 
@@ -206,8 +221,9 @@ $timeout(function(){
                         node.state.severity=5;
                                },10);
                         vm.reset();
+                        bulkOperationCompleted('skipNodes','success');
                     }, function (err) {
-
+                        bulkOperationCompleted('skipNodes','error');
                     })
                 })
 
@@ -220,13 +236,14 @@ $timeout(function(){
 
                 angular.forEach(vm.selectedNodes, function (node) {
                     JobService.stopNode({jobschedulerId: $scope.schedulerIds.selected,nodes:[{jobChain: vm.jobChain.path, node: node.name}]}).then(function (res) {
-$timeout(function(){
+                        $timeout(function(){
                                     node.state._text='STOPPED';
                         node.state.severity=2;
                                },10);
                         vm.reset();
+                        bulkOperationCompleted('stopNodes','success');
                     }, function (err) {
-
+                        bulkOperationCompleted('stopNodes','error');
                     })
                 })
 
@@ -241,8 +258,25 @@ $timeout(function(){
                         node.state.severity=4;
                                },10);
                         vm.reset();
+                        bulkOperationCompleted('unskipNodes','success');
                     }, function (err) {
+                        bulkOperationCompleted('unskipNodes','error');
+                    })
+                })
+        };
 
+        vm.unstopNodes = function () {
+
+                angular.forEach(vm.selectedNodes, function (node) {
+                    JobService.activateNode({jobschedulerId: $scope.schedulerIds.selected,nodes:[{jobChain: vm.jobChain.path, node: node.name}]}).then(function (res) {
+$timeout(function(){
+                                    node.state._text='ACTIVE';
+                        node.state.severity=4;
+                               },10);
+                        vm.reset();
+                        bulkOperationCompleted('unstopNodes','success');
+                    }, function (err) {
+                        bulkOperationCompleted('unstopNodes','error');
                     })
                 })
         };
@@ -348,7 +382,6 @@ $timeout(function(){
         vm.onAction = onAction;
 
         function onAction(path, node, action) {
-            vm.selectedNodes = [];
             if (action == 'stop node') {
                 return JobService.stopNode({jobschedulerId: $scope.schedulerIds.selected,nodes:[{jobChain: path, node: node}]});
             } else if (action == 'skip') {
@@ -482,7 +515,7 @@ $timeout(function(){
 
         vm.checkAllOrders = function () {
             if (vm.allOrdersCheck.orders) {
-
+console.log("Orders here "+JSON.stringify(vm.orders))
                 vm.obj.orders = angular.copy(vm.orders, vm.obj.orders);
             } else {
                 vm.obj.orders = [];
@@ -496,6 +529,9 @@ $timeout(function(){
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
+            if(interval){
+               $timeout.cancel(interval);
+            }
             if (promise1)
                 $timeout.cancel(promise1);
             if (promise2)
