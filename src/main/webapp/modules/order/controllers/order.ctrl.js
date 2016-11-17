@@ -529,8 +529,8 @@ console.log("Orders here "+JSON.stringify(vm.orders))
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
-            if(interval){
-               $timeout.cancel(interval);
+            if(timeout){
+               $timeout.cancel(timeout);
             }
             if (promise1)
                 $timeout.cancel(promise1);
