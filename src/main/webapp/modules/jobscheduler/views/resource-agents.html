@@ -8,10 +8,10 @@
                         <div>
                             <span class="text-left">
                                 <i class="fa fa-server"></i>
-                                <span class="text"
-                                      ng-bind="cluster.AgentClusterName.substring(0,cluster.AgentClusterName.lastIndexOf('&'))"></span>
-                                <span class="text-sm text-c" ng-bind-template="({{cluster.SchedulingType}})"></span>
-                                <span class="fa fa-circle text-sm {{cluster.Status}}"></span>
+                                <span uib-tooltip="{{cluster.AgentCluster}}" class="text block-ellipsis"
+                                      ng-bind="cluster.AgentCluster"></span>
+                                <span class="text-sm _600" uib-tooltip="{{cluster.SchedulingType}}" ng-bind-template="({{cluster.SchedulingType | limitTo:1}})"></span>
+                                <span class="fa fa-stop text-xs {{cluster.Status.substring(0,cluster.Status.lastIndexOf('&'))}}"></span>
                             </span>
                         </div>
                         <div class="text-sm  text-left text-muted p-t-sm">
@@ -19,7 +19,7 @@
                             {{'label.totalAgents' | translate}}
                         </div>
                         <div class="text-sm  text-left text-muted p-t-xs p-l">
-                            <span class="text-black _600" ng-bind="cluster.RunningAgent"></span> {{'label.running' | translate}}
+                            <span class="text-black _600" ng-bind="cluster.RunningAgents"></span> {{'label.running' | translate}}
                         </div>
                         <div class="text-sm  text-left text-muted p-t-xs">
                             <span class="text-black _600" ng-bind="cluster.RunningTasks"></span>

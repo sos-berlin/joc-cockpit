@@ -22,14 +22,16 @@
                 var ordersData = [];
 
                 function preparePieData(res) {
+
                     var count = 0;
-                    for (var prop in res.orders) {
+                    for (var prop in res) {
+                   
                         var obj = {};
                         obj.key = prop;
-                        obj.y = res.orders[prop];
+                        obj.y = res[prop];
                         ordersData.push(obj);
                         count++;
-                        if (count === Object.keys(res.orders).length) {
+                        if (count === Object.keys(res).length) {
                             vm.ordersData = ordersData;
                         }
                     }
@@ -39,6 +41,9 @@
                     vm.isLoading = false;
 
                     vm.jobChain = JSON.parse(SOSAuth.jobChain);
+                    
+                    vm.snapshot = vm.jobChain.ordersSummary;
+                    preparePieData(vm.snapshot);
                 }
 
                 function getSnapshot() {
@@ -60,7 +65,7 @@
                 }
 
 
-                getSnapshot();
+              //  getSnapshot();
 
 
                 vm.width = 500;
@@ -122,7 +127,7 @@
                 }
 
 
-                startPolling();
+               // startPolling();
 
                 function startPolling() {
                     if ($rootScope.config.orderOverviewWidget.polling == 'true') {

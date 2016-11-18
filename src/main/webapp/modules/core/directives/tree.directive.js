@@ -20,7 +20,6 @@
                 onClick: "&",
                 expandNode: "&",
                 collapseNode: "&",
-                viewOrders: '&',
                 initialSelection: "@",
                 treeControl: "=",
                 expandTo: "=",

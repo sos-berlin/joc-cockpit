@@ -1143,6 +1143,7 @@ console.log("Orders here "+JSON.stringify(vm.orders))
             }, function (err) {
 
             });
+
             vm.object.jobChains = [];
         };
         vm.unstopJob = function () {
@@ -1883,23 +1884,6 @@ console.log("Orders here "+JSON.stringify(vm.orders))
         vm.getTreeStructure = function () {
             if(vm.filterTree) {
                 vm.filterTree1 = angular.copy(vm.filterTree);
-            } else {
-                OrderService.tree({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    compact: true,
-                    types: ['ORDER']
-                }).then(function (res) {
-                    if (res.folders.length > 1) {
-                        vm.filterTree = res.folders;
-                    } else {
-                        vm.filterTree = res.folders[0].folders;
-                    }
-                    vm.filterTree = orderBy(vm.filterTree, 'name');
-                     vm.filterTree1 = angular.copy(vm.filterTree);
-
-                },function(){
-                     $('#treeModal').modal('hide');
-                });
             }
             $('#treeModal').modal('show');
         };
@@ -1907,6 +1891,7 @@ console.log("Orders here "+JSON.stringify(vm.orders))
 
 
         vm.treeExpand = function (data) {
+             data.folders = orderBy(data.folders, 'name');
             angular.forEach(vm.object.paths, function (value) {
                 if (data.path == value) {
                     if (data.folders.length > 0) {
@@ -2765,29 +2750,13 @@ console.log("Orders here "+JSON.stringify(vm.orders))
         vm.getTreeStructure = function () {
             if(vm.filterTree) {
                 vm.filterTree1 = angular.copy(vm.filterTree);
-            } else {
-                OrderService.tree({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    compact: true,
-                    types: ['ORDER']
-                }).then(function (res) {
-                    if (res.folders.length > 1) {
-                        vm.filterTree = res.folders;
-                    } else {
-                        vm.filterTree = res.folders[0].folders;
-                    }
-                    vm.filterTree = orderBy(vm.filterTree, 'name');
-                     vm.filterTree1 = angular.copy(vm.filterTree);
-
-                },function(){
-                     $('#treeModal').modal('hide');
-                });
             }
             $('#treeModal').modal('show');
         };
 
 
         vm.treeExpand = function (data) {
+             data.folders = orderBy(data.folders, 'name');
             angular.forEach(vm.object.paths, function (value) {
                 if (data.path == value) {
                     if (data.folders.length > 0) {
@@ -4228,7 +4197,8 @@ console.log("Orders here "+JSON.stringify(vm.orders))
 
             JobChainService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
-                compact: true
+                compact: true,
+                types: ['JOBCHAIN']
             }).then(function (res) {
 
                 if (res.folders.length > 1) {
@@ -4236,6 +4206,7 @@ console.log("Orders here "+JSON.stringify(vm.orders))
                 } else {
                     vm.tree = res.folders[0].folders;
                 }
+                vm.tree = orderBy(vm.tree, 'name');
 
             }, function (err) {
 
@@ -4245,6 +4216,7 @@ console.log("Orders here "+JSON.stringify(vm.orders))
 
 
         vm.treeExpand = function (data) {
+             data.folders = orderBy(data.folders, 'name');
             angular.forEach(vm.object.paths, function (value) {
                 if (data.path == value) {
                     if (data.folders.length > 0) {

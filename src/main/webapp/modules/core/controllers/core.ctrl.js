@@ -210,7 +210,7 @@
                 vm.remainingSessionTime = s + 's';
             }
 
-            if(count<-5){
+            if(count<0){
                 $window.sessionStorage.setItem('$SOS$URL', $location.path());
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
                 vm.logout(true);
@@ -234,10 +234,13 @@
         });
 
         vm.logout = function (reload) {
-            $window.localStorage.clientLogs = {};
+
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
+                $window.sessionStorage.$SOS$TREE ={};
+                $window.sessionStorage.$SOS$JOBSCHEDULE ={};
+                 $window.localStorage.clientLogs = {};
                  $location.path('/login').search({});
                 if(reload){
                     $window.location.reload();

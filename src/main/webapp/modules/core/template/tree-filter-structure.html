@@ -12,7 +12,7 @@
                 <a class="" ng-click="user_clicks_branch(row.branch)">
                     <i ng-class="row.tree_icon" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon"></i>
                 </a>
-                <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || row.branch[expandingProperty] || '-'}}</span>
+                <span class="indented tree-label"  ng-click="on_user_click(row.branch)"> {{row.branch[expandingProperty.field] || row.branch[expandingProperty] || '/'}}</span>
             </td>
         </tr>
         </tbody>

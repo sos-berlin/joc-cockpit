@@ -11,9 +11,9 @@
                                 <div class="hide font14" ng-class="{show:!jobChain.processClass}" ng-bind="schedulerIds.selected"></div>
                             </div>
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
-                                 <button class="btn btn-grey btn-sm m-l-sm"  ng-click="reset()" translate>
+<!--                                 <button class="btn btn-grey btn-sm m-l-sm"  ng-click="reset()" translate>
                                     button.reset
-                                </button>
+                                </button>-->
                                 <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJob}" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>
@@ -153,6 +153,7 @@
                                  <th translate>label.orders</th>
                                 <th translate>label.jobPath</th>
                                 <th translate>label.jobStatus</th>
+                                <th translate>label.nodeStatus</th>
                                 <th translate>label.nextNode</th>
                                 <th translate>label.errorNode</th>
                                 <th></th>
@@ -169,7 +170,7 @@
                                 <td>
                                     <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
                                     <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
-                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'?node.state.severity:node.job.state.severity)]"></i>
+                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'? node.state.severity:node.job.state.severity)]"></i>
                                    {{node.name}} </a>
 
                                 </td>
@@ -194,9 +195,10 @@
                                        ng-click="hidePanelFuc()">Show Less<br></i>
                                 </td>
                                 <td ng-bind="node.job.path"></td>
-
                                 <td><span class="text-c label" ng-class="bgColorFunction(node.job.state.severity)"
                                           ng-bind="node.job.state._text | translate"></span></td>
+                                <td><span class="text-c label" ng-class="bgColorFunction(node.state.severity)"
+                                          ng-bind="node.state._text | translate"></span></td>
                                 <td ng-bind="node.nextNode"></td>
                                 <td ng-bind="node.errorNode"></td>
                                 <td width="40">
@@ -364,7 +366,7 @@
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.id</th>
-                                                        <th translate>label.jobChain</th>
+                                                        <th translate>label.orderId</th>
                                                         <th translate>label.status</th>
                                                         <th translate>label.startTime</th>
                                                         <th translate>label.endTime</th>
@@ -376,7 +378,7 @@
                                                     <tbody>
                                                     <tr ng-repeat="history in orderHistory.history">
                                                         <td ng-bind="history.historyId"></td>
-                                                        <td ng-bind="history.jobChain"></td>
+                                                        <td ng-bind="history.orderId"></td>
                                                         <td><span class="text-c label" ng-bind="history.state._text"
                                                                   ng-class="bgColorFunction(history.state.severity)"></span>
                                                         </td>

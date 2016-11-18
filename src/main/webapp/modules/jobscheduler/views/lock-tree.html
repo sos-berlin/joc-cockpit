@@ -1,9 +1,9 @@
-<div class="max-tree-ht">
+<div class="max-tree-ht" style="margin-left: -16px">
     <table class="tree-grid folder-tree-grid pull-left">
         <tbody>
         <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions track by row.branch.uid"
-            ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
-            <td>
+            ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row" ng-init="user_clicks_branch(tree_rows[0].branch)">
+            <td class="hide" ng-class="{'show' :$index!=0}">
                 <a class="inline" ng-click="user_clicks_branch(row.branch)">
                     <i ng-if="!row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder"></i>
                     <i ng-if="row.branch.expanded" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-folder-open"></i>

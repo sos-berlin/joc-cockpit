@@ -395,7 +395,6 @@
    "label.job": "ジョブ",
    "label.jobPath": "ジョブパス",
    "label.jobStatus": "ジョブステータス",
-   "label.nextNode": "次ノード",
    "label.errorNode": "エラーノード",
    "label.viewTaskLog": "タスクログ表示",
    "label.startTask": "タスク開始",
@@ -598,6 +597,7 @@
    "label.debug2": "Debug2",
    "label.debug3": "Debug3",
    "label.agentClusterName": "AgentCluster Name",
+   "label.nextNode": "Next Node",
    "label.modifyLogViewingCriteria": "Modify Log Viewing Criteria",
    "message.noProcessClassesFound": "no process classes found",
    "message.noScheduleFound": "no schedules found",
@@ -653,7 +653,13 @@
    "button.terminateAllTasksWithTimeout": "Terminate All Tasks With Timeout",
    "button.unstopNode": "Unstop Node",
    "button.unsipNode": "Unskip Node",
-   "button.close": "Close"
+   "button.close": "Close",
+   "button.continue": "Continue",
+   "UNHEALTHY": "unhealthy",
+   "HEALTHY": "healthy",
+   "UNREACHABLE": "unreachable",
+   "STARTING": "starting",
+   "label.nodeStatus": "Node Status"
 }
 
 

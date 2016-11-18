@@ -8,16 +8,16 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
 
-                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-if="jobChain.state._text.toLowerCase() != 'STOPPED'" ng-class="{'show-block':permission.JobChain.stop}" ng-disabled="jobChain.state._text.toLowerCase() == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="stopJob()"><i class="fa fa-stop"></i>
+                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-if="jobChain.state._text != 'STOPPED'" ng-class="{'show-block':permission.JobChain.stop}" ng-disabled="jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="stopJob()"><i class="fa fa-stop"></i>
                             <span class="hidden-sm-down" translate>button.stopJobChain</span>
                         </button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm " ng-if="jobChain.state._text.toLowerCase() == 'STOPPED'"  ng-class="{'show-block':permission.JobChain.unstop}" ng-disabled="jobChain.state._text.toLowerCase() == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="unstopJob()"><i class="fa fa-play"></i>
+                        <button class="hide btn btn-grey btn-sm m-l-sm " ng-if="jobChain.state._text == 'STOPPED'"  ng-class="{'show-block':permission.JobChain.unstop}" ng-disabled="jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="unstopJob()"><i class="fa fa-play"></i>
                             <span class="hidden-sm-down" translate>button.unstopJobChain</span>
                         </button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-click="addOrder()" ng-class="{'show-block':permission.JobChain.addOrder}" ng-disabled="jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'"><i class="fa fa-plus-square"></i>
+                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-click="addOrder()" ng-class="{'show-block':permission.JobChain.addOrder}" ng-disabled="jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'"><i class="fa fa-plus-square"></i>
                             <span class="hidden-sm-down" translate>button.addAnOrder</span>
                         </button>
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text.toLowerCase() == 'UNDER_CONSTRUCTION' || jobChain.state._text.toLowerCase() == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.viewCalendar</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.viewCalendar</span></button>
                         <div class="btn-group dropdown" ng-show="!overview" ng-class="{'disable-link':pageView=='grid'}">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span ng-show="filter.sortBy =='orderId'">

@@ -10,7 +10,7 @@
                 <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
                     <div class="hide m-t-xs" ng-class="{'show': pageView=='grid'}">
                         <div class="row">
-                            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 " ng-repeat="order in filtered = (orders | filter: filterString:strict)" >
+                            <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 " ng-repeat="order in filtered = (orders | filter: filterString:strict)" >
                                     <div class="box card" ng-class="{'light-bg':showLogPanel == order}">
                             <div class="box-body">
                                 <div>
@@ -59,6 +59,11 @@
                                 <div class="text-left text-muted p-t-sm">
                                     <span translate>label.state </span>:
                                     <span ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                </div>
+                                <div class="text-left text-muted p-t-sm">
+                                    <span translate>label.nextStartTime </span>:
+                                    <span  ng-bind="order.nextStartTime | stringToDate "> </span>
+                                    <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span>
                                 </div>
                             </div>
                             <div class="box-footer b-t">
@@ -177,7 +182,7 @@
                                             <td  ng-bind="order.startedAt | stringToDate"></td>
                                             <td  ng-bind="order.inProcessSince | fromNow"></td>
                                             <td  ng-bind="order.historyId || '-'"></td>
-                                            <td  class="text-muted" ng-bind="order.nextStartTime | stringToDate"></td>
+                                            <td  class="text-muted">{{order.nextStartTime | stringToDate}} <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span></td>
                                             <td class="noExl">
                                                 <div class="btn-group dropdown ">
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
