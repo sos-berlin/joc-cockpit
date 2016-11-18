@@ -238,12 +238,14 @@
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
-                $window.sessionStorage.$SOS$TREE ={};
-                $window.sessionStorage.$SOS$JOBSCHEDULE ={};
-                 $window.localStorage.clientLogs = {};
+            
                  $location.path('/login').search({});
                 if(reload){
                     $window.location.reload();
+                }else{
+                    $window.sessionStorage.$SOS$TREE ={};
+                    $window.localStorage.clientLogs = {};
+                     //$window.sessionStorage.$SOS$JOBSCHEDULE ={};
                 }
             });
 
