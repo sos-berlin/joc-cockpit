@@ -47,7 +47,7 @@
                 if (d == 0 && h != 0) {
                     return h + 'h ' + m + 'm ' + s + 's';
                 } else if (h == 0 && m != 0) {
-                    return m + ' m' + s + ' s';
+                    return m + 'm ' + s + ' s';
                 } else if (d == 0 && h == 0 && m == 0) {
                     return s + ' sec';
                 } else {
@@ -64,11 +64,10 @@
         return function (d1, d2) {
             if (!d1) {
                 d1=new Date();
-            };
+            }
             if (!d2) {
                 d2=new Date();
-            };
-
+            }
             d1 = moment(d1).tz($window.localStorage.$SOS$ZONE);
             d2 = moment(d2).tz($window.localStorage.$SOS$ZONE);
             var milliseconds = moment(d2).diff(d1);
@@ -81,7 +80,7 @@
                 if (d == 0 && h != 0) {
                     return h + 'h ' + m + 'm ' + s + 's';
                 } else if (h == 0 && m != 0) {
-                    return m + ' m' + s + ' s';
+                    return m + 'm ' + s + ' s';
                 } else if (d == 0 && h == 0 && m == 0) {
                     return s + ' sec';
                 } else {

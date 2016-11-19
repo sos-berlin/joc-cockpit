@@ -132,7 +132,7 @@
                                       get-job-info="getJobInfo(filter)"
                                       on-action="onAction(path,node,action)"
                                       show-configuration="showConfiguration(type,path,name)"
-                                      orders="obj.orders"
+                                      orders="fOrders"
                                       get-orders = "getOrders(filter)"
                                 >
                         </flow-diagram>
@@ -176,7 +176,7 @@
                                 </td>
                                 <td>
                                     <div ng-repeat="order in node.orders | limitTo : 2:0">
-                                        <a href="" ng-click="showTaskFuc(order)">
+                                        <span>
                                             <span class="text-sm">
                                                 <i class="text-xs fa fa-circle" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">Next start {{order.nextStartTime | stringToDate}}
@@ -184,7 +184,7 @@
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}">Next start never</span>
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':order.startedAt}">Running since {{order.startedAt | stringToDate}}(+{{order.startedAt | durationFromCurrent:undefined }})</span>
                                             </span>
-                                        </a>
+                                        </span>
                                     </div>
 
                                     <i class="cursor text-xs"
@@ -331,70 +331,49 @@
                 </div>
             </div>
             <div class="hide m-t-sm" ng-class="{'show': isLoading}">
-                <div class="row" ng-show="showTaskPanel">
-                    <div class="col-md-12 hide" ng-class="{'show':isLoading1}">
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
-                                <span class="text">{{showTaskPanel.orderId}} </span>
+                                <span class="text">{{'label.orderHistory' | translate}} </span>
                             </div>
                             <div class="box-tool">
                                 <ul class="nav text-muted text-md">
                                     <li class="nav-item inline m-l-sm">
                                         <a class="text-primary " ng-click="viewAllHistories()" translate>button.viewAllHistories
                                         </a>
-                                        <a href="" ng-click="hideTaskPanel()"><img src="images/remove.png"> </a>
+                                      <!--  <a href="" ng-click="hideTaskPanel()"><img src="images/remove.png"> </a>-->
                                     </li>
                                 </ul>
                             </div>
                             <div class="box-body p-t b-t">
-                                <div class="b-b">
-                                    <ul class="nav nav-tabs">
-                                        <li class="nav-item">
-                                            <a class="nav-link" ng-class="{active: !isRunning}" href
-                                               data-toggle="tab" data-target="#tab1"
-                                               translate>label.orderHistory</a>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                                <div class="tab-content p-a m-b-md">
-                                    <div class="tab-pane animated fadeIn " ng-class="{active: !isRunning}"
-                                         id="tab1">
-                                        <div class="row">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped table-bordered ">
-                                                    <thead>
-                                                    <tr>
-                                                        <th translate>label.id</th>
-                                                        <th translate>label.orderId</th>
-                                                        <th translate>label.status</th>
-                                                        <th translate>label.startTime</th>
-                                                        <th translate>label.endTime</th>
-                                                        <th translate>label.duration</th>
-                                                        <th translate>label.node</th>
-
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr ng-repeat="history in orderHistory.history">
-                                                        <td ng-bind="history.historyId"></td>
-                                                        <td ng-bind="history.orderId"></td>
-                                                        <td><span class="text-c label" ng-bind="history.state._text"
-                                                                  ng-class="bgColorFunction(history.state.severity)"></span>
-                                                        </td>
-                                                        <td ng-bind="history.startTime | stringToDate"></td>
-                                                        <td ng-bind="history.endTime | stringToDate"></td>
-                                                        <td ng-bind="history.startTime | duration:history.endTime"></td>
-                                                        <td ng-bind="history.node"></td>
-
-                                                    </tr>
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                    </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered ">
+                                        <thead>
+                                        <tr>
+                                            <!--<th translate>label.id</th>-->
+                                            <th translate>label.orderId</th>
+                                            <th translate>label.status</th>
+                                            <th translate>label.startTime</th>
+                                            <th translate>label.endTime</th>
+                                            <th translate>label.duration</th>
+                                            <th translate>label.node</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="history in orderHistory.history" ng-click="showLogs(history)" class="cursor">
+                                           <!-- <td ng-bind="history.historyId"></td>-->
+                                            <td ng-bind="history.orderId"></td>
+                                            <td><span class="text-c label" ng-bind="history.state._text | translate"
+                                                      ng-class="bgColorFunction(history.state.severity)"></span>
+                                            </td>
+                                            <td ng-bind="history.startTime | stringToDate"></td>
+                                            <td ng-bind="history.endTime | stringToDate"></td>
+                                            <td ng-bind="history.startTime | duration:history.endTime"></td>
+                                            <td ng-bind="history.node"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

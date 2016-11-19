@@ -659,8 +659,31 @@
    "HEALTHY": "healthy",
    "UNREACHABLE": "unreachable",
    "STARTING": "starting",
-   "label.nodeStatus": "Node Status"
+   "label.nodeStatus": "Node Status",
+   "button.logOut": "Log Out",
+   "button.logIn": "Log In",
+   "label.runningAgents": "Running Agents",
+   "label.runningOrders": "Running Orders",
+   "label.runningOrder": "Running Order",
+   "label.suspendedOrders": "Suspended Orders",
+   "label.suspendedOrder": "Suspended Order",
+   "label.pendingOrders": "Pending Orders",
+   "label.pendingOrder": "Pending Order",
+   "label.maxProcesses": "Max Processes",
+   "label.noOfProcesses": "No. of Processes",
+   "label.usedByJobs": "Used By Jobs",
+   "label.associatedJobChainswith": "Associated JobChains with",
+   "label.holidayCalendar": "Holiday Calendar",
+   "label.continueAllTasks": "continue all tasks",
+   "label.endAllTasks": "end all tasks",
+   "label.setRunTime": "set run time",
+   "label.setState": "set state",
+   "label.reset": "reset",
+   "message.noLocksFound": "no locks found"
 }
+
+
+
 
 
 

@@ -6,12 +6,13 @@
                 <div class="box card">
                     <div class="box-body">
                         <div>
-                            <span class="text-left">
-                                <i class="fa fa-server"></i>
-                                <span uib-tooltip="{{cluster.AgentCluster}}" class="text block-ellipsis"
+                            <span class="text-left ">
+                                <span class="fa fa-stop pos-abt m-t-xs text-xs {{cluster.Status.substring(0,cluster.Status.lastIndexOf('&'))}}"></span>
+                                <i class="fa fa-server m-l m-r-xs"></i>
+                                <span uib-tooltip="{{cluster.AgentCluster}}" class="text text-ellipsis1"
                                       ng-bind="cluster.AgentCluster"></span>
-                                <span class="text-sm _600" uib-tooltip="{{cluster.SchedulingType}}" ng-bind-template="({{cluster.SchedulingType | limitTo:1}})"></span>
-                                <span class="fa fa-stop text-xs {{cluster.Status.substring(0,cluster.Status.lastIndexOf('&'))}}"></span>
+                                <span class="text-sm _600 pull-right" uib-tooltip="{{cluster.SchedulingType}}" ng-bind-template="({{cluster.SchedulingType | limitTo:1}})"></span>
+
                             </span>
                         </div>
                         <div class="text-sm  text-left text-muted p-t-sm">

@@ -201,7 +201,7 @@
             }
 
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
-                if(vm.agentClusters && vm.agentClusters.length>0) {
+/*                if(vm.agentClusters && vm.agentClusters.length>0) {
                     angular.forEach(vm.agentClusters, function (data) {
                         angular.forEach(result.agentClusters, function (data1) {
                             if (data1.path == '/' + data.path + '/' + data.name) {
@@ -210,9 +210,9 @@
                         });
                     });
                 }
-                else{
+                else*/
                     vm.agentClusters = result.agentClusters;
-                }
+
                 vm.tree_data = prepareDataForTree(vm.agentClusters);
             });
         }
@@ -863,7 +863,8 @@
                 compact: true,
                 types: ['SCHEDULE']
             }).then(function (res) {
-
+                console.log(res.folders)
+                if(res.folders && res.folders.length>0 && res.folders[0])
                 vm.tree = res.folders;
                 vm.isLoading = true;
             }, function (err) {
@@ -1403,12 +1404,12 @@
             return results;
         }
 
-        function getAgentClusterV(result) {
+        function getAgentClusterV() {
 
             JobSchedulerService.getAgentCluster({
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (res) {
-                if(vm.agentClusters) {
+           /*     if(vm.agentClusters && vm.agentClusters.length>0) {
                     angular.forEach(vm.agentClusters, function (data) {
                         angular.forEach(res.agentClusters, function (data1) {
                             if (data1.path == '/' + data.path + '/' + data.name) {
@@ -1416,16 +1417,16 @@
                             }
                         });
                     });
-                }else{
+                }else{*/
                     vm.agentClusters=res.agentClusters;
-                }
+
 
                 prepareAgentClusterData(vm.agentClusters);
             });
         }
 
         vm.getAgentCluster = function () {
-            JobSchedulerService.getAgentClusterP({
+/*            JobSchedulerService.getAgentClusterP({
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (result) {
                 vm.agentClusters = result.agentClusters;
@@ -1433,7 +1434,8 @@
                 getAgentClusterV();
             }, function (err) {
                 getAgentClusterV();
-            });
+            });*/
+            getAgentClusterV();
         };
 
         function prepareAgentClusterData(result) {
@@ -2391,13 +2393,7 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true
             }).then(function (res) {
-
-                if (res.folders.length > 1) {
-                    vm.tree = res.folders;
-                } else {
-                    vm.tree = res.folders[0].folders;
-                }
-
+                vm.tree = res.folders;
             }, function (err) {
 
             });

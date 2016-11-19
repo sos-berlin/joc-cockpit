@@ -22,10 +22,8 @@
                 var ordersData = [];
 
                 function preparePieData(res) {
-
                     var count = 0;
                     for (var prop in res) {
-                   
                         var obj = {};
                         obj.key = prop;
                         obj.y = res[prop];
@@ -37,16 +35,22 @@
                     }
                 }
 
-                if (SOSAuth.jobChain) {
-                    vm.isLoading = false;
+                function loadJobChain() {
+                    if (SOSAuth.jobChain) {
+                        vm.isLoading = false;
 
-                    vm.jobChain = JSON.parse(SOSAuth.jobChain);
-                    
-                    vm.snapshot = vm.jobChain.ordersSummary;
-                    preparePieData(vm.snapshot);
+                        vm.jobChain = JSON.parse(SOSAuth.jobChain);
+
+                        vm.snapshot = vm.jobChain.ordersSummary;
+                        preparePieData(vm.snapshot);
+                    }
                 }
+                loadJobChain();
 
-                function getSnapshot() {
+                $scope.$on("reloadJobChain", function () {
+                    loadJobChain();
+                });
+            function getSnapshot() {
                     if (SOSAuth.scheduleIds) {
                         var filter = {};
                         if (vm.jobChain) {
@@ -65,7 +69,7 @@
                 }
 
 
-              //  getSnapshot();
+                //getSnapshot();
 
 
                 vm.width = 500;
@@ -127,7 +131,7 @@
                 }
 
 
-               // startPolling();
+                // startPolling();
 
                 function startPolling() {
                     if ($rootScope.config.orderOverviewWidget.polling == 'true') {
@@ -359,6 +363,11 @@
                                 }
                             }
 
+                            var btnClass ='fa fa-stop';
+                            if(op1 == 'button.proceedNode'){
+                                btnClass ='fa fa-play';
+                            }
+
                             rectangleTemplate = rectangleTemplate +
                             '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect ' + rectCls + '" >' +
                             '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
@@ -375,7 +384,7 @@
                             host +
                             '</div >' +
                             '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="fa fa-stop"></i> <span translate>' + op1 + '</span></a>' +
+                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="'+btnClass+'" ></i> <span translate>' + op1 + '</span></a>' +
                             '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
                             '</div>' +
                             '</div>';
@@ -592,9 +601,9 @@
                 'onAction': '&',
                 'showConfiguration': '&',
                 'orders': '=',
-                'getOrders':'&'
+                'getOrders': '&'
             },
-            controller: ['$scope', '$interval', 'gettextCatalog','$timeout', function ($scope, $interval, gettextCatalog,$timeout) {
+            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', function ($scope, $interval, gettextCatalog, $timeout) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.object = {};
@@ -1115,7 +1124,7 @@
                                         action: 'unskip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.skipNode');
+                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                                         div1.className = div1.className.replace(/border-.*/, '');
                                         item.state._text = 'ACTIVE';
                                         item.state.severity = 4;
@@ -1256,8 +1265,8 @@
                     }
                 }
 
-                vm.$watchCollection('orders', function () {
-                    console.log("Orders " + JSON.stringify(vm.orders));
+                vm.$on('ordersModified', function () {
+
                     if (!vm.orders) {
                         return;
                     }
@@ -1267,6 +1276,8 @@
                 var done = false;
 
                 function getOrders() {
+                    console.log("Orders 01 " + JSON.stringify(vm.orders));
+                     vm.shouldPollForOrders = false;
                     var filter = {};
                     filter.orders = [];
                     filter.orders[0] = {};
@@ -1300,7 +1311,6 @@
                     }
 
 
-
                     function colorFunction(d) {
                         if (d == 0) {
                             return 'green';
@@ -1328,13 +1338,13 @@
                     }
 
                     function addLabel() {
-                        console.log("Add label01");
-vm.shouldPollForOrders=false;
+
+
                         angular.forEach(vm.orders, function (order, index) {
-                            console.log("Order state " + order.state + " path " + order.path);
+
                             var node = document.getElementById(order.state);
-                            if(order.startedAt){
-                                vm.shouldPollForOrders=true;
+                            if (order.startedAt) {
+                                vm.shouldPollForOrders = true;
                             }
 
                             if (node) {
@@ -1382,38 +1392,64 @@ vm.shouldPollForOrders=false;
 
                         })
 
-                        //pollForOrders();
+                        pollForOrders();
 
                     }
 
                 }
 
-                 vm.shouldPollForOrders = false;
-        vm.orderPollingInterval = 15000;
+                vm.shouldPollForOrders = false;
+                vm.orderPollingInterval = 15000;
 
 
-                    var timeout = undefined;
-        function pollForOrders(){
-            console.log("polling 01");
-            $timeout.cancel(timeout);
-            if(true){
-                 console.log("polling");
-                timeout=$timeout(function(){
-                    var filter = {};
-                    filter.orders=[];
-                    angular.forEach(vm.orders,function(order){
-                        filter.orders.push({jobChain:order.jobChain,orderId:order.orderId});
-                    })
+                var timeout = undefined;
 
-                    vm.getOrders({filter:filter}).then(function(res){
-                           console.log("Response 01"+JSON.stringify(res));
-                        $timeout.cancel(timeout);
-                    },function(err){
+                function pollForOrders() {
 
-                    })
-                },vm.orderPollingInterval);
-            }
-        }
+                    $timeout.cancel(timeout);
+                    if (vm.shouldPollForOrders) {
+                        timeout = $timeout(function () {
+                            var filter = {};
+                            filter.orders = [];
+                            angular.forEach(vm.orders, function (order, index) {
+                                filter.orders.push({jobChain: order.jobChain, orderId: order.orderId});
+                            })
+
+                            vm.getOrders({filter: filter}).then(function (res) {
+
+                                angular.forEach(vm.orders, function (eOrder, eIndex) {
+                                    var exists = false;
+                                    angular.forEach(res.orders, function (rOrder, rIndex) {
+                                        if(eOrder.jobChain==rOrder.jobChain && eOrder.orderId==rOrder.orderId){
+                                            exists =true;
+                                             eOrder.nextStartTime = rOrder.nextStartTime;
+                                        eOrder.startedAt = rOrder.startedAt;
+                                        eOrder.state = rOrder.state;
+                                            eOrder.processingState = rOrder.processingState;
+                                        }
+                                    })
+
+                                })
+
+                                getOrders();
+
+                            }, function (err) {
+                                console.log("Error ");
+                                if (err && err.data && err.data.error && err.data.error.message && /There is no Order\s*'(.+),(.+)'/g.test(err.data.error.message) != -1) {
+                                    angular.forEach(vm.orders, function (order, index) {
+                                        if (order.jobChain == /There is no Order\s*'(.+),(.+)'/g.exec(err.data.error.message)[1]
+                                            && order.orderId == /There is no Order\s*'(.+),(.+)'/g.exec(err.data.error.message)[2]) {
+                                            console.log("Matched");
+                                            vm.orders.splice(index, 1);
+
+                                        }
+                                    })
+                                    getOrders();
+                                }
+                            })
+                        }, vm.orderPollingInterval);
+                    }
+                }
 
 
                 startPolling();
@@ -1435,6 +1471,8 @@ vm.shouldPollForOrders=false;
                 vm.$on('$destroy', function () {
                     if (interval)
                         $interval.cancel(interval);
+                    if (timeout)
+                        $timeout.cancel(timeout);
                 });
 
                 vm.$on('bulkOperationCompleted', function (event, args) {
@@ -1520,7 +1558,7 @@ vm.shouldPollForOrders=false;
                             var btnId2 = '#btn1' + node.name.replace(':', '__');
                             var btn2 = document.querySelector(btnId2);
                             var div1 = document.getElementById(node.name);
-                            btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.skipNode');
+                            btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                             div1.className = div1.className.replace(/border-.*/, '');
                             $timeout(function () {
                                 node.state._text = 'ACTIVE';

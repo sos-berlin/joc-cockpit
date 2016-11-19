@@ -42,8 +42,8 @@
         };
     }
 
-    ngSpinnerBar.$inject = ["$rootScope", "$state","SOSAuth"];
-    function ngSpinnerBar($rootScope, $state, SOSAuth) {
+    ngSpinnerBar.$inject = ["$rootScope", "$state","SOSAuth","$window"];
+    function ngSpinnerBar($rootScope, $state, SOSAuth, $window) {
         return {
             link: function (scope, element) {
                 // by default hide the spinner bar
@@ -60,8 +60,10 @@
                     else if (toState.url === '/resources') {
                         $state.go('app.resources.agentClusters');
                         event.preventDefault();
-                    }else if(toState.url === '/allOrders') {
+                    }
+                    if (!(toState.url == '/jobChain' || toState.url == '/orders' || toState.url == '/overview')) {
                         SOSAuth.jobChain = undefined;
+                        $window.sessionStorage.$SOS$TREE = {};
                     }
                     if($rootScope.clientLogFilter.state) {
                         startTime = new Date();

@@ -11,7 +11,8 @@
         .controller('ConfigurationCtrl', ConfigurationCtrl)
         .controller('DialogCtrl', DialogCtrl)
         .controller('RuntimeEditorDialogCtrl', RuntimeEditorDialogCtrl)
-        .controller('ClientLogCtrl', ClientLogCtrl);
+        .controller('ClientLogCtrl', ClientLogCtrl)
+        .controller('CommonLogCtrl', CommonLogCtrl);
 
 
     AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal'];
@@ -238,14 +239,14 @@
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
-            
+
                  $location.path('/login').search({});
                 if(reload){
                     $window.location.reload();
-                }else{
-                    $window.sessionStorage.$SOS$TREE ={};
+                }else {
+                    $window.sessionStorage.$SOS$TREE = null;
                     $window.localStorage.clientLogs = {};
-                     //$window.sessionStorage.$SOS$JOBSCHEDULE ={};
+                    $window.sessionStorage.$SOS$JOBSCHEDULE = null;
                 }
             });
 
@@ -3663,6 +3664,30 @@
         }, 500);
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
+        });
+    }
+
+    CommonLogCtrl.$inject = ['$scope', '$location','OrderService','$sce'];
+    function CommonLogCtrl($scope, $location,OrderService,$sce) {
+        var vm = $scope;
+
+        var object = $location.search();
+        document.title = object.job_chain + ' : ' +object.order_id + " - Log";
+
+
+        var orders = {};
+        orders.jobschedulerId = $scope.schedulerIds.selected;
+        orders.jobChain = object.job_chain;
+        orders.orderId = object.order_id;
+        orders.historyId = object.history_id;
+        orders.mime = ['HTML'];
+
+
+        OrderService.log(orders).then(function (res) {
+            if(res.log)
+            vm.logs =  $sce.trustAsHtml(res.log.html);
+        }, function () {
+
         });
     }
 

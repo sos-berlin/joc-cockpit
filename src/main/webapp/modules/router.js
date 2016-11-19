@@ -120,6 +120,14 @@
                     skip: true
                 }
             })
+            .state('show_log', {
+                url: '/show_log',
+                templateUrl: 'modules/core/views/log.html',
+                controller: 'CommonLogCtrl',
+                ncyBreadcrumb: {
+                    skip: true
+                }
+            })
             .state('app', {
                 abstract: true,
                 url: '',
