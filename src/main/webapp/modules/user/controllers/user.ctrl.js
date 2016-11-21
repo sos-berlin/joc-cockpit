@@ -10,8 +10,8 @@
         .controller('UserProfileCtrl', UserProfileCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'gettextCatalog'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,gettextCatalog) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window','JobSchedulerService', 'gettextCatalog','$cookies'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService,gettextCatalog,$cookies) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
@@ -30,6 +30,14 @@
                  $location.path('/error');
             });
         }
+
+        if($cookies.getObject('rememberMe')!=undefined){
+           vm.user.username=$cookies.getObject('userName')
+           vm.user.password =$cookies.getObject('password')
+           vm.rememberMe=$cookies.getObject('rememberMe');
+        }
+
+
 
         function getPermissions() {
 
@@ -67,6 +75,17 @@
                         if (response && response.isAuthenticated) {
                             SOSAuth.accessTokenId = response.accessToken;
                             SOSAuth.rememberMe = vm.rememberMe;
+                            if(vm.rememberMe){
+                                $cookies.putObject("userName",  vm.user.username);
+                                $cookies.putObject("password",  vm.user.password);
+                                $cookies.putObject("rememberMe",  vm.rememberMe);
+                            }else{
+                                $cookies.remove("userName");
+                                $cookies.remove("password");
+                                $cookies.remove("rememberMe");
+
+                            }
+
                             SOSAuth.setUser(response);
                             SOSAuth.save();
                              getSchedulerIds();

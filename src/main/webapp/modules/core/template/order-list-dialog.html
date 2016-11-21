@@ -3,68 +3,73 @@
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate><span ng-bind="jobChain.path"></span> : <span translate>label.orders</span></h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="min-height: 500px">
         <div class="row">
             <div class="col-sm-12">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered ">
                         <thead>
                         <tr>
-                            <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
-                                            <i ng-show="propertyName == 'orderId' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'orderId' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-
-                                        <th ng-click="sortBy('processingState._text')"><a><span translate>label.processingStatus</span>
-                                            <i ng-show="propertyName == 'processingState._text' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'processingState._text' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('state')"><a><span translate>label.state</span>
-                                            <i ng-show="propertyName == 'state' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'state' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th   ng-click="sortBy('startedAt')"><a><span translate>label.startedAt</span>
-                                            <i ng-show="propertyName == 'startedAt' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'startedAt' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th  ng-click="sortBy('inProcessSince')"><a><span translate>label.runningSince</span>
-                                            <i ng-show="propertyName == 'inProcessSince' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'inProcessSince' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-
-                                        <th ng-click="sortBy('nextStartTime')"><a>
-                                            <span translate>label.nextStartTime</span>
-                                            <i ng-show="propertyName == 'nextStartTime' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'nextStartTime' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th></th>
-                                    </tr>
+                            <th ng-click="sortBy1('orderId')"><a><span translate>label.orderId</span>
+                                <i ng-show="propertyName1 == 'orderId' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName1 == 'orderId' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy1('processingState._text')"><a><span translate>label.processingStatus</span>
+                                <i ng-show="propertyName1 == 'processingState._text' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName1 == 'processingState._text' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy1('state')"><a><span translate>label.state</span>
+                                <i ng-show="propertyName1 == 'state' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName1 == 'state' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th   ng-click="sortBy1('startedAt')"><a><span translate>label.startedAt</span>
+                                <i ng-show="propertyName1 == 'startedAt' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName1 == 'startedAt' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th  ng-click="sortBy1('inProcessSince')"><a><span translate>label.runningSince</span>
+                                <i ng-show="propertyName1 == 'inProcessSince' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName1 == 'inProcessSince' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th ng-click="sortBy1('nextStartTime')"><a>
+                                <span translate>label.nextStartTime</span>
+                                <i ng-show="propertyName1 == 'nextStartTime' && !reverse"
+                                   class="fa fa-caret-down "></i>
+                                <i ng-show="propertyName1 == 'nextStartTime' && reverse"
+                                   class="fa fa-caret-up "></i></a>
+                            </th>
+                            <th></th>
+                        </tr>
                         </thead>
                         <tbody ng-repeat="order in orders">
                         <tr>
                             <td>
                                 <span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                    <i class="text-muted">{{:: order.title}}</i>
+                                <i class="text-muted">{{:: order.title}}</i>
                             </td>
                             <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                             </td>
-                            <td><a uib-tooltip="{{order.stateText}}" ng-bind="order.state"></a></td>
-                            <td  ng-bind="order.startedAt | stringToDate"></td>
-                            <td  ng-bind="order.inProcessSince | fromNow"></td>
-                            <td  class="text-muted">{{order.nextStartTime | stringToDate}} <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span></td>
+                            <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
+                            <td >
+                                <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
+                                <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
+                            </td>
+                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(+{{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
+                            <td  class="text-muted">
+                                <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
+                                    <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                            </td>
                             <td>
                                 <div class="btn-group dropdown ">
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i

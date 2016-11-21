@@ -28,7 +28,8 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-            'ngclipboard'
+           'ngclipboard',
+	  'ngCookies'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs=[];

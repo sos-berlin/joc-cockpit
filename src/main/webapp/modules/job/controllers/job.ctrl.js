@@ -154,7 +154,7 @@
 
         function traverseTree(data) {
             data.jobChains = [];
-            data.folders = orderBy(data.folders, 'name');
+
             angular.forEach(vm.jobChains, function (value) {
 
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
@@ -165,8 +165,11 @@
 
             if (data.jobChains.length > 0) {
                 vm.branchs.push(data);
+            }else{
+                vm.folderPath = data.name || '/';
             }
             if (data.folders.length > 0) {
+                data.folders = orderBy(data.folders, 'name');
                 angular.forEach(data.folders, function (value) {
                     traverseTree(value);
                 });
@@ -243,9 +246,11 @@
                 data.jobChains = data1;
 
                 if (data.jobChains.length > 0) {
-                    data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
+
                     vm.branchs.push(data);
-                }
+                }else{
+                vm.folderPath = data.name || '/';
+            }
                 angular.forEach(data.jobChains, function (value) {
                     vm.allJobChains.push(value);
                     if (value.ordersSummary.running > 0) {
@@ -254,9 +259,10 @@
                 })
             }, function () {
                 if (data.jobChains.length > 0) {
-                    data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
                     vm.branchs.push(data);
-                }
+                }else{
+                vm.folderPath = data.name || '/';
+            }
                 angular.forEach(data.jobChains, function (value) {
                     vm.allJobChains.push(value);
 
@@ -317,21 +323,19 @@
                 data.jobChains = data1;
 
                 if (data.jobChains.length > 0) {
-                    data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
+
                     vm.branchs.push(data);
-                }
+                }else{
+                vm.folderPath = data.name || '/';
+            }
                 angular.forEach(data.jobChains, function (value) {
 
                     angular.forEach(vm.allJobChains, function (value1, index) {
 
                         if (value.path == value1.path) {
                             vm.allJobChains.splice(index, 1, value);
-
                         }
-
-
                     });
-
 
                     // vm.allJobChains.push(value)
                     if (value.ordersSummary.running > 0) {
@@ -340,17 +344,16 @@
                 })
             }, function () {
                 if (data.jobChains.length > 0) {
-                    data.jobChains = orderBy(data.jobChains, vm.filter.sortBy);
                     vm.branchs.push(data);
-                }
+                }else{
+                vm.folderPath = data.name || '/';
+            }
                 angular.forEach(data.jobChains, function (value) {
                     // vm.allJobChains.push(value)
                     angular.forEach(vm.allJobChains, function (index, value1) {
                         if (value.jobChains.path == value1.jobChains.path) {
                             vm.allJobChains.splice(index, 1, value);
                         }
-
-
                     });
 
                     if (value.ordersSummary.running > 0) {
@@ -363,12 +366,10 @@
 
         vm.treeHandler1 = function (data) {
             data.folders = orderBy(data.folders, 'name');
-
             data.jobChains = [];
             vm.branchs = [];
             vm.allJobChains = [];
             expandFolderData(data);
-
         };
 
         vm.treeHandler = function (data) {
@@ -391,11 +392,11 @@
             vm.allJobChains = [];
             function recursive(data) {
                 data.expanded = !0;
-                data.folders = orderBy(data.folders, 'name');
+
 
                 data.jobChains = [];
                 expandFolderData(data);
-
+                data.folders = orderBy(data.folders, 'name');
                 angular.forEach(data.folders, function (a) {
                     a.expanded = !0;
 
@@ -416,6 +417,7 @@
         vm.collapseNode = function (data) {
             function recursive(data) {
                 data.expanded = !1;
+                 data.folders = orderBy(data.folders, 'name');
                 angular.forEach(data.folders, function (a) {
                     a.expanded = !1;
                     if (a.folders.length > 0) {
@@ -435,10 +437,13 @@
             expandFolderData(data);
             if (data.jobChains.length > 0) {
                 vm.branchs.push(data);
+            }else{
+                vm.folderPath = data.name || '/';
             }
             angular.forEach(data.jobChains, function (value) {
                 vm.allJobChains.push(value)
-            })
+            });
+             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded)
                     checkExpand(value);
@@ -473,7 +478,7 @@
 
             if (data.jobChains.length > 0)
                 volatileFolderData(data, obj);
-
+            data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded)
                     checkExpandTreeForUpdates(value);
@@ -605,7 +610,7 @@
         });
 
         vm.checkAll = function () {
-            if (vm.allCheck.checkbox && vm.jobChains.length > 0) {
+            if (vm.allCheck.checkbox && vm.allJobChains && vm.allJobChains.length > 0) {
                 vm.object.jobChains = vm.allJobChains.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
             } else {
                 vm.reset();
@@ -618,6 +623,13 @@
             SOSAuth.save();
             $window.sessionStorage.$SOS$TREE = JSON.stringify(vm.tree);
             $location.path('/jobChainDetails/orders').search({path: jobChain.path});
+        };
+
+        vm.viewOrdersDetail = function (jobChain) {
+            SOSAuth.setJobChain(JSON.stringify(jobChain));
+            SOSAuth.save();
+            $window.sessionStorage.$SOS$TREE = JSON.stringify(vm.tree);
+            $location.path('/jobChainDetails/overview').search({path: jobChain.path});
         };
 
         vm.viewCalendar = function (jobChain) {
@@ -655,21 +667,23 @@
         function loadJobOrderV(obj) {
             OrderService.getJobOrders(obj).then(function (res) {
                 var data = [];
-                if (vm.orders.length > 0) {
-                    angular.forEach(vm.orders, function (orders) {
-                        if (orders.path.substring(0, 1) != '/') {
-                            orders.path = '/' + orders.path;
-                        }
-                        angular.forEach(res.orders, function (orderData) {
-                            if (orders.path == orderData.path) {
-                                orders = angular.merge(orders, orderData);
-                                data.push(orders);
+                if(res && res.orders) {
+                    if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
+                        angular.forEach(vm.orders, function (orders) {
+                            if (orders.path.substring(0, 1) != '/') {
+                                orders.path = '/' + orders.path;
                             }
-                        })
-                    });
-                    vm.orders = data;
-                } else {
-                    vm.orders = res.orders;
+                            angular.forEach(res.orders, function (orderData) {
+                                if (orders.path == orderData.path) {
+                                    orders = angular.merge(orders, orderData);
+                                    data.push(orders);
+                                }
+                            })
+                        });
+                        vm.orders = data;
+                    } else {
+                        vm.orders = res.orders;
+                    }
                 }
                 vm.isLoading = true;
             });
@@ -678,7 +692,9 @@
 
         function loadOrders(obj) {
             OrderService.getJobOrdersP(obj).then(function (result) {
-                vm.orders = result.orders;
+                if(result && result.orders) {
+                    vm.orders = result.orders;
+                }
                 vm.isLoading = true;
                 loadJobOrderV(obj);
             }, function () {
@@ -711,16 +727,21 @@
         };
 
         function addOrder(order, paramObject) {
-
             var orders = {};
-            orders.jobschedulerId = vm.schedulerIds.selected;
+            orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders = [];
-            orders.orders.push({jobChain: vm._jobChain.path});
-            orders.jobChain = vm._jobChain.path;
-            orders.orderId = order.orderId;
-            orders.endState = order.endState;
-            orders.state = order.state;
-            orders.title = order.title;
+            var obj={};
+            obj.jobChain= vm._jobChain.path;
+
+            if(order.orderId)
+            obj.orderId = order.orderId;
+            if(order.endState)
+            obj.endState = order.endState;
+            if(order.state)
+            obj.state = order.state;
+            if(order.title)
+            obj.title = order.title;
+
 
             if (order.fromDate && order.fromTime) {
                 order.fromDate.setHours(order.fromTime.getHours());
@@ -729,20 +750,18 @@
             }
 
             if (order.fromDate) {
-                orders.at = moment.utc(order.fromDate).format();
+                obj.at = moment.utc(order.fromDate).format();
             } else {
-                orders.at = 'now';
+                obj.at = 'now';
             }
 
             if (paramObject.length > 0) {
-                orders.params = paramObject;
+                obj.params = paramObject;
             }
+            orders.orders.push(obj);
             OrderService.addOrder(orders).then(function (res) {
-
-
-                getJobChain(vm.schedulerIds.selected, vm._jobChain);
+                 getJobChain(vm.schedulerIds.selected, vm._jobChain);
                 vm.getJobchainOnAddOrder = true;
-
                 toasty.success = {
                     'title': gettextCatalog.getString('message.addOrderSuccessfully')
                 }
@@ -750,6 +769,7 @@
 
             });
         }
+
 
         vm.jobChainPollingInterval = 15000;
         vm.getJobchainOnAddOrder = false;
@@ -774,8 +794,6 @@
             JobChainService.getJobChainsP(obj).then(function (result) {
                 data.jobChains = result.jobChains;
                 volatileFolderDataForAddOrder(data, obj);
-
-
                 //  $timeout.cancel(timeout);
                 pollForJobChains(schedulerIds, jobchain);
 
@@ -946,18 +964,11 @@
 
         vm.sortBy = function (propertyName) {
             vm.reset();
-            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
+            vm.reverse = !vm.reverse;
             vm.propertyName = propertyName;
+            vm.filter.sortBy = propertyName;
             vm.allJobChains = orderBy(vm.allJobChains, vm.propertyName, vm.reverse);
         };
-
-        vm.mainSortBy = function (propertyName) {
-            vm.reset();
-            vm.sortReverse = !vm.sortReverse;
-            vm.filter.sortBy = propertyName;
-            vm.allJobChains = orderBy(vm.allJobChains, vm.filter.sortBy, vm.sortReverse);
-        };
-
 
         vm.applyFilter = function () {
             vm.jobChainFilter = {};
@@ -1074,11 +1085,10 @@
         };
 
         vm.treeExpand = function (data) {
-            data.folders = orderBy(data.folders, 'name');
             angular.forEach(vm.object.paths, function (value) {
                 if (data.path == value) {
                     if (data.folders.length > 0) {
-
+                         data.folders = orderBy(data.folders, 'name');
                         angular.forEach(data.folders, function (res) {
                             vm.object.paths.push(res.path);
                         });
@@ -1190,9 +1200,9 @@
     }
 
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
-        "gettextCatalog", "FileSaver", "Blob", "$state", "$interval"];
+        "gettextCatalog", "FileSaver", "Blob", "$state", "$interval","$window"];
     function JobCtrl($scope, $rootScope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
-                     gettextCatalog, FileSaver, Blob, $state, $interval) {
+                     gettextCatalog, FileSaver, Blob, $state, $interval,$window) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "ALL";
@@ -1333,7 +1343,7 @@
 
         function traverseTree(data) {
             data.jobs = [];
-            data.folders = orderBy(data.folders, 'name');
+
             angular.forEach(vm.jobs, function (value) {
                 if (data.path == value.path.substring(0, value.path.lastIndexOf('/')) || data.path == value.path.substring(0, value.path.lastIndexOf('/') + 1)) {
                     data.jobs.push(value);
@@ -1345,6 +1355,7 @@
             }
 
             if (data.folders.length > 0) {
+                data.folders = orderBy(data.folders, 'name');
                 angular.forEach(data.folders, function (value) {
                     traverseTree(value);
                 });
@@ -1415,6 +1426,7 @@
         vm.treeHandler = function (data) {
             data.expanded = !data.expanded;
             if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
                 if (!data.jobs || data.jobs.length == 0)
                     expandFolderData(data);
                 vm.branchs = [];
@@ -1487,7 +1499,7 @@
             }
             angular.forEach(data.jobs, function (a) {
                 vm.allJobs.push(a);
-            })
+            });
             angular.forEach(data.folders, function (value) {
                 if (value.expanded)
                     checkExpand(value);
@@ -1722,18 +1734,11 @@
 
         vm.sortBy = function (propertyName) {
             vm.object.jobs = [];
-            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
+            vm.reverse = !vm.reverse;
             vm.propertyName = propertyName;
+             vm.filter.sortBy = propertyName;
             vm.allJobs = orderBy(vm.allJobs, vm.propertyName, vm.reverse);
         };
-
-        vm.mainSortBy = function (propertyName) {
-            vm.object.jobs = [];
-            vm.sortReverse = !vm.sortReverse;
-            vm.filter.sortBy = propertyName;
-            vm.allJobs = orderBy(vm.allJobs, vm.filter.sortBy, vm.sortReverse);
-        };
-
 
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
@@ -1949,7 +1954,7 @@
                 vm.isLoading1 = true;
             });
 
-            JobService.getJobP(jobs).then(function (res) {
+            JobService.getJobsP(jobs).then(function (res) {
                 JobService.get(jobs).then(function (result) {
                     vm.showTaskPanel = angular.merge(res.jobs[0], result.jobs[0]);
                 }, function (err) {
@@ -1960,17 +1965,20 @@
 
         };
 
-        vm.taskLog = function () {
-            TaskService.log({
-                taskId: vm.showTaskPanel.taskId,
-                jobschedulerId: vm.schedulerIds.selected
-            }).then(function (res) {
-                var logs = JSON.parse(JSON.stringify(res));
-                logs = logs.data.substring(logs.data.indexOf("plain") + 8);
-                logs = logs.substring(0, logs.indexOf("}"));
-                logs = logs.replace(/"/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/\\n/g, '<br>');
-                vm.logs = logs.split('<br>');
-            });
+
+        var newWindow;
+
+        $window.onunload = refreshParent;
+        function refreshParent() {
+            if (newWindow) {
+                newWindow.close();
+            }
+        }
+
+        vm.showLogs = function (task) {
+            refreshParent();
+            var url = '#/show_log?task_id=' + task.taskId;
+            newWindow = $window.open(url, "Task Log", "width="+screen.width,"height=300");
         };
 
         vm.logClass = function (logData) {

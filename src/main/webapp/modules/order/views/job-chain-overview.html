@@ -179,10 +179,10 @@
                                         <span>
                                             <span class="text-sm">
                                                 <i class="text-xs fa fa-circle" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
-                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">Next start {{order.nextStartTime | stringToDate}}
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
                                                 (-{{undefined | durationFromCurrent:order.nextStartTime }})</span>
-                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}">Next start never</span>
-                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.startedAt}">Running since {{order.startedAt | stringToDate}}(+{{order.startedAt | durationFromCurrent:undefined }})</span>
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(+{{order.startedAt | durationFromCurrent:undefined }})</span>
                                             </span>
                                         </span>
                                     </div>
@@ -219,7 +219,7 @@
                                                ng-if="node.state._text.toLowerCase() != 'stopped'"
                                                ng-click="stopNode(node)" translate>button.stopNode</a>
                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'stopped'"
-                                               ng-click="unskipNode(node)" translate>button.unstopNode</a>
+                                               ng-click="unStopNode(node)" translate>button.unstopNode</a>
                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() != 'skipped'"
                                                ng-click="skipNode(node)"
                                                translate>button.skipNode</a>
@@ -318,8 +318,8 @@
 
                     </div>
 
-                    <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase">
-                        No Nodes Found
+                    <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                        message.noNodesFound
                     </div>
                     <div class="text-center m-t m-b text-uppercase hide text-orange"
                          ng-class="{'show': (filtered.length===0 && jobChain.nodes.length !==0)}" translate>
@@ -374,6 +374,9 @@
                                         </tr>
                                         </tbody>
                                     </table>
+                                    <div ng-if="orderHistory.history.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                        message.noOrderHistoryFound
+                                    </div>
                                 </div>
                             </div>
                         </div>

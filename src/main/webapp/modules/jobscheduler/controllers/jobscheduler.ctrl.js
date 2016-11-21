@@ -1923,15 +1923,32 @@
             var from = new Date();
             var to = new Date();
             if (range == 'today' || !range) {
-                from.setHours(0);
-                from.setMinutes(0);
-                from.setSeconds(0);
+               // from.setHours(0);
+               // from.setMinutes(0);
+               // from.setSeconds(0);
                 to.setDate(to.getDate() + 1);
+               // to.setHours(0);
+               // to.setMinutes(0);
+               // to.setSeconds(0);
+            } else if (range == 'next-24-hours') {
+              /*  to.setDate(to.getDate() + 1);
                 to.setHours(0);
                 to.setMinutes(0);
                 to.setSeconds(0);
-            } else if (range == 'next-24-hours') {
-                to.setHours(to.getHours() + 24);
+
+                to.setHours(to.getHours() + 24);*/
+              from.setDate(from.getDate() + 1);
+              //   from.setHours(0);
+              //  from.setMinutes(0);
+              //  from.setSeconds(0);
+                to.setDate(to.getDate() +2);
+             //   to.setHours(0);
+              //  to.setMinutes(0);
+              //  to.setSeconds(0);
+
+
+
+                // console.info("setDateRange::"+to);
             }
 
             vm.filter.from = from;
@@ -1943,6 +1960,13 @@
         vm.getPlans = function () {
             if (vm.range != 'period') {
                 vm.filter.range = undefined;
+            }
+
+            if(vm.filter.range == 'next-24-hours'){
+                setDateRange(vm.filter.range);
+            }
+             if(vm.filter.range == 'today'){
+                setDateRange(vm.filter.range);
             }
             vm.load();
         };
@@ -1986,7 +2010,7 @@
             },
             columnsHeaderContents: {
                 'model.name': '{{getHeader()}}',
-                'mode.lorderId': '{{getHeader()}}',
+                'model.orderId': '{{getHeader()}}',
                 'model.status': '{{getHeader()}}'
             },
             autoExpand: 'none',
@@ -2136,11 +2160,12 @@
                 orders[index] = {};
                 orders[index].tasks = [];
                 orders[index].tasks[0] = {};
-                if (order.job != "NULL") {
+                if (order.job!=undefined ) {
                     orders[index].name = order.job;
                     orders[index].orderId = '-';
                 } else {
-                    orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
+                   // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
+                    orders[index].name = order.jobChain.substring(order.jobChain);
                     orders[index].orderId = order.orderId;
                 }
 

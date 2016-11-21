@@ -15,7 +15,7 @@
                             <button class="btn btn-grey btn-sm" ng-model="filter.range"
                                     uib-btn-radio="'next-24-hours'"
                                     ng-class="{'btn-primary': filter.range=='next-24-hours'}"
-                                    ng-click="range='period';getPlans()"
+                                    ng-click="range='period';getPlans();setDateRange('next-24-hours');"
                                     translate>button.next24
                             </button>
                         </div>
@@ -280,8 +280,8 @@
                             <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                             <tr>
                                 <td>
-                                <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain.substring(plan.jobChain.lastIndexOf('/')+1,plan.jobChain.length)"></span>
-                                <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job.substring(plan.job.lastIndexOf('/')+1,plan.job.length)"></span>
+                                <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain"></span>
+                                <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job"></span>
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
                                 <td><span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span></td>

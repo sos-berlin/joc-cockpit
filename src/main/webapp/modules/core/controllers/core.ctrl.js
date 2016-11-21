@@ -3667,28 +3667,47 @@
         });
     }
 
-    CommonLogCtrl.$inject = ['$scope', '$location','OrderService','$sce'];
-    function CommonLogCtrl($scope, $location,OrderService,$sce) {
+    CommonLogCtrl.$inject = ['$scope', '$location','OrderService','TaskService','$sce'];
+    function CommonLogCtrl($scope, $location,OrderService,TaskService, $sce) {
         var vm = $scope;
 
         var object = $location.search();
-        document.title = object.job_chain + ' : ' +object.order_id + " - Log";
+        if (object.order_id) {
+            document.title = object.job_chain + ' : ' + object.order_id + " - Log";
 
 
-        var orders = {};
-        orders.jobschedulerId = $scope.schedulerIds.selected;
-        orders.jobChain = object.job_chain;
-        orders.orderId = object.order_id;
-        orders.historyId = object.history_id;
-        orders.mime = ['HTML'];
+            var orders = {};
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobChain = object.job_chain;
+            orders.orderId = object.order_id;
+            orders.historyId = object.history_id;
+            orders.mime = ['HTML'];
 
 
-        OrderService.log(orders).then(function (res) {
-            if(res.log)
-            vm.logs =  $sce.trustAsHtml(res.log.html);
-        }, function () {
+            OrderService.log(orders).then(function (res) {
+                if (res.log)
+                    vm.logs = $sce.trustAsHtml(res.log.html);
+            }, function () {
 
-        });
+            });
+        }
+        if (object.task_id) {
+            document.title = object.task_id + " - Log";
+
+
+            var orders = {};
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.taskId = object.task_id;
+            orders.mime = ['HTML'];
+
+
+            TaskService.log(orders).then(function (res) {
+                if (res.log)
+                    vm.logs = $sce.trustAsHtml(res.log.html);
+            }, function () {
+
+            });
+        }
     }
 
 })();

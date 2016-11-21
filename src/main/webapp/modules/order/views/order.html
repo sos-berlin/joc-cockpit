@@ -48,24 +48,24 @@
                             <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span  ng-show="filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='processingState._text'">
                                      {{'label.status' | translate}}
-                                   <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                   <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                     </span>
                                 <span  ng-show="filter.sortBy =='startedAt'">
                                      {{'label.date' | translate}}
-                                  <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                  <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                     </span>
                                 </span> </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a id="orderid_id" class="dropdown-item" ng-click="mainSortBy1('orderId')" translate>label.orderId</a>
-                                <a  id="status_id" class="dropdown-item" ng-click="mainSortBy1('processingState._text')" translate>label.status</a>
-                                <a id="date_id" class="dropdown-item" ng-click="mainSortBy1('startedAt')" translate>label.date</a>
+                                <a id="orderid_id" class="dropdown-item" ng-click="sortBy('orderId')" translate>label.orderId</a>
+                                <a  id="status_id" class="dropdown-item" ng-click="sortBy('processingState._text')" translate>label.status</a>
+                                <a id="date_id" class="dropdown-item" ng-click="sortBy('startedAt')" translate>label.date</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown">
@@ -89,6 +89,8 @@
                                  ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
                                  ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span class="hidden-sm-down" translate>button.suspendOrder</span></button>
+                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.resume}"
+                                 ng-disabled="resumeSelected" ng-click="resumeAllOrder()"><i class="fa fa-step-forward"></i> <span class="hidden-sm-down" translate>button.resumeOrder</span></button>
                          <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> <span class="hidden-sm-down" translate>button.resetOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}"
                                  ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span class="hidden-sm-down" translate>button.startOrderNow</span></button>

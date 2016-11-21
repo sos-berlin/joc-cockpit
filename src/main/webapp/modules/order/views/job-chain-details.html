@@ -18,28 +18,28 @@
                             <span class="hidden-sm-down" translate>button.addAnOrder</span>
                         </button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.viewCalendar</span></button>
-                        <div class="btn-group dropdown" ng-show="!overview" ng-class="{'disable-link':pageView=='grid'}">
+                        <div class="btn-group dropdown" ng-show="!overview">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span ng-show="filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='processingState._text'">
                                      {{'label.status' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='startedAt'">
                                      {{'label.date' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
                             </span> </a>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy2('orderId')" translate>label.orderId</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy2('processingState._text')" translate>label.status</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy2('startedAt')" translate>label.date</a>
+                                <a class="dropdown-item" href ng-click="sortBy('orderId')" translate>label.orderId</a>
+                                <a class="dropdown-item" href ng-click="sortBy('processingState._text')" translate>label.status</a>
+                                <a class="dropdown-item" href ng-click="sortBy('startedAt')" translate>label.date</a>
                             </div>
                         </div>
                          <toggle-view ng-show="!overview"></toggle-view>
