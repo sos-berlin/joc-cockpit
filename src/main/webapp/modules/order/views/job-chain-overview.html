@@ -123,30 +123,30 @@
                     </div>
                 </div>
             </div>
-                <div ng-if="pageView=='grid'">
-                    <div class="p-t-sm" >
-                        <flow-diagram job-chain="jobChain"
-                                      on-add="onAdd($item)"
-                                      on-remove="onRemove($item)"
-                                      show-error-nodes="showErrorNodes"
-                                      get-job-info="getJobInfo(filter)"
-                                      on-action="onAction(path,node,action)"
-                                      show-configuration="showConfiguration(type,path,name)"
-                                      orders="fOrders"
-                                      get-orders = "getOrders(filter)"
-                                >
-                        </flow-diagram>
-                    </div>
+            <div ng-if="pageView=='grid'">
+                <div class="p-t-sm" >
+                    <flow-diagram job-chain="jobChain"
+                                  on-add="onAdd($item)"
+                                  on-remove="onRemove($item)"
+                                  show-error-nodes="showErrorNodes"
+                                  get-job-info="getJobInfo(filter)"
+                                  on-action="onAction(path,node,action)"
+                                  show-configuration="showConfiguration(type,path,name)"
+                                  orders="fOrders"
+                                  get-orders = "getOrders(filter)"
+                            >
+                    </flow-diagram>
                 </div>
-                <div class="hide m-t" ng-class="{'show': pageView=='list'}">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-bordered  ">
-                            <thead>
-                            <tr>
-                                <th>
-                                    <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
-                                            class="primary"></i>
+            </div>
+            <div class="hide m-t" ng-class="{'show': pageView=='list'}">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered  ">
+                        <thead>
+                        <tr>
+                            <th>
+                                <label class="md-check lg-check">
+                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
+                                        class="primary"></i>
                                     </label>
                                 </th>
                                 <th translate>label.state</th>
@@ -180,19 +180,24 @@
                                             <span class="text-sm">
                                                 <i class="text-xs fa fa-circle" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
-                                                (-{{undefined | durationFromCurrent:order.nextStartTime }})</span>
+                                                ({{undefined | durationFromCurrent:order.nextStartTime }})</span>
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
-                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(+{{order.startedAt | durationFromCurrent:undefined }})</span>
+                                                <span class="hide text-primary text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}({{order.startedAt | durationFromCurrent:undefined }})</span>
                                             </span>
                                         </span>
                                     </div>
-
                                     <i class="cursor text-xs"
-                                       ng-if="showPanel != node.name && node.orders && node.orders.length>2"
-                                       ng-click="showPanelFuc(node.name)">Show More<br></i>
+                                       ng-if="showOrderPanel != node.name && node.orders && node.orders.length>2"
+                                       ng-click="showOrderPanelFuc(node.name)" ><span translate>label.showMore</span><br></i>
                                     <i class="cursor text-xs"
-                                       ng-if="showPanel == node.name && node.orders && node.orders.length>2"
-                                       ng-click="hidePanelFuc()">Show Less<br></i>
+                                       ng-if="showOrderPanel == node.name && node.orders && node.orders.length>2"
+                                       ng-click="hideOrderPanelFuc()"><span translate>label.showLess</span><br></i>
+                                    <i class="cursor text-xs"
+                                       ng-if="showOrderPanel != node.name && node.orders && node.orders.length<3 && node.orders.length>0"
+                                       ng-click="showOrderPanelFuc(node.name)"><span translate>label.showDetail</span><br></i>
+                                    <i class="cursor text-xs"
+                                       ng-if="showOrderPanel == node.name && node.orders && node.orders.length<3 && node.orders.length>0"
+                                       ng-click="hideOrderPanelFuc()"><span translate>label.hideDetail</span><br></i>
                                 </td>
                                 <td ng-bind="node.job.path"></td>
                                 <td><span class="text-c label" ng-class="bgColorFunction(node.job.state.severity)"
@@ -239,6 +244,8 @@
                                         <tr>
                                             <th translate>label.orderId</th>
                                             <th translate>label.status</th>
+                                            <th translate>label.startedAt</th>
+                                            <th translate>label.runningSince</th>
                                             <th translate>label.nextRunning</th>
 
                                         </tr>
@@ -249,7 +256,16 @@
                                             <td><span class="text-c label"
                                                       ng-class="bgColorFunction(order.processingState.severity)"
                                                       ng-bind="order.processingState._text | translate"></span></td>
-                                            <td>{{order.nextStartTime | stringToDate}}</td>
+                                             <td>
+                                                 <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
+                                                 <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
+                                             </td>
+                                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(+{{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
+                                            <td>
+                                                <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
+                                                    <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                                            </td>
                                             <td class="noExl">
                                                 <div class="btn-group dropdown ">
                                                     <button type="button" class="btn-drop more-option-h"
@@ -257,8 +273,7 @@
                                                             class="fa fa-ellipsis-h"></i></button>
                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28"
                                                          role="menu">
-                                                        <a target="_blank"
-                                                           href="#/showConfiguration?type=order&path={{order.path}}/{{order.orderId}}"
+                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                            class="hide dropdown-item"
                                                            ng-class="{show:permission.Order.view.configuration}"
                                                            translate>button.showConfiguration</a>
@@ -305,6 +320,10 @@
                                                            ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)"
                                                            translate>button.deleteOrder</a>
+                                                         <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" class="dropdown-item hide"
+                                                                           ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                                                           ng-click="showOrderLogs(order)"
+                                                                           translate>button.viewLogs</a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -330,7 +349,7 @@
                     <div class="cssload-loading">{{'Loading' | translate}}...</div>
                 </div>
             </div>
-            <div class="hide m-t-sm" ng-class="{'show': isLoading}">
+            <div class="hide m-t-sm" ng-class="{'show': isLoading1}">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">

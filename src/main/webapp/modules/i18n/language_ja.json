@@ -679,8 +679,23 @@
    "label.setRunTime": "set run time",
    "label.setState": "set state",
    "label.reset": "reset",
-   "message.noLocksFound": "no locks found"
+   "message.noLocksFound": "no locks found",
+   "button.unskipNode": "Unskip Node",
+   "button.startOrder": "Start Order",
+   "button.manageOrders": "Manage Orders",
+   "label.never": "never",
+   "label.nextStartNever": "Next Start: never",
+   "label.showMore": "Show More",
+   "label.showLess": "Show Less",
+   "label.showDetail": "Show Detail",
+   "label.hideDetail": "Hide Detail",
+   "message.in": "in",
+   "message.selectAnyOtherFolderToShowObjects": "select any other folder to show objects.!!",
+   "message.noNodesFound": "no nodes found"
 }
+
+
+
 
 
 

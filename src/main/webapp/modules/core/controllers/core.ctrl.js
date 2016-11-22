@@ -34,13 +34,17 @@
          * also posts the error server side after generating a stacktrace.
          */
         TraceKit.report.subscribe(function (errorReport) {
-            if ($rootScope.clientLogFilter) {
-                var error = {
-                    message: errorReport,
-                    logTime: new Date(),
-                    level: 'error'
-                };
-                $rootScope.clientLogs.push(error)
+            try {
+                if ($rootScope.clientLogFilter) {
+                    var error = {
+                        message: errorReport,
+                        logTime: new Date(),
+                        level: 'error'
+                    };
+                    $rootScope.clientLogs.push(error)
+                }
+            }catch(e){
+
             }
         });
         if ($window.sessionStorage.clientLogFilter) {
@@ -244,7 +248,7 @@
                 if(reload){
                     $window.location.reload();
                 }else {
-                    $window.sessionStorage.$SOS$TREE = null;
+                   // $window.sessionStorage.$SOS$TREE = null;
                     $window.localStorage.clientLogs = {};
                     $window.sessionStorage.$SOS$JOBSCHEDULE = null;
                 }

@@ -70,7 +70,7 @@
             }
             d1 = moment(d1).tz($window.localStorage.$SOS$ZONE);
             d2 = moment(d2).tz($window.localStorage.$SOS$ZONE);
-            var milliseconds = moment(d2).diff(d1);
+            var milliseconds = Math.abs(moment(d2).diff(d1));
             if (milliseconds >= 1000) {
                 var s = parseInt((milliseconds / 1000) % 60),
                     m = parseInt((milliseconds / (60 * 1000)) % 60),
@@ -78,13 +78,16 @@
                     d = parseInt(milliseconds / (1000 * 60 * 60 * 24));
 
                 if (d == 0 && h != 0) {
-                    return h + 'h ' + m + 'm ' + s + 's';
+                    return h + 'h';
                 } else if (h == 0 && m != 0) {
-                    return m + 'm ' + s + ' s';
+                    return m + 'min';
                 } else if (d == 0 && h == 0 && m == 0) {
-                    return s + ' sec';
+                    return s + 'sec';
                 } else {
-                    return d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
+                    if(d>1)
+                        return d + 'days';
+                    else
+                        return d + 'day';
                 }
             } else {
                 return 'less than a sec';

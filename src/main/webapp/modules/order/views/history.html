@@ -105,8 +105,8 @@
         <div class="hide"  ng-class="{'show': isLoading}">
             <div class="m-t-sm box p-a" ng-show="filter.type == 'jobChain'" >
 
-                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450" context-menu="menuOptions">
-                    <table class="table table-hover table-bordered " id="{{filter.type}}" >
+                <div class="table-responsive" context-menu="menuOptions">
+                    <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
                             <tr>
                                <th class="noExl">
@@ -160,7 +160,7 @@
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == history}">
+                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy: filter.sortBy | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                         <tr >
                             <td class="noExl">
                                 <label class="md-check">
@@ -170,7 +170,7 @@
                             <td>
                                 <i class="cursor fa fa-caret-down" ng-if="showPanel != history.historyId" ng-click="showPanelFuc(history.historyId)"></i>
                                 <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == history.historyId" ng-click="hidePanelFuc()"></i>
-                                <a ng-click="showLogFuc(history)" href="" ng-bind="history.orderId"></a>
+                                <a ng-click="showOrderLogs(history)" href="" ng-bind="history.orderId"></a>
                             </td>
                             <td ng-bind="history.jobChain"></td>
                             <td ><span class="label" ng-class="bgColorFunction(history.state.severity)" ng-bind="history.state._text | translate"></span></td>
@@ -247,8 +247,8 @@
                 </div>
             </div>
             <div class="m-t-sm box p-a" ng-show="filter.type == 'job'">
-                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450" context-menu="menuOptions">
-                    <table class="table table-hover table-bordered " id="{{filter.type}}">
+                <div class="table-responsive" context-menu="menuOptions">
+                    <table class="table table-hover table-bordered " id="job">
                         <thead>
                             <tr>
                                <th class="noExl">
@@ -308,7 +308,7 @@
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize" ng-class="{'light-bg':showLogPanel == jobHistory}">
+                        <tbody ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | orderBy: filter.sortBy | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                         <tr >
                             <td class="noExl">
                                 <label class="md-check">
@@ -318,7 +318,7 @@
                             <td>
                                 <i class="cursor fa fa-caret-down" ng-if="showPanel != jobHistory.taskId" ng-click="showPanelFuc(jobHistory.taskId)"></i>
                                 <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel == jobHistory.taskId" ng-click="hidePanelFuc()"></i>
-                                <a ng-click="showLogFuc(jobHistory)" href="" ng-bind="jobHistory.taskId"></a>
+                                <a ng-click="showTaskLogs(jobHistory)" href="" ng-bind="jobHistory.taskId"></a>
                             </td>
                             <td ng-bind="jobHistory.job"></td>
                             <td><span class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
@@ -399,43 +399,6 @@
         <div  ng-if="!isLoading" class="text-center m-t-lg" >
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
-        <div class="hide " ng-class="{'show': isLoading}" >
-            <div class="row" ng-show="showLogPanel" >
-                <div class="col-md-12">
-                    <div  class="box white" >
-                        <div class="box-header">
-                            <span class="text" ng-if="showLogPanel.jobChain">{{showLogPanel.jobChain}} - <i class="text-sm text-muted">{{showLogPanel.orderId}}</i></span>
-                            <span class="text" ng-if="showLogPanel.job">{{showLogPanel.job}} - <i class="text-sm text-muted">{{showLogPanel.taskId}}</i></span>
-                        </div>
-                        <div class="box-tool">
-                            <ul class="nav text-muted text-md">
-                                <li class="nav-item inline m-l-sm">
-                                    <a href="" ng-click="hideLogPanel()"><img src="images/remove.png"> </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="box-body b-t">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()"><i class="fa fa-print"></i></button>
-                                    <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog(logs)"><i class="fa fa-save"></i></button>
-                                    <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search' | translate}}" ng-model="search">
-                                </div>
-                            </div>
-                            <div class="row" >
-                                <pre class="log m-a" resizable r-directions="['bottom']" r-height="250">
-                                    <div style="margin-top: -65px">
-                                        <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
-                                            <span ng-class="logClass(log)">{{log}}</span>
-                                        </div>
-                                    </div>
-                                </pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-           </div>
     </div>
 </div>
 

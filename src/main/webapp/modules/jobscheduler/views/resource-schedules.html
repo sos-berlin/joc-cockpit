@@ -32,7 +32,7 @@
                   <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
                       <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
                   </div>
-                  <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"  ng-repeat="schedule in filtered = (branch.schedules | filter: filterString:strict)">
+                  <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"  ng-repeat="schedule in branch.schedules | orderBy: propertyNameS">
                             <div class="box card">
                                 <div class="box-body">
 
@@ -79,7 +79,7 @@
                         </div>
               </div>
          </div>
-        <div class="box p-a" ng-show="pageView=='list' && branchs.length>0">
+        <div class="box p-a" ng-show="pageView=='list' && allSchedules.length>0">
             <div class="table-responsive" >
                 <table class="table table-hover table-bordered  ">
                     <thead>
@@ -89,59 +89,59 @@
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                     </label>
                                 </th>
-                                <th ng-click="sortBy('name')"><a><span translate>label.scheduleName</span>
-                                    <i ng-show="propertyName == 'name' && !reverse"
+                                <th ng-click="sortByS('name')"><a><span translate>label.scheduleName</span>
+                                    <i ng-show="propertyNameS == 'name' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'name' && reverse"
+                                    <i ng-show="propertyNameS == 'name' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                <th ng-click="sortBy('path')"><a><span translate>label.path</span>
-                                    <i ng-show="propertyName == 'path' && !reverse"
+                                <th ng-click="sortByS('path')"><a><span translate>label.path</span>
+                                    <i ng-show="propertyNameS == 'path' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'path' && reverse"
+                                    <i ng-show="propertyNameS == 'path' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.state</span>
-                                    <i ng-show="propertyName == 'state._text' && !reverse"
+                                <th ng-click="sortByS('state._text')"><a><span translate>label.state</span>
+                                    <i ng-show="propertyNameS == 'state._text' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'state._text' && reverse"
+                                    <i ng-show="propertyNameS == 'state._text' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                <th ng-click="sortBy('usedByOrders.length')"><a><span translate>label.usedByOrders</span>
-                                    <i ng-show="propertyName == 'usedByOrders.length' && !reverse"
+                                <th ng-click="sortByS('usedByOrders.length')"><a><span translate>label.usedByOrders</span>
+                                    <i ng-show="propertyNameS == 'usedByOrders.length' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'usedByOrders.length' && reverse"
+                                    <i ng-show="propertyNameS == 'usedByOrders.length' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                <th ng-click="sortBy('usedByJobs.length')"><a><span translate>label.usedByJobs</span>
-                                    <i ng-show="propertyName == 'usedByJobs.length' && !reverse"
+                                <th ng-click="sortByS('usedByJobs.length')"><a><span translate>label.usedByJobs</span>
+                                    <i ng-show="propertyNameS == 'usedByJobs.length' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'usedByJobs.length' && reverse"
+                                    <i ng-show="propertyNameS == 'usedByJobs.length' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                  <th ng-click="sortBy('validityFrom')"><a><span translate>label.validityFrom</span>
-                                    <i ng-show="propertyName == 'validityFrom' && !reverse"
+                                  <th ng-click="sortByS('validityFrom')"><a><span translate>label.validityFrom</span>
+                                    <i ng-show="propertyNameS == 'validityFrom' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'validityFrom' && reverse"
+                                    <i ng-show="propertyNameS == 'validityFrom' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                  <th ng-click="sortBy('validityTo')"><a><span translate>label.validityTo</span>
-                                    <i ng-show="propertyName == 'validityTo' && !reverse"
+                                  <th ng-click="sortByS('validityTo')"><a><span translate>label.validityTo</span>
+                                    <i ng-show="propertyNameS == 'validityTo' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'validityTo' && reverse"
+                                    <i ng-show="propertyNameS == 'validityTo' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-                                 <th ng-click="sortBy('subsituteBy')"><a><span translate>label.substituteBy</span>
-                                    <i ng-show="propertyName == 'subsituteBy' && !reverse"
+                                 <th ng-click="sortByS('subsituteBy')"><a><span translate>label.substituteBy</span>
+                                    <i ng-show="propertyNameS == 'subsituteBy' && !reverseS"
                                        class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'subsituteBy' && reverse"
+                                    <i ng-show="propertyNameS == 'subsituteBy' && reverseS"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="schedule in filtered = (allSchedules | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize">
+                            <tr ng-repeat="schedule in filtered = (allSchedules | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy: propertyNameS">
                                 <td>
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
@@ -191,7 +191,12 @@
                 <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allSchedules.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
-        <div ng-if="isLoading && allSchedules.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
+        <div ng-if="isLoading && allSchedules.length==0" class="text-center m-t h6 text-uppercase">
+            <span translate>message.noScheduleFound</span>
+            <span translate>message.in</span>
+            <span class="text-primary">"{{folderPathS}}"</span>
+            <span translate>message.selectAnyOtherFolderToShowObjects</span>
+        </div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg">
         <div class="cssload-loading">{{'label.loading' | translate}}...</div>

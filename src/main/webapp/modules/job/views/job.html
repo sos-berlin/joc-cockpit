@@ -189,74 +189,67 @@
                 <div class="m-t-sm box p-a" ng-show="pageView=='list' && allJobs.length>0" >
                     <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                         <table ng-table="tableParams" class="table table-hover table-bordered  " id="jobTableId">
-                                <thead>
-                                    <tr>
-                                        <th class="noExl">
-                                            <label class="md-check lg-check">
-                                                <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
-                                            </label>
-                                        </th>
-                                        <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
-                                            <i ng-show="propertyName == 'name' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'name' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('path')"><a><span translate>label.path</span>
-                                            <i ng-show="propertyName == 'path' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'path' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('state._text')" ><a><span translate>label.status</span>
-                                            <i ng-show="propertyName == 'state._text' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'state._text' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('usedInJobChains')"><a><span translate>label.jobChainsAssociated</span>
-                                            <i ng-show="propertyName == 'usedInJobChains' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'usedInJobChains' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('estimatedDuration')"><a><span translate>label.timeSlot</span>
-                                            <i ng-show="propertyName == 'estimatedDuration' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'estimatedDuration' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('numOfRunningTasks')"><a><span translate>label.taskRunning</span>
-                                            <i ng-show="propertyName == 'numOfRunningTasks' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'numOfRunningTasks' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
-                                            <i ng-show="propertyName == 'ordersSummary.pending' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'ordersSummary.pending' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-
-                                        <th ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
-                                            <i ng-show="propertyName == 'ordersSummary.suspended' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'ordersSummary.suspended' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
-                                            <i ng-show="propertyName == 'ordersSummary.waitingForResource' && !reverse"
-                                               class="fa fa-caret-down "></i>
-                                            <i ng-show="propertyName == 'ordersSummary.waitingForResource' && reverse"
-                                               class="fa fa-caret-up "></i></a>
-                                        </th>
-                                        <th class="noExl"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy:filter.sortBy" ng-class="{'light-bg':showTaskPanel == job}">
-                                    <td class="noExl">
+                            <thead>
+                            <tr>
+                                <th class="noExl">
+                                    <label class="md-check lg-check">
+                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
+                                    </label>
+                                </th>
+                                <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
+                                    <i ng-show="propertyName == 'name' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'name' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('path')"><a><span translate>label.path</span>
+                                    <i ng-show="propertyName == 'path' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'path' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('state._text')" ><a><span translate>label.status</span>
+                                    <i ng-show="propertyName == 'state._text' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'state._text' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('usedInJobChains')"><a><span translate>label.jobChainsAssociated</span>
+                                    <i ng-show="propertyName == 'usedInJobChains' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'usedInJobChains' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('numOfRunningTasks')"><a><span translate>label.taskRunning</span>
+                                    <i ng-show="propertyName == 'numOfRunningTasks' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'numOfRunningTasks' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
+                                    <i ng-show="propertyName == 'ordersSummary.pending' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'ordersSummary.pending' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
+                                    <i ng-show="propertyName == 'ordersSummary.suspended' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'ordersSummary.suspended' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
+                                    <i ng-show="propertyName == 'ordersSummary.waitingForResource' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'ordersSummary.waitingForResource' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>
+                                <th class="noExl"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy:filter.sortBy" ng-class="{'light-bg':showTaskPanel == job}">
+                                <td class="noExl">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                         </label>
@@ -271,7 +264,6 @@
                                         <a ng-if="job.usedInJobChains" class="primary-text-hover-color" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></a>
                                         <span ng-if="!job.usedInJobChains">0</span>
                                     </td>
-                                    <td ng-bind="job.estimatedDuration || '-'"> </td>
                                     <td>
                                         <a ng-if="job.numOfRunningTasks" class="primary-text-hover-color" ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a>
                                         <span ng-if="!job.numOfRunningTasks" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></span>
@@ -321,7 +313,12 @@
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobs.length !==0)}" translate>message.noDataMatched</div>
                     </div>
                 </div>
-                <div ng-if="isLoading && allJobs.length==0" class="text-center m-t h6 text-uppercase" translate>message.noJobsFound</div>
+                <div ng-if="isLoading && allJobs.length==0" class="text-center m-t h6 text-uppercase">
+                    <span translate>message.noJobsFound</span>
+                    <span translate>message.in</span>
+                    <span class="text-primary">"{{folderPath || '/'}}"</span>
+                    <span translate>message.selectAnyOtherFolderToShowObjects</span>
+                </div>
                 <div class="hide " ng-class="{'show': isLoading}" >
                 <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
                     <div class="col-md-12 hide" ng-class="{'show':isLoading1}">

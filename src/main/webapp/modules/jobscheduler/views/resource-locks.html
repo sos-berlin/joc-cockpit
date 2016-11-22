@@ -32,7 +32,7 @@
                 <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
                 </div>
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 hide" ng-class="{'show': pageView=='grid'}" ng-repeat="lock in filtered = (branch.locks | filter: filterString:strict)">
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 hide" ng-class="{'show': pageView=='grid'}" ng-repeat="lock in branch.locks | orderBy: propertyNameL">
                     <div class="box card">
                         <div class="box-body">
                             <div class="text-left block-ellipsis">
@@ -57,51 +57,51 @@
                 </div>
             </div>
         </div>
-        <div class="m-t-sm box p-a" ng-show="pageView=='list' && branchsL.length>0">
+        <div class="m-t-sm box p-a" ng-show="pageView=='list' && allLocks.length>0">
             <div class="table-responsive" >
                 <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
-                            <th ng-click="sortBy('name')"><a><span translate>label.lockName</span>
-                                <i ng-show="propertyName == 'name' && !reverse"
+                            <th ng-click="sortByL('name')"><a><span translate>label.lockName</span>
+                                <i ng-show="propertyNameL == 'name' && !reverseL"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'name' && reverse"
+                                <i ng-show="propertyNameL == 'name' && reverseL"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('path')"><a><span translate>label.path</span>
-                                <i ng-show="propertyName == 'path' && !reverse"
+                            <th ng-click="sortByL('path')"><a><span translate>label.path</span>
+                                <i ng-show="propertyNameL == 'path' && !reverseL"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'path' && reverse"
+                                <i ng-show="propertyNameL == 'path' && reverseL"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('status')"><a><span translate>label.status</span>
-                                <i ng-show="propertyName == 'status' && !reverse"
+                            <th ng-click="sortByL('status')"><a><span translate>label.status</span>
+                                <i ng-show="propertyNameL == 'status' && !reverseL"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'status' && reverse"
+                                <i ng-show="propertyNameL == 'status' && reverseL"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>
-                                <i ng-show="propertyName == 'maxNonExclusive' && !reverse"
+                            <th ng-click="sortByL('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>
+                                <i ng-show="propertyNameL == 'maxNonExclusive' && !reverseL"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'maxNonExclusive' && reverse"
+                                <i ng-show="propertyNameL == 'maxNonExclusive' && reverseL"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>
-                                <i ng-show="propertyName == 'holders.tasks.length' && !reverse"
+                            <th ng-click="sortByL('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>
+                                <i ng-show="propertyNameL == 'holders.tasks.length' && !reverseL"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'holders.tasks.length' && reverse"
+                                <i ng-show="propertyNameL == 'holders.tasks.length' && reverseL"
                                    class="fa fa-caret-up "></i></a>
                             </th>
-                            <th ng-click="sortBy('queue.length')"><a><span translate>label.numberQueued</span>
-                                <i ng-show="propertyName == 'queue.length' && !reverse"
+                            <th ng-click="sortByL('queue.length')"><a><span translate>label.numberQueued</span>
+                                <i ng-show="propertyNameL == 'queue.length' && !reverseL"
                                    class="fa fa-caret-down "></i>
-                                <i ng-show="propertyName == 'queue.length' && reverse"
+                                <i ng-show="propertyNameL == 'queue.length' && reverseL"
                                    class="fa fa-caret-up "></i></a>
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="lock in filtered = (allLocks | filter: filterString:strict) | orderBy: filter.sortBy:sortReverse | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
+                        <tr ng-repeat="lock in filtered = (allLocks | filter: filterString:strict) | orderBy: propertyNameL | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                             <td ng-bind="lock.name || '-'"></td>
                             <td>{{lock.path}}</td>
                             <td ng-bind="lock.status || '-'"></td>
@@ -142,7 +142,13 @@
                 <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allLocks.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
-        <div ng-if="isLoading && branchsL.length==0" class="text-center m-t h6 text-uppercase"  translate>message.noLocksFound</div>
+
+        <div ng-if="isLoading && allLocks.length==0" class="text-center m-t h6 text-uppercase">
+            <span translate>message.noLocksFound</span>
+            <span translate>message.in</span>
+            <span class="text-primary">"{{folderPathL}}"</span>
+            <span translate>message.selectAnyOtherFolderToShowObjects</span>
+        </div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>

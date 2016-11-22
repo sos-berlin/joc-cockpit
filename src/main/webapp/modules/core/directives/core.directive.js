@@ -63,7 +63,7 @@
                     }
                     if (!(toState.url == '/jobChain' || toState.url == '/orders' || toState.url == '/overview')) {
                         SOSAuth.jobChain = undefined;
-                        $window.sessionStorage.$SOS$TREE = {};
+                       // $window.sessionStorage.$SOS$TREE = {};
                     }
                     if($rootScope.clientLogFilter.state) {
                         startTime = new Date();

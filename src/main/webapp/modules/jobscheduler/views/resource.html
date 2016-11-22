@@ -110,36 +110,84 @@
                              </div>
                          </div>
                      </div>
-                    <div class="btn-group dropdown">
+                    <div class="btn-group dropdown" ng-if="state=='agent'">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
-                                    <span ng-show="filter.sortBy =='name'">
+                                    <span ng-show="propertyNameA =='name'">
                                          {{'label.name' | translate}}
-                                        <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="!reverseA" class="fa fa-caret-down"></i>
+                                        <i ng-show="reverseA" class="fa fa-caret-up"></i>
                                     </span>
-                                    <span ng-show="filter.sortBy =='startedAt' && state!='schedules'">
-                                         {{'label.date' | translate}}
-                                      <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
-                                    </span>
-                                    <span ng-show="filter.sortBy =='nextStartTime' && state=='schedules'">
-                                    {{'label.nextStart' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
-                                    </span>
-                                    <span ng-show="filter.sortBy =='path' && state=='processClass'">
+                                    <span ng-show="propertyNameA =='path'">
                                     {{'label.path' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverseA" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverseA" class="fa fa-caret-up"></i>
                                     </span>
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('name')" translate>label.name</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('startedAt')" ng-show="state=='schedules'" translate>label.date</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('nextStartTime')" ng-show="state=='schedules'" translate>label.nextStart</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('path')" ng-show="state=='processClass'" translate>label.path</a>
+                                <a class="dropdown-item" href ng-click="sortByA('name')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="sortByA('path')" translate>label.path</a>
+                            </div>
+                    </div>
+                    <div class="btn-group dropdown" ng-if="state=='lock'">
+                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                <span class="text-primary">
+                                    <span ng-show="propertyNameL =='name'">
+                                         {{'label.name' | translate}}
+                                        <i ng-show="!reverseL" class="fa fa-caret-down"></i>
+                                        <i ng-show="reverseL" class="fa fa-caret-up"></i>
+                                    </span>
+                                    <span ng-show="propertyNameL =='path'">
+                                    {{'label.path' | translate}}
+                                    <i ng-show="!reverseL" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverseL" class="fa fa-caret-up"></i>
+                                    </span>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" href ng-click="sortByL('name')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="sortByL('path')" translate>label.path</a>
+                            </div>
+                    </div>
+                    <div class="btn-group dropdown" ng-if="state=='schedules'">
+                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                <span class="text-primary">
+                                    <span ng-show="propertyNameS =='name'">
+                                         {{'label.name' | translate}}
+                                        <i ng-show="!reverseS" class="fa fa-caret-down"></i>
+                                        <i ng-show="reverseS" class="fa fa-caret-up"></i>
+                                    </span>
+                                    <span ng-show="propertyNameS =='path'">
+                                    {{'label.path' | translate}}
+                                    <i ng-show="!reverseS" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverseS" class="fa fa-caret-up"></i>
+                                    </span>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" href ng-click="sortByS('name')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="sortByS('path')" translate>label.path</a>
+                            </div>
+                    </div>
+                    <div class="btn-group dropdown" ng-if="state=='processClass'">
+                            <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
+                                <span class="text-primary">
+                                    <span ng-show="propertyNameP =='name'">
+                                         {{'label.name' | translate}}
+                                        <i ng-show="!reverseP" class="fa fa-caret-down"></i>
+                                        <i ng-show="reverseP" class="fa fa-caret-up"></i>
+                                    </span>
+                                    <span ng-show="propertyNameP =='path'">
+                                    {{'label.path' | translate}}
+                                    <i ng-show="!reverseP" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverseP" class="fa fa-caret-up"></i>
+                                    </span>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" href ng-click="sortByP('name')" translate>label.name</a>
+                                <a class="dropdown-item" href ng-click="sortByP('path')" translate>label.path</a>
                             </div>
                     </div>
                     <toggle-view></toggle-view>

@@ -67,7 +67,11 @@
     <div class="padding p-b-0">
          <div class="row">
             <div class="col-sm-12">
-                <h5 class="pos-abt _300 p-t-xs">{{jobChain.path}}</h5>
+                <h5 class="pos-abt _300 p-t-xs">
+                     <ol class="breadcrumb">
+                      <li ng-class="{'active': $index == paths.length-1}" ng-repeat="path in paths"><a href="" ng-click="setPath(path)">{{path}}</a></li>
+                    </ol>
+                </h5>
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pull-right">
                      <li class="nav-item">
                         <a class="nav-link" ng-class="{active : !isOverview}" ng-click="viewJobChainOrder()">

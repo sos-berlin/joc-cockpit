@@ -1485,11 +1485,6 @@
                             btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
                             div1.className = div1.className.replace(/border-.*/, 'border-red');
                             btn3.className = btn3.className.replace('bg-hover-color', '');
-                            $timeout(function () {
-                                node.job.state._text = 'STOPPED';
-                                node.job.state.severity = 2;
-                            }, 10);
-                            console.log("Node " + node.name + " state " + node.state._text + " job state " + node.job.state._text);
                         })
                     } else if (args.operation == 'unstopJobs' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
@@ -1499,11 +1494,6 @@
                             btn3.innerHTML = gettextCatalog.getString('button.stopJob');
                             div1.className = div1.className.replace(/border-.*/, 'border-grey');
                             btn3.className = btn3.className + " bg-hover-color";
-                            $timeout(function () {
-                                node.job.state._text = 'PENDING';
-                                node.job.state.severity = 1;
-                            }, 10);
-
                         })
                     }
                     else if (args.operation == 'stopNodes' && args.status == 'success') {
@@ -1517,10 +1507,6 @@
                             div1.className = div1.className.replace(/border-.*/, 'border-red');
                             btn1.className = btn1.className.replace('text-hover-color', '');
                             btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
-                            $timeout(function () {
-                                node.state._text = 'STOPPED';
-                                node.state.severity = 2;
-                            }, 10);
                         })
                     } else if (args.operation == 'unstopNodes' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
@@ -1530,10 +1516,6 @@
                             btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
                             div1.className = div1.className.replace(/border-.*/, 'border-grey');
                             btn1.className = btn1.className + " text-hover-color";
-                            $timeout(function () {
-                                node.state._text = 'ACTIVE';
-                                node.state.severity = 4;
-                            }, 10);
                         })
 
                     } else if (args.operation == 'skipNodes' && args.status == 'success') {
@@ -1548,10 +1530,6 @@
                             div1.className = div1.className.replace(/border-.*/, 'border-red');
                             btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
                             btn1.className = btn1.className + " text-hover-color";
-                            $timeout(function () {
-                                node.state._text = 'SKIPPED';
-                                node.state.severity = 5;
-                            }, 10);
                         })
                     } else if (args.operation == 'unskipNodes' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
@@ -1560,22 +1538,16 @@
                             var div1 = document.getElementById(node.name);
                             btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                             div1.className = div1.className.replace(/border-.*/, '');
-                            $timeout(function () {
-                                node.state._text = 'ACTIVE';
-                                node.state.severity = 4;
-                            }, 10);
                         })
 
                     }
-
 
                     angular.forEach(vm.selectedNodes, function (node) {
                         var chkId = '#chk' + node.name.replace(':', '__');
                         console.log("chkId " + chkId);
                         $(chkId).attr("checked", false);
                     })
-
-
+                    vm.selectedNodes = [];
                 })
 
             }]

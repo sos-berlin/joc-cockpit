@@ -277,7 +277,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
+                            <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy: filter.sortBy">
                             <tr>
                                 <td>
                                 <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain"></span>

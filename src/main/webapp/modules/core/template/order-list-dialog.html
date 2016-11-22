@@ -3,7 +3,7 @@
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate><span ng-bind="jobChain.path"></span> : <span translate>label.orders</span></h4>
     </div>
-    <div class="modal-body" style="min-height: 500px">
+    <div class="modal-body" style="min-height: 500px; max-height: 650px; overflow: auto">
         <div class="row">
             <div class="col-sm-12">
                 <div class="table-responsive">
@@ -64,10 +64,10 @@
                                 <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
                                 <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
                             </td>
-                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(+{{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
+                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
                             <td  class="text-muted">
                                 <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                    <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                    <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                             </td>
                             <td>
@@ -104,6 +104,9 @@
                                                ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                             <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
                                                ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+                                            <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" class="dropdown-item hide"
+                                               ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                               translate>button.viewLog</a>
                                         </div>
                                 </div>
                             </td>

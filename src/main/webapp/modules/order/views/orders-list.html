@@ -79,6 +79,9 @@
                                                ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                             <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
                                                ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+                                            <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" class="dropdown-item hide"
+                                               ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                               translate>button.viewLog</a>
                                         </div>
                                     </div>
                                 </div>
@@ -90,11 +93,11 @@
                                     <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
                                         {{'label.nextStart' | translate}}:
                                         {{order.nextStartTime | stringToDate}}
-                                       <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span>
+                                       <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span>
                                     </span>
                                     <span class="hide" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
                                     <span class="hide" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}}: {{order.startedAt | stringToDate}}
-                                        <span class="text-success">(+{{order.startedAt | durationFromCurrent:undefined }})</span>
+                                        <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span>
                                     </span>
                                 </div>
                             </div>
@@ -215,11 +218,11 @@
                                     <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
                                     <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
                                 </td>
-                                <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(+{{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
+                                <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
                                 <td ng-bind="order.historyId || '-'"></td>
-                                <td  class="text-muted">
+                                <td>
                                     <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                        <span class="text-success">(-{{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                        <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
                                     <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                 </td>
                                 <td class="noExl">
@@ -256,6 +259,9 @@
                                                ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                             <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
                                                ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+                                            <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" class="dropdown-item hide"
+                                               ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                               translate>button.viewLog</a>
                                         </div>
                                     </div>
                                 </td>
@@ -308,7 +314,13 @@
                 <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
-        <div ng-if="isLoading && allOrders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
+
+            <div ng-if="isLoading && allOrders.length==0" class="text-center m-t h6 text-uppercase">
+                <span translate>message.noOrdersFound</span>
+                <span translate>message.in</span>
+                <span class="text-primary">"{{folderPath}}"</span>
+                <span translate>message.selectAnyOtherFolderToShowObjects</span>
+            </div>
         </div>
         <div class="hide " ng-class="{'show': isLoading}" >
             <div class="row hide" ng-show="showLogPanel" ng-class="{'show': pageView=='list'}">
@@ -328,10 +340,7 @@
                             <div class="b-b">
                               <ul class="nav nav-tabs">
                                 <li class="nav-item">
-                                  <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>label.orderLog</a>
-                                </li>
-                                <li class="nav-item">
-                                  <a class="nav-link" href data-toggle="tab" data-target="#tab2" ng-click="loadHistory()" translate>label.orderHistory</a>
+                                  <a class="nav-link active" href data-toggle="tab" data-target="#tab2" ng-click="loadHistory()" translate>label.orderHistory</a>
                                 </li>
                                 <li class="nav-item">
                                   <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>label.orderStepHistory</a>
@@ -339,27 +348,7 @@
                               </ul>
                             </div>
                              <div class="tab-content p-a">
-                              <div class="tab-pane animated fadeIn active " id="tab1">
-                                  <div class="row">
-                                      <div class="col-md-12">
-                                          <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()"><i class="fa fa-print"></i></button>
-                                          <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()"><i class="fa fa-save"></i></button>
-                                          <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search'| translate}}" ng-model="search">
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="row">
-                                          <pre class="log m-t m-b-0 m-r" resizable r-directions="['bottom']" r-height="250">
-                                              <div class="p-a p-t-0 p-b-0" style="margin-top: -65px">
-                                                  <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
-                                                      <span ng-class="logClass(log)">{{log}}</span>
-                                                  </div>
-                                              </div>
-                                          </pre>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div class="tab-pane animated fadeIn " id="tab2">
+                              <div class="tab-pane animated fadeIn active" id="tab2">
                                   <div class="row">
                                       <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                         <table class="table table-striped table-bordered " >
