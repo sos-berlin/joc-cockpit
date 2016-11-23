@@ -410,6 +410,7 @@
   "label.lastWeek": "Last Week",
   "label.endTime": "End time",
   "label.duration": "Duration",
+  "label.expectedDuration": "Expected Duration",
   "label.exitNode": "Exit Node",
   "label.advanceOptionsFilter": "Advance Options Filter",
   "label.incomplete": "Incomplete",

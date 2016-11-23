@@ -1499,14 +1499,14 @@
                     else if (args.operation == 'stopNodes' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
                             var btnId1 = '#btn1' + node.name.replace(':', '__');
-                            var btnId2 = '#btn2' + node.name.replace(':', '__');
+                            /*var btnId2 = '#btn2' + node.name.replace(':', '__');*/
                             var btn1 = document.querySelector(btnId1);
-                            var btn2 = document.querySelector(btnId2);
+                            /*var btn2 = document.querySelector(btnId2);*/
                             var div1 = document.getElementById(node.name);
                             btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                             div1.className = div1.className.replace(/border-.*/, 'border-red');
                             btn1.className = btn1.className.replace('text-hover-color', '');
-                            btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
+                            /*btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');*/
                         })
                     } else if (args.operation == 'unstopNodes' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
@@ -1520,16 +1520,16 @@
 
                     } else if (args.operation == 'skipNodes' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
-                            var btnId1 = '#btn1' + node.name.replace(':', '__');
+                           /* var btnId1 = '#btn1' + node.name.replace(':', '__');*/
                             var btnId2 = '#btn2' + node.name.replace(':', '__');
-                            var btn1 = document.querySelector(btnId1);
+                            /*var btn1 = document.querySelector(btnId1);*/
                             var btn2 = document.querySelector(btnId2);
                             var div1 = document.getElementById(node.name);
                             btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                             btn2.className = btn2.className.replace('text-hover-color', '');
                             div1.className = div1.className.replace(/border-.*/, 'border-red');
-                            btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
-                            btn1.className = btn1.className + " text-hover-color";
+                            /*btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');*/
+                            /*btn1.className = btn1.className + " text-hover-color";*/
                         })
                     } else if (args.operation == 'unskipNodes' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
@@ -1546,7 +1546,7 @@
                         var chkId = '#chk' + node.name.replace(':', '__');
                         console.log("chkId " + chkId);
                         $(chkId).attr("checked", false);
-                    })
+                    });
                     vm.selectedNodes = [];
                 })
 

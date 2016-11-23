@@ -121,11 +121,9 @@
                         <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
                         <tree tree-data="tree"
                                 tree-control="my_tree"
-                                expand-to="expand_to"
                                 view-orders="viewOrders(jobChain)"
                                 expand-on="expanding_property"
                                 on-select="treeHandler1(branch)"
-                                expand-level="2"
                                 on-click="treeHandler(branch)"
                                 expand-node="expandNode(branch)"
                                 collapse-node="collapseNode(branch)"
@@ -186,21 +184,21 @@
                                     <div class="text-sm  text-left text-muted p-t-sm">
                                         <span class="text-black _600" ng-bind="jobChain.numOfNodes || 0"></span>
                                         <span  ng-if="jobChain.numOfNodes>1" ng-bind="'label.jobs' | translate"></span>
-                                        <span  ng-if="jobChain.numOfNodes<=1" ng-bind="'label.job' | translate"></span>
+                                        <span  ng-if="jobChain.numOfNodes<=1 || !jobChain.numOfNodes" ng-bind="'label.job' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs cursor">
                                         <a href="" class="primary-text-hover-color" ng-click="viewOrders(jobChain)">
                                             <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
                                             <span  ng-if="jobChain.numOfOrders>1" ng-bind="'label.orders' | translate"></span>
-                                            <span  ng-if="jobChain.numOfOrders<=1" ng-bind="'label.order' | translate"></span>
+                                            <span  ng-if="jobChain.numOfOrders<=1 || !jobChain.numOfOrders" ng-bind="'label.order' | translate"></span>
                                         </a>
                                     </div>
                                     <div class="text-sm  text-left text-muted m-l p-t-xs">
-                                        <span class="text-black _600" ng-bind="jobChain.ordersSummary.pending"></span>
+                                        <span class="text-black _600" ng-bind="jobChain.ordersSummary.pending || 0"></span>
                                         <span ng-bind="'label.pending' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.running"></span>
+                                        <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.running || 0"></span>
                                         <span ng-bind="'label.running' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.suspended"></span>
+                                        <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.suspended || 0"></span>
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs">
@@ -583,7 +581,7 @@
                     <span translate>message.noJobChainsFound</span>
                     <span translate>message.in</span>
                     <span class="text-primary">"{{folderPath || '/'}}"</span>
-                    <span translate>message.selectAnyOtherFolderToShowObjects</span>
+                    <span translate>message.selectOtherJobChain</span>
                 </div>
             </div>
             <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">

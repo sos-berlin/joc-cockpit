@@ -180,6 +180,50 @@
             });
         };
 
+            var newWindow = null, windowWidth = '1000', windowHeight = '200', windowTop = '0', windowLeft = '0', windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no',
+            popUpBlocker     = false,
+            enableFocus          = false;
+
+        $window.onunload = refreshParent;
+        function refreshParent() {
+            try {
+                if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
+                    newWindow.close();
+                }
+            }
+            catch (x) {
+                throw new Error(x.message);
+            }
+        }
+
+        vm.showLogWindow = function (order, task) {
+            var url=null;
+            try {
+                if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
+                    if(order)
+                    url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
+                    else
+                     url = '#/show_log?task_id=' + task.taskId;
+                    newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
+                }
+                if (typeof newWindow == 'undefined' || newWindow == null) {
+                    popUpBlocker = true;
+                    throw new Error('PopUp Blocker is active');
+                } else {
+                    if(newWindow.document.title != 'JobScheduler - Logger') {
+                        newWindow.document.title = 'JobScheduler - Logger';
+                    }
+                    if (enableFocus) {
+                        newWindow.focus();
+                    }
+                }
+            } catch (e) {
+                popUpBlocker = true;
+                throw new Error(e.message);
+            }
+
+        }
+
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
         });
@@ -248,7 +292,6 @@
                 if(reload){
                     $window.location.reload();
                 }else {
-                   // $window.sessionStorage.$SOS$TREE = null;
                     $window.localStorage.clientLogs = {};
                     $window.sessionStorage.$SOS$JOBSCHEDULE = null;
                 }
@@ -3674,12 +3717,8 @@
     CommonLogCtrl.$inject = ['$scope', '$location','OrderService','TaskService','$sce'];
     function CommonLogCtrl($scope, $location,OrderService,TaskService, $sce) {
         var vm = $scope;
-
         var object = $location.search();
         if (object.order_id) {
-            document.title = object.job_chain + ' : ' + object.order_id + " - Log";
-
-
             var orders = {};
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.jobChain = object.job_chain;
@@ -3691,21 +3730,19 @@
             OrderService.log(orders).then(function (res) {
                 if (res.log)
                     vm.logs = $sce.trustAsHtml(res.log.html);
+                   // vm.logs = res.log;
             }, function () {
 
             });
         }
         if (object.task_id) {
-            document.title = object.task_id + " - Log";
+            var tasks = {};
+            tasks.jobschedulerId = $scope.schedulerIds.selected;
+            tasks.taskId = object.task_id;
+            tasks.mime = ['HTML'];
 
 
-            var orders = {};
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.taskId = object.task_id;
-            orders.mime = ['HTML'];
-
-
-            TaskService.log(orders).then(function (res) {
+            TaskService.log(tasks).then(function (res) {
                 if (res.log)
                     vm.logs = $sce.trustAsHtml(res.log.html);
             }, function () {

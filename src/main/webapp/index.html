@@ -143,19 +143,6 @@
 
 <script src="js/tracekit.js"></script>
 <!-- endbuild -->
-<script>
-    $(window).on('popstate', function () {
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-    });
-
-    window.setTimeout(function() {
-        var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
-        $('body').append($fakeFrame);
-        $fakeFrame.remove();
-    }, 3000);
-</script>
-
 </body>
 </html>
 

@@ -201,7 +201,7 @@
                 </div>
             </div>
             <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
-                <div class="table-responsive">
+                <div class="table-responsive" ng-if="plans.length>0">
                         <table class="table table-hover table-bordered " id="dailyPlanTableId">
                             <thead>
                             <tr>
@@ -227,10 +227,17 @@
                                        class="fa fa-caret-up "></i></a>
                                 </th>
 
-                                 <th ng-click="sortBy('exitCode')"><a><span translate>label.executionResult</span>
+                                <!-- <th ng-click="sortBy('exitCode')"><a><span translate>label.executionResult</span>
                                     <i ng-show="propertyName == 'exitCode' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'exitCode' && reverse"
+                                       class="fa fa-caret-up "></i></a>
+                                </th>-->
+
+                                   <th ng-click="sortBy('late')"><a><span translate>label.late</span>
+                                    <i ng-show="propertyName == 'late' && !reverse"
+                                       class="fa fa-caret-down "></i>
+                                    <i ng-show="propertyName == 'late' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
                                  <th ng-click="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>
@@ -240,14 +247,16 @@
                                        class="fa fa-caret-up "></i></a>
                                 </th>
 
-                                <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
+                               <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
                                     <i ng-show="propertyName == 'expectedEndTime' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'expectedEndTime' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
 
-                                <th ng-click="sortBy('duration')"><a><span translate>label.duration</span>
+
+
+                                <th ng-click="sortBy('duration')"><a><span translate>label.expectedDuration</span>
                                     <i ng-show="propertyName == 'duration' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'duration' && reverse"
@@ -284,10 +293,20 @@
                                 <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job"></span>
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
-                                <td><span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span></td>
-                                <td><span ng-bind="plan.exitCode"></span></td>
+                                <td>
+                                    <a class="text-c label" ng-if="plan.historyId && plan.orderId" ng-click="showLogWindow(plan,null)"  ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </a>
+                                    <span class="text-c label" ng-if="!plan.historyId || !plan.orderId" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
+
+                                      <!-- <span class="text-c label" ng-if="plan.state._text!='ERROR'" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span>-->
+                                </td>
+                               <!-- <td><span ng-bind="plan.exitCode"></span></td>-->
+                                <td><span ng-if="plan.late==true">late</span>
+                                <span ng-if="plan.late==false"></span>
+                                </td>
+
                                 <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
+
                                 <td><span ng-bind="plan.plannedStartTime | duration:plan.expectedEndTime"></span></td>
                                 <td><span ng-bind="plan.startTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.endTime | stringToDate"></span></td>
@@ -318,10 +337,8 @@
                             </div>
                         </div>
                     </div>
-                <div class="hide text-center m-t text-uppercase text-orange"
-                     ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
-                </div>
-                <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
+                
+                <div ng-if="plans.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
                     message.noPlanFound
                 </div>
             </div>

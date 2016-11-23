@@ -14,10 +14,8 @@
          <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
          <tree tree-data="treeLock"
                tree-control="my_tree_lock"
-               expand-to="expand_to"
                expand-on="expanding_property1"
                on-select="treeHandler1L(branch)"
-               expand-level="2"
                on-click="treeHandlerL(branch)"
                expand-node="expandNodeL(branch)"
                collapse-node="collapseNodeL(branch)"
@@ -146,8 +144,8 @@
         <div ng-if="isLoading && allLocks.length==0" class="text-center m-t h6 text-uppercase">
             <span translate>message.noLocksFound</span>
             <span translate>message.in</span>
-            <span class="text-primary">"{{folderPathL}}"</span>
-            <span translate>message.selectAnyOtherFolderToShowObjects</span>
+            <span class="text-primary">"{{folderPathL || '/'}}"</span>
+            <span translate>message.selectOtherLock</span>
         </div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>

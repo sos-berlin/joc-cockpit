@@ -380,7 +380,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat="history in orderHistory.history" ng-click="showLogs(history)" class="cursor">
+                                        <tr ng-repeat="history in orderHistory.history" ng-click="showLogWindow(history,null)" class="cursor">
                                            <!-- <td ng-bind="history.historyId"></td>-->
                                             <td ng-bind="history.orderId"></td>
                                             <td><span class="text-c label" ng-bind="history.state._text | translate"

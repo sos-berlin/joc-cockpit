@@ -30,14 +30,15 @@
             <div class="col-md-12">
                 <div class="box white">
                     <div class="box-body m-t-sm p-a p-b-xs">
-<!--                       <pre class="log">
-                           <div style="margin-top: -60px;">
+                      <pre class="log">
+<!--                           <div style="margin-top: -60px;">
                                <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
                                    <span ng-class="logClass(log)">{{log}}</span>
                                </div>
-                           </div>
-                       </pre>-->
-                        <span ng-bind="logs"></span>
+                           </div>-->
+                          <span ng-bind-html="logs"></span>
+                       </pre>
+
                    </div>
                 </div>
             </div>

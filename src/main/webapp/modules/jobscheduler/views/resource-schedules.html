@@ -14,10 +14,8 @@
         <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
         <tree tree-data="tree"
               tree-control="my_tree"
-              expand-to="expand_to"
               expand-on="expanding_property1"
               on-select="treeHandler1(branch)"
-              expand-level="2"
               on-click="treeHandler(branch)"
               expand-node="expandNode(branch)"
               collapse-node="collapseNode(branch)"
@@ -194,8 +192,8 @@
         <div ng-if="isLoading && allSchedules.length==0" class="text-center m-t h6 text-uppercase">
             <span translate>message.noScheduleFound</span>
             <span translate>message.in</span>
-            <span class="text-primary">"{{folderPathS}}"</span>
-            <span translate>message.selectAnyOtherFolderToShowObjects</span>
+            <span class="text-primary">"{{folderPathS || '/'}}"</span>
+            <span translate>message.selectOtherSchedule</span>
         </div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg">

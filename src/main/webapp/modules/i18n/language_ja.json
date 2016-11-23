@@ -691,7 +691,8 @@
    "label.hideDetail": "Hide Detail",
    "message.in": "in",
    "message.selectAnyOtherFolderToShowObjects": "select any other folder to show objects.!!",
-   "message.noNodesFound": "no nodes found"
+   "message.noNodesFound": "no nodes found",
+"label.expectedDuration": "Expected Duration"
 }
 
 

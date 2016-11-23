@@ -181,8 +181,8 @@
                                                 <i class="cursor fa fa-caret-down noExl" ng-if="showPanel != order.path"
                                                    ng-click="showPanelFuc(order.path)"></i>
                                                 <i class="cursor fa fa-caret-up noExl" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
-                                                <span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                                <i class="text-muted">{{:: order.title}}</i>
+                                                <a ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                                <i class="text-muted">{{:: order.title}}</i></a>
                                             </td>
                                             <td><a ui-sref="app.jobChain" ng-bind="order.jobChain"></a></td>
                                             <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
@@ -309,10 +309,7 @@
                                     <div class="b-b">
                                       <ul class="nav nav-tabs">
                                         <li class="nav-item">
-                                          <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>label.orderLog</a>
-                                        </li>
-                                        <li class="nav-item">
-                                          <a class="nav-link" href data-toggle="tab" data-target="#tab2" ng-click="loadHistory()" translate>label.orderHistory</a>
+                                          <a class="nav-link active" href data-toggle="tab" data-target="#tab2" ng-click="loadHistory()" translate>label.orderHistory</a>
                                         </li>
                                         <li class="nav-item">
                                           <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>label.orderStepHistory</a>
@@ -320,51 +317,45 @@
                                       </ul>
                                     </div>
                                      <div class="tab-content p-a m-b-md">
-                                      <div class="tab-pane animated fadeIn active " id="tab1">
-                                          <div class="row">
-                                              <div class="col-md-12">
-                                                  <button type="button" class="btn btn-default btn-sm pull-right m-l-sm"><i class="fa fa-print"></i></button>
-                                                  <button type="button" class="btn btn-default btn-sm pull-right m-l-sm" ng-click="downloadLog()"><i class="fa fa-save"></i></button>
-                                                  <input type="text" class="form-control inline w pull-right search-box light" placeholder="{{'placeholder.search'| translate}}">
-                                              </div>
-                                          </div>
-                                          <div class="row">
-                                              <div class="col-md-12">
-                                                 <div ng-bind-html="logs.html"></div>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <div class="tab-pane animated fadeIn " id="tab2">
+                                      <div class="tab-pane animated fadeIn active" id="tab2">
                                           <div class="row">
                                               <div class="table-responsive">
-                                                <table class="table table-striped table-bordered " >
+                                                  <table class="table table-striped table-bordered ">
                                                     <thead>
                                                     <tr>
-                                                        <th translate>label.node</th>
-                                                        <th translate>label.startOfExecution</th>
-                                                        <th translate>label.endOfExecution</th>
+                                                        <!--<th translate>label.id</th>-->
+                                                        <th translate>label.orderId</th>
+                                                        <th translate>label.status</th>
+                                                        <th translate>label.startTime</th>
+                                                        <th translate>label.endTime</th>
                                                         <th translate>label.duration</th>
-                                                        <th translate>label.exitCode</th>
+                                                        <th translate>label.node</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="history in historys">
-                                                            <td>{{history.node}}</td>
-                                                            <td>{{history.startTime | stringToDate}}</td>
-                                                            <td>{{history.endTime | stringToDate}}</td>
-                                                            <td ng-bind="history.startTime | duration:history.endTime"></td>
-                                                            <td ng-bind="history.exitCode"></td>
-                                                        </tr>
-
+                                                    <tr ng-repeat="history in historys" ng-click="showLogWindow(history,null)" class="cursor">
+                                                       <!-- <td ng-bind="history.historyId"></td>-->
+                                                        <td ng-bind="history.orderId"></td>
+                                                        <td><span class="text-c label" ng-bind="history.state._text | translate"
+                                                                  ng-class="bgColorFunction(history.state.severity)"></span>
+                                                        </td>
+                                                        <td ng-bind="history.startTime | stringToDate"></td>
+                                                        <td ng-bind="history.endTime | stringToDate"></td>
+                                                        <td ng-bind="history.startTime | duration:history.endTime"></td>
+                                                        <td ng-bind="history.node"></td>
+                                                    </tr>
                                                     </tbody>
                                                 </table>
+                                                <div ng-if="historys.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                    message.noOrderHistoryFound
+                                                </div>
                                             </div>
                                           </div>
                                       </div>
                                       <div class="tab-pane animated fadeIn " id="tab3">
                                           <div class="row">
                                               <div class="table-responsive">
-                                                <table class="table table-striped table-bordered " >
+                                                    <table class="table table-striped table-bordered " >
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.step</th>
@@ -379,7 +370,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="history in historys">
+                                                        <tr ng-repeat="history in setHistorys" ng-click="showLogWindow(history,null)" class="cursor">
                                                             <td>{{history.step}}</td>
                                                             <td>{{history.node}}</td>
                                                             <td>{{history.job}}</td>
@@ -392,6 +383,9 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
+                                                  <div ng-if="setHistorys.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                    message.noOrderHistoryFound
+                                                </div>
                                             </div>
                                           </div>
                                       </div>
