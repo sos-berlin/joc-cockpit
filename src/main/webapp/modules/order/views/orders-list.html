@@ -24,7 +24,7 @@
                     on-click="treeHandler(branch)"
                     expand-node="expandNode(branch)"
                     collapse-node="collapseNode(branch)"
-                    template-url="modules/order/views/order-tree.html">
+                    template-url="modules/core/template/tree.html">
             </tree>
         </div>
     </div>
@@ -226,7 +226,7 @@
                                     <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                 </td>
                                 <td class="noExl">
-                                    <div class="btn-group dropdown " ng-class="{dropup: $index>0?filtered.length<pageSize?$index> filtered.length-5:$index> pageSize-5:false}">
+                                    <div class="btn-group dropdown ">
                                         <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" id="menu{{$index}}">
@@ -315,11 +315,12 @@
             </div>
         </div>
 
-            <div ng-if="isLoading && allOrders.length==0" class="text-center m-t h6 text-uppercase">
-                <span translate>message.noOrdersFound</span>
-                <span translate>message.in</span>
+            <div ng-if="isLoading && !loading && allOrders.length==0" class="text-center m-t h6">
                 <span class="text-primary">"{{folderPath || '/'}}"</span>
-                <span translate>message.selectOtherOrder</span>
+                <span translate>message.emptyFolder</span>
+            </div>
+            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
         </div>
         <div class="hide " ng-class="{'show': isLoading}" >
@@ -351,7 +352,7 @@
                               <div class="tab-pane animated fadeIn active" id="tab2">
                                   <div class="row">
                                       <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
-                                          <table class="table table-striped table-bordered ">
+                                          <table class="table table-hover table-bordered ">
                                             <thead>
                                             <tr>
                                                 <!--<th translate>label.id</th>-->
@@ -386,7 +387,7 @@
                               <div class="tab-pane animated fadeIn " id="tab3">
                                   <div class="row">
                                       <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
-                                        <table class="table table-striped table-bordered " >
+                                        <table class="table table-hover table-bordered " >
                                             <thead>
                                             <tr>
                                                 <th translate>label.step</th>

@@ -3,7 +3,7 @@
 </div>
 <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
     <div>
-        <button class="btn btn-grey btn-sm" ng-click="my_tree_process.expand_all();expandAllP();" >
+        <button class="btn btn-grey btn-sm" ng-click="my_tree_process.expand_all();" >
             <i class="fa fa-angle-down fa-lg"></i>
             <span translate>button.expandAll</span>
         </button>
@@ -19,7 +19,7 @@
               on-click="treeHandlerP(branch)"
               expand-node="expandNodeP(branch)"
               collapse-node="collapseNodeP(branch)"
-              template-url="modules/jobscheduler/views/process-class-tree.html">
+              template-url="modules/core/template/tree.html">
         </tree>
     </div>
 </div>
@@ -124,12 +124,13 @@
                 <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allProcessClasses.length !==0)}" translate>message.noDataMatched</div>
             </div>
         </div>
-        <div ng-if="isLoading && allProcessClasses.length==0" class="text-center m-t h6 text-uppercase">
-            <span translate>message.noProcessClassesFound</span>
-            <span translate>message.in</span>
+        <div ng-if="isLoading && !loading && allProcessClasses.length==0" class="text-center m-t h6">
             <span class="text-primary">"{{folderPathP || '/'}}"</span>
-            <span translate>message.selectOtherProcessClass</span>
+            <span translate>message.emptyFolder</span>
         </div>
+            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+            </div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>

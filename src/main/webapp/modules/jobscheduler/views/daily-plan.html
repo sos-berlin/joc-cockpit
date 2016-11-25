@@ -7,6 +7,9 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
+<div class="btn-group m-l-sm hidden-btn-group" style="padding-left: 10px" ng-show="isLoading" >
+                        <span us-spinner="{radius:6, width:2, length: 4}" spinner-key="spinner-1" ></span>
+                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': filter.range=='today'}"
@@ -192,9 +195,12 @@
                         </div>
                     </div>
 
-                    <div class="hide text-center m-t text-uppercase text-orange"
+                    <!--<div class="hide text-center m-t text-uppercase text-orange"
                          ng-class="{'show': (temp.length>0 && (data.length ==0))}" translate>message.noDataMatched
-                    </div>
+                    </div>-->
+                      <div class=" text-center m-t text-uppercase "
+                     ng-if="data.length==0" translate>message.noDataFound
+                </div>
                     <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
                         message.noPlanFound
                     </div>
@@ -294,9 +300,8 @@
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
                                 <td>
-                                    <a class="text-c label" ng-if="plan.historyId && plan.orderId" ng-click="showLogWindow(plan,null)"  ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </a>
-                                    <span class="text-c label" ng-if="!plan.historyId || !plan.orderId" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
-
+                                    <a class="text-c label text-hover-primary" ng-if="plan.historyId && plan.orderId" ng-click="showLogWindow(plan,null)"  ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </a>
+                                    <span class="text-c label" ng-if="(!plan.historyId && plan.orderId) || (plan.historyId && !plan.orderId)" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
                                       <!-- <span class="text-c label" ng-if="plan.state._text!='ERROR'" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span>-->
                                 </td>
                                <!-- <td><span ng-bind="plan.exitCode"></span></td>-->
@@ -337,8 +342,15 @@
                             </div>
                         </div>
                     </div>
-                
-                <div ng-if="plans.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
+
+
+              <!--  <div class=" text-center m-t text-uppercase text-orange"
+                     ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
+                </div>-->
+                <div class=" text-center m-t text-uppercase "
+                     ng-if="plans.length==0" translate>message.noDataFound
+                </div>
+                <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
                     message.noPlanFound
                 </div>
             </div>

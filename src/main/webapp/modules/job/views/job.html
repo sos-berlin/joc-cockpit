@@ -115,7 +115,7 @@
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
             <div>
-                    <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();expandAll();" >
+                    <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
                         <i class="fa fa-angle-down fa-lg"></i>
                         <span translate>button.expandAll</span>
                     </button>
@@ -132,7 +132,7 @@
                             on-click="treeHandler(branch)"
                             expand-node="expandNode(branch)"
                             collapse-node="collapseNode(branch)"
-                            template-url="modules/job/views/job-tree.html">
+                            template-url="modules/core/template/tree.html">
                     </tree>
                 </div>
         </div>
@@ -271,7 +271,7 @@
                                     <td ng-bind="job.ordersSummary.queued"></td>
 
                                     <td class="noExl">
-                                        <div class="btn-group dropdown"  ng-class="{dropup: $index>0?filtered.length<pageSize?$index> filtered.length-5:$index> pageSize-5:false}">
+                                        <div class="btn-group dropdown">
                                             <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                     class="fa fa-ellipsis-h"></i></button>
                                             <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
@@ -311,12 +311,14 @@
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobs.length !==0)}" translate>message.noDataMatched</div>
                     </div>
                 </div>
-                <div ng-if="isLoading && allJobs.length==0" class="text-center m-t h6 text-uppercase">
-                    <span translate>message.noJobsFound</span>
-                    <span translate>message.in</span>
+                <div ng-if="isLoading && !loading && allJobs.length==0" class="text-center m-t h6">
                     <span class="text-primary">"{{folderPath || '/'}}"</span>
-                    <span translate>message.selectOtherJob</span>
+                    <span translate>message.emptyFolder</span>
                 </div>
+
+            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+            </div>
                 <div class="hide " ng-class="{'show': isLoading}" >
                 <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
                     <div class="col-md-12 hide" ng-class="{'show':isLoading1}">
@@ -353,7 +355,7 @@
                                      <div class="tab-pane animated fadeIn " ng-class="{active: !isRunning}" id="tab1" >
                                          <div class="row">
                                              <div class="table-responsive">
-                                                <table class="table table-striped table-bordered ">
+                                                <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.id</th>
@@ -389,7 +391,7 @@
                                      <div class="tab-pane animated fadeIn " id="tab2">
                                          <div class="row">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-bordered ">
+                                                <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.id</th>
@@ -409,7 +411,7 @@
                                      <div class="tab-pane animated fadeIn " id="tab3" ng-if="showTaskPanel.orderQueue && showTaskPanel.orderQueue.length>0">
                                          <div class="row">
                                              <div class="table-responsive">
-                                                <table class="table table-striped table-bordered " >
+                                                <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.id</th>
@@ -435,7 +437,7 @@
                                      <div class="tab-pane animated fadeIn" id="tab5" ng-show="isRunning">
                                          <div class="row">
                                              <div class="table-responsive">
-                                            <table class="table table-striped table-bordered " >
+                                            <table class="table table-hover table-bordered " >
                                                 <thead>
                                                 <tr>
                                                     <th translate>label.pid</th>
@@ -485,6 +487,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="jobChain" tabindex="-1" role="dialog" aria-labelledby="JobChain" >
     <div class="modal-dialog" role="document">

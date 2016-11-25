@@ -5,8 +5,8 @@
         .directive('dailyPlanOverview', dailyPlanOverview);
 
 
-    clusterStatusView.$inject = ["$compile", "$filter", "$sce","$rootScope"];
-    function clusterStatusView($compile, $filter, $sce,$rootScope) {
+    clusterStatusView.$inject = ["$compile", "$filter", "$sce","$rootScope","$window"];
+    function clusterStatusView($compile, $filter, $sce,$rootScope, $window) {
 
         return {
             restrict: 'E',
@@ -352,7 +352,7 @@
                                 c = c + " yellow-border";
                             }
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
-                                '<br>Started at : ' + $filter('date')(supervisor.data.jobscheduler.startedAt, 'dd-MMM-yy HH:mm:ss') + '<br> Survey Date: ' + $filter('date')(supervisor.data.jobscheduler.surveyDate, 'dd-MMM-yy HH:mm:ss'));
+                                '<br>Started at : ' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '<br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
 
 
                             var sClassRunning = 'text-success';
@@ -440,7 +440,7 @@
 
 
                                 scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                    '<br>Started at : ' + $filter('date')(master.startedAt, 'dd-MMM-yy HH:mm:ss') + '<br> Survey Date: ' + $filter('date')(master.surveyDate, 'dd-MMM-yy HH:mm:ss'));
+                                    '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
                                 if (master.state && master.state._text.toLowerCase() == 'paused') {
@@ -563,7 +563,7 @@
                                 lastId=master.host + master.port;
 
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                '<br>Started at : ' + $filter('date')(master.startedAt, 'dd-MMM-yy HH:mm:ss') + '<br> Survey Date: ' + $filter('date')(master.surveyDate, 'dd-MMM-yy HH:mm:ss'));
+                                '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                             var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
                                 'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                 '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
@@ -621,7 +621,7 @@
                         } else if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text.toLowerCase() == 'running') {
                             classRunning = 'text-black-lt';
                         }
-                        scope.popoverTemplate1 = $sce.trustAsHtml(' Last Refreshed Date : ' + $filter('date')(scope.clusterStatusData.database.deliveryDate, 'dd-MMM-yy HH:mm:ss'));
+                        scope.popoverTemplate1 = $sce.trustAsHtml(' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
 
                         var masterTemplate = '<div uib-popover-html="popoverTemplate1" popover-placement="left" popover-trigger="mouseenter" ' +
 
@@ -1016,20 +1016,21 @@
                 lateError: '=',
                 executed: '=',
                 error: '=',
-                total: '='
+                total: '=',
+                day:"="
             },
             template: '<div class="plan-overview bg-dimgrey" style="width: {{waiting}}%">\n'
-                +'<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan" ><span class="text-muted" translate>label.waitingOrders</span> - {{waiting |number:0}} % </a></label></div>'
+                +'<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan({filter:1,day:day})" ><span class="text-muted" translate>label.waitingOrders</span> - {{waiting |number:0}} %  </a></label></div>'
                 +'<div class="plan-overview bg-gold" style="width: {{late}}%">\n'
-                +'<label class="hide plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan" > <span class="text-muted" translate>label.lateOrders</span> - {{late |number:0}} % </a></label></div>'
-                +'<div class="plan-overview bg-green" style="width: {{lateSuccess}}%">\n'
-                +'<label class="hide plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan" > <span class="text-muted" translate>label.lateOrdersSuccess</span> - {{lateSuccess |number:0}} % </a></label></div>'
-                +'<div class="plan-overview bg-crimson" style="width: {{lateError}}%">\n'
-                +'<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan" > <span class="text-muted" translate>label.lateOrdersError</span> - {{lateError |number:0}} % </a></label></div>'
+                +'<label class="hide plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-muted" translate>label.lateOrders</span> - {{late |number:0}} % </a></label></div>'
+                +'<div class="plan-overview bg-green1" style="width: {{lateSuccess}}%">\n'
+                +'<label class="hide plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-muted" translate>label.lateOrdersSuccess</span> - {{lateSuccess |number:0}} % </a></label></div>'
+                +'<div class="plan-overview bg-crimson1" style="width: {{lateError}}%">\n'
+                +'<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-muted" translate>label.lateOrdersError</span> - {{lateError |number:0}} % </a></label></div>'
                 +'<div class="plan-overview bg-green" style="width: {{executed}}%">\n'
-                +'<label class="hide plan-status" ng-class="{\'show\': executed > 0}" uib-tooltip="{{executed*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan" > <span class="text-muted" translate>label.successOrders</span> - {{executed |number:0}} % </a></label></div>'
+                +'<label class="hide plan-status" ng-class="{\'show\': executed > 0}" uib-tooltip="{{executed*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-muted" translate>label.successOrders</span> - {{executed |number:0}} % </a></label></div>'
                 +'<div class="plan-overview bg-crimson" style="width: {{error}}%">\n'
-                +'<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan" > <span class="text-muted" translate>label.errorOrders</span> - {{error |number:0}} % </a></label></div>'
+                +'<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-muted" translate>label.errorOrders</span> - {{error |number:0}} % </a></label></div>'
         }
     }
 })();

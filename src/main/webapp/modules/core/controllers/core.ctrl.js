@@ -325,22 +325,13 @@
             getScheduleDetail(res);
         });
 
-        function getPermissions(jobScheduler) {
-
-            UserService.getPermissions(jobScheduler).then(function (permission) {
-                SOSAuth.setPermission(permission);
-                SOSAuth.save();
-                $window.location.reload();
-            });
-        }
 
         vm.changeScheduler = function (jobScheduler) {
-            JobSchedulerService.switchSchedulerId(jobScheduler).then(function () {
+            JobSchedulerService.switchSchedulerId(jobScheduler).then(function (permission) {
                 JobSchedulerService.getSchedulerIds().then(function (res) {
-                    if (res && !res.data) {
-                        res.selected = jobScheduler;
+                    if (res) {
                         SOSAuth.setIds(res);
-                        SOSAuth.save();
+                        SOSAuth.setPermission(permission);
                         if ($rootScope.clientLogFilter.state) {
                             var debug = {
                                 message: 'JOBSCHEDULER CHANGE TO ' + jobScheduler,
@@ -349,7 +340,10 @@
                             };
                             $rootScope.clientLogs.push(debug);
                         }
-                        getPermissions(jobScheduler);
+
+                        SOSAuth.save();
+                        $window.location.reload();
+
                     } else {
                         toasty.error({
                             title: gettextCatalog.getString('message.oops'),

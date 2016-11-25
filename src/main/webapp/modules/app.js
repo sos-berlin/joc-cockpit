@@ -28,7 +28,7 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-           'ngclipboard',
+           'ngclipboard','angularSpinner',
 	  'ngCookies'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {

@@ -152,6 +152,10 @@
             })
             .state('app.dailyPlan', {
                 url: '/dailyPlan',
+                params:{
+                    filter:null,
+                    day:null
+                },
                 templateUrl: 'modules/jobscheduler/views/daily-plan.html',
                 controller: 'DailyPlanCtrl',
                 ncyBreadcrumb: {

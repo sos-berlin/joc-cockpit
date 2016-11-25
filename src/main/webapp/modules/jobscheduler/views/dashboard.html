@@ -176,7 +176,7 @@
                     <div class="box-body p-a">
                         <div class="hide" ng-class="{'show': totalPlanData > 0}">
                             <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
-                                    late-error="lateError" executed="executed" error="error" total="totalPlanData"></daily-plan-overview>
+                                    late-error="lateError" executed="executed" error="error" total="totalPlanData" day="filter.range"></daily-plan-overview>
                         </div>
                         <div class="hide text-center m-t h6 text-u-c"
                             ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable

@@ -11,7 +11,7 @@
                                 <div class="hide font14" ng-class="{show:!jobChain.processClass}" ng-bind="schedulerIds.selected"></div>
                             </div>
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
-<!--                                 <button class="btn btn-grey btn-sm m-l-sm"  ng-click="reset()" translate>
+<!--                            <button class="btn btn-grey btn-sm m-l-sm"  ng-click="reset()" translate>
                                     button.reset
                                 </button>-->
                                 <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJob}" ng-click="stopJobs()" translate>
@@ -33,8 +33,6 @@
                                     button.unskipNode
                                 </button>
                             </div>
-
-
                             <div ng-class="{'hide':selectedNodes.length>0}">
                                 <div class="inline" ng-show="pageView=='grid'">
                                     <div class="inline">
@@ -133,8 +131,7 @@
                                   on-action="onAction(path,node,action)"
                                   show-configuration="showConfiguration(type,path,name)"
                                   orders="fOrders"
-                                  get-orders = "getOrders(filter)"
-                            >
+                                  get-orders = "getOrders(filter)">
                     </flow-diagram>
                 </div>
             </div>
@@ -169,8 +166,8 @@
                                 </td>
                                 <td>
                                     <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
-                                    <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
-                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'? node.state.severity:node.job.state.severity)]"></i>
+<!--                                    <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
+                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'? node.state.severity:node.job.state.severity)]"></i>-->
                                    {{node.name}} </a>
 
                                 </td>
@@ -178,7 +175,7 @@
                                     <div ng-repeat="order in node.orders | limitTo : 2:0">
                                         <span>
                                             <span class="text-sm">
-                                                <i class="text-xs fa fa-circle" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
+                                                <i class="text-xs fa fa-stop" ng-class="[colorFunction(order.processingState.severity)]"></i> {{order.orderId}}
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
                                                 ({{undefined | durationFromCurrent:order.nextStartTime }})</span>
                                                 <span class="hide text-primary text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
@@ -187,17 +184,17 @@
                                         </span>
                                     </div>
                                     <i class="cursor text-xs"
-                                       ng-if="showOrderPanel != node.name && node.orders && node.orders.length>2"
-                                       ng-click="showOrderPanelFuc(node.name)" ><span translate>label.showMore</span><br></i>
+                                       ng-if="showPanel != node.name && node.orders && node.orders.length>2"
+                                       ng-click="showPanelFuc(node.name)" ><span translate>label.showMore</span><br></i>
                                     <i class="cursor text-xs"
-                                       ng-if="showOrderPanel == node.name && node.orders && node.orders.length>2"
-                                       ng-click="hideOrderPanelFuc()"><span translate>label.showLess</span><br></i>
+                                       ng-if="showPanel == node.name && node.orders && node.orders.length>2"
+                                       ng-click="hidePanelFuc()"><span translate>label.showLess</span><br></i>
                                     <i class="cursor text-xs"
-                                       ng-if="showOrderPanel != node.name && node.orders && node.orders.length<3 && node.orders.length>0"
-                                       ng-click="showOrderPanelFuc(node.name)"><span translate>label.showDetail</span><br></i>
+                                       ng-if="showPanel != node.name && node.orders && node.orders.length<3 && node.orders.length>0"
+                                       ng-click="showPanelFuc(node.name)"><span translate>label.showDetail</span><br></i>
                                     <i class="cursor text-xs"
-                                       ng-if="showOrderPanel == node.name && node.orders && node.orders.length<3 && node.orders.length>0"
-                                       ng-click="hideOrderPanelFuc()"><span translate>label.hideDetail</span><br></i>
+                                       ng-if="showPanel == node.name && node.orders && node.orders.length<3 && node.orders.length>0"
+                                       ng-click="hidePanelFuc()"><span translate>label.hideDetail</span><br></i>
                                 </td>
                                 <td ng-bind="node.job.path"></td>
                                 <td><span class="text-c label" ng-class="bgColorFunction(node.job.state.severity)"

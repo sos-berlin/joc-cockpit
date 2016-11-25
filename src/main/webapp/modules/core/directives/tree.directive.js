@@ -34,7 +34,7 @@
 
                 var e, f, g, h, i, j, k, l, m, n, o, p;
                 if (e = function (a) {
-                    }, d.iconExpand = d.iconExpand ? d.iconExpand : "fa fa-plus", d.iconCollapse = d.iconCollapse ? d.iconCollapse : "fa fa-minus", d.iconLeaf = d.iconLeaf ? d.iconLeaf : "icon-file", d.sortedAsc = d.sortedAsc ? d.sortedAsc : "m-t-xs fa fa-caret-up", d.sortedDesc = d.sortedDesc ? d.sortedDesc : "icon-file m-t-xs fa fa-caret-down", d.expandLevel = d.expandLevel ? d.expandLevel : "0", h = parseInt(d.expandLevel, 10), !b.treeData)return void alert("No data was defined for the tree, please define treeData!");
+                    }, d.iconExpand = d.iconExpand ? d.iconExpand : "fa fa-plus", d.iconCollapse = d.iconCollapse ? d.iconCollapse : "fa fa-minus", d.iconLeaf = d.iconLeaf ? d.iconLeaf : "icon-file", d.sortedAsc = d.sortedAsc ? d.sortedAsc : "m-t-xs fa fa-caret-up", d.sortedDesc = d.sortedDesc ? d.sortedDesc : "m-t-xs fa fa-caret-down", d.expandLevel = d.expandLevel ? d.expandLevel : "0", h = parseInt(d.expandLevel, 10), !b.treeData)return void alert("No data was defined for the tree, please define treeData!");
                 var q = function () {
                     if (d.expandOn)f = b.expandOn, b.expandingProperty = b.expandOn; else if (b.treeData.length) {
                         for (var c = b.treeData[0], e = Object.keys(c), g = 0, h = e.length; g < h; g++)if ("string" == typeof c[e[g]]) {
