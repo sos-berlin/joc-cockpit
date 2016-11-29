@@ -9,38 +9,38 @@
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allOrders
+                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'RUNNING'"
-                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
+                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'SUSPENDED'"
-                                    ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="load()" translate>button.suspended
+                                    ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="filter.state"
                                     uib-btn-radio="'SETBACK'"
-                                    ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="load()" translate>button.setback
+                                    ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="load()" translate>button.allOrders
+                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
                                         uib-btn-radio="'RUNNING'"
-                                        ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="load()" translate>button.running
+                                        ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
                                         uib-btn-radio="'SUSPENDED'"
-                                        ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="load()" translate>button.suspended
+                                        ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
                                 </a>
                                 <a class="dropdown-item" ng-model="filter.state"
                                         uib-btn-radio="'SETBACK'"
-                                        ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="load()" translate>button.setback
+                                        ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
                                 </a>
                             </div>
                         </div>
@@ -125,9 +125,7 @@
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"
-                            expand-to="expand_to"
                             object="object"
-                            expand-level="2"
                             icon-leaf     = "fa fa-folder"
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"

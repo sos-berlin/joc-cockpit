@@ -79,6 +79,7 @@
                 });
                 return deferred.promise;
             },
+
             getConfiguration: function (path,orderId,jobschedulerId) {
                 var deferred = $q.defer();
 

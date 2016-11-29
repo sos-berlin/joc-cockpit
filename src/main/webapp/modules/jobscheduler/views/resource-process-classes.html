@@ -41,7 +41,7 @@
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
                                 <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                        class="text fa fa-ellipsis-v"></i></a>
+                                        class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                     <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
                                 </div>
@@ -88,7 +88,7 @@
                     <tr ng-repeat="processClass in filtered = (allProcessClasses | filter: filterString:strict) | orderBy: propertyNameP | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
                         <td ng-bind="processClass.name"></td>
                         <td ng-bind="processClass.path"></td>
-                        <td ng-bind="processClass.maxProcesses || 10"></td>
+                        <td ng-bind="processClass.maxProcesses || 30"></td>
                         <td ng-bind="processClass.numOfProcesses || 0"></td>
                          <td  class="hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
                              <div class="btn-group dropdown">

@@ -1,0 +1,42 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img
+                src="images/close-button.png"></span></button>
+        <h4 class="modal-title">
+            <span translate>label.resumeOrder </span>
+            &nbsp;{{order.orderId}} <i ng-if="order.title">-</i> <span class="text-muted text">{{order.title}}</span>
+        </h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>label.newOrderState</label>
+
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="order.state"
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
+                        <option value="" translate>label.chooseStartingStep</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>label.newOrderEndState</label>
+
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="order.endState"
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
+                        <option value="" translate>label.chooseEndStep</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm" translate>button.resume</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

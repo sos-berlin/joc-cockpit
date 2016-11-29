@@ -28,18 +28,14 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-           'ngclipboard','angularSpinner',
-	  'ngCookies'
+           'ngclipboard',
+	        'ngCookies'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs=[];
             $resource("config.json").get(function (data) {
                 $rootScope.configData = data;
             });
-            $resource('poll_config.json').get(function (res) {
-                $rootScope.config = res;
-            });
-
         }])
         .config(['calendarConfig', function (calendarConfig) {
             calendarConfig.dateFormatter = 'moment';

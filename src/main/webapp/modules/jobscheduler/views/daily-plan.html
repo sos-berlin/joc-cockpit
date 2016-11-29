@@ -7,9 +7,6 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
-<div class="btn-group m-l-sm hidden-btn-group" style="padding-left: 10px" ng-show="isLoading" >
-                        <span us-spinner="{radius:6, width:2, length: 4}" spinner-key="spinner-1" ></span>
-                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': filter.range=='today'}"
@@ -93,10 +90,10 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="mainSortBy('processedPlan')" translate>label.name</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('orderId')" translate>label.orderId</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('plannedStartTime')" translate>label.plannedStart</a>
-                                <a class="dropdown-item" href ng-click="mainSortBy('status')" translate>label.status</a>
+                                <a class="dropdown-item" ng-click="mainSortBy('processedPlan')" translate>label.name</a>
+                                <a class="dropdown-item" ng-click="mainSortBy('orderId')" translate>label.orderId</a>
+                                <a class="dropdown-item" ng-click="mainSortBy('plannedStartTime')" translate>label.plannedStart</a>
+                                <a class="dropdown-item" ng-click="mainSortBy('status')" translate>label.status</a>
                             </div>
                         </div>
 
@@ -165,7 +162,7 @@
                              show-side="options.labelsEnabled"
                              daily="options.daily"
                              current-date="options.currentDate"
-                             current-date-value="options.currentDateValue"
+                             current-date-value=currentDateValue
                              sort-mode="options.sortMode"
                              view-scale="options.scale"
                              column-width="getColumnWidth(options.width, options.scale, options.zoom)"
@@ -233,13 +230,6 @@
                                        class="fa fa-caret-up "></i></a>
                                 </th>
 
-                                <!-- <th ng-click="sortBy('exitCode')"><a><span translate>label.executionResult</span>
-                                    <i ng-show="propertyName == 'exitCode' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'exitCode' && reverse"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>-->
-
                                    <th ng-click="sortBy('late')"><a><span translate>label.late</span>
                                     <i ng-show="propertyName == 'late' && !reverse"
                                        class="fa fa-caret-down "></i>
@@ -292,16 +282,15 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy: filter.sortBy">
-                            <tr>
+                            <tbody >
+                            <tr ng-repeat="plan in plans | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy: filter.sortBy" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
                                 <td>
                                 <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain"></span>
                                 <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job"></span>
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
                                 <td>
-                                    <a class="text-c label text-hover-primary" ng-if="plan.historyId && plan.orderId" ng-click="showLogWindow(plan,null)"  ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </a>
-                                    <span class="text-c label" ng-if="(!plan.historyId && plan.orderId) || (plan.historyId && !plan.orderId)" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
+                                    <span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
                                       <!-- <span class="text-c label" ng-if="plan.state._text!='ERROR'" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span>-->
                                 </td>
                                <!-- <td><span ng-bind="plan.exitCode"></span></td>-->
@@ -321,11 +310,11 @@
 
                             </tbody>
                         </table>
-                        <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length"
+                        <ul ng-show="plans.length > pageSize" uib-pagination total-items="plans.length"
                             ng-model="currentPage" items-per-page='pageSize' ng-change="pageChange()"
                             class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-right" ng-show="filtered.length > 10">
+                        <div class="pull-right" ng-show="plans.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': pageSize=='10'}">10
@@ -362,7 +351,7 @@
         </div>
     </div>
 </div>
-
+<div ng-if="showSpinner1 && isLoading" class="loading-img"></div>
 
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
@@ -380,9 +369,7 @@
                     <tree
                             tree-data="tree"
                             tree-control="filter_tree"
-                            expand-to="expand_to"
                             object="object"
-                            expand-level="2"
                             icon-leaf     = "fa fa-folder"
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"

@@ -384,7 +384,7 @@
                                 '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
                                 '<div class="text-left  p-t-sm p-l-sm "><span>' + supervisor.jobschedulerId +
                                 '</span> <div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
+                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
@@ -464,7 +464,7 @@
                                     '<div class="text-left  p-t-sm p-l-sm ">' +
                                     '<span>' + name +
                                     '</span>' + '<div class="btn-group dropdown pull-right" >' +
-                                    '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
+                                    '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
@@ -568,7 +568,7 @@
                                 'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                 '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
                                 '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-v"></i></a>' +
+                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
@@ -976,31 +976,7 @@
 
                 }
 
-                startPolling();
-                function startPolling() {
 
-                    if ($rootScope.config.jobSchedulerMasterClusterStatus.polling == 'true') {
-                        poll();
-                    }
-
-                }
-
-                var interval;
-
-                function poll() {
-
-                    interval = $interval(function () {
-                        if (vm.getSupervisor) {
-                            vm.getSupervisor(true);
-                        }
-                    }, $rootScope.config.jobSchedulerMasterClusterStatus.interval * 1000);
-
-                }
-
-                vm.$on("$destroy", function () {
-                    $interval.cancel(interval);
-
-                });
 
             }]
         }

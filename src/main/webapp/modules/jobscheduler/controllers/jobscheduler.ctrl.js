@@ -453,12 +453,6 @@
             });
         }
 
-        function filteredVolatileTreeDataL() {
-            angular.forEach(vm.treeLock, function (value) {
-                if (value.expanded || value.selected1)
-                    checkExpandTreeForUpdatesL(value);
-            });
-        }
 
 
         /** <<<<<<<<<<<<< End Locks >>>>>>>>>>>>>>> */
@@ -487,21 +481,19 @@
             vm.folderPathP = '/';
             angular.forEach(vm.treeProcess, function (value) {
                 value.expanded = true;
-                if (value.expanded) {
-                    vm.branchsP = [];
-                    vm.allProcessClasses = [];
-                    checkExpandP(value);
-                }
-
+                vm.branchsP = [];
+                vm.allProcessClasses = [];
+                checkExpandP(value);
             });
         }
 
         function volatileInformationP(obj, expandNode) {
             ResourceService.getProcessClass(obj).then(function (res) {
-                if (vm.processClasses.length > 0) {
+                vm.loading = false;
+                if (vm.processClasses.length > 0 && vm.processClasses.length == res.processClasses.length) {
                     angular.forEach(vm.processClasses, function (processClass) {
                         angular.forEach(res.processClasses, function (processClassData) {
-                            if (processClass.path == processClassData.path) {
+                            if (processClass.path == processClassData.path || processClassData.name == 'multi' || processClassData.name == '(default)' || processClassData.name == 'single') {
                                 processClass = angular.merge(processClass, processClassData);
                             }
                         });
@@ -514,6 +506,7 @@
                     startTraverseNodeP(expandNode);
                 }
             }, function () {
+                vm.loading = false;
                 if (expandNode) {
                     startTraverseNodeP(expandNode);
                 }
@@ -529,7 +522,7 @@
             ResourceService.getProcessClassP(obj).then(function (result) {
                 data.processClasses = result.processClasses;
                 volatileFolderDataP(data, obj);
-                vm.loading = false;
+
             }, function () {
                 volatileFolderDataP(data, obj);
                 vm.loading = false;
@@ -538,11 +531,13 @@
 
         function volatileFolderDataP(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
-                if (data.processClasses.length > 0) {
+                 vm.loading = false;
+                if (data.processClasses.length > 0 && data.processClasses.length == res.processClasses.length) {
                     angular.forEach(data.processClasses, function (processClass) {
                         angular.forEach(res.processClasses, function (processClassData) {
-                            if (processClass.path == processClassData.path) {
+                            if (processClass.path == processClassData.path || processClassData.name == 'multi' || processClassData.name == '(default)' || processClassData.name == 'single') {
                                 processClass = angular.merge(processClass, processClassData);
+                                console.log(processClassData);
                             }
                         });
                     });
@@ -559,6 +554,7 @@
                     vm.allProcessClasses.push(value);
                 });
             }, function () {
+                 vm.loading = false;
                 if (data.processClasses.length > 0) {
                     vm.branchsP.push(data);
                 }
@@ -604,9 +600,8 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             ResourceService.getProcessClassP(obj).then(function (result) {
                 vm.processClasses = result.processClasses;
-                startTraverseNodeP(data);
+
                 volatileInformationP(obj, data);
-                vm.loading = false;
             }, function () {
                 volatileInformationP(obj, data);
                 vm.loading = false;
@@ -691,7 +686,7 @@
                                      if (processClasses.path == processClassData.path) {
                                          processClasses = angular.merge(processClasses, processClassData);
                                      }
-                                 })
+                                 });
                                  //update list view
                                  angular.forEach(vm.allProcessClasses, function (processClass) {
                                      if (processClass.path == processClassData.path) {
@@ -748,7 +743,7 @@
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                vm.object.allSchedules = vm.allSchedules.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
+                vm.object.schedules = vm.allSchedules.slice((vm.pageSize * (vm.currentPage - 1)), (vm.pageSize * vm.currentPage));
             } else {
                 vm.object.schedules = [];
             }
@@ -1185,55 +1180,9 @@
                 else
                     filteredTreeData();
             }
-            startPolling();
+
         });
 
-
-        var interval1, interval2, interval3, interval4;
-
-        function poll1() {
-            interval1 = $interval(function () {
-                loadAgentsV();
-            }, $rootScope.config.agentCluster.interval * 1000)
-        }
-
-        function poll2() {
-            interval2 = $interval(function () {
-                filteredVolatileTreeDataL();
-            }, $rootScope.config.locks.interval * 1000)
-        }
-
-        function poll3() {
-            interval3 = $interval(function () {
-                filteredVolatileTreeDataP();
-            }, $rootScope.config.processClass.interval * 1000)
-        }
-
-        function poll4() {
-            interval4 = $interval(function () {
-                filteredVolatileTreeData();
-            }, $rootScope.config.schedules.interval * 1000)
-        }
-
-        function startPolling() {
-            $interval.cancel(interval1);
-            $interval.cancel(interval2);
-            $interval.cancel(interval3);
-            $interval.cancel(interval4);
-            if (vm.state == 'agent') {
-                if ($rootScope.config.agentCluster.polling == 'true')
-                    poll1();
-            } else if (vm.state == 'lock') {
-                if ($rootScope.config.locks.polling == 'true')
-                    poll2();
-            } else if (vm.state == 'processClass') {
-                if ($rootScope.config.processClass.polling == 'true')
-                    poll3();
-            } else {
-                if ($rootScope.config.schedules.polling == 'true')
-                    poll4();
-            }
-        }
 
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
@@ -1255,11 +1204,6 @@
             watcher1();
             watcher2();
             watcher3();
-            $interval.cancel(interval1);
-            $interval.cancel(interval2);
-            $interval.cancel(interval3);
-            $interval.cancel(interval4);
-
         });
     }
 
@@ -1285,7 +1229,7 @@
             vm.orders = orderBy(vm.orders, vm.propertyName, vm.reverse);
         };
 
-        function loadOrderV() {
+        function loadOrderV(orders) {
             OrderService.get({
                 jobschedulerId: $scope.schedulerIds.selected,
                 orders: orders,
@@ -1304,10 +1248,10 @@
             }).then(function (result) {
                 vm.orders = result.orders;
                 vm.isLoading = true;
-                loadOrderV();
+                loadOrderV(orders);
             }, function () {
                 vm.isLoading = true;
-                loadOrderV();
+                loadOrderV(orders);
             });
         }
 
@@ -1417,6 +1361,153 @@
 
             });
             vm.zones = moment.tz.names();
+        };
+
+          /** --------action ------------ **/
+
+        vm.deleteAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+
+            OrderService.deleteOrder(orders).then(function (res) {
+                orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    angular.forEach(vm.object.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                            }
+                        })
+                    });
+                    vm.object.orders = [];
+                });
+
+            }, function () {
+
+            });
+
+        };
+
+        vm.suspendAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            OrderService.suspendOrder(orders).then(function (res) {
+                orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    angular.forEach(vm.object.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                            }
+                        })
+                    });
+                    vm.object.orders = [];
+                });
+
+
+            }, function () {
+
+            });
+
+        };
+        vm.resumeAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            OrderService.resumeOrder(orders).then(function (res) {
+                orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    angular.forEach(vm.object.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                            }
+                        })
+                    });
+                    vm.object.orders = [];
+                });
+
+
+            }, function () {
+
+            });
+
+        };
+        vm.resetAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            OrderService.resetOrder(orders).then(function (res) {
+                orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    angular.forEach(vm.object.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                            }
+                        })
+                    });
+                    vm.object.orders = [];
+                });
+            }, function () {
+
+            });
+
+        };
+        vm.startAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
+            });
+
+            OrderService.startOrder(orders).then(function (res) {
+                orders.compact = true;
+                OrderService.get(orders).then(function (res) {
+                    angular.forEach(vm.object.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                            }
+                        })
+                    });
+                    vm.object.orders = [];
+                });
+            }, function () {
+
+            });
+
         };
     }
 
@@ -1903,57 +1994,10 @@
         function getPlanPercent(status) {
             return (status / vm.totalPlanData) * 100;
         }
-
-
-        startPolling();
-
-        function startPolling() {
-
-            if ($rootScope.config.agentClusterStatus.polling == 'true') {
-                poll1();
-            }
-            if ($rootScope.config.orderOverviewWidget.polling == 'true') {
-                poll2();
-            }
-            if ($rootScope.config.dailyPlanWidget.polling == 'true') {
-                poll3();
-            }
-        }
-
-        var interval1, interval2, interval3;
-
-        function poll1() {
-            interval1 = $interval(function () {
-                vm.getAgentCluster();
-
-            }, $rootScope.config.agentClusterStatus.interval * 1000)
-        }
-
-        function poll2() {
-            interval2 = $interval(function () {
-                vm.loadOrderSnapshot();
-            }, $rootScope.config.orderOverviewWidget.interval * 1000)
-        }
-
-        function poll3() {
-            interval3 = $interval(function () {
-                vm.getDailyPlans();
-            }, $rootScope.config.dailyPlanWidget.interval * 1000)
-        }
-
-        $scope.$on('$destroy', function () {
-            $interval.cancel(interval1);
-            $interval.cancel(interval2);
-            $interval.cancel(interval3);
-
-        });
-
-
     }
 
-
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'DailyPlanService', '$interval', '$rootScope', 'JobChainService','$stateParams','usSpinnerService'];
-    function DailyPlanCtrl($scope, $timeout, gettextCatalog, moment, orderBy, $uibModal, SavedFilter, toasty, OrderService, DailyPlanService, $interval, $rootScope, JobChainService,$stateParams,usSpinnerService) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'moment', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'OrderService', 'DailyPlanService', '$interval', '$rootScope', 'JobChainService','$stateParams'];
+    function DailyPlanCtrl($scope, $timeout, gettextCatalog, moment, orderBy, $uibModal, SavedFilter, toasty, OrderService, DailyPlanService, $interval, $rootScope, JobChainService,$stateParams) {
 
         var vm = $scope;
 
@@ -1990,12 +2034,6 @@
         vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
         vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
 
-        var watcher = $scope.$watch('pageView', function (newName) {
-            if (newName) {
-                vm.pageView = newName;
-            }
-        });
-
         function setDateRange(range) {
             var from = new Date();
             var to = new Date();
@@ -2007,7 +2045,7 @@
                 to.setHours(0);
                 to.setMinutes(0);
                 to.setSeconds(0);
-                vm.currentDateValue=new Date();
+                vm.currentDateValue = new Date();
             } else if (range == 'next-24-hours') {
                 /*  to.setDate(to.getDate() + 1);
                  to.setHours(0);
@@ -2026,7 +2064,7 @@
 
 
                 // console.info("setDateRange::"+to);
-                 vm.currentDateValue=from;
+                vm.currentDateValue = from;
             }
 
             vm.filter.from = from;
@@ -2235,173 +2273,56 @@
             var orders = [];
             $scope.ordersNoDuplicate = [];
             data2 = orderBy(data2, 'plannedStartTime', false);
-            angular.forEach(data2, function (order, index) {
+
+            var groupJobChain = alasql('SELECT * FROM ?  GROUP BY jobChain', [data2]);
+            angular.forEach(groupJobChain, function (order1, index) {
+                var i = 0;
+                orders[index] = {};
+                orders[index].tasks = [];
+                angular.forEach(data2, function (order, index1) {
 
 
-                if ($scope.ordersNoDuplicate.length > 0) {
-                    var flag = false;
+                    if (order1.jobChain == order.jobChain) {
 
-                    angular.forEach($scope.ordersNoDuplicate, function (order1, index1) {
-//console.info("for ordersNoDuplicate index1 :"+index1 +"order:"+JSON.stringify(order));
-
-
-                        if (order.jobChain == order1.name) {
-                            //console.info("order1 jobChain :"+JSON.stringify(order1));
-
-                            orders[index1].tasks[orders[index1].tasks.length] = {};
-                            flag = true;
-                            var indexLength = orders[index1].tasks.length - 1;
-                            //   orders[index].tasks[orders[index].tasks.length].name = orders[index].name;
-                            orders[index1].tasks[indexLength].name = orders[index1].name;
-                            // orders[index1].status = order.state._text;
-                            vm.plans[index1].status = order.state._text;
-                            if (order.state._text == 'SUCCESSFUL') {
-                                orders[index1].tasks[indexLength].color = "#7ab97a";
-                            } else if (order.state._text == 'FAILED') {
-                                orders[index1].tasks[indexLength].color = "#e86680";
-                            }
-                            else if (order.late) {
-                                orders[index1].tasks[indexLength].color = "rgba(255, 195, 0, .9)";
-                            }
-                            orders[index1].tasks[indexLength].from = '';
-
-                            orders[index1].tasks[indexLength].from = new Date(order.plannedStartTime);
-
-                            if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-                                minNextStartTime = new Date(order.plannedStartTime);
-                            }
-                            if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-                                maxEndTime = new Date(order.expectedEndTime);
-                            }
-                            orders[index1].tasks[indexLength].to = new Date(order.expectedEndTime);
-                            // $scope.ordersNoDuplicate[index] = orders[index];
-
+                        orders[index].tasks[i] = {};
+                        if (order.job != undefined) {
+                            orders[index].name = order.job;
+                            orders[index].orderId = '-';
+                        } else {
+                            // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
+                            orders[index].name = order.jobChain.substring(order.jobChain);
+                            orders[index].orderId = order.orderId;
                         }
 
-                        if (order.job == order1.name) {
-
-                            //console.info("order1 job :"+JSON.stringify(order1));
-                            orders[index1].tasks[orders[index1].tasks.length] = {};
-                            flag = true;
-                            var indexLength = orders[index1].tasks.length - 1;
-                            //   orders[index].tasks[orders[index].tasks.length].name = orders[index].name;
-                            orders[index1].tasks[indexLength].name = orders[index1].name;
-                            // orders[index1].status = order.state._text;
-                            vm.plans[index1].status = order.state._text;
-                            if (order.state._text == 'SUCCESSFUL') {
-                                orders[index1].tasks[indexLength].color = "#7ab97a";
-                            } else if (order.state._text == 'FAILED') {
-                                orders[index1].tasks[indexLength].color = "#e86680";
-                            }
-                            else if (order.late) {
-                                orders[index1].tasks[indexLength].color = "rgba(255, 195, 0, .9)";
-                            }
-                            orders[index1].tasks[indexLength].from = '';
-
-                            orders[index1].tasks[indexLength].from = new Date(order.plannedStartTime);
-
-                            if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-                                minNextStartTime = new Date(order.plannedStartTime);
-                            }
-                            if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-                                maxEndTime = new Date(order.expectedEndTime);
-                            }
-                            orders[index1].tasks[indexLength].to = new Date(order.expectedEndTime);
-
+                        vm.plans[index].processedPlanned = orders[index].name;
+                        orders[index].tasks[i].name = orders[index].name;
+                        //orders[index].status = order.state._text;
+                        vm.plans[index].status = order.state._text;
+                        if (order.state._text == 'SUCCESSFUL') {
+                            orders[index].tasks[i].color = "#7ab97a";
+                        } else if (order.state._text == 'FAILED') {
+                            orders[index].tasks[i].color = "#e86680";
                         }
-                        else if (flag == false && index1 == $scope.ordersNoDuplicate.length - 1) {
-                            //  console.info("else if  :"+JSON.stringify($scope.ordersNoDuplicate));
-                            //   console.info("else if  orders :"+JSON.stringify(orders));
-//console.info("else if  $scope.ordersNoDuplicate.length :"+$scope.ordersNoDuplicate.length);
-
-
-                            var indexLength = $scope.ordersNoDuplicate.length;
-                            orders[indexLength] = {};
-                            orders[indexLength].tasks = [];
-                            orders[indexLength].tasks[0] = {};
-
-                            if (order.job != undefined) {
-                                orders[indexLength].name = order.job;
-                                orders[indexLength].orderId = '-';
-                            } else {
-                                // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
-                                orders[indexLength].name = order.jobChain.substring(order.jobChain);
-                                orders[indexLength].orderId = order.orderId;
-                            }
-
-                            vm.plans[indexLength].processedPlanned = orders[indexLength].name;
-                            orders[indexLength].tasks[0].name = orders[indexLength].name;
-                            // orders[indexLength].status = order.state._text;
-                            vm.plans[indexLength].status = order.state._text;
-                            if (order.state._text == 'SUCCESSFUL') {
-                                orders[indexLength].tasks[0].color = "#7ab97a";
-                            } else if (order.state._text == 'FAILED') {
-                                orders[indexLength].tasks[0].color = "#e86680";
-                            }
-                            else if (order.late) {
-                                orders[indexLength].tasks[0].color = "rgba(255, 195, 0, .9)";
-                            }
-
-                            orders[indexLength].tasks[0].from = new Date(order.plannedStartTime);
-
-                            if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-                                minNextStartTime = new Date(order.plannedStartTime);
-                            }
-                            if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-                                maxEndTime = new Date(order.expectedEndTime);
-                            }
-                            orders[indexLength].tasks[0].to = new Date(order.expectedEndTime);
-
-                            $scope.ordersNoDuplicate.push(orders[indexLength]);
-                            //    console.info(" second orders[index]" + JSON.stringify(orders[indexLength]));
-                            //   console.info(" second $scope.ordersNoDuplicate[index]" + JSON.stringify($scope.ordersNoDuplicate));
+                        else if (order.late) {
+                            orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
                         }
 
-                    });
-                } else {
-                    orders[index] = {};
-                    orders[index].tasks = [];
-                    orders[index].tasks[0] = {};
-                    if (order.job != undefined) {
-                        orders[index].name = order.job;
-                        orders[index].orderId = '-';
-                    } else {
-                        // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
-                        orders[index].name = order.jobChain.substring(order.jobChain);
-                        orders[index].orderId = order.orderId;
+                        orders[index].tasks[i].from = new Date(order.plannedStartTime);
+
+                        if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
+                            minNextStartTime = new Date(order.plannedStartTime);
+                        }
+                        if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
+                            maxEndTime = new Date(order.expectedEndTime);
+                        }
+                        orders[index].tasks[i].to = new Date(order.expectedEndTime);
+                        i++;
+
                     }
 
-                    vm.plans[index].processedPlanned = orders[index].name;
-                    orders[index].tasks[0].name = orders[index].name;
-                    //orders[index].status = order.state._text;
-                    vm.plans[index].status = order.state._text;
-                    if (order.state._text == 'SUCCESSFUL') {
-                        orders[index].tasks[0].color = "#7ab97a";
-                    } else if (order.state._text == 'FAILED') {
-                        orders[index].tasks[0].color = "#e86680";
-                    }
-                    else if (order.late) {
-                        orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
-                    }
-
-                    orders[index].tasks[0].from = new Date(order.plannedStartTime);
-
-                    if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-                        minNextStartTime = new Date(order.plannedStartTime);
-                    }
-                    if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-                        maxEndTime = new Date(order.expectedEndTime);
-                    }
-                    orders[index].tasks[0].to = new Date(order.expectedEndTime);
-
-                    $scope.ordersNoDuplicate[index] = orders[index];
-                    //console.info(" first $scope.ordersNoDuplicate[index]" + JSON.stringify($scope.ordersNoDuplicate));
-
-                }
-
+                });
 
             });
-
 
             if (minNextStartTime) {
                 minNextStartTime.setMinutes(0);
@@ -2417,6 +2338,7 @@
             }
 
             vm.data = orderBy(orders, 'plannedStartTime');
+           // console.info("data:" + JSON.stringify(vm.data));
 
             promise1 = $timeout(function () {
                 $('#div').animate({
@@ -2424,6 +2346,207 @@
                 }, 500);
             }, 4000);
         }
+
+        /*       function prepareGanttData(data2) {
+
+         var minNextStartTime;
+         var maxEndTime;
+         var orders = [];
+         $scope.ordersNoDuplicate = [];
+         data2 = orderBy(data2, 'plannedStartTime', false);
+
+         // console.info("Data2"+JSON.stringify(data2));
+         //console.info("variable"+JSON.stringify(alasql('SELECT * FROM ?  GROUP BY jobChain', [data2])));
+
+         angular.forEach(data2, function (order, index) {
+
+
+         if ($scope.ordersNoDuplicate.length > 0) {
+         var flag = false;
+
+         angular.forEach($scope.ordersNoDuplicate, function (order1, index1) {
+         //console.info("for ordersNoDuplicate index1 :"+index1 +"order:"+JSON.stringify(order));
+
+
+         if (order.jobChain == order1.name) {
+         //console.info("order1 jobChain :"+JSON.stringify(order1));
+
+         orders[index1].tasks[orders[index1].tasks.length] = {};
+         flag = true;
+         var indexLength = orders[index1].tasks.length - 1;
+         //   orders[index].tasks[orders[index].tasks.length].name = orders[index].name;
+         orders[index1].tasks[indexLength].name = orders[index1].name;
+         // orders[index1].status = order.state._text;
+         vm.plans[index1].status = order.state._text;
+         if (order.state._text == 'SUCCESSFUL') {
+         orders[index1].tasks[indexLength].color = "#7ab97a";
+         } else if (order.state._text == 'FAILED') {
+         orders[index1].tasks[indexLength].color = "#e86680";
+         }
+         else if (order.late) {
+         orders[index1].tasks[indexLength].color = "rgba(255, 195, 0, .9)";
+         }
+         orders[index1].tasks[indexLength].from = '';
+
+         orders[index1].tasks[indexLength].from = new Date(order.plannedStartTime);
+
+         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
+         minNextStartTime = new Date(order.plannedStartTime);
+         }
+         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
+         maxEndTime = new Date(order.expectedEndTime);
+         }
+         orders[index1].tasks[indexLength].to = new Date(order.expectedEndTime);
+         // $scope.ordersNoDuplicate[index] = orders[index];
+
+         }
+
+         if (order.job == order1.name) {
+
+         //console.info("order1 job :"+JSON.stringify(order1));
+         orders[index1].tasks[orders[index1].tasks.length] = {};
+         flag = true;
+         var indexLength = orders[index1].tasks.length - 1;
+         //   orders[index].tasks[orders[index].tasks.length].name = orders[index].name;
+         orders[index1].tasks[indexLength].name = orders[index1].name;
+         // orders[index1].status = order.state._text;
+         vm.plans[index1].status = order.state._text;
+         if (order.state._text == 'SUCCESSFUL') {
+         orders[index1].tasks[indexLength].color = "#7ab97a";
+         } else if (order.state._text == 'FAILED') {
+         orders[index1].tasks[indexLength].color = "#e86680";
+         }
+         else if (order.late) {
+         orders[index1].tasks[indexLength].color = "rgba(255, 195, 0, .9)";
+         }
+         orders[index1].tasks[indexLength].from = '';
+
+         orders[index1].tasks[indexLength].from = new Date(order.plannedStartTime);
+
+         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
+         minNextStartTime = new Date(order.plannedStartTime);
+         }
+         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
+         maxEndTime = new Date(order.expectedEndTime);
+         }
+         orders[index1].tasks[indexLength].to = new Date(order.expectedEndTime);
+
+         }
+         else if (flag == false && index1 == $scope.ordersNoDuplicate.length - 1) {
+         //  console.info("else if  :"+JSON.stringify($scope.ordersNoDuplicate));
+         //   console.info("else if  orders :"+JSON.stringify(orders));
+         //console.info("else if  $scope.ordersNoDuplicate.length :"+$scope.ordersNoDuplicate.length);
+
+
+         var indexLength = $scope.ordersNoDuplicate.length;
+         orders[indexLength] = {};
+         orders[indexLength].tasks = [];
+         orders[indexLength].tasks[0] = {};
+
+         if (order.job != undefined) {
+         orders[indexLength].name = order.job;
+         orders[indexLength].orderId = '-';
+         } else {
+         // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
+         orders[indexLength].name = order.jobChain.substring(order.jobChain);
+         orders[indexLength].orderId = order.orderId;
+         }
+
+         vm.plans[indexLength].processedPlanned = orders[indexLength].name;
+         orders[indexLength].tasks[0].name = orders[indexLength].name;
+         // orders[indexLength].status = order.state._text;
+         vm.plans[indexLength].status = order.state._text;
+         if (order.state._text == 'SUCCESSFUL') {
+         orders[indexLength].tasks[0].color = "#7ab97a";
+         } else if (order.state._text == 'FAILED') {
+         orders[indexLength].tasks[0].color = "#e86680";
+         }
+         else if (order.late) {
+         orders[indexLength].tasks[0].color = "rgba(255, 195, 0, .9)";
+         }
+
+         orders[indexLength].tasks[0].from = new Date(order.plannedStartTime);
+
+         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
+         minNextStartTime = new Date(order.plannedStartTime);
+         }
+         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
+         maxEndTime = new Date(order.expectedEndTime);
+         }
+         orders[indexLength].tasks[0].to = new Date(order.expectedEndTime);
+
+         $scope.ordersNoDuplicate.push(orders[indexLength]);
+         //    console.info(" second orders[index]" + JSON.stringify(orders[indexLength]));
+         //   console.info(" second $scope.ordersNoDuplicate[index]" + JSON.stringify($scope.ordersNoDuplicate));
+         }
+
+         });
+         } else {
+         orders[index] = {};
+         orders[index].tasks = [];
+         orders[index].tasks[0] = {};
+         if (order.job != undefined) {
+         orders[index].name = order.job;
+         orders[index].orderId = '-';
+         } else {
+         // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
+         orders[index].name = order.jobChain.substring(order.jobChain);
+         orders[index].orderId = order.orderId;
+         }
+
+         vm.plans[index].processedPlanned = orders[index].name;
+         orders[index].tasks[0].name = orders[index].name;
+         //orders[index].status = order.state._text;
+         vm.plans[index].status = order.state._text;
+         if (order.state._text == 'SUCCESSFUL') {
+         orders[index].tasks[0].color = "#7ab97a";
+         } else if (order.state._text == 'FAILED') {
+         orders[index].tasks[0].color = "#e86680";
+         }
+         else if (order.late) {
+         orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
+         }
+
+         orders[index].tasks[0].from = new Date(order.plannedStartTime);
+
+         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
+         minNextStartTime = new Date(order.plannedStartTime);
+         }
+         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
+         maxEndTime = new Date(order.expectedEndTime);
+         }
+         orders[index].tasks[0].to = new Date(order.expectedEndTime);
+
+         $scope.ordersNoDuplicate[index] = orders[index];
+         //console.info(" first $scope.ordersNoDuplicate[index]" + JSON.stringify($scope.ordersNoDuplicate));
+
+         }
+
+
+         });
+
+
+         if (minNextStartTime) {
+         minNextStartTime.setMinutes(0);
+         minNextStartTime.setHours(0);
+         vm.options.fromDate = minNextStartTime;
+         var to = new Date(minNextStartTime);
+         to.setHours(23);
+         if (maxEndTime > to) {
+         vm.options.toDate = maxEndTime;
+         } else {
+         vm.options.toDate = to;
+         }
+         }
+
+         vm.data = orderBy(orders, 'plannedStartTime');
+
+         promise1 = $timeout(function () {
+         $('#div').animate({
+         scrollLeft: $("#gantt-current-date-line").offset().left
+         }, 500);
+         }, 4000);
+         }*/
 
         vm.load = function () {
             var obj = {};
@@ -2595,9 +2718,9 @@
         };
 
         vm.favorite = function (filter) {
-            vm.savedDailyPlanFilter.favorite = filter;
-            vm.savedDailyPlanFilter.selected = filter;
-            selectedFiltered = undefined;
+            vm.savedDailyPlanFilter.favorite = filter.name;
+            vm.savedDailyPlanFilter.selected = filter.name;
+            selectedFiltered = filter;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
             vm.load();
@@ -2684,47 +2807,22 @@
             vm.dailyPlanFilter.paths = vm.paths;
         };
 
-
-        startPolling();
-
-        function startPolling() {
-            if ($rootScope.config.dailyPlan.polling == 'true') {
-                poll();
+        vm.startSpin = function () {
+            if (vm.showSpinner) {
+               vm.showSpinner1= true;
             }
-        }
+        };
 
-        var interval;
-
-        function poll() {
-            interval = $interval(function () {
-                vm.load();
-            }, $rootScope.config.dailyPlan.interval * 1000)
-
-        }
-
-        $scope.$on('$destroy', function () {
-            if (interval)
-                $interval.cancel(interval);
+        vm.stopSpin = function () {
+            if (!vm.showSpinner) {
+                vm.showSpinner1= false;
+            }
+        };
+        vm.$on('$destroy', function () {
             if (promise1)
                 $timeout.cancel(promise1);
             watcher();
-
         });
-
-           $scope.startSpin = function() {
-      if ($scope.showSpinner) {
-        usSpinnerService.spin('spinner-1');
-          console.info("$scope.startSpin"+$scope.showSpinner);
-      //  $scope.startcounter++;
-      }
-    };
-
-    $scope.stopSpin = function() {
-      if (!$scope.showSpinner) {
-        usSpinnerService.stop('spinner-1');
-            console.info("$scope.stopSpin"+$scope.showSpinner);
-      }
-    };
 
 
     }

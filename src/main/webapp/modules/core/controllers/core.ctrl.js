@@ -200,10 +200,13 @@
             var url=null;
             try {
                 if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
-                    if(order)
+                    if(order && order.historyId && order.orderId)
                     url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
-                    else
+                    else if(task.taskId)
                      url = '#/show_log?task_id=' + task.taskId;
+                    else{
+                        return;
+                    }
                     newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
                 }
                 if (typeof newWindow == 'undefined' || newWindow == null) {

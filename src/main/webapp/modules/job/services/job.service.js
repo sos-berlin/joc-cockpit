@@ -88,6 +88,7 @@
              histories: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/history');
+                 filter.maxLastHistoryItems =30;
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -283,6 +284,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
+                filter.maxLastHistoryItems=30;
                 var Job = $resource('job/history');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);

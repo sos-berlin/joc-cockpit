@@ -45,7 +45,7 @@
                                         </div>
                                         <div class="btn-group dropdown pull-right abt-dropdown ">
                                             <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                                    class="text fa fa-ellipsis-v"></i></a>
+                                                    class="text fa fa-ellipsis-h"></i></a>
 
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
                                                 <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
@@ -139,7 +139,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="schedule in filtered = (allSchedules | filter: filterString:strict) | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy: propertyNameS">
+                            <tr ng-repeat="schedule in allSchedules | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy: propertyNameS">
                                 <td>
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
@@ -169,8 +169,8 @@
                             </tr>
                             </tbody>
                         </table>
-                <ul ng-show="filtered.length > pageSize" uib-pagination total-items="filtered.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                <div class="pull-right" ng-show="filtered.length > 10">
+                <ul ng-show="allSchedules.length > pageSize" uib-pagination total-items="allSchedules.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                <div class="pull-right" ng-show="allSchedules.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': pageSize=='10'}" >10
@@ -186,7 +186,7 @@
                                 </button>
                             </div>
                         </div>
-                <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allSchedules.length !==0)}" translate>message.noDataMatched</div>
+
             </div>
         </div>
         <div ng-if="isLoading && allSchedules.length==0" class="text-center m-t h6">

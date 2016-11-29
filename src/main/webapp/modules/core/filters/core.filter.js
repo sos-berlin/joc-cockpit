@@ -78,9 +78,9 @@
                     d = parseInt(milliseconds / (1000 * 60 * 60 * 24));
 
                 if (d == 0 && h != 0) {
-                    return h + 'h';
+                    return h + ':'+m+'h';
                 } else if (h == 0 && m != 0) {
-                    return m + 'min';
+                    return m +':'+s+ 'min';
                 } else if (d == 0 && h == 0 && m == 0) {
                     return s + 'sec';
                 } else {

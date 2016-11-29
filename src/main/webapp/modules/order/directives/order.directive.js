@@ -133,26 +133,6 @@
 
                 // startPolling();
 
-                function startPolling() {
-                    if ($rootScope.config.orderOverviewWidget.polling == 'true') {
-                        poll();
-                    }
-                }
-
-                var interval;
-
-
-                function poll() {
-                    interval = $interval(function () {
-                        getSnapshot();
-                    }, $rootScope.config.orderOverviewWidget.interval * 1000)
-                }
-
-                $scope.$on('$destroy', function () {
-                    $interval.cancel(interval);
-                });
-
-
             }]
         };
     }
@@ -374,7 +354,7 @@
                             '<input type="checkbox"  id="' + chkId + '">' +
                             '<i class="ch-purple"></i>' +
                             '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
-                            '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
+                            '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                             '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                             '<a id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
                             '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
@@ -431,7 +411,7 @@
                                     '<input type="checkbox"  id="' + chkId + '">' +
                                     '<i class="ch-purple"></i>' +
                                     '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
-                                    '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-v"></i></a>' +
+                                    '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a href="" id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
                                     '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>button.stopJob</a>' +
@@ -1452,25 +1432,7 @@
                 }
 
 
-                startPolling();
-                function startPolling() {
-                    if ($rootScope.config.jobChainsWorkflow.polling == 'true') {
-                        poll();
-                    }
-                }
-
-                var interval;
-
-                function poll() {
-                    interval = $interval(function () {
-                        //TODO
-                        //console.log('updated workflow...................');
-                    }, $rootScope.config.jobChainsWorkflow.interval * 1000)
-                }
-
                 vm.$on('$destroy', function () {
-                    if (interval)
-                        $interval.cancel(interval);
                     if (timeout)
                         $timeout.cancel(timeout);
                 });
