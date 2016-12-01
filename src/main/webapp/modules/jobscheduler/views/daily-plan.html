@@ -67,33 +67,32 @@
                                 <span class="text-primary">
                                 <span ng-show="filter.sortBy =='processedPlan'">
                                     {{'label.name' | translate}}
-                                    <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='orderId'">
                                     {{'label.orderId' | translate}}
-                                  <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                  <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
                                 <span ng-show="filter.sortBy =='plannedStartTime'">
                                     {{'label.planned' | translate}}
-                                <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                        <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='status'">
+                                <span ng-show="filter.sortBy =='state._text'">
                                    {{'label.status' | translate}}
-                               <i ng-show="!sortReverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="sortReverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
                                 </span>
-
                                 </span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-click="mainSortBy('processedPlan')" translate>label.name</a>
-                                <a class="dropdown-item" ng-click="mainSortBy('orderId')" translate>label.orderId</a>
-                                <a class="dropdown-item" ng-click="mainSortBy('plannedStartTime')" translate>label.plannedStart</a>
-                                <a class="dropdown-item" ng-click="mainSortBy('status')" translate>label.status</a>
+                                <a class="dropdown-item" ng-click="sortBy('processedPlan')" translate>label.name</a>
+                                <a class="dropdown-item" ng-click="sortBy('orderId')" translate>label.orderId</a>
+                                <a class="dropdown-item" ng-click="sortBy('plannedStartTime')" translate>label.plannedStart</a>
+                                <a class="dropdown-item" ng-click="sortBy('state._text')" translate>label.status</a>
                             </div>
                         </div>
 
@@ -208,9 +207,7 @@
                         <table class="table table-hover table-bordered " id="dailyPlanTableId">
                             <thead>
                             <tr>
-
                                 <th ng-click="sortBy('processedPlan')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
-
                                     <i ng-show="propertyName == 'processedPlan' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'processedPlan' && reverse"
@@ -222,15 +219,13 @@
                                     <i ng-show="propertyName == 'orderId' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
                                 <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
                                     <i ng-show="propertyName == 'state._text' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'state._text' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
-                                   <th ng-click="sortBy('late')"><a><span translate>label.late</span>
+                                <th ng-click="sortBy('late')"><a><span translate>label.late</span>
                                     <i ng-show="propertyName == 'late' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'late' && reverse"
@@ -242,62 +237,49 @@
                                     <i ng-show="propertyName == 'plannedStartTime' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
-                               <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
+                                <th ng-click="sortBy('expectedEndTime')"><a><span translate>label.expectedEnd</span>
                                     <i ng-show="propertyName == 'expectedEndTime' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'expectedEndTime' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
-
-
                                 <th ng-click="sortBy('duration')"><a><span translate>label.expectedDuration</span>
                                     <i ng-show="propertyName == 'duration' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'duration' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
                                 <th ng-click="sortBy('startTime')"><a><span translate>label.start</span>
                                     <i ng-show="propertyName == 'startTime' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'startTime' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
                                  <th ng-click="sortBy('endTime')"><a><span translate>label.end</span>
                                     <i ng-show="propertyName == 'endTime' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'endTime' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
                                  <th ng-click="sortBy('duration1')"><a><span translate>label.duration</span>
                                     <i ng-show="propertyName == 'duration1' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'duration1' && reverse"
                                        class="fa fa-caret-up "></i></a>
                                 </th>
-
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in plans | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy: filter.sortBy" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
+                            <tr ng-repeat="plan in plans | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy: filter.sortBy:reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
                                 <td>
-                                <span class="hide" ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain"></span>
-                                <span class="hide" ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job"></span>
+                                    <a class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain"></a>
+                                    <a class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job"></a>
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
                                 <td>
-                                    <span class="text-c label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
-                                      <!-- <span class="text-c label" ng-if="plan.state._text!='ERROR'" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text"></span>-->
+                                    <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>
-                               <!-- <td><span ng-bind="plan.exitCode"></span></td>-->
-                                <td><span ng-if="plan.late==true">late</span>
-                                <span ng-if="plan.late==false"></span>
-                                </td>
-
+                                <td><span ng-if="plan.late==true" translate>label.late</span></td>
                                 <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
 
@@ -305,7 +287,6 @@
                                 <td><span ng-bind="plan.startTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.endTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.startTime | duration:plan.endTime"></span></td>
-
                             </tr>
 
                             </tbody>
@@ -351,7 +332,7 @@
         </div>
     </div>
 </div>
-<div ng-if="showSpinner1 && isLoading" class="loading-img"></div>
+<div ng-if="showSpinner1 && isLoading" class="loading-img1"></div>
 
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">

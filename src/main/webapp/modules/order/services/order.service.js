@@ -80,6 +80,17 @@
                 return deferred.promise;
             },
 
+            getSummary: function (filter) {
+                var deferred = $q.defer();
+
+                var Summary = $resource('orders/overview/summary');
+                Summary.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             getConfiguration: function (path,orderId,jobschedulerId) {
                 var deferred = $q.defer();
 

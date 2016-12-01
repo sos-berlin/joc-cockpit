@@ -26,166 +26,178 @@
 <div id="rightPanel1">
     <div class="hide" ng-class="{'show': isLoading}">
         <div class="hide row" ng-class="{'show': pageView=='grid'}">
-             <div ng-repeat="branch in branchs">
-                  <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
-                      <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
-                  </div>
-                  <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"  ng-repeat="schedule in branch.schedules | orderBy: propertyNameS">
-                            <div class="box card">
-                                <div class="box-body">
+            <div ng-repeat="branch in branchs">
+                <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
+                    <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
+                </div>
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                     ng-repeat="schedule in branch.schedules | orderBy: propertyNameS:reverseS">
+                    <div class="box card">
+                        <div class="box-body">
 
-                                    <div>
-                                        <label class="md-check pos-abt">
-                                            <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i
-                                                class="primary"></i></label>
+                            <div>
+                                <label class="md-check pos-abt">
+                                    <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
+                                </label>
 
-                                        <div class="text-left m-l-md block-ellipsis" >
-                                             <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
-                                            <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
-                                        </div>
-                                        <div class="btn-group dropdown pull-right abt-dropdown ">
-                                            <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
-                                                    class="text fa fa-ellipsis-h"></i></a>
-
-                                            <div class="dropdown-menu dropdown-ac dropdown-more">
-                                                <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                                <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
-                                                <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="text-sm text-left text-muted p-t-sm">
-                                        <span translate>label.validity </span>:
-                                        <span ng-bind="'-'"></span>
-                                    </div>
-                                     <div class="text-sm text-left text-muted p-t-sm">
-                                        <span translate>label.noOfOrders </span>:
-                                        <a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark primary-text-hover-color" ng-bind="schedule.usedByOrders.length || 0"></a>
-                                    </div>
-                                    <div class="text-sm text-left text-muted p-t-sm">
-                                        <span translate>label.noOfJobs </span>:
-                                        <a class="text-dark primary-text-hover-color" ng-bind="schedule.usedByJobs.length || 0"></a>
-                                    </div>
+                                <div class="text-left m-l-md block-ellipsis">
+                                    <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
+                                    <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
-                                <div class="box-footer b-t">
-                                    <div>
-                                        <a href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
-                                        <a href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-              </div>
-         </div>
-        <div class="box p-a" ng-show="pageView=='list' && allSchedules.length>0">
-            <div class="table-responsive" >
-                <table class="table table-hover table-bordered  ">
-                    <thead>
-                            <tr>
-                                <th>
-                                    <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
-                                    </label>
-                                </th>
-                                <th ng-click="sortByS('name')"><a><span translate>label.scheduleName</span>
-                                    <i ng-show="propertyNameS == 'name' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'name' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                <th ng-click="sortByS('path')"><a><span translate>label.path</span>
-                                    <i ng-show="propertyNameS == 'path' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'path' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                <th ng-click="sortByS('state._text')"><a><span translate>label.state</span>
-                                    <i ng-show="propertyNameS == 'state._text' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'state._text' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                <th ng-click="sortByS('usedByOrders.length')"><a><span translate>label.usedByOrders</span>
-                                    <i ng-show="propertyNameS == 'usedByOrders.length' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'usedByOrders.length' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                <th ng-click="sortByS('usedByJobs.length')"><a><span translate>label.usedByJobs</span>
-                                    <i ng-show="propertyNameS == 'usedByJobs.length' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'usedByJobs.length' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                  <th ng-click="sortByS('validityFrom')"><a><span translate>label.validityFrom</span>
-                                    <i ng-show="propertyNameS == 'validityFrom' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'validityFrom' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                  <th ng-click="sortByS('validityTo')"><a><span translate>label.validityTo</span>
-                                    <i ng-show="propertyNameS == 'validityTo' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'validityTo' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                 <th ng-click="sortByS('subsituteBy')"><a><span translate>label.substituteBy</span>
-                                    <i ng-show="propertyNameS == 'subsituteBy' && !reverseS"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyNameS == 'subsituteBy' && reverseS"
-                                       class="fa fa-caret-up "></i></a>
-                                </th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="schedule in allSchedules | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy: propertyNameS">
-                                <td>
-                                    <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
-                                    </label>
-                                </td>
-                                <td >{{schedule.name}}
-                                    <span ng-if="schedule.title">-</span>
-                                    <i class="text-muted" ng-bind-html="schedule.title"></i>
-                                </td>
-                                <td ng-bind="schedule.path"></td>
-                                 <td><span class="text-c label" ng-class="bgColorFunction(schedule.state.severity)" ng-bind="schedule.state._text  | translate" ></span></td>
-                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length || 0"></a></td>
-                                <td><a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length || 0"></a></td>
-                                <td ng-bind="schedule.validityFrom || 'never'"></td>
-                                <td ng-bind="schedule.validityTo || 'never'"></td>
-                                <td ng-bind="schedule.subsituteBy || 'never'"></td>
-                                <td>
-                                    <div class="btn-group dropdown">
-                                    <a class="more-option-h" href data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></a>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item" ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                <div class="btn-group dropdown pull-right abt-dropdown ">
+                                    <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more">
+                                        <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
+                                           ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                         <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
                                         <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                     </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                <ul ng-show="allSchedules.length > pageSize" uib-pagination total-items="allSchedules.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" ng-change="pageChange()" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                <div class="pull-right" ng-show="allSchedules.length > 10">
-                            <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
-                                        ng-class="{'primary': pageSize=='10'}" >10
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
-                                        ng-class="{'primary': pageSize=='25'}" >25
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
-                                        ng-class="{'primary': pageSize=='50'}" >50
-                                </button>
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
-                                        ng-class="{'primary': pageSize=='100'}">100
-                                </button>
+                                </div>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-sm">
+                                <span translate>label.validity </span>:
+                                <span ng-bind="'-'"></span>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-sm">
+                                <span translate>label.noOfOrders </span>:
+                                <a  href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark text-hover-primary" ng-bind="schedule.usedByOrders.length || 0"></a>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-sm">
+                                <span translate>label.noOfJobs </span>:
+                                <a class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length || 0"></a>
                             </div>
                         </div>
+                        <div class="box-footer b-t">
+                            <div>
+                                <a href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
+                                <a href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box p-a" ng-show="pageView=='list' && allSchedules.length>0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered  ">
+                    <thead>
+                    <tr>
+                        <th>
+                            <label class="md-check lg-check">
+                                <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
+                            </label>
+                        </th>
+                        <th ng-click="sortByS('name')"><a><span translate>label.scheduleName</span>
+                            <i ng-show="propertyNameS == 'name' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'name' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('path')"><a><span translate>label.path</span>
+                            <i ng-show="propertyNameS == 'path' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'path' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('state._text')"><a><span translate>label.state</span>
+                            <i ng-show="propertyNameS == 'state._text' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'state._text' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('usedByOrders.length')"><a><span translate>label.usedByOrders</span>
+                            <i ng-show="propertyNameS == 'usedByOrders.length' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'usedByOrders.length' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('usedByJobs.length')"><a><span translate>label.usedByJobs</span>
+                            <i ng-show="propertyNameS == 'usedByJobs.length' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'usedByJobs.length' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('validityFrom')"><a><span translate>label.validityFrom</span>
+                            <i ng-show="propertyNameS == 'validityFrom' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'validityFrom' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('validityTo')"><a><span translate>label.validityTo</span>
+                            <i ng-show="propertyNameS == 'validityTo' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'validityTo' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th ng-click="sortByS('subsituteBy')"><a><span translate>label.substituteBy</span>
+                            <i ng-show="propertyNameS == 'subsituteBy' && !reverseS"
+                               class="fa fa-caret-down "></i>
+                            <i ng-show="propertyNameS == 'subsituteBy' && reverseS"
+                               class="fa fa-caret-up "></i></a>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="schedule in allSchedules | startFrom:(currentPage - 1) * pageSize|limitTo: pageSize | orderBy: propertyNameS:reverseS">
+                        <td>
+                            <label class="md-check">
+                                <input type="checkbox" data-checklist-model="object.schedules"
+                                       data-checklist-value="schedule"><i class="primary"></i>
+                            </label>
+                        </td>
+                        <td>{{schedule.name}}
+                            <span ng-if="schedule.title">-</span>
+                            <i class="text-muted" ng-bind-html="schedule.title"></i>
+                        </td>
+                        <td ng-bind="schedule.path"></td>
+                        <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
+                                  ng-bind="schedule.state._text  | translate"></span></td>
+                        <td><a class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}"
+                               ng-bind="schedule.usedByOrders.length || 0"></a></td>
+                        <td><a class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}"
+                               ng-bind="schedule.usedByJobs.length || 0"></a></td>
+                        <td ng-bind="schedule.validityFrom || 'never'"></td>
+                        <td ng-bind="schedule.validityTo || 'never'"></td>
+                        <td ng-bind="schedule.subsituteBy || 'never'"></td>
+                        <td>
+                            <div class="btn-group dropdown">
+                                <a class="more-option-h" href data-toggle="dropdown"><i
+                                        class="fa fa-ellipsis-h"></i></a>
+
+                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                    <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
+                                       class="hide dropdown-item"
+                                       ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                    <a class="dropdown-item" ng-click="substitute(schedule)"
+                                       translate>button.substitute</a>
+                                    <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <ul ng-show="allSchedules.length > pageSize" uib-pagination total-items="allSchedules.length"
+                    ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5"
+                    ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
+                    previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                <div class="pull-right" ng-show="allSchedules.length > 10">
+                    <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
+                                ng-class="{'primary': pageSize=='10'}">10
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
+                                ng-class="{'primary': pageSize=='25'}">25
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
+                                ng-class="{'primary': pageSize=='50'}">50
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
+                                ng-class="{'primary': pageSize=='100'}">100
+                        </button>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -194,29 +206,29 @@
             <span translate>message.emptyFolder</span>
         </div>
     </div>
-            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-            </div>
+    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+    </div>
 </div>
 
 <script>
     $('.table-responsive').on('shown.bs.dropdown', function (e) {
-    var $table = $(this),
-        $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+        var $table = $(this),
+                $menu = $(e.target).find('.dropdown-menu'),
+                tableOffsetHeight = $table.offset().top + $table.height(),
+                menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
 
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
+        if (menuOffsetHeight > tableOffsetHeight)
+            $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight + 10);
+    });
 
-  $('.table-responsive').on('hide.bs.dropdown', function () {
-    $(this).css("padding-bottom", 0);
-  });
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $(this).css("padding-bottom", 0);
+    });
 
-      $(document).ready(function () {
-      $('#leftPanel').stickySidebar({
+    $(document).ready(function () {
+        $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190
         });
-  });
+    });
 </script>

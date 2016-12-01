@@ -15,8 +15,8 @@
         .controller('CommonLogCtrl', CommonLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal','$location'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal,$location) {
         var vm = $scope;
         vm.schedulerIds = {};
 
@@ -43,7 +43,7 @@
                     };
                     $rootScope.clientLogs.push(error)
                 }
-            }catch(e){
+            } catch (e) {
 
             }
         });
@@ -131,12 +131,12 @@
             }
         };
 
-         vm.checkNavHeader = function() {
+        vm.checkNavHeader = function () {
             if ($('#navbar1').hasClass('in')) {
                 $('#navbar1').removeClass('in');
                 $('a.navbar-item').addClass('collapsed');
             }
-        }
+        };
 
         $(window).resize(function () {
             vm.calculateHeight();
@@ -180,9 +180,10 @@
             });
         };
 
-            var newWindow = null, windowWidth = '1000', windowHeight = '200', windowTop = '0', windowLeft = '0', windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no',
-            popUpBlocker     = false,
-            enableFocus          = false;
+        var newWindow = null, windowWidth = '1000', windowHeight = '200', windowTop = '200', windowLeft = '50',
+            windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no',
+            popUpBlocker = false,
+            enableFocus = false;
 
         $window.onunload = refreshParent;
         function refreshParent() {
@@ -197,23 +198,24 @@
         }
 
         vm.showLogWindow = function (order, task) {
-            var url=null;
+            var url = null;
             try {
                 if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
-                    if(order && order.historyId && order.orderId)
-                    url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
-                    else if(task.taskId)
-                     url = '#/show_log?task_id=' + task.taskId;
-                    else{
+                    if (order && order.historyId && order.orderId)
+                        url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
+                    else if (task && task.taskId)
+                        url = '#/show_log?task_id=' + task.taskId;
+                    else {
                         return;
                     }
+
                     newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
                 }
                 if (typeof newWindow == 'undefined' || newWindow == null) {
                     popUpBlocker = true;
                     throw new Error('PopUp Blocker is active');
                 } else {
-                    if(newWindow.document.title != 'JobScheduler - Logger') {
+                    if (newWindow.document.title != 'JobScheduler - Logger') {
                         newWindow.document.title = 'JobScheduler - Logger';
                     }
                     if (enableFocus) {
@@ -225,7 +227,31 @@
                 throw new Error(e.message);
             }
 
-        }
+        };
+
+        vm.showJobChain = function(jobChain){
+            var path = jobChain.substring(0,jobChain.lastIndexOf('/')) || '/';
+            var name = '';
+            if(path!='/')
+            name = path.substring(path.lastIndexOf('/')+1,path.length);
+            $rootScope.expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/jobChains')
+        };
+
+        vm.showJob = function(job){
+            var path = job.substring(0,job.lastIndexOf('/')) || '/';
+            var name = '';
+            if(path!='/')
+            name = path.substring(path.lastIndexOf('/')+1,path.length);
+            $rootScope.job_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/jobs')
+        };
 
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
@@ -236,13 +262,13 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window','$state'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window,$state) {
         var vm = $scope;
         toasty.clear();
 
         vm.currentTime = moment();
-        var count = parseInt(SOSAuth.sessionTimeout/1000);
+        var count = parseInt(SOSAuth.sessionTimeout / 1000);
 
         var interval = $interval(function () {
             --count;
@@ -262,7 +288,7 @@
                 vm.remainingSessionTime = s + 's';
             }
 
-            if(count<0){
+            if (count < 0) {
                 $window.sessionStorage.setItem('$SOS$URL', $location.path());
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
                 vm.logout(true);
@@ -291,10 +317,10 @@
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
 
-                 $location.path('/login').search({});
-                if(reload){
+                $location.path('/login').search({});
+                if (reload) {
                     $window.location.reload();
-                }else {
+                } else {
                     $window.localStorage.clientLogs = {};
                     $window.sessionStorage.$SOS$JOBSCHEDULE = null;
                 }
@@ -302,7 +328,7 @@
 
         };
 
-        if($window.sessionStorage.$SOS$JOBSCHEDULE) {
+        if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
             vm.selectedJobScheduler = JSON.parse($window.sessionStorage.$SOS$JOBSCHEDULE);
             vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
@@ -312,8 +338,8 @@
 
         function getScheduleDetail(res) {
 
-            for(var i=0;i<res.masters.length;i++) {
-                if(res.masters[i].jobschedulerId==vm.schedulerIds.selected) {
+            for (var i = 0; i < res.masters.length; i++) {
+                if (res.masters[i].jobschedulerId == vm.schedulerIds.selected) {
                     vm.selectedJobScheduler = res.masters[i];
                     vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
                     if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
@@ -324,6 +350,7 @@
             }
 
         }
+
         $scope.$on('reloadScheduleDetail', function (event, res) {
             getScheduleDetail(res);
         });
@@ -345,7 +372,7 @@
                         }
 
                         SOSAuth.save();
-                        $window.location.reload();
+                        $state.reload();
 
                     } else {
                         toasty.error({
@@ -360,7 +387,6 @@
 
 
         $scope.$on('$stateChangeSuccess', function () {
-            vm.filterString = '';
             vm.checkNavHeader();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
@@ -371,7 +397,7 @@
         });
     }
 
-    ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$uibModalInstance","$sce"];
+    ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$uibModalInstance", "$sce"];
     function ConfigurationCtrl($scope, JobService, JobChainService, OrderService, ScheduleService, ResourceService, $uibModalInstance, $sce) {
         var vm = $scope;
         vm.ok = function () {
@@ -403,7 +429,7 @@
             OrderService.getConfiguration(vm.path, vm.name, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                   vm.html = $sce.trustAsHtml(res.configuration.content.html);
+                    vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });
@@ -421,7 +447,7 @@
             ResourceService.getLockConfiguration(vm.path, vm.schedulerIds.selected).then(function (res) {
                 if (res) {
                     vm.configuration = res.configuration;
-                   vm.html = $sce.trustAsHtml(res.configuration.content.html);
+                    vm.html = $sce.trustAsHtml(res.configuration.content.html);
                 }
 
             });
@@ -3711,8 +3737,8 @@
         });
     }
 
-    CommonLogCtrl.$inject = ['$scope', '$location','OrderService','TaskService','$sce'];
-    function CommonLogCtrl($scope, $location,OrderService,TaskService, $sce) {
+    CommonLogCtrl.$inject = ['$scope', '$location', 'OrderService', 'TaskService', '$sce'];
+    function CommonLogCtrl($scope, $location, OrderService, TaskService, $sce) {
         var vm = $scope;
         var object = $location.search();
         if (object.order_id) {
@@ -3727,7 +3753,7 @@
             OrderService.log(orders).then(function (res) {
                 if (res.log)
                     vm.logs = $sce.trustAsHtml(res.log.html);
-                   // vm.logs = res.log;
+                // vm.logs = res.log;
             }, function () {
 
             });

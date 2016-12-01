@@ -4,7 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                      <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
@@ -44,7 +44,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="btn-group dropdown" ng-class="{'disable-link':pageView=='grid'}">
+                        <div class="btn-group dropdown">
                             <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span  ng-show="filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}

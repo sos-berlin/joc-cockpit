@@ -10,21 +10,69 @@
 
     CoreService.$inject = ['$window'];
     function CoreService($window) {
+        var _view = 'grid', _sideView = false, tabs ={};
+        tabs._jobChain ={};
+        tabs._jobChain.filter = {};
+        tabs._jobChain.filter.state = 'ALL';
+        tabs._jobChain.filter.sortBy = 'name';
+        tabs._jobChain.filter.reverse = false;
+        tabs._jobChain.pageSize = '10';
+        tabs._jobChain.currentPage = '1';
+        tabs._jobChain.expand_to = {};
+        tabs._jobChain.selectedView = '';
+
+        tabs._job ={};
+        tabs._job.filter = {};
+        tabs._job.filter.state = 'ALL';
+        tabs._job.filter.sortBy = 'name';
+        tabs._job.filter.reverse = false;
+        tabs._job.pageSize = '10';
+        tabs._job.currentPage = '1';
+        tabs._job.expand_to = {};
+        tabs._job.selectedView = '';
+
+        tabs._order ={};
+        tabs._order.filter = {};
+        tabs._order.filter.state = 'ALL';
+        tabs._order.filter.sortBy = 'orderId';
+        tabs._order.filter.reverse = false;
+        tabs._order.pageSize = '10';
+        tabs._order.currentPage = '1';
+        tabs._order.expand_to = {};
+        tabs._order.selectedView = '';
+
+        tabs._history ={};
+        tabs._history.order ={};
+        tabs._history.type = 'jobChain';
+        tabs._history.order.filter = {};
+        tabs._history.order.filter.state = 'all';
+        tabs._history.order.filter.date = '1h';
+        tabs._history.order.filter.sortBy = 'startTime';
+        tabs._history.order.filter.sortReverse = false;
+        tabs._history.order.pageSize = '25';
+        tabs._history.order.currentPage = '1';
+        tabs._history.task ={};
+        tabs._history.task.filter ={};
+        tabs._history.task.filter.state = 'all';
+        tabs._history.task.filter.date = '1h';
+        tabs._history.task.filter.sortBy = 'startTime';
+        tabs._history.task.filter.sortReverse = false;
+        tabs._history.task.pageSize = '25';
+        tabs._history.task.currentPage = '1';
+
 
         if ($window.sessionStorage.$SOS$VIEW) {
-            var _view = $window.sessionStorage.$SOS$VIEW;
+            _view = $window.sessionStorage.$SOS$VIEW;
         } else {
-            var _view = 'grid';
             $window.sessionStorage.$SOS$VIEW = 'grid';
         }
 
         if ($window.sessionStorage.$SOS$SIDEVIEW == 'true' || $window.sessionStorage.$SOS$SIDEVIEW == true) {
-            var _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
+             _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
         } else {
-            var _sideView = false;
+
             $window.sessionStorage.$SOS$SIDEVIEW = false;
         }
-
 
         return {
             getParams: function (name) {
@@ -46,6 +94,30 @@
             },
             getSideView: function () {
                 return !_sideView;
+            },
+            getJobtab: function () {
+                return tabs._job;
+            },
+            setJobTab: function (job) {
+                tabs._job = job;
+            },
+            getJobChainTab: function () {
+                return tabs._jobChain;
+            },
+            setJobChainTab: function (jobChain) {
+                tabs._jobChain = jobChain;
+            },
+            getOrderTab: function () {
+                return tabs._order;
+            },
+            setOrderTab: function (order) {
+                tabs._order = order;
+            },
+            getHistoryTab: function () {
+                return tabs._history;
+            },
+            setHistoryTab: function (history) {
+                tabs._history = history;
             }
         }
     }

@@ -11,8 +11,8 @@
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "gettextCatalog", "ScheduleService", "$interval", "$uibModal"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, gettextCatalog, ScheduleService, $interval, $uibModal) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "gettextCatalog", "ScheduleService", "$uibModal"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, gettextCatalog, ScheduleService, $uibModal) {
         var vm = $scope;
         vm.filter = {};
         vm.filter.state = "all";
@@ -46,20 +46,15 @@
         vm.sortByP = function (propertyName) {
             vm.reverseP = !vm.reverseP;
             vm.propertyNameP = propertyName;
-            vm.allProcessClasses = orderBy(vm.allProcessClasses, vm.propertyNameP, vm.reverseP);
-
         };
         vm.sortByS = function (propertyName) {
             vm.object.schedules = [];
             vm.reverseS = !vm.reverseS;
             vm.propertyNameS = propertyName;
-            vm.allSchedules = orderBy(vm.allSchedules, vm.propertyNameS, vm.reverseS);
-
         };
         vm.sortByL = function (propertyName) {
             vm.reverseL = !vm.reverseL;
             vm.propertyNameL = propertyName;
-            vm.allLocks = orderBy(vm.allLocks, vm.propertyNameL, vm.reverseL);
         };
 
 
@@ -217,12 +212,10 @@
             vm.folderPathL = '/';
             angular.forEach(vm.treeLock, function (value) {
                 value.expanded = true;
-                if (value.expanded) {
-                    vm.branchsL = [];
-                    vm.allLocks = [];
-                    checkExpandL(value);
-                }
-
+                value.selected1 = true;
+                vm.branchsL = [];
+                vm.allLocks = [];
+                checkExpandL(value);
             });
         }
 
@@ -326,7 +319,7 @@
 
         function volatileFolderDataL(data, obj) {
             ResourceService.get(obj).then(function (res) {
-                vm.loading = false;
+
                 if (data.locks && data.locks.length > 0) {
                     angular.forEach(data.locks, function (lock) {
                         angular.forEach(res.locks, function (lockData) {
@@ -345,6 +338,7 @@
                 angular.forEach(data.locks, function (value) {
                     vm.allLocks.push(value);
                 });
+                vm.loading = false;
             }, function () {
                 if (data.locks.length > 0) {
                     vm.branchsL.push(data);
@@ -406,11 +400,13 @@
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
-                vm.folderPathL = data.name;
-                if (value.expanded)
+                if (value.expanded) {
                     checkExpandL(value);
+                    if (data.path == '/') {
+                        data.selected1 = false;
+                    }
+                }
             });
-
         }
 
         function checkExpandTreeForUpdatesL(data) {
@@ -421,7 +417,7 @@
 
                 if (data.locks.length > 0) {
                     ResourceService.get(obj).then(function (res) {
-                        vm.loading = false;
+
                         if (res.locks && res.locks.length > 0) {
                             angular.forEach(res.locks, function (locksData) {
                                 //update card view
@@ -439,7 +435,7 @@
                                 });
                             });
                         }
-
+                        vm.loading = false;
                     },function(){
                         vm.loading = false;
                     });
@@ -481,6 +477,7 @@
             vm.folderPathP = '/';
             angular.forEach(vm.treeProcess, function (value) {
                 value.expanded = true;
+                value.selected1 = true;
                 vm.branchsP = [];
                 vm.allProcessClasses = [];
                 checkExpandP(value);
@@ -531,7 +528,7 @@
 
         function volatileFolderDataP(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
-                 vm.loading = false;
+
                 if (data.processClasses.length > 0 && data.processClasses.length == res.processClasses.length) {
                     angular.forEach(data.processClasses, function (processClass) {
                         angular.forEach(res.processClasses, function (processClassData) {
@@ -553,8 +550,9 @@
                 angular.forEach(data.processClasses, function (value) {
                     vm.allProcessClasses.push(value);
                 });
+                vm.loading = false;
             }, function () {
-                 vm.loading = false;
+
                 if (data.processClasses.length > 0) {
                     vm.branchsP.push(data);
                 }
@@ -564,6 +562,7 @@
                 angular.forEach(data.processClasses, function (value) {
                     vm.allProcessClasses.push(value);
                 });
+                vm.loading = false;
             });
         }
 
@@ -652,22 +651,26 @@
         }
 
         function checkExpandP(data) {
-            data.processClasses = [];
-            expandFolderDataP(data);
-            if (data.processClasses.length > 0) {
-                vm.branchsP.push(data);
-            }
-            vm.folderPathP = data.name;
-            data.folders = orderBy(data.folders, 'name');
-            angular.forEach(data.processClasses, function (value) {
-                vm.allProcessClasses.push(value);
-            });
-            angular.forEach(data.folders, function (value) {
+            if (data.selected1) {
+                data.processClasses = [];
+                expandFolderDataP(data);
+                if (data.processClasses.length > 0) {
+                    vm.branchsP.push(data);
+                }
                 vm.folderPathP = data.name;
-                if (value.expanded)
+                angular.forEach(data.processClasses, function (value) {
+                    vm.allProcessClasses.push(value);
+                });
+            }
+            data.folders = orderBy(data.folders, 'name');
+            angular.forEach(data.folders, function (value) {
+                if (value.expanded) {
                     checkExpandP(value);
+                    if (data.path == '/') {
+                        data.selected1 = false;
+                    }
+                }
             });
-
         }
 
         function checkExpandTreeForUpdatesP(data) {
@@ -893,12 +896,10 @@
             vm.folderPathS = '/';
             angular.forEach(vm.tree, function (value) {
                 value.expanded = true;
-                if (value.expanded) {
-                    vm.branchs = [];
-                    vm.allSchedules = [];
-                    checkExpand(value);
-                }
-
+                value.selected1 = true;
+                vm.branchs = [];
+                vm.allSchedules = [];
+                checkExpand(value);
             });
         }
 
@@ -1079,21 +1080,26 @@
 
 
         function checkExpand(data) {
-            data.schedules = [];
-            expandFolderData(data);
-            if (data.schedules.length > 0) {
-                vm.branchs.push(data);
-            }
-            vm.folderPathS = data.name;
+            if (data.selected1) {
+                data.schedules = [];
+                expandFolderData(data);
+                if (data.schedules.length > 0) {
+                    vm.branchs.push(data);
+                }
+                vm.folderPathS = data.name;
 
-            angular.forEach(data.schedules, function (value) {
-                vm.allSchedules.push(value);
-            });
+                angular.forEach(data.schedules, function (value) {
+                    vm.allSchedules.push(value);
+                });
+            }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
-                vm.folderPathS = data.name;
-                if (value.expanded)
+                if (value.expanded) {
                     checkExpand(value);
+                    if (data.path == '/') {
+                        data.selected1 = false;
+                    }
+                }
             });
 
         }
@@ -1208,8 +1214,8 @@
     }
 
 
-    ScheduleOrderCtrl.$inject = ["$scope", "$rootScope", "ScheduleService", "$stateParams", "$location", "OrderService", "$uibModal", "orderByFilter"];
-    function ScheduleOrderCtrl($scope, $rootScope, ScheduleService, $stateParams, $location, OrderService, $uibModal, orderBy) {
+    ScheduleOrderCtrl.$inject = ["$scope", "$rootScope", "ScheduleService", "$stateParams", "$location", "OrderService", "$uibModal"];
+    function ScheduleOrderCtrl($scope, $rootScope, ScheduleService, $stateParams, $location, OrderService, $uibModal) {
         var vm = $scope;
         vm.name = $stateParams.name;
         var object = $location.search();
@@ -1217,16 +1223,16 @@
         vm.path = object.path;
 
         vm.filter = {};
-        vm.filter.sortBy = "status";
+        vm.filter.sortBy = "orderId";
         vm.isLoading = false;
         vm.object = {};
 
         /**--------------- sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
             vm.object.orders = [];
-            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
+             vm.reverse = !vm.reverse;
             vm.propertyName = propertyName;
-            vm.orders = orderBy(vm.orders, vm.propertyName, vm.reverse);
+            vm.filter.sortBy = propertyName;
         };
 
         function loadOrderV(orders) {
@@ -1884,7 +1890,7 @@
         /*----------------- Daily plan overview -----------------*/
         vm.filter = {};
         vm.filter.range = "today";
-
+vm.filter.orderRange = "today";
         function setDateRange(range) {
             var from = new Date();
             var to = new Date();
@@ -1944,6 +1950,77 @@
         }
 
         vm.getDailyPlans();
+
+
+           function setOrderDateRange(range) {
+            var from = new Date();
+            var to = new Date();
+            if (range == 'today' || !range) {
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setSeconds(0);
+                to.setDate(to.getDate() + 1);
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setSeconds(0);
+            } else if (range == 'next-24-hours') {
+                /*  to.setDate(to.getDate() + 1);
+                 to.setHours(0);
+                 to.setMinutes(0);
+                 to.setSeconds(0);
+
+                 to.setHours(to.getHours() + 24);*/
+                from.setDate(from.getDate() + 1);
+                //   from.setHours(0);
+                //  from.setMinutes(0);
+                //  from.setSeconds(0);
+                to.setDate(to.getDate() + 2);
+                //   to.setHours(0);
+                //  to.setMinutes(0);
+                //  to.setSeconds(0);
+                // console.info("setDateRange::"+to);
+            }
+
+            vm.filter.orderSummaryfrom = from;
+            vm.filter.orderSummaryto = to;
+        }
+
+  vm.getOrderSummary = function () {
+            var obj = {};
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+        console.info("vm.filter.range:"+vm.filter.range)
+            if (vm.filter.orderRange == 'next-24-hours') {
+                setOrderDateRange(vm.filter.orderRange);
+
+            }
+            if (vm.filter.orderRange == 'today') {
+                setOrderDateRange(vm.filter.orderRange);
+            }
+            if (vm.filter.orderRange == "today") {
+                obj.dateFrom = vm.filter.orderSummaryfrom;
+                obj.dateTo = vm.filter.orderSummaryto;
+            } else {
+
+                obj.dateFrom = '-'+vm.filter.orderSummaryfrom;
+              //  obj.dateTo = vm.filter.orderSummaryto;
+
+            }
+            OrderService.getSummary(obj).then(function (res) {
+
+vm.orderSummary=res.orders;
+
+ vm.orderSummary.total=vm.orderSummary.successful + vm.orderSummary.failed;
+                if(vm.orderSummary.successful==0){
+                  vm.orderSummary.percent=0;
+                }else{
+                  vm.orderSummary.percent=(vm.orderSummary.successful/1)/100;
+                }
+
+            }, function (err) {
+
+            })
+        };
+ vm.getOrderSummary();
 
         function filterData() {
             vm.waiting = 0;
@@ -2007,7 +2084,7 @@
 
         vm.filter = {};
         vm.filter.range = "today";
-        vm.filter.sortBy = "name";
+        vm.filter.sortBy = "processedPlan";
         vm.filter.status = 'ALL';
         vm.range = 'period';
         vm.showPanel = '';
@@ -2347,214 +2424,13 @@
             }, 4000);
         }
 
-        /*       function prepareGanttData(data2) {
-
-         var minNextStartTime;
-         var maxEndTime;
-         var orders = [];
-         $scope.ordersNoDuplicate = [];
-         data2 = orderBy(data2, 'plannedStartTime', false);
-
-         // console.info("Data2"+JSON.stringify(data2));
-         //console.info("variable"+JSON.stringify(alasql('SELECT * FROM ?  GROUP BY jobChain', [data2])));
-
-         angular.forEach(data2, function (order, index) {
-
-
-         if ($scope.ordersNoDuplicate.length > 0) {
-         var flag = false;
-
-         angular.forEach($scope.ordersNoDuplicate, function (order1, index1) {
-         //console.info("for ordersNoDuplicate index1 :"+index1 +"order:"+JSON.stringify(order));
-
-
-         if (order.jobChain == order1.name) {
-         //console.info("order1 jobChain :"+JSON.stringify(order1));
-
-         orders[index1].tasks[orders[index1].tasks.length] = {};
-         flag = true;
-         var indexLength = orders[index1].tasks.length - 1;
-         //   orders[index].tasks[orders[index].tasks.length].name = orders[index].name;
-         orders[index1].tasks[indexLength].name = orders[index1].name;
-         // orders[index1].status = order.state._text;
-         vm.plans[index1].status = order.state._text;
-         if (order.state._text == 'SUCCESSFUL') {
-         orders[index1].tasks[indexLength].color = "#7ab97a";
-         } else if (order.state._text == 'FAILED') {
-         orders[index1].tasks[indexLength].color = "#e86680";
-         }
-         else if (order.late) {
-         orders[index1].tasks[indexLength].color = "rgba(255, 195, 0, .9)";
-         }
-         orders[index1].tasks[indexLength].from = '';
-
-         orders[index1].tasks[indexLength].from = new Date(order.plannedStartTime);
-
-         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-         minNextStartTime = new Date(order.plannedStartTime);
-         }
-         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-         maxEndTime = new Date(order.expectedEndTime);
-         }
-         orders[index1].tasks[indexLength].to = new Date(order.expectedEndTime);
-         // $scope.ordersNoDuplicate[index] = orders[index];
-
-         }
-
-         if (order.job == order1.name) {
-
-         //console.info("order1 job :"+JSON.stringify(order1));
-         orders[index1].tasks[orders[index1].tasks.length] = {};
-         flag = true;
-         var indexLength = orders[index1].tasks.length - 1;
-         //   orders[index].tasks[orders[index].tasks.length].name = orders[index].name;
-         orders[index1].tasks[indexLength].name = orders[index1].name;
-         // orders[index1].status = order.state._text;
-         vm.plans[index1].status = order.state._text;
-         if (order.state._text == 'SUCCESSFUL') {
-         orders[index1].tasks[indexLength].color = "#7ab97a";
-         } else if (order.state._text == 'FAILED') {
-         orders[index1].tasks[indexLength].color = "#e86680";
-         }
-         else if (order.late) {
-         orders[index1].tasks[indexLength].color = "rgba(255, 195, 0, .9)";
-         }
-         orders[index1].tasks[indexLength].from = '';
-
-         orders[index1].tasks[indexLength].from = new Date(order.plannedStartTime);
-
-         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-         minNextStartTime = new Date(order.plannedStartTime);
-         }
-         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-         maxEndTime = new Date(order.expectedEndTime);
-         }
-         orders[index1].tasks[indexLength].to = new Date(order.expectedEndTime);
-
-         }
-         else if (flag == false && index1 == $scope.ordersNoDuplicate.length - 1) {
-         //  console.info("else if  :"+JSON.stringify($scope.ordersNoDuplicate));
-         //   console.info("else if  orders :"+JSON.stringify(orders));
-         //console.info("else if  $scope.ordersNoDuplicate.length :"+$scope.ordersNoDuplicate.length);
-
-
-         var indexLength = $scope.ordersNoDuplicate.length;
-         orders[indexLength] = {};
-         orders[indexLength].tasks = [];
-         orders[indexLength].tasks[0] = {};
-
-         if (order.job != undefined) {
-         orders[indexLength].name = order.job;
-         orders[indexLength].orderId = '-';
-         } else {
-         // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
-         orders[indexLength].name = order.jobChain.substring(order.jobChain);
-         orders[indexLength].orderId = order.orderId;
-         }
-
-         vm.plans[indexLength].processedPlanned = orders[indexLength].name;
-         orders[indexLength].tasks[0].name = orders[indexLength].name;
-         // orders[indexLength].status = order.state._text;
-         vm.plans[indexLength].status = order.state._text;
-         if (order.state._text == 'SUCCESSFUL') {
-         orders[indexLength].tasks[0].color = "#7ab97a";
-         } else if (order.state._text == 'FAILED') {
-         orders[indexLength].tasks[0].color = "#e86680";
-         }
-         else if (order.late) {
-         orders[indexLength].tasks[0].color = "rgba(255, 195, 0, .9)";
-         }
-
-         orders[indexLength].tasks[0].from = new Date(order.plannedStartTime);
-
-         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-         minNextStartTime = new Date(order.plannedStartTime);
-         }
-         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-         maxEndTime = new Date(order.expectedEndTime);
-         }
-         orders[indexLength].tasks[0].to = new Date(order.expectedEndTime);
-
-         $scope.ordersNoDuplicate.push(orders[indexLength]);
-         //    console.info(" second orders[index]" + JSON.stringify(orders[indexLength]));
-         //   console.info(" second $scope.ordersNoDuplicate[index]" + JSON.stringify($scope.ordersNoDuplicate));
-         }
-
-         });
-         } else {
-         orders[index] = {};
-         orders[index].tasks = [];
-         orders[index].tasks[0] = {};
-         if (order.job != undefined) {
-         orders[index].name = order.job;
-         orders[index].orderId = '-';
-         } else {
-         // orders[index].name = order.jobChain.substring(order.jobChain.lastIndexOf('/') + 1, order.jobChain.length);
-         orders[index].name = order.jobChain.substring(order.jobChain);
-         orders[index].orderId = order.orderId;
-         }
-
-         vm.plans[index].processedPlanned = orders[index].name;
-         orders[index].tasks[0].name = orders[index].name;
-         //orders[index].status = order.state._text;
-         vm.plans[index].status = order.state._text;
-         if (order.state._text == 'SUCCESSFUL') {
-         orders[index].tasks[0].color = "#7ab97a";
-         } else if (order.state._text == 'FAILED') {
-         orders[index].tasks[0].color = "#e86680";
-         }
-         else if (order.late) {
-         orders[index].tasks[0].color = "rgba(255, 195, 0, .9)";
-         }
-
-         orders[index].tasks[0].from = new Date(order.plannedStartTime);
-
-         if (!minNextStartTime || minNextStartTime > new Date(order.plannedStartTime)) {
-         minNextStartTime = new Date(order.plannedStartTime);
-         }
-         if (!maxEndTime || maxEndTime < new Date(order.expectedEndTime)) {
-         maxEndTime = new Date(order.expectedEndTime);
-         }
-         orders[index].tasks[0].to = new Date(order.expectedEndTime);
-
-         $scope.ordersNoDuplicate[index] = orders[index];
-         //console.info(" first $scope.ordersNoDuplicate[index]" + JSON.stringify($scope.ordersNoDuplicate));
-
-         }
-
-
-         });
-
-
-         if (minNextStartTime) {
-         minNextStartTime.setMinutes(0);
-         minNextStartTime.setHours(0);
-         vm.options.fromDate = minNextStartTime;
-         var to = new Date(minNextStartTime);
-         to.setHours(23);
-         if (maxEndTime > to) {
-         vm.options.toDate = maxEndTime;
-         } else {
-         vm.options.toDate = to;
-         }
-         }
-
-         vm.data = orderBy(orders, 'plannedStartTime');
-
-         promise1 = $timeout(function () {
-         $('#div').animate({
-         scrollLeft: $("#gantt-current-date-line").offset().left
-         }, 500);
-         }, 4000);
-         }*/
-
         vm.load = function () {
             var obj = {};
-            obj.jobschedulerId= vm.schedulerIds.selected;
-            obj.dateFrom= vm.filter.from;
-            obj.dateTo= vm.filter.to;
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.dateFrom = vm.filter.from;
+            obj.dateTo = vm.filter.to;
 
-            if(vm.filter.status !='ALL') {
+            if (vm.filter.status != 'ALL') {
                 obj.states = [];
                 if (vm.filter.status == 'WAITING') {
                     obj.states.push("PLANNED");
@@ -2562,65 +2438,61 @@
                     obj.states.push("SUCCESSFUL");
                     obj.states.push("FAILED");
                 }
-                if (vm.filter.status == 'LATE'){
+                if (vm.filter.status == 'LATE') {
                     obj.late = true;
                 }
             }
 
             obj = applySavedFilter(obj);
- vm.showSpinner=true;
+            vm.showSpinner = true;
             $scope.startSpin();
-           
+
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
 
                 //if (vm.pageView == 'grid')
-                    prepareGanttData(vm.plans);
+                prepareGanttData(vm.plans);
                 vm.isLoading = true;
-                 vm.showSpinner= false;
-                  $scope.stopSpin();
+                vm.showSpinner = false;
+                $scope.stopSpin();
             }, function (err) {
-                 vm.isLoading = true;
+                vm.isLoading = true;
+                vm.showSpinner = false;
+                $scope.stopSpin();
             })
         };
 
            // console.info($stateParams);
-        if($stateParams.filter!=null){
-              if ($stateParams.filter == 1) {
-                  vm.filter.status = 'WAITING';
-              }
-             if ($stateParams.filter ==2) {
-                  vm.filter.status = 'LATE';
-              }
+        if($stateParams.filter!=null) {
+            if ($stateParams.filter == 1) {
+                vm.filter.status = 'WAITING';
+            }
+            if ($stateParams.filter == 2) {
+                vm.filter.status = 'LATE';
+            }
 
-             if ($stateParams.filter == 3) {
-                  vm.filter.status = 'EXECUTED';
-              }
+            if ($stateParams.filter == 3) {
+                vm.filter.status = 'EXECUTED';
+            }
 
-               if($stateParams.day == 'next-24-hours' ){
+            if ($stateParams.day == 'next-24-hours') {
                 setDateRange('next-24-hours');
             }
-             if($stateParams.day == 'today' ){
+            if ($stateParams.day == 'today') {
                 setDateRange('today');
             }
-
-           //vm.load();
+            //vm.load();
         }
 
          /**--------------- filter, sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
-            vm.reverse = (propertyName !== null && vm.propertyName === propertyName) ? !vm.reverse : false;
+            vm.reverse = !vm.reverse;
             vm.propertyName = propertyName;
-            vm.plans = orderBy(vm.plans, vm.propertyName, vm.reverse);
-            prepareGanttData(vm.plans);
-
-        };
-
-        vm.mainSortBy = function (propertyName) {
-            vm.sortReverse = !vm.sortReverse;
             vm.filter.sortBy = propertyName;
-            vm.plans = orderBy(vm.plans, vm.filter.sortBy, vm.sortReverse);
-            prepareGanttData(vm.plans);
+            if (vm.pageView == 'grid') {
+                vm.plans = orderBy(vm.plans, vm.propertyName, vm.reverse);
+                prepareGanttData(vm.plans);
+            }
         };
 
 

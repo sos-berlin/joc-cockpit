@@ -4,7 +4,7 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                 </div>
             </div>
@@ -17,7 +17,7 @@
             <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" >
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="box" style="max-height: 294px">
+                        <div class="box" style="max-height: 180px">
                             <div class="box-header b-b">
                                 <h3 translate>label.agentClusterStatus</h3>
                             </div>
@@ -36,10 +36,10 @@
                                                     labelType="percent"
                                                     noData="{{'message.noDataAvailable' | translate}}"
                                                     color="colorFunction()">
-                                                <svg height="295"></svg>
+                                                <svg height="180"></svg>
                                             </nvd3-pie-chart>
                                         </div>
-                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 90px; color: #000 !important;text-align: center; font-size: 15px">
+                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 60px; color: #000 !important;text-align: center; font-size: 15px">
                                             {{'message.noDataAvailable' | translate}}
                                         </div>
                                     </div>
@@ -68,123 +68,227 @@
                             </div>
                             <div>
 
-                                <nvd3-discrete-bar-chart
-                                        data="agentStatusChart"
-                                        id="agentClusterStatus"
-                                        width="550"
-                                        height="235"
-                                        yAxisTickFormat="yAxisTickFormatFunction()"
-                                        valueFormat="valueFormatFunction()"
-                                        interactive="true"
-                                        showXAxis="true"
-                                        showYAxis="true"
-                                        margin="{bottom:70, right: 25,left: 40, top:20}"
-                                        forceY="{{YAxisDomain}}"
-                                        noData="{{'message.noDataAvailable' | translate}}"
-                                        showValues="true">
-                                    <svg></svg>
-                                </nvd3-discrete-bar-chart>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-8 col-lg-7 col-md-12 col-sm-12">
-                 <div class="row" >
-                    <div class="col-md-12" >
-                        <div class=" box" >
-                            <div class="box-header b-b">
-                                <h3 translate>label.masterClusterStatus</h3>
-                            </div>
-                            <div class="box-tool" ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'">
-                                <div class="btn-group dropdown pull-right">
-                                    <button class="btn btn-sm grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
-                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
-                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart" ng-click="clusterAction('cluster','restart')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.restart</a>
-                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate" ng-click="clusterAction('cluster','terminate')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminate</a>
-                                        <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminateFailSafe && selectedJobScheduler.clusterType._type.toLowerCase() == 'passive'" ng-click="clusterAction('cluster','terminateFailsafe')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminateFailsafe</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="divClusterStatusWidget" class="box-body " style="min-height: 330px">
-                              <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()"
-                                                   on-refresh="getClusterMembers(refresh)" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="white">
-
-                            <div class="box">
-                                <div class="box-header b-b">
-                                    <h3 class="m-t-xs" translate>label.ordersOverview</h3>
-                                </div>
-                                <div class="box-body" >
-                                    <div class="text-center row">
-                                        <div class="col-xs-2">
-                                            <div class="" translate>label.pending</div>
-                                            <a id ="pending-id" href="#/orders/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
-                                        </div>
-                                        <div class="col-xs-2">
-                                            <div class="" translate>label.running</div>
-                                            <a id ="running-id" href="#/orders/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
-                                        </div>
-
-                                        <div class="col-xs-2">
-                                            <div class=" " translate>label.suspended</div>
-                                            <a id ="suspended-id" href="#/orders/SUSPENDED" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
-                                        </div>
-
-                                        <div class="col-xs-2">
-                                            <div class=" " translate>label.setback</div>
-                                            <a id ="setback-id" href="#/orders/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
-                                        </div>
-                                        <div class="col-xs-2">
-                                            <div class=" " translate>label.waitingForResource</div>
-                                            <a id ="waitingForResource-id" href="#/orders/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
-                                        </div>
-                                        <div class="col-xs-2">
-                                            <div class=" " translate>label.blacklist</div>
-                                            <a id ="blacklist-id" href="#/orders/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="hide row" ng-class="{show: permission.DailyPlan.view.status}">
-            <div class="col-sm-12">
-                <div class="box">
-                    <div class="box-header b-b">
-                        <h3 class="m-t-xs" translate>label.dailyPlanOverview</h3>
-                    </div>
-                    <div class="box-tool">
-                        <div class="btn-group m-l-sm">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="getDailyPlans()" translate>button.today
-                            </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.range"
-                                    uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="getDailyPlans()"
-                                    translate>button.next24
-                            </button>
-                        </div>
-                    </div>
-                    <div class="box-body p-a">
-                        <div class="hide" ng-class="{'show': totalPlanData > 0}">
-                            <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
-                                    late-error="lateError" executed="executed" error="error" total="totalPlanData" day="filter.range"></daily-plan-overview>
-                        </div>
-                        <div class="hide text-center m-t h6 text-u-c"
-                            ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable
-                        </div>
-                    </div>
+                    <nvd3-discrete-bar-chart
+                            data="agentStatusChart"
+                            id="agentClusterStatus"
+                            width="550"
+                            height="200"
+                            yAxisTickFormat="yAxisTickFormatFunction()"
+                            valueFormat="valueFormatFunction()"
+                            interactive="true"
+                            showXAxis="true"
+                            showYAxis="true"
+                            margin="{bottom:70, right: 25,left: 40, top:20}"
+                            forceY="{{YAxisDomain}}"
+                            noData="{{'message.noDataAvailable' | translate}}"
+                            showValues="true">
+                        <svg></svg>
+                    </nvd3-discrete-bar-chart>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="col-xxl-8 col-lg-7 col-md-12 col-sm-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class=" box">
+                <div class="box-header b-b">
+                    <h3 translate>label.masterClusterStatus</h3>
+                </div>
+                <div class="box-tool" ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'">
+                    <div class="btn-group dropdown pull-right">
+                        <button class="btn btn-sm grey dropdown-toggle" data-toggle="dropdown" translate>label.menu
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
+                            <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart"
+                               ng-click="clusterAction('cluster','restart')"
+                               ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}"
+                               translate>button.restart</a>
+                            <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate"
+                               ng-click="clusterAction('cluster','terminate')"
+                               ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}"
+                               translate>button.terminate</a>
+                            <a class="dropdown-item"
+                               ng-if="permission.JobschedulerMasterCluster.terminateFailSafe && selectedJobScheduler.clusterType._type.toLowerCase() == 'passive'"
+                               ng-click="clusterAction('cluster','terminateFailsafe')"
+                               ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}"
+                               translate>button.terminateFailsafe</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="divClusterStatusWidget" class="box-body " style="min-height: 330px">
+                    <cluster-status-view cluster-status-data="clusterStatusData"
+                                         get-supervisor-details="getSupervisor()"
+                                         on-refresh="getClusterMembers(refresh)"
+                                         on-operation="clusterAction(item,action,host,port)"></cluster-status-view>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+    <div class="col-md-8">
+        <div class="box">
+            <div class="box-header b-b">
+                <h3 class="m-t-xs" translate>label.ordersOverview</h3>
+            </div>
+            <div class="box-body">
+                <div class="text-center row">
+                    <div class="col-sm-2">
+                        <div class="" translate>label.pending</div>
+                        <a id="pending-id" href="#/orders/PENDING" class="text-lg _600 text-black-lt"
+                           ng-bind="snapshot.pending || 0"></a>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="" translate>label.running</div>
+                        <a id="running-id" href="#/orders/RUNNING" class="text-lg _600 text-black-lt"
+                           ng-bind="snapshot.running || 0"></a>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class=" " translate>label.suspended</div>
+                        <a id="suspended-id" href="#/orders/SUSPENDED" class="text-lg _600"
+                           ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class=" " translate>label.setback</div>
+                        <a id="setback-id" href="#/orders/SETBACK" class="text-lg _600 text-black-lt"
+                           ng-bind="snapshot.setback || 0"></a>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class=" " translate>label.waitingForResource</div>
+                        <a id="waitingForResource-id" href="#/orders/WAITINGFORRESOURCE"
+                           class="text-lg _600 text-black-lt"
+                           ng-bind="snapshot.waitingForResource || 0"></a>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class=" " translate>label.blacklist</div>
+                        <a id="blacklist-id" href="#/orders/BLACKLIST" class="text-lg _600 text-black-lt"
+                           ng-bind="snapshot.blacklist || 0"></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="box">
+            <div class="box-header b-b">
+                <h3 class="m-t-xs" translate>label.ordersSummary</h3>
+            </div>
+            <div class="row m-b-sm box-tool ">
+                <div class="col-md-12 container-fluid">
+                    <div class="pull-right">
+                        <div class="btn-group m-l-sm" style="padding-right:5px">
+                            <button class="btn btn-grey btn-sm" ng-model="filter.orderRange" uib-btn-radio="'today'"
+                                    ng-class="{'btn-primary': filter.orderRange=='today'}" ng-click="getOrderSummary()"
+                                    translate>
+                                button.today
+                            </button>
+                            <div class="btn-group dropdown ">
+                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown"
+                                        translate>label.selectCriteria
+                                </button>
+
+                                <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                    <!--   <a class="dropdown-item" ng-model="filter.date" uib-btn-radio="'all'"
+                                          ng-click="loadHistory()"
+                                          ng-class="{'btn-primary': filter.orderSummaryfrom=='all'}" translate>button.all
+                                       </a>-->
+                                    <a class="dropdown-item" ng-model="filter.orderSummaryfrom"
+                                       ng-click="filter.orderRange='dateRange';getOrderSummary()"
+                                       uib-btn-radio="'1h'"
+                                       ng-class="{'btn-primary': filter.orderSummaryfrom=='1h'}" translate>button.last1
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.orderSummaryfrom" uib-btn-radio="'12h'"
+                                       ng-click="filter.orderRange='dateRange';getOrderSummary()"
+                                       ng-class="{'btn-primary': filter.orderSummaryfrom=='12h'}" translate>button.last12
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.orderSummaryfrom"
+                                       ng-click="filter.orderRange='dateRange';getOrderSummary()"
+                                       uib-btn-radio="'1d'"
+                                       ng-class="{'btn-primary': filter.orderSummaryfrom=='1d'}" translate>button.last24
+                                    </a>
+                                    <a class="dropdown-item" ng-model="filter.orderSummaryfrom"
+                                       ng-click="filter.orderRange='dateRange';getOrderSummary()"
+                                       uib-btn-radio="'1w'"
+                                       ng-class="{'btn-primary': filter.orderSummaryfrom=='1w'}" translate>button.lastWeak
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <div class="row">
+                    <div class="text-center">
+                        <div class="col-sm-4">
+                            <div class="" translate>label.successful</div>
+                            <span href="" class="text-lg _600 text-black-lt"
+                                  ng-bind="orderSummary.successful"></span>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="" translate>label.failed</div>
+                            <span href="" class="text-lg _600 crimson" ng-if="orderSummary.failed>0"
+                                  ng-bind="orderSummary.failed"></span>
+
+                            <span href="" class="text-lg _600 text-black-lt" ng-if="orderSummary.failed==0"
+                                  ng-bind="orderSummary.failed"></span>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+<div class="hide " ng-class="{show: permission.DailyPlan.view.status}">
+    <div class="col-sm-12">
+        <div class="box">
+            <div class="box-header b-b">
+                <h3 class="m-t-xs" translate>label.dailyPlanOverview</h3>
+            </div>
+            <div class="box-tool">
+                <div class="btn-group m-l-sm">
+                    <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
+                            ng-class="{'btn-primary': filter.range=='today'}" ng-click="getDailyPlans()" translate>
+                        button.today
+                    </button>
+                    <button class="btn btn-grey btn-sm" ng-model="filter.range"
+                            uib-btn-radio="'next-24-hours'"
+                            ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="getDailyPlans()"
+                            translate>button.next24
+                    </button>
+                </div>
+            </div>
+            <div class="box-body p-a">
+                <div class="hide" ng-class="{'show': totalPlanData > 0}">
+                    <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
+                                         late-error="lateError" executed="executed" error="error" total="totalPlanData"
+                                         day="filter.range"></daily-plan-overview>
+                </div>
+                <div class="hide text-center m-t h6 text-u-c"
+                     ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+</div>
+</div>
+
 

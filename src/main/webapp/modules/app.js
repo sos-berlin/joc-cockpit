@@ -28,7 +28,7 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-           'ngclipboard',
+            'ngclipboard',
 	        'ngCookies'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
@@ -36,6 +36,7 @@
             $resource("config.json").get(function (data) {
                 $rootScope.configData = data;
             });
+
         }])
         .config(['calendarConfig', function (calendarConfig) {
             calendarConfig.dateFormatter = 'moment';

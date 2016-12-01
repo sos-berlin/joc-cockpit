@@ -132,14 +132,14 @@
                     </div>
                 </div>
         <div id="rightPanel1">
-            <div class="hide" ng-class="{'show': isLoading}">
+            <div class="hide" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
                     <div ng-repeat="branch in branchs track by $index">
                         <div class="col-sm-12" ng-if="branch.path && branch.jobChains.length>0" style="margin-bottom: 10px">
                             <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
                         </div>
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                             ng-repeat="jobChain in branch.jobChains | orderBy:filter.sortBy">
+                             ng-repeat="jobChain in branch.jobChains | orderBy:filter.sortBy:reverse">
                             <div class="box card">
                                 <div class="box-body">
                                     <div>
@@ -148,8 +148,8 @@
                                                    data-checklist-value="jobChain"><i class="primary"></i>
                                         </label>
                                         <div class="text-left m-l-md block-ellipsis">
-                                            <i ng-if="jobChain.distributed" class="fa fa-chain-broken"></i>
-                                            <a href="" class="primary-text-hover-color" uib-tooltip="{{jobChain.title}}"
+                                            <i ng-if="jobChain.distributed" class="fa fa-chain"></i>
+                                            <a class="text-hover-primary" uib-tooltip="{{jobChain.title}}"
                                                ng-class="{'text-danger':jobChain.state._text == 'STOPPED', 'text-success':jobChain.state._text == 'RUNNING'}"
                                                ng-click="viewOrdersDetail(jobChain)" ng-bind="jobChain.name"></a>
                                         </div>
@@ -169,7 +169,7 @@
                                                        ng-click="startOrder(jobChain);" translate>button.manageOrders</a>
                                                     <a class="dropdown-item"
                                                        ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
-                                                           ng-click="viewCalendar(jobChain);" translate>button.viewCalendar</a>
+                                                           ng-click="viewCalendar(jobChain);" translate>button.showCalendar</a>
                                                     <a class="hide dropdown-item bg-hover-color"
                                                            ng-if="jobChain.state._text != 'STOPPED'"
                                                            ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -187,7 +187,7 @@
                                         <span  ng-if="jobChain.numOfNodes<=1 || !jobChain.numOfNodes" ng-bind="'label.job' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs cursor">
-                                        <a href="" class="primary-text-hover-color" ng-click="viewOrders(jobChain)">
+                                        <a href="" class="text-hover-primary" ng-click="viewOrders(jobChain)">
                                             <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
                                             <span  ng-if="jobChain.numOfOrders>1" ng-bind="'label.orders' | translate"></span>
                                             <span  ng-if="jobChain.numOfOrders<=1 || !jobChain.numOfOrders" ng-bind="'label.order' | translate"></span>
@@ -202,7 +202,7 @@
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs">
-                                        <span ng-bind="jobChain.processClass || '-'"></span>
+                                        <a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i>
                                         <span class="m-l" ng-if="jobChain.distributed" translate>label.distributed</span>
                                     </div>
                                 </div>
@@ -216,7 +216,7 @@
                                     <a href class="text-right primary-text-hover-color"
                                        ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                        ng-click="viewCalendar(jobChain);">
-                                        <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.viewCalendar</span>
+                                        <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.showCalendar</span>
                                     </a>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@
                                         <i class="primary"></i>
                                     </label>
                                 </th>
-                                <th ng-click="sortBy('name')"><a><span translate>label.jobChainName</span>
+                                <th ng-click="sortBy('name')"><a><span translate>label.jobChain</span>
                                     <i ng-show="propertyName == 'name' && !reverse"
                                        class="fa fa-caret-down "></i>
                                     <i ng-show="propertyName == 'name' && reverse"
@@ -307,7 +307,7 @@
                                 <th class="noExl"></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in allJobChains | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy:filter.sortBy" ng-class="{'light-bg':showNodePanel.path == jobChain.path}">
+                            <tbody ng-repeat="jobChain in allJobChains | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy:filter.sortBy:reverse" ng-class="{'light-bg':jobChain.show}">
                             <tr>
                                 <td class="noExl">
                                     <label class="md-check">
@@ -316,11 +316,11 @@
                                     </label>
                                 </td>
                                 <td>
-                                    <i class="cursor fa fa-caret-down noExl" ng-if="showNodePanel.path != jobChain.path"
+                                    <i class="cursor fa fa-caret-down noExl" ng-if="!jobChain.show"
                                        ng-click="showNodePanelFuc(jobChain)"></i>
-                                    <i class="cursor fa fa-caret-up noExl" ng-if="hideNodePanel && showNodePanel.path == jobChain.path" ng-click="hideNodePanelFuc()"></i>
+                                    <i class="cursor fa fa-caret-up noExl" ng-if="jobChain.show" ng-click="hideNodePanelFuc(jobChain)"></i>
 
-                                    <a class="primary-text-hover-color" href ng-click="viewOrdersDetail(jobChain)"
+                                    <a class="text-hover-primary" href ng-click="viewOrdersDetail(jobChain)"
                                        ng-class="{'text-danger':jobChain.state._text == 'STOPPED'}" ng-bind="jobChain.name"></a>
                                     <span ng-if="jobChain.title"> - </span>
                                     <i class="text-muted"><span ng-bind-html="jobChain.title"></span></i>
@@ -328,7 +328,7 @@
                                 <td ng-bind="jobChain.path"></td>
                                 <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text  | translate"></span></td>
                                 <td ng-bind="jobChain.numOfNodes || 0"></td>
-                                <td ng-bind="jobChain.processClass || '-'"></td>
+                                <td ><a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
                                 <td><a  href ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.pending"></a></td>
                                 <td><a  href ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.running"></a></td>
                                 <td><a  href ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.suspended"></a></td>
@@ -352,7 +352,7 @@
                                                ng-click="startOrder(jobChain);" translate>button.manageOrders</a>
                                             <a class="dropdown-item"
                                                ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
-                                               ng-click="viewCalendar(jobChain);" translate>button.viewCalendar</a>
+                                               ng-click="viewCalendar(jobChain);" translate>button.showCalendar</a>
                                             <a class="hide dropdown-item bg-hover-color"
                                                ng-if="jobChain.state._text != 'STOPPED'"
                                                ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -365,34 +365,34 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr ng-show="showNodePanel.path == jobChain.path" class="noExl" ng-class="{'light-bg':showNodePanel.path == jobChain.path}">
+                            <tr ng-show="jobChain.show" class="noExl light-bg">
                                 <td></td>
-                                <td colspan="12">
+                                <td colspan="12" style="padding: 1px 2px 0 2px !important">
                                     <table class="table m-a-0">
                                         <thead>
                                             <tr>
                                                 <th translate>label.state</th>
-                                                <th translate>label.jobPath</th>
+                                                <th translate>label.job</th>
                                                 <th translate>label.jobStatus</th>
                                                 <th translate>label.nodeStatus</th>
                                                 <th></th>
                                             </tr>
                                             </thead>
-                                            <tbody ng-repeat="node in showNodePanel.nodes | orderBy:state">
+                                            <tbody ng-repeat="node in jobChain.nodes | orderBy:state">
                                             <tr>
                                                 <td>
-                                                    <a href="" ng-style="{'padding-left' : node.padding+ 'px'}">
+                                                    <span ng-style="{'padding-left' : node.padding+ 'px'}">
                                                <!--     <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
                                                        ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'? node.state.severity:node.job.state.severity)]"></i>-->
-                                                   {{node.name}} </a>
+                                                   {{node.name}} </span>
                                                 </td>
                                                 <td ng-controller="OrderFunctionCtrl">
-                                                    {{node.job.path}}
+                                                    <a class="text-hover-primary" ng-click="showJob(node.job.path)">{{node.job.path}}</a>
                                                     <div>
                                                     <div ng-repeat="order in node.orders | limitTo : limitNum">
                                                         <span>
                                                             <span class="text-sm">
-                                                                <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} - <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                                                <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} <i class="text-muted text-xs" ng-if="order.title">- {{order.title}}</i> - <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
                                                                 ({{undefined | durationFromCurrent:order.nextStartTime }})</span>
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
@@ -468,14 +468,14 @@
                                                                ng-click="unstopJob(node)" translate>button.unstopJob</a>
                                                             <a class="dropdown-item bg-hover-color"
                                                                ng-if="node.state._text.toLowerCase() != 'stopped'"
-                                                               ng-click="stopNode(node)" translate>button.stopNode</a>
+                                                               ng-click="stopNode(node,jobChain)" translate>button.stopNode</a>
                                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'stopped'"
-                                                               ng-click="unStopNode(node)" translate>button.unstopNode</a>
+                                                               ng-click="unStopNode(node,jobChain)" translate>button.unstopNode</a>
                                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() != 'skipped'"
-                                                               ng-click="skipNode(node)"
+                                                               ng-click="skipNode(node,jobChain)"
                                                                translate>button.skipNode</a>
                                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'skipped'"
-                                                               ng-click="unskipNode(node)" translate>button.unskipNode</a>
+                                                               ng-click="unskipNode(node,jobChain)" translate>button.unskipNode</a>
                                                         </div>
                                                     </div>
                                                 </td>

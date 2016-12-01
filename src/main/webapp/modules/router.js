@@ -171,7 +171,7 @@
                 }
             })
             .state('app.jobChain', {
-                url: '/jobChain',
+                url: '/jobChains',
                 templateUrl: 'modules/job/views/job-chain.html',
                 controller: 'JobChainCtrl',
                 ncyBreadcrumb: {

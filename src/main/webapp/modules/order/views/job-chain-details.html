@@ -17,7 +17,7 @@
                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-click="addOrder()" ng-class="{'show-block':permission.JobChain.addOrder}" ng-disabled="jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'"><i class="fa fa-plus-square"></i>
                             <span class="hidden-sm-down" translate>button.addAnOrder</span>
                         </button>
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.viewCalendar</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.showCalendar</span></button>
                         <div class="btn-group dropdown" ng-show="!overview">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
                                 <span ng-show="filter.sortBy =='orderId'">
@@ -69,7 +69,7 @@
             <div class="col-sm-12">
                 <h5 class="pos-abt _300 p-t-xs">
                      <ol class="breadcrumb">
-                      <li ng-class="{'active': $index == paths.length-1}" ng-repeat="path in paths"><a href="" ng-click="setPath(path)">{{path}}</a></li>
+                      <li ng-repeat="path in paths"><a class="text-hover-primary" ng-if="$index != paths.length-1" ng-click="setPath(path)">{{path}}</a><span class="text-muted" ng-if="$index == paths.length-1">{{path}}</span></li>
                     </ol>
                 </h5>
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pull-right">

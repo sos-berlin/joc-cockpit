@@ -32,7 +32,6 @@
    "button.proceedNode": "処理ノード",
    "button.addAnotherParameter": "パラメータ追加",
    "button.submitOrder": "オーダー登録",
-   "button.viewCalendar": "カレンダ表示",
    "button.processClass": "プロセスクラス",
    "button.name": "名称",
    "button.resumeOrder": "オーダー回復",
@@ -503,12 +502,15 @@
    "button.addParameter": "Add Parameter",
    "button.addPeriod": "Add Period",
    "button.processing": "Processing",
+   "button.resumeOrderFromState": "Resume Order from state",
    "button.deleteOrder": "Delete Order",
+   "button.removeOrder": "Remove Setback",
    "button.blacklist": "Blacklist",
    "button.editExistingFilters": "Edit existing views",
    "button.addToIgnoreList": "Add to Ignore list",
    "button.startOrder": "Start Order",
    "button.editExitingFilters": "Edit exiting views",
+   "button.allStatus": "All Status",
    "button.waiting": "Waiting",
    "button.late": "Late",
    "button.executed": "Executed",
@@ -519,7 +521,6 @@
    "button.close": "Close",
    "button.done": "Done",
    "button.ok": "Ok",
-   "button.resumeOrderFromState": "Resume Order from state",
    "button.modifyLogView": "Modify Log View",
    "button.advancedSearch": "Advanced Search",
    "button.viewAllHistories": "View History",
@@ -535,6 +536,9 @@
    "button.manageOrders": "Manage Orders",
    "button.order": "Order",
    "button.task": "Task",
+   "button.successful": "Successful",
+   "button.failed": "Failed",
+   "button.incomplete": "Incomplete",
    "breadcrumb.processClasses": "Process Classes",
    "breadcrumb.locks": "Locks",
    "breadcrumb.agents": "Agents",
@@ -642,13 +646,15 @@
    "message.noLocksFound": "no locks found",
    "message.noTaskHistoryFound": "no task history found",
    "message.noNodesFound": "no nodes found",
+   "message.noEnqueuedTasksFound": "no enqueued task found",
+   "message.noQueueOrdersFound": "no queue order found",
    "message.filterDeleteSuccessfully": " view deleted successfully",
    "message.nonNumericValue": "Non-numeric value",
    "message.scheduleError": "Substitute schedule is required ",
    "message.validFromError": "Valid from is required ",
    "message.validToError": "Valid to is required ",
    "message.validDate": "Valid from must be older than the valid to",
-   "message.incorrectJobChainPath": "Job chain path is not correct",
+   "message.incorrectJobChainPath": "Job Chain path is not correct",
    "message.addOrderSuccessfully": "Order Successfully added",
    "message.invalid": "Invalid Input",
    "message.errorInLoadingScheduleIds": "Error in fetching Scheduler Ids",
@@ -685,8 +691,13 @@
    "tab.schedule": "Schedule",
    "tab.runtime": "Run Time",
    "tooltip.exportInXLS": "export xlsx",
-   "tooltip.useDefault": "Use as default view"
+   "tooltip.useDefault": "Use as default view",
+"label.ordersSummary": "Orders Summary",
+   "label.selectCriteria":  "Select Criteria"
 }
+
+
+
 
 
 
