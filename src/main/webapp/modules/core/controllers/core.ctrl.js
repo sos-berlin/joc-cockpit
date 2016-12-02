@@ -44,7 +44,7 @@
                     $rootScope.clientLogs.push(error)
                 }
             } catch (e) {
-
+                console.log(e)
             }
         });
         if ($window.sessionStorage.clientLogFilter) {
@@ -241,6 +241,14 @@
             $location.path('/jobChains')
         };
 
+        vm.isEmpty  = function(obj) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
+        }
+
         vm.showJob = function(job){
             var path = job.substring(0,job.lastIndexOf('/')) || '/';
             var name = '';
@@ -262,8 +270,8 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window','$state'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window,$state) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window','$state','$uibModalStack'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window,$state,$uibModalStack) {
         var vm = $scope;
         toasty.clear();
 
@@ -291,7 +299,7 @@
             if (count < 0) {
                 $window.sessionStorage.setItem('$SOS$URL', $location.path());
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
-                vm.logout(true);
+                vm.logout();
             }
 
             $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
@@ -311,21 +319,13 @@
             vm.selectedJobScheduler.startedAt = date;
         });
 
-        vm.logout = function (reload) {
-
-            UserService.logout().then(function () {
-                SOSAuth.clearUser();
-                SOSAuth.clearStorage();
-
-                $location.path('/login').search({});
-                if (reload) {
-                    $window.location.reload();
-                } else {
-                    $window.localStorage.clientLogs = {};
-                    $window.sessionStorage.$SOS$JOBSCHEDULE = null;
-                }
-            });
-
+        vm.logout = function () {
+            UserService.logout();
+            SOSAuth.clearUser();
+            SOSAuth.clearStorage();
+            $location.path('/login').search({});
+            $window.localStorage.clientLogs = {};
+            $window.sessionStorage.$SOS$JOBSCHEDULE = null;
         };
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
@@ -388,6 +388,7 @@
 
         $scope.$on('$stateChangeSuccess', function () {
             vm.checkNavHeader();
+            $uibModalStack.dismissAll();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
         });

@@ -15,7 +15,7 @@
         tabs._jobChain.filter = {};
         tabs._jobChain.filter.state = 'ALL';
         tabs._jobChain.filter.sortBy = 'name';
-        tabs._jobChain.filter.reverse = false;
+        tabs._jobChain.reverse = false;
         tabs._jobChain.pageSize = '10';
         tabs._jobChain.currentPage = '1';
         tabs._jobChain.expand_to = {};
@@ -25,7 +25,7 @@
         tabs._job.filter = {};
         tabs._job.filter.state = 'ALL';
         tabs._job.filter.sortBy = 'name';
-        tabs._job.filter.reverse = false;
+        tabs._job.reverse = false;
         tabs._job.pageSize = '10';
         tabs._job.currentPage = '1';
         tabs._job.expand_to = {};
@@ -35,7 +35,7 @@
         tabs._order.filter = {};
         tabs._order.filter.state = 'ALL';
         tabs._order.filter.sortBy = 'orderId';
-        tabs._order.filter.reverse = false;
+        tabs._order.reverse = false;
         tabs._order.pageSize = '10';
         tabs._order.currentPage = '1';
         tabs._order.expand_to = {};
@@ -48,7 +48,7 @@
         tabs._history.order.filter.state = 'all';
         tabs._history.order.filter.date = '1h';
         tabs._history.order.filter.sortBy = 'startTime';
-        tabs._history.order.filter.sortReverse = false;
+        tabs._history.order.sortReverse = false;
         tabs._history.order.pageSize = '25';
         tabs._history.order.currentPage = '1';
         tabs._history.task ={};
@@ -56,7 +56,7 @@
         tabs._history.task.filter.state = 'all';
         tabs._history.task.filter.date = '1h';
         tabs._history.task.filter.sortBy = 'startTime';
-        tabs._history.task.filter.sortReverse = false;
+        tabs._history.task.sortReverse = false;
         tabs._history.task.pageSize = '25';
         tabs._history.task.currentPage = '1';
 

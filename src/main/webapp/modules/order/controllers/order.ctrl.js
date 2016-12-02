@@ -3509,6 +3509,17 @@
             vm.showLogPanel = undefined;
         };
 
+        vm.limitNum = 5;
+        vm.showOrderPanel='';
+        vm.showOrderPanelFuc = function (num,name) {
+            vm.limitNum = num;
+            vm.showOrderPanel= name;
+        };
+        vm.hideOrderPanelFuc = function () {
+            vm.limitNum = 5;
+            vm.showOrderPanel='';
+        };
+
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
@@ -3661,7 +3672,7 @@
         vm.search = function(q) {
             vm.loading = true;
             var obj = {};
-            obj.reqex = q;
+            obj.regex = q;
             obj.jobschedulerId = vm.schedulerIds.selected;
             if (vm.filter.type == 'job') {
                 TaskService.histories(obj).then(function (res) {

@@ -1214,21 +1214,13 @@
                 jobChain: jobChain.path
             }).then(function (res) {
                 jobChain =angular.merge(jobChain, res.jobChain);
-                showOrders(res.jobChain);
+                //showOrders(jobChain);
             });
 
             jobChain.show = true;
         };
         vm.hideNodePanelFuc = function (jobChain) {
             jobChain.show = false;
-        };
-
-        vm.limitNum = 5;
-        vm.showOrderPanelFuc = function (num) {
-            vm.limitNum = num;
-        };
-        vm.hideOrderPanelFuc = function () {
-            vm.limitNum = 5;
         };
 
 
@@ -1350,6 +1342,7 @@
             watcher3();
             watcher4();
             $timeout.cancel(timeout);
+
         });
     }
 

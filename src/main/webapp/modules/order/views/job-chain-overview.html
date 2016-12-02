@@ -155,7 +155,7 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="node in filtered = (jobChain.nodes | filter: filterString:strict)">
+                            <tbody ng-repeat="node in jobChain.nodes">
                             <tr>
                                 <td width="40">
                                     <label class="md-check">
@@ -226,7 +226,7 @@
                                                     </div>
                                                     <i class="cursor text-xs"
                                                        ng-if="showOrderPanel != node.name && node.orders && node.orders.length>5"
-                                                       ng-click="showOrderPanelFuc(node.name)" ><span translate>label.showMore</span><br></i>
+                                                       ng-click="showOrderPanelFuc(node.orders.length, node.name)" ><span translate>label.showMore</span><br></i>
                                                     <i class="cursor text-xs"
                                                        ng-if="showOrderPanel == node.name && node.orders && node.orders.length>5"
                                                        ng-click="hideOrderPanelFuc()" ><span translate>label.showLess</span><br></i>
@@ -273,12 +273,8 @@
 
                     </div>
 
-                    <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
                         message.noNodesFound
-                    </div>
-                    <div class="text-center m-t m-b text-uppercase hide text-orange"
-                         ng-class="{'show': (filtered.length===0 && jobChain.nodes.length !==0)}" translate>
-                        message.noDataMatched
                     </div>
                 </div>
                 <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">

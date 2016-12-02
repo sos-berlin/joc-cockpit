@@ -441,7 +441,7 @@
                                                     </div>
                                                     <i class="cursor text-xs"
                                                        ng-if="showOrderPanel != node.name && node.orders && node.orders.length>5"
-                                                       ng-click="showOrderPanelFuc(node.name)" ><span translate>label.showMore</span><br></i>
+                                                       ng-click="showOrderPanelFuc(node.orders.length, node.name)" ><span translate>label.showMore</span><br></i>
                                                     <i class="cursor text-xs"
                                                        ng-if="showOrderPanel == node.name && node.orders && node.orders.length>5"
                                                        ng-click="hideOrderPanelFuc()" ><span translate>label.showLess</span><br></i>

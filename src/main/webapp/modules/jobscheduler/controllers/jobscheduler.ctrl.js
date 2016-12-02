@@ -1891,6 +1891,7 @@
         vm.filter = {};
         vm.filter.range = "today";
 vm.filter.orderRange = "today";
+         vm.filter.label = 'button.today';
         function setDateRange(range) {
             var from = new Date();
             var to = new Date();
@@ -2106,10 +2107,6 @@ vm.orderSummary=res.orders;
                 }
             });
         }
-
-        vm.savedIgnoreList = JSON.parse(SavedFilter.ignoreList) || {};
-        vm.savedIgnoreList.dailyPlans = vm.savedIgnoreList.dailyPlans || [];
-        vm.savedIgnoreList.isEnable = vm.savedIgnoreList.isEnable || false;
 
         function setDateRange(range) {
             var from = new Date();

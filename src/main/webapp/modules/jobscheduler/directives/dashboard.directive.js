@@ -148,13 +148,9 @@
                         })
                     }
 
-
                     function getTemporaryData(refresh) {
-
                         scope.onRefresh({refresh:refresh}).then(function (res) {
-
                             if (scope.clusterStatusData.supervisors.length <= 0) {
-
                                 getTemporaryData2(res, refresh);
                             }
 
