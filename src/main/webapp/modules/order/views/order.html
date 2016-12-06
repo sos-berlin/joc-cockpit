@@ -8,58 +8,58 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
+                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
                                     uib-btn-radio="'RUNNING'"
-                                    ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
                                     uib-btn-radio="'SUSPENDED'"
-                                    ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
                                     uib-btn-radio="'SETBACK'"
-                                    ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.state"
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                         uib-btn-radio="'RUNNING'"
-                                        ng-class="{'btn-primary': filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
+                                        ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.state"
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                         uib-btn-radio="'SUSPENDED'"
-                                        ng-class="{'btn-primary': filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
+                                        ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.state"
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                         uib-btn-radio="'SETBACK'"
-                                        ng-class="{'btn-primary': filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
+                                        ng-class="{'btn-primary': orderFilters.filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
                                 </a>
                             </div>
                         </div>
                         <div class="btn-group dropdown">
                             <a id="sortby_id" class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
-                                <span  ng-show="filter.sortBy =='orderId'">
+                                <span  ng-show="orderFilters.filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}
-                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!orderFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="orderFilters.reverse" class="fa fa-caret-down"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='processingState._text'">
+                                <span ng-show="orderFilters.filter.sortBy =='processingState._text'">
                                      {{'label.status' | translate}}
-                                   <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                   <i ng-show="!orderFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="orderFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
-                                <span  ng-show="filter.sortBy =='startedAt'">
+                                <span  ng-show="orderFilters.filter.sortBy =='startedAt'">
                                      {{'label.date' | translate}}
-                                  <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                  <i ng-show="!orderFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="orderFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                 </span> </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
@@ -79,7 +79,7 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || allOrders.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                          <toggle-view></toggle-view>
                     </div>
 

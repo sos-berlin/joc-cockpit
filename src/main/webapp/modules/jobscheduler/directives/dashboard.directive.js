@@ -5,8 +5,8 @@
         .directive('dailyPlanOverview', dailyPlanOverview);
 
 
-    clusterStatusView.$inject = ["$compile", "$filter", "$sce","$rootScope","$window"];
-    function clusterStatusView($compile, $filter, $sce,$rootScope, $window) {
+    clusterStatusView.$inject = ["$compile", "$sce","$window"];
+    function clusterStatusView($compile, $sce, $window) {
 
         return {
             restrict: 'E',
@@ -19,7 +19,7 @@
                 var top = 0;
                 var supervisedMasters = [];
                 var lastId;
-                init();
+
                 function init() {
                     rWidth = 200;
                     rHeight = 130;
@@ -30,6 +30,7 @@
                     scope.vMargin = vMargin;
                     supervisedMasters = [];
                 }
+                init();
 
                 var mainTemplate = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 330px;width: 100%;overflow: auto;"> ';
 
@@ -61,12 +62,8 @@
 
 
                 function prepareData() {
-
-
                     var supervisors = [];
-
                     scope.clusterStatusData.supervisors = scope.clusterStatusData.supervisors || [];
-
 
                     if (!scope.clusterStatusData || !scope.clusterStatusData.members || !scope.clusterStatusData.members.masters) {
                         return;
@@ -83,22 +80,17 @@
                             return;
                         }
 
-
                         supervisedMasters.push(index);
-
-
+                         var nMaster = {};
                         if (supervisors.indexOf(master.supervisor.jobschedulerId) >= 0) {
-                            var nMaster = {};
+
                             scope.clusterStatusData.supervisors[supervisors.indexOf(master.supervisor.jobschedulerId)].masters.push(angular.copy(master, nMaster));
                         } else {
                             supervisors.push(master.supervisor.jobschedulerId);
                             var nSupervisor = master.supervisor;
                             nSupervisor.masters = [];
-                            var nMaster = {};
                             nSupervisor.masters.push(angular.copy(master, nMaster));
                             scope.clusterStatusData.supervisors.push(nSupervisor);
-
-
                         }
 
                         if (index == scope.clusterStatusData.members.masters.length - 1) {
@@ -160,17 +152,13 @@
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
                                             var span = document.getElementById('sp' + master.host + master.port);
                                             master.state = nMaster.state;
-                                            
 
                                             if (master.state && refresh) {
-
                                                 refreshMasterState(master);
                                             }
-
                                         }
                                         if (scope.clusterStatusData.supervisors.length - 1 == sIndex && supervisor.masters.length - 1 == index && res.masters.length - 1 == rIndex) {
                                             getTemporaryData2(res, refresh);
-
                                         }
                                     })
                                 })
@@ -252,8 +240,6 @@
                                             disconnectLink(master.host, master.port);
 
                                         }
-
-
                                     }
                                 }
                             })
@@ -347,7 +333,7 @@
 
                                 c = c + " yellow-border";
                             }
-                            scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+                            scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
                                 '<br>Started at : ' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '<br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
 
 
@@ -382,7 +368,8 @@
                                 '</span> <div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a  class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
@@ -435,7 +422,7 @@
                                 }
 
 
-                                scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                     '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
@@ -463,6 +450,7 @@
                                     '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
                                     '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
@@ -558,7 +546,7 @@
 
                                 lastId=master.host + master.port;
 
-                            scope.popoverTemplate = $sce.trustAsHtml('Architecture : x' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                            scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                             var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
                                 'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
@@ -567,6 +555,7 @@
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
                                 '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
@@ -669,7 +658,7 @@
                                     }
 
                                 })
-                            })
+                            });
 
                             angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
                                 if(diff>0){
@@ -681,7 +670,7 @@
                                     parseInt(document.getElementById(master.host+master.port).style.left.replace('px',''))+diff+'px';
                                 }
 
-                            })
+                            });
                             if(diff>0){
                                 document.getElementById('database').style.top=
                                     parseInt(document.getElementById('database').style.top.replace('px',''))+diff+'px';
@@ -754,7 +743,7 @@
 
 
                         })
-                    })
+                    });
 
                     function changeToWaiting(host, port) {
                         angular.forEach(vm.clusterStatusData.supervisors, function (supervisor, sIndex) {
@@ -768,7 +757,7 @@
                                     vm.refreshMasterState(master);
                                 }
                             })
-                        })
+                        });
 
                         angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                             if (master.host == host && master.port == port) {
@@ -899,7 +888,7 @@
                                 drawForRemainings();
                             }
                         })
-                    })
+                    });
 
                     function drawForRemainings() {
 
@@ -971,9 +960,6 @@
 
 
                 }
-
-
-
             }]
         }
     }

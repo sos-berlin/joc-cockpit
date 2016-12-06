@@ -18,22 +18,22 @@
                             <span class="hidden-sm-down" translate>button.addAnOrder</span>
                         </button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')" ng-click="viewCalendar();"><i class="fa fa-calendar"></i>  <span class="hidden-sm-down" translate>button.showCalendar</span></button>
-                        <div class="btn-group dropdown" ng-show="!overview">
+                        <div class="btn-group dropdown" ng-show="!orderDetailFilters.overview">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span> <span class="text-primary">
-                                <span ng-show="filter.sortBy =='orderId'">
+                                <span ng-show="orderDetailFilters.filter.sortBy =='orderId'">
                                      {{'label.orderId' | translate}}
-                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!orderDetailFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="orderDetailFilters.reverse" class="fa fa-caret-down"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='processingState._text'">
+                                <span ng-show="orderDetailFilters.filter.sortBy =='processingState._text'">
                                      {{'label.status' | translate}}
-                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!orderDetailFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="orderDetailFilters.reverse" class="fa fa-caret-down"></i>
                                 </span>
-                                <span ng-show="filter.sortBy =='startedAt'">
+                                <span ng-show="orderDetailFilters.filter.sortBy =='startedAt'">
                                      {{'label.date' | translate}}
-                                    <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                    <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="!orderDetailFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="orderDetailFilters.reverse" class="fa fa-caret-down"></i>
                                 </span>
                             </span> </a>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
@@ -42,7 +42,7 @@
                                 <a class="dropdown-item" href ng-click="sortBy('startedAt')" translate>label.date</a>
                             </div>
                         </div>
-                         <toggle-view ng-show="!overview"></toggle-view>
+                         <toggle-view ng-show="!orderDetailFilters.overview"></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block' :object.orders.length>0}">
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}" ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i>
@@ -74,7 +74,7 @@
                 </h5>
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pull-right">
                      <li class="nav-item">
-                        <a class="nav-link" ng-class="{active : !isOverview}" ng-click="viewJobChainOrder()">
+                        <a class="nav-link" ng-class="{active : !orderDetailFilters.overview}" ng-click="viewJobChainOrder()">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>button.jobChainOrders</span></span>
                         </a>
                     </li>
@@ -82,7 +82,7 @@
                         <span class="separator"></span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"  ng-class="{active : isOverview}" ng-click="viewJobChainDetail()">
+                        <a class="nav-link"  ng-class="{active : orderDetailFilters.overview}" ng-click="viewJobChainDetail()">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>button.overview</span></span>
                         </a>
                     </li>

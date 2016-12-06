@@ -2,7 +2,7 @@
     <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
         <div>
             <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 hide" ng-class="{'show': pageView=='grid'}"
-                 ng-repeat="cluster in filtered = (tree_data | filter: filterString:strict)  | orderBy: filter.sortBy:sortReverse">
+                 ng-repeat="cluster in tree_data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
                 <div class="box card">
                     <div class="box-body">
                         <div>
@@ -29,8 +29,6 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center m-t text-uppercase hide text-orange"
-                 ng-class="{'show': (filtered.length===0 && tree_data.length !==0)}" translate>message.noDataMatched</div>
         </div>
     </div>
     <div class="m-t-sm box p-a" ng-show="pageView=='list' && tree_data.length >0">

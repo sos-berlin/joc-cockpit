@@ -92,11 +92,12 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"  ui-sref="app.resources.agentClusters" ui-sref-active-eq="active">
+                <a class="nav-link" ng-click="navigateToResource()" ui-sref-active-eq="active">
                     <span class="nav-text" >
                         <img src="images/resources.png">
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                     </span>
+                    <span class="hide" ui-sref="app.resources.agentClusters"></span>
                     <span class="hide" ui-sref="app.resources.locks"></span>
                     <span class="hide" ui-sref="app.resources.processClasses"></span>
                     <span class="hide" ui-sref="app.resources.schedules"></span>

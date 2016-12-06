@@ -8,18 +8,18 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="changeStatus()" translate>
+                            <button class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': jobChainFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>
                                 button.allJobChains
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                            <button class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state"
                                     uib-btn-radio="'ACTIVE'"
-                                    ng-class="{'btn-primary': filter.state=='ACTIVE'}" ng-click="changeStatus()" translate>
+                                    ng-class="{'btn-primary': jobChainFilters.filter.state=='ACTIVE'}" ng-click="changeStatus()" translate>
                                 button.active
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.state"
+                            <button class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state"
                                     uib-btn-radio="'STOPPED'"
-                                    ng-class="{'btn-primary': filter.state=='STOPPED'}" ng-click="changeStatus()" translate>
+                                    ng-class="{'btn-primary': jobChainFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>
                                 button.stopped
                             </button>
                         </div>
@@ -28,16 +28,16 @@
                                 label.status
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="filter.state" uib-btn-radio="'ALL'"
-                                   ng-class="{'btn-primary': filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobChains
+                                <a class="dropdown-item" ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
+                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobChains
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.state"
+                                <a class="dropdown-item" ng-model="jobChainFilters.filter.state"
                                    uib-btn-radio="'ACTIVE'"
-                                   ng-class="{'btn-primary': filter.state=='ACTIVE'}" ng-click="changeStatus()" translate>button.active
+                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='ACTIVE'}" ng-click="changeStatus()" translate>button.active
                                 </a>
-                                <a class="dropdown-item" ng-model="filter.state"
+                                <a class="dropdown-item" ng-model="jobChainFilters.filter.state"
                                    uib-btn-radio="'STOPPED'"
-                                   ng-class="{'btn-primary': filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
+                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
                                 </a>
                             </div>
                         </div>
@@ -45,15 +45,15 @@
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span
                                     translate>label.sortBy</span>
                                 <span class="text-primary">
-                                    <span ng-show="filter.sortBy =='name'">
+                                    <span ng-show="jobChainFilters.filter.sortBy =='name'">
                                         {{'label.name' | translate}}
-                                        <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="!jobChainFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="jobChainFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
-                                    <span ng-show="filter.sortBy =='processClass'">
+                                    <span ng-show="jobChainFilters.filter.sortBy =='processClass'">
                                         {{'label.agentCluster' | translate}}
-                                        <i ng-show="!reverse" class="fa fa-caret-down"></i>
-                                        <i ng-show="reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="!jobChainFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="jobChainFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                 </span>
                             </a>
@@ -134,12 +134,12 @@
         <div id="rightPanel1">
             <div class="hide" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
-                    <div ng-repeat="branch in branchs track by $index">
-                        <div class="col-sm-12" ng-if="branch.path && branch.jobChains.length>0" style="margin-bottom: 10px">
-                            <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
+                    <div ng-repeat="(key, value) in allJobChains  | groupBy: 'path1'">
+                        <div class="col-sm-12" style="margin-bottom: 10px">
+                            <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                         </div>
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                             ng-repeat="jobChain in branch.jobChains | orderBy:filter.sortBy:reverse">
+                             ng-repeat="jobChain in value | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse">
                             <div class="box card">
                                 <div class="box-body">
                                     <div>
@@ -235,79 +235,79 @@
                                     </label>
                                 </th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobChain</span>
-                                    <i ng-show="propertyName == 'name' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'name' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'name' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'name' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('path')"><a><span translate>label.path</span>
-                                    <i ng-show="propertyName == 'path' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'path' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'path' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'path' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('state._text')"><a><span translate>label.state</span>
-                                    <i ng-show="propertyName == 'state._text' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'state._text' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'state._text' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'state._text' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('numOfNodes')"><a><span translate>label.noOfJobs</span>
-                                    <i ng-show="propertyName == 'numOfNodes' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'numOfNodes' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'numOfNodes' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'numOfNodes' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('processClass')"><a><span translate>label.agentCluster</span>
-                                    <i ng-show="propertyName == 'processClass' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'processClass' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'processClass' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'processClass' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain.ordersSummary.pending')"><a><span
                                         translate>label.orderPending</span>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.pending' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.pending' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.pending' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.pending' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain.ordersSummary.running')"><a><span
                                         translate>label.orderRunning</span>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.running' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.running' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.running' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.running' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain.ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.suspended' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.suspended' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.suspended' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.suspended' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain.ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.waitingForResource' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.waitingForResource' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.waitingForResource' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.waitingForResource' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain.ordersSummary.setback')"><a><span
                                         translate>label.orderSetbacks</span>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.setback' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.setback' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.setback' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.setback' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain.ordersSummary.blacklist')"><a><span
                                         translate>label.orderBlacklist</span>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.blacklist' && !reverse"
-                                       class="fa fa-caret-down "></i>
-                                    <i ng-show="propertyName == 'jobChain.ordersSummary.blacklist' && reverse"
-                                       class="fa fa-caret-up "></i></a>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.blacklist' && !jobChainFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.blacklist' && jobChainFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th class="noExl"></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in allJobChains | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize | orderBy:filter.sortBy:reverse" ng-class="{'light-bg':jobChain.show}">
+                            <tbody ng-repeat="jobChain in allJobChains | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse" ng-class="{'light-bg':jobChain.show}">
                             <tr>
                                 <td class="noExl">
                                     <label class="md-check">
@@ -491,31 +491,31 @@
                             </tr>
                             </tbody>
                         </table>
-                        <ul ng-show="allJobChains.length > pageSize" uib-pagination total-items="allJobChains.length"
-                            ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5"
+                        <ul ng-show="allJobChains.length > jobChainFilters.pageSize" uib-pagination total-items="allJobChains.length"
+                            ng-model="jobChainFilters.currentPage" items-per-page='jobChainFilters.pageSize' class="pagination-sm m-t-0" max-size="5"
                             ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                         <div class="pull-right" ng-show="allJobChains.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
-                                        ng-class="{'primary': pageSize=='10'}">10
+                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'10'"
+                                        ng-class="{'primary': jobChainFilters.pageSize=='10'}">10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
-                                        ng-class="{'primary': pageSize=='25'}">25
+                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'25'"
+                                        ng-class="{'primary': jobChainFilters.pageSize=='25'}">25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
-                                        ng-class="{'primary': pageSize=='50'}">50
+                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'50'"
+                                        ng-class="{'primary': jobChainFilters.pageSize=='50'}">50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
-                                        ng-class="{'primary': pageSize=='100'}">100
+                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'100'"
+                                        ng-class="{'primary': jobChainFilters.pageSize=='100'}">100
                                 </button>
                             </div>
                         </div>
 
                     </div>
                 </div>
-                <div ng-if="isLoading && !loading && allJobChains.length==0" class="text-center m-t h6">
-                    <span class="text-primary">"{{folderPath || '/'}}"</span>
+                <div ng-if="isLoading && !loading && folderPath && allJobChains.length==0" class="text-center m-t h6">
+                    <span class="text-primary">"{{folderPath}}"</span>
                     <span translate>message.emptyFolder</span>
                 </div>
 

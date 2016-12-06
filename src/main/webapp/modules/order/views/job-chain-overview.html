@@ -34,7 +34,7 @@
                                 </button>
                             </div>
                             <div ng-class="{'hide':selectedNodes.length>0}">
-                                <div class="inline" ng-show="pageView=='grid'">
+                                <div class="inline" ng-show="orderDetailFilters.pageView=='grid'">
                                     <div class="inline">
                                         <label class="md-check" ng-init="fitToScreen = false">
                                             <input data-ng-model="fitToScreen" type="checkbox"><i
@@ -67,9 +67,9 @@
                                                         </th>
                                                         <th ng-click="reverseSort=!reverseSort"><a><span translate>label.orderId</span>
                                                             <i ng-show="!reverseSort"
-                                                               class="fa fa-caret-down "></i>
+                                                               class="fa fa-caret-up "></i>
                                                             <i ng-show="reverseSort"
-                                                               class="fa fa-caret-up "></i></a>
+                                                               class="fa fa-caret-down "></i></a>
                                                         </th>
                                                     </tr>
                                                     </thead>
@@ -99,11 +99,11 @@
                                     </div>
                                 </div>
                                 <div class="btn-group m-l-sm">
-                                    <button class="btn btn-grey btn-sm" ng-model="pageView" uib-btn-radio="'grid'"
-                                            ng-class="{'btn-primary': pageView=='grid'}"><i class="fa fa-sitemap"></i>
+                                    <button class="btn btn-grey btn-sm" ng-model="orderDetailFilters.pageView" uib-btn-radio="'grid'"
+                                            ng-class="{'btn-primary': orderDetailFilters.pageView=='grid'}"><i class="fa fa-sitemap"></i>
                                     </button>
-                                    <button class="btn btn-grey btn-sm" ng-model="pageView"
-                                            uib-btn-radio="'list'" ng-class="{'btn-primary': pageView=='list'}"><i class="fa fa-bars"></i>
+                                    <button class="btn btn-grey btn-sm" ng-model="orderDetailFilters.pageView"
+                                            uib-btn-radio="'list'" ng-class="{'btn-primary': orderDetailFilters.pageView=='list'}"><i class="fa fa-bars"></i>
                                     </button>
                                 </div>
                             </div>
@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" ng-show="pageView=='grid'">
+            <div class="row" ng-show="orderDetailFilters.pageView=='grid'">
 
                 <div class="col-md-12 hidden-dropdown pull-right" >
 
@@ -121,7 +121,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="pageView=='grid'">
+            <div ng-if="orderDetailFilters.pageView=='grid'">
                 <div class="p-t-sm" >
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
@@ -135,7 +135,7 @@
                     </flow-diagram>
                 </div>
             </div>
-            <div class="hide m-t" ng-class="{'show': pageView=='list'}">
+            <div class="hide m-t" ng-class="{'show': orderDetailFilters.pageView=='list'}">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered  ">
                         <thead>

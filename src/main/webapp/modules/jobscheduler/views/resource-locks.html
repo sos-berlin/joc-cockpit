@@ -14,7 +14,7 @@
          <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
          <tree tree-data="treeLock"
                tree-control="my_tree_lock"
-               expand-on="expanding_property1"
+               expand-on="expanding_propertyL"
                on-select="treeHandler1L(branch)"
                on-click="treeHandlerL(branch)"
                expand-node="expandNodeL(branch)"
@@ -24,13 +24,14 @@
      </div>
  </div>
 <div id="rightPanel1">
-    <div class="hide" ng-class="{'show': isLoading}">
+    <div class="hide" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row m-t-sm" ng-class="{'show': pageView=='grid'}">
-            <div ng-repeat="branch in branchsL track by $index">
-                <div class="col-sm-12" ng-if="branch.path" style="margin-bottom: 10px">
-                    <span class="text inline"><i class="fa fa-folder-o"></i> {{::branch.path}}</span>
+            <div ng-repeat="(key, value) in allLocks  | groupBy: 'path1'">
+                <div class="col-sm-12" style="margin-bottom: 10px">
+                    <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                 </div>
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12 hide" ng-class="{'show': pageView=='grid'}" ng-repeat="lock in branch.locks | orderBy: propertyNameL:reverseL">
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                     ng-repeat="lock in value | orderBy: locksFilters.filter.sortBy:locksFilters.reverse">
                     <div class="box card">
                         <div class="box-body">
                             <div class="text-left block-ellipsis">
@@ -61,45 +62,45 @@
                         <thead>
                         <tr>
                             <th ng-click="sortByL('name')"><a><span translate>label.lockName</span>
-                                <i ng-show="propertyNameL == 'name' && !reverseL"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyNameL == 'name' && reverseL"
-                                   class="fa fa-caret-up "></i></a>
+                                <i ng-show="locksFilters.filter.sortBy == 'name' && !locksFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="locksFilters.filter.sortBy == 'name' && locksFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortByL('path')"><a><span translate>label.path</span>
-                                <i ng-show="propertyNameL == 'path' && !reverseL"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyNameL == 'path' && reverseL"
-                                   class="fa fa-caret-up "></i></a>
+                                <i ng-show="locksFilters.filter.sortBy == 'path' && !locksFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="locksFilters.filter.sortBy == 'path' && locksFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortByL('status')"><a><span translate>label.status</span>
-                                <i ng-show="propertyNameL == 'status' && !reverseL"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyNameL == 'status' && reverseL"
-                                   class="fa fa-caret-up "></i></a>
+                                <i ng-show="locksFilters.filter.sortBy == 'status' && !locksFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="locksFilters.filter.sortBy == 'status' && locksFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortByL('maxNonExclusive')"><a><span translate>label.maxNonExclusive</span>
-                                <i ng-show="propertyNameL == 'maxNonExclusive' && !reverseL"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyNameL == 'maxNonExclusive' && reverseL"
-                                   class="fa fa-caret-up "></i></a>
+                                <i ng-show="locksFilters.filter.sortBy == 'maxNonExclusive' && !locksFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="locksFilters.filter.sortBy == 'maxNonExclusive' && locksFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortByL('holders.tasks.length')"><a><span translate>label.numberLockHolder</span>
-                                <i ng-show="propertyNameL == 'holders.tasks.length' && !reverseL"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyNameL == 'holders.tasks.length' && reverseL"
-                                   class="fa fa-caret-up "></i></a>
+                                <i ng-show="locksFilters.filter.sortBy == 'holders.tasks.length' && !locksFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="locksFilters.filter.sortBy == 'holders.tasks.length' && locksFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
                             </th>
                             <th ng-click="sortByL('queue.length')"><a><span translate>label.numberQueued</span>
-                                <i ng-show="propertyNameL == 'queue.length' && !reverseL"
-                                   class="fa fa-caret-down "></i>
-                                <i ng-show="propertyNameL == 'queue.length' && reverseL"
-                                   class="fa fa-caret-up "></i></a>
+                                <i ng-show="locksFilters.filter.sortBy == 'queue.length' && !locksFilters.reverse"
+                                   class="fa fa-caret-up "></i>
+                                <i ng-show="locksFilters.filter.sortBy == 'queue.length' && locksFilters.reverse"
+                                   class="fa fa-caret-down "></i></a>
                             </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="lock in allLocks | orderBy: propertyNameL:reverseL | startFrom:(currentPage - 1) * pageSize | limitTo: pageSize">
+                        <tr ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * locksFilters.pageSize | limitTo: locksFilters.pageSize">
                             <td ng-bind="lock.name || '-'"></td>
                             <td>{{lock.path}}</td>
                             <td ng-bind="lock.status || '-'"></td>
@@ -120,33 +121,33 @@
                         </tr>
                         </tbody>
                     </table>
-                <ul ng-show="allLocks.length > pageSize" uib-pagination total-items="allLocks.length" ng-model="currentPage" items-per-page='pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <ul ng-show="allLocks.length > locksFilters.pageSize" uib-pagination total-items="allLocks.length" ng-model="locksFilters.currentPage" items-per-page='locksFilters.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-right" ng-show="allLocks.length > 10">
                         <div class="btn-group m-r-xxs">
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'10'"
-                                    ng-class="{'primary': pageSize=='10'}" >10
+                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'10'"
+                                    ng-class="{'primary': locksFilters.pageSize=='10'}" >10
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'25'"
-                                    ng-class="{'primary': pageSize=='25'}" >25
+                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'25'"
+                                    ng-class="{'primary': locksFilters.pageSize=='25'}" >25
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'50'"
-                                    ng-class="{'primary': pageSize=='50'}" >50
+                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'50'"
+                                    ng-class="{'primary': locksFilters.pageSize=='50'}" >50
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="pageSize" uib-btn-radio="'100'"
-                                    ng-class="{'primary': pageSize=='100'}">100
+                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'100'"
+                                    ng-class="{'primary': locksFilters.pageSize=='100'}">100
                             </button>
                         </div>
                     </div>
             </div>
         </div>
 
-        <div ng-if="isLoading && !loading && allLocks.length==0" class="text-center m-t h6">
-            <span class="text-primary">"{{folderPathL || '/'}}"</span>
+        <div ng-if="isLoading && !loading && folderPathL && allLocks.length==0" class="text-center m-t h6">
+            <span class="text-primary">"{{folderPathL}}"</span>
             <span translate>message.emptyFolder</span>
         </div>
-            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-            </div>
+    </div>
+    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>

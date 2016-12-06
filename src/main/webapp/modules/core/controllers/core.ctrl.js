@@ -24,10 +24,6 @@
             name: 'JobScheduler'
         };
 
-        vm.goBack = function () {
-            $window.history.back();
-        };
-
         /**
          * Exception Logging Service, currently only used by the $exceptionHandler
          * it preserves the default behaviour ( logging to the console) but
@@ -270,8 +266,8 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window','$state','$uibModalStack'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window,$state,$uibModalStack) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window','$state','$uibModalStack','CoreService'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window,$state,$uibModalStack,CoreService) {
         var vm = $scope;
         toasty.clear();
 
@@ -385,6 +381,20 @@
             })
         };
 
+        vm.navigateToResource = function(){
+             vm.resourceFilters = CoreService.getResourceTab();
+            if(vm.resourceFilters.state == 'agent'){
+                $state.go('app.resources.agentClusters');
+            }else if(vm.resourceFilters.state == 'processClass'){
+                $state.go('app.resources.processClasses');
+            }else if(vm.resourceFilters.state == 'schedules'){
+                $state.go('app.resources.schedules');
+            }else{
+                $state.go('app.resources.locks');
+            }
+
+        };
+
 
         $scope.$on('$stateChangeSuccess', function () {
             vm.checkNavHeader();
@@ -396,6 +406,33 @@
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
         });
+        vm.eventId = '';
+        vm.changeScheduler = function (jobScheduler) {
+
+            var obj = {};
+            obj.jobscheduler = [{"jobschedulerId": jobScheduler, "eventId": vm.eventId}
+            ];
+            //console.info("value:" + JSON.stringify(obj));
+
+            CoreService.getEvents(obj).then(function (res) {
+              //  console.info("success:" + JSON.stringify(res));
+                vm.events =res.events;
+            vm.eventId=vm.events[0].eventId;
+            $rootScope.$broadcast('event-started');
+              vm.changeScheduler(vm.schedulerIds.selected);
+
+            }, function (err) {
+               // console.info("error:" + JSON.stringify(err));
+            })
+
+        };
+
+        vm.changeScheduler(vm.schedulerIds.selected);
+  /*      $scope.$on('event-changed', function (event,agrs) {
+//console.info("event:" + agrs);
+                vm.changeScheduler(vm.schedulerIds.selected);
+                 });*/
+
     }
 
     ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$uibModalInstance", "$sce"];

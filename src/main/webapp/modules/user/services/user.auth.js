@@ -37,30 +37,32 @@
 
                     },
                     responseError: function (rejection) {
-                         if ($location.path()!='/login' && (rejection.status == 440 || rejection.status == 401)) {
+                        if ($location.path() != '/login' && (rejection.status == 440 || rejection.status == 401)) {
                             toasty.error({
-                                title: 'Login Timeout!',
+                                title: 'Session Timeout!',
                                 msg: 'Your session has expired and must log in again.',
                                 timeout: 0
                             });
                             SOSAuth.clearUser();
                             SOSAuth.clearStorage();
                             $location.path('/login');
+                        } else {
+                            if (rejection.data && rejection.data.error)
+                                toasty.error({
+                                    title: rejection.data.error.code || rejection.status,
+                                    msg: rejection.data.error.message || 'API expection',
+                                    timeout: 0
+                                });
                         }
-                            if($rootScope.clientLogFilter.state) {
-                                var error = {
-                                    message: rejection,
-                                    logTime: new Date(),
-                                    level: 'error'
-                                };
-                                $rootScope.clientLogs.push(error);
-                            }
-                        if(rejection.data && rejection.data.error)
-                           toasty.error({
-                                title: rejection.data.error.code || rejection.status,
-                                msg: rejection.data.error.message || 'API expection',
-                                timeout: 0
-                            });
+                        if ($rootScope.clientLogFilter.state) {
+                            var error = {
+                                message: rejection,
+                                logTime: new Date(),
+                                level: 'error'
+                            };
+                            $rootScope.clientLogs.push(error);
+                        }
+
                         return $q.reject(rejection);
                     },
                     response: function (response) {
@@ -68,7 +70,7 @@
                         var responseTimeStamp = new Date();
                         if ($location.path()!='/login' && (response.status == 440 || response.status == 401)) {
                             toasty.error({
-                                title: 'Login Timeout!',
+                                title: 'Session Timeout!',
                                 msg: "Your session has expired and must log in again.",
                                 timeout: 0
                             });
@@ -92,7 +94,7 @@
                                     level: 'debug'
                                 };
                                 $rootScope.clientLogs.push(info);
-                                var info = {
+                                info = {
                                     message: 'HTTP REQUEST STATUS onComplete '+response.status,
                                     logTime: new Date(),
                                     level: 'debug'

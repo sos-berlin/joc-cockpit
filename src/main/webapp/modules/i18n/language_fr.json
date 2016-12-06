@@ -2,6 +2,7 @@
   "button.viewAllAgentsDetails": "View all Agents details",
   "button.terminate": "Terminate",
   "button.restart": "Restart",
+  "button.abort": "Abort",
   "button.abortAndRestart": "Abort and Restart",
   "button.pause": "Pause",
   "button.continue": "Continue",

@@ -531,6 +531,7 @@
    "button.expandAll": "Expand All",
    "button.collapseAll": "Collapse All",
    "button.reset": "Reset",
+   "button.abort": "Abort",
    "button.openInNewTab": "Open in new tab",
    "button.copyToClipboard": "Copy to clipboard",
    "button.manageOrders": "Manage Orders",
