@@ -41,7 +41,7 @@
                             toasty.error({
                                 title: 'Session Timeout!',
                                 msg: 'Your session has expired and must log in again.',
-                                timeout: 0
+                                timeout: 10000
                             });
                             SOSAuth.clearUser();
                             SOSAuth.clearStorage();
@@ -51,7 +51,7 @@
                                 toasty.error({
                                     title: rejection.data.error.code || rejection.status,
                                     msg: rejection.data.error.message || 'API expection',
-                                    timeout: 0
+                                    timeout: 10000
                                 });
                         }
                         if ($rootScope.clientLogFilter.state) {
@@ -72,7 +72,7 @@
                             toasty.error({
                                 title: 'Session Timeout!',
                                 msg: "Your session has expired and must log in again.",
-                                timeout: 0
+                                timeout: 10000
                             });
                             SOSAuth.clearUser();
                             SOSAuth.clearStorage();

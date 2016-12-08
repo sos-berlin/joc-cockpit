@@ -168,7 +168,26 @@
                                                 <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTaskWithTimeout(job)" translate>button.terminateAllTasksWithTimeout</a>
                                         </div>
                                     </div>
-                                    <div class="text-sm text-left text-muted p-t-sm" ><span class="text-black _600 cursor"  ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></span> {{'label.runningTask' | translate}}</div>
+                                    <div class="text-sm text-left text-muted p-t-sm" >
+                                        <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
+                                        <i class="text-black">of</i>
+                                        <span class="text-black _600"  ng-bind="job.maxTasks || 0"></span>
+                                         {{'label.runningTask' | translate}}
+                                    </div>
+                                    <div class="text-sm  text-left text-muted p-t-xs">
+                                        <span>
+                                            <span class="text-black _600" ng-bind="job.ordersSummary.pending +job.ordersSummary.running+job.ordersSummary.setback+job.ordersSummary.suspended+job.ordersSummary.waitingForResource"></span>
+                                            <span  ng-bind="'label.orders' | translate"></span>
+                                        </span>
+                                    </div>
+                                    <div class="text-sm  text-left text-muted m-l p-t-xs">
+                                        <span class="text-black _600" ng-bind="job.ordersSummary.pending || 0"></span>
+                                        <span ng-bind="'label.pending' | translate"></span>
+                                        <span class="text-black _600 m-l" ng-bind="job.ordersSummary.running || 0"></span>
+                                        <span ng-bind="'label.running' | translate"></span>
+                                        <span class="text-black _600 m-l" ng-bind="job.ordersSummary.suspended || 0"></span>
+                                        <span ng-bind="'label.suspended' | translate"></span>
+                                    </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.status </span>:
                                         <span ng-class="colorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span>
@@ -230,6 +249,12 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy('ordersSummary.running')"><a><span translate>label.orderRunning</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -240,6 +265,12 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('ordersSummary.setback')"><a><span translate>label.orderSetbacks</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th class="noExl"></th>
@@ -264,12 +295,22 @@
                                         <span ng-if="!job.usedInJobChains">0</span>
                                     </td>
                                     <td>
-                                        <a ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></a>
-                                        <span ng-if="!job.numOfRunningTasks" ng-bind="job.numOfRunningTasks || 0 +' of '+job.maxTasks"></span>
+                                        <a ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
+                                            <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
+                                            <i class="text-black ">of</i>
+                                            <span class="text-black _600"  ng-bind="job.maxTasks || 0"></span>
+                                        </a>
+                                        <span ng-if="!job.numOfRunningTasks">
+                                            <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
+                                            <i class="text-black ">of</i>
+                                            <span class="text-black _600"  ng-bind="job.maxTasks || 0"></span>
+                                        </span>
                                     </td>
                                     <td ng-bind="job.ordersSummary.pending"></td>
+                                    <td ng-bind="job.ordersSummary.running"></td>
                                     <td ng-bind="job.ordersSummary.suspended"></td>
-                                    <td ng-bind="job.ordersSummary.queued"></td>
+                                    <td ng-bind="job.ordersSummary.waitingForResource"></td>
+                                    <td ng-bind="job.ordersSummary.setback"></td>
 
                                     <td class="noExl">
                                         <div class="btn-group dropdown">

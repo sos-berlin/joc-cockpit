@@ -62,11 +62,13 @@
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.noOfOrders </span>:
-                                <a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark text-hover-primary" ng-bind="schedule.usedByOrders.length || 0"></a>
+                                <a ng-if="schedule.usedByOrders.length>0" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark text-hover-primary" ng-bind="schedule.usedByOrders.length"></a>
+                                <span class="text-dark text-hover-primary" ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.noOfJobs </span>:
-                                <a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length || 0"></a>
+                                <a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-if="schedule.usedByJobs.length>0" class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length"></a>
+                                <span class="text-dark text-hover-primary" ng-if="!schedule.usedByJobs.length || schedule.usedByJobs.length==0"></span>
                             </div>
                         </div>
                         <div class="box-footer b-t">
@@ -155,10 +157,14 @@
                         <td ng-bind="schedule.path"></td>
                         <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
                                   ng-bind="schedule.state._text  | translate"></span></td>
-                        <td><a class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}"
-                               ng-bind="schedule.usedByOrders.length || 0"></a></td>
-                        <td><a class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}"
-                               ng-bind="schedule.usedByJobs.length || 0"></a></td>
+                        <td>
+                            <a ng-if="schedule.usedByOrders.length>0" class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length"></a>
+                            <span ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
+                        </td>
+                        <td>
+                            <a ng-if="schedule.usedByJobs.length>0" class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a>
+                            <span ng-if="!schedule.usedByJobs.length || schedule.usedByJobs.length==0">0</span>
+                        </td>
                         <td ng-bind="schedule.validityFrom || 'never'"></td>
                         <td ng-bind="schedule.validityTo || 'never'"></td>
                         <td ng-bind="schedule.subsituteBy || 'never'"></td>

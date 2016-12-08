@@ -120,9 +120,11 @@
                 var subHeaderHt = 58;
                 var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
+                $('.max-ht2').css('height', ht -50 + 'px');
                 $('.max-tree-ht').css('height', ht - 42 + 'px');
             } else {
                 $('.max-ht').css('height', 'auto');
+                $('.max-ht2').css('height', 'auto');
                 $('.max-tree-ht').css('height', 'auto');
             }
         };
@@ -194,34 +196,45 @@
         }
 
         vm.showLogWindow = function (order, task) {
-            var url = null;
-            try {
-                if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
-                    if (order && order.historyId && order.orderId)
-                        url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
-                    else if (task && task.taskId)
-                        url = '#/show_log?task_id=' + task.taskId;
-                    else {
-                        return;
-                    }
 
-                    newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
-                }
-                if (typeof newWindow == 'undefined' || newWindow == null) {
-                    popUpBlocker = true;
-                    throw new Error('PopUp Blocker is active');
-                } else {
-                    if (newWindow.document.title != 'JobScheduler - Logger') {
-                        newWindow.document.title = 'JobScheduler - Logger';
-                    }
-                    if (enableFocus) {
-                        newWindow.focus();
-                    }
-                }
-            } catch (e) {
-                popUpBlocker = true;
-                throw new Error(e.message);
-            }
+             if($window.localStorage.$SOS$ISNEWWINDOW == 'newWindow') {
+               var url = null;
+                 try {
+                     if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
+                         if (order && order.historyId && order.orderId)
+                             url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
+                         else if (task && task.taskId)
+                             url = '#/show_log?task_id=' + task.taskId;
+                         else {
+                             return;
+                         }
+
+                         newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
+                     }
+                     if (typeof newWindow == 'undefined' || newWindow == null) {
+                         popUpBlocker = true;
+                         throw new Error('PopUp Blocker is active');
+                     } else {
+                         if (newWindow.document.title != 'JobScheduler - Logger') {
+                             newWindow.document.title = 'JobScheduler - Logger';
+                         }
+                         if (enableFocus) {
+                             newWindow.focus();
+                         }
+                     }
+                 } catch (e) {
+                     popUpBlocker = true;
+                     throw new Error(e.message);
+                 }
+             }else{
+                 var url = null;
+                 if (order && order.historyId && order.orderId) {
+                     url = '#/order/log/'+order.historyId+'/'+order.orderId+'?jobChain='+order.jobChain;
+                 }else if (task && task.taskId){
+                     url = '#/job/log/'+task.taskId;
+                 }
+                 window.open(url, '_blank');
+             }
 
         };
 
@@ -243,7 +256,7 @@
                     return false;
             }
             return true;
-        }
+        };
 
         vm.showJob = function(job){
             var path = job.substring(0,job.lastIndexOf('/')) || '/';
@@ -266,11 +279,11 @@
         });
     }
 
-    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window','$state','$uibModalStack','CoreService'];
-    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window,$state,$uibModalStack,CoreService) {
+    HeaderCtrl.$inject = ['$scope', 'UserService', 'JobSchedulerService', '$interval', 'toasty', 'SOSAuth', '$rootScope', '$location', 'gettextCatalog', '$window', '$state', '$uibModalStack', 'CoreService', '$timeout'];
+    function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout) {
         var vm = $scope;
         toasty.clear();
-
+        vm.logout = false;
         vm.currentTime = moment();
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
 
@@ -297,8 +310,11 @@
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
                 vm.logout();
             }
-
-            $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
+            try {
+                $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
+            }catch(e){
+                $window.localStorage.clientLogs={};
+            }
         }, 1000);
 
         vm.refreshSession = function () {
@@ -316,6 +332,8 @@
         });
 
         vm.logout = function () {
+             //vm.changeEvent(vm.schedulerIds.selected);
+             vm.logout = true;
             UserService.logout();
             SOSAuth.clearUser();
             SOSAuth.clearStorage();
@@ -369,6 +387,7 @@
 
                         SOSAuth.save();
                         $state.reload();
+                        $rootScope.$broadcast('reloadUser');
 
                     } else {
                         toasty.error({
@@ -403,35 +422,52 @@
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
         });
 
-        $scope.$on('$destroy', function () {
-            $interval.cancel(interval);
-        });
+
         vm.eventId = '';
-        vm.changeScheduler = function (jobScheduler) {
+        var eventTimeOut = '';
+        var eventTimeOutFlag = false;
+        vm.changeEvent = function (jobScheduler) {
 
             var obj = {};
-            obj.jobscheduler = [{"jobschedulerId": jobScheduler, "eventId": vm.eventId}
-            ];
-            //console.info("value:" + JSON.stringify(obj));
+
+            if (vm.logout == true) {
+                obj.jobscheduler = [
+                    {"jobschedulerId": jobScheduler, "eventId": vm.eventId, "close": true}
+                ];
+            } else {
+                obj.jobscheduler = [
+                    {"jobschedulerId": jobScheduler, "eventId": vm.eventId}
+                ];
+            }
 
             CoreService.getEvents(obj).then(function (res) {
-              //  console.info("success:" + JSON.stringify(res));
-                vm.events =res.events;
-            vm.eventId=vm.events[0].eventId;
-            $rootScope.$broadcast('event-started');
-              vm.changeScheduler(vm.schedulerIds.selected);
+
+                vm.events = res.events;
+                vm.eventId = vm.events[0].eventId;
+                $rootScope.$broadcast('event-started');
+                vm.changeEvent(vm.schedulerIds.selected);
+                eventTimeOutFlag = false;
 
             }, function (err) {
-               // console.info("error:" + JSON.stringify(err));
+
+                if (eventTimeOutFlag == false && vm.logout == false && err.status == 420) {
+
+                    eventTimeOut = $timeout(function () {
+                        vm.changeEvent(vm.schedulerIds.selected);
+                        $timeout.cancel(eventTimeOut);
+                    }, 2000);
+                    eventTimeOutFlag = true;
+                }
+
             })
 
         };
 
-        vm.changeScheduler(vm.schedulerIds.selected);
-  /*      $scope.$on('event-changed', function (event,agrs) {
-//console.info("event:" + agrs);
-                vm.changeScheduler(vm.schedulerIds.selected);
-                 });*/
+        vm.changeEvent(vm.schedulerIds.selected);
+        $scope.$on('$destroy', function () {
+            $interval.cancel(interval);
+            $timeout.cancel(eventTimeOut);
+        });
 
     }
 

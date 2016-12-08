@@ -41,6 +41,14 @@
             if (!$window.localStorage.$SOS$DATEFORMAT) {
                 $window.localStorage.$SOS$DATEFORMAT = 'DD.MM.YYYY HH:mm:ss';
             }
+
+            if(!$window.localStorage.$SOS$MAXRECORDS){
+                $window.localStorage.$SOS$MAXRECORDS = 10000;
+            }
+
+            if(!$window.localStorage.$SOS$ISNEWWINDOW){
+                 $window.localStorage.$SOS$ISNEWWINDOW = 'newWindow';
+            }
             $resource("modules/i18n/language_" + $rootScope.locale.lang + ".json").get(function (data) {
                 gettextCatalog.setStrings($rootScope.locale.lang, data);
                 gettextCatalog.setCurrentLanguage($rootScope.locale.lang);

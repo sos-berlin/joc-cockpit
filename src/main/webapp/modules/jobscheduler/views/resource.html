@@ -77,34 +77,34 @@
                                 </div>
                         </div>
                     </div>
-                    <div class="hide" ng-class="{'show-block':state=='schedules'}">
+                    <div class="hide" ng-class="{'show-block':resourceFilters.state=='schedules'}">
                          <div class="inline" ng-class="{'hide':object.schedules.length>0}">
                              <div class="btn-group hidden-btn-group">
                                 <button class="btn btn-grey btn-sm" ng-model="schdeuleFilters.filter.state" uib-btn-radio="'all'"
-                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='all'}" ng-click="loadSchedules()" translate>button.allSchedules</span>
+                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules</span>
                                 </button>
                                 <button class="btn btn-grey btn-sm" ng-model="schdeuleFilters.filter.state"
-                                        uib-btn-radio="'ACTIVE'"
-                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='ACTIVE'}" ng-click="loadSchedules()" translate>button.active
+                                        uib-btn-radio="'active'"
+                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='active'}" ng-click="changeState()" translate>button.active
                                 </button>
                                 <button class="btn btn-grey btn-sm" ng-model="schdeuleFilters.filter.state"
-                                        uib-btn-radio="'INACTIVE'"
-                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='INACTIVE'}" ng-click="loadSchedules()" translate>button.inactive
+                                        uib-btn-radio="'inactive'"
+                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='inactive'}" ng-click="changeState()" translate>button.inactive
                                 </button>
                             </div>
                              <div class="btn-group dropdown hidden-dropdown">
                                 <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" ng-model="schdeuleFilters.filter.state" uib-btn-radio="'all'"
-                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='all'}" ng-click="loadSchedules()" translate>button.allSchedules</span>
+                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules</span>
                                         </a>
                                         <a class="dropdown-item" ng-model="schdeuleFilters.filter.state"
-                                                uib-btn-radio="'ACTIVE'"
-                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='ACTIVE'}" ng-click="loadSchedules()" translate>button.active</span>
+                                                uib-btn-radio="'active'"
+                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='active'}" ng-click="changeState()" translate>button.active</span>
                                         </a>
                                         <a class="dropdown-item" ng-model="schdeuleFilters.filter.state"
-                                                uib-btn-radio="'INACTIVE'"
-                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='INACTIVE'}" ng-click="loadSchedules()" translate>button.inactive</span>
+                                                uib-btn-radio="'inactive'"
+                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='inactive'}" ng-click="changeState()" translate>button.inactive</span>
                                         </a>
                                     </div>
                              </div>
@@ -200,9 +200,8 @@
         </div>
     </div>
 </div>
-<div class="scroll-y max-ht">
-    <div class="padding p-b-0">
-        <div class="row">
+<div class="padding">
+    <div class="row">
              <div class="col-md-12">
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                      <li class="nav-item">
@@ -236,8 +235,11 @@
                     </li>
                  </ul>
             </div>
-         </div>
-         <div class="m-t" ui-view></div>
+    </div>
+</div>
+<div class="scroll-y max-ht2">
+    <div class="padding p-b-0 p-t-0">
+        <div ui-view></div>
     </div>
 </div>
 

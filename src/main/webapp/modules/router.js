@@ -218,7 +218,7 @@
                 templateUrl: 'modules/order/views/orders-overview.html',
                 controller: 'OrderOverviewCtrl',
                 ncyBreadcrumb: {
-                    label: '{{ \'breadcrumb.orders\' | translate}}',
+                    label: '{{ \'breadcrumb.ordersOverview\' | translate}}',
                     parent: 'app.dashboard'
                 }
             })

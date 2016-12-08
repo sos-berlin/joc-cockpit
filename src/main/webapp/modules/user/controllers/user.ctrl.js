@@ -119,7 +119,8 @@
         vm.timezone = jstz().timezone_name;
         vm.perferences.zone = $window.localStorage.$SOS$ZONE;
         vm.perferences.dateFormat = $window.localStorage.$SOS$DATEFORMAT;
-
+        vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
+        vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
 
         vm.setLocale = function () {
             vm.locale = vm.perferences.locale;
@@ -140,6 +141,15 @@
         vm.setDateFormat = function () {
             $window.localStorage.$SOS$DATEFORMAT = vm.perferences.dateFormat;
             $rootScope.$broadcast('reloadDate');
+        };
+        vm.changePerferences = function () {
+            $window.localStorage.$SOS$ISNEWWINDOW = vm.perferences.isNewWindow;
+
+            if(isNaN(parseInt(vm.perferences.maxRecords))){
+                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
+            }else{
+                 $window.localStorage.$SOS$MAXRECORDS = parseInt(vm.perferences.maxRecords);
+            }
         };
 
 

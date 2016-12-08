@@ -218,6 +218,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
+                filter.limit=30;
                 var History = $resource('order/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);

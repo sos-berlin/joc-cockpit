@@ -45,12 +45,13 @@
                         preparePieData(vm.snapshot);
                     }
                 }
+
                 loadJobChain();
 
                 $scope.$on("reloadJobChain", function () {
                     loadJobChain();
                 });
-            function getSnapshot() {
+                function getSnapshot() {
                     if (SOSAuth.scheduleIds) {
                         var filter = {};
                         if (vm.jobChain) {
@@ -106,7 +107,6 @@
                         else if (d.data.key == 'pending') {
                             return 'rgba(255, 195, 0, 0.9)';
                         }
-
                     };
                 };
 
@@ -129,10 +129,6 @@
                 if (!CoreService.getSideView()) {
                     vm.hidePanel();
                 }
-
-
-                // startPolling();
-
             }]
         };
     }

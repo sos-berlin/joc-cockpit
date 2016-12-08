@@ -273,8 +273,8 @@
                             <tbody >
                             <tr ng-repeat="plan in plans | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
                                 <td>
-                                    <a class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:!plan.job!='NULL'}" ng-bind="plan.jobChain"></a>
-                                    <a class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:!plan.job=='NULL'}" ng-bind="plan.job"></a>
+                                    <a class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></a>
+                                    <a class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></a>
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
                                 <td>

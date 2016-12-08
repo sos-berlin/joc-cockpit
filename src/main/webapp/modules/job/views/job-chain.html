@@ -378,8 +378,8 @@
                                                 <th></th>
                                             </tr>
                                             </thead>
-                                            <tbody ng-repeat="node in jobChain.nodes | orderBy:state">
-                                            <tr>
+                                            <tbody >
+                                            <tr ng-repeat="node in jobChain.nodes | orderBy:state">
                                                 <td>
                                                     <span ng-style="{'padding-left' : node.padding+ 'px'}">
                                                <!--     <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
@@ -477,6 +477,18 @@
                                                             <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'skipped'"
                                                                ng-click="unskipNode(node,jobChain)" translate>button.unskipNode</a>
                                                         </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
+                                                <td colspan="4">
+
+                                                    <div class="text-sm text-l-c" ng-repeat="order in jobChain.fileOrderSources">
+                                                        <span  ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
+                                                        <span>{{'label.directory' | translate}}:</span> {{order.directory}}&nbsp;
+                                                        <span>{{'label.pattern' | translate}}:</span> {{order.regex}}&nbsp;
+                                                        <span>{{'label.delay' | translate}}:</span> {{order.delayAfterError}}&nbsp;
+                                                        <span>{{'label.repeat' | translate}}:</span> {{order.repeat}}
                                                     </div>
                                                 </td>
                                             </tr>

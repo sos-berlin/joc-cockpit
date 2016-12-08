@@ -125,27 +125,33 @@
                             <div class="text-center row">
                                 <div class="col-xs-2">
                                     <div class="" translate>label.pending</div>
-                                    <a id ="pending-id" href="#/orders/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
+                                    <a ng-if="snapshot.pending>0" href="#/orders/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending"></a>
+                                    <span ng-if="snapshot.pending.length==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class="" translate>label.running</div>
-                                    <a id ="running-id" href="#/orders/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
+                                    <a ng-if="snapshot.running>0" href="#/orders/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
+                                    <span ng-if="snapshot.running==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.suspended</div>
-                                    <a id ="suspended-id" href="#/orders/SUSPENDED" class="text-lg _600"  ng-class="{'dark-orange': snapshot.suspended>0}" ng-bind="snapshot.suspended || 0"></a>
+                                    <a ng-if="snapshot.suspended>0" href="#/orders/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended"></a>
+                                    <span ng-if="snapshot.suspended==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.suspended || 0"></span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.setback</div>
-                                    <a id ="setback-id" href="#/orders/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
+                                    <a ng-if="snapshot.setback>0" href="#/orders/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
+                                    <span ng-if="snapshot.setback==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.waitingForResource</div>
-                                    <a id ="waitingForResource-id" href="#/orders/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
+                                    <a ng-if="snapshot.waitingForResource>0" href="#/orders/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
+                                    <span ng-if="snapshot.waitingForResource==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.blacklist</div>
-                                    <a id ="blacklist-id" href="#/orders/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
+                                    <a ng-if="snapshot.blacklist>0" href="#/orders/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
+                                    <span ng-if="snapshot.blacklist==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></span>
                                 </div>
                             </div>
                         </div>
@@ -164,46 +170,39 @@
 
                             <div class="pull-right">
                                 <div class="btn-group m-l-sm" style="padding-right:5px">
-                                   <!-- <button class="btn btn-grey btn-sm" ng-model="filter.orderRange"
-                                            uib-btn-radio="'today'"
-                                            ng-class="{'btn-primary': filter.orderRange=='today'}"
-                                            ng-click="getOrderSummary();filter.label=''"
-                                            translate>
-                                        button.today
-                                    </button>-->
 
                                     <div class="btn-group dropdown ">
                                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
                                                 data-toggle="dropdown">
 
-                                            <span>  {{filter.label | translate}}</span>
+                                            <span>  {{dashboardFilters.filter.label | translate}}</span>
                                         </button>
 
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                             <a class="dropdown-item" ng-model="filter.orderRange"
-                                               ng-click="getOrderSummary();filter.label='button.today'"
+                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderRange"
+                                               ng-click="getOrderSummary();dashboardFilters.filter.label='button.today'"
                                                uib-btn-radio="'today'"
-                                               ng-class="{'btn-primary': filter.orderRange=='today'}" translate>button.today
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderRange=='today'}" translate>button.today
                                             </a>
-                                            <a class="dropdown-item" ng-model="filter.orderSummaryfrom"
-                                               ng-click="filter.orderRange='dateRange';getOrderSummary();filter.label='button.last1'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
+                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last1'"
                                                uib-btn-radio="'1h'"
-                                               ng-class="{'btn-primary': filter.orderSummaryfrom=='1h'}" translate>button.last1
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='1h'}" translate>button.last1
                                             </a>
-                                            <a class="dropdown-item" ng-model="filter.orderSummaryfrom"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
                                                uib-btn-radio="'12h'"
-                                               ng-click="filter.orderRange='dateRange';getOrderSummary();filter.label='button.last12'"
-                                               ng-class="{'btn-primary': filter.orderSummaryfrom=='12h'}" translate>button.last12
+                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last12'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='12h'}" translate>button.last12
                                             </a>
-                                            <a class="dropdown-item" ng-model="filter.orderSummaryfrom "
-                                               ng-click="filter.orderRange='dateRange';getOrderSummary();filter.label='button.last24'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom "
+                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last24'"
                                                uib-btn-radio="'1d'"
-                                               ng-class="{'btn-primary': filter.orderSummaryfrom=='1d'}" translate>button.last24
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='1d'}" translate>button.last24
                                             </a>
-                                            <a class="dropdown-item" ng-model="filter.orderSummaryfrom"
-                                               ng-click="filter.orderRange='dateRange';getOrderSummary();filter.label='button.lastWeak'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
+                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.lastWeak'"
                                                uib-btn-radio="'1w'"
-                                               ng-class="{'btn-primary': filter.orderSummaryfrom=='1w'}" translate>button.lastWeak
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='1w'}" translate>button.lastWeak
                                             </a>
                                         </div>
                                     </div>
@@ -219,12 +218,13 @@
 
                                 <div class="col-sm-offset-1 col-xs-5">
                                     <div class="" translate>label.successful</div>
-                                    <span class="text-lg _600 text-black-lt" ng-class="{'text-success':orderSummary.successful>0}" ng-bind="orderSummary.successful || 0"></span>
+                                    <span class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></span>
+                                    <span class="text-lg _600 text-black-lt"  ng-if="orderSummary.successful==0">0</span>
                                 </div>
                                 <div class="col-xs-5">
                                     <div class="" translate>label.failed</div>
-                                    <span class="text-lg _600 text-black-lt"  ng-class="{'crimson':orderSummary.failed>0}"
-                                        ng-bind="orderSummary.failed || 0"></span>
+                                    <span class="text-lg _600 crimson"  ng-if="orderSummary.failed>0" ng-bind="orderSummary.failed || 0"></span>
+                                    <span class="text-lg _600 text-black-lt"  ng-if="orderSummary.failed==0">0</span>
                                 </div>
                             </div>
                         </div>
@@ -240,12 +240,12 @@
                     </div>
                     <div class="box-tool">
                         <div class="btn-group m-l-sm">
-                            <button class="btn btn-grey btn-sm" ng-model="filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': filter.range=='today'}" ng-click="getDailyPlans()" translate>button.today
+                            <button class="btn btn-grey btn-sm" ng-model="dashboardFilters.filter.range" uib-btn-radio="'today'"
+                                    ng-class="{'btn-primary': dashboardFilters.filter.range=='today'}" ng-click="getDailyPlans()" translate>button.today
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="filter.range"
+                            <button class="btn btn-grey btn-sm" ng-model="dashboardFilters.filter.range"
                                     uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': filter.range=='next-24-hours'}" ng-click="getDailyPlans()"
+                                    ng-class="{'btn-primary': dashboardFilters.filter.range=='next-24-hours'}" ng-click="getDailyPlans()"
                                     translate>button.next24
                             </button>
                         </div>
@@ -253,7 +253,7 @@
                     <div class="box-body p-a">
                         <div class="hide" ng-class="{'show': totalPlanData > 0}">
                             <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
-                                    late-error="lateError" executed="executed" error="error" total="totalPlanData" day="filter.range"></daily-plan-overview>
+                                    late-error="lateError" executed="executed" error="error" total="totalPlanData" day="dashboardFilters.filter.range"></daily-plan-overview>
                         </div>
                         <div class="hide text-center m-t h6 text-u-c"
                             ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable

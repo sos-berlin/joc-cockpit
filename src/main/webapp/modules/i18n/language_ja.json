@@ -693,18 +693,17 @@
    "tab.runtime": "Run Time",
    "tooltip.exportInXLS": "export xlsx",
    "tooltip.useDefault": "Use as default view",
-"label.ordersSummary": "Orders Summary",
-   "label.selectCriteria":  "Select Criteria"
+   "label.ordersSummary": "Orders Summary",
+   "label.selectCriteria": "Select Criteria",
+   "breadcrumb.ordersOverview": "Orders Overview",
+   "label.pattern": "Pattern",
+   "label.delay": "Delay",
+   "label.showLogs": "Show Logs",
+   "label.newTab": "New Tab",
+   "label.newWindow": "New Window",
+   "label.fileOrders": "File Orders",
+   "label.maxNumberOfHistoryEntries": "Max. number of history entries"
 }
-
-
-
-
-
-
-
-
-
 
 
 

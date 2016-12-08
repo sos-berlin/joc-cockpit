@@ -36,7 +36,7 @@
                         <div class="box-body">
                             <div class="text-left block-ellipsis">
                                 <span>
-                                    <i class="fa fa-stop text-sm"></i>
+                                    <i class="fa fa-stop text-sm text-orange" ng-class="{'text-success': processClass.numOfProcesses>0 }"></i>
                                     <span class="text" ng-bind="processClass.name"></span>
                                 </span>
                             </div>
@@ -48,7 +48,12 @@
                                 </div>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses || 10"></span> {{'label.maxProcesses' | translate}}</div>
-                            <div class="text-sm  text-left text-muted p-t-xs" ><span class="text-black _600" ng-bind="processClass.numOfProcesses || 0"></span>  {{'label.noOfProcesses' | translate}}</div>
+                            <div class="text-sm  text-left text-muted p-t-xs" >
+                                <span ng-if="!processClass.numOfProcesses" class="text-black _600">0</span>
+                                 <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
+                                {{'label.noOfProcesses' | translate}}
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -87,10 +92,13 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="processClass in allProcessClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * processFilters.pageSize | limitTo: processFilters.pageSize">
-                        <td ng-bind="processClass.name"></td>
+                        <td ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name"></td>
                         <td ng-bind="processClass.path"></td>
                         <td ng-bind="processClass.maxProcesses || 30"></td>
-                        <td ng-bind="processClass.numOfProcesses || 0"></td>
+                        <td>
+                            <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
+                            <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
+                        </td>
                         <td  class="hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
                              <div class="btn-group dropdown">
                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">

@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'jobChain'}">
-<!--                        <div class="btn-group m-l-sm hidden-btn-group">
+                      <!--  <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="order.filter.state" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.state=='all'}" translate>button.allStatus
                             </button>
@@ -121,14 +121,13 @@
                             </div>
                         </div>-->
                         <div class="btn-group m-l-sm hidden-btn-group">
-
                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.date=='all'}" translate>button.all
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': task.filter.date=='-1h'}" translate>button.last1
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
+                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-12h'"
                                     ng-class="{'btn-primary': task.filter.date=='-12h'}" translate>button.last12
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
@@ -341,59 +340,59 @@
                         <thead>
                             <tr>
                                 <th ng-click="sortBy1('taskId')"><a><span translate>label.taskId</span>
-                                    <i ng-show="task.filter.sortBy == 'taskId' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'taskId' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'taskId' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'taskId' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy1('job')"><a><span translate>label.job</span>
-                                    <i ng-show="task.filter.sortBy == 'job' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'job' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'job' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'job' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy1('state._text')"><a><span translate>label.status</span>
-                                    <i ng-show="task.filter.sortBy == 'state._text' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'state._text' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'state._text' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'state._text' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
 <!--                                <th ng-click="sortBy1('agent')"><a><span translate>label.processedBy </span>
-                                    <i ng-show="task.filter.sortBy == 'agent' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'agent' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'agent' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'agent' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>-->
                                 <th ng-click="sortBy1('startTime')"><a><span translate>label.startTime</span>
-                                    <i ng-show="task.filter.sortBy == 'startTime' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'startTime' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'startTime' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'startTime' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy1('endTime')"><a><span translate>label.endTime</span>
-                                    <i ng-show="task.filter.sortBy == 'endTime' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'endTime' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'endTime' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'endTime' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy1('duration')">
                                     <a><span translate>label.duration</span>
-                                    <i ng-show="task.filter.sortBy == 'duration' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'duration' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'duration' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'duration' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy1('exitCode')"><a><span translate>label.exitCode</span>
-                                    <i ng-show="task.filter.sortBy == 'exitCode' && !task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'exitCode' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'exitCode' && task.filter.sortBy"
+                                    <i ng-show="task.filter.sortBy == 'exitCode' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
                         <tbody >
-                        <tr ng-repeat="jobHistory in jobHistorys | startFrom:(task.currentPage - 1) * task.pageSize | limitTo: task.pageSize | orderBy:task.filter.sortBy:task.filter.sortBy" class="cursor">
+                        <tr ng-repeat="jobHistory in jobHistorys | startFrom:(task.currentPage - 1) * task.pageSize | limitTo: task.pageSize | orderBy:task.filter.sortBy:task.sortReverse" class="cursor">
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-bind="jobHistory.taskId"></span>
                             </td>
@@ -444,6 +443,7 @@
         </div>
     </div>
 </div>
+{{jobHistorys}}
 <div ng-if="loading" class="loading-img1"></div>
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">

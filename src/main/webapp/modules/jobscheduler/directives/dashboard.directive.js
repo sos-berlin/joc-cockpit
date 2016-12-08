@@ -32,7 +32,7 @@
                 }
                 init();
 
-                var mainTemplate = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 330px;width: 100%;overflow: auto;"> ';
+                var mainTemplate = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 360px;width: 100%;overflow: auto;"> ';
 
                 var template = mainTemplate;
 

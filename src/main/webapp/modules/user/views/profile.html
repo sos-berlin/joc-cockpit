@@ -160,6 +160,25 @@
                            <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss - seconds</div>
                        </div>
                    </div>
+                    <div class="row m-t">
+                       <div class="col-sm-2 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
+                       <div class="col-sm-3">
+                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxRecords" ng-blur="upc.changePerferences()">
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-2 text-dark" translate>label.showLogs</div>
+                       <div class="col-sm-3">
+                           <label class="md-check w">
+                               <input type="radio" name="radio" ng-model="upc.perferences.isNewWindow" value="newWindow" ng-change="upc.changePerferences()">
+                               <i class="primary"></i> <span translate>label.newWindow</span>
+                           </label>
+                           <label class="md-check ">
+                               <input type="radio" name="radio" ng-model="upc.perferences.isNewWindow" value="newTab" ng-change="upc.changePerferences()">
+                               <i class="primary"></i> <span translate>label.newTab</span>
+                           </label>
+                       </div>
+                   </div>
                    <hr>
                    <h5 translate>label.roles</h5>
                    <div class="row m-t-sm">

@@ -10,8 +10,8 @@
 
     CoreService.$inject = ['$window','$resource', '$q'];
     function CoreService($window,$resource, $q) {
-        var _view = 'grid', _sideView = false, tabs ={};
-        tabs._jobChain ={};
+        var _view = 'grid', _sideView = false, tabs = {};
+        tabs._jobChain = {};
         tabs._jobChain.filter = {};
         tabs._jobChain.filter.state = 'ALL';
         tabs._jobChain.filter.sortBy = 'name';
@@ -21,7 +21,7 @@
         tabs._jobChain.expand_to = [];
         tabs._jobChain.selectedView = '';
 
-        tabs._job ={};
+        tabs._job = {};
         tabs._job.filter = {};
         tabs._job.filter.state = 'ALL';
         tabs._job.filter.sortBy = 'name';
@@ -31,7 +31,16 @@
         tabs._job.expand_to = [];
         tabs._job.selectedView = '';
 
-        tabs._daliyPlan ={};
+        tabs._dashboard = {};
+        tabs._dashboard.filter = {};
+        tabs._dashboard.filter.range = "today";
+        tabs._dashboard.filter.orderRange = "today";
+        tabs._dashboard.filter.orderSummaryfrom = "today";
+        tabs._dashboard.filter.orderSummaryto = "today";
+        tabs._dashboard.filter.orderRange = "today";
+        tabs._dashboard.filter.label = 'button.today';
+
+        tabs._daliyPlan = {};
         tabs._daliyPlan.filter = {};
         tabs._daliyPlan.filter.status = 'ALL';
         tabs._daliyPlan.filter.sortBy = 'processedPlan';
@@ -42,7 +51,7 @@
         tabs._daliyPlan.currentPage = '1';
         tabs._daliyPlan.selectedView = '';
 
-        tabs._order ={};
+        tabs._order = {};
         tabs._order.filter = {};
         tabs._order.filter.state = 'ALL';
         tabs._order.filter.sortBy = 'orderId';
@@ -52,17 +61,13 @@
         tabs._order.expand_to = [];
         tabs._order.selectedView = '';
 
-        tabs._order1 ={};
+        tabs._order1 = {};
         tabs._order1.filter = {};
-        tabs._order1.filter.state = 'ALL';
         tabs._order1.filter.sortBy = 'orderId';
         tabs._order1.reverse = false;
         tabs._order1.pageSize = '10';
-        tabs._order1.currentPage = '1';
-        tabs._order1.expand_to = [];
-        tabs._order1.selectedView = '';
 
-        tabs._orderDetail ={};
+        tabs._orderDetail = {};
         tabs._orderDetail.overview = true;
         tabs._orderDetail.filter = {};
         tabs._orderDetail.filter.sortBy = 'orderId';
@@ -73,8 +78,8 @@
         tabs._orderDetail.showErrorNodes = true;
         tabs._orderDetail.fitToScreen = false;
 
-        tabs._history ={};
-        tabs._history.order ={};
+        tabs._history = {};
+        tabs._history.order = {};
         tabs._history.type = 'jobChain';
         tabs._history.order.filter = {};
         tabs._history.order.filter.state = 'all';
@@ -83,8 +88,8 @@
         tabs._history.order.filter.sortReverse = false;
         tabs._history.order.pageSize = '25';
         tabs._history.order.currentPage = '1';
-        tabs._history.task ={};
-        tabs._history.task.filter ={};
+        tabs._history.task = {};
+        tabs._history.task.filter = {};
         tabs._history.task.filter.state = 'all';
         tabs._history.task.filter.date = '-1h';
         tabs._history.task.filter.sortBy = 'startTime';
@@ -93,16 +98,16 @@
         tabs._history.task.currentPage = '1';
 
 
-        tabs._resource ={};
-        tabs._resource.agents ={};
+        tabs._resource = {};
+        tabs._resource.agents = {};
         tabs._resource.agents.filter = {};
         tabs._resource.agents.filter.state = 'all';
         tabs._resource.agents.filter.sortBy = 'name';
         tabs._resource.agents.filter.reverse = false;
         tabs._resource.agents.pageSize = '25';
         tabs._resource.agents.currentPage = '1';
-        tabs._resource.locks ={};
-        tabs._resource.locks.filter ={};
+        tabs._resource.locks = {};
+        tabs._resource.locks.filter = {};
         tabs._resource.locks.filter.state = 'all';
         tabs._resource.locks.filter.sortBy = 'name';
         tabs._resource.locks.filter.reverse = false;
@@ -110,15 +115,15 @@
         tabs._resource.locks.currentPage = '1';
         tabs._resource.locks.selectedView = '';
         tabs._resource.processClasses = {};
-        tabs._resource.processClasses.filter ={};
+        tabs._resource.processClasses.filter = {};
         tabs._resource.processClasses.filter.state = 'all';
         tabs._resource.processClasses.filter.sortBy = 'name';
         tabs._resource.processClasses.filter.reverse = false;
         tabs._resource.processClasses.pageSize = '25';
         tabs._resource.processClasses.currentPage = '1';
         tabs._resource.processClasses.selectedView = '';
-        tabs._resource.schedules ={};
-        tabs._resource.schedules.filter ={};
+        tabs._resource.schedules = {};
+        tabs._resource.schedules.filter = {};
         tabs._resource.schedules.filter.state = 'all';
         tabs._resource.schedules.filter.sortBy = 'name';
         tabs._resource.schedules.filter.reverse = false;
@@ -135,7 +140,7 @@
         }
 
         if ($window.sessionStorage.$SOS$SIDEVIEW == 'true' || $window.sessionStorage.$SOS$SIDEVIEW == true) {
-             _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
+            _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
         } else {
 
             $window.sessionStorage.$SOS$SIDEVIEW = false;
@@ -187,11 +192,14 @@
             getHistoryTab: function () {
                 return tabs._history;
             },
+            getDashboardTab: function () {
+                return tabs._dashboard;
+            },
 
-             getResourceTab: function () {
+            getResourceTab: function () {
                 return tabs._resource;
             },
-              getEvents: function (filter) {
+            getEvents: function (filter) {
                 var deferred = $q.defer();
 
                 var Events = $resource('events');
