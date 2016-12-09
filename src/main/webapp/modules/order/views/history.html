@@ -257,8 +257,8 @@
                         <tbody ng-repeat="history in historys | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.filter.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
                         <tr  class="cursor">
                             <td ng-click="showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-up" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-down" ng-if="hidePanel && showPanel.historyId == history.historyId" ng-click="hidePanelFuc();$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-down" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel.historyId == history.historyId" ng-click="hidePanelFuc();$event.stopPropagation()"></i>
                                 <span ng-bind="history.orderId"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null)"><a ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="history.jobChain"></a></td>

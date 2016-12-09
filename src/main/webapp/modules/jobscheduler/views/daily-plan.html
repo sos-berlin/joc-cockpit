@@ -10,12 +10,12 @@
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today'}"
-                                    ng-click="range='period';getPlans()" translate>button.today
+                                    ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.today
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.range"
                                     uib-btn-radio="'next-24-hours'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours'}"
-                                    ng-click="range='period';getPlans();setDateRange('next-24-hours');"
+                                    ng-click="dailyPlanFilters.range='period';getPlans();setDateRange('next-24-hours');"
                                     translate>button.next24
                             </button>
                         </div>
@@ -23,10 +23,10 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today'}" ng-click="range='period';getPlans()" translate>button.today
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today'}" ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.today
                                 </a>
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'next-24-hours'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours'}" ng-click="range='period';getPlans()" translate>button.next24
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours'}" ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.next24
                                 </a>
                             </div>
                         </div>
@@ -192,15 +192,6 @@
                         </div>
                     </div>
 
-                    <!--<div class="hide text-center m-t text-uppercase text-orange"
-                         ng-class="{'show': (temp.length>0 && (data.length ==0))}" translate>message.noDataMatched
-                    </div>-->
-                      <div class=" text-center m-t text-uppercase "
-                     ng-if="data.length==0" translate>message.noDataFound
-                </div>
-                    <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
-                        message.noPlanFound
-                    </div>
                 </div>
             </div>
             <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
@@ -318,16 +309,14 @@
               <!--  <div class=" text-center m-t text-uppercase text-orange"
                      ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
                 </div>-->
-                <div class=" text-center m-t text-uppercase "
-                     ng-if="plans.length==0" translate>message.noDataFound
-                </div>
-                <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
-                    message.noPlanFound
-                </div>
             </div>
-
         </div>
-
+        <div class=" text-center m-t text-uppercase "
+             ng-if="plans.length==0" translate>message.noDataFound
+        </div>
+        <div ng-if="temp.length==0 && isLoading" class="text-center m-t h6 text-uppercase" translate>
+            message.noPlanFound
+        </div>
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>

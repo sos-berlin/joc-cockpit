@@ -17,7 +17,7 @@
                 width: '@',
                 height: '@'
             },
-            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', '$interval', function (OrderService, $scope, CoreService, SOSAuth, $interval) {
+            controller: ['$scope', 'CoreService', 'SOSAuth', '$interval', function ($scope, CoreService, SOSAuth, $interval) {
                 var vm = $scope;
                 var ordersData = [];
 
@@ -51,27 +51,6 @@
                 $scope.$on("reloadJobChain", function () {
                     loadJobChain();
                 });
-                function getSnapshot() {
-                    if (SOSAuth.scheduleIds) {
-                        var filter = {};
-                        if (vm.jobChain) {
-                            filter.orders = [];
-                            filter.orders.push({jobChain: vm.jobChain.path});
-                        }
-                        vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-                        filter.jobschedulerId = vm.schedulerIds.selected;
-                        OrderService.getSnapshot(filter).then(function (res) {
-                            vm.snapshot = res;
-                            preparePieData(res);
-                        }, function (err) {
-
-                        });
-                    }
-                }
-
-
-                //getSnapshot();
-
 
                 vm.width = 500;
                 vm.height = 500;

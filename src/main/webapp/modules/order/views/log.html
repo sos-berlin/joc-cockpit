@@ -2,10 +2,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="padding">
-                <div class="text-right ">
-                    <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs text-c" ncy-breadcrumb></span>
-                    </div>
+                <div>
+                    <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb-last></span>
+
                 </div>
             </div>
         </div>
@@ -30,15 +29,9 @@
             <div class="col-md-12">
                 <div class="box white">
                     <div class="box-body m-t-sm p-a p-b-xs">
-                      <pre class="log">
-<!--                           <div style="margin-top: -60px;">
-                               <div style="margin-bottom: -20px;" ng-repeat="log in logs | filter:search">
-                                   <span ng-class="logClass(log)">{{log}}</span>
-                               </div>
-                           </div>-->
+                       <pre class="log">
                           <span ng-bind-html="logs"></span>
                        </pre>
-
                    </div>
                 </div>
             </div>

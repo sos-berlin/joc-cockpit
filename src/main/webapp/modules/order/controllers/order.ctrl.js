@@ -22,7 +22,7 @@
         vm.orderDetailFilters.overview = false;
 
         function loadJobOrderV(obj) {
-            OrderService.getJobOrders(obj).then(function (res) {
+            OrderService.getOrdersP(obj).then(function (res) {
                 var data = [];
                 if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
                     angular.forEach(vm.orders, function (orders) {
@@ -48,7 +48,7 @@
 
 
         function loadOrders(obj) {
-            OrderService.getJobOrdersP(obj).then(function (result) {
+            OrderService.getOrdersP(obj).then(function (result) {
                 vm.orders = result.orders;
                 vm.isLoading = true;
                 loadJobOrderV(obj);
@@ -931,7 +931,7 @@
 
         $scope.$on('$stateChangeSuccess', function (event, toState) {
             vm.object = {};
-            vm.isOverview = toState.url == '/overview';
+            vm.orderDetailFilters.isOverview = toState.url == '/overview';
         });
 
 
@@ -945,9 +945,8 @@
 
         vm.sortBy = function (propertyName) {
             vm.object.orders = [];
-            vm.reverse = !vm.reverse;
-            vm.propertyName = propertyName;
-            vm.filter.sortBy = propertyName;
+            vm.orderDetailFilters.reverse = !vm.orderDetailFilters.reverse;
+            vm.orderDetailFilters.filter.sortBy = propertyName;
         };
 
 
@@ -1281,11 +1280,9 @@
             field: "name"
         };
 
-
         vm.exportToExcel = function () {
             $rootScope.$broadcast('exportData');
         };
-
 
         /**
          * Function to initialized tree view
@@ -1296,13 +1293,11 @@
                 compact: true,
                 types: ['ORDER']
             }).then(function (res) {
-                vm.calculateHeight();
                 vm.filterTree = res.folders;
                 if (vm.isEmpty(vm.orderFilters.expand_to)) {
                     vm.tree = angular.copy(vm.filterTree);
                     filteredTreeData();
                 } else {
-
                     vm.tree = vm.orderFilters.expand_to;
                     previousTreeState();
                 }
@@ -1313,32 +1308,26 @@
                 vm.isLoading = true;
             });
         }
-
         initTree();
-
 
         vm.treeHandler = function (data) {
             navFullTree();
             data.selected1 = true;
             data.orders = [];
-
             vm.allOrders = [];
             vm.loading = true;
             expandFolderData(data);
-
         };
         vm.treeHandler1 = function (data) {
             if (data.expanded) {
                 data.folders = orderBy(data.folders, 'name');
             }
-
         };
         vm.expandNode = function (data) {
             navFullTree();
             vm.allOrders = [];
             vm.loading = true;
             vm.folderPath = data.name || '/';
-
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -1356,7 +1345,6 @@
             });
         };
         vm.collapseNode = function (data) {
-
             function recursive(data) {
                 data.expanded = !1;
                 angular.forEach(data.folders, function (a) {
@@ -1368,7 +1356,6 @@
                     }
                 });
             }
-
             recursive(data);
         };
 
@@ -1382,7 +1369,7 @@
                 angular.forEach(vm.orders, function (value) {
                     if (data.path == value.path.substring(0, value.path.lastIndexOf('/')) || data.path == value.path.substring(0, value.path.lastIndexOf('/') + 1)) {
                         data.orders.push(value);
-                         value.path1 = data.path;
+                        value.path1 = data.path;
                         vm.allOrders.push(value);
                     }
                 });
@@ -1445,7 +1432,7 @@
                 if (data.orders.length > 0) {
                     vm.allOrders = [];
                     angular.forEach(data.orders, function (order) {
-                         order.path1 = data.path;
+                        order.path1 = data.path;
                         vm.allOrders.push(order);
                     });
                 }
@@ -1455,7 +1442,7 @@
                 vm.folderPath = data.name || '/';
                 if (data.orders.length > 0) {
                     angular.forEach(data.orders, function (order) {
-                         order.path1 = data.path;
+                        order.path1 = data.path;
                         vm.allOrders.push(order);
                     });
                 }
@@ -1490,16 +1477,16 @@
 
                 vm.folderPath = data.name || '/';
                 angular.forEach(data.orders, function (a) {
-                     a.path1 = data.path;
+                    a.path1 = data.path;
                     vm.allOrders.push(a);
                 });
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
-                    checkExpand(value);
-                    if (data.path == '/') {
-                        data.selected1 = false;
-                    }
+                checkExpand(value);
+                if (data.path == '/') {
+                    data.selected1 = false;
+                }
             });
         }
 
@@ -1519,7 +1506,7 @@
             });
         }
 
-       function checkExpandTreeForUpdates(data) {
+        function checkExpandTreeForUpdates(data) {
 
             if (data.selected1) {
                 var obj = {};
@@ -2918,10 +2905,8 @@
         };
 
         vm.jobHistory = jobHistory;
-        function jobHistory() {
-
+        function jobHistory(filter) {
             vm.isLoading = false;
-            var filter = {jobschedulerId: $scope.schedulerIds.selected};
 
             filter.dateFrom = vm.task.filter.date == 'all' ? undefined : vm.task.filter.date;
             if (selectedFiltered2) {
@@ -2929,12 +2914,8 @@
             }
             filter.limit =parseInt($window.localStorage.$SOS$MAXRECORDS);
             TaskService.histories(filter).then(function (res) {
-                vm.temp1 = res.history;
-                if (res.history && res.history.length > 0) {
-                    filterJobData();
-                } else {
-                    vm.jobHistorys = res.history;
-                }
+                vm.jobHistorys = res.history;
+                filterJobData();
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -2943,7 +2924,7 @@
 
         vm.init = function (filter) {
             if (vm.historyFilters.type == 'job') {
-                jobHistory();
+                jobHistory(filter);
             } else {
                 filter.dateFrom = vm.order.filter.date == 'all' ? undefined : vm.order.filter.date;
                 if (selectedFiltered1) {
@@ -2951,12 +2932,8 @@
                 }
                 filter.limit =parseInt($window.localStorage.$SOS$MAXRECORDS);
                 OrderService.histories(filter).then(function (res) {
-                    vm.temp = res.history;
-                    if(res.history && res.history.length>0) {
-                        filterData();
-                    }else{
-                        vm.historys = res.history;
-                    }
+                    vm.historys = res.history;
+                    filterData();
                     vm.isLoading = true;
                 }, function () {
                     vm.isLoading = true;
@@ -2971,7 +2948,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             if (vm.historyFilters.type == 'job') {
                 TaskService.histories(obj).then(function (res) {
-                    vm.temp1 = res.history;
+                    vm.jobHistorys = res.history;
                      vm.loading = false;
                     filterJobData();
 
@@ -2980,7 +2957,7 @@
                 });
             } else {
                 OrderService.histories(obj).then(function (res) {
-                    vm.temp = res.history;
+                    vm.historys = res.history;
                      vm.loading = false;
                     filterData();
                 },function(){
@@ -3143,18 +3120,11 @@
         vm.init({jobschedulerId: $scope.schedulerIds.selected});
 
         function filterData() {
-
-            vm.historys = vm.temp;
-
             checkIgnoreList();
         }
 
         function filterJobData() {
-
-            vm.jobHistorys = vm.temp1;
-
             checkJobIgnorelist();
-
         }
 
         function checkIgnoreList() {

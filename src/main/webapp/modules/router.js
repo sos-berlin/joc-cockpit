@@ -228,8 +228,7 @@
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
                 ncyBreadcrumb: {
-                    label: '{{ \'breadcrumb.orderLogs\' | translate}}',
-                    parent: 'app.history'
+                    label: '{{ \'breadcrumb.orderLogs\' | translate}}'
                 }
             })
             .state('app.jobLog', {
@@ -237,8 +236,7 @@
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
                 ncyBreadcrumb: {
-                    label: '{{ \'breadcrumb.taskLogs\' | translate}}',
-                    parent: 'app.history'
+                    label: '{{ \'breadcrumb.taskLogs\' | translate}}'
                 }
             })
             .state('app.resources', {

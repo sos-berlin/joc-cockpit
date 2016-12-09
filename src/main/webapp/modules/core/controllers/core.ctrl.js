@@ -371,6 +371,12 @@
 
 
         vm.changeScheduler = function (jobScheduler) {
+             var obj = {};
+
+            obj.jobscheduler = [
+                    {"jobschedulerId": vm.schedulerIds.jobschedulerIds, "eventId": vm.eventId, "close": true}
+            ];
+            CoreService.getEvents(obj);
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function (permission) {
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res) {
@@ -445,7 +451,7 @@
                 vm.events = res.events;
                 vm.eventId = vm.events[0].eventId;
                 $rootScope.$broadcast('event-started');
-                vm.changeEvent(vm.schedulerIds.selected);
+                vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                 eventTimeOutFlag = false;
 
             }, function (err) {
@@ -453,7 +459,7 @@
                 if (eventTimeOutFlag == false && vm.logout == false && err.status == 420) {
 
                     eventTimeOut = $timeout(function () {
-                        vm.changeEvent(vm.schedulerIds.selected);
+                        vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                         $timeout.cancel(eventTimeOut);
                     }, 2000);
                     eventTimeOutFlag = true;
@@ -463,7 +469,7 @@
 
         };
 
-        vm.changeEvent(vm.schedulerIds.selected);
+        vm.changeEvent(vm.schedulerIds.jobschedulerIds);
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
             $timeout.cancel(eventTimeOut);

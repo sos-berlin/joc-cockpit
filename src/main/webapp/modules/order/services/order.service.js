@@ -36,9 +36,9 @@
                 return deferred.promise;
             },
 
-            getJobOrdersP: function (filter) {
+            getOrderP: function (filter) {
                 var deferred = $q.defer();
-                var Orders = $resource('orders/p');
+                var Orders = $resource('order/p');
                 Orders.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -46,9 +46,9 @@
                 });
                 return deferred.promise;
             },
-            getJobOrders: function (filter) {
+            getOrder: function (filter) {
                 var deferred = $q.defer();
-                var Orders = $resource('orders');
+                var Orders = $resource('order');
                 Orders.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
