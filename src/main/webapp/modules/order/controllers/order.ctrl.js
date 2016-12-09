@@ -1009,8 +1009,6 @@
 
             if (order.fromDate) {
                 obj.at = moment.utc(order.fromDate).format();
-            } else {
-                obj.at = 'now';
             }
 
             if (paramObject.length > 0) {
@@ -2907,6 +2905,10 @@
         vm.jobHistory = jobHistory;
         function jobHistory(filter) {
             vm.isLoading = false;
+            if(!filter){
+
+               filter = {jobschedulerId: $scope.schedulerIds.selected};
+            }
 
             filter.dateFrom = vm.task.filter.date == 'all' ? undefined : vm.task.filter.date;
             if (selectedFiltered2) {
