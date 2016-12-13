@@ -49,50 +49,7 @@
                                             <span translate>label.showErrorNodes</span>
                                         </label>
                                     </div>
-                                    <div class="btn-group dropdown m-r-sm "  >
-                                        <button class="btn btn-sm btn-grey dropdown-toggle" data-toggle="dropdown"
-                                                translate>label.orders
-                                        </button>
-                                        <div id="dDorders" class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-left" style="margin-right: -50px">
 
-                                            <div class="table-responsive" style="height: 200px;width: 400px">
-                                                <table class="table table-hover table-bordered " id="orderTableId">
-                                                    <thead>
-                                                    <tr>
-                                                        <th class="noExl">
-                                                            <label class="md-check">
-                                                                <input type="checkbox" ng-model="allOrdersCheck.orders" ng-click="checkAllOrders()">
-                                                                <i class="primary"></i>
-                                                            </label>
-                                                        </th>
-                                                        <th ng-click="reverseSort=!reverseSort"><a><span translate>label.orderId</span>
-                                                            <i ng-show="!reverseSort"
-                                                               class="fa fa-caret-up "></i>
-                                                            <i ng-show="reverseSort"
-                                                               class="fa fa-caret-down "></i></a>
-                                                        </th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    <tr ng-repeat="order in orders | orderBy: 'orderId':reverseSort">
-                                                        <td class="noExl">
-                                                            <label class="md-check">
-                                                                <input type="checkbox" data-checklist-model="obj.orders" data-checklist-value="order">
-                                                                <i class="primary"></i>
-                                                            </label>
-                                                        </td>
-                                                        <td>
-                                                            <span class="text-dark">{{order.orderId}}</span>
-                                                            <span ng-if="order.title">-</span>
-                                                            <i class="text-muted">{{order.title}}</i>
-                                                        </td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                                </div>
-                                            </div>
-                                        </div>
                                     <div class="light p-r-xs inline w-lg hidden-btn-group">
                                         <span class="p-r-sm " translate>label.zoom</span>
                                         <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
@@ -131,7 +88,9 @@
                                   on-action="onAction(path,node,action)"
                                   show-configuration="showConfiguration(type,path,name)"
                                   orders="fOrders"
-                                  get-orders = "getOrders(filter)">
+                                  get-orders = "getOrders(filter)"
+                                  permission="permission"
+                                  on-order-action = "onOrderAction(order, action)">
                     </flow-diagram>
                 </div>
             </div>
@@ -248,21 +207,21 @@
                                              role="menu">
                                             <a class="dropdown-item" ng-click="showConfiguration('job',node.job.path,node.job.name)" translate>button.showConfiguration</a>
                                             <a class="dropdown-item bg-hover-color"
-                                               ng-if="node.job.state._text.toLowerCase() != 'stopped'"
+                                               ng-if="node.job.state._text.toLowerCase() != 'stopped' && permission.Job.stop"
                                                ng-click="stopJob(node)"
                                                translate>button.stopJob</a>
-                                            <a class="dropdown-item" ng-if="node.job.state._text.toLowerCase() == 'stopped'"
+                                            <a class="dropdown-item" ng-if="node.job.state._text.toLowerCase() == 'stopped' && permission.Job.unstop"
                                                ng-click="unstopJob(node)" translate>button.unstopJob</a>
                                             <a class="dropdown-item bg-hover-color"
-                                               ng-if="node.state._text.toLowerCase() != 'stopped'"
-                                               ng-click="stopNode(node)" translate>button.stopNode</a>
-                                            <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'stopped'"
-                                               ng-click="unStopNode(node)" translate>button.unstopNode</a>
-                                            <a class="dropdown-item" ng-if="node.state._text.toLowerCase() != 'skipped'"
-                                               ng-click="skipNode(node)"
+                                               ng-if="node.state._text.toLowerCase() != 'stopped' && permission.JobChain.stopJobChainNode"
+                                               ng-click="stopNode(node,jobChain)" translate>button.stopNode</a>
+                                            <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'stopped' && permission.JobChain.unstopJobChainNode"
+                                               ng-click="unStopNode(node,jobChain)" translate>button.unstopNode</a>
+                                            <a class="dropdown-item" ng-if="node.state._text.toLowerCase() != 'skipped' && permission.JobChain.skipJobChainNode"
+                                               ng-click="skipNode(node,jobChain)"
                                                translate>button.skipNode</a>
-                                            <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'skipped'"
-                                               ng-click="unskipNode(node)" translate>button.unskipNode</a>
+                                            <a class="dropdown-item" ng-if="node.state._text.toLowerCase() == 'skipped' && permission.JobChain.unskipJobChainNode"
+                                               ng-click="unskipNode(node,jobChain)" translate>button.unskipNode</a>
                                         </div>
                                     </div>
                                 </td>

@@ -17,7 +17,7 @@
                 width: '@',
                 height: '@'
             },
-            controller: ['$scope', 'CoreService', 'SOSAuth', '$interval', function ($scope, CoreService, SOSAuth, $interval) {
+            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', function (OrderService, $scope, CoreService, SOSAuth) {
                 var vm = $scope;
                 var ordersData = [];
 
@@ -51,6 +51,26 @@
                 $scope.$on("reloadJobChain", function () {
                     loadJobChain();
                 });
+
+                function getSnapshot() {
+                    if (SOSAuth.scheduleIds) {
+                        var filter = {};
+                        vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+                        filter.jobschedulerId = vm.schedulerIds.selected;
+                        OrderService.getSnapshot(filter).then(function (res) {
+                            vm.snapshot = res.orders;
+                            preparePieData(vm.snapshot);
+                        });
+                    }
+                }
+
+                function loadSnapshot() {
+
+                    if (!SOSAuth.jobChain) {
+                        getSnapshot();
+                    }
+                }
+                loadSnapshot();
 
                 vm.width = 500;
                 vm.height = 500;
@@ -89,6 +109,10 @@
                     };
                 };
 
+                vm.$on('reloadSnapshot', function () {
+                    loadSnapshot();
+                });
+
                 vm.$on('elementClick.directive', function (angularEvent, event) {
                     $rootScope.$broadcast('orderState', event.label);
                 });
@@ -102,7 +126,6 @@
                     $('#rightPanel').addClass('m-l-0 fade-in');
                     $('#leftPanel').hide();
                     $('.sidebar-btn').show();
-
                 };
 
                 if (!CoreService.getSideView()) {
@@ -113,9 +136,8 @@
     }
 
 
-    flowDiagram.$inject = ["$compile", "$rootScope", "$window"];
-
-    function flowDiagram($compile, $rootScope, $window) {
+    flowDiagram.$inject = ["$compile", "$rootScope", "$window","gettextCatalog"];
+    function flowDiagram($compile, $rootScope, $window,gettextCatalog) {
         return {
             restrict: 'E',
             transclude: true,
@@ -183,14 +205,17 @@
 
 
                     angular.forEach(scope.jobChain.nodes, function (item, index) {
-
+                         scope.startId = "start";
+                        if(item.name=='start'){
+                            scope.startId = "start"+index;
+                        }
                         if (index == 0) {
                             avatarTop = top + rectH / 2 + 5 - avatarW / 2;
                             var startTop = avatarTop - 25;
                             var startLeft = avatarW / 2 - "Start".length * 3;
                             rectangleTemplate = rectangleTemplate + '<span id="lbStart" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
                             + '" translate>label.start</span>' +
-                            '<span id="start" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
+                            '<span id="'+scope.startId+'" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
                         }
 
@@ -489,7 +514,7 @@
                         var compiledHtml = $compile(rectangleTemplate)(scope);
                         element.append(compiledHtml);
                         if (maxUTop < iTop) {
-                            var rect = document.getElementById('start');
+                            var rect = document.getElementById(scope.startId);
                             var top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
                             rect.style['top'] = top - maxUTop + iTop + 'px';
@@ -556,9 +581,11 @@
                 'onAction': '&',
                 'showConfiguration': '&',
                 'orders': '=',
-                'getOrders': '&'
+                'getOrders': '&',
+                'permission': '=',
+                'onOrderAction':'&'
             },
-            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', function ($scope, $interval, gettextCatalog, $timeout) {
+            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout','$filter', function ($scope, $interval, gettextCatalog, $timeout,$filter) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.object = {};
@@ -590,7 +617,7 @@
                             return;
                         }
                         var div1 = document.getElementById('tbOrderSource');
-                        var div2 = document.getElementById('start');
+                        var div2 = document.getElementById(vm.startId);
                         var div3 = document.getElementById(vm.jobChain.nodes[0].name);
 
 
@@ -659,7 +686,7 @@
                         }
                         ////console.log("top: " + y1 + " left: " + x1 + " width: " + div1.clientWidth + " height: " + div2.clientHeight);
                         if (index == 0) {
-                            var avatar = document.getElementById('start');
+                            var avatar = document.getElementById(vm.startId);
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
                             //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
@@ -1131,10 +1158,7 @@
                                         //console.log("Error " + JSON.stringify(err));
                                     });
                                 }
-
                             }
-
-
                         });
 
                         var btnId4 = '#btn4' + item.name.replace(':', '__');
@@ -1148,7 +1172,7 @@
 
                         if (vm.jobChain.nodes.length - 1 == index) {
                             getInfo(0);
-                            // getOrders();
+                             getOrders();
                         }
 
                     })
@@ -1220,32 +1244,45 @@
                     }
                 }
 
-                vm.$on('ordersModified', function () {
+                vm.$on('event-started', function () {
+            if (vm.events && vm.events.length > 0) {
+                angular.forEach(vm.events[0].eventSnapshots, function (value1) {
+                    if (value1.eventType.indexOf("Order") !== -1 || value1.eventType.indexOf("JobChain") !== -1 || value1.eventType == 'JobStateChanged') {
+                        if (value1.path != undefined) {
+                            var path;
+                                path = value1.path.split(",");
+                                if (jobChainPath == path[0]) {
+                                    var obj = {};
+                                    obj.jobschedulerId = $scope.schedulerIds.selected;
+                                    obj.jobChain = jobChainPath;
 
-                    if (!vm.orders) {
-                        return;
+                                    JobChainService.getJobChain(obj).then(function (res) {
+                                        if (res.jobChain) {
+
+                                            vm.jobChain=res.jobChain;
+                                        }
+                                    });
+                                }
+                        }
                     }
-                    getOrders();
-                });
 
-                var done = false;
+                });
+            }
+
+        });
+
+
+
 
                 function getOrders() {
-                    console.log("Orders 01 " + JSON.stringify(vm.orders));
-                     vm.shouldPollForOrders = false;
+                    console.log("In get orders");
+
                     var filter = {};
                     filter.orders = [];
                     filter.orders[0] = {};
                     filter.orders[0].jobChain = vm.jobChain.path;
-                    var orderMargin = 10;
                     var nodeCount = 0;
-                    var labelCount = 0;
 
-                    var nodes = document.getElementsByClassName("border-green");
-
-                    if (!nodes || nodes.length == 0) {
-                        addLabel();
-                    } else {
                         angular.forEach(vm.jobChain.nodes, function (node, index) {
                             nodeCount++;
                             var rect = document.getElementById(node.name);
@@ -1259,11 +1296,12 @@
                             }
 
 
-                            if (vm.jobChain.nodes.length - 1 == index) {
-                                addLabel();
+                            if (node.orders && node.orders.length>0) {
+                                 console.log("In get orders 02 ");
+                                addLabel(node.orders);
                             }
                         })
-                    }
+
 
 
                     function colorFunction(d) {
@@ -1292,38 +1330,72 @@
                         }
                     }
 
-                    function addLabel() {
+                    function addLabel(orders) {
 
-
-                        angular.forEach(vm.orders, function (order, index) {
-
+                        angular.forEach(orders, function (order, index) {
                             var node = document.getElementById(order.state);
                             if (order.startedAt) {
                                 vm.shouldPollForOrders = true;
                             }
-
                             if (node) {
-                                if (node.className.indexOf('border-green') > -1) {
-                                    console.log("Found border " + order.state + " " + node.className);
+                                if (node.className.indexOf('border-green') > -1 || node.className.indexOf('border-grey-pending') > -1) {
+                                     if(order.processingState._text=='RUNNING'){
+                                         node.className = node.className.replace(/border-.*/, 'border-green');
+                                    }else {
+                                        node.className = node.className.replace(/border-.*/, 'border-grey-pending');
+                                    }
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     var label = document.createElement('div');
                                     var color = '';
                                     if (order.processingState.severity > -1) {
                                         color = colorFunction(order.processingState.severity);
                                     }
+                                    var diff=0;
+                                    var time = 0;
+                                    if(order.startedAt){
+                                        diff='+'+$filter('durationFromCurrent')(order.startedAt);
+                                        time=order.startedAt;
+                                    }else{
+                                       diff='-'+$filter('durationFromCurrent')(undefined,order.nextStartTime);
+                                        time=order.nextStartTime;
+                                    }
 
-                                    label.innerHTML = '<span class="text-sm"><i class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId + ' <span class="text-primary text-xs">' + moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
-                                    +'</span></span>';
+                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
+                                    + '<span id="date-' + order.orderId + '"  class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
+                                    + '</span>'
+                                    + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                    + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">'
+                                    + '<a id="log-' + order.orderId + '" target="_blank" href="#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' +order.jobChain + '" '
+                                    + 'class="hide">'+ gettextCatalog.getString("button.viewLog") +'</a>'
+                                    + '<a class="hide" id="configuration-' + order.orderId + '">'+ gettextCatalog.getString("button.showConfiguration") +'</a>'
+                                    + '<a class="hide" id="ordernow-' + order.orderId + '">'+ gettextCatalog.getString("button.startOrderNow") +'</a>'
+                                    + '<a class="hide" id="orderat-' + order.orderId + '">'+ gettextCatalog.getString("button.startOrderat") +'</a>'
+                                    + '<a class="hide" id="orderstate-' + order.orderId + '">'+ gettextCatalog.getString("button.setOrderState") +'</a>'
+                                    + '<a class="hide" id="runtime-' + order.orderId + '">'+ gettextCatalog.getString("button.setRunTime") +'</a>'
+                                    + '<a class="hide" id="suspend-' + order.orderId + '">'+ gettextCatalog.getString("button.suspendOrder") +'</a>'
+                                    + '<a class="hide" id="resume-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrder") +'</a>'
+                                    + '<a class="hide" id="resumeodrprmt-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrderParametrized") +'</a>'
+                                    + '<a class="hide" id="resumeodrfrmstate-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrderFromState") +'</a>'
+                                    + '<a class="hide" id="orderreset-' + order.orderId + '">'+ gettextCatalog.getString("button.resetOrder") +'button.</a>'
+                                    + '<a class="hide" id="orderremove-' + order.orderId + '">'+ gettextCatalog.getString("button.removeOrder") +'</a>'
+                                    + '<a class="hide" id="calendar-' + order.orderId + '">'+ gettextCatalog.getString("button.showCalendar") +'</a>'
+                                    + '<a class="hide" id="orderdelete-' + order.orderId + '">'+ gettextCatalog.getString("button.deleteOrder") +'</a>'
+                                    + '</div></div>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
                                     if (node.offsetTop - container.offsetTop < 75) {
                                         container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
-
                                     container.appendChild(label);
                                 } else if (node.className.indexOf('border-grey') > -1) {
-                                    node.className = node.className.replace(/border-.*/, 'border-green');
+                                    if(order.processingState._text=='RUNNING'){
+                                         node.className = node.className.replace(/border-.*/, 'border-green');
+                                    }else {
+                                        node.className = node.className.replace(/border-.*/, 'border-grey-pending');
+                                    }
+
                                     var color = '';
+
                                     if (order.processingState.severity > -1) {
                                         color = colorFunction(order.processingState.severity);
                                     }
@@ -1333,84 +1405,327 @@
                                     label.style['width'] = node.clientWidth + 'px';
                                     label.style['margin-bottom'] = '5px';
                                     label.style['left'] = node.offsetLeft + 'px';
-                                    label.innerHTML = '<div><span class="text-sm"><i class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId + ' <span class="text-primary text-xs">' + moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
-                                    +'</span></div>';
+                                    var diff=0;
+                                    var time = 0;
+                                    if(order.startedAt){
+                                        diff='+'+$filter('durationFromCurrent')(order.startedAt);
+                                        time=order.startedAt;
+                                    }else{
+                                       diff='-'+$filter('durationFromCurrent')(undefined,order.nextStartTime);
+                                        time=order.nextStartTime;
+                                    }
+
+
+                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
+                                    + '<span id="date-' + order.orderId + '" class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
+                                    + '</span>'
+                                    + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                    + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">'
+                                    + '<a id="log-' + order.orderId + '" target="_blank" href="#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' +order.jobChain + '" '
+                                    + 'class="hide">'+ gettextCatalog.getString("button.viewLog") +'</a>'
+                                    + '<a class="hide" id="configuration-' + order.orderId + '">'+gettextCatalog.getString("button.showConfiguration")+'</a>'
+                                    + '<a class="hide" id="ordernow-' + order.orderId + '">'+ gettextCatalog.getString("button.startOrderNow") +'</a>'
+                                    + '<a class="hide" id="orderat-' + order.orderId + '">'+ gettextCatalog.getString("button.startOrderat") +'</a>'
+                                    + '<a class="hide" id="orderstate-' + order.orderId + '">'+ gettextCatalog.getString("button.setOrderState") +'</a>'
+                                    + '<a class="hide" id="runtime-' + order.orderId + '">'+ gettextCatalog.getString("button.setRunTime") +'</a>'
+                                    + '<a class="hide" id="suspend-' + order.orderId + '">'+ gettextCatalog.getString("button.suspendOrder") +'</a>'
+                                    + '<a class="hide" id="resume-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrder") +'</a>'
+                                    + '<a class="hide" id="resumeodrprmt-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrderParametrized") +'</a>'
+                                    + '<a class="hide" id="resumeodrfrmstate-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrderFromState") +'</a>'
+                                    + '<a class="hide" id="orderreset-' + order.orderId + '">'+ gettextCatalog.getString("button.resetOrder") +'</a>'
+                                    + '<a class="hide" id="orderremove-' + order.orderId + '">'+ gettextCatalog.getString("button.removeOrder") +'</a>'
+                                    + '<a class="hide" id="calendar-' + order.orderId + '">'+ gettextCatalog.getString("button.showCalendar") +'</a>'
+                                    + '<a class="hide" id="orderdelete-' + order.orderId + '">'+ gettextCatalog.getString("button.deleteOrder") +'</a>'
+                                    + '</div></div>';
                                     mainContainer.appendChild(label);
                                     label.style['top'] = node.offsetTop - label.clientHeight + 'px';
                                     label.style['height'] = 'auto';
-                                    label.style['max-height'] = '80px';
-                                    label.style['overflow'] = 'auto';
-                                    label.style['overflow-x'] = 'auto';
                                 }
 
                             }
+ var orderLog = document.getElementById('log-' + order.orderId);
+                            if(vm.permission.Order.view.orderLog && order.historyId) {
+                                orderLog.className = 'show-inline dropdown-item';
+                            }
 
-                        })
+                            var orderConfiguration = document.getElementById('configuration-' + order.orderId);
+                            if(vm.permission.Order.view.configuration) {
+                                orderConfiguration.className = 'show dropdown-item';
+                            }
 
-                        pollForOrders();
+                            var configuration = document.querySelector("#configuration-" + order.orderId);
+                            configuration.addEventListener('click', function (e) {
+                                vm.showConfiguration({type: 'order', path: order.jobChain, name: order.orderId});
+                            });
+
+                            var orderNow = document.getElementById('ordernow-' + order.orderId);
+                            if((order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && vm.permission.Order.start) {
+                                orderNow.className = 'show dropdown-item';
+                            }
+
+                            var startOrderNow = document.querySelector("#ordernow-" + order.orderId);
+                            startOrderNow.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'start order now'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var orderAt = document.getElementById('orderat-' + order.orderId);
+                            if((order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && vm.permission.Order.start) {
+                                orderAt.className = 'show dropdown-item';
+                            }
+
+                            var startOrderAt = document.querySelector("#orderat-" + order.orderId);
+                            startOrderAt.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'start order at'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var date = document.getElementById("date-" + order.orderId);
+                                    date.innerHTML = moment(order.nextStartTime).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var orderState = document.getElementById('orderstate-' + order.orderId);
+                            if((order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && vm.permission.Order.setState) {
+                                orderState.className = 'show dropdown-item';
+                            }
+
+                            var setOrderState = document.querySelector("#orderstate-" + order.orderId);
+                            setOrderState.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'set order state'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var runTime = document.getElementById('runtime-' + order.orderId);
+                            if((order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && vm.permission.Order.setRunTime) {
+                                runTime.className = 'show dropdown-item';
+                            }
+
+                            var setRunTime = document.querySelector("#runtime-" + order.orderId);
+                            setRunTime.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'set run time'
+                                }).then(function (res) {
+                                    if(res) {
+                                        $.extend(true, order, res.orders[0]);
+                                    }
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var suspend = document.getElementById('suspend-' + order.orderId);
+                            if((order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && vm.permission.Order.suspend) {
+                                suspend.className = 'show dropdown-item bg-hover-color';
+                            }
+
+                            var suspendOrder = document.querySelector("#suspend-" + order.orderId);
+                            suspendOrder.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'suspend order'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var resume = document.getElementById('resume-' + order.orderId);
+                            if((order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
+                                resume.className = 'show dropdown-item';
+                            }
+
+                            var resumeOrder = document.querySelector("#resume-" + order.orderId);
+                            resumeOrder.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'resume order'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var resumeOrderParam = document.getElementById('resumeodrprmt-' + order.orderId);
+                            if((order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
+                                resumeOrderParam.className = 'show dropdown-item';
+                            }
+
+                            var resumeOrderWithParam = document.querySelector("#resumeodrprmt-" + order.orderId);
+                            resumeOrderWithParam.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'resume order with param'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var resumeOrderFromState = document.getElementById('resumeodrfrmstate-' + order.orderId);
+                            if((order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
+                                resumeOrderFromState.className = 'show dropdown-item';
+                            }
+
+                            var resumeOrderNextstate = document.querySelector("#resumeodrfrmstate-" + order.orderId);
+                            resumeOrderNextstate.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'resume order next state'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var orderReset = document.getElementById('orderreset-' + order.orderId);
+                            if((order.processingState._text != 'BLACKLIST') && vm.permission.Order.reset) {
+                                orderReset.className = 'show dropdown-item';
+                            }
+
+                            var resetOrder = document.querySelector("#orderreset-" + order.orderId);
+                            resetOrder.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'reset order'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var orderRemove = document.getElementById('orderremove-' + order.orderId);
+                            if((order.processingState._text == 'SETBACK') && vm.permission.Order.removeSetback) {
+                                orderRemove.className = 'show dropdown-item  bg-hover-color';
+                            }
+
+                            var removeOrder = document.querySelector("#orderremove-" + order.orderId);
+                            removeOrder.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'remove order'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                            var calendar = document.getElementById('calendar-' + order.orderId);
+                            if(order.processingState._text != 'BLACKLIST') {
+                                calendar.className = 'show dropdown-item';
+                            }
+
+                            var viewCalendar = document.querySelector("#calendar-" + order.orderId);
+                            viewCalendar.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'view calendar'
+                                });
+                            });
+
+                            var orderDelete = document.getElementById('orderdelete-' + order.orderId);
+                            if(order.processingState._text == 'BLACKLIST' && vm.permission.Order.delete.permanent) {
+                                orderDelete.className = 'show dropdown-item  bg-hover-color';
+                            }
+
+                            var deleteOrder = document.querySelector("#orderdelete-" + order.orderId);
+                            deleteOrder.addEventListener('click', function (e) {
+                                vm.onOrderAction({
+                                    order: order,
+                                    action: 'delete order'
+                                }).then(function (res) {
+                                    $.extend(true, order, res.orders[0]);
+                                    var color = '';
+                                    if (order.processingState.severity > -1) {
+                                        color = colorFunction(order.processingState.severity);
+                                    }
+                                    var circle = document.getElementById("circle-" + order.orderId);
+                                    circle.className = "";
+                                    circle.className = "text-xs fa fa-circle " + color;
+                                }, function (err) {
+                                    //console.log("Error " + JSON.stringify(err));
+                                });
+                            });
+
+                        });
+
+
 
                     }
-
-                }
-
-                vm.shouldPollForOrders = false;
-                vm.orderPollingInterval = 15000;
-
-
-                var timeout = undefined;
-
-                function pollForOrders() {
-
-                    $timeout.cancel(timeout);
-                    if (vm.shouldPollForOrders) {
-                        timeout = $timeout(function () {
-                            var filter = {};
-                            filter.orders = [];
-                            angular.forEach(vm.orders, function (order, index) {
-                                filter.orders.push({jobChain: order.jobChain, orderId: order.orderId});
-                            })
-
-                            vm.getOrders({filter: filter}).then(function (res) {
-
-                                angular.forEach(vm.orders, function (eOrder, eIndex) {
-                                    var exists = false;
-                                    angular.forEach(res.orders, function (rOrder, rIndex) {
-                                        if(eOrder.jobChain==rOrder.jobChain && eOrder.orderId==rOrder.orderId){
-                                            exists =true;
-                                             eOrder.nextStartTime = rOrder.nextStartTime;
-                                        eOrder.startedAt = rOrder.startedAt;
-                                        eOrder.state = rOrder.state;
-                                            eOrder.processingState = rOrder.processingState;
-                                        }
-                                    })
-
-                                })
-
-                                getOrders();
-
-                            }, function (err) {
-                                console.log("Error ");
-                                if (err && err.data && err.data.error && err.data.error.message && /There is no Order\s*'(.+),(.+)'/g.test(err.data.error.message) != -1) {
-                                    angular.forEach(vm.orders, function (order, index) {
-                                        if (order.jobChain == /There is no Order\s*'(.+),(.+)'/g.exec(err.data.error.message)[1]
-                                            && order.orderId == /There is no Order\s*'(.+),(.+)'/g.exec(err.data.error.message)[2]) {
-                                            console.log("Matched");
-                                            vm.orders.splice(index, 1);
-
-                                        }
-                                    })
-                                    getOrders();
-                                }
-                            })
-                        }, vm.orderPollingInterval);
-                    }
                 }
 
 
-                vm.$on('$destroy', function () {
-                    if (timeout)
-                        $timeout.cancel(timeout);
-                });
 
                 vm.$on('bulkOperationCompleted', function (event, args) {
                     console.log("Bulk operation completed " + JSON.stringify(args));

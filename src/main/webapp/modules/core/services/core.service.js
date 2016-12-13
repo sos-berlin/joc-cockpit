@@ -82,7 +82,7 @@
         tabs._history.order = {};
         tabs._history.type = 'jobChain';
         tabs._history.order.filter = {};
-        tabs._history.order.filter.state = 'all';
+        tabs._history.order.filter.historyStates = 'all';
         tabs._history.order.filter.date = '-1h';
         tabs._history.order.filter.sortBy = 'startTime';
         tabs._history.order.filter.sortReverse = false;
@@ -90,7 +90,7 @@
         tabs._history.order.currentPage = '1';
         tabs._history.task = {};
         tabs._history.task.filter = {};
-        tabs._history.task.filter.state = 'all';
+        tabs._history.task.filter.historyStates = 'all';
         tabs._history.task.filter.date = '-1h';
         tabs._history.task.filter.sortBy = 'startTime';
         tabs._history.task.filter.sortReverse = false;

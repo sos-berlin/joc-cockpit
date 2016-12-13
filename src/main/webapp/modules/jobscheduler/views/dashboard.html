@@ -218,12 +218,12 @@
 
                                 <div class="col-sm-offset-1 col-xs-5">
                                     <div class="" translate>label.successful</div>
-                                    <span class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></span>
+                                    <a ng-click="showOrderSummary('SUCCESS')" class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></a>
                                     <span class="text-lg _600 text-black-lt"  ng-if="orderSummary.successful==0">0</span>
                                 </div>
                                 <div class="col-xs-5">
                                     <div class="" translate>label.failed</div>
-                                    <span class="text-lg _600 crimson"  ng-if="orderSummary.failed>0" ng-bind="orderSummary.failed || 0"></span>
+                                    <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 crimson"  ng-if="orderSummary.failed>0" ng-bind="orderSummary.failed || 0"></a>
                                     <span class="text-lg _600 text-black-lt"  ng-if="orderSummary.failed==0">0</span>
                                 </div>
                             </div>
@@ -252,7 +252,7 @@
                     </div>
                     <div class="box-body p-a">
                         <div class="hide" ng-class="{'show': totalPlanData > 0}">
-                            <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess"
+                            <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess" width="arrayWidth"
                                     late-error="lateError" executed="executed" error="error" total="totalPlanData" day="dashboardFilters.filter.range"></daily-plan-overview>
                         </div>
                         <div class="hide text-center m-t h6 text-u-c"

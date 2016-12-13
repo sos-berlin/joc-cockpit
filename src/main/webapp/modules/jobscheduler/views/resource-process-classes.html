@@ -1,7 +1,7 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
+<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeProcess.length>0">
     <div>
         <button class="btn btn-grey btn-sm" ng-click="my_tree_process.expand_all();" >
             <i class="fa fa-angle-down fa-lg"></i>
@@ -47,7 +47,7 @@
                                     <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
                                 </div>
                             </div>
-                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses || 10"></span> {{'label.maxProcesses' | translate}}</div>
+                            <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses"></span> {{'label.maxProcesses' | translate}}</div>
                             <div class="text-sm  text-left text-muted p-t-xs" >
                                 <span ng-if="!processClass.numOfProcesses" class="text-black _600">0</span>
                                  <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
@@ -94,7 +94,7 @@
                     <tr ng-repeat="processClass in allProcessClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * processFilters.pageSize | limitTo: processFilters.pageSize">
                         <td ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name"></td>
                         <td ng-bind="processClass.path"></td>
-                        <td ng-bind="processClass.maxProcesses || 30"></td>
+                        <td ng-bind="processClass.maxProcesses"></td>
                         <td>
                             <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
                             <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
@@ -142,6 +142,7 @@
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
+<div ng-if="isLoading && treeProcess.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
 <script>
        $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),

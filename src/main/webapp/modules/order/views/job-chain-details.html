@@ -7,7 +7,6 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
-
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-if="jobChain.state._text != 'STOPPED'" ng-class="{'show-block':permission.JobChain.stop}" ng-disabled="jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="stopJob()"><i class="fa fa-stop"></i>
                             <span class="hidden-sm-down" translate>button.stopJobChain</span>
                         </button>
@@ -57,39 +56,41 @@
                             <span class="hidden-sm-down" translate>button.startOrderNow</span>
                         </button>
                      </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="scroll-y max-ht">
-    <div class="padding p-b-0">
-         <div class="row">
-            <div class="col-sm-12">
-                <h5 class="pos-abt _300 p-t-xs">
-                     <ol class="breadcrumb">
-                      <li ng-repeat="path in paths"><a class="text-hover-primary" ng-if="$index != paths.length-1" ng-click="setPath(path)">{{path}}</a><span class="text-muted" ng-if="$index == paths.length-1">{{path}}</span></li>
-                    </ol>
-                </h5>
-                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pull-right">
-                     <li class="nav-item">
-                        <a class="nav-link" ng-class="{active : !orderDetailFilters.overview}" ng-click="viewJobChainOrder()">
-                            <span class="nav-text text-dark p-b-sm"><span class="" translate>button.jobChainOrders</span></span>
-                        </a>
+<div class="padding">
+    <div class="row">
+        <div class="col-sm-12">
+            <h5 class="pos-abt _300 p-t-xs">
+                <ol class="breadcrumb">
+                    <li ng-repeat="path in paths">
+                        <a class="text-hover-primary" ng-if="$index != paths.length-1" ng-click="setPath(path)">{{path}}</a><span class="text-muted" ng-if="$index == paths.length-1">{{path}}</span>
                     </li>
-                     <li class="nav-item dropdown-separator">
-                        <span class="separator"></span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link"  ng-class="{active : orderDetailFilters.overview}" ng-click="viewJobChainDetail()">
-                            <span class="nav-text text-dark p-b-sm"><span class="" translate>button.overview</span></span>
-                        </a>
-                    </li>
-                 </ul>
-            </div>
-         </div>
-         <div class="m-t" ui-view></div>
+                </ol>
+            </h5>
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary pull-right">
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{active : !orderDetailFilters.overview}" ng-click="viewJobChainOrder()">
+                        <span class="nav-text text-dark p-b-sm"><span translate>button.jobChainOrders</span></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown-separator">
+                    <span class="separator"></span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ng-class="{active : orderDetailFilters.overview}" ng-click="viewJobChainDetail()">
+                        <span class="nav-text text-dark p-b-sm"><span class="" translate>button.overview</span></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
-
+<div class="scroll-y max-ht2">
+    <div class="padding p-b-0 p-t-0">
+        <div ui-view></div>
+    </div>
+</div>

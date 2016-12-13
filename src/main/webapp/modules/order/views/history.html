@@ -7,37 +7,37 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'jobChain'}">
-                      <!--  <div class="btn-group m-l-sm hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.state" uib-btn-radio="'all'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': order.filter.state=='all'}" translate>button.allStatus
+                       <div class="btn-group m-l-sm hidden-btn-group">
+                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.state" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': order.filter.state=='SUCCESSFUL'}" translate>button.successful
+                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESS'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': order.filter.historyStates=='SUCCESS'}" translate>button.successful
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.state" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': order.filter.state=='FAILED'}" translate>button.failed
+                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.state" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': order.filter.state=='INCOMPLETE'}" translate>button.incomplete
+                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': order.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="order.filter.state" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': order.filter.state=='all'}" translate>button.allStatus
+                                <a class="dropdown-item " ng-model="order.filter.historyStates" uib-btn-radio="'all'"
+                                   ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.state" uib-btn-radio="'SUCCESSFUL'"
-                                   ng-class="{'btn-primary': order.filter.state=='SUCCESSFUL'}" translate>button.successful
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESS'"
+                                   ng-class="{'btn-primary': order.filter.historyStates=='SUCCESS'}" translate>button.successful
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.state" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': order.filter.state=='FAILED'}" translate>button.failed
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'"
+                                   ng-class="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.state" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': order.filter.state=='INCOMPLETE'}" translate>button.incomplete
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
+                                   ng-class="{'btn-primary': order.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
                                 </a>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
 
                             <button class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
@@ -89,37 +89,37 @@
                         </div>
                     </div>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'job'}">
-<!--                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.state" uib-btn-radio="'all'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': task.filter.state=='all'}" translate>button.allStatus
+                        <div class="btn-group m-l-sm hidden-btn-group">
+                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': task.filter.historyStates=='all'}" translate>button.allStatus
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.state" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': task.filter.state=='SUCCESSFUL'}" translate>button.successful
+                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESS'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': task.filter.historyStates=='SUCCESS'}" translate>button.successful
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.state" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': task.filter.state=='FAILED'}" translate>button.failed
+                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': task.filter.historyStates=='FAILED'}" translate>button.failed
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.state" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': task.filter.state=='INCOMPLETE'}" translate>button.incomplete
+                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': task.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="task.filter.state" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': task.filter.state=='all'}" translate>button.allStatus
+                                <a class="dropdown-item " ng-model="task.filter.historyStates" uib-btn-radio="'all'"
+                                   ng-class="{'btn-primary': task.filter.historyStates=='all'}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.state" uib-btn-radio="'SUCCESSFUL'"
-                                   ng-class="{'btn-primary': task.filter.state=='SUCCESSFUL'}" translate>button.successful
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESS'"
+                                   ng-class="{'btn-primary': task.filter.historyStates=='SUCCESS'}" translate>button.successful
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.state" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': task.filter.state=='FAILED'}" translate>button.failed
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'"
+                                   ng-class="{'btn-primary': task.filter.historyStates=='FAILED'}" translate>button.failed
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.state" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': task.filter.state=='INCOMPLETE'}" translate>button.incomplete
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
+                                   ng-class="{'btn-primary': task.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
                                 </a>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.date=='all'}" translate>button.all
@@ -199,7 +199,7 @@
 
                 </div>
                 <div class="col-lg-2 col-md-4 col-sm-6">
-                    <input type="search" ng-model="q"><a style="position: absolute; right: 13px;" ng-show="q" ng-click="search(q)"><i class="fa fa-arrow-right"></i></a>
+                    <input type="search" ng-model="filterString"> 
                 </div>
         </div>
         <div class="hide"  ng-class="{'show': isLoading}">
@@ -254,7 +254,7 @@
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="history in historys | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.filter.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
+                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.filter.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
                         <tr  class="cursor">
                             <td ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
@@ -315,8 +315,9 @@
                         </tbody>
                     </table>
                     <div ng-if="isLoading && historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noOrderHistoryFound</div>
-                    <ul ng-show="historys.length > order.pageSize" uib-pagination total-items="historys.length" ng-model="order.currentPage" items-per-page='order.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="historys.length > 10">
+<div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
+                    <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-right" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': order.pageSize=='10'}" >10
@@ -392,7 +393,7 @@
                             </tr>
                         </thead>
                         <tbody >
-                        <tr ng-repeat="jobHistory in jobHistorys | startFrom:(task.currentPage - 1) * task.pageSize | limitTo: task.pageSize | orderBy:task.filter.sortBy:task.sortReverse" class="cursor">
+                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | startFrom:(task.currentPage - 1) * task.pageSize | limitTo: task.pageSize | orderBy:task.filter.sortBy:task.sortReverse" class="cursor">
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-bind="jobHistory.taskId"></span>
                             </td>
@@ -417,9 +418,10 @@
                         </tbody>
                     </table>
                     <div ng-if="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
+ <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
 
-                     <ul ng-show="jobHistorys.length > task.pageSize" uib-pagination total-items="jobHistorys.length" ng-model="task.currentPage" ng-change="pageChange()" items-per-page='task.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="jobHistorys.length > 10">
+                     <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" ng-change="pageChange()" items-per-page='task.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-right" ng-show="jobFiltered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': task.pageSize=='10'}" >10

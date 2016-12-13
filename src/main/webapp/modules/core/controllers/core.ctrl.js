@@ -283,7 +283,6 @@
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout) {
         var vm = $scope;
         toasty.clear();
-        vm.logout = false;
         vm.currentTime = moment();
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
 
@@ -330,10 +329,10 @@
             date.setSeconds(date.getSeconds() + 1);
             vm.selectedJobScheduler.startedAt = date;
         });
-
+        var logout = false;
         vm.logout = function () {
-             //vm.changeEvent(vm.schedulerIds.selected);
-             vm.logout = true;
+
+            logout = true;
             UserService.logout();
             SOSAuth.clearUser();
             SOSAuth.clearStorage();
@@ -371,12 +370,7 @@
 
 
         vm.changeScheduler = function (jobScheduler) {
-             var obj = {};
 
-            obj.jobscheduler = [
-                    {"jobschedulerId": vm.schedulerIds.jobschedulerIds, "eventId": vm.eventId, "close": true}
-            ];
-            CoreService.getEvents(obj);
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function (permission) {
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res) {
@@ -435,16 +429,9 @@
         vm.changeEvent = function (jobScheduler) {
 
             var obj = {};
-
-            if (vm.logout == true) {
-                obj.jobscheduler = [
-                    {"jobschedulerId": jobScheduler, "eventId": vm.eventId, "close": true}
-                ];
-            } else {
-                obj.jobscheduler = [
-                    {"jobschedulerId": jobScheduler, "eventId": vm.eventId}
-                ];
-            }
+            obj.jobscheduler = [
+                {"jobschedulerId": jobScheduler, "eventId": vm.eventId}
+            ];
 
             CoreService.getEvents(obj).then(function (res) {
 
@@ -455,18 +442,14 @@
                 eventTimeOutFlag = false;
 
             }, function (err) {
-
-                if (eventTimeOutFlag == false && vm.logout == false && err.status == 420) {
-
+                if (eventTimeOutFlag == false && logout == false && err.status == 420) {
                     eventTimeOut = $timeout(function () {
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                         $timeout.cancel(eventTimeOut);
                     }, 2000);
                     eventTimeOutFlag = true;
                 }
-
             })
-
         };
 
         vm.changeEvent(vm.schedulerIds.jobschedulerIds);

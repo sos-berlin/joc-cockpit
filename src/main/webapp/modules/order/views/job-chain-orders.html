@@ -25,8 +25,7 @@
                                             <i class="text fa fa-ellipsis-h"></i></a>
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
-                                            <a target="_blank"
-                                               href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}"
+                                            <a ng-click="showLogWindow(order)"
                                                class="dropdown-item hide"
                                                ng-if="order.historyId"
                                                ng-class="{'show-inline':permission.Order.view.orderLog}"
@@ -101,12 +100,12 @@
                                             <i class="fa fa-step-forward text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.resume</span>
                                         </a>
-                                        <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text != 'RUNNING'}" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
+                                        <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text != 'RUNNING' && !order.historyId}" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                            ng-click="suspendOrder(order)">
                                             <i class="fa fa-pause text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.suspend</span>
                                         </a>
-                                        <a target="_blank" href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
+                                        <a ng-click="showLogWindow(order)" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
                                            ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
                                             <i class="fa fa-file-text text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.viewLog</span>
@@ -118,7 +117,7 @@
                     </div>
                 </div>
                 <div class="hide box p-a " ng-class="{'show': pageView=='list'}" ng-show="orders.length >0">
-                    <div class="table-responsive" >
+                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>
@@ -217,8 +216,7 @@
                                                         class="fa fa-ellipsis-h"></i></button>
                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28"
                                                          role="menu">
-                                                        <a target="_blank"
-                                                           href="#/order/log/{{order.historyId}}/{{order.orderId}}?jobChain={{order.jobChain}}"
+                                                        <a ng-click="showLogWindow(order)"
                                                            class="dropdown-item hide"
                                                            ng-if="order.historyId"
                                                            ng-class="{'show-inline':permission.Order.view.orderLog}"

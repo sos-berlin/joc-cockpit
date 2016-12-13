@@ -90,7 +90,7 @@
                         return d + 'day';
                 }
             } else {
-                return 'less than a sec';
+                return 1+' sec' ;
             }
         }
     }

@@ -1,7 +1,7 @@
 <div class="hide-block sidebar-btn resize-cursor">
     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
 </div>
-<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
+<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="tree.length>0">
     <div>
         <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
             <i class="fa fa-angle-down fa-lg"></i>
@@ -222,6 +222,7 @@
     </div>
 </div>
 
+<div ng-if="isLoading && tree.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
 <script>
     $('.table-responsive').on('shown.bs.dropdown', function (e) {
         var $table = $(this),

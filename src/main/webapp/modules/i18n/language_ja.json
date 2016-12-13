@@ -540,6 +540,7 @@
    "button.successful": "Successful",
    "button.failed": "Failed",
    "button.incomplete": "Incomplete",
+   "button.showDetailView": "Show Detail View",
    "breadcrumb.processClasses": "Process Classes",
    "breadcrumb.locks": "Locks",
    "breadcrumb.agents": "Agents",
@@ -702,8 +703,13 @@
    "label.newTab": "New Tab",
    "label.newWindow": "New Window",
    "label.fileOrders": "File Orders",
-   "label.maxNumberOfHistoryEntries": "Max. number of history entries"
+   "label.maxNumberOfHistoryEntries": "Max. number of history entries",
+   "label.enqueuedAt": "Enqueued at",
+   "QUEUE_AT": "queue_at"
 }
+
+
+
 
 
 

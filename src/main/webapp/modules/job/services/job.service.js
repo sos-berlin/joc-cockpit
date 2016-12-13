@@ -142,6 +142,16 @@
                 });
                 return deferred.promise;
             },
+            getJob: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('job');
+                Job.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             start: function (jobs) {
                 var deferred = $q.defer();
                 var Job = $resource('jobs/start');

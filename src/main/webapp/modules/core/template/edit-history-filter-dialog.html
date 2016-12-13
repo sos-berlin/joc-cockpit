@@ -1,4 +1,4 @@
-<div>
+<div ng-click="refreshSession()">
     <div class="modal-header primary">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title"><span translate>label.updateFilter</span> : {{filterName}}</h4>
@@ -79,7 +79,7 @@
                         <i class="primary"></i><span translate>label.incomplete</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'SUCCESSFUL'">
+                        <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'SUCCESS'">
                         <i class="primary"></i><span translate>label.success</span>
                     </label>
                     <label class="md-check">
