@@ -11,8 +11,8 @@
                             <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESS'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': order.filter.historyStates=='SUCCESS'}" translate>button.successful
+                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': order.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
                             </button>
                             <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
@@ -27,8 +27,8 @@
                                 <a class="dropdown-item " ng-model="order.filter.historyStates" uib-btn-radio="'all'"
                                    ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESS'"
-                                   ng-class="{'btn-primary': order.filter.historyStates=='SUCCESS'}" translate>button.successful
+                                <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'"
+                                   ng-class="{'btn-primary': order.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'"
                                    ng-class="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
@@ -209,52 +209,52 @@
                         <thead>
                             <tr>
                                 <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
-                                    <i ng-show="order.filter.sortBy == 'orderId' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'orderId' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'orderId' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'orderId' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
-                                    <i ng-show="order.filter.sortBy == 'state._text' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'state._text' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'state._text' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'state._text' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('startTime')"><a><span translate>label.startTime</span>
-                                    <i ng-show="order.filter.sortBy == 'startTime' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'startTime' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'startTime' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'startTime' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('endTime')"><a><span translate>label.endTime</span>
-                                    <i ng-show="order.filter.sortBy == 'endTime' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'endTime' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'endTime' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'endTime' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('duration')">
                                     <a><span translate>label.duration</span>
-                                    <i ng-show="order.filter.sortBy == 'duration' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'duration' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'duration' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'duration' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('node')"><a><span translate>label.endNode</span>
-                                    <i ng-show="order.filter.sortBy == 'node' && !order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'node' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'node' && order.filter.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'node' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.filter.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
+                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
                         <tr  class="cursor">
                             <td ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
@@ -305,7 +305,7 @@
                                      <td>{{order.startTime | duration:order.endTime}}</td>
                                      <td>{{order.exitCode}}</td>
                                      <td>{{order.error.code}}</td>
-                                     <td>{{order.error.message}}</td>
+                                     <td class="text-danger">{{order.error.message}}</td>
                                  </tr>
                                  </tbody>
                              </table>
@@ -315,7 +315,7 @@
                         </tbody>
                     </table>
                     <div ng-if="isLoading && historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noOrderHistoryFound</div>
-<div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
                     <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-right" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
@@ -358,12 +358,6 @@
                                     <i ng-show="task.filter.sortBy == 'state._text' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-<!--                                <th ng-click="sortBy1('agent')"><a><span translate>label.processedBy </span>
-                                    <i ng-show="task.filter.sortBy == 'agent' && !task.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'agent' && task.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>-->
                                 <th ng-click="sortBy1('startTime')"><a><span translate>label.startTime</span>
                                     <i ng-show="task.filter.sortBy == 'startTime' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -399,7 +393,6 @@
                             </td>
                             <td ng-click="showLogWindow(null,jobHistory)"><a ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></a></td>
                             <td ng-click="showLogWindow(null,jobHistory)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
-                          <!--  <td ng-click="showLogWindow(null,jobHistory)"><a class="text-primary" target="_blank" href="{{jobHistory.agent}}" ng-bind="jobHistory.agent"></a></td>-->
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.endTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | duration:jobHistory.endTime"></td>
@@ -418,7 +411,7 @@
                         </tbody>
                     </table>
                     <div ng-if="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
- <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
 
                      <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" ng-change="pageChange()" items-per-page='task.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-right" ng-show="jobFiltered.length > 10">

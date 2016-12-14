@@ -34,7 +34,7 @@
                                 </button>
                             </div>
                             <div ng-class="{'hide':selectedNodes.length>0}">
-                                <div class="inline" ng-show="orderDetailFilters.pageView=='grid'">
+                                <div class="inline" ng-show="orderFilters.pageView=='grid'">
                                     <div class="inline">
                                         <label class="md-check" ng-init="fitToScreen = false">
                                             <input data-ng-model="fitToScreen" type="checkbox"><i
@@ -56,11 +56,11 @@
                                     </div>
                                 </div>
                                 <div class="btn-group m-l-sm">
-                                    <button class="btn btn-grey btn-sm" ng-model="orderDetailFilters.pageView" uib-btn-radio="'grid'"
-                                            ng-class="{'btn-primary': orderDetailFilters.pageView=='grid'}"><i class="fa fa-sitemap"></i>
+                                    <button class="btn btn-grey btn-sm" ng-model="orderFilters.pageView" uib-btn-radio="'grid'"
+                                            ng-class="{'btn-primary': orderFilters.pageView=='grid'}"><i class="fa fa-sitemap"></i>
                                     </button>
-                                    <button class="btn btn-grey btn-sm" ng-model="orderDetailFilters.pageView"
-                                            uib-btn-radio="'list'" ng-class="{'btn-primary': orderDetailFilters.pageView=='list'}"><i class="fa fa-bars"></i>
+                                    <button class="btn btn-grey btn-sm" ng-model="orderFilters.pageView"
+                                            uib-btn-radio="'list'" ng-class="{'btn-primary': orderFilters.pageView=='list'}"><i class="fa fa-bars"></i>
                                     </button>
                                 </div>
                             </div>
@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" ng-show="orderDetailFilters.pageView=='grid'">
+            <div class="row" ng-show="orderFilters.pageView=='grid'">
 
                 <div class="col-md-12 hidden-dropdown pull-right" >
 
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="orderDetailFilters.pageView=='grid'">
+            <div ng-if="orderFilters.pageView=='grid'">
                 <div class="p-t-sm" >
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
@@ -88,13 +88,13 @@
                                   on-action="onAction(path,node,action)"
                                   show-configuration="showConfiguration(type,path,name)"
                                   orders="fOrders"
-                                  get-orders = "getOrders(filter)"
+                                  get-job-chain = "getJobChain(filter)"
                                   permission="permission"
                                   on-order-action = "onOrderAction(order, action)">
                     </flow-diagram>
                 </div>
             </div>
-            <div class="hide m-t" ng-class="{'show': orderDetailFilters.pageView=='list'}">
+            <div class="hide m-t" ng-class="{'show': orderFilters.pageView=='list'}">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered  ">
                         <thead>
@@ -178,7 +178,7 @@
                                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                                         <a href class="dropdown-item" ng-if="order.processingState._text != 'BLACKLIST'"
                                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
-                                                                        <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
+                                                                        <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                                     </div>
                                                         </div>

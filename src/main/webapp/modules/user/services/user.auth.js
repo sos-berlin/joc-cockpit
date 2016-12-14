@@ -53,6 +53,12 @@
                                     msg: rejection.data.error.message || 'API expection',
                                     timeout: 10000
                                 });
+                            if (rejection.data && rejection.data.errors && rejection.data.errors.length>0)
+                                toasty.error({
+                                    msg: rejection.data.errors[0].message || 'API expection',
+                                    timeout: 10000
+                                });
+                            console.log(rejection.data)
                         }
                         if ($rootScope.clientLogFilter.state) {
                             var error = {

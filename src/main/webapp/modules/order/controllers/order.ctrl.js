@@ -17,9 +17,10 @@
     JobChainOrdersCtrl.$inject = ["$scope", "SOSAuth", "OrderService", "CoreService"];
     function JobChainOrdersCtrl($scope, SOSAuth, OrderService, CoreService) {
         var vm = $scope;
-        vm.orderDetailFilters = CoreService.getOrderDetailTab();
 
-        vm.orderDetailFilters.overview = false;
+        vm.orderFilters = CoreService.getOrderDetailTab();
+
+        vm.orderFilters.overview = false;
 
         function loadJobOrderV(obj) {
             OrderService.get(obj).then(function (res) {
@@ -117,8 +118,9 @@
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, orderBy, $state, $location, CoreService, $uibModal) {
 
         var vm = $scope;
-        vm.orderDetailFilters = CoreService.getOrderDetailTab();
-        vm.orderDetailFilters.overview = true;
+        vm.orderFilters = CoreService.getOrderDetailTab();
+        vm.orderFilters.overview = true;
+        vm.orderFilters.pageView = 'list';
 
         vm.selectedNodes = [];
         vm.allOrdersCheck = {};
@@ -327,14 +329,8 @@
 
         function volatileFolderData(obj) {
             JobChainService.getJobChain(obj).then(function (res) {
-                vm.jobChainData = angular.merge(vm.jobChainData, res.jobChain);
-                angular.forEach(vm.jobChainData.nodes, function (nodes) {
-                    angular.forEach(vm.jobChain.nodes, function (value) {
-                        if (value.name == nodes.name) {
-                            value = angular.merge(value, nodes);
-                        }
-                    });
-                });
+                vm.jobChain = angular.merge(vm.jobChainData, res.jobChain);
+
             }, function (err) {
 
             });
@@ -1110,9 +1106,12 @@
     JobChainDetailsCtrl.$inject = ["$scope", "SOSAuth", "ScheduleService", "JobChainService", "$uibModal", "OrderService", "toasty", "$rootScope", "DailyPlanService", "$location", "gettextCatalog", "CoreService"];
     function JobChainDetailsCtrl($scope, SOSAuth, ScheduleService, JobChainService, $uibModal, OrderService, toasty, $rootScope, DailyPlanService, $location, gettextCatalog, CoreService) {
         var vm = $scope;
-        vm.orderDetailFilters = CoreService.getOrderDetailTab();
+        vm.orderFilters = CoreService.getOrderDetailTab();
         var object = $location.search();
 
+        vm.reset = function () {
+            vm.object = {};
+        };
         function volatileInfo(result) {
             JobChainService.getJobChain({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -1173,7 +1172,7 @@
 
         $scope.$on('$stateChangeSuccess', function (event, toState) {
             vm.object = {};
-            vm.orderDetailFilters.isOverview = toState.url == '/overview';
+            vm.orderFilters.isOverview = toState.url == '/overview';
         });
 
 
@@ -1187,8 +1186,8 @@
 
         vm.sortBy = function (propertyName) {
             vm.object.orders = [];
-            vm.orderDetailFilters.reverse = !vm.orderDetailFilters.reverse;
-            vm.orderDetailFilters.filter.sortBy = propertyName;
+            vm.orderFilters.reverse = !vm.orderFilters.reverse;
+            vm.orderFilters.filter.sortBy = propertyName;
         };
 
 
@@ -1307,7 +1306,7 @@
 
             });
 
-            vm.object.jobChains = [];
+            vm.reset();
         };
         vm.unstopJob = function () {
             var jobChains = {};
@@ -1317,7 +1316,7 @@
             JobChainService.unstop(jobChains).then(function (res) {
 
             });
-            vm.object.jobChains = [];
+            vm.reset();
         };
 
         /** --------action ------------ **/
@@ -1331,8 +1330,12 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.deleteOrder(orders).then(function (res) {
-                vm.object.orders = [];
+                angular.forEach(vm.object.orders, function (value, index) {
+                    vm.object.orders.splice(index, 1);
+                });
+                vm.reset();
             });
+
         };
 
         vm.suspendAllOrder = function () {
@@ -1343,9 +1346,9 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.suspendOrder(orders).then(function (res) {
-                vm.object.orders = [];
-            });
 
+            });
+            vm.reset();
         };
         vm.resumeAllOrder = function () {
             var orders = {};
@@ -1355,9 +1358,10 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.resumeOrder(orders).then(function (res) {
-                vm.object.orders = [];
+
 
             });
+            vm.reset();
 
         };
         vm.resetAllOrder = function () {
@@ -1368,9 +1372,9 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.resetOrder(orders).then(function (res) {
-                vm.object.orders = [];
-            });
 
+            });
+            vm.reset();
         };
         vm.startAllOrder = function () {
             var orders = {};
@@ -1380,8 +1384,9 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
             });
             OrderService.startOrder(orders).then(function (res) {
-                vm.object.orders = [];
+
             });
+            vm.reset();
         };
 
         $scope.$on('event-started', function () {
@@ -2102,9 +2107,11 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.deleteOrder(orders).then(function (res) {
-
+                angular.forEach(vm.object.orders, function (value, index) {
+                    vm.object.orders.splice(index, 1);
+                });
+                vm.reset();
             });
-            vm.reset();
         };
 
         vm.suspendAllOrder = function () {
@@ -2334,9 +2341,12 @@
                 orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             });
             OrderService.deleteOrder(orders).then(function (res) {
-
+                angular.forEach(vm.object.orders, function (value, index) {
+                    vm.object.orders.splice(index, 1);
+                });
+                vm.reset();
             });
-            vm.reset();
+
         };
 
         vm.suspendAllOrder = function () {
@@ -2426,7 +2436,7 @@
                             vm.allOrders = res.orders;
 
                         });
-                         $rootScope.$broadcast('reloadSnapshot');
+                        $rootScope.$broadcast('reloadSnapshot');
                         break;
                     }
                 }
@@ -2464,7 +2474,7 @@
                         if (value.processingState._text != 'PENDING' && value.processingState._text != 'SETBACK') {
                             $rootScope.runningSelected = true;
                         }
-                        if (value.processingState._text != 'BLACKLIST') {
+                        if (value._type != 'AD_HOC') {
                             $rootScope.deletedSelected = true;
 
                         } else {
@@ -2485,13 +2495,13 @@
                     vm.object.orders = vm.orders.slice((vm.orderFilters.pageSize * (vm.orderFilters.currentPage - 1)), (vm.orderFilters.pageSize * vm.orderFilters.currentPage));
 
             } else {
-               vm.reset();
+                vm.reset();
             }
         };
 
         var watcher3 = vm.$watch('orderFilters.pageSize', function (newNames) {
             if (newNames)
-              vm.reset();
+                vm.reset();
         });
 
         $scope.$on('exportData', function () {
@@ -2512,7 +2522,7 @@
 
         /**--------------- sorting and pagination -------------------*/
         vm.pageChange = function () {
-           vm.reset();
+            vm.reset();
         };
 
 
@@ -2563,7 +2573,7 @@
             modalInstance.result.then(function () {
                 startAt(vm.order, vm.paramObject);
             }, function () {
-               vm.reset();
+                vm.reset();
             });
         };
 
@@ -2576,7 +2586,7 @@
             OrderService.startOrder(orders).then(function (res) {
 
             });
-           vm.reset();
+            vm.reset();
         };
 
         function setOrderState(order) {
@@ -2686,7 +2696,7 @@
 
                 setRunTime(order);
             }, function () {
-               vm.reset();
+                vm.reset();
             });
 
             ScheduleService.getSchedulesP({
@@ -2805,7 +2815,7 @@
             OrderService.resetOrder(orders).then(function (res) {
 
             });
-           vm.reset();
+            vm.reset();
         };
 
         vm.removeOrder = function (order) {
@@ -2816,7 +2826,7 @@
             OrderService.removeOrder(orders).then(function (res) {
 
             });
-           vm.reset();
+            vm.reset();
         };
 
         vm.deleteOrder = function (order) {
@@ -2825,9 +2835,24 @@
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             OrderService.deleteOrder(orders).then(function (res) {
+                if (vm.allOrders && vm.allOrders.length > 0) {
+                    angular.forEach(vm.allOrders, function (value) {
 
+                        if (value.path == order.path) {
+                            vm.allOrders.splice(index, 1);
+                        }
+                    });
+                } else if (vm.orders && vm.orders.length > 0) {
+                    angular.forEach(vm.orders, function (value, index) {
+
+                        if (value.path == order.path) {
+                            vm.orders.splice(index, 1);
+                        }
+                    });
+                }
             });
-           vm.reset();
+
+            vm.reset();
         };
 
         vm.viewCalendar = function (order) {
@@ -2855,7 +2880,7 @@
         };
 
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -2962,11 +2987,11 @@
             vm.object = {};
         };
         vm.sortBy = function (propertyName) {
-            vm.order.filter.sortReverse = !vm.order.filter.sortReverse;
+            vm.order.sortReverse = !vm.order.sortReverse;
             vm.order.filter.sortBy = propertyName;
         };
         vm.sortBy1 = function (propertyName) {
-            vm.task.filter.sortReverse = !vm.task.filter.sortReverse;
+            vm.task.sortReverse = !vm.task.sortReverse;
             vm.task.filter.sortBy = propertyName;
         };
 
@@ -3275,7 +3300,7 @@
 
 
         vm.reset = function () {
-           
+            vm.allCheck.checkbox = false;
             vm.object = {};
         };
         vm.validPlanned = true;

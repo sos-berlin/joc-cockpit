@@ -666,7 +666,6 @@
                         vm.orders = res.orders;
                     }
                 }
-                vm.isLoading = true;
             });
         }
 
@@ -676,10 +675,8 @@
                 if (result && result.orders) {
                     vm.orders = result.orders;
                 }
-                vm.isLoading = true;
                 loadJobOrderV(obj);
             }, function () {
-                vm.isLoading = true;
                 loadJobOrderV(obj);
             });
         }
@@ -701,8 +698,9 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
+                 vm.orders = null;
             }, function () {
+                vm.orders = null;
                 vm.reset();
             });
         };
@@ -1035,42 +1033,6 @@
 
         };
 
-        function showOrders(jobChain) {
-
-            var filter = {};
-            filter.orders = [];
-            filter.compact = true;
-            filter.orders.push({jobChain: jobChain.path});
-            filter.jobschedulerId = vm.schedulerIds.selected;
-            OrderService.get(filter).then(function (res) {
-                vm.shouldPollForOrders = false;
-                res.orders = orderBy(res.orders, '+processingState._text', false, function (v1, v2) {
-                    if (v1.value == 'RUNNING') {
-                        return -1;
-                    } else if (v1.value > v2.value) {
-                        return -1;
-                    }
-                    return 1;
-                });
-
-                vm.orders = res.orders;
-
-                angular.forEach(jobChain.nodes, function (node) {
-                    node.orders = [];
-                    angular.forEach(vm.orders, function (order) {
-                        if (order.startedAt) {
-                            vm.shouldPollForOrders = true;
-                        }
-                        if (order.state == node.name) {
-                            node.orders.push(order);
-                        }
-                    });
-
-                });
-            });
-        }
-
-
         function traverseToSelectedJobChain(data, jobChain) {
             function recursive(data) {
                 if (data.path == jobChain.path1)
@@ -1227,14 +1189,42 @@
                                         }
                                     });
                                 }
-                                if(value2.path == path[0] && vm.showHistoryPanel.path ==path[0]) {
-                                        var filter = {};
-                                        filter.jobChain = vm.showHistoryPanel.path;
-                                        filter.jobschedulerId = $scope.schedulerIds.selected;
-                                        JobChainService.histories(filter).then(function (res) {
-                                            vm.historys = res.history;
-                                        });
+                                if (value2.path == path[0] && vm.showHistoryPanel && vm.showHistoryPanel.path == path[0]) {
+                                    var filter = {};
+                                    filter.jobChain = vm.showHistoryPanel.path;
+                                    filter.jobschedulerId = $scope.schedulerIds.selected;
+                                    JobChainService.histories(filter).then(function (res) {
+                                        vm.historys = res.history;
+                                    });
 
+                                }
+                                if (vm.orders && vm.orders.length > 0 && vm.orders[0].jobChain == path[0]) {
+                                    var obj = {};
+                                    obj.jobschedulerId = vm.schedulerIds.selected;
+                                    obj.compact = true;
+                                    obj.orders = [];
+                                    obj.orders.push({jobChain: path[0]});
+                                    OrderService.get(obj).then(function (res) {
+                                        var data = [];
+                                        if (res && res.orders) {
+                                            if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
+                                                angular.forEach(vm.orders, function (orders) {
+                                                    if (orders.path.substring(0, 1) != '/') {
+                                                        orders.path = '/' + orders.path;
+                                                    }
+                                                    angular.forEach(res.orders, function (orderData) {
+                                                        if (orders.path == orderData.path) {
+                                                            orders = angular.merge(orders, orderData);
+                                                            data.push(orders);
+                                                        }
+                                                    })
+                                                });
+                                                vm.orders = data;
+                                            } else {
+                                                vm.orders = res.orders;
+                                            }
+                                        }
+                                    });
                                 }
                             });
                         }

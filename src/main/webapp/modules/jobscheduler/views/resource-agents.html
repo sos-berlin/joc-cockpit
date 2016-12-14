@@ -1,41 +1,167 @@
 <div ng-show="isLoading">
-    <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
+    <div class="hide row" ng-class="{'show': pageView=='grid'}">
         <div>
-            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 hide" ng-class="{'show': pageView=='grid'}"
-                 ng-repeat="cluster in tree_data | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
+            <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12"
+                 ng-repeat="cluster in agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse">
                 <div class="box card">
                     <div class="box-body">
                         <div>
                             <span class="text-left ">
-                                <span class="fa fa-stop pos-abt m-t-xs text-xs {{cluster.Status.substring(0,cluster.Status.lastIndexOf('&'))}}"></span>
+                                <span class="fa fa-stop pos-abt m-t-xs text-xs" ng-class="colorFunction(cluster.state.severity)"></span>
                                 <i class="fa fa-server m-l m-r-xs"></i>
-                                <span uib-tooltip="{{cluster.AgentCluster}}" class="text text-ellipsis1"
-                                      ng-bind="cluster.AgentCluster"></span>
-                                <span class="text-sm _600 pull-right" uib-tooltip="{{cluster.SchedulingType}}" ng-bind-template="({{cluster.SchedulingType | limitTo:1}})"></span>
+                                <span uib-tooltip="{{cluster.path}}" tooltip-placement="bottom" class="text text-ellipsis1"
+                                      ng-bind="cluster.path"></span>
+                                <span class="text-sm _600 pull-right" uib-tooltip="{{cluster._type | translate}}" tooltip-placement="bottom" ng-bind-template="({{cluster._type | limitTo:1}})"></span>
 
                             </span>
                         </div>
                         <div class="text-sm  text-left text-muted p-t-sm">
-                            <span class="text-black _600" ng-bind="cluster.TotalAgents"></span>
+                            <span class="text-black _600" ng-bind="cluster.numOfAgents.any"></span>
                             {{'label.totalAgents' | translate}}
                         </div>
                         <div class="text-sm  text-left text-muted p-t-xs p-l">
-                            <span class="text-black _600" ng-bind="cluster.RunningAgents"></span> {{'label.running' | translate}}
+                            <span class="text-black _600" ng-bind="cluster.numOfAgents.running"></span> {{'label.running' | translate}}
                         </div>
                         <div class="text-sm  text-left text-muted p-t-xs">
-                            <span class="text-black _600" ng-bind="cluster.RunningTasks"></span>
-                            {{'label.runningTasks' | translate}}
+                            <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
+                            <span class="text-black _600"  ng-if="cluster.numOfProcesses==0" >0</span>
+                            {{'label.runningProcesses' | translate}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="m-t-sm box p-a" ng-show="pageView=='list' && tree_data.length >0">
-        <tree-grid id="healthy-id"  tree-data="tree_data" tree-control="my_tree" col-defs="col_defs"
-                   icon-leaf="fa fa-server" expand-on="expanding_property"></tree-grid>
+    <div class="box p-a" ng-show="pageView=='list' && agentClusters.length >0">
+         <div class="table-responsive" >
+                <table class="table table-hover table-bordered  ">
+                    <thead>
+                    <tr>
+                        <th ng-click="sortByA('path')"><a><span translate>label.agentCluster</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'path' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'path' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('state._text')"><a><span translate>label.status</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'state._text' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'state._text' && agentsFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('numOfAgents.any')"><a><span translate>label.totalAgents</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('numOfAgents.running')"><a><span translate>label.runningAgents</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.running' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.running' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('numOfAgents.any - numOfAgents.running')"><a><span translate>label.notReachable</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfAgents.any - numOfAgents.running' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('_type')"><a><span translate>label.schedulingType</span>
+                            <i ng-show="agentsFilters.filter.sortBy == '_type' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == '_type' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('surveyDate')"><a><span translate>label.lastUpdateTime</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'surveyDate' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'surveyDate' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('maxProcesses')"><a><span translate>label.maxProcesses</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'maxProcesses' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'maxProcesses' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByA('numOfProcesses')"><a><span translate>label.runningProcesses</span>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfProcesses' && !agentsFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody ng-repeat="cluster in agentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * agentsFilters.pageSize | limitTo: agentsFilters.pageSize" ng-class="{'light-bg':cluster.show}">
+                    <tr>
+                        <td>
+                            <i class="cursor fa fa-caret-down noExl" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
+                            <i class="cursor fa fa-caret-up noExl" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
+                            {{cluster.path}}
+                        </td>
+                        <td><span class="label" ng-class="bgColorFunction(cluster.state.severity)">
+                            <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_RUNNING'">{{'healthy' | translate}}</span>
+                            <span ng-if="cluster.state._text =='ONLY_SOME_AGENTS_ARE_RUNNING'">{{'unhealthy' | translate}}</span>
+                            <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_UNREACHABLE'">{{'unreachable' | translate}}</span>
+                        </span></td>
+                        <td>{{cluster.numOfAgents.any}}</td>
+                        <td>{{cluster.numOfAgents.running}}</td>
+                        <td>{{cluster.numOfAgents.any - cluster.numOfAgents.running}}</td>
+                        <td>{{cluster._type | translate}}</td>
+                        <td>{{cluster.surveyDate | stringToDate}}</td>
+                        <td>{{cluster.maxProcesses}}</td>
+                        <td>
+                            <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
+                            <span ng-if="!cluster.numOfProcesses" ng-bind="cluster.numOfProcesses || 0"></span>
+                        </td>
+                    </tr>
+                    <tr ng-if="cluster.show">
+                        <td colspan="9" style="padding: 1px !important;">
+                            <table class="table m-a-0">
+                                <thead>
+                                <tr>
+                                    <th translate>label.agent</th>
+                                    <th translate>label.state</th>
+                                    <th translate>label.url</th>
+                                    <th translate>label.startedAt</th>
+                                    <th translate>label.runningTasks</th>
+                                </tr>
+                                </thead>
+                                <tbody ng-repeat="agent in cluster.agents">
+                                <tr>
+                                    <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{agent.host}}</td>
+                                    <td><span class="label" ng-class="bgColorFunction(agent.state.severity)">{{agent.state._text | translate}}</span></td>
+                                    <td><a target="_blank" href="{{agent.url}}" class="text-hover-primary">{{agent.url}}</a></td>
+                                    <td>{{agent.startedAt | stringToDate}}</td>
+                                    <td>{{agent.runningTasks || 0}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <ul ng-show="agentClusters.length > agentsFilters.pageSize" uib-pagination total-items="agentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='agentsFilters.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-right" ng-show="agentClusters.length > 10">
+                    <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'10'"
+                                ng-class="{'primary': agentsFilters.pageSize=='10'}" >10
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'25'"
+                                ng-class="{'primary': agentsFilters.pageSize=='25'}" >25
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'50'"
+                                ng-class="{'primary': agentsFilters.pageSize=='50'}" >50
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'100'"
+                                ng-class="{'primary': agentsFilters.pageSize=='100'}">100
+                        </button>
+                    </div>
+                </div>
+            </div>
     </div>
-    <div ng-if="isLoading && tree_data.length==0" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
+    <div ng-if="isLoading && agentClusters.length==0" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
 </div>
 <div ng-if="!isLoading" class="text-center m-t-lg">
     <div class="cssload-loading">{{'label.loading' | translate}}...</div>

@@ -435,7 +435,7 @@
                                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                                         <a href class="dropdown-item" ng-if="order.processingState._text != 'BLACKLIST'"
                                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
-                                                                        <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
+                                                                        <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                             </div>
                                                         </div>
@@ -531,7 +531,12 @@
                     <span class="text-primary">"{{folderPath}}"</span>
                     <span translate>message.emptyFolder</span>
                 </div>
-
+            </div>
+            <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+            </div>
+            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
             <div class="hide " ng-class="{'show': isLoading}">
                 <div class="row hide" ng-show="showHistoryPanel" ng-class="{'show': pageView=='list'}">
@@ -602,12 +607,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-            </div>
-            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
         </div>
     </div>

@@ -136,24 +136,26 @@
     }
 
 
-    flowDiagram.$inject = ["$compile", "$rootScope", "$window","gettextCatalog"];
-    function flowDiagram($compile, $rootScope, $window,gettextCatalog) {
+    flowDiagram.$inject = ["$compile", "$window","gettextCatalog"];
+    function flowDiagram($compile, $window,gettextCatalog) {
         return {
             restrict: 'E',
             transclude: true,
             link: function (scope, element) {
-
+                  var done = false;
                 scope.$watch("jobChain", function (data) {
-                    //console.log("Normal watch called01 " + data);
-                    if (!data) {
+                    if (!data || done) {
                         return;
                     }
+                    done = true;
                     draw();
                 });
                 function draw() {
+
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
+                    scope.jobPaths=[];
 
 
                     //console.log("Items " + scope.jobChain.nodes.length + " " + scope.width);
@@ -287,6 +289,7 @@
                             var host;
 
                             if (item.job) {
+                                scope.jobPaths.push(item.job.path);
                                 jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
                                 jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
                                 jobName = '<span><i class="fa fa-file1"></i><span class="">' + jobName + '</span></span>';
@@ -311,13 +314,14 @@
                             var btnId2 = 'btn2' + item.name.replace(':', '__');
                             var btnId3 = 'btn3' + item.name.replace(':', '__');
                             var btnId4 = 'btn4' + item.name.replace(':', '__');
-                            //console.log("ID is " + chkId);
-                            var rectCls = "border-grey";
-                            //console.log("Item " + JSON.stringify(item));
                             var op1 = "button.stopNode";
                             var op2 = "button.skipNode";
                             var op3 = "button.stopJob";
                             var op1Cls = "text-hover-color";
+                            var op2Cls = "";
+                            var op3Cls="";
+                            var op4Cls="";
+
 
                             item.state = item.state || {};
                             item.job.state = item.job.state || {};
@@ -327,18 +331,17 @@
                             if (item.state._text.toLowerCase() != "active") {
                                 if (item.state._text.toLowerCase() == "skipped") {
                                     op2 = "button.proceedNode";
-                                    rectCls = "border-dark-orange";
+
                                 } else if (item.state._text.toLowerCase() == "stopped") {
                                     op1 = "button.proceedNode";
                                     op1Cls = "";
-                                    rectCls = "border-red";
                                 }
 
                             } else {
                                 if (item.job.state._text.toLowerCase() == "running") {
                                 } else if (item.job.state._text.toLowerCase() == "pending") {
                                 } else if (item.job.state._text.toLowerCase() == "stopped") {
-                                    rectCls = "border-red";
+
                                     op3 = "button.unstopJob";
                                 }
                             }
@@ -348,16 +351,38 @@
                                 btnClass ='fa fa-play';
                             }
 
+                              if(op1=="button.stopNode" && !scope.permission.JobChain.stopJobChainNode){
+                                op1Cls = op1Cls+" disable-link";
+                            }else if(op1=="button.proceedNode" && !scope.permission.JobChain.unstopJobChainNode){
+                                op1Cls = op1Cls+" disable-link";
+                            }
+
+                            if(op2=="button.skipNode" && !scope.permission.JobChain.skipJobChainNode){
+                                op2Cls = op2Cls+" disable-link";
+                            }else if(op2=="button.proceedNode" && !scope.permission.JobChain.unskipJobChainNode){
+                                op2Cls = op2Cls+" disable-link";
+                            }
+
+                            if(op3=="button.stopJob" && !scope.permission.Job.stop){
+                                op3Cls = op3Cls+" disable-link";
+                            }else if(op3=="button.unstopJob" && !scope.permission.Job.unstop){
+                                op3Cls = op3Cls+" disable-link";
+                            }
+
+                            if(!scope.permission.JobChain.view.configuration){
+                                op4Cls = op4Cls+" disable-link";
+                            }
+                            console.log("Path "+item.job.path);
                             rectangleTemplate = rectangleTemplate +
-                            '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect ' + rectCls + '" >' +
+                            '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect border-grey" >' +
                             '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
                             '<input type="checkbox"  id="' + chkId + '">' +
                             '<i class="ch-purple"></i>' +
                             '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
                             '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                             '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                            '<a id="' + btnId4 + '" class="dropdown-item" translate>button.showConfiguration</a>' +
-                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color" translate>' + op3 + '</a>' +
+                            '<a id="' + btnId4 + '" class="dropdown-item '+ op4Cls+'" translate>button.showConfiguration</a>' +
+                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color '+ op3Cls+'" translate>' + op3 + '</a>' +
                             '</div></div></div>'
                             + '<div class="text-left text-muted p-t-sm ">' + jobName +
                             '</div>' +
@@ -365,7 +390,7 @@
                             '</div >' +
                             '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
                             '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="'+btnClass+'" ></i> <span translate>' + op1 + '</span></a>' +
-                            '<a href class=" pull-right " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
+                            '<a href class=" pull-right '+ op2Cls+' " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
                             '</div>' +
                             '</div>';
                         }
@@ -581,7 +606,7 @@
                 'onAction': '&',
                 'showConfiguration': '&',
                 'orders': '=',
-                'getOrders': '&',
+                'getJobChain': '&',
                 'permission': '=',
                 'onOrderAction':'&'
             },
@@ -1045,12 +1070,7 @@
                                         action: 'stop node'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-red');
-                                        btn1.className = btn1.className.replace('text-hover-color', '');
-                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
-                                        item.state._text = 'STOPPED';
-                                        item.state.severity = 2;
+
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
@@ -1061,11 +1081,7 @@
                                         action: 'unstop node'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-grey');
-                                        btn1.className = btn1.className + " text-hover-color";
-                                        item.state._text = 'ACTIVE';
-                                        item.state.severity = 4;
+
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     });
@@ -1089,13 +1105,7 @@
                                         action: 'skip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
-                                        btn2.className = btn2.className.replace('text-hover-color', '');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-dark-orange');
-                                        btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
-                                        btn1.className = btn1.className + " text-hover-color";
-                                        item.state._text = 'SKIPPED';
-                                        item.state.severity = 5;
+
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
@@ -1106,10 +1116,7 @@
                                         action: 'unskip'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
-                                        div1.className = div1.className.replace(/border-.*/, '');
-                                        item.state._text = 'ACTIVE';
-                                        item.state.severity = 4;
+
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     });
@@ -1133,12 +1140,8 @@
                                         action: 'stop job'
                                     }).then(function (res) {
                                         console.log("Response " + JSON.stringify(res));
-                                        btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-red');
-                                        btn3.className = btn3.className.replace('bg-hover-color', '');
-                                        item.job.state._text = 'STOPPED';
-                                        item.job.state.severity = 2;
-                                        vm.onAdd({$item: undefined});
+
+                                        //vm.onAdd({$item: undefined});
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     })
@@ -1149,11 +1152,7 @@
                                         action: 'unstop job'
                                     }).then(function (res) {
                                         //console.log("Response " + JSON.stringify(res));
-                                        btn3.innerHTML = gettextCatalog.getString('button.stopJob');
-                                        div1.className = div1.className.replace(/border-.*/, 'border-grey');
-                                        btn3.className = btn3.className + " bg-hover-color";
-                                        item.job.state._text = 'PENDING';
-                                        item.job.state.severity = 1;
+
                                     }, function (err) {
                                         //console.log("Error " + JSON.stringify(err));
                                     });
@@ -1172,7 +1171,7 @@
 
                         if (vm.jobChain.nodes.length - 1 == index) {
                             getInfo(0);
-                             getOrders();
+                             updateJobChain();
                         }
 
                     })
@@ -1243,23 +1242,26 @@
                         });
                     }
                 }
+var path=[];
+                vm.$on('event-started', function (event,args) {
+            if (args.events && args.events.length > 0) {
 
-                vm.$on('event-started', function () {
-            if (vm.events && vm.events.length > 0) {
-                angular.forEach(vm.events[0].eventSnapshots, function (value1) {
+                angular.forEach(args.events[0].eventSnapshots, function (value1) {
                     if (value1.eventType.indexOf("Order") !== -1 || value1.eventType.indexOf("JobChain") !== -1 || value1.eventType == 'JobStateChanged') {
                         if (value1.path != undefined) {
-                            var path;
+
+                            if(value1.path.indexOf(",")>-1){
                                 path = value1.path.split(",");
-                                if (jobChainPath == path[0]) {
+                            }else{
+                                path[0]=value1.path;
+                            }
+                                if (jobChainPath == path[0] || vm.jobPaths.indexOf(path[0])>-1) {
                                     var obj = {};
-                                    obj.jobschedulerId = $scope.schedulerIds.selected;
                                     obj.jobChain = jobChainPath;
-
-                                    JobChainService.getJobChain(obj).then(function (res) {
+                                    vm.getJobChain({filter:obj}).then(function (res) {
                                         if (res.jobChain) {
-
                                             vm.jobChain=res.jobChain;
+                                            updateJobChain();
                                         }
                                     });
                                 }
@@ -1274,8 +1276,8 @@
 
 
 
-                function getOrders() {
-                    console.log("In get orders");
+                function updateJobChain() {
+                    console.log("In get orders "+vm.jobPaths+" "+path[0]+" "+vm.jobPaths.indexOf(path[0]));
 
                     var filter = {};
                     filter.orders = [];
@@ -1288,8 +1290,99 @@
                             var rect = document.getElementById(node.name);
                             var label = document.getElementById('lbl-order-' + node.name);
                             if (rect) {
-                                rect.className = rect.className.replace(/border-.*/, 'border-grey');
-                                console.log("Set grey border for " + rect.id);
+                                var btnId1 = '#btn1' + node.name.replace(':', '__');
+                                    var btn1 = document.querySelector(btnId1);
+                                    var btnId2 = '#btn2' + node.name.replace(':', '__');
+                                    var btn2 = document.querySelector(btnId2);
+                                 var btnId = '#btn3' + node.name.replace(':', '__');
+
+                        var btn3 = document.querySelector(btnId);
+                                if (node.state._text.toLowerCase() != "active") {
+                                if (node.state._text.toLowerCase() == "skipped") {
+                                    rect.className = rect.className.replace(/border-.*/, 'border-dark-orange');
+                                    btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
+                                        btn2.className = btn2.className.replace('text-hover-color', '');
+                                         if(!vm.permission.JobChain.unskipJobChainNode){
+                                            btn2.className = btn2.className+" disable-link";
+                                        }else{
+                                            btn2.className=btn2.className.replace(/disable-link/g,'');
+                                        }
+                                        rect.className = rect.className.replace(/border-.*/, 'border-dark-orange');
+                                        btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
+                                        btn1.className = btn1.className + " text-hover-color";
+                                         if(!vm.permission.JobChain.stopJobChainNode){
+                                            btn1.className = btn1.className+" disable-link";
+                                        }else{
+                                            btn1.className=btn1.className.replace(/disable-link/g,'');
+                                        }
+
+                                } else if (node.state._text.toLowerCase() == "stopped") {
+                                   rect.className = rect.className.replace(/border-.*/, 'border-red');
+
+                                    btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
+                                        rect.className = rect.className.replace(/border-.*/, 'border-red');
+                                        btn1.className = btn1.className.replace('text-hover-color', '');
+                                        if(!vm.permission.JobChain.unstopJobChainNode){
+                                            btn1.className = btn1.className+" disable-link";
+                                        }else{
+                                            btn1.className.replace(/disable-link/g,'');
+                                        }
+                                        btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
+                                         if(!vm.permission.JobChain.skipJobChainNode){
+                                            btn2.className = btn2.className+" disable-link";
+                                        }else{
+                                            btn2.className.replace(/disable-link/g,'');
+                                        }
+
+
+                                }
+
+                            } else {
+
+                                    rect.className = rect.className.replace(/border-.*/, 'border-grey');
+                                     btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
+                                        btn1.className = btn1.className + " text-hover-color";
+                                         if(!vm.permission.JobChain.stopJobChainNode){
+                                            btn1.className = btn1.className+" disable-link";
+                                        }else{
+                                            btn1.className=btn1.className.replace(/disable-link/g,'');
+                                        }
+                                    btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
+                                         if(!vm.permission.JobChain.skipJobChainNode){
+                                            btn2.className = btn2.className+" disable-link";
+                                        }else{
+                                            btn2.className=btn2.className.replace(/disable-link/g,'');
+                                        }
+                                     btn3.innerHTML = gettextCatalog.getString('button.stopJob');
+                                        btn3.className = btn3.className + " bg-hover-color";
+                                         if(!vm.permission.Job.stop){
+                                            btn3.className = btn3.className+" disable-link";
+                                        }else{
+                                            btn3.className=btn3.className.replace(/disable-link/g,'');
+                                        }
+
+
+
+
+                                if (node.job.state._text.toLowerCase() == "running") {
+                                    rect.className = rect.className.replace(/border-.*/, 'border-gey');
+                                } else if (node.job.state._text.toLowerCase() == "pending") {
+                                    rect.className = rect.className.replace(/border-.*/, 'border-grey');
+                                } else if (node.job.state._text.toLowerCase() == "stopped") {
+                                    rect.className = rect.className.replace(/border-.*/, 'border-red');
+                                     btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
+                                        rect.className = rect.className.replace(/border-.*/, 'border-red');
+                                        btn3.className = btn3.className.replace('bg-hover-color', '');
+                                         if(!vm.permission.Job.unstop){
+                                            btn3.className = btn3.className+" disable-link";
+                                        }else{
+                                            btn3.className=btn3.className.replace(/disable-link/g,'');
+                                        }
+
+                                }
+                            }
+
+
                             }
                             if (label) {
                                 label.parentNode.removeChild(label);
@@ -1338,13 +1431,13 @@
                                 vm.shouldPollForOrders = true;
                             }
                             if (node) {
-                                if (node.className.indexOf('border-green') > -1 || node.className.indexOf('border-grey-pending') > -1) {
+                                var container = document.getElementById('lbl-order-' + order.state);
+                                if (container && container.childNodes.length>0) {
+                                    console.log("Found container and child nodes "+container.childNodes.length);
                                      if(order.processingState._text=='RUNNING'){
                                          node.className = node.className.replace(/border-.*/, 'border-green');
-                                    }else {
-                                        node.className = node.className.replace(/border-.*/, 'border-grey-pending');
                                     }
-                                    var container = document.getElementById('lbl-order-' + order.state);
+
                                     var label = document.createElement('div');
                                     var color = '';
                                     if (order.processingState.severity > -1) {
@@ -1387,11 +1480,10 @@
                                         container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
                                     container.appendChild(label);
-                                } else if (node.className.indexOf('border-grey') > -1) {
+                                } else  {
+                                    console.log("Found no container or no child nodes ");
                                     if(order.processingState._text=='RUNNING'){
                                          node.className = node.className.replace(/border-.*/, 'border-green');
-                                    }else {
-                                        node.className = node.className.replace(/border-.*/, 'border-grey-pending');
                                     }
 
                                     var color = '';
@@ -1695,7 +1787,7 @@
                             });
 
                             var orderDelete = document.getElementById('orderdelete-' + order.orderId);
-                            if(order.processingState._text == 'BLACKLIST' && vm.permission.Order.delete.permanent) {
+                            if(order._type =='AD_HOC' && vm.permission.Order.delete.permanent) {
                                 orderDelete.className = 'show dropdown-item  bg-hover-color';
                             }
 

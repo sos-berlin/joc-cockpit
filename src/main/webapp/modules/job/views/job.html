@@ -115,26 +115,26 @@
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
             <div>
-                    <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
-                        <i class="fa fa-angle-down fa-lg"></i>
-                        <span translate>button.expandAll</span>
-                    </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
-                        <i class="fa fa-angle-up fa-lg"></i>
-                        <span translate>button.collapseAll</span>
-                    </button>
-                    <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
-                    <tree
-                            tree-data="tree"
-                            tree-control="my_tree"
-                            expand-on="expanding_property"
-                            on-select="treeHandler1(branch)"
-                            on-click="treeHandler(branch)"
-                            expand-node="expandNode(branch)"
-                            collapse-node="collapseNode(branch)"
-                            template-url="modules/core/template/tree.html">
-                    </tree>
-                </div>
+                <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
+                    <i class="fa fa-angle-down fa-lg"></i>
+                    <span translate>button.expandAll</span>
+                </button>
+                <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
+                    <i class="fa fa-angle-up fa-lg"></i>
+                    <span translate>button.collapseAll</span>
+                </button>
+                <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                <tree
+                        tree-data="tree"
+                        tree-control="my_tree"
+                        expand-on="expanding_property"
+                        on-select="treeHandler1(branch)"
+                        on-click="treeHandler(branch)"
+                        expand-node="expandNode(branch)"
+                        collapse-node="collapseNode(branch)"
+                        template-url="modules/core/template/tree.html">
+                </tree>
+            </div>
         </div>
         <div id="rightPanel1">
             <div class="hide" ng-class="{'show': isLoading}" ng-hide="loading">
@@ -190,7 +190,7 @@
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.status </span>:
-                                        <span ng-class="colorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span>
+                                        <span ng-class="colorFunction(job.state.severity)" ng-bind="job.state._text | translate" ></span>
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">
@@ -302,7 +302,7 @@
                                         </a>
                                         <span ng-if="!job.numOfRunningTasks">
                                             <span ng-bind="job.numOfRunningTasks || 0"></span>
-                                            <i class="text-black ">of</i>
+                                            <i class="text-black" translate>of</i>
                                             <span ng-bind="job.maxTasks || 0"></span>
                                         </span>
                                     </td>
@@ -353,7 +353,18 @@
 
                     </div>
                 </div>
-                <div class="hide " ng-class="{'show': isLoading}" >
+            </div>
+            <div ng-if="isLoading && !loading && folderPath && allJobs.length==0" class="text-center m-t h6">
+                    <span class="text-primary">"{{folderPath}}"</span>
+                    <span translate>message.emptyFolder</span>
+            </div>
+            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+            </div>
+            <div ng-if="!isLoading" class="text-center m-t-lg">
+                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+            </div>
+            <div class="hide " ng-class="{'show': isLoading}" >
                 <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
                     <div class="col-md-12 hide" ng-class="{'show':isLoading1}">
                         <div class="box white" id="scrollToTask">
@@ -405,13 +416,13 @@
                                                     <tbody>
                                                         <tr ng-repeat="task in taskHistory" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
                                                            <td>{{task.taskId}}</td>
-                                                           <td><span class="label" ng-class="bgColorFunction(task.state.severity)">{{task.state._text || '-'}}</span></td>
+                                                           <td><span class="label" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span></td>
                                                            <td>{{task.startTime | stringToDate}}</td>
                                                            <td>{{task.endTime | stringToDate}}</td>
                                                            <td>{{task.startTime | duration:task.endTime}}</td>
                                                            <td>{{task.exitCode}}</td>
-                                                           <td>{{task.error.code || '-'}}</td>
-                                                           <td class="text-danger">{{task.error.message || '-'}}</td>
+                                                           <td>{{task.error.code}}</td>
+                                                           <td class="text-danger">{{task.error.message}}</td>
                                                         </tr>
 
                                                     </tbody>
@@ -520,18 +531,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
-                    <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-                </div>
-            </div>
-            </div>
-            <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
-            <div ng-if="isLoading && !loading && folderPath && allJobs.length==0" class="text-center m-t h6">
-                    <span class="text-primary">"{{folderPath}}"</span>
-                    <span translate>message.emptyFolder</span>
-            </div>
-            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
         </div>
     </div>

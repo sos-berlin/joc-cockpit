@@ -1,7 +1,7 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title" translate><span ng-bind="processClass.path"></span> : <span ng-bind="processClass.name"></span> </h4>
+        <h4 class="modal-title" translate><span ng-bind="processClass.path"></span> <span ng-if="processClass.name">:</span> <span ng-bind="processClass.name"></span> </h4>
     </div>
     <div class="modal-body" style="min-height: 500px; max-height: 650px; overflow: auto">
         <div class="row">
@@ -16,8 +16,8 @@
                             <th translate>label.taskId</th>
                         </tr>
                         </thead>
-                        <tbody ng-repeat="process in processClass.processes">
-                        <tr>
+                        <tbody >
+                        <tr ng-repeat="process in processClass.processes" class="cursor" title="Show logs" ng-click="showLogWindow(null,process)">
                             <td>{{process.pid}}</td>
                             <td>{{process.job}}</td>
                             <td>{{process.runningSince | stringToDate}} <span class="text-success">({{process.runningSince | durationFromCurrent:undefined }})</span></td>

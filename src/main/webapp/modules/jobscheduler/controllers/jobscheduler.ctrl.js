@@ -22,11 +22,9 @@
 
         vm.object = {};
 
-
         vm.tree = [];
         vm.treeLock = [];
         vm.treeProcess = [];
-        vm.tree_data = [];
         vm.my_tree = {};
         vm.my_tree_lock = {};
         vm.my_tree_process = {};
@@ -43,9 +41,6 @@
         vm.sortByA = function (propertyName) {
             vm.agentsFilters.reverse = !vm.agentsFilters.reverse;
             vm.agentsFilters.filter.sortBy = propertyName;
-            if (pageView == 'list')
-                vm.tree_data = orderBy(vm.tree_data, vm.agentsFilters.filter.sortBy, vm.agentsFilters.reverse);
-
         };
         vm.sortByP = function (propertyName) {
             vm.processFilters.reverse = !vm.processFilters.reverse;
@@ -64,110 +59,13 @@
 
         /** -----------------Begin Agent clusters------------------- */
 
-        vm.expanding_property = {
-            field: "AgentCluster",
-            displayName: gettextCatalog.getString('label.agentCluster'),
-            sortable: true
+
+        vm.showAgents = function(cluster){
+            cluster.show =true;
         };
-
-        vm.col_defs = [
-            {
-                field: "Status",
-                displayName: gettextCatalog.getString('label.status'),
-                sortable: true,
-                cellTemplate: "<span  class='label b-{{row.branch[col.field].substr(0,row.branch[col.field].length-1)}} _{{row.branch[col.field].substr(row.branch[col.field].length-1,row.branch[col.field].length)}}'>{{ row.branch[col.field].substring(0,row.branch[col.field].lastIndexOf('&')) | translate}}</span>"
-            },
-            {
-                field: "URL",
-                displayName: gettextCatalog.getString('label.url'),
-                sortable: true,
-                cellTemplate: "<a target='_blank' href='{{row.branch[col.field]}}'>{{row.branch[col.field]}}</a>"
-            },
-            {
-                field: "TotalAgents",
-                displayName: gettextCatalog.getString('label.totalAgents'),
-                sortable: true,
-                sortingType: "number"
-            },
-            {
-                field: "RunningAgents",
-                displayName: gettextCatalog.getString('label.runningAgents'),
-                sortable: true,
-                sortingType: "number"
-            },
-            {
-                field: "NotReachable",
-                displayName: gettextCatalog.getString('label.notReachable'),
-                sortable: true,
-                sortingType: "number"
-            }, {
-                field: "SchedulingType",
-                displayName: gettextCatalog.getString('label.schedulingType'),
-                sortable: true,
-                cellTemplate: "<span >{{ row.branch[col.field] | translate }}</span>"
-            },
-            {
-                field: "LastUpdateTime",
-                displayName: gettextCatalog.getString('label.lastUpdateTime'),
-                sortable: true,
-                cellTemplate: "<span class='text-muted'>{{ row.branch[col.field] | stringToDate }}</span>"
-            },
-            {
-                field: "MaxProcess",
-                displayName: gettextCatalog.getString('label.maxProcesses'),
-                sortable: true,
-                sortingType: "number"
-            },
-            {
-                field: "RunningTasks",
-                displayName: gettextCatalog.getString('label.runningTasks'),
-                sortable: true,
-                sortingType: "number"
-            }
-        ];
-
-        function prepareDataForTree(res) {
-            var agentsData = [];
-            angular.forEach(res, function (value) {
-                var st = value.state._text === "ALL_AGENTS_ARE_RUNNING" ? "healthy" : value.state._text === "ONLY_SOME_AGENTS_ARE_RUNNING" ? "unhealthy" : "unreachable";
-                var clusterObj = {
-                    "AgentCluster": value.path,
-                    "Status": st + '&',
-                    "URL": '-',
-                    "TotalAgents": value.numOfAgents.any,
-                    "RunningAgents": value.numOfAgents.running,
-                    "NotReachable": value.numOfAgents.any - value.numOfAgents.running,
-                    "SchedulingType": value._type,
-                    "LastUpdateTime": value.surveyDate,
-                    "MaxProcess": value.maxProcesses,
-                    "RunningTasks": value.numOfProcesses,
-                    "children": []
-                };
-
-                angular.forEach(value.agents, function (agent, index1) {
-                    if (agent.runningTasks)
-                        clusterObj.RunningTasks = clusterObj.RunningTasks + agent.runningTasks;
-
-                    var agentObj = {
-                        "AgentCluster": agent.host || '-',
-                        "Status": agent.state._text + '&' + agent.state.severity,
-                        "URL": agent.url,
-                        "TotalAgents": "-",
-                        "RunningAgents": "-",
-                        "NotReachable": "-",
-                        "SchedulingType": "-",
-                        "LastUpdateTime": agent.surveyDate,
-                        "MaxProcess": "-",
-                        "RunningTasks": agent.runningTasks
-                    };
-                    clusterObj.children.push(agentObj);
-                });
-
-                agentsData.push(clusterObj);
-
-            });
-            return agentsData;
-        }
+        vm.hideAgents = function(cluster){
+            cluster.show =false;
+        };
 
         vm.loadAgents = function () {
             loadAgentsV();
@@ -184,9 +82,11 @@
             }
 
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
-
-                vm.agentClusters = result.agentClusters;
-                vm.tree_data = prepareDataForTree(vm.agentClusters);
+                if(vm.agentClusters) {
+                    vm.agentClusters = angular.merge(vm.agentClusters, result.agentClusters);
+                } else{
+                    vm.agentClusters = result.agentClusters;
+                }
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -508,17 +408,18 @@
         function volatileInformationP(obj, expandNode) {
             ResourceService.getProcessClass(obj).then(function (res) {
 
-                if (vm.processClasses.length > 0 && vm.processClasses.length == res.processClasses.length) {
+                if (vm.processClasses.length > 0) {
                     angular.forEach(vm.processClasses, function (processClass) {
                         angular.forEach(res.processClasses, function (processClassData) {
-                            if (processClass.path == processClassData.path || processClassData.name == 'multi' || processClassData.name == '(default)' || processClassData.name == 'single') {
-                                processClass = angular.merge(processClass, processClassData);
+                             if (processClass.path == processClassData.path) {
+                                processClassData.maxProcesses = processClass.maxProcesses;
+                                processClass = processClassData;
                             }
                         });
                     });
-                } else {
-                    vm.processClasses = res.processClasses;
                 }
+
+                vm.processClasses = res.processClasses;
 
                 if (expandNode) {
                     startTraverseNodeP(expandNode);
@@ -551,17 +452,19 @@
         function volatileFolderDataP(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
 
-                if (data.processClasses.length > 0 && data.processClasses.length == res.processClasses.length) {
+                if (data.processClasses.length > 0) {
                     angular.forEach(data.processClasses, function (processClass) {
                         angular.forEach(res.processClasses, function (processClassData) {
-                            if (processClass.path == processClassData.path || processClassData.name == 'multi' || processClassData.name == '(default)' || processClassData.name == 'single') {
-                                processClass = angular.merge(processClass, processClassData);
+                            if (processClass.path == processClassData.path) {
+                                processClassData.maxProcesses = processClass.maxProcesses;
+                                processClass = processClassData;
                             }
                         });
                     });
-                } else {
-                    data.processClasses = res.processClasses;
                 }
+
+                data.processClasses = res.processClasses;
+
 
                 if (data.processClasses.length > 0) {
                     angular.forEach(data.processClasses, function (value) {
@@ -665,8 +568,9 @@
                 data.folders = orderBy(data.folders, 'name');
 
                 data.processClasses = [];
+
                 angular.forEach(vm.processClasses, function (value) {
-                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))  || (data.path == '/' && (value.name == 'multi' || value.name == '(default)' || value.name == 'single'))) {
                         data.processClasses.push(value);
                         value.path1 = data.path;
                         vm.allProcessClasses.push(value);
@@ -1332,6 +1236,9 @@ if (t1) {
         vm.orderFilters = CoreService.getOrderTab1();
         vm.orderFilters.currentPage = 1;
 
+            vm.reset = function(){
+                vm.object = {};
+            };
         vm.object = {};
 
         /**--------------- sorting and pagination -------------------*/

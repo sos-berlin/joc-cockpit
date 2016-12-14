@@ -183,7 +183,7 @@
                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                         <a href class="dropdown-item" ng-if="order.processingState._text != 'BLACKLIST'"
                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
-                                                        <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
+                                                        <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                     </div>
                                                 </div>
@@ -319,14 +319,14 @@
                                             <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
                                             <td >
                                                 <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
-                                                <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
+                                                <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
                                             </td>
                                             <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
                                             <td ng-bind="order.historyId || '-'"></td>
                                             <td>
                                                 <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
                                                     <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
-                                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                                                <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                             </td>
                                             <td class="noExl">
                                                 <div class="btn-group dropdown ">
@@ -363,7 +363,7 @@
                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                         <a href class="dropdown-item" ng-if="order.processingState._text != 'BLACKLIST'"
                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
-                                                        <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
+                                                        <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                     </div>
                                                 </div>
@@ -372,7 +372,7 @@
                                         <tr ng-show="showPanel == order.path" class="noExl">
 
                                             <td></td>
-                                            <td colspan="9" style="padding: 0 !important;">
+                                            <td colspan="9" style="padding: 1px !important;">
                                                 <table class="table m-a-0">
                                                     <thead>
                                                     <tr>
@@ -417,6 +417,16 @@
                         </div>
                     </div>
 
+                    </div>
+                    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                    </div>
+                    <div ng-if="isLoading && !loading && folderPath && allOrders.length==0" class="text-center m-t h6">
+                        <span class="text-primary">"{{folderPath}}"</span>
+                        <span translate>message.emptyFolder</span>
+                    </div>
+                    <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+                        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
                     </div>
                     <div class="hide " ng-class="{'show': isLoading}" >
                         <div class="row hide" ng-show="showLogPanel" ng-class="{'show': pageView=='list'}">
@@ -484,16 +494,6 @@
                         <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
                             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
                         </div>
-                    </div>
-                    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-                        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-                    </div>
-                    <div ng-if="isLoading && !loading && folderPath && allOrders.length==0" class="text-center m-t h6">
-                        <span class="text-primary">"{{folderPath}}"</span>
-                        <span translate>message.emptyFolder</span>
-                    </div>
-                    <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-                        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
                     </div>
                 </div>
             </div>

@@ -85,7 +85,7 @@
         tabs._history.order.filter.historyStates = 'all';
         tabs._history.order.filter.date = '-1h';
         tabs._history.order.filter.sortBy = 'startTime';
-        tabs._history.order.filter.sortReverse = false;
+        tabs._history.order.sortReverse = false;
         tabs._history.order.pageSize = '25';
         tabs._history.order.currentPage = '1';
         tabs._history.task = {};
@@ -93,7 +93,7 @@
         tabs._history.task.filter.historyStates = 'all';
         tabs._history.task.filter.date = '-1h';
         tabs._history.task.filter.sortBy = 'startTime';
-        tabs._history.task.filter.sortReverse = false;
+        tabs._history.task.sortReverse = false;
         tabs._history.task.pageSize = '25';
         tabs._history.task.currentPage = '1';
 
@@ -102,7 +102,7 @@
         tabs._resource.agents = {};
         tabs._resource.agents.filter = {};
         tabs._resource.agents.filter.state = 'all';
-        tabs._resource.agents.filter.sortBy = 'name';
+        tabs._resource.agents.filter.sortBy = 'path';
         tabs._resource.agents.filter.reverse = false;
         tabs._resource.agents.pageSize = '25';
         tabs._resource.agents.currentPage = '1';

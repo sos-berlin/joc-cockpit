@@ -202,9 +202,9 @@
                  try {
                      if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
                          if (order && order.historyId && order.orderId)
-                             url = '#/show_log?history_id=' + order.historyId + '&order_id=' + order.orderId + '&job_chain=' + order.jobChain;
+                             url = '#/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
                          else if (task && task.taskId)
-                             url = '#/show_log?task_id=' + task.taskId;
+                             url = '#/show_log?taskId=' + task.taskId+'&job=' + task.job;
                          else {
                              return;
                          }
@@ -231,7 +231,7 @@
                  if (order && order.historyId && order.orderId) {
                      url = '#/order/log/'+order.historyId+'/'+order.orderId+'?jobChain='+order.jobChain;
                  }else if (task && task.taskId){
-                     url = '#/job/log/'+task.taskId;
+                     url = '#/job/log/'+task.taskId+'&job=' + task.job;
                  }
                  window.open(url, '_blank');
              }
@@ -310,6 +310,7 @@
                 vm.logout();
             }
             try {
+                if($rootScope.clientLogFilter.state)
                 $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
             }catch(e){
                 $window.localStorage.clientLogs={};
@@ -429,15 +430,27 @@
         vm.changeEvent = function (jobScheduler) {
 
             var obj = {};
-            obj.jobscheduler = [
-                {"jobschedulerId": jobScheduler, "eventId": vm.eventId}
-            ];
+         obj.jobscheduler=[];
+   for(var i=0;i<jobScheduler.length;i++){
+            if (vm.logout == true) {
+
+
+                obj.jobscheduler.push(
+                    {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId, "close": true}
+                );
+            } else {
+                obj.jobscheduler.push (
+                    {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
+                    );
+            }
+            }
+
 
             CoreService.getEvents(obj).then(function (res) {
 
                 vm.events = res.events;
                 vm.eventId = vm.events[0].eventId;
-                $rootScope.$broadcast('event-started');
+                $rootScope.$broadcast('event-started',{events:vm.events});
                 vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                 eventTimeOutFlag = false;
 

@@ -74,7 +74,7 @@
                                                ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                             <a href class="dropdown-item" ng-if="order.processingState._text != 'BLACKLIST'"
                                                ng-click="viewCalendar(order)" translate>button.showCalendar</a>
-                                            <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'BLACKLIST' && permission.Order.delete.permanent"
+                                            <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                         </div>
                                 </div>
