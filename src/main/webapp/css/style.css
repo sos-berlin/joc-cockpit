@@ -47,3 +47,5 @@ input[type="search"]:focus {
     background: transparent url('../images/loader.gif') 50% 50% no-repeat;
     background-size: 50px;
 }
+table.fixed { table-layout:fixed; }
+table.fixed td { overflow: hidden; }

@@ -353,13 +353,13 @@
 
                               if(op1=="button.stopNode" && !scope.permission.JobChain.stopJobChainNode){
                                 op1Cls = op1Cls+" disable-link";
-                            }else if(op1=="button.proceedNode" && !scope.permission.JobChain.unstopJobChainNode){
+                            }else if(op1=="button.proceedNode" && !scope.permission.JobChain.processJobChainNode){
                                 op1Cls = op1Cls+" disable-link";
                             }
 
                             if(op2=="button.skipNode" && !scope.permission.JobChain.skipJobChainNode){
                                 op2Cls = op2Cls+" disable-link";
-                            }else if(op2=="button.proceedNode" && !scope.permission.JobChain.unskipJobChainNode){
+                            }else if(op2=="button.proceedNode" && !scope.permission.JobChain.processJobChainNode){
                                 op2Cls = op2Cls+" disable-link";
                             }
 
@@ -1170,6 +1170,8 @@
                         });
 
                         if (vm.jobChain.nodes.length - 1 == index) {
+                            vm.limitNum = 3;
+                            vm.showOrderPanel='';
                             getInfo(0);
                              updateJobChain();
                         }
@@ -1302,7 +1304,7 @@ var path=[];
                                     rect.className = rect.className.replace(/border-.*/, 'border-dark-orange');
                                     btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                                         btn2.className = btn2.className.replace('text-hover-color', '');
-                                         if(!vm.permission.JobChain.unskipJobChainNode){
+                                         if(!vm.permission.JobChain.processJobChainNode){
                                             btn2.className = btn2.className+" disable-link";
                                         }else{
                                             btn2.className=btn2.className.replace(/disable-link/g,'');
@@ -1322,7 +1324,7 @@ var path=[];
                                     btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                                         rect.className = rect.className.replace(/border-.*/, 'border-red');
                                         btn1.className = btn1.className.replace('text-hover-color', '');
-                                        if(!vm.permission.JobChain.unstopJobChainNode){
+                                        if(!vm.permission.JobChain.processJobChainNode){
                                             btn1.className = btn1.className+" disable-link";
                                         }else{
                                             btn1.className.replace(/disable-link/g,'');
@@ -1391,7 +1393,7 @@ var path=[];
 
                             if (node.orders && node.orders.length>0) {
                                  console.log("In get orders 02 ");
-                                addLabel(node.orders);
+                                addLabel(node.orders, node.name);
                             }
                         })
 
@@ -1423,7 +1425,7 @@ var path=[];
                         }
                     }
 
-                    function addLabel(orders) {
+                    function addLabel(orders, name) {
 
                         angular.forEach(orders, function (order, index) {
                             var node = document.getElementById(order.state);
@@ -1431,6 +1433,42 @@ var path=[];
                                 vm.shouldPollForOrders = true;
                             }
                             if (node) {
+                                if(index > vm.limitNum - 1) {
+                                    if (orders.length - 1 == index) {
+                                        var container = document.getElementById('lbl-order-' + order.state);
+                                        var label = document.createElement('div');
+                                        label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
+                                        + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
+                                        var top = container.offsetTop;
+                                        container.appendChild(label);
+                                        if (node.offsetTop - container.offsetTop < 75) {
+                                            container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
+                                        }
+                                        container.appendChild(label);
+                                        var more = document.getElementById('more');
+                                        var less = document.getElementById('less');
+                                        if (vm.showOrderPanel != name && orders.length > 3) {
+                                            more.className = 'show cursor text-xs';
+                                            less.className = 'hide cursor text-xs';
+                                        }
+
+                                        var showMore = document.querySelector("#more");
+                                        showMore.addEventListener('click', function (e) {
+                                            showOrderPanelFun(orders.length, name, more, less, order);
+                                        });
+
+                                        if (vm.showOrderPanel == name && orders.length > 3) {
+                                            less.className = 'show cursor text-xs';
+                                            more.className = 'hide cursor text-xs';
+                                        }
+
+                                        var showLess = document.querySelector("#less");
+                                        showLess.addEventListener('click', function (e) {
+                                            hideOrderPanelFuc(more, less);
+                                        });
+                                    }
+                                    return;
+                                }
                                 var container = document.getElementById('lbl-order-' + order.state);
                                 if (container && container.childNodes.length>0) {
                                     console.log("Found container and child nodes "+container.childNodes.length);
@@ -1507,8 +1545,7 @@ var path=[];
                                         time=order.nextStartTime;
                                     }
 
-
-                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
+                                    label.innerHTML = '<div><span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
                                     + '<span id="date-' + order.orderId + '" class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
                                     + '</span>'
                                     + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
@@ -1528,20 +1565,54 @@ var path=[];
                                     + '<a class="hide" id="orderremove-' + order.orderId + '">'+ gettextCatalog.getString("button.removeOrder") +'</a>'
                                     + '<a class="hide" id="calendar-' + order.orderId + '">'+ gettextCatalog.getString("button.showCalendar") +'</a>'
                                     + '<a class="hide" id="orderdelete-' + order.orderId + '">'+ gettextCatalog.getString("button.deleteOrder") +'</a>'
-                                    + '</div></div>';
+                                    + '</div></div></div>';
                                     mainContainer.appendChild(label);
                                     label.style['top'] = node.offsetTop - label.clientHeight + 'px';
                                     label.style['height'] = 'auto';
                                 }
 
+                                if (orders.length - 1 == index && orders.length == vm.limitNum) {
+                                    var container = document.getElementById('lbl-order-' + order.state);
+                                    var label = document.createElement('div');
+                                    label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
+                                    + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
+                                    var top = container.offsetTop;
+                                    container.appendChild(label);
+                                    if (node.offsetTop - container.offsetTop < 75) {
+                                        container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
+                                    }
+                                    container.appendChild(label);
+                                    var more = document.getElementById('more');
+                                    var less = document.getElementById('less');
+                                    if (vm.showOrderPanel != name && orders.length > 3) {
+                                        more.className = 'show cursor text-xs';
+                                        less.className = 'hide cursor text-xs';
+                                    }
+
+                                    var showMore = document.querySelector("#more");
+                                    showMore.addEventListener('click', function (e) {
+                                        showOrderPanelFun(orders.length, name, more, less, order);
+                                    });
+
+                                    if (vm.showOrderPanel == name && orders.length > 3) {
+                                        less.className = 'show cursor text-xs';
+                                        more.className = 'hide cursor text-xs';
+                                    }
+
+                                    var showLess = document.querySelector("#less");
+                                    showLess.addEventListener('click', function (e) {
+                                        hideOrderPanelFuc(more, less);
+                                    });
+                                }
                             }
- var orderLog = document.getElementById('log-' + order.orderId);
+
+                            var orderLog = document.getElementById('log-' + order.orderId);
                             if(vm.permission.Order.view.orderLog && order.historyId) {
                                 orderLog.className = 'show-inline dropdown-item';
                             }
 
                             var orderConfiguration = document.getElementById('configuration-' + order.orderId);
-                            if(vm.permission.Order.view.configuration) {
+                            if(vm.permission.Order.view.configuration && order._type !='AD_HOC') {
                                 orderConfiguration.className = 'show dropdown-item';
                             }
 
@@ -1774,7 +1845,7 @@ var path=[];
                             });
 
                             var calendar = document.getElementById('calendar-' + order.orderId);
-                            if(order.processingState._text != 'BLACKLIST') {
+                            if(order.processingState._text != 'BLACKLIST' && order._type !='AD_HOC') {
                                 calendar.className = 'show dropdown-item';
                             }
 
@@ -1817,7 +1888,28 @@ var path=[];
                     }
                 }
 
+                function showOrderPanelFun(num, name, more, less, order) {
+                    vm.limitNum = num;
+                    vm.showOrderPanel= name;
 
+                    less.className = 'show cursor text-xs';
+                    more.className = 'hide cursor text-xs';
+                    updateJobChain();
+
+                    var container = document.getElementById('lbl-order-' + order.state);
+                    container.style['max-height'] = '80px';
+                    container.style['overflow'] = 'auto';
+                    container.style['overflow-x'] = 'auto';
+                }
+
+                function hideOrderPanelFuc(more, less) {
+                    vm.limitNum = 3;
+                    vm.showOrderPanel='';
+
+                    less.className = 'hide cursor text-xs';
+                    more.className = 'show cursor text-xs';
+                    updateJobChain();
+                }
 
                 vm.$on('bulkOperationCompleted', function (event, args) {
                     console.log("Bulk operation completed " + JSON.stringify(args));

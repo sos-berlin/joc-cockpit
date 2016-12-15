@@ -38,26 +38,27 @@
 
                 var tWidth = 0;
 
-                function refresh(data) {
+                function refresh() {
                     $("#clusterStatusContainer").remove();
                     template = mainTemplate;
-                    if (data) {
+                    if (scope.clusterStatusData) {
                         init();
                         prepareData();
                     } else {
-                        if (!scope.clusterStatusData) {
                             $("#clusterStatusContainer").remove();
                             template = mainTemplate;
                             template += '<div style="position: absolute;top: 50%;left: 40%;" class="h6 text-u-c" translate>message.noDataAvailable</div>';
                             template = template + '</div>';
                             template = $compile(template)(scope);
                             elem.append(template);
-                        }
+
                     }
                 }
 
-                scope.$watch("clusterStatusData", function (data) {
-                    refresh(data);
+                scope.$on("clusterStatusDataChanged", function () {
+                    console.log("Changed ");
+                    refresh();
+
                 });
 
 
@@ -192,6 +193,14 @@
                                     drawFlow();
                                 }
                             })
+
+                            if(refresh && (refresh.state=='stopping'||refresh.state=='starting') && res.masters.length==0){
+                                if(master.state._text!='waiting_for_activation'){
+                                    master.state._text=refresh.state;
+                                refreshMasterState(master);
+                                }
+
+                            }
                         })
 
                     }
@@ -200,6 +209,10 @@
                     function refreshMasterState(master) {
 
                         var span = document.getElementById('sp' + master.host + master.port);
+                        var dState = document.getElementById('state' + master.host + master.port);
+                        if(dState){
+                            dState.innerHTML='State: '+ master.state._text;
+                        }
                         if (master.state && span) {
 
                             var anchors = document.querySelectorAll("a[id^='__']");
@@ -208,8 +221,12 @@
 
                                 if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
                                     var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
+
                                     if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
-                                        if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response') {
+                                        if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response'
+                                            || master.state._text.toLowerCase()=='stopping' ||master.state._text.toLowerCase()=='terminating'||
+                                            master.state._text.toLowerCase()=='starting') {
+                                            console.log("Here 01");
                                             var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
                                             span.className = span.className.replace(/text-.+/, cls);
                                             anchor.className = anchor.className.replace('hide', 'show') + " disable-link";
@@ -382,6 +399,7 @@
                                 '</span></div>' +
                                 '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
+                                '<div id="' + 'state' + supervisor.host + supervisor.port + '" class="text-left text-xs p-t-xs p-b-xs p-l-sm">State: ' + supervisor.state._text + '</div>'+
                                 '</div> ';
 
                             var masterTemplate = '';
@@ -432,12 +450,16 @@
                                 }
 
                                 var precedence = '';
-                                if (master.clusterType.type == 'passive' && master.clusterType.precedence == 0) {
+                                if (master.clusterType.type == 'PASSIVE' && master.clusterType.precedence == 0) {
                                     precedence = 'Primary';
                                     name = 'JobScheduler JS' + master.clusterType.precedence;
-                                } else if (master.clusterType.type == 'passive' && master.clusterType.precedence == 1) {
+                                } else if (master.clusterType.type == 'PASSIVE' && master.clusterType.precedence == 1) {
                                     precedence = 'Backup';
                                     name = 'JobScheduler JS' + master.clusterType.precedence;
+                                }
+                                if(master.clusterType._type=="PASSIVE" && !master.state){
+                                    master.state={};
+                                    master.state._text="waiting_for_activation";
                                 }
                                 lastId=master.host + master.port;
                                 masterTemplate = '<div  uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
@@ -460,7 +482,7 @@
                                     '</div> </div>' +
                                     '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
                                     '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port + '(' + precedence + ')' + '</div>' +
-
+'<div id="' + 'state' + master.host + master.port + '" class="text-left text-xs p-t-xs p-b-xs p-l-sm">State: ' + master.state._text + '</div>'+
                                     '</div>';
 
                                 if (index == 0) {
@@ -514,14 +536,14 @@
                                 c = c + " yellow-border";
                             }
                             var name = '';
-                            if (master.clusterType && master.clusterType.type == 'passive') {
-                                if (master.state && master.state._text.toLowerCase() == 'running') {
-                                    name = 'JobScheduler JS' + (master.clusterType.precedence + 1);
+                            if (master.clusterType && master.clusterType._type == 'PASSIVE') {
+                                if (master.clusterType.precedence == 0) {
+                                    name = 'PRIMARY';
                                 } else {
-                                    name = 'JobScheduler JS' + (master.clusterType.precedence + 1);
+                                     name = 'BACKUP';
                                 }
 
-                            } else if (master.clusterType && master.clusterType.type == 'active') {
+                            } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
                                 name = 'JobScheduler JS' + (index + 1);
 
                             }
@@ -545,6 +567,10 @@
                             }
 
                                 lastId=master.host + master.port;
+                                if(master.clusterType._type=="PASSIVE" && !master.state){
+                                    master.state={};
+                                    master.state._text="waiting_for_activation";
+                                }
 
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
@@ -564,8 +590,8 @@
                                 '</div></div>' +
                                 '</span></div>' +
                                 '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
-                                '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
-
+                                '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
+'<div id="' + 'state' + master.host + master.port + '" class="text-left text-xs p-t-xs p-b-xs p-l-sm">State: ' + master.state._text + '</div>'+
                                 '</div>';
 
                             if (index == 0) {
@@ -694,7 +720,7 @@
                 onOperation: '&'
 
             },
-            controller: ["$scope", "$interval", "$timeout", function ($scope, $interval, $timeout) {
+            controller: ["$scope", "$interval", function ($scope, $interval) {
                 var vm = $scope;
                 var promise;
 
@@ -735,9 +761,11 @@
                                     host: results[3],
                                     port: results[4]
                                 });
-                                 console.log(results);
-                                changeToWaiting(results[3], results[4]);
-                                vm.getSupervisor(true);
+                                if(results[2]!=='terminateAndRestartWithin'){
+                                      changeToWaiting(results[3], results[4]);
+                                }
+
+                                //vm.getSupervisor(true);
 
                             }
 
@@ -761,6 +789,9 @@
 
                         angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                             if (master.host == host && master.port == port) {
+                                if(!master.state){
+                                   master.state={};
+                                }
                                 master.state._text = 'waiting_for_response';
                                 vm.refreshMasterState(master);
                             }
@@ -960,6 +991,21 @@
 
 
                 }
+
+                vm.$on('event-started', function (event,args) {
+            if (args.events && args.events.length > 0) {
+
+                angular.forEach(args.events[0].eventSnapshots, function (value1) {
+                    if (value1.eventType.indexOf("SchedulerStateChanged") !== -1) {
+                         console.log("Event here "+JSON.stringify(value1));
+
+                        vm.getSupervisor(value1);
+                    }
+
+                });
+            }
+
+        });
             }]
         }
     }

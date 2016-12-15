@@ -67,9 +67,8 @@
                         vm.tree = angular.copy(res.folders);
                         filteredTreeData();
                     } else {
-                        var x = angular.merge({}, vm.filterTree, vm.jobChainFilters.expand_to);
-                        vm.jobChainFilters.expand_to = [];
-                        vm.jobChainFilters.expand_to.push(x[0]);
+
+                        vm.jobChainFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobChainFilters.expand_to);
                         vm.tree = vm.jobChainFilters.expand_to;
                         previousTreeState();
                     }
@@ -925,9 +924,9 @@
             });
         };
 
-        vm.deleteFilter = function () {
+        vm.deleteFilter = function (name) {
             angular.forEach(vm.savedJobChainFilter.list, function (value, index) {
-                if (value.name == vm.jobChainFilter.name) {
+                if (value.name == name) {
                     toasty.success({
                         title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
                         msg: ''
@@ -936,9 +935,10 @@
                 }
             });
             if (vm.savedJobChainFilter.list.length == 0) {
-                vm.savedJobChainFilter = {};
+                 vm.savedJobChainFilter.selected = undefined;
                 selectedFiltered = undefined;
-            } else if (vm.savedJobChainFilter.selected == vm.jobChainFilter.name) {
+            }
+            if (vm.savedJobChainFilter.selected == name) {
                 vm.savedJobChainFilter.selected = undefined;
                 selectedFiltered = undefined;
                 vm.load();
@@ -1165,6 +1165,39 @@
             });
         };
 
+        function recursiveTreeUpdate(scrTree, destTree) {
+            if(scrTree && destTree)
+            for (var i = 0; i < scrTree.length; i++) {
+                for (var j = 0; j < destTree.length; j++) {
+                    if (scrTree[i].path == destTree[j].path) {
+                        scrTree[i].jobChains = destTree[j].jobChains;
+                        scrTree[i].expanded = destTree[j].expanded;
+                        scrTree[i].selected = destTree[j].selected;
+                        scrTree[i].selected1 = destTree[j].selected1;
+                        recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        vm.recursiveTreeUpdate = function(scrTree, destTree) {
+            if(scrTree && destTree)
+            for(var i = 0; i < scrTree.length; i++) {
+                for (var j = 0; j < destTree.length; j++) {
+                    if (scrTree[i].path == destTree[j].path) {
+                        scrTree[i].jobChains =destTree[j].jobChains;
+                        scrTree[i].expanded =destTree[j].expanded;
+                        scrTree[i].selected =destTree[j].selected;
+                        scrTree[i].selected1 =destTree[j].selected1;
+                        recursiveTreeUpdate(scrTree[i].folders,destTree[j].folders);
+                        break;
+                    }
+                }
+            }
+            return scrTree;
+        };
 
         var t1 = '';
         $scope.$on('event-started', function () {
@@ -1242,15 +1275,11 @@
                             }).then(function (res) {
                                     if (!angular.equals(vm.filterTree, res.folders)) {
                                         vm.filterTree = res.folders;
-                                        var x = angular.merge({}, vm.filterTree, vm.jobChainFilters.expand_to);
-                                        vm.jobChainFilters.expand_to = [];
-                                        vm.jobChainFilters.expand_to.push(x[0]);
+                                        vm.jobChainFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobChainFilters.expand_to);
                                         vm.tree = vm.jobChainFilters.expand_to;
-
                                     }
                                 }
                             );
-
                             $timeout.cancel(t1);
                         }, 5000);
 
@@ -1346,9 +1375,7 @@
                         vm.tree = angular.copy(vm.filterTree);
                         filteredTreeData();
                     } else {
-                        var x = angular.merge({}, vm.filterTree, vm.jobFilters.expand_to);
-                        vm.jobFilters.expand_to = [];
-                        vm.jobFilters.expand_to.push(x[0]);
+                        vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobFilters.expand_to);
                         vm.tree = vm.jobFilters.expand_to;
                         previousTreeState();
                     }
@@ -1982,9 +2009,9 @@
             });
         };
 
-        vm.deleteFilter = function () {
+        vm.deleteFilter = function (name) {
             angular.forEach(vm.savedJobFilter.list, function (value, index) {
-                if (value.name == vm.jobFilter.name) {
+                if (value.name == name) {
                     toasty.success({
                         title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
                         msg: ''
@@ -1993,14 +2020,18 @@
                 }
             });
             if (vm.savedJobFilter.list.length == 0) {
-                vm.savedJobFilter = {};
-            } else if (vm.savedJobFilter.selected == vm.jobFilter.name) {
                 vm.savedJobFilter.selected = undefined;
+                selectedFiltered = undefined;
+            }
+            if (vm.savedJobFilter.selected == name) {
+                vm.savedJobFilter.selected = undefined;
+                selectedFiltered = undefined;
+                vm.load();
             }
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
 
-            vm.load();
+
         };
 
         vm.favorite = function (filter) {
@@ -2356,7 +2387,7 @@
         function setRunTime(job) {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobs.push({job: job.path, runtime: job.runTime});
+            jobs.jobs.push({job: job.path, runTime: job.runTime});
             jobs.jobschedulerId = vm.schedulerIds.selected;
             JobService.setRunTime(jobs).then(function (res) {
 
@@ -2407,6 +2438,40 @@
             $state.go('app.history');
         };
 
+            function recursiveTreeUpdate(scrTree, destTree) {
+            if(scrTree && destTree)
+            for (var i = 0; i < scrTree.length; i++) {
+                for (var j = 0; j < destTree.length; j++) {
+                    if (scrTree[i].path == destTree[j].path) {
+                        scrTree[i].jobs = destTree[j].jobs;
+                        scrTree[i].expanded = destTree[j].expanded;
+                        scrTree[i].selected = destTree[j].selected;
+                        scrTree[i].selected1 = destTree[j].selected1;
+                        recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        vm.recursiveTreeUpdate = function(scrTree, destTree) {
+            if(scrTree && destTree)
+            for(var i = 0; i < scrTree.length; i++) {
+                for (var j = 0; j < destTree.length; j++) {
+                    if (scrTree[i].path == destTree[j].path) {
+                        scrTree[i].jobs =destTree[j].jobs;
+                        scrTree[i].expanded =destTree[j].expanded;
+                        scrTree[i].selected =destTree[j].selected;
+                        scrTree[i].selected1 =destTree[j].selected1;
+                        recursiveTreeUpdate(scrTree[i].folders,destTree[j].folders);
+                        break;
+                    }
+                }
+            }
+            return scrTree;
+        };
+
         var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0) {
@@ -2455,11 +2520,7 @@
                             }).then(function (res) {
                                     if (!angular.equals(vm.filterTree, res.folders)) {
                                         vm.filterTree = res.folders;
-                                        var x = angular.merge({}, vm.filterTree, vm.jobFilters.expand_to);
-
-                                        vm.jobFilters.expand_to = [];
-                                        vm.jobFilters.expand_to.push(x[0]);
-
+                                        vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobFilters.expand_to);
                                         vm.tree = vm.jobFilters.expand_to;
                                     }
                                 }

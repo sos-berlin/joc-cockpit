@@ -3,11 +3,10 @@
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate>label.editFilters</h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" style="min-height: 400px">
         <div class="row">
             <div class="col-sm-12">
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered " >
+                <table class="table table-hover table-bordered " >
                         <thead>
                         <tr>
                             <th translate>label.srNo</th>
@@ -23,14 +22,19 @@
                                     <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name" href="" ng-click="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
                                     {{filter.name}}</td>
                                 <td>
-                                    <a href="" class="text-u-l text-primary" ng-click="ok();editFilter(filter)" translate>button.edit</a>
+                                    <div class="btn-group dropdown">
+                                        <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                            <a class="dropdown-item " ng-click="ok();editFilter(filter)" translate>button.edit</a>
+                                            <a class="dropdown-item bg-hover-color" ng-click="ok();deleteFilter(filter.name)" translate>button.delete</a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
 
                         </tbody>
                     </table>
-                </div>
-
             </div>
         </div>
     </div>

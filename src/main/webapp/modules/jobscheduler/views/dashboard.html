@@ -126,32 +126,32 @@
                                 <div class="col-xs-2">
                                     <div class="" translate>label.pending</div>
                                     <a ng-if="snapshot.pending>0" href="#/orders/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending"></a>
-                                    <span ng-if="snapshot.pending.length==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></span>
+                                    <span ng-if="!snapshot.pending || snapshot.pending.length==0" class="text-lg _600 text-black-lt">0</span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class="" translate>label.running</div>
                                     <a ng-if="snapshot.running>0" href="#/orders/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
-                                    <span ng-if="snapshot.running==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></span>
+                                    <span ng-if="!snapshot.running || snapshot.running==0" class="text-lg _600 text-black-lt">0</span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.suspended</div>
                                     <a ng-if="snapshot.suspended>0" href="#/orders/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended"></a>
-                                    <span ng-if="snapshot.suspended==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.suspended || 0"></span>
+                                    <span ng-if="!snapshot.suspended || snapshot.suspended==0" class="text-lg _600 text-black-lt">0</span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.setback</div>
                                     <a ng-if="snapshot.setback>0" href="#/orders/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
-                                    <span ng-if="snapshot.setback==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></span>
+                                    <span ng-if="!snapshot.setback || snapshot.setback==0" class="text-lg _600 text-black-lt">0</span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.waitingForResource</div>
                                     <a ng-if="snapshot.waitingForResource>0" href="#/orders/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
-                                    <span ng-if="snapshot.waitingForResource==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></span>
+                                    <span ng-if="!snapshot.waitingForResource || snapshot.waitingForResource==0" class="text-lg _600 text-black-lt">0</span>
                                 </div>
                                 <div class="col-xs-2">
                                     <div class=" " translate>label.blacklist</div>
                                     <a ng-if="snapshot.blacklist>0" href="#/orders/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
-                                    <span ng-if="snapshot.blacklist==0" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></span>
+                                    <span ng-if="!snapshot.blacklist || snapshot.blacklist==0" class="text-lg _600 text-black-lt">0</span>
                                 </div>
                             </div>
                         </div>
@@ -219,12 +219,12 @@
                                 <div class="col-sm-offset-1 col-xs-5">
                                     <div class="" translate>label.successful</div>
                                     <a ng-click="showOrderSummary('SUCCESS')" class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></a>
-                                    <span class="text-lg _600 text-black-lt"  ng-if="orderSummary.successful==0">0</span>
+                                    <span class="text-lg _600 text-black-lt"  ng-if="!orderSummary.successful || orderSummary.successful==0">0</span>
                                 </div>
                                 <div class="col-xs-5">
                                     <div class="" translate>label.failed</div>
                                     <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 crimson"  ng-if="orderSummary.failed>0" ng-bind="orderSummary.failed || 0"></a>
-                                    <span class="text-lg _600 text-black-lt"  ng-if="orderSummary.failed==0">0</span>
+                                    <span class="text-lg _600 text-black-lt"  ng-if="!orderSummary.failed || orderSummary.failed==0">0</span>
                                 </div>
                             </div>
                         </div>

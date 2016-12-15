@@ -534,7 +534,7 @@
   "button.successful": "Successful",
   "button.failed": "Failed",
   "button.incomplete": "Incomplete",
-  "button.showDetailView": "Show Detail View",
+  "button.showDetailView": "Show Detail",
   "breadcrumb.processClasses": "Process Classes",
   "breadcrumb.locks": "Locks",
   "breadcrumb.agents": "Agents",
@@ -700,6 +700,7 @@
   "button.createNewFilter": "Create New Customization",
   "button.updateFilter": "Update Customization",
   "button.deleteFilter": "Delete Customization",
+  "button.delete": "Delete",
   "button.saveFilter": "Save Customization",
   "label.editExistingFilters": "Edit Existing Customization",
   "label.updateFilter": "Update Customization",
@@ -709,8 +710,13 @@
   "label.editFilters": "Edit Customization",
   "label.updateFilter:": "Update Customization:",
   "label.view": "view",
-  "label.sharedFilter": "Shared Customization"
+  "label.sharedFilter": "Shared Customization",
+  "label.suspendAllTasks": "suspend all tasks",
+  "label.processJobChainNode": "process jobchain node"
 }
+
+
+
 
 
 

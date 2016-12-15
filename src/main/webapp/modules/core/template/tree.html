@@ -1,25 +1,34 @@
+
 <div class="max-tree-ht">
     <table class="tree-grid folder-tree-grid pull-left">
         <tbody>
         <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions track by row.branch.uid"
             ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
             <td ng-class="{'text-primary' : row.branch.selected1}">
-                <div>
-                    <a class="inline text-hover-primary" ng-click="user_clicks_branch(row.branch)" style="width: 16px">
-                        <i ng-if="!row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-angle-right fa-lg"></i>
-                        <i ng-if="row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="indented tree-icon fa fa-angle-down fa-lg"></i>
-                        <i ng-if="row.branch.folders.length==0"  class="indented p-l-sm"></i>
-                    </a>
-                    <span class="indented tree-label"  ng-click="on_user_click(row.branch)">
-                        <span>
-                            <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
-                            <i ng-if="row.branch.expanded" class="fa fa-folder-open"></i>
-                            {{row.branch[expandingProperty.field] || '/' }}
-                        </span>
-                        <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()" ng-if="!row.branch.expanded"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
-                        <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()" ng-if="row.branch.expanded"> <i class="text-xs fa fa-compress"></i></span>
-                    </span>
-                 </div>
+                <table class="fixed">
+                    <tr class="indented">
+                        <td>
+                            <a class="text-hover-primary" ng-click="user_clicks_branch(row.branch)" style="width: 16px">
+                                <i ng-if="!row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-right fa-lg"></i>
+                                <i ng-if="row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-down fa-lg"></i>
+                                <i ng-if="row.branch.folders.length==0"  class="p-l-sm"></i>
+                            </a>
+                        </td>
+                        <td style="white-space: nowrap">
+                            <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
+                                <span ng-class="{'p-r-sm' : row.branch.expanded}">
+                                    <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
+                                    <i ng-if="row.branch.expanded" class="fa fa-folder-open"></i>
+                                    {{row.branch[expandingProperty.field] || '/' }}
+                                </span>
+                            </span>
+                        </td>
+                        <td style="padding-right: 20px">
+                            <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()" ng-if="!row.branch.expanded"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
+                            <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()" ng-if="row.branch.expanded"> <i class="text-xs fa fa-compress"></i></span>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
         </tbody>

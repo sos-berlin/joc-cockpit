@@ -270,6 +270,7 @@
             $location.path('/jobs')
         };
 
+
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
         });
@@ -283,6 +284,7 @@
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout) {
         var vm = $scope;
         toasty.clear();
+
         vm.currentTime = moment();
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
 
@@ -310,10 +312,10 @@
                 vm.logout();
             }
             try {
-                if($rootScope.clientLogFilter.state)
-                $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
-            }catch(e){
-                $window.localStorage.clientLogs={};
+                if ($rootScope.clientLogFilter.state)
+                    $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
+            } catch (e) {
+                $window.localStorage.clientLogs = {};
             }
         }, 1000);
 
@@ -387,8 +389,9 @@
                         }
 
                         SOSAuth.save();
-                        $state.reload();
+                        //$state.reload();
                         $rootScope.$broadcast('reloadUser');
+                        $window.location.reload();
 
                     } else {
                         toasty.error({
@@ -401,15 +404,15 @@
             })
         };
 
-        vm.navigateToResource = function(){
-             vm.resourceFilters = CoreService.getResourceTab();
-            if(vm.resourceFilters.state == 'agent'){
+        vm.navigateToResource = function () {
+            vm.resourceFilters = CoreService.getResourceTab();
+            if (vm.resourceFilters.state == 'agent') {
                 $state.go('app.resources.agentClusters');
-            }else if(vm.resourceFilters.state == 'processClass'){
+            } else if (vm.resourceFilters.state == 'processClass') {
                 $state.go('app.resources.processClasses');
-            }else if(vm.resourceFilters.state == 'schedules'){
+            } else if (vm.resourceFilters.state == 'schedules') {
                 $state.go('app.resources.schedules');
-            }else{
+            } else {
                 $state.go('app.resources.locks');
             }
 
@@ -426,41 +429,44 @@
 
         vm.eventId = '';
         var eventTimeOut = '';
-        var eventTimeOutFlag = false;
+
         vm.changeEvent = function (jobScheduler) {
 
             var obj = {};
-         obj.jobscheduler=[];
-   for(var i=0;i<jobScheduler.length;i++){
-            if (vm.logout == true) {
-
-
-                obj.jobscheduler.push(
-                    {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId, "close": true}
-                );
-            } else {
-                obj.jobscheduler.push (
-                    {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
+            obj.jobscheduler = [];
+            for (var i = 0; i < jobScheduler.length; i++) {
+                if (vm.schedulerIds.selected == jobScheduler[i]) {
+                    obj.jobscheduler.push(
+                        {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
                     );
+                } else {
+                    obj.jobscheduler.push(
+                        {"jobschedulerId": jobScheduler[i]}
+                    );
+                }
             }
-            }
-
 
             CoreService.getEvents(obj).then(function (res) {
+                for (var i = 0; i < res.events.length; i++) {
+                    if(res.events[i].jobschedulerId == vm.schedulerIds.selected) {
+                        vm.events = [];
+                           vm.events.push(res.events[i]);
+                        vm.eventId = res.events[i].eventId;
+                         $rootScope.$broadcast('event-started', {events: vm.events});
+                    }
+                }
 
-                vm.events = res.events;
-                vm.eventId = vm.events[0].eventId;
-                $rootScope.$broadcast('event-started',{events:vm.events});
                 vm.changeEvent(vm.schedulerIds.jobschedulerIds);
-                eventTimeOutFlag = false;
 
             }, function (err) {
-                if (eventTimeOutFlag == false && logout == false && err.status == 420) {
+                if (logout == false && err.status == 420) {
+                    if (eventTimeOut)
+                        $timeout.cancel(eventTimeOut);
                     eventTimeOut = $timeout(function () {
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                         $timeout.cancel(eventTimeOut);
                     }, 2000);
-                    eventTimeOutFlag = true;
+
                 }
             })
         };
@@ -468,9 +474,9 @@
         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
-            $timeout.cancel(eventTimeOut);
+            if (eventTimeOut)
+                $timeout.cancel(eventTimeOut);
         });
-
     }
 
     ConfigurationCtrl.$inject = ["$scope", "JobService", "JobChainService", "OrderService", "ScheduleService", "ResourceService", "$uibModalInstance", "$sce"];
@@ -3817,12 +3823,12 @@
     function CommonLogCtrl($scope, $location, OrderService, TaskService, $sce) {
         var vm = $scope;
         var object = $location.search();
-        if (object.order_id) {
+        if (object.orderId) {
             var orders = {};
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.jobChain = object.job_chain;
-            orders.orderId = object.order_id;
-            orders.historyId = object.history_id;
+            orders.jobChain = object.jobChain;
+            orders.orderId = object.orderId;
+            orders.historyId = object.historyId;
             orders.mime = ['HTML'];
 
 
@@ -3834,10 +3840,10 @@
 
             });
         }
-        if (object.task_id) {
+        if (object.taskId) {
             var tasks = {};
             tasks.jobschedulerId = $scope.schedulerIds.selected;
-            tasks.taskId = object.task_id;
+            tasks.taskId = object.taskId;
             tasks.mime = ['HTML'];
 
 
