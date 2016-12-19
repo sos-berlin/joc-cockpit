@@ -142,7 +142,7 @@
                     }
 
                     function getTemporaryData(refresh) {
-                        scope.onRefresh({refresh:refresh}).then(function (res) {
+                        scope.onRefresh().then(function (res) {
                             if (scope.clusterStatusData.supervisors.length <= 0) {
                                 getTemporaryData2(res, refresh);
                             }
@@ -195,7 +195,7 @@
                             })
 
                             if(refresh && (refresh.state=='stopping'||refresh.state=='starting') && res.masters.length==0){
-                                if(master.state._text!='waiting_for_activation'){
+                                if(master.state._text!==' '){
                                     master.state._text=refresh.state;
                                 refreshMasterState(master);
                                 }
@@ -211,7 +211,7 @@
                         var span = document.getElementById('sp' + master.host + master.port);
                         var dState = document.getElementById('state' + master.host + master.port);
                         if(dState){
-                            dState.innerHTML='State: '+ master.state._text;
+                            dState.innerHTML= master.state._text;
                         }
                         if (master.state && span) {
 
@@ -225,7 +225,7 @@
                                     if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
                                         if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response'
                                             || master.state._text.toLowerCase()=='stopping' ||master.state._text.toLowerCase()=='terminating'||
-                                            master.state._text.toLowerCase()=='starting') {
+                                            master.state._text.toLowerCase()=='starting' ||master.state._text.toLowerCase()==' ') {
                                             console.log("Here 01");
                                             var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
                                             span.className = span.className.replace(/text-.+/, cls);
@@ -254,7 +254,7 @@
                                             connectLink(master.host, master.port);
 
                                         } else if (master.state._text.toLowerCase() == 'unreachable') {
-                                            disconnectLink(master.host, master.port);
+                                            //disconnectLink(master.host, master.port);
 
                                         }
                                     }
@@ -297,7 +297,7 @@
 
                                         } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
 
-                                            disconnectLink(supervisor.host, supervisor.port);
+                                            //disconnectLink(supervisor.host, supervisor.port);
                                         }
 
 
@@ -399,7 +399,7 @@
                                 '</span></div>' +
                                 '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
-                                '<div id="' + 'state' + supervisor.host + supervisor.port + '" class="text-left text-xs p-t-xs p-b-xs p-l-sm">State: ' + supervisor.state._text + '</div>'+
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.state._text + '</span></div>'+
                                 '</div> ';
 
                             var masterTemplate = '';
@@ -433,6 +433,11 @@
                                 } else if (master.state && master.state._text.toLowerCase() != 'running') {
                                     classRunning = 'text-black-lt';
 
+                                }else if (master.state && (master.state._text.toLowerCase() == ' '
+                                    || master.state._text.toLowerCase() == 'stopping'|| master.state._text.toLowerCase() == 'starting'
+                                    || master.state._text.toLowerCase() == 'terminating')) {
+                                    classRunning = 'text-warn';
+
                                 }
 
                                 if (master.state && master.state._text.toLowerCase() == 'stopped') {
@@ -458,8 +463,9 @@
                                     name = 'JobScheduler JS' + master.clusterType.precedence;
                                 }
                                 if(master.clusterType._type=="PASSIVE" && !master.state){
+                                    console.log("IN passive no master state find");
                                     master.state={};
-                                    master.state._text="waiting_for_activation";
+                                    master.state._text=' ';
                                 }
                                 lastId=master.host + master.port;
                                 masterTemplate = '<div  uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
@@ -482,7 +488,7 @@
                                     '</div> </div>' +
                                     '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
                                     '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port + '(' + precedence + ')' + '</div>' +
-'<div id="' + 'state' + master.host + master.port + '" class="text-left text-xs p-t-xs p-b-xs p-l-sm">State: ' + master.state._text + '</div>'+
+                                        '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
                                     '</div>';
 
                                 if (index == 0) {
@@ -548,29 +554,38 @@
 
                             }
 
+                                if(master.clusterType._type=="PASSIVE" && !master.state){
+                                    master.state={};
+                                    master.state._text=' ';
+                                }
+                                var pauseClass = 'show';
+                            var continueClass = 'hide';
+                            var disableClass = '';
                             var classRunning = 'text-success';
+                                console.log("STATE "+ master.state._text);
                             if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                 classRunning = 'text-danger';
-                            } else if (master.state && master.state._text.toLowerCase() != 'running') {
+                                disableClass = 'disable-link';
+                            }else if (master.state && (master.state._text == ' '
+                                    || master.state._text.toLowerCase() == 'stopping'|| master.state._text.toLowerCase() == 'starting'
+                                    || master.state._text.toLowerCase() == 'terminating')) {
+                                    classRunning = 'text-warn';
+                                 disableClass = 'disable-link';
+
+                                }
+                            else if (master.state && master.state._text.toLowerCase() != 'running') {
                                 classRunning = 'text-black-lt';
                             }
 
-                            var pauseClass = 'show';
-                            var continueClass = 'hide';
-                            var disableClass = '';
+
                             if (master.state && master.state._text.toLowerCase() == 'paused') {
                                 pauseClass = 'hide';
                                 continueClass = 'show';
                             }
-                            if (master.state && master.state._text.toLowerCase() == 'stopped') {
-                                disableClass = 'disable-link';
-                            }
+
 
                                 lastId=master.host + master.port;
-                                if(master.clusterType._type=="PASSIVE" && !master.state){
-                                    master.state={};
-                                    master.state._text="waiting_for_activation";
-                                }
+
 
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
@@ -591,7 +606,8 @@
                                 '</span></div>' +
                                 '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
                                 '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
-'<div id="' + 'state' + master.host + master.port + '" class="text-left text-xs p-t-xs p-b-xs p-l-sm">State: ' + master.state._text + '</div>'+
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
+
                                 '</div>';
 
                             if (index == 0) {

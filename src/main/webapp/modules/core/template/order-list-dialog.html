@@ -33,10 +33,10 @@
                                 <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
                                 <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
                             </td>
-                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
+                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
                             <td  class="text-muted">
                                 <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                    <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                    <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                             </td>
                             <td>

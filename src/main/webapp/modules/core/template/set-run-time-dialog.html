@@ -610,7 +610,7 @@
                             <input class="form-control input-date" ng-model="holidayDate"
                                    data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text"
                                    style="width: 30%; background-position: 95% 8px;">
-                            <button type="button" class="btn btn-xs m-l-sm" ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
+                            <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm" ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
                         </div>
                 </div>
                 <div class="row">
@@ -672,8 +672,8 @@
                     <div class="col-sm-6">
                         <input type="text" class="form-control" ng-model="liveFile">
                     </div>
-                    <div class="col-sm-1">
-                         <button type="button" class="btn btn-xs" style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i class="fa fa-plus"></i></button>
+                    <div class="col-sm-1" ng-disabled="!liveFile">
+                         <button type="button"  class="btn btn-xs" style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="row">
@@ -717,7 +717,7 @@
                 <span ng-if="editor.create" translate>button.createRuntime</span>
             </button>
             <button ng-if="editor.nextPage" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="prev()" translate>button.prev
+                    class="btn btn-grey btn-sm m-l-sm" ng-click="prev()" translate>button.back
             </button>
             <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
                     class="btn btn-grey btn-sm m-l-sm" ng-click="editor.hideEvery = false;" translate>button.back

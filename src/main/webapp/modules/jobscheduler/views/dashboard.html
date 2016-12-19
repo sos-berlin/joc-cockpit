@@ -107,7 +107,7 @@
                             </div>
                             <div id="divClusterStatusWidget" class="box-body " style="min-height: 330px">
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()"
-                                                   on-refresh="getClusterMembers(refresh)" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
+                                                   on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
                             </div>
                         </div>
                     </div>
@@ -186,23 +186,23 @@
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
                                                ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last1'"
-                                               uib-btn-radio="'1h'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='1h'}" translate>button.last1
+                                               uib-btn-radio="'-1h'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1h'}" translate>button.last1
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
-                                               uib-btn-radio="'12h'"
+                                               uib-btn-radio="'-12h'"
                                                ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last12'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='12h'}" translate>button.last12
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-12h'}" translate>button.last12
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom "
                                                ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last24'"
-                                               uib-btn-radio="'1d'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='1d'}" translate>button.last24
+                                               uib-btn-radio="'-1d'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1d'}" translate>button.last24
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
                                                ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.lastWeak'"
-                                               uib-btn-radio="'1w'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='1w'}" translate>button.lastWeak
+                                               uib-btn-radio="'-1w'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1w'}" translate>button.lastWeak
                                             </a>
                                         </div>
                                     </div>
@@ -218,7 +218,7 @@
 
                                 <div class="col-sm-offset-1 col-xs-5">
                                     <div class="" translate>label.successful</div>
-                                    <a ng-click="showOrderSummary('SUCCESS')" class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></a>
+                                    <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></a>
                                     <span class="text-lg _600 text-black-lt"  ng-if="!orderSummary.successful || orderSummary.successful==0">0</span>
                                 </div>
                                 <div class="col-xs-5">

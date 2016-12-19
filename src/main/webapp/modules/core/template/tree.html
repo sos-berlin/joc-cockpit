@@ -23,7 +23,7 @@
                                 </span>
                             </span>
                         </td>
-                        <td style="padding-right: 20px">
+                        <td style="padding-right: 20px" ng-if="row.branch.folders.length>0">
                             <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()" ng-if="!row.branch.expanded"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
                             <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()" ng-if="row.branch.expanded"> <i class="text-xs fa fa-compress"></i></span>
                         </td>

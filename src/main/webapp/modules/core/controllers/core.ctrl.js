@@ -24,6 +24,8 @@
             name: 'JobScheduler'
         };
 
+
+
         /**
          * Exception Logging Service, currently only used by the $exceptionHandler
          * it preserves the default behaviour ( logging to the console) but
@@ -317,7 +319,10 @@
             } catch (e) {
                 $window.localStorage.clientLogs = {};
             }
+
+            //console.log((unescape(encodeURIComponent(JSON.stringify(sessionStorage))).length*2)/ (1024* 1024) )
         }, 1000);
+
 
         vm.refreshSession = function () {
             UserService.touch().then(function (res) {
@@ -391,7 +396,10 @@
                         SOSAuth.save();
                         //$state.reload();
                         $rootScope.$broadcast('reloadUser');
-                        $window.location.reload();
+                        console.log('Reload Screen');
+                       $timeout(function(){
+                            $window.location.reload();
+                       },10);
 
                     } else {
                         toasty.error({
@@ -434,32 +442,38 @@
 
             var obj = {};
             obj.jobscheduler = [];
-            for (var i = 0; i < jobScheduler.length; i++) {
-                if (vm.schedulerIds.selected == jobScheduler[i]) {
-                    obj.jobscheduler.push(
-                        {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
-                    );
-                } else {
-                    obj.jobscheduler.push(
-                        {"jobschedulerId": jobScheduler[i]}
-                    );
+            if(!vm.eventsRequest || vm.eventsRequest.length==0) {
+                for (var i = 0; i < jobScheduler.length; i++) {
+                    if (vm.schedulerIds.selected == jobScheduler[i]) {
+                        obj.jobscheduler.push(
+                            {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
+                        );
+                    } else {
+                        obj.jobscheduler.push(
+                            {"jobschedulerId": jobScheduler[i]}
+                        );
+                    }
                 }
+            }else{
+                obj.jobscheduler = vm.eventsRequest;
             }
 
             CoreService.getEvents(obj).then(function (res) {
+                vm.eventsRequest = [];
                 for (var i = 0; i < res.events.length; i++) {
                     if(res.events[i].jobschedulerId == vm.schedulerIds.selected) {
                         vm.events = [];
-                           vm.events.push(res.events[i]);
-                        vm.eventId = res.events[i].eventId;
+                        vm.events.push(res.events[i]);
                          $rootScope.$broadcast('event-started', {events: vm.events});
                     }
-                }
 
+                    vm.eventsRequest.push({jobschedulerId : res.events[i].jobschedulerId, eventId : res.events[i].eventId });
+                }
+                if(logout == false)
                 vm.changeEvent(vm.schedulerIds.jobschedulerIds);
 
             }, function (err) {
-                if (logout == false && err.status == 420) {
+                if (logout == false && (err.status == 420 || err.status == 434)) {
                     if (eventTimeOut)
                         $timeout.cancel(eventTimeOut);
                     eventTimeOut = $timeout(function () {

@@ -20,7 +20,7 @@
                         <tr ng-repeat="process in processClass.processes" class="cursor" title="Show logs" ng-click="showLogWindow(null,process)">
                             <td>{{process.pid}}</td>
                             <td>{{process.job}}</td>
-                            <td>{{process.runningSince | stringToDate}} <span class="text-success">({{process.runningSince | durationFromCurrent:undefined }})</span></td>
+                            <td>{{process.runningSince | stringToDate}} <span class="text-success">(<span time="{{process.runningSince}}"></span>)</span></td>
                             <td>{{process.taskId}}</td>
                         </tr>
                         </tbody>

@@ -372,7 +372,7 @@
                             if(!scope.permission.JobChain.view.configuration){
                                 op4Cls = op4Cls+" disable-link";
                             }
-                            console.log("Path "+item.job.path);
+
                             rectangleTemplate = rectangleTemplate +
                             '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect border-grey" >' +
                             '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
@@ -610,7 +610,7 @@
                 'permission': '=',
                 'onOrderAction':'&'
             },
-            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout','$filter', function ($scope, $interval, gettextCatalog, $timeout,$filter) {
+            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout','$filter', 'SOSAuth',function ($scope, $interval, gettextCatalog, $timeout,$filter,SOSAuth) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.object = {};
@@ -649,34 +649,35 @@
                         var top = div1.offsetTop + div1.clientHeight;
                         var left = div1.offsetLeft + div1.clientWidth / 2;
                         var height = (div3.offsetTop - div1.offsetTop - div1.clientHeight) / 2;
-                        node = document.createElement('div');
-                        node.setAttribute('class', 'h-line next-link');
-                        //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                        node.style['top'] = top + 'px';
-                        node.style['left'] = left + 'px';
-                        node.style['width'] = '2px';
-                        node.style['height'] = height + 2 + 'px';
-                        mainContainer.appendChild(node);
 
                         node = document.createElement('div');
                         node.setAttribute('class', 'h-line next-link');
                         //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                        node.style['top'] = top + height + 'px';
+                        node.style['top'] = top - div2.clientHeight - 3 + 'px';
                         node.style['left'] = div2.offsetLeft + div2.clientWidth / 2 + 'px';
-                        node.style['width'] = left - div2.offsetLeft - div2.clientWidth / 2 + 1 + 'px';
+                        node.style['width'] = left- div1.clientWidth/2 - 15 + 'px';
                         node.style['height'] = '2px';
                         mainContainer.appendChild(node);
 
                         node = document.createElement('div');
                         node.setAttribute('class', 'h-line next-link');
                         //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
-                        node.style['top'] = top + height + 'px';
+                        node.style['top'] = top - div2.clientHeight - 3 + 'px';
                         node.style['left'] = div2.offsetLeft + div2.clientWidth / 2 + 'px';
                         node.style['width'] = 2 + 'px';
-                        node.style['height'] = div2.offsetTop - top - height + 'px';
+                        node.style['height'] = (div2.offsetTop - top) + div1.clientHeight/2  + 'px';
                         mainContainer.appendChild(node);
 
-
+                        var start = document.createElement('span');
+                        start.setAttribute('class', 'text-primary text-c');
+                        start.setAttribute('id', 'lbStart');
+                        start.style['left'] = document.getElementById('lbStart').offsetLeft + 'px';
+                        start.style['top'] = document.getElementById('lbStart').offsetTop + 'px';
+                        start.style['position'] = 'absolute';
+                        start.style['z-index'] = 1000;
+                        start.innerHTML = gettextCatalog.getString('label.start');
+                        mainContainer.removeChild(document.getElementById('lbStart'));
+                        mainContainer.appendChild(start);
                     }
 
                     angular.forEach(vm.jobChain.nodes, function (item, index) {
@@ -692,11 +693,8 @@
                                     console.log("Previous found for " + obj.name + " " + item.name);
                                     pDiv = document.getElementById(obj.parent);
                                     console.log("Previous found for " + item.name + " " + pDiv);
-
                                 }
-
                             })
-
                         }
 
                         var x1 = div1.offsetLeft;
@@ -1244,43 +1242,17 @@
                         });
                     }
                 }
-var path=[];
-                vm.$on('event-started', function (event,args) {
-            if (args.events && args.events.length > 0) {
 
-                angular.forEach(args.events[0].eventSnapshots, function (value1) {
-                    if (value1.eventType.indexOf("Order") !== -1 || value1.eventType.indexOf("JobChain") !== -1 || value1.eventType == 'JobStateChanged') {
-                        if (value1.path != undefined) {
 
-                            if(value1.path.indexOf(",")>-1){
-                                path = value1.path.split(",");
-                            }else{
-                                path[0]=value1.path;
-                            }
-                                if (jobChainPath == path[0] || vm.jobPaths.indexOf(path[0])>-1) {
-                                    var obj = {};
-                                    obj.jobChain = jobChainPath;
-                                    vm.getJobChain({filter:obj}).then(function (res) {
-                                        if (res.jobChain) {
-                                            vm.jobChain=res.jobChain;
-                                            updateJobChain();
-                                        }
-                                    });
-                                }
-                        }
-                    }
 
-                });
-            }
+                vm.$on('reloadJobChain', function (event,args) {
 
+                vm.jobChain = JSON.parse(SOSAuth.jobChain);
+               updateJobChain();
         });
 
 
-
-
                 function updateJobChain() {
-                    console.log("In get orders "+vm.jobPaths+" "+path[0]+" "+vm.jobPaths.indexOf(path[0]));
-
                     var filter = {};
                     filter.orders = [];
                     filter.orders[0] = {};
@@ -1428,10 +1400,8 @@ var path=[];
                     function addLabel(orders, name) {
 
                         angular.forEach(orders, function (order, index) {
-                            var node = document.getElementById(order.state);
-                            if (order.startedAt) {
-                                vm.shouldPollForOrders = true;
-                            }
+                            var node = document.getElementById(name);
+
                             if (node) {
                                 if(index > vm.limitNum - 1) {
                                     if (orders.length - 1 == index) {
@@ -1491,10 +1461,10 @@ var path=[];
                                         time=order.nextStartTime;
                                     }
 
-                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
+                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i><span class="text-ellipsis1"> ' + order.orderId
                                     + '<span id="date-' + order.orderId + '"  class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
-                                    + '</span>'
-                                    + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                    + '</span></span>'
+                                    + '<div class="btn-group dropdown pull-right" style="right: 0!important; position: absolute"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                     + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">'
                                     + '<a id="log-' + order.orderId + '" target="_blank" href="#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' +order.jobChain + '" '
                                     + 'class="hide">'+ gettextCatalog.getString("button.viewLog") +'</a>'
@@ -1520,13 +1490,13 @@ var path=[];
                                     container.appendChild(label);
                                 } else  {
                                     console.log("Found no container or no child nodes ");
-                                    if(order.processingState._text=='RUNNING'){
+                                    if(order.processingState && order.processingState._text=='RUNNING'){
                                          node.className = node.className.replace(/border-.*/, 'border-green');
                                     }
 
-                                    var color = '';
+                                    var color = 'dimgrey';
 
-                                    if (order.processingState.severity > -1) {
+                                    if (order.processingState && order.processingState.severity > -1) {
                                         color = colorFunction(order.processingState.severity);
                                     }
                                     var label = document.createElement('div');
@@ -1545,10 +1515,10 @@ var path=[];
                                         time=order.nextStartTime;
                                     }
 
-                                    label.innerHTML = '<div><span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
+                                    label.innerHTML = '<div><span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i><span class="text-ellipsis1"> ' + order.orderId
                                     + '<span id="date-' + order.orderId + '" class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
-                                    + '</span>'
-                                    + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                    + '</span></span>'
+                                    + '<div class="btn-group dropdown pull-right" style="right: 0!important; position: absolute"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                     + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">'
                                     + '<a id="log-' + order.orderId + '" target="_blank" href="#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' +order.jobChain + '" '
                                     + 'class="hide">'+ gettextCatalog.getString("button.viewLog") +'</a>'
@@ -1616,7 +1586,7 @@ var path=[];
                                 orderConfiguration.className = 'show dropdown-item';
                             }
 
-                            var configuration = document.querySelector("#configuration-" + order.orderId);
+                            var configuration = document.getElementById("configuration-" + order.orderId);
                             configuration.addEventListener('click', function (e) {
                                 vm.showConfiguration({type: 'order', path: order.jobChain, name: order.orderId});
                             });
@@ -1626,23 +1596,12 @@ var path=[];
                                 orderNow.className = 'show dropdown-item';
                             }
 
-                            var startOrderNow = document.querySelector("#ordernow-" + order.orderId);
+                            var startOrderNow = document.getElementById("ordernow-" + order.orderId);
                             startOrderNow.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'start order now'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var orderAt = document.getElementById('orderat-' + order.orderId);
@@ -1650,7 +1609,7 @@ var path=[];
                                 orderAt.className = 'show dropdown-item';
                             }
 
-                            var startOrderAt = document.querySelector("#orderat-" + order.orderId);
+                            var startOrderAt = document.getElementById("orderat-" + order.orderId);
                             startOrderAt.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
@@ -1669,16 +1628,12 @@ var path=[];
                                 orderState.className = 'show dropdown-item';
                             }
 
-                            var setOrderState = document.querySelector("#orderstate-" + order.orderId);
+                            var setOrderState = document.getElementById("orderstate-" + order.orderId);
                             setOrderState.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'set order state'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var runTime = document.getElementById('runtime-' + order.orderId);
@@ -1686,18 +1641,12 @@ var path=[];
                                 runTime.className = 'show dropdown-item';
                             }
 
-                            var setRunTime = document.querySelector("#runtime-" + order.orderId);
+                            var setRunTime = document.getElementById("runtime-" + order.orderId);
                             setRunTime.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'set run time'
-                                }).then(function (res) {
-                                    if(res) {
-                                        $.extend(true, order, res.orders[0]);
-                                    }
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var suspend = document.getElementById('suspend-' + order.orderId);
@@ -1705,23 +1654,12 @@ var path=[];
                                 suspend.className = 'show dropdown-item bg-hover-color';
                             }
 
-                            var suspendOrder = document.querySelector("#suspend-" + order.orderId);
+                            var suspendOrder = document.getElementById("suspend-" + order.orderId);
                             suspendOrder.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'suspend order'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var resume = document.getElementById('resume-' + order.orderId);
@@ -1729,23 +1667,12 @@ var path=[];
                                 resume.className = 'show dropdown-item';
                             }
 
-                            var resumeOrder = document.querySelector("#resume-" + order.orderId);
+                            var resumeOrder = document.getElementById("resume-" + order.orderId);
                             resumeOrder.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'resume order'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var resumeOrderParam = document.getElementById('resumeodrprmt-' + order.orderId);
@@ -1753,23 +1680,12 @@ var path=[];
                                 resumeOrderParam.className = 'show dropdown-item';
                             }
 
-                            var resumeOrderWithParam = document.querySelector("#resumeodrprmt-" + order.orderId);
+                            var resumeOrderWithParam = document.getElementById("resumeodrprmt-" + order.orderId);
                             resumeOrderWithParam.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'resume order with param'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var resumeOrderFromState = document.getElementById('resumeodrfrmstate-' + order.orderId);
@@ -1777,23 +1693,12 @@ var path=[];
                                 resumeOrderFromState.className = 'show dropdown-item';
                             }
 
-                            var resumeOrderNextstate = document.querySelector("#resumeodrfrmstate-" + order.orderId);
+                            var resumeOrderNextstate = document.getElementById("resumeodrfrmstate-" + order.orderId);
                             resumeOrderNextstate.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'resume order next state'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var orderReset = document.getElementById('orderreset-' + order.orderId);
@@ -1801,23 +1706,12 @@ var path=[];
                                 orderReset.className = 'show dropdown-item';
                             }
 
-                            var resetOrder = document.querySelector("#orderreset-" + order.orderId);
+                            var resetOrder = document.getElementById("orderreset-" + order.orderId);
                             resetOrder.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'reset order'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var orderRemove = document.getElementById('orderremove-' + order.orderId);
@@ -1825,23 +1719,12 @@ var path=[];
                                 orderRemove.className = 'show dropdown-item  bg-hover-color';
                             }
 
-                            var removeOrder = document.querySelector("#orderremove-" + order.orderId);
+                            var removeOrder = document.getElementById("orderremove-" + order.orderId);
                             removeOrder.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'remove order'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                             var calendar = document.getElementById('calendar-' + order.orderId);
@@ -1849,7 +1732,7 @@ var path=[];
                                 calendar.className = 'show dropdown-item';
                             }
 
-                            var viewCalendar = document.querySelector("#calendar-" + order.orderId);
+                            var viewCalendar = document.getElementById("calendar-" + order.orderId);
                             viewCalendar.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
@@ -1862,23 +1745,12 @@ var path=[];
                                 orderDelete.className = 'show dropdown-item  bg-hover-color';
                             }
 
-                            var deleteOrder = document.querySelector("#orderdelete-" + order.orderId);
+                            var deleteOrder = document.getElementById("orderdelete-" + order.orderId);
                             deleteOrder.addEventListener('click', function (e) {
                                 vm.onOrderAction({
                                     order: order,
                                     action: 'delete order'
-                                }).then(function (res) {
-                                    $.extend(true, order, res.orders[0]);
-                                    var color = '';
-                                    if (order.processingState.severity > -1) {
-                                        color = colorFunction(order.processingState.severity);
-                                    }
-                                    var circle = document.getElementById("circle-" + order.orderId);
-                                    circle.className = "";
-                                    circle.className = "text-xs fa fa-circle " + color;
-                                }, function (err) {
-                                    //console.log("Error " + JSON.stringify(err));
-                                });
+                                })
                             });
 
                         });

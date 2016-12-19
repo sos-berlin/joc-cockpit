@@ -8,7 +8,7 @@
         <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
            <label class="col-sm-3 form-control-label" translate>label.filterName</label>
            <div class=" col-sm-6">
-                <input type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="orderFilter.name" ng-blur="checkFilterName()">
+                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="orderFilter.name" ng-blur="checkFilterName()">
                <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
                    <div ng-message="required" translate>message.requiredError</div>
                    <div ng-message="maxlength" translate>message.tooLongError</div>
@@ -19,9 +19,9 @@
            </div>
         </div>
         <div class="form-group row">
-            <label class="col-sm-3 form-control-label" translate>label.orderName</label>
+            <label class="col-sm-3 form-control-label" translate>label.regex</label>
             <div class=" col-sm-6">
-                <input type="text" class="form-control" placeholder="{{'placeholder.orderRegexAndChooseTree' | translate}}" ng-model="orderFilter.regex">
+                <input type="text" ng-disabled="orderFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="orderFilter.regex">
             </div>
             <div class="col-sm-1  p-l-0 p-t-sm" ng-click="getTreeStructure()"><a href=""><i class="fa fa-folder-o fa-lg"></i></a></div>
         </div>

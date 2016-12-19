@@ -10,7 +10,7 @@
                 <label class="col-sm-3 form-control-label" translate>label.filterName</label>
 
                 <div class=" col-sm-6">
-                    <input type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                    <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}"
                            name="filterName" ng-maxlength="25" ng-model="dailyPlanFilter.name"
                            ng-blur="checkFilterName()">
 
@@ -27,10 +27,10 @@
 
 
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.orderName</label>
+                <label class="col-sm-3 form-control-label" translate>label.regex</label>
 
                 <div class=" col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.regex' | translate}}"
+                    <input type="text" ng-disabled="dailyPlanFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
                            ng-model="dailyPlanFilter.regex">
                 </div>
                          <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i

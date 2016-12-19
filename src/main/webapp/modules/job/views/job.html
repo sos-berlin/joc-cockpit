@@ -8,34 +8,30 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobs.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button id="jobs" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'"
+                            <button ng-disabled="savedJobFilter.selected" id="jobs" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': jobFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobs
                             </button>
-                            <button id="pending" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                       uib-btn-radio="'PENDING'"
-                                       ng-class="{'btn-primary': jobFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                                     uib-btn-radio="'PENDING'" ng-class="{'btn-primary': jobFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending
                             </button>
-                            <button id="running" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'RUNNING'"
-                                    ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                                    uib-btn-radio="'RUNNING'" ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                             </button>
-                            <button id="stopped" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'STOPPED'"
-                                    ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                                    uib-btn-radio="'STOPPED'" ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
                             </button>
-                            <button id="queued" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'QUEUED'"
-                                    ng-class="{'btn-primary': jobFilters.filter.state=='QUEUED'}" ng-click="changeStatus()" translate>button.waitingForResource
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                                    uib-btn-radio="'QUEUED'" ng-class="{'btn-primary': jobFilters.filter.state=='QUEUED'}" ng-click="changeStatus()" translate>button.waitingForResource
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'" ng-class="{'btn-primary': jobFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobs</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'PENDING'" ng-class="{'btn-primary': jobFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'RUNNING'" ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.runnin</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'STOPPED'" ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'QUEUED'" ng-class="{'btn-primary': jobFilters.filter.state=='QUEUED'}" ng-click="changeStatus()" translate>button.waitingForResource</a>
+                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'" ng-class="{'btn-primary': jobFilters.filter.state=='ALL', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.allJobs</a>
+                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'PENDING'" ng-class="{'btn-primary': jobFilters.filter.state=='PENDING', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.pending</a>
+                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'RUNNING'" ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.runnin</a>
+                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'STOPPED'" ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.stopped</a>
+                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'QUEUED'" ng-class="{'btn-primary': jobFilters.filter.state=='QUEUED', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.waitingForResource</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown">
@@ -51,17 +47,11 @@
                                           <i ng-show="!jobFilters.reverse" class="fa fa-caret-up"></i>
                                         <i ng-show="jobFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
-                                    <span ng-show="jobFilters.filter.sortBy =='startedAt'">
-                                        {{'label.date' | translate}}
-                                        <i ng-show="!jobFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="jobFilters.reverse" class="fa fa-caret-down"></i>
-                                    </span>
                                 </span>
                              </a>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="sortBy('name')" translate>label.name</a>
                                 <a class="dropdown-item" href ng-click="sortBy('state._text')" translate>label.state</a>
-                                <a class="dropdown-item" href ng-click="sortBy('startedAt')" translate>label.date</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown">
@@ -71,7 +61,7 @@
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedJobFilter.list.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: savedJobFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedJobFilter.list track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name" class="fa fa-times-circle-o"></i>
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
                                 </a>
                             </div>
                         </div>
@@ -109,15 +99,8 @@
                     <span translate>button.collapseAll</span>
                 </button>
                 <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
-                <tree
-                        tree-data="tree"
-                        tree-control="my_tree"
-                        expand-on="expanding_property"
-                        on-select="treeHandler1(branch)"
-                        on-click="treeHandler(branch)"
-                        expand-node="expandNode(branch)"
-                        collapse-node="collapseNode(branch)"
-                        template-url="modules/core/template/tree.html">
+                <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property" on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
+                      expand-node="expandNode(branch)" collapse-node="collapseNode(branch)" template-url="modules/core/template/tree.html">
                 </tree>
             </div>
         </div>
@@ -376,8 +359,8 @@
                                     <li class="nav-item" ng-if="showTaskPanel.ordersSummary">
                                       <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>label.orderQueue</a>
                                     </li>
-                                    <li class="nav-item" ng-if="showTaskPanel.numOfRunningTasks>0">
-                                      <a class="nav-link active" href data-toggle="tab" data-target="#tab5" translate>label.runningTask</a>
+                                    <li class="nav-item" >
+                                      <a class="nav-link" ng-class="{active: isRunning}" href data-toggle="tab" data-target="#tab5" translate>label.runningTask</a>
                                     </li>
                                   </ul>
                                 </div>
@@ -426,12 +409,14 @@
                                                     <tr>
                                                         <th translate>label.id</th>
                                                         <th translate>label.enqueued</th>
+                                                        <th translate>label.plannedStart</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showTaskPanel.taskQueue">
                                                             <td>{{task.taskId}}</td>
                                                             <td>{{task.enqueued}}</td>
+                                                            <td>{{task.plannedStart | stringToDate}}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -460,7 +445,7 @@
                                                             <td><a class="text-hover-primary" ng-click="showJonChain(order.jobChain)">{{order.jobChain}}</a></td>
                                                             <td><span class="label" ng-class="bgColorFunction(order.processingState.severity)">{{order.processingState._text | translate}}</span></td>
                                                             <td> <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                                                <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                                                <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span></td>
                                                             <td>{{order.state}}</td>
                                                         </tr>
@@ -481,22 +466,24 @@
                                                     <th translate>label.pid</th>
                                                     <th translate>label.id</th>
                                                     <th translate>label.cause</th>
+                                                    <th translate>label.order</th>
+                                                    <th translate>label.processSteps</th>
                                                     <th translate>label.runningSince</th>
-                                                    <th translate>label.enqueuedAt</th>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr ng-repeat="task in showTaskPanel.runningTasks">
+                                                    <tr ng-repeat="task in showTaskPanel.runningTasks" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
                                                         <td>{{task.pid}}</td>
                                                         <td>{{task.taskId}}</td>
                                                         <td>{{task._cause | translate}}</td>
-                                                        <td>{{task.startedAt | stringToDate}} <span class="text-success">({{task.startedAt | durationFromCurrent:undefined }})</span></td>
-                                                        <td>{{task.enqueued | stringToDate}} <span class="text-success">({{task.enqueued | durationFromCurrent:undefined }})</span></td>
+                                                        <td>{{task.order.orderId}}</td>
+                                                        <td>{{task.steps}}</td>
+                                                        <td>{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
                                                         <td>
                                                             <div class="btn-group dropdown">
                                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                                                        class="text-primary fa fa-ellipsis-h"></i></button>
+                                                                        class="fa fa-ellipsis-h"></i></button>
                                                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                                                     <a class="dropdown-item" ng-click="end(task)" translate>button.end</a>
                                                                     <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task)" translate>button.killImmediately</a>
@@ -508,6 +495,9 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                                 <div ng-if="!showTaskPanel.runningTasks || showTaskPanel.runningTasks.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                    message.noRunningTasksFound
+                                                </div>
                                         </div>
                                          </div>
                                      </div>

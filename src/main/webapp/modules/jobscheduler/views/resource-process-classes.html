@@ -18,14 +18,14 @@
               on-select="treeHandler1P(branch)"
               on-click="treeHandlerP(branch)"
               expand-node="expandNodeP(branch)"
-              collapse-node="collapseNodeP(branch)"
+              collapse-node="collapseNode(branch)"
               template-url="modules/core/template/tree.html">
         </tree>
     </div>
 </div>
 <div id="rightPanel1">
     <div class="hide" ng-class="{'show': isLoading}" ng-hide="loading">
-        <div class="hide m-t-sm row" ng-class="{'show': pageView=='grid'}">
+        <div class="hide row" ng-class="{'show': pageView=='grid'}">
             <div ng-repeat="(key, value) in allProcessClasses  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="m-t-sm box p-a" ng-show="pageView=='list' && allProcessClasses.length>0">
+        <div class="box p-a" ng-show="pageView=='list' && allProcessClasses.length>0">
             <div class="table-responsive" >
                 <table class="table table-hover table-bordered  ">
                     <thead>

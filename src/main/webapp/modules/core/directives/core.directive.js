@@ -13,6 +13,7 @@
         .directive('contextMenu', contextMenu)
         .directive('toggleView', toggleView)
         .directive('letterAvatar', letterAvatar)
+        .directive('time', time)
 
 
         .constant('defaultAvatarSettings', {
@@ -42,13 +43,13 @@
         };
     }
 
-    ngSpinnerBar.$inject = ["$rootScope", "$state","SOSAuth","$window"];
+    ngSpinnerBar.$inject = ["$rootScope", "$state", "SOSAuth", "$window"];
     function ngSpinnerBar($rootScope, $state, SOSAuth, $window) {
         return {
             link: function (scope, element) {
                 // by default hide the spinner bar
                 element.addClass('hide'); // hide spinner bar by default
-                var startTime,endTime;
+                var startTime, endTime;
                 // display the spinner bar whenever the route changes(the content part started loading)
                 $rootScope.$on('$stateChangeStart', function (event, toState) {
                     element.removeClass('hide'); // show spinner bar
@@ -63,9 +64,9 @@
                     }
                     if (!(toState.url == '/jobChain' || toState.url == '/orders' || toState.url == '/overview')) {
                         SOSAuth.jobChain = undefined;
-                       // $window.sessionStorage.$SOS$TREE = {};
+                        // $window.sessionStorage.$SOS$TREE = {};
                     }
-                    if($rootScope.clientLogFilter.state) {
+                    if ($rootScope.clientLogFilter.state) {
                         startTime = new Date();
                         var info = {
                             message: 'START LOADING ' + toState.url,
@@ -84,7 +85,7 @@
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
-                    if($rootScope.clientLogFilter.state) {
+                    if ($rootScope.clientLogFilter.state) {
                         endTime = new Date();
                         var info = {
                             message: 'ELAPSED TIME FOR UPDATE ' + toState.url + ' ' + ((endTime.getTime() - startTime.getTime()) / 1000) + 's',
@@ -102,9 +103,9 @@
 
                 $rootScope.$on('$viewContentLoading', function () {
                     var date = new Date();
-                    if(endTime && endTime.getTime()<date.getTime()) {
+                    if (endTime && endTime.getTime() < date.getTime()) {
                         var info = {
-                            message: 'ELAPSED TIME FOR UPDATE CONTENT ' +  ((date.getTime() - endTime.getTime()) / 1000) + 's',
+                            message: 'ELAPSED TIME FOR UPDATE CONTENT ' + ((date.getTime() - endTime.getTime()) / 1000) + 's',
                             logTime: date,
                             level: 'debug2'
                         };
@@ -115,18 +116,18 @@
                 // handle errors
                 $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
                     element.addClass('hide'); // hide spinner bar
-                     if (error === "login") {
+                    if (error === "login") {
                         $state.go("login");
-                     }else {
-                         if($rootScope.clientLogFilter.state) {
-                             var error = {
-                                 message: 'ERROR ON LOADING : ' + toState.url,
-                                 logTime: new Date(),
-                                 level: 'error'
-                             };
-                             $rootScope.clientLogs.push(error);
-                         }
-                     }
+                    } else {
+                        if ($rootScope.clientLogFilter.state) {
+                            var error = {
+                                message: 'ERROR ON LOADING : ' + toState.url,
+                                logTime: new Date(),
+                                level: 'error'
+                            };
+                            $rootScope.clientLogs.push(error);
+                        }
+                    }
                 });
             }
         };
@@ -532,17 +533,17 @@
             angular.forEach(options, function (item) {
 
                 var $li = $('<li>');
-                    if (typeof item[2] === "boolean") {
+                if (typeof item[2] === "boolean") {
 
-                        if(item[0] === gettextCatalog.getString('button.enableIgnoreList') && item[2] ==false){
-                            processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
-                        }
-                        if(item[0] === gettextCatalog.getString('button.disableIgnoreList') && item[2] == true){
-                            processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
-                        }
-                    }else {
+                    if (item[0] === gettextCatalog.getString('button.enableIgnoreList') && item[2] == false) {
                         processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
                     }
+                    if (item[0] === gettextCatalog.getString('button.disableIgnoreList') && item[2] == true) {
+                        processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
+                    }
+                } else {
+                    processItem($scope, event, model, item, $ul, $li, $promises, $q, $, level);
+                }
 
                 $ul.append($li);
             });
@@ -620,12 +621,11 @@
     }
 
 
-
     function toggleView() {
         return {
             restrict: 'E',
             templateUrl: 'modules/core/template/toggle-view.html',
-            controller: ['CoreService', '$scope','$rootScope', function (CoreService, $scope,$rootScope) {
+            controller: ['CoreService', '$scope', '$rootScope', function (CoreService, $scope, $rootScope) {
                 var vm = $scope;
                 vm.pageView = CoreService.getView();
                 vm.setView = function () {
@@ -763,6 +763,37 @@
         return textTag;
     }
 
+    time.$inject = ['$timeout', '$filter'];
+    function time($timeout, $filter) {
+
+        return function (scope, element, attrs) {
+            var time = attrs.time;
+
+            var timeoutId = '';
+            var intervalLength = 1000 * 5; // 5 seconds
+            var filter = $filter('remainingTime');
+
+            function updateTime() {
+                element.text(filter(time));
+            }
+
+            function updateLater() {
+                timeoutId = $timeout(function () {
+                    updateTime();
+                    updateLater();
+                }, intervalLength);
+            }
+
+            element.bind('$destroy', function () {
+                $timeout.cancel(timeoutId);
+            });
+
+            updateTime();
+            if(time)
+            updateLater();
+        };
+
+    }
 
 
 })();

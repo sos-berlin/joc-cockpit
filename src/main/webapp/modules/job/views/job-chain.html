@@ -8,16 +8,16 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobChains.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
+                            <button ng-disabled="savedJobChainFilter.selected" class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': jobChainFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>
                                 button.allJobChains
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state"
+                            <button ng-disabled="savedJobChainFilter.selected" class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state"
                                     uib-btn-radio="'ACTIVE'"
                                     ng-class="{'btn-primary': jobChainFilters.filter.state=='ACTIVE'}" ng-click="changeStatus()" translate>
                                 button.active
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state"
+                            <button ng-disabled="savedJobChainFilter.selected" class="btn btn-grey btn-sm" ng-model="jobChainFilters.filter.state"
                                     uib-btn-radio="'STOPPED'"
                                     ng-class="{'btn-primary': jobChainFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>
                                 button.stopped
@@ -29,15 +29,15 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="jobChainFilters.filter.state" uib-btn-radio="'ALL'"
-                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobChains
+                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='ALL', 'disable-link':savedJobChainFilter.selected}" ng-click="changeStatus()" translate>button.allJobChains
                                 </a>
                                 <a class="dropdown-item" ng-model="jobChainFilters.filter.state"
                                    uib-btn-radio="'ACTIVE'"
-                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='ACTIVE'}" ng-click="changeStatus()" translate>button.active
+                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='ACTIVE', 'disable-link':savedJobChainFilter.selected}" ng-click="changeStatus()" translate>button.active
                                 </a>
                                 <a class="dropdown-item" ng-model="jobChainFilters.filter.state"
                                    uib-btn-radio="'STOPPED'"
-                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
+                                   ng-class="{'btn-primary': jobChainFilters.filter.state=='STOPPED', 'disable-link':savedJobChainFilter.selected}" ng-click="changeStatus()" translate>button.stopped
                                 </a>
                             </div>
                         </div>
@@ -396,9 +396,9 @@
                                                             <span class="text-sm">
                                                                 <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} <i class="text-muted text-xs" ng-if="order.title">- {{order.title}}</i> - <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
-                                                                ({{undefined | durationFromCurrent:order.nextStartTime }})</span>
+                                                                (<span time="{{order.nextStartTime}}"></span>)</span>
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
-                                                                <span class="hide text-success text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}({{order.startedAt | durationFromCurrent:undefined }})</span>
+                                                                <span class="hide text-success text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span time="{{order.startedAt}}"></span>)</span>
                                                             </span>
                                                         </span>
                                                         <div class="btn-group dropdown ">

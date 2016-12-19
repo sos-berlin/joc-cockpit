@@ -8,39 +8,63 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
                         <div class="btn-group hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state" uib-btn-radio="'ALL'"
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': orderFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
+                                       uib-btn-radio="'PENDING'"
+                                       ng-class="{'btn-primary': orderFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending
+                            </button>
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
                                     uib-btn-radio="'RUNNING'"
                                     ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
                                     uib-btn-radio="'SUSPENDED'"
                                     ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
                                     uib-btn-radio="'SETBACK'"
                                     ng-class="{'btn-primary': orderFilters.filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
+                            </button>
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
+                                       uib-btn-radio="'WAITINGFORRESOURCE'"
+                                       ng-class="{'btn-primary': orderFilters.filter.state=='WAITINGFORRESOURCE'}" ng-click="changeStatus()" translate>button.waitingForResource
+                            </button>
+                            <button ng-disabled="savedOrderFilter.selected" class="btn btn-grey btn-sm" ng-model="orderFilters.filter.state"
+                                       uib-btn-radio="'BLACKLIST'"
+                                       ng-class="{'btn-primary': orderFilters.filter.state=='BLACKLIST'}" ng-click="changeStatus()" translate>button.blacklist
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="orderFilters.filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': orderFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allOrders
+                                    ng-class="{'btn-primary': orderFilters.filter.state=='ALL', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.allOrders
+                                </a>
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state"
+                                       uib-btn-radio="'PENDING'"
+                                       ng-class="{'btn-primary': orderFilters.filter.state=='PENDING', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.pending
                                 </a>
                                 <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                         uib-btn-radio="'RUNNING'"
-                                        ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
+                                        ng-class="{'btn-primary': orderFilters.filter.state=='RUNNING', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.running
                                 </a>
                                 <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                         uib-btn-radio="'SUSPENDED'"
-                                        ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED'}" ng-click="changeStatus()" translate>button.suspended
+                                        ng-class="{'btn-primary': orderFilters.filter.state=='SUSPENDED', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.suspended
                                 </a>
                                 <a class="dropdown-item" ng-model="orderFilters.filter.state"
                                         uib-btn-radio="'SETBACK'"
-                                        ng-class="{'btn-primary': orderFilters.filter.state=='SETBACK'}" ng-click="changeStatus()" translate>button.setback
+                                        ng-class="{'btn-primary': orderFilters.filter.state=='SETBACK', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.setback
+                                </a>
+                                 <a class="dropdown-item" ng-model="orderFilters.filter.state"
+                                       uib-btn-radio="'WAITINGFORRESOURCE'"
+                                       ng-class="{'btn-primary': orderFilters.filter.state=='WAITINGFORRESOURCE', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.waitingForResource
+                                </a>
+                                <a class="dropdown-item" ng-model="orderFilters.filter.state"
+                                       uib-btn-radio="'BLACKLIST'"
+                                       ng-class="{'btn-primary': orderFilters.filter.state=='BLACKLIST', 'disable-link':savedOrderFilter.selected}" ng-click="changeStatus()" translate>button.blacklist
                                 </a>
                             </div>
                         </div>
@@ -56,8 +80,8 @@
                                    <i ng-show="!orderFilters.reverse" class="fa fa-caret-up"></i>
                                     <i ng-show="orderFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
-                                <span  ng-show="orderFilters.filter.sortBy =='startedAt'">
-                                     {{'label.date' | translate}}
+                                <span  ng-show="orderFilters.filter.sortBy =='nextStartTime'">
+                                     {{'label.nextStartTime' | translate}}
                                   <i ng-show="!orderFilters.reverse" class="fa fa-caret-up"></i>
                                     <i ng-show="orderFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
@@ -65,7 +89,7 @@
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a id="orderid_id" class="dropdown-item" ng-click="sortBy('orderId')" translate>label.orderId</a>
                                 <a  id="status_id" class="dropdown-item" ng-click="sortBy('processingState._text')" translate>label.status</a>
-                                <a id="date_id" class="dropdown-item" ng-click="sortBy('startedAt')" translate>label.date</a>
+                                <a id="date_id" class="dropdown-item" ng-click="sortBy('nextStartTime')" translate>label.nextStartTime</a>
                             </div>
                         </div>
                         <div class="btn-group dropdown">
@@ -196,11 +220,11 @@
                                                 <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
                                                     {{'label.nextStart' | translate}}:
                                                     {{order.nextStartTime | stringToDate}}
-                                                   <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span>
+                                                   <span class="text-success" >(<span time="{{order.nextStartTime}}"></span>)</span>
                                                 </span>
                                                 <span class="hide" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
                                                 <span class="hide" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}}: {{order.startedAt | stringToDate}}
-                                                    <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span>
+                                                    <span class="text-success" >(<span time="{{order.startedAt}}"></span>)</span>
                                                 </span>
                                             </div>
                                         </div>
@@ -321,11 +345,11 @@
                                                 <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
                                                 <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
                                             </td>
-                                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">({{order.startedAt | durationFromCurrent:undefined }})</span></span></td>
+                                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
                                             <td ng-bind="order.historyId || '-'"></td>
                                             <td>
                                                 <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                                    <span class="text-success">({{undefined | durationFromCurrent:order.nextStartTime }})</span></span>
+                                                    <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                                 <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                             </td>
                                             <td class="noExl">

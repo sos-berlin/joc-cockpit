@@ -349,16 +349,6 @@
                 });
                 return deferred.promise;
             },
-            history: function (filter) {
-                var deferred = $q.defer();
-                var Job = $resource('task/history');
-                Job.save(filter,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             log: function (filter) {
                 var deferred = $q.defer();
                 var Job = $resource('task/log');
@@ -371,7 +361,7 @@
             },
             end: function (filter) {
                 var deferred = $q.defer();
-                var Job = $resource('task/end');
+                var Job = $resource('tasks/end');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -382,7 +372,7 @@
       ,
             terminate: function (filter) {
                 var deferred = $q.defer();
-                var Job = $resource('task/terminate');
+                var Job = $resource('tasks/terminate');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -392,7 +382,7 @@
             },
             terminateWith: function (taskId, filter) {
                 var deferred = $q.defer();
-                var Job = $resource('task/terminate_within');
+                var Job = $resource('tasks/terminate_within');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -402,7 +392,7 @@
             },
               kill: function (taskId, filter) {
                 var deferred = $q.defer();
-                var Job = $resource('task/kill');
+                var Job = $resource('tasks/kill');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

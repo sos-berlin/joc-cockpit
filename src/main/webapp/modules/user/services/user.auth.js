@@ -11,6 +11,7 @@
 
                 return {
                     request: function (config) {
+                        config.headers["Cache-Control"]="no-store,no-cache,must-revalidate";
                         if (config.method == 'POST') {
 
                             config.url = $rootScope.configData['WEB_SERVER_URL']+ config.url;
@@ -32,9 +33,7 @@
                                 $rootScope.clientLogs.push(info);
                             }
                         }
-
                         return config;
-
                     },
                     responseError: function (rejection) {
                         if ($location.path() != '/login' && (rejection.status == 440 || rejection.status == 401)) {
@@ -47,18 +46,17 @@
                             SOSAuth.clearStorage();
                             $location.path('/login');
                         } else {
-                            if (rejection.data && rejection.data.error)
+                            if (rejection.data && rejection.data.error && rejection.status != 434)
                                 toasty.error({
                                     title: rejection.data.error.code || rejection.status,
                                     msg: rejection.data.error.message || 'API expection',
                                     timeout: 10000
                                 });
-                            if (rejection.data && rejection.data.errors && rejection.data.errors.length>0)
+                            if (rejection.data && rejection.data.errors && rejection.data.errors.length>0 && rejection.status != 434)
                                 toasty.error({
                                     msg: rejection.data.errors[0].message || 'API expection',
                                     timeout: 10000
                                 });
-                            console.log(rejection.data)
                         }
                         if ($rootScope.clientLogFilter.state) {
                             var error = {

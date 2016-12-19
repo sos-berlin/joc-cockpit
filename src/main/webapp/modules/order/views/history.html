@@ -8,16 +8,16 @@
                     </div>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'jobChain'}">
                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
                             </button>
                         </div>
@@ -25,34 +25,34 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item " ng-model="order.filter.historyStates" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': order.filter.historyStates=='all'}" translate>button.allStatus
+                                   ng-class="{'btn-primary': order.filter.historyStates=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.allStatus
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'SUCCESSFUL'"
-                                   ng-class="{'btn-primary': order.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
+                                   ng-class="{'btn-primary': order.filter.historyStates=='SUCCESSFUL', 'disable-link':savedHistoryFilter.selected}" translate>button.successful
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': order.filter.historyStates=='FAILED'}" translate>button.failed
+                                   ng-class="{'btn-primary': order.filter.historyStates=='FAILED', 'disable-link':savedHistoryFilter.selected}" translate>button.failed
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': order.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
+                                   ng-class="{'btn-primary': order.filter.historyStates=='INCOMPLETE', 'disable-link':savedHistoryFilter.selected}" translate>button.incomplete
                                 </a>
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
 
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.date=='all'}" translate>button.all
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': order.filter.date=='-1h'}" translate>button.last1
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.date=='-12h'}" translate>button.last12
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
                                     ng-class="{'btn-primary': order.filter.date=='-1d'}" translate>button.last24
                             </button>
-                             <button class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
+                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
                                     ng-class="{'btn-primary': order.filter.date=='-1w'}" translate>button.lastWeak
                             </button>
                         </div>
@@ -60,19 +60,19 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="order.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
-                                        ng-class="{'btn-primary': order.filter.date=='all'}" translate>button.all
+                                        ng-class="{'btn-primary': order.filter.date=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.all
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
-                                        ng-class="{'btn-primary': order.filter.date=='-1h'}" translate>button.last1
+                                        ng-class="{'btn-primary': order.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}" translate>button.last1
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
-                                        ng-class="{'btn-primary': order.filter.date=='-12h'}" translate>button.last12
+                                        ng-class="{'btn-primary': order.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}" translate>button.last12
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
-                                        ng-class="{'btn-primary': order.filter.date=='-1d'}" translate>button.last24
+                                        ng-class="{'btn-primary': order.filter.date=='-1d', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
-                                        ng-class="{'btn-primary': order.filter.date=='-1w'}" translate>button.lastWeak
+                                        ng-class="{'btn-primary': order.filter.date=='-1w', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>

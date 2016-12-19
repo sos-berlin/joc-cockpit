@@ -10,26 +10,27 @@
                                 <div class="hide font14" ng-class="{show:jobChain.processClass}" ng-bind="jobChain.processClass || '-'"></div>
                                 <div class="hide font14" ng-class="{show:!jobChain.processClass}" ng-bind="schedulerIds.selected"></div>
                             </div>
+
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
 <!--                            <button class="btn btn-grey btn-sm m-l-sm"  ng-click="reset()" translate>
                                     button.reset
                                 </button>-->
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJob && permission.Job.stop}" ng-click="stopJobs()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJob && isPendingJob && permission.Job.stop}" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedJob && permission.Job.unstop}" ng-click="unstopJobs()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedJob && !isPendingJob && permission.Job.unstop}" ng-click="unstopJobs()" translate>
                                     button.unstopJob
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedNode && permission.JobChain.stopJobChainNode}" ng-click="stopNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedNode && (isActiveNode || isSkippedNode)&& permission.JobChain.stopJobChainNode}" ng-click="stopNodes()" translate>
                                     button.stopNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedNode && permission.JobChain.processJobChainNode}" ng-click="unstopNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedNode && !isActiveNode && !isSkippedNode && permission.JobChain.processJobChainNode}" ng-click="unstopNodes()" translate>
                                     button.unstopNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isSkippedNode && permission.JobChain.skipJobChainNode}" ng-click="skipNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isSkippedNode && (isActiveNode || isStoppedNode) && permission.JobChain.skipJobChainNode}" ng-click="skipNodes()" translate>
                                     button.skipNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isSkippedNode && permission.JobChain.processJobChainNode}" ng-click="unskipNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isSkippedNode && !isActiveNode && !isStoppedNode && permission.JobChain.processJobChainNode}" ng-click="unskipNodes()" translate>
                                     button.unskipNode
                                 </button>
                             </div>
@@ -124,10 +125,7 @@
                                 </td>
                                 <td>
                                     <span ng-style="{'padding-left' : node.padding+ 'px'}">
-<!--                                    <i class="fa fa-circle text-xs" ng-click="showPanelFuc(order.path)"
-                                       ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'? node.state.severity:node.job.state.severity)]"></i>-->
                                    {{node.name}} </span>
-
                                 </td>
                                 <td ng-controller="OrderFunctionCtrl">
                                                     <a class="text-hover-primary" ng-click="showJob(node.job.path)">{{node.job.path}}</a>
@@ -137,9 +135,9 @@
                                                             <span class="text-sm">
                                                                 <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} <i class="text-muted text-xs" ng-if="order.title">- {{order.title}}</i> -  <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
-                                                                ({{undefined | durationFromCurrent:order.nextStartTime }})</span>
+                                                                (<span time="{{order.nextStartTime}}"></span>)</span>
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.nextStartNever</span>
-                                                                <span class="hide text-success text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}({{order.startedAt | durationFromCurrent:undefined }})</span>
+                                                                <span class="hide text-success text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span time="{{order.startedAt}}"></span>)</span>
                                                             </span>
                                                         </span>
                                                         <div class="btn-group dropdown ">
