@@ -205,7 +205,7 @@
                                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'SETBACK' && permission.Order.removeSetback "
                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                                        <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST'"
+                                                        <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
@@ -385,7 +385,7 @@
                                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'SETBACK' && permission.Order.removeSetback "
                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                                        <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST'"
+                                                        <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>

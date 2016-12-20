@@ -226,18 +226,20 @@
                                         if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response'
                                             || master.state._text.toLowerCase()=='stopping' ||master.state._text.toLowerCase()=='terminating'||
                                             master.state._text.toLowerCase()=='starting' ||master.state._text.toLowerCase()==' ') {
-                                            console.log("Here 01");
                                             var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
                                             span.className = span.className.replace(/text-.+/, cls);
+                                            dState.className = dState.className.replace(/text-.+/, cls);
                                             anchor.className = anchor.className.replace('hide', 'show') + " disable-link";
                                             connectLink(master.host, master.port);
                                         } else if (master.state._text.toLowerCase() == 'waiting_for_activation') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
+                                            dState.className = dState.className.replace(/text-.+/, " text-black-lt");
                                             anchor.className = anchor.className+' disable-link';
                                             connectLink(master.host, master.port);
                                         }
                                         else if (master.state._text.toLowerCase() == 'running') {
                                             span.className = span.className.replace(/text-.+/, "text-success");
+                                             dState.className = dState.className.replace(/text-.+/, " text-success");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             if (results[2] == 'continue') {
                                                 anchor.className = anchor.className.replace('show', 'hide');
@@ -245,6 +247,7 @@
                                             connectLink(master.host, master.port);
                                         } else if (master.state._text.toLowerCase() == 'paused') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
+                                            dState.className = dState.className.replace(/text-.+/, " text-black-lt");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             if (results[2] == 'pause') {
                                                 anchor.className = anchor.className.replace('show', 'hide');
@@ -351,6 +354,7 @@
                                 c = c + " yellow-border";
                             }
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+                                '<br>Version : ' + supervisor.data.jobscheduler.version +
                                 '<br>Started at : ' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '<br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
 
 
@@ -395,11 +399,12 @@
                                 '</div>' +
                                 '</div></div>' +
 
-                                '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm">' + supervisor.data.jobscheduler.version +
+                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm">' + supervisor.jobschedulerId +
                                 '</span></div>' +
                                 '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.state._text + '</span></div>'+
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.data.state.
+                                _text + '</span></div>'+
                                 '</div> ';
 
                             var masterTemplate = '';
@@ -446,6 +451,7 @@
 
 
                                 scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                    '<br>Version : ' + master.version +
                                     '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
@@ -486,7 +492,7 @@
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
                                     '</div> </div>' +
-                                    '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
+                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.version+'">' + master.version +
                                     '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port + '(' + precedence + ')' + '</div>' +
                                         '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
                                     '</div>';
@@ -588,6 +594,7 @@
 
 
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                '<br>Version : ' + master.version +
                                 '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                             var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
                                 'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
@@ -604,7 +611,7 @@
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                 '</div></div>' +
                                 '</span></div>' +
-                                '<div class="text-left p-t-xs p-l-sm "><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm">' + master.version +
+                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.jobschedulerId+'">' + master.jobschedulerId +
                                 '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
                                 '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
 

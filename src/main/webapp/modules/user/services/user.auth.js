@@ -11,10 +11,13 @@
 
                 return {
                     request: function (config) {
-                        config.headers["Cache-Control"]="no-store,no-cache,must-revalidate";
-                        if (config.method == 'POST') {
 
-                            config.url = $rootScope.configData['WEB_SERVER_URL']+ config.url;
+                        if (config.method == 'POST') {
+                            if($rootScope.configData) {
+                                config.url = $rootScope.configData['WEB_SERVER_URL'] + config.url;
+                            }else{
+                                config.url = 'joc/api/' + config.url;
+                            }
 
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
@@ -57,6 +60,12 @@
                                     msg: rejection.data.errors[0].message || 'API expection',
                                     timeout: 10000
                                 });
+                        }
+                        if(rejection.status == 403) {
+                            toasty.warning({
+                                title: 'Permission denied',
+                                timeout: 6000
+                            });
                         }
                         if ($rootScope.clientLogFilter.state) {
                             var error = {

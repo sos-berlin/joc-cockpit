@@ -15,8 +15,8 @@
         .controller('CommonLogCtrl', CommonLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal','$location'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal,$location) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal','$location','toasty'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal,$location,toasty) {
         var vm = $scope;
         vm.schedulerIds = {};
 
@@ -198,46 +198,53 @@
         }
 
         vm.showLogWindow = function (order, task) {
+            if ((task && !vm.permission.Job.view.taskLog) ||(order && !vm.permission.Order.view.orderLog)) {
+                    toasty.warning({
+                            title: 'Permission denied',
+                            timeout: 6000
+                        });
+                return;
+            }
 
-             if($window.localStorage.$SOS$ISNEWWINDOW == 'newWindow') {
-               var url = null;
-                 try {
-                     if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
-                         if (order && order.historyId && order.orderId)
-                             url = '#/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
-                         else if (task && task.taskId)
-                             url = '#/show_log?taskId=' + task.taskId+'&job=' + task.job;
-                         else {
-                             return;
-                         }
+            if ($window.localStorage.$SOS$ISNEWWINDOW == 'newWindow') {
+                var url = null;
+                try {
+                    if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
+                        if (order && order.historyId && order.orderId)
+                            url = '#/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
+                        else if (task && task.taskId)
+                            url = '#/show_log?taskId=' + task.taskId + '&job=' + task.job;
+                        else {
+                            return;
+                        }
 
-                         newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
-                     }
-                     if (typeof newWindow == 'undefined' || newWindow == null) {
-                         popUpBlocker = true;
-                         throw new Error('PopUp Blocker is active');
-                     } else {
-                         if (newWindow.document.title != 'JobScheduler - Logger') {
-                             newWindow.document.title = 'JobScheduler - Logger';
-                         }
-                         if (enableFocus) {
-                             newWindow.focus();
-                         }
-                     }
-                 } catch (e) {
-                     popUpBlocker = true;
-                     throw new Error(e.message);
-                 }
-             }else{
-                 var url = null;
-                 if (order && order.historyId && order.orderId) {
-                     url = '#/order/log/'+order.historyId+'/'+order.orderId+'?jobChain='+order.jobChain;
-                 }else if (task && task.taskId){
-                     url = '#/job/log/'+task.taskId+'&job=' + task.job;
-                 }
-                 window.open(url, '_blank');
-             }
-
+                        newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
+                    }
+                    if (typeof newWindow == 'undefined' || newWindow == null) {
+                        popUpBlocker = true;
+                        throw new Error('PopUp Blocker is active');
+                    } else {
+                        if (newWindow.document.title != 'JobScheduler - Logger') {
+                            newWindow.document.title = 'JobScheduler - Logger';
+                        }
+                        if (enableFocus) {
+                            newWindow.focus();
+                        }
+                    }
+                } catch (e) {
+                    console.log(e)
+                    popUpBlocker = true;
+                    throw new Error(e.message);
+                }
+            } else {
+                var url = null;
+                if (order && order.historyId && order.orderId) {
+                    url = '#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
+                } else if (task && task.taskId) {
+                    url = '#/job/log/' + task.taskId + '&job=' + task.job;
+                }
+                window.open(url, '_blank');
+            }
         };
 
         vm.showJobChain = function(jobChain){
@@ -320,7 +327,6 @@
                 $window.localStorage.clientLogs = {};
             }
 
-            //console.log((unescape(encodeURIComponent(JSON.stringify(sessionStorage))).length*2)/ (1024* 1024) )
         }, 1000);
 
 
@@ -384,28 +390,24 @@
                     if (res) {
                         SOSAuth.setIds(res);
                         SOSAuth.setPermission(permission);
-                        if ($rootScope.clientLogFilter.state) {
-                            var debug = {
-                                message: 'JOBSCHEDULER CHANGE TO ' + jobScheduler,
-                                logTime: new Date(),
-                                level: 'debug3'
-                            };
-                            $rootScope.clientLogs.push(debug);
-                        }
 
                         SOSAuth.save();
-                        //$state.reload();
+
                         $rootScope.$broadcast('reloadUser');
-                        console.log('Reload Screen');
-                       $timeout(function(){
-                            $window.location.reload();
-                       },10);
+                        if($location.path().match('jobChainDetails/')){
+                           $location.path('/').search({});
+                        }else {
+
+                            $timeout(function () {
+                                $window.location.reload();
+                            }, 5);
+                        }
 
                     } else {
                         toasty.error({
                             title: gettextCatalog.getString('message.oops'),
                             msg: gettextCatalog.getString('message.errorInLoadingScheduleIds'),
-                            timeout: 0
+                            timeout: 10000
                         });
                     }
                 });
@@ -414,13 +416,13 @@
 
         vm.navigateToResource = function () {
             vm.resourceFilters = CoreService.getResourceTab();
-            if (vm.resourceFilters.state == 'agent') {
+            if (vm.resourceFilters.state == 'agent' && vm.permission.ProcessClass.view.status) {
                 $state.go('app.resources.agentClusters');
-            } else if (vm.resourceFilters.state == 'processClass') {
+            } else if (vm.resourceFilters.state == 'processClass' && vm.permission.ProcessClass.view.status) {
                 $state.go('app.resources.processClasses');
-            } else if (vm.resourceFilters.state == 'schedules') {
+            } else if (vm.resourceFilters.state == 'schedules' && vm.permission.Schedule.view.status) {
                 $state.go('app.resources.schedules');
-            } else {
+            } else if(vm.permission.Lock.view.status){
                 $state.go('app.resources.locks');
             }
 
@@ -428,6 +430,7 @@
 
 
         $scope.$on('$stateChangeSuccess', function () {
+
             vm.checkNavHeader();
             $uibModalStack.dismissAll();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
@@ -620,7 +623,7 @@
                 toasty.error({
                     title: 'Invalid xml',
                     msg: e,
-                    timeout: 0
+                    timeout: 10000
                 });
             }
         };
@@ -1090,7 +1093,7 @@
                 toasty.error({
                     title: 'Invalid xml',
                     msg: e,
-                    timeout: 0
+                    timeout: 10000
                 });
             }
 

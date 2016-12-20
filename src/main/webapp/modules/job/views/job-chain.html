@@ -168,7 +168,7 @@
                                                     <a class="hide dropdown-item"
                                                        ng-class="{show:permission.Order.start, 'disable-link':jobChain.numOfOrders==0}"
                                                        ng-click="startOrder(jobChain);" translate>button.manageOrders</a>
-                                                    <a class="dropdown-item"
+                                                    <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                        ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                            ng-click="viewCalendar(jobChain);" translate>button.showCalendar</a>
                                                     <a class="hide dropdown-item bg-hover-color"
@@ -214,7 +214,7 @@
                                         <i class="fa fa-plus-square-o text-black-lt"></i>
                                         <span class="text-black-lt" translate>button.addOrder</span>
                                     </a>
-                                    <a href class="text-right primary-text-hover-color"
+                                    <a href class="text-right primary-text-hover-color" ng-if="permission.DailyPlan.view.status"
                                        ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                        ng-click="viewCalendar(jobChain);">
                                         <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.showCalendar</span>
@@ -352,7 +352,7 @@
                                             <a class="hide dropdown-item"
                                                ng-class="{show:permission.Order.start, 'disable-link':jobChain.numOfOrders==0}"
                                                ng-click="startOrder(jobChain);" translate>button.manageOrders</a>
-                                            <a class="dropdown-item"
+                                            <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="viewCalendar(jobChain);" translate>button.showCalendar</a>
                                             <a class="hide dropdown-item bg-hover-color"
@@ -433,7 +433,7 @@
                                                            ng-click="resetOrder(order)" translate>button.resetOrder</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'SETBACK' && permission.Order.removeSetback "
                                                            ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                                        <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST'"
+                                                        <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
@@ -538,7 +538,7 @@
             <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
-            <div class="hide " ng-class="{'show': isLoading}">
+            <div class="hide " ng-class="{'show': isLoading && permission.JobChain.view.history}">
                 <div class="row hide" ng-show="showHistoryPanel" ng-class="{'show': pageView=='list'}">
                     <div class="col-md-12 hide" ng-class="{show: isLoading1}">
                         <div class="box white">

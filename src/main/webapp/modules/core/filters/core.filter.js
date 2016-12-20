@@ -93,7 +93,7 @@
                         return d + 'day';
                 }
             } else {
-                return 1+' sec' ;
+                return 'never' ;
             }
         }
     }

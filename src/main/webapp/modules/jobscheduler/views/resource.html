@@ -175,31 +175,31 @@
     <div class="row">
              <div class="col-md-12">
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                     <li class="nav-item">
+                     <li class="nav-item" ng-if="permission.ProcessClass.view.status">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentClusters">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentClusters</span></span>
                         </a>
                     </li>
-                     <li class="nav-item dropdown-separator">
+                     <li class="nav-item dropdown-separator" ng-if="permission.ProcessClass.view.status">
                         <span class="separator"></span>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" ng-if="permission.Lock.view.status">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.locks">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
                         </a>
                     </li>
-                     <li class="nav-item dropdown-separator">
+                     <li class="nav-item dropdown-separator" ng-if="permission.Lock.view.status">
                         <span class="separator"></span>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" ng-if="permission.ProcessClass.view.status">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.processClasses">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
                         </a>
                     </li>
-                      <li class="nav-item dropdown-separator">
+                      <li class="nav-item dropdown-separator" ng-if="permission.ProcessClass.view.status">
                         <span class="separator"></span>
                     </li>
-                     <li class="nav-item">
+                     <li class="nav-item" ng-if="permission.Schedule.view.status">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.schedules">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.schedules</span></span>
                         </a>

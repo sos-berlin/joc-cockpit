@@ -718,7 +718,7 @@
   "tab.weekDays": "WeekDays",
   "tab.schedule": "Schedule",
   "tab.runtime": "Run Time",
-  "tooltip.exportInXLS": "export xlsx",
+  "tooltip.exportInXLS": "export xls",
   "tooltip.useDefault": "Use as default customization"
 }
 

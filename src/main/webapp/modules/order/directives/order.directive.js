@@ -142,16 +142,15 @@
             restrict: 'E',
             transclude: true,
             link: function (scope, element) {
-                  var done = false;
-                scope.$watch("jobChain", function (data) {
-                    if (!data || done) {
-                        return;
-                    }
-                    done = true;
+                
+                scope.$on("drawJobChainFlowDiagram", function () {
                     draw();
                 });
-                function draw() {
 
+
+
+                function draw() {
+                   console.log("Drawing chain");
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
@@ -267,14 +266,16 @@
                                 })
                             } else if (index > 0) {
                                 var matched = false;
-                                console.log("Not split " + item.name);
+                                //console.log("Not split " + item.name);
+                                var mIndex=-1;
                                 coords.map(function (obj) {
+
                                     if (obj.next == item.name && coords[index].left <= obj.left) {
-                                        console.log("Matched for " + JSON.stringify(obj) + " " + item.name);
+                                        //console.log("Matched for " + JSON.stringify(obj) + " " + item.name);
                                         coords[index].left = obj.left + margin + rectW;
                                         coords[index].parent = obj.actual;
                                         if (!matched) {
-                                            console.log("set top " + obj.top);
+                                            //console.log("set top " + obj.top);
                                             coords[index].top = obj.top;
                                         }
                                         matched = true;
@@ -285,7 +286,7 @@
 
 
                             var jobName;
-                            var lock;
+
                             var host;
 
                             if (item.job) {
@@ -294,10 +295,9 @@
                                 jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
                                 jobName = '<span><i class="fa fa-file1"></i><span class="">' + jobName + '</span></span>';
                                 host = '<div class="text-left text-muted p-t-xs ">' +
-                                '<span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                '<span id="' + 'plk' + item.name + '" class="pull-right show"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                '<span id="' + 'ppc' + item.name + '" class="show-inline"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                '<span id="' + 'plk' + item.name + '" class="pull-right show-inline"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
                                 '</div>';
-                                lock = '<div class="text-left text-muted p-t-xs "><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></div>';
                             } else if (item.jobChain) {
                                 jobName = '<span><i class="fa fa-list"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
                             }
@@ -444,7 +444,7 @@
                                     + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
                                     '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
                                     '<span id="' + 'pc' + item.name + '" class="p-l-sm"></span></span>' +
-                                    '<span class="show" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                    '<span class="show-inline" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
                                     '</div>' + '</div>' +
                                     '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
                                     '<a href class=" text-left text-hover-color" id="' + btnId1 + '" > <i class="fa fa-stop"></i> {{\'button.stopNode\' | translate}}</a>' +
@@ -685,14 +685,14 @@
                         var div1 = document.getElementById(item.name);
                         var div2 = document.getElementById(item.nextNode);
                         pDiv = undefined;
-                        console.log("Item " + item.name);
+                       // console.log("Item " + item.name);
                         if (index > 0 && splitRegex.test(item.name)) {
                             vm.coords.map(function (obj) {
                                 //console.log(" obj "+JSON.stringify(obj)+" "+item.name);
                                 if (obj.actual == item.name) {
-                                    console.log("Previous found for " + obj.name + " " + item.name);
+                                    //console.log("Previous found for " + obj.name + " " + item.name);
                                     pDiv = document.getElementById(obj.parent);
-                                    console.log("Previous found for " + item.name + " " + pDiv);
+                                    //console.log("Previous found for " + item.name + " " + pDiv);
                                 }
                             })
                         }
@@ -771,7 +771,7 @@
                             if (div2) {
 
                                 if (pDiv && pDiv.offsetTop > div1.offsetTop) {
-                                    console.log("Previous is below for " + item.name);
+                                    //console.log("Previous is below for " + item.name);
                                     var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                     var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                     width = vm.margin / 2;
@@ -804,7 +804,7 @@
                                     node.style['height'] = '2px';
                                     mainContainer.appendChild(node);
                                 } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
-                                    console.log("Previous is above for " + item.name);
+                                    //console.log("Previous is above for " + item.name);
                                     var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                     var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                     var width = vm.margin / 2;
@@ -841,7 +841,7 @@
                                 }
 
                                 if (div1.offsetTop > div2.offsetTop) {
-                                    console.log("Drawing next for02 " + item.name + " " + item.nextNode);
+                                   // console.log("Drawing next for02 " + item.name + " " + item.nextNode);
                                     //console.log("Offset is lesser " + div1.id);
                                     var top = div2.offsetTop + div2.clientHeight / 2;
                                     var left = div2.offsetLeft - vm.margin / 2;
@@ -879,7 +879,7 @@
                                     mainContainer.appendChild(node);
 
                                 } else if (div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
-                                    console.log("Drawing next for01 " + item.name + " " + item.nextNode);
+                                    //console.log("Drawing next for01 " + item.name + " " + item.nextNode);
                                     var top = div1.offsetTop + div1.clientHeight / 2;
                                     var left = div1.offsetLeft + div1.clientWidth;
                                     var width = div2.offsetLeft - left - vm.margin / 2;
@@ -924,7 +924,7 @@
                                     if (vm.jobChain.nodes.length - 1 > index && parallels > 0) {
 
                                     } else {
-                                        console.log("Drawing next for " + item.name + " " + item.nextNode);
+                                        //console.log("Drawing next for " + item.name + " " + item.nextNode);
                                         node = document.createElement('div');
                                         node.setAttribute('class', 'h-line next-link');
                                         node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
@@ -941,7 +941,7 @@
                             if (errorNode) {
                                 var firstTop = 0;
                                 var splitted = false;
-                                console.log("For item " + item.name);
+                                //console.log("For item " + item.name);
                                 vm.coords.map(function (obj) {
                                     // console.log("Obj "+JSON.stringify(obj));
                                     if (firstTop == 0) {
@@ -1066,23 +1066,13 @@
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'stop node'
-                                    }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
-
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
                                     })
                                 } else if (btn1.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'unstop node'
-                                    }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
-
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
-                                    });
+                                    })
                                 }
 
                             }
@@ -1101,23 +1091,13 @@
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'skip'
-                                    }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
-
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
                                     })
                                 } else if (btn2.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
                                     vm.onAction({
                                         path: jobChainPath,
                                         node: item.name,
                                         action: 'unskip'
-                                    }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
-
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
-                                    });
+                                    })
                                 }
 
                             }
@@ -1136,24 +1116,13 @@
                                         path: item.job.path,
                                         node: item.name,
                                         action: 'stop job'
-                                    }).then(function (res) {
-                                        console.log("Response " + JSON.stringify(res));
-
-                                        //vm.onAdd({$item: undefined});
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
                                     })
                                 } else if (btn3.textContent.trim() == gettextCatalog.getString('button.unstopJob')) {
                                     vm.onAction({
                                         path: item.job.path,
                                         node: item.name,
                                         action: 'unstop job'
-                                    }).then(function (res) {
-                                        //console.log("Response " + JSON.stringify(res));
-
-                                    }, function (err) {
-                                        //console.log("Error " + JSON.stringify(err));
-                                    });
+                                    })
                                 }
                             }
                         });
@@ -1184,26 +1153,42 @@
                     if (node.job && node.job.path) {
                         vm.getJobInfo({filter: {compact: true, job: node.job.path}}).then(function (res) {
 
-                            // //console.log("Name " + node.name);
+                            //console.log("Name " + node.name);
                             var span = document.getElementById('lk' + node.name);
                             var pSpan = document.getElementById('plk' + node.name);
-                            if (res.job.locks) {
+                            if (res.job.locks && res.job.locks.length>0) {
+
                                 node.locks = res.job.locks;
-                                pSpan.className = pSpan.className.replace("hide", "show");
-                                span.textContent = node.locks[0];
+                                pSpan.className = pSpan.className.replace("hide", "show-inline");
+                                if(node.locks[0] && node.locks[0].path && node.locks[0].path.indexOf('/')!=-1){
+                                    var extra = node.locks.length-1>0?' + '+node.locks.length+' more':'';
+                                     span.textContent = node.locks[0].path.substring(node.locks[0].path.lastIndexOf('/')+1,node.locks[0].path.length)
+                                     +extra;
+                                }else if(node.locks[0] && node.locks[0].path){
+                                    var extra = node.locks.length-1>0?' and '+node.locks.length+' more':''
+                                    span.textContent = node.locks[0].path+extra;
+                                }
+                                //console.log("Lock span " + span.textContent);
+
                             } else {
-                                pSpan.className = pSpan.className.replace("show", "hide");
+                                pSpan.className = pSpan.className.replace("show-inline", "hide");
 
                             }
-                            span = document.getElementById('pc' + node.name);
-                            pSpan = document.getElementById('ppc' + node.name);
+                            var span01 = document.getElementById('pc' + node.name);
+                            var pSpan01 = document.getElementById('ppc' + node.name);
                             if (res.job.processClass) {
                                 node.processClass = res.job.processClass;
-                                pSpan.className.replace("hide", "show");
-                                span.textContent = res.job.processClass;
+                                pSpan01.className.replace("hide", "show-inline");
+                                if(node.processClass && node.processClass.indexOf('/')!=-1){
+                                     span01.textContent = node.processClass.substring(node.processClass.lastIndexOf('/')+1,node.processClass.length)
+
+                                }else if(node.processClass ){
+                                    span01.textContent = node.processClass;
+                                }
+//console.log("Pc span " + span01.textContent);
                             } else {
-                                pSpan.className = pSpan.className.replace("show", "hide");
-                                span.textContent = '--';
+                                pSpan01.className = pSpan01.className.replace("show-inline", "hide");
+                                span01.textContent = '--';
                             }
 
 
@@ -1222,7 +1207,7 @@
                 vm.$watch("showErrorNodes", toggleErrorNodes);
 
                 function toggleErrorNodes() {
-                    console.log("Show error nodes " + vm.showErrorNodes);
+                    //console.log("Show error nodes " + vm.showErrorNodes);
                     var errorElms = document.getElementsByClassName("error-link");
                     var errorNodes = document.getElementsByClassName("error-node");
                     //console.log("Length " + errorElms.length);
@@ -1295,12 +1280,13 @@
 
                                     btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.proceedNode');
                                         rect.className = rect.className.replace(/border-.*/, 'border-red');
-                                        btn1.className = btn1.className.replace('text-hover-color', '');
+                                        btn1.className = btn1.className.replace(/text-hover-color/g, '');
                                         if(!vm.permission.JobChain.processJobChainNode){
                                             btn1.className = btn1.className+" disable-link";
                                         }else{
                                             btn1.className.replace(/disable-link/g,'');
                                         }
+                                    console.log("btn1 class name "+btn1.className);
                                         btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                                          if(!vm.permission.JobChain.skipJobChainNode){
                                             btn2.className = btn2.className+" disable-link";
@@ -1364,7 +1350,7 @@
 
 
                             if (node.orders && node.orders.length>0) {
-                                 console.log("In get orders 02 ");
+                                 //console.log("In get orders 02 ");
                                 addLabel(node.orders, node.name);
                             }
                         })
@@ -1406,6 +1392,7 @@
                                 if(index > vm.limitNum - 1) {
                                     if (orders.length - 1 == index) {
                                         var container = document.getElementById('lbl-order-' + order.state);
+                                        container.style['top'] = node.offsetTop - container.clientHeight - 25 + 'px';
                                         var label = document.createElement('div');
                                         label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
                                         + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
@@ -1441,9 +1428,10 @@
                                 }
                                 var container = document.getElementById('lbl-order-' + order.state);
                                 if (container && container.childNodes.length>0) {
-                                    console.log("Found container and child nodes "+container.childNodes.length);
-                                     if(order.processingState._text=='RUNNING'){
-                                         node.className = node.className.replace(/border-.*/, 'border-green');
+                                    //console.log("Found container and child nodes "+container.childNodes.length);
+                                    /*container.style['top'] = node.offsetTop - container.clientHeight + 'px';*/
+                                    if(order.processingState._text=='RUNNING'){
+                                        node.className = node.className.replace(/border-.*/, 'border-green');
                                     }
 
                                     var label = document.createElement('div');
@@ -1457,15 +1445,19 @@
                                         diff='+'+$filter('durationFromCurrent')(order.startedAt);
                                         time=order.startedAt;
                                     }else{
-                                       diff='-'+$filter('durationFromCurrent')(undefined,order.nextStartTime);
+                                        if($filter('durationFromCurrent')(undefined,order.nextStartTime)=='never')
+                                          diff=$filter('durationFromCurrent')(undefined,order.nextStartTime);
+                                        else
+                                          diff='-'+$filter('durationFromCurrent')(undefined,order.nextStartTime);
+
                                         time=order.nextStartTime;
                                     }
 
-                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i><span class="text-ellipsis1"> ' + order.orderId
+                                    label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
                                     + '<span id="date-' + order.orderId + '"  class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
-                                    + '</span></span>'
-                                    + '<div class="btn-group dropdown pull-right" style="right: 0!important; position: absolute"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
-                                    + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">'
+                                    + '</span>'
+                                    + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                    + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" style="position: fixed;z-index: 9999;top: '+node.offsetTop *2.5+'px; left:'+node.offsetLeft+'px !important">'
                                     + '<a id="log-' + order.orderId + '" target="_blank" href="#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' +order.jobChain + '" '
                                     + 'class="hide">'+ gettextCatalog.getString("button.viewLog") +'</a>'
                                     + '<a class="hide" id="configuration-' + order.orderId + '">'+ gettextCatalog.getString("button.showConfiguration") +'</a>'
@@ -1477,7 +1469,7 @@
                                     + '<a class="hide" id="resume-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrder") +'</a>'
                                     + '<a class="hide" id="resumeodrprmt-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrderParametrized") +'</a>'
                                     + '<a class="hide" id="resumeodrfrmstate-' + order.orderId + '">'+ gettextCatalog.getString("button.resumeOrderFromState") +'</a>'
-                                    + '<a class="hide" id="orderreset-' + order.orderId + '">'+ gettextCatalog.getString("button.resetOrder") +'button.</a>'
+                                    + '<a class="hide" id="orderreset-' + order.orderId + '">'+ gettextCatalog.getString("button.resetOrder") +'</a>'
                                     + '<a class="hide" id="orderremove-' + order.orderId + '">'+ gettextCatalog.getString("button.removeOrder") +'</a>'
                                     + '<a class="hide" id="calendar-' + order.orderId + '">'+ gettextCatalog.getString("button.showCalendar") +'</a>'
                                     + '<a class="hide" id="orderdelete-' + order.orderId + '">'+ gettextCatalog.getString("button.deleteOrder") +'</a>'
@@ -1489,7 +1481,7 @@
                                     }
                                     container.appendChild(label);
                                 } else  {
-                                    console.log("Found no container or no child nodes ");
+
                                     if(order.processingState && order.processingState._text=='RUNNING'){
                                          node.className = node.className.replace(/border-.*/, 'border-green');
                                     }
@@ -1505,21 +1497,28 @@
                                     label.style['width'] = node.clientWidth + 'px';
                                     label.style['margin-bottom'] = '5px';
                                     label.style['left'] = node.offsetLeft + 'px';
+                                    label.style['white-space'] = 'nowrap';
                                     var diff=0;
                                     var time = 0;
                                     if(order.startedAt){
                                         diff='+'+$filter('durationFromCurrent')(order.startedAt);
                                         time=order.startedAt;
                                     }else{
-                                       diff='-'+$filter('durationFromCurrent')(undefined,order.nextStartTime);
+
+                                        if($filter('durationFromCurrent')(undefined,order.nextStartTime)=='never')
+                                          diff=$filter('durationFromCurrent')(undefined,order.nextStartTime);
+                                        else
+                                          diff='-'+$filter('durationFromCurrent')(undefined,order.nextStartTime);
+
+
                                         time=order.nextStartTime;
                                     }
 
-                                    label.innerHTML = '<div><span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i><span class="text-ellipsis1"> ' + order.orderId
+                                    label.innerHTML = '<div><span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' + order.orderId
                                     + '<span id="date-' + order.orderId + '" class="text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +' ('+diff+ ')</span>'
-                                    + '</span></span>'
-                                    + '<div class="btn-group dropdown pull-right" style="right: 0!important; position: absolute"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
-                                    + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">'
+                                    + '</span>'
+                                    + '<div class="btn-group dropdown"><button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                    + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" style="position: fixed;z-index: 9999;top: '+node.offsetTop *2.5+'px; left:'+node.offsetLeft+'px !important">'
                                     + '<a id="log-' + order.orderId + '" target="_blank" href="#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' +order.jobChain + '" '
                                     + 'class="hide">'+ gettextCatalog.getString("button.viewLog") +'</a>'
                                     + '<a class="hide" id="configuration-' + order.orderId + '">'+gettextCatalog.getString("button.showConfiguration")+'</a>'
@@ -1537,12 +1536,16 @@
                                     + '<a class="hide" id="orderdelete-' + order.orderId + '">'+ gettextCatalog.getString("button.deleteOrder") +'</a>'
                                     + '</div></div></div>';
                                     mainContainer.appendChild(label);
-                                    label.style['top'] = node.offsetTop - label.clientHeight + 'px';
+                                    label.style['top'] = node.offsetTop - label.clientHeight - 15 + 'px';
                                     label.style['height'] = 'auto';
+                                    label.style['min-height'] = '35px';
+                                    label.style['max-height'] = '90px';
+                                    label.style['overflow'] = 'auto';
                                 }
 
                                 if (orders.length - 1 == index && orders.length == vm.limitNum) {
                                     var container = document.getElementById('lbl-order-' + order.state);
+                                    container.style['top'] = node.offsetTop - container.clientHeight - 15 + 'px';
                                     var label = document.createElement('div');
                                     label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
                                     + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
@@ -1583,7 +1586,10 @@
 
                             var orderConfiguration = document.getElementById('configuration-' + order.orderId);
                             if(vm.permission.Order.view.configuration && order._type !='AD_HOC') {
-                                orderConfiguration.className = 'show dropdown-item';
+                                if(orderConfiguration){
+                                    orderConfiguration.className = 'show dropdown-item';
+                                }
+
                             }
 
                             var configuration = document.getElementById("configuration-" + order.orderId);
@@ -1728,7 +1734,7 @@
                             });
 
                             var calendar = document.getElementById('calendar-' + order.orderId);
-                            if(order.processingState._text != 'BLACKLIST' && order._type !='AD_HOC') {
+                            if(order.processingState._text != 'BLACKLIST' && order._type !='AD_HOC' && vm.permission.DailyPlan.view.status) {
                                 calendar.className = 'show dropdown-item';
                             }
 
@@ -1767,11 +1773,6 @@
                     less.className = 'show cursor text-xs';
                     more.className = 'hide cursor text-xs';
                     updateJobChain();
-
-                    var container = document.getElementById('lbl-order-' + order.state);
-                    container.style['max-height'] = '80px';
-                    container.style['overflow'] = 'auto';
-                    container.style['overflow-x'] = 'auto';
                 }
 
                 function hideOrderPanelFuc(more, less) {
@@ -1784,7 +1785,7 @@
                 }
 
                 vm.$on('bulkOperationCompleted', function (event, args) {
-                    console.log("Bulk operation completed " + JSON.stringify(args));
+                    //console.log("Bulk operation completed " + JSON.stringify(args));
                     if (args.operation == 'stopJobs' && args.status == 'success') {
                         angular.forEach(vm.selectedNodes, function (node) {
                             var btnId3 = '#btn3' + node.name.replace(':', '__');
@@ -1852,7 +1853,7 @@
 
                     angular.forEach(vm.selectedNodes, function (node) {
                         var chkId = '#chk' + node.name.replace(':', '__');
-                        console.log("chkId " + chkId);
+                        //console.log("chkId " + chkId);
                         $(chkId).attr("checked", false);
                     });
                     vm.selectedNodes = [];

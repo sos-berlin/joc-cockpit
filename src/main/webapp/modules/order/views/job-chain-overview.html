@@ -79,7 +79,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="orderFilters.pageView=='grid'">
+            <div class="hide" ng-class={show:orderFilters.pageView=='grid'}>
                 <div class="p-t-sm" >
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
@@ -238,7 +238,7 @@
                     <div class="cssload-loading">{{'Loading' | translate}}...</div>
                 </div>
             </div>
-            <div class="hide m-t-sm" ng-class="{'show': isLoading1}">
+            <div class="hide m-t-sm" ng-class="{'show': isLoading1 && permission.JobChain.view.history}">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">

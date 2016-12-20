@@ -19,7 +19,7 @@
         tabs._jobChain.pageSize = '10';
         tabs._jobChain.currentPage = '1';
         tabs._jobChain.expand_to = [];
-        tabs._jobChain.selectedView = '';
+        tabs._jobChain.selectedView = true;
 
         tabs._job = {};
         tabs._job.filter = {};
@@ -29,7 +29,7 @@
         tabs._job.pageSize = '10';
         tabs._job.currentPage = '1';
         tabs._job.expand_to = [];
-        tabs._job.selectedView = '';
+        tabs._job.selectedView = true;
 
         tabs._dashboard = {};
         tabs._dashboard.filter = {};
@@ -49,7 +49,7 @@
         tabs._daliyPlan.reverse = false;
         tabs._daliyPlan.pageSize = '10';
         tabs._daliyPlan.currentPage = '1';
-        tabs._daliyPlan.selectedView = '';
+        tabs._daliyPlan.selectedView = true;
 
         tabs._order = {};
         tabs._order.filter = {};
@@ -59,7 +59,7 @@
         tabs._order.pageSize = '10';
         tabs._order.currentPage = '1';
         tabs._order.expand_to = [];
-        tabs._order.selectedView = '';
+        tabs._order.selectedView = true;
 
         tabs._order1 = {};
         tabs._order1.filter = {};
@@ -74,7 +74,7 @@
         tabs._orderDetail.reverse = false;
         tabs._orderDetail.pageSize = '10';
         tabs._orderDetail.currentPage = '1';
-        tabs._orderDetail.pageView = 'list';
+        tabs._orderDetail.pageView = 'grid';
         tabs._orderDetail.showErrorNodes = true;
         tabs._orderDetail.fitToScreen = false;
 
@@ -88,6 +88,7 @@
         tabs._history.order.sortReverse = false;
         tabs._history.order.pageSize = '25';
         tabs._history.order.currentPage = '1';
+        tabs._history.order.selectedView = true;
         tabs._history.task = {};
         tabs._history.task.filter = {};
         tabs._history.task.filter.historyStates = 'all';
@@ -96,6 +97,7 @@
         tabs._history.task.sortReverse = false;
         tabs._history.task.pageSize = '25';
         tabs._history.task.currentPage = '1';
+        tabs._history.task.selectedView = true;
 
 
         tabs._resource = {};
