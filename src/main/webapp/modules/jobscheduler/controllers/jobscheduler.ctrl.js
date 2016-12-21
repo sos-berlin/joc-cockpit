@@ -489,8 +489,74 @@
                 vm.loading = false;
             });
         }
+        function expandFolderDataL1(data) {
+            vm.loading = true;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.folders = [{folder: data.path, recursive: false}];
+            ResourceService.getLocksP(obj).then(function (result) {
+                data.locks = result.locks;
+                volatileFolderDataL1(data, obj);
+            }, function () {
+                volatileFolderDataL1(data, obj);
+                vm.loading = false;
+            });
+        }
+function volatileFolderDataL(data, obj) {
+            ResourceService.get(obj).then(function (res) {
 
-        function volatileFolderDataL(data, obj) {
+                if (data.locks && data.locks.length > 0) {
+                    angular.forEach(data.locks, function (lock) {
+                        angular.forEach(res.locks, function (lockData) {
+                            if (lock.path == lockData.path) {
+                                lock = angular.merge(lock, lockData);
+                            }
+                        });
+                    });
+                } else {
+                    data.locks = res.locks;
+                }
+
+                if (data.locks.length > 0) {
+                    angular.forEach(data.locks, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allLocks, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allLocks.push(value);
+                    });
+                }
+                vm.folderPathL = data.name || '/';
+
+                vm.loading = false;
+            }, function () {
+
+                if (data.locks.length > 0) {
+                    angular.forEach(data.locks, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allLocks, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allLocks.push(value);
+                    });
+                }
+                vm.folderPathL = data.name || '/';
+
+                vm.loading = false;
+            });
+        }
+
+        function volatileFolderDataL1(data, obj) {
             ResourceService.get(obj).then(function (res) {
 
                 if (data.locks && data.locks.length > 0) {
@@ -687,8 +753,78 @@
                 vm.loading = false;
             });
         }
+        function expandFolderDataP1(data) {
+            vm.loading = true;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.folders = [{folder: data.path, recursive: false}];
+            ResourceService.getProcessClassP(obj).then(function (result) {
+                data.processClasses = result.processClasses;
+                volatileFolderDataP1(data, obj);
 
-        function volatileFolderDataP(data, obj) {
+            }, function () {
+                volatileFolderDataP1(data, obj);
+                vm.loading = false;
+            });
+        }
+
+   function volatileFolderDataP(data, obj) {
+            ResourceService.getProcessClass(obj).then(function (res) {
+
+                if (data.processClasses.length > 0) {
+                    angular.forEach(data.processClasses, function (processClass) {
+                        angular.forEach(res.processClasses, function (processClassData) {
+                            if (processClass.path == processClassData.path) {
+                                processClassData.maxProcesses = processClass.maxProcesses;
+                                processClass = processClassData;
+                            }
+                        });
+                    });
+                }
+
+                data.processClasses = res.processClasses;
+
+
+                if (data.processClasses.length > 0) {
+                    angular.forEach(data.processClasses, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allProcessClasses, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allProcessClasses.push(value);
+                    });
+                }
+                vm.folderPathP = data.name || '/';
+
+                vm.loading = false;
+            }, function () {
+
+                if (data.processClasses.length > 0) {
+                    angular.forEach(data.processClasses, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allProcessClasses, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allProcessClasses.push(value);
+                    });
+                }
+                vm.folderPathP = data.name || '/';
+
+                vm.loading = false;
+            });
+        }
+
+        function volatileFolderDataP1(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
 
                 if (data.processClasses.length > 0) {
@@ -1114,7 +1250,77 @@
             });
         }
 
-        function volatileFolderData(data, obj) {
+        function expandFolderData1(data) {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.folders = [{folder: data.path, recursive: false}];
+            ScheduleService.getSchedulesP(obj).then(function (result) {
+                data.schedules = result.schedules;
+                volatileFolderData1(data, obj);
+            }, function (err) {
+                vm.loading = false;
+                volatileFolderData1(data, obj);
+            });
+        }
+
+ function volatileFolderData(data, obj) {
+            if (vm.schdeuleFilters.filter.state != 'all') {
+                obj.state = [];
+                obj.state.push(vm.schdeuleFilters.filter.state);
+            }
+            ScheduleService.get(obj).then(function (res) {
+
+                if (data.schedules.length > 0) {
+                    angular.forEach(data.schedules, function (schedule) {
+                        angular.forEach(res.schedules, function (scheduleData) {
+                            if (schedule.name == scheduleData.name) {
+                                schedule = angular.merge(schedule, scheduleData);
+                            }
+                        });
+                    });
+                } else {
+                    data.schedules = res.schedules;
+                }
+
+                if (data.schedules.length > 0) {
+                    angular.forEach(data.schedules, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allSchedules, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allSchedules.push(value);
+                    });
+                }
+                vm.folderPathS = data.name || '/';
+
+                vm.loading = false;
+            }, function () {
+                if (data.schedules.length > 0) {
+                    angular.forEach(data.schedules, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allSchedules, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allSchedules.push(value);
+                    });
+                }
+                vm.folderPathS = data.name || '/';
+
+                vm.loading = false;
+            });
+        }
+
+        function volatileFolderData1(data, obj) {
             if (vm.schdeuleFilters.filter.state != 'all') {
                 obj.state = [];
                 obj.state.push(vm.schdeuleFilters.filter.state);
@@ -1401,7 +1607,7 @@
                     traverseTreeForUpdateSchedule(vm.tree[i], path);
                 } else {
                     if (vm.tree[i].selected1)
-                        expandFolderData(vm.tree[i]);
+                        expandFolderData1(vm.tree[i]);
                     break;
                 }
             }
@@ -1414,7 +1620,7 @@
                         traverseTreeForUpdateSchedule(data.folders[i], path);
                     } else {
                         if (data.folders[i].selected1)
-                            expandFolderData(data.folders[i]);
+                            expandFolderData1(data.folders[i]);
                         break;
                     }
                 }
@@ -1426,7 +1632,7 @@
                     traverseTreeForUpdateLock(vm.treeLock[i], path);
                 } else {
                     if (vm.treeLock[i].selected1)
-                        expandFolderDataL(vm.treeLock[i]);
+                        expandFolderDataL1(vm.treeLock[i]);
                     break;
                 }
             }
@@ -1439,7 +1645,7 @@
                         traverseTreeForUpdateLock(data.folders[i], path);
                     } else {
                         if (data.folders[i].selected1)
-                            expandFolderDataL(data.folders[i]);
+                            expandFolderDataL1(data.folders[i]);
                         break;
                     }
                 }
@@ -1451,7 +1657,7 @@
                     traverseTreeForUpdateProcess(vm.treeProcess[i], path);
                 } else {
                     if (vm.treeProcess[i].selected1)
-                        expandFolderDataP(vm.treeProcess[i]);
+                        expandFolderDataP1(vm.treeProcess[i]);
                     break;
                 }
             }
@@ -1464,7 +1670,7 @@
                         traverseTreeForUpdateProcess(data.folders[i], path);
                     } else {
                         if (data.folders[i].selected1)
-                            expandFolderDataP(data.folders[i]);
+                            expandFolderDataP1(data.folders[i]);
                         break;
                     }
                 }

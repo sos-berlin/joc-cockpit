@@ -1577,7 +1577,7 @@
                             });
 
                             var orderNow = document.getElementById('ordernow-' + order.orderId);
-                            if ((order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && vm.permission.Order.start) {
+                            if ((order.processingState && (order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK')) && vm.permission.Order.start) {
                                 orderNow.className = 'show dropdown-item';
                             }
 
@@ -1589,7 +1589,7 @@
                             });
 
                             var orderAt = document.getElementById('orderat-' + order.orderId);
-                            if ((order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && vm.permission.Order.start) {
+                            if (order.processingState && (order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && vm.permission.Order.start) {
                                 orderAt.className = 'show dropdown-item';
                             }
 
@@ -1601,7 +1601,7 @@
                             });
 
                             var orderState = document.getElementById('orderstate-' + order.orderId);
-                            if ((order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && vm.permission.Order.setState) {
+                            if (order.processingState && (order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && vm.permission.Order.setState) {
                                 orderState.className = 'show dropdown-item';
                             }
 
@@ -1613,7 +1613,7 @@
                             });
 
                             var runTime = document.getElementById('runtime-' + order.orderId);
-                            if ((order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && vm.permission.Order.setRunTime) {
+                            if (order.processingState && (order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && vm.permission.Order.setRunTime) {
                                 runTime.className = 'show dropdown-item';
                             }
 
@@ -1625,7 +1625,7 @@
                             });
 
                             var suspend = document.getElementById('suspend-' + order.orderId);
-                            if ((order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && vm.permission.Order.suspend) {
+                            if (order.processingState && (order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && vm.permission.Order.suspend) {
                                 suspend.className = 'show dropdown-item bg-hover-color';
                             }
 
@@ -1637,7 +1637,7 @@
                             });
 
                             var resume = document.getElementById('resume-' + order.orderId);
-                            if ((order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
+                            if (order.processingState && (order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
                                 resume.className = 'show dropdown-item';
                             }
 
@@ -1649,7 +1649,7 @@
                             });
 
                             var resumeOrderParam = document.getElementById('resumeodrprmt-' + order.orderId);
-                            if ((order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
+                            if (order.processingState && (order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
                                 resumeOrderParam.className = 'show dropdown-item';
                             }
 
@@ -1661,7 +1661,7 @@
                             });
 
                             var resumeOrderFromState = document.getElementById('resumeodrfrmstate-' + order.orderId);
-                            if ((order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
+                            if (order.processingState && (order.processingState._text == 'SUSPENDED') && vm.permission.Order.resume) {
                                 resumeOrderFromState.className = 'show dropdown-item';
                             }
 
@@ -1673,7 +1673,7 @@
                             });
 
                             var orderReset = document.getElementById('orderreset-' + order.orderId);
-                            if ((order.processingState._text != 'BLACKLIST') && vm.permission.Order.reset) {
+                            if (order.processingState && (order.processingState._text != 'BLACKLIST') && vm.permission.Order.reset) {
                                 orderReset.className = 'show dropdown-item';
                             }
 
@@ -1685,7 +1685,7 @@
                             });
 
                             var orderRemove = document.getElementById('orderremove-' + order.orderId);
-                            if ((order.processingState._text == 'SETBACK') && vm.permission.Order.removeSetback) {
+                            if (order.processingState && (order.processingState._text == 'SETBACK') && vm.permission.Order.removeSetback) {
                                 orderRemove.className = 'show dropdown-item bg-hover-color';
                             }
 
@@ -1697,7 +1697,7 @@
                             });
 
                             var viewCalendar = document.getElementById('calendar-' + order.orderId);
-                            if (order.processingState._text != 'BLACKLIST' && order._type != 'AD_HOC' && vm.permission.DailyPlan.view.status) {
+                            if (order.processingState && order.processingState._text != 'BLACKLIST' && order._type != 'AD_HOC' && vm.permission.DailyPlan.view.status) {
                                 viewCalendar.className = 'show dropdown-item';
                             }
 

@@ -1502,7 +1502,92 @@
             });
         }
 
+        function expandFolderData1(data) {
+
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            if (selectedFiltered) {
+                obj.regex = selectedFiltered.regex;
+            }
+            obj.folders = [{folder: data.path, recursive: false}];
+            OrderService.getOrdersP(obj).then(function (result) {
+                data.orders = result.orders;
+                volatileFolderData1(data, obj);
+            }, function () {
+                volatileFolderData1(data, obj);
+                vm.loading = false;
+            });
+        }
+
         function volatileFolderData(data, obj) {
+
+            if (selectedFiltered) {
+                obj = parseDate(obj);
+            }else {
+                if (vm.orderFilters.filter.state != 'ALL') {
+                    obj.processingStates = [];
+                    obj.processingStates.push(vm.orderFilters.filter.state);
+                }
+            }
+
+            OrderService.get(obj).then(function (res) {
+
+                var data1 = [];
+                if (data.orders.length > 0 && data.orders.length > res.orders.length) {
+                    angular.forEach(data.orders, function (orders) {
+                        if (orders.path.substring(0, 1) != '/') {
+                            orders.path = '/' + orders.path;
+                        }
+                        angular.forEach(res.orders, function (orderData) {
+                            if (orders.path == orderData.path) {
+                                orders = angular.merge(orders, orderData);
+                                data1.push(orders);
+                            }
+                        })
+                    });
+                    data.orders = data1;
+                } else {
+                    data.orders = res.orders;
+                }
+
+                if (data.orders.length > 0) {
+                    angular.forEach(data.orders, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allOrders, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allOrders.push(value);
+                    });
+                }
+                vm.folderPath = data.name || '/';
+
+                vm.loading = false;
+            }, function () {
+                if (data.orders.length > 0) {
+                    angular.forEach(data.orders, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allOrders, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allOrders.push(value);
+                    });
+                }
+                vm.folderPath = data.name || '/';
+            });
+        }
+
+        function volatileFolderData1(data, obj) {
 
             if (selectedFiltered) {
                 obj = parseDate(obj);
@@ -2261,7 +2346,7 @@
                     traverseTreeForUpdateOrder(vm.tree[i], path);
                 } else {
                     if(vm.tree[i].selected1)
-                    expandFolderData(vm.tree[i]);
+                    expandFolderData1(vm.tree[i]);
                     break;
                 }
             }
@@ -2274,7 +2359,7 @@
                         traverseTreeForUpdateOrder(data.folders[i], path);
                     } else {
                         if(data.folders[i].selected1)
-                        expandFolderData(data.folders[i]);
+                        expandFolderData1(data.folders[i]);
                         break;
                     }
                 }

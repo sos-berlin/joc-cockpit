@@ -198,7 +198,119 @@
             });
         }
 
+        function expandFolderData1(data) {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            if (selectedFiltered) {
+                obj.regex = selectedFiltered.regex;
+            }
+            obj.folders = [
+                {folder: data.path, recursive: false}
+            ];
+
+            JobChainService.getJobChainsP(obj).then(function (result) {
+                data.jobChains = result.jobChains;
+                volatileFolderData1(data, obj);
+            }, function (err) {
+                vm.loading = false;
+                volatileFolderData1(data, obj);
+            });
+        }
+
         function volatileFolderData(data, obj) {
+
+            if (selectedFiltered && selectedFiltered.state) {
+                obj.states = selectedFiltered.state;
+            } else {
+                if (vm.jobChainFilters.filter.state != 'ALL') {
+                    obj.states = [];
+                    obj.states.push(vm.jobChainFilters.filter.state);
+                }
+            }
+
+            JobChainService.get(obj).then(function (res) {
+
+                var data1 = [];
+                if (data.jobChains && data.jobChains.length > 0) {
+                    angular.forEach(data.jobChains, function (jobChains) {
+                        if (jobChains.path.substring(0, 1) != '/') {
+                            jobChains.path = '/' + jobChains.path;
+                        }
+
+                        angular.forEach(res.jobChains, function (jobChainData) {
+                            var flag1 = true;
+                            if (jobChains.path == jobChainData.path) {
+                                jobChains = angular.merge(jobChains, jobChainData);
+                                if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
+                                    if (!jobChains.processClass.match(selectedFiltered.agentName)) {
+                                        flag1 = false;
+                                    }
+                                }
+                                if (flag1)
+                                    data1.push(jobChains);
+
+                            }
+                        })
+                    });
+
+                } else {
+                    angular.forEach(res.jobChains, function (jobChainData) {
+                        var flag1 = true;
+                        if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
+                            if (!jobChains.processClass.match(selectedFiltered.agentName)) {
+                                flag1 = false;
+                            }
+                        }
+                        if (flag1)
+                            data1.push(jobChainData);
+                    })
+
+                }
+                data.jobChains = data1;
+
+                if (data.jobChains.length > 0) {
+                    angular.forEach(data.jobChains, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allJobChains, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allJobChains.push(value);
+                    });
+                }
+                vm.folderPath = data.name || '/';
+
+
+                vm.loading = false;
+            }, function () {
+
+                if (data.jobChains.length > 0) {
+                    angular.forEach(data.jobChains, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allJobChains, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allJobChains.push(value);
+                    });
+                }
+                vm.folderPath = data.name || '/';
+
+
+                vm.loading = false;
+            });
+        }
+
+        function volatileFolderData1(data, obj) {
 
             if (selectedFiltered && selectedFiltered.state) {
                 obj.states = selectedFiltered.state;
@@ -1363,7 +1475,7 @@
                     traverseTreeForUpdateJobChain(vm.tree[i], path);
                 } else {
                     if(vm.tree[i].selected1)
-                    expandFolderData(vm.tree[i]);
+                    expandFolderData1(vm.tree[i]);
                     break;
                 }
             }
@@ -1376,7 +1488,7 @@
                         traverseTreeForUpdateJobChain(data.folders[i], path);
                     } else {
                         if(data.folders[i].selected1)
-                        expandFolderData(data.folders[i]);
+                        expandFolderData1(data.folders[i]);
                         break;
                     }
                 }
@@ -1590,7 +1702,96 @@
             });
         }
 
-        function volatileFolderData(data, obj) {
+                function expandFolderData1(data) {
+
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            if (selectedFiltered) {
+                obj.regex = selectedFiltered.regex;
+            }
+            obj.folders = [{folder: data.path, recursive: false}];
+            JobService.getJobsP(obj).then(function (result) {
+                data.jobs = result.jobs;
+                volatileFolderData1(data, obj);
+            }, function (err) {
+                volatileFolderData1(data, obj);
+                vm.loading = false;
+            });
+        }
+
+function volatileFolderData(data1, obj) {
+
+            if (selectedFiltered) {
+                obj = parseDate(obj);
+            } else {
+                if (vm.jobFilters.filter.state != 'ALL') {
+                    obj.states = [];
+                    obj.states.push(vm.jobFilters.filter.state);
+                }
+            }
+
+            JobService.get(obj).then(function (res) {
+
+                var data = [];
+                if (data1.jobs && data1.jobs.length > 0) {
+                    angular.forEach(data1.jobs, function (jobs) {
+                        if (jobs.path.substring(0, 1) != '/') {
+                            jobs.path = '/' + jobs.path;
+                        }
+                        angular.forEach(res.jobs, function (jobData) {
+                            if (jobs.path == jobData.path) {
+                                jobs = angular.merge(jobs, jobData);
+                                data.push(jobs);
+                            }
+                        })
+                    });
+                    data1.jobs = data;
+                } else {
+                    data1.jobs = res.jobs;
+                }
+
+
+                angular.forEach(data1.jobs, function (value) {
+                    var flag = true;
+                    value.path1 = data1.path;
+
+                    angular.forEach(vm.allJobs, function (value1) {
+                        if (value.path == value1.path) {
+                            flag = false;
+                        }
+                    });
+                    if (flag)
+                        vm.allJobs.push(value);
+                });
+
+                vm.folderPath = data1.name || '/';
+
+                vm.loading = false;
+
+
+            }, function () {
+                if (data1.jobs.length > 0) {
+                    angular.forEach(data1.jobs, function (value) {
+                        var flag = true;
+                        value.path1 = data1.path;
+
+                        angular.forEach(vm.allJobs, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allJobs.push(value);
+                    });
+                }
+                vm.folderPath = data1.name || '/';
+
+                vm.loading = false;
+            });
+        }
+
+        function volatileFolderData1(data, obj) {
 
             if (selectedFiltered) {
                 obj = parseDate(obj);
@@ -2696,7 +2897,7 @@
                     traverseTreeForUpdateJob(vm.tree[i], path);
                 } else {
                     if(vm.tree[i].selected1)
-                    expandFolderData(vm.tree[i]);
+                    expandFolderData1(vm.tree[i]);
                     break;
                 }
             }
@@ -2709,7 +2910,7 @@
                         traverseTreeForUpdateJob(data.folders[i], path);
                     } else {
                         if(data.folders[i].selected1)
-                        expandFolderData(data.folders[i]);
+                        expandFolderData1(data.folders[i]);
                         break;
                     }
                 }
