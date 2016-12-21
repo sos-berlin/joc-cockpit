@@ -190,7 +190,7 @@
                     </div>
                 </div>
         </div>
-        <div ng-if="isLoading && !loading && folderPathA && allAgentClusters.length==0" class="text-center m-t h6">
+        <div ng-if="isLoading && !loading && folderPathA && allAgentClusters.length==0 && treeAgent.length>0" class="text-center m-t h6">
             <span class="text-primary">"{{folderPathA}}"</span>
             <span translate>message.emptyFolder</span>
         </div>

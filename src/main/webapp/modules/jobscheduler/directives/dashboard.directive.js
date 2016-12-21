@@ -399,11 +399,11 @@
                                 '</div>' +
                                 '</div></div>' +
 
-                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm">' + supervisor.jobschedulerId +
+                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="'+supervisor.jobschedulerId+'">' + supervisor.jobschedulerId +
                                 '</span></div>' +
                                 '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.data.state.
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.data.jobscheduler.state.
                                 _text + '</span></div>'+
                                 '</div> ';
 
@@ -461,13 +461,17 @@
                                 }
 
                                 var precedence = '';
-                                if (master.clusterType.type == 'PASSIVE' && master.clusterType.precedence == 0) {
-                                    precedence = 'Primary';
-                                    name = 'JobScheduler JS' + master.clusterType.precedence;
-                                } else if (master.clusterType.type == 'PASSIVE' && master.clusterType.precedence == 1) {
-                                    precedence = 'Backup';
-                                    name = 'JobScheduler JS' + master.clusterType.precedence;
+                               if (master.clusterType && master.clusterType._type == 'PASSIVE') {
+                                if (master.clusterType.precedence == 0) {
+                                    name = 'PRIMARY';
+                                } else {
+                                     name = 'BACKUP';
                                 }
+
+                            } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
+                                name = 'JobScheduler JS' + (index + 1);
+
+                            }
                                 if(master.clusterType._type=="PASSIVE" && !master.state){
                                     console.log("IN passive no master state find");
                                     master.state={};
@@ -492,8 +496,8 @@
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
                                     '</div> </div>' +
-                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.version+'">' + master.version +
-                                    '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port + '(' + precedence + ')' + '</div>' +
+                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.jobschedulerId+'">' + master.jobschedulerId +
+                                    '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port  + '</div>' +
                                         '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
                                     '</div>';
 

@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <div ng-if="isLoading && !loading && folderPathL && allLocks.length==0" class="text-center m-t h6">
+        <div ng-if="isLoading && !loading && folderPathL && allLocks.length==0 && treeLock.length>0" class="text-center m-t h6">
             <span class="text-primary">"{{folderPathL}}"</span>
             <span translate>message.emptyFolder</span>
         </div>

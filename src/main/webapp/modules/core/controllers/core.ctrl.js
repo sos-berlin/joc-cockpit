@@ -488,6 +488,7 @@
             })
         };
 
+        if(vm.schedulerIds && vm.schedulerIds.jobschedulerIds)
         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
