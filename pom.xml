@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sos-berlin</groupId>
   <artifactId>joc-gui</artifactId>
-  <version>1.11.0-RC2-SNAPSHOT</version>
+  <version>1.11.0-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>JOC Web GUI</name>
   <description>The Web GUI for the Jobscheduler</description>
@@ -14,4 +14,18 @@
     <tag>HEAD</tag>
   </scm>
   
+  	<build>
+		<plugins>
+			<!-- configuration of the release properties -->
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<!-- for release:prepare -->
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+					<updateVersionsToSnapshot>true</updateVersionsToSnapshot>
+				</configuration>
+			</plugin>
+		</plugins>
+  	</build>
+
 </project>
