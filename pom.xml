@@ -7,5 +7,10 @@
   <name>JOC Web GUI</name>
   <description>The Web GUI for the Jobscheduler</description>
   
+  <scm>
+    <connection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</connection>
+    <developerConnection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</developerConnection>
+    <url>https://github.com/sos-berlin/joc-cockpit.git</url>
+  </scm>
   
 </project>
