@@ -28,4 +28,35 @@
 		</plugins>
   	</build>
 
+    <profiles>
+        <profile>
+            <id>delete-local-repository</id>
+            <build>
+                <plugins>
+	                <!-- clean local repository once before build and log deleted files and folders -->
+		            <plugin>
+		                <artifactId>maven-antrun-plugin</artifactId>
+		                <inherited>false</inherited>
+		                <executions>
+		                    <execution>
+		                        <id>delete-local-repository</id>
+		                        <phase>pre-clean</phase>
+		                        <goals>
+		                            <goal>run</goal>
+		                        </goals>
+		                        <configuration>
+		                            <target name="clean-local-repo">                            
+		                                <echo>Purging ${settings.localRepository}/com/sos-berlin...</echo>
+		                                <delete dir="${settings.localRepository}/com/sos-berlin" verbose="true"/>
+		                            </target>
+		                            <failOnError>false</failOnError>
+		                        </configuration>
+		                    </execution>
+		                </executions>
+	                </plugin>
+                </plugins>           
+            </build>
+        </profile>
+    </profiles>
+
 </project>
