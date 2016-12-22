@@ -7,5 +7,25 @@
   <name>JOC Web GUI</name>
   <description>The Web GUI for the Jobscheduler</description>
   
+  <scm>
+    <connection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</connection>
+    <developerConnection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</developerConnection>
+    <url>https://github.com/sos-berlin/joc-cockpit.git</url>
+    <tag>HEAD</tag>
+  </scm>
   
+  	<build>
+		<plugins>
+			<!-- configuration of the release properties -->
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<!-- for release:prepare -->
+					<tagNameFormat>v@{project.version}</tagNameFormat>
+					<updateVersionsToSnapshot>true</updateVersionsToSnapshot>
+				</configuration>
+			</plugin>
+		</plugins>
+  	</build>
+
 </project>
