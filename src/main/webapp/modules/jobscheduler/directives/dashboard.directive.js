@@ -385,7 +385,7 @@
                                 ' <div class="cluster-rect" uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
                                 'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
                                 '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
-                                '<div class="text-left  p-t-sm p-l-sm "><span>' + supervisor.jobschedulerId +
+                                '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
                                 '</span> <div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +

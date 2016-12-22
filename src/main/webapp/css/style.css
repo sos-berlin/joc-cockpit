@@ -56,3 +56,11 @@ table.fixed td { overflow: hidden; }
     overflow:hidden;
     text-overflow:ellipsis
 }
+
+.notification{
+
+    background-color: white;
+    color: #000000;
+ border-radius: 8px;
+
+}

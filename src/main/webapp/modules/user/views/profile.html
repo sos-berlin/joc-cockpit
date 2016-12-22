@@ -189,7 +189,83 @@
                        </div>
                    </div>
                    <hr>
-                   <h5 translate>label.permissions</h5>
+
+                    <h5 translate>Event filter</h5>
+
+<div class="row m-t">
+    <div class="col-sm-2"><span class="text-dark " translate>label.task</span></div>
+    <div class="col-sm-10" style="padding-left: 20px ">
+        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllTaskModel"
+                                                     ng-change="upc.selectAllTaskFunction(selectAllTaskModel)"/> <i class="primary"></i> <span translate>label.selectAll</span>
+
+        </span>
+                     <span class="col-sm-2 md-check  text-black-lt" ng-repeat="task in tasks">
+                         <input type="checkbox" checklist-model="eventFilter" checklist-value="task.value"
+                                ng-change="upc.selectTaskFunction(checked)"/><i class="primary"></i>
+                         <span >{{task.label | translate}} </span>
+                     </span>
+
+    </div>
+
+</div>
+
+<div class="row m-t">
+    <div class="col-sm-2"><span class="text-dark " translate>label.job</span></div>
+    <div class="col-sm-10" style="padding-left: 20px ">
+        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllJobModel"
+                                                     ng-change="upc.selectAllJobFunction(selectAllJobModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="job in jobs">
+                    <input type="checkbox" checklist-model="eventFilter" checklist-value="job.value"
+                           ng-change="upc.selectJobFunction(checked)"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
+                                </span>
+    </div>
+
+</div>
+<div class="row m-t">
+    <div class="col-sm-2"><span class="text-dark " translate>label.jobChain</span></div>
+    <div class="col-sm-10" style="padding-left: 20px ">
+        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllJobChainModel"
+                                                     ng-change="upc.selectAllJobChainFunction(selectAllJobChainModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="jobChain in jobChains">
+                     <input type="checkbox" checklist-model="eventFilter" checklist-value="jobChain.value"
+                            ng-change="upc.selectJobChainFunction(checked)"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
+                                 </span>
+    </div>
+
+</div>
+
+
+
+<div class="row m-t">
+    <div class="col-sm-12" ><span class="text-dark" translate>label.orderPositive</span></div>
+    <div class="col-sm-2" style="padding-left: 5%  "><span class="text-dark " translate>label.onProcessing </span></div>
+    <div class="col-sm-10" style="padding-left: 20px ">
+        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllPositiveOrderModel"
+                                                     ng-change="upc.selectAllPositiveOrderFunction(selectAllPositiveOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="positiveOrder in positiveOrders">
+                     <input type="checkbox" checklist-model="eventFilter" checklist-value="positiveOrder.value"
+                            ng-change="upc.selectPositiveOrderFunction(checked)"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
+                                 </span>
+    </div>
+
+</div>
+
+
+<div class="row m-t">
+    <div class="col-sm-12" ><span class="text-dark" translate>label.orderNegative</span></div>
+    <div class="col-sm-2" style="padding-left: 5%  "><span class="text-dark " translate>label.onProcessing</span></div>
+    <div class="col-sm-10" style="padding-left: 20px ">
+        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllNegativeOrderModel"
+                                                     ng-change="upc.selectAllNegativeOrdersFunction(selectAllNegativeOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="negativeOrder in negativeOrders">
+                     <input type="checkbox" checklist-model="eventFilter" checklist-value="negativeOrder.value"
+                            ng-change="upc.selectNegativeOrderFunction(checked)"/><i class="primary"></i>  <span>{{negativeOrder.label  | translate}}</span>
+                                 </span>
+    </div>
+
+</div>
+
+<hr>                   <h5 translate>label.permissions</h5>
                    <div class="row m-t">
                        <div class="col-sm-2"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
                        <div class="col-sm-10">

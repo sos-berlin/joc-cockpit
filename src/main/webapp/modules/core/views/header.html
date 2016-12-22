@@ -40,6 +40,67 @@
     </ul>
     <!-- / navbar right -->
 
+    <ul class="nav navbar-nav pull-right " style="padding-right: 20px">
+
+        <li class="nav-item dropdown">
+            <a class="nav-link text-white" data-toggle="dropdown" ng-click="updateAllEvent(allSessionEvent)">
+
+              <span class="text-left p-l-xs">
+                   <span class="label label-sm up notification" ng-if="allSessionEvent.length>0"
+                         ng-bind="allSessionEvent.length"></span>
+                    <i class="fa fa-lg fa-bell-o fa-grey"></i>
+
+              </span>
+            </a>
+
+            <div class="dropdown-menu pull-right dropdown-ac">
+
+                <div class="scrollable" style="max-height: 300px;width: 700px ;margin-left: 10px">
+                    <h5 style="margin: 8px 0px 0px 2px"><span>Notifications </span></h5>
+                    <hr>
+                    <table class="table-hover" style="margin-left: 10px; margin-bottom: 1rem">
+                        <tbody ng-repeat="group in allSessionEvent">
+                        <tr>
+                            <td ng-click="expandNotification(group)" style="cursor: pointer ; width:600px">
+                                <span ng-if="!group.read && (group.show==false  || group.show==undefined)" style="font-weight:bold">
+                                {{group.events.length}} new events on {{group.jobschedulerId}} <span class="text-capitalize">{{group.objectType | lowercase}}</span>  {{group.path}} {{(group.eventId/1000) | timeDifference}}
+                                </span>
+                                 <span ng-if="!group.read && group.show==true">
+                                {{group.events.length}} new events on {{group.jobschedulerId}} <span class="text-capitalize">{{group.objectType | lowercase}}</span>  {{group.path}} {{(group.eventId/1000) | timeDifference}}</span>
+                                <span ng-if="group.read">
+                                {{group.events.length}} new events on {{group.jobschedulerId}} <span class="text-capitalize">{{group.objectType | lowercase}}</span>  {{group.path}} {{(group.eventId/1000) | timeDifference}}</span>
+
+                                <i class="cursor fa fa-caret-right  noExl"
+                                   ng-if="group.show==false || group.show==undefined"></i>
+                                <i class="cursor fa  fa-caret-down noExl" ng-if="group.show==true"></i>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="value in group.events" ng-show="group.show">
+                            <td> <span style="padding: 0px 0px 0px 32px"><span class="text-capitalize">{{value.objectType | lowercase}}</span> {{value.path | splitString}} {{value.eventType}}
+                             <span>{{(value.eventId/1000) | date:'dd-MM-yyyy HH:mm:ss'}}</span></span>
+                            </td>
+            <!--                <td style="float: right" >
+  <span uib-tooltip="view order" style="">
+    <i class="cursor fa fa-bars" aria-hidden="true"></i>
+</span>
+    <span uib-tooltip="view history" style="margin-left: 1px">
+<i class="cursor fa fa-history" aria-hidden="true"></i>
+    </span>
+        <span uib-tooltip="show log" style="margin-left: 1px">
+    <i class=" cursor fa fa-file-o" aria-hidden="true"></i>
+</span>
+                            </td>-->
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </li>
+    </ul>
+
+
     <!-- navbar collapse -->
     <div class="collapse navbar-toggleable-custom" id="navbar1">
         <!-- search form -->
@@ -117,3 +178,8 @@
     </div>
     <!-- / navbar collapse -->
 </div>
+<script type="text/javascript">
+    $('.dropdown-menu').click(function (e) {
+        e.stopPropagation();
+    });
+</script>

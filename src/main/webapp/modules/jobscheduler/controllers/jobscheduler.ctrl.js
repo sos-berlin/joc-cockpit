@@ -502,6 +502,7 @@
                 vm.loading = false;
             });
         }
+
 function volatileFolderDataL(data, obj) {
             ResourceService.get(obj).then(function (res) {
 
@@ -768,7 +769,7 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
-   function volatileFolderDataP(data, obj) {
+     function volatileFolderDataP(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
 
                 if (data.processClasses.length > 0) {
@@ -1052,10 +1053,9 @@ function volatileFolderDataL(data, obj) {
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
             }).then(function (res) {
-                if (res.runTime) {
-                    vm.runTimes = res.runTime;
-                    vm.runTimes.content = vm.runTimes.content.replace(/&lt;/g, '<');
-                    vm.runTimes.content = vm.runTimes.content.replace(/&gt;/g, '>');
+                if (res.configuration) {
+                    vm.runTimes = res.configuration;
+                    vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
@@ -1085,7 +1085,7 @@ function volatileFolderDataL(data, obj) {
             vm.object.schedules = [];
         };
 
-        vm.setRunTime = function (schedule) {
+        function setRunTime(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
@@ -1120,9 +1120,10 @@ function volatileFolderDataL(data, obj) {
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
             }).then(function (res) {
-                if (res.runTime) {
-                    vm.runTimes = res.runTime;
-                    vm.xml = vm.runTimes.runtime;
+                if (res.configuration) {
+                    vm.runTimes = res.configuration;
+                    vm.runTimes.content = vm.runTimes.content.xml;
+                    vm.xml = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
 
@@ -1883,10 +1884,9 @@ function volatileFolderDataL(data, obj) {
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
             }).then(function (res) {
-                if (res.runTime) {
-                    vm.runTimes = res.runTime;
-                    vm.runTimes.content = vm.runTimes.content.replace(/&lt;/g, '<');
-                    vm.runTimes.content = vm.runTimes.content.replace(/&gt;/g, '>');
+                if (res.configuration) {
+                    vm.runTimes = res.configuration;
+                    vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
@@ -1929,10 +1929,9 @@ function volatileFolderDataL(data, obj) {
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: vm.schedule.path
             }).then(function (res) {
-                if (res.runTime) {
-                    vm.runTimes = res.runTime;
-                    vm.runTimes.content = vm.runTimes.content.replace(/&lt;/g, '<');
-                    vm.runTimes.content = vm.runTimes.content.replace(/&gt;/g, '>');
+                if (res.configuration) {
+                    vm.runTimes = res.configuration;
+                    vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
@@ -2501,10 +2500,12 @@ function volatileFolderDataL(data, obj) {
                 from.setHours(0);
                 from.setMinutes(0);
                 from.setSeconds(0);
+                from.setMilliseconds(0);
                 to.setDate(to.getDate() + 1);
                 to.setHours(0);
                 to.setMinutes(0);
                 to.setSeconds(0);
+                to.setMilliseconds(0);
             } else if (range == 'next-24-hours') {
 
                 from.setDate(from.getDate() + 1);
@@ -2671,7 +2672,8 @@ function volatileFolderDataL(data, obj) {
             vm.taskHistoryTab = CoreService.getHistoryTab();
             vm.taskHistoryTab.type = 'jobChain';
             vm.taskHistoryTab.order.filter.historyStates = state;
-            vm.taskHistoryTab.order.filter.date = typeof vm.dashboardFilters.filter.orderSummaryfrom === 'string' ? vm.dashboardFilters.filter.orderSummaryfrom : 'all';
+            vm.taskHistoryTab.order.selectedView = false;
+            vm.taskHistoryTab.order.filter.date = typeof vm.dashboardFilters.filter.orderSummaryfrom === 'string' ? vm.dashboardFilters.filter.orderSummaryfrom : 'today';
             $state.go('app.history');
         };
 
@@ -3234,11 +3236,14 @@ function volatileFolderDataL(data, obj) {
         };
 
         vm.changeFilter = function (filter) {
-            if (filter)
+            if (filter) {
                 vm.savedDailyPlanFilter.selected = filter.name;
-            else
+                vm.dailyPlanFilters.selectedView = true;
+            }
+            else {
                 vm.savedDailyPlanFilter.selected = filter;
-            vm.dailyPlanFilters.selectedView = true;
+                vm.dailyPlanFilters.selectedView = false;
+            }
             selectedFiltered = filter;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();

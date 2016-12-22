@@ -24,7 +24,7 @@
     </div>
 </div>
 <div id="rightPanel1">
-    <div class="hide" ng-class="{'show': isLoading}" ng-hide="loading">
+    <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row" ng-class="{'show': pageView=='grid'}">
             <div ng-repeat="(key, value) in allSchedules  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
@@ -36,11 +36,11 @@
                         <div class="box-body">
 
                             <div>
-                                <label class="md-check pos-abt">
+                                <label class="md-check pos-abt" ng-if="permission.Schedule.edit">
                                     <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
                                 </label>
 
-                                <div class="text-left m-l-md block-ellipsis">
+                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Schedule.edit}">
                                     <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
@@ -49,8 +49,8 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
                                            ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                        <a class="dropdown-item" ng-click="substitute(schedule)" translate>button.substitute</a>
-                                        <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)" translate>button.substitute</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
                                 <span class="text-dark text-hover-primary" ng-if="!schedule.usedByJobs.length || schedule.usedByJobs.length==0"></span>
                             </div>
                         </div>
-                        <div class="box-footer b-t">
+                        <div class="box-footer b-t" ng-if="permission.Schedule.edit">
                             <div>
                                 <a href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
                                 <a href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
@@ -86,7 +86,7 @@
                 <table class="table table-hover table-bordered  ">
                     <thead>
                     <tr>
-                        <th>
+                        <th ng-if="permission.Schedule.edit">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                             </label>
@@ -144,7 +144,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="schedule in allSchedules | startFrom:(schdeuleFilters.currentPage - 1) * schdeuleFilters.pageSize|limitTo: schdeuleFilters.pageSize | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse">
-                        <td>
+                        <td ng-if="permission.Schedule.edit">
                             <label class="md-check">
                                 <input type="checkbox" data-checklist-model="object.schedules"
                                        data-checklist-value="schedule"><i class="primary"></i>
@@ -177,9 +177,9 @@
                                     <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
                                        class="hide dropdown-item"
                                        ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                    <a class="dropdown-item" ng-click="substitute(schedule)"
+                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
                                        translate>button.substitute</a>
-                                    <a class="dropdown-item" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                 </div>
                             </div>
                         </td>

@@ -328,10 +328,10 @@
                                                            data-checklist-value="order"><i class="primary"></i>
                                                 </label>
                                             </td>
-                                            <td>
-                                                <i class="cursor fa fa-caret-down noExl" ng-if="showPanel != order.path"
+                                            <td class="nowrap">
+                                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="showPanel != order.path"
                                                    ng-click="showPanelFuc(order.path)"></i>
-                                                <i class="cursor fa fa-caret-up noExl" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
+                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
 
                                                 <a class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                                 <i class="text-muted">{{:: order.title}}</i></a>

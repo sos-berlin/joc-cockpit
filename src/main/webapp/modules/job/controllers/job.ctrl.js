@@ -1145,11 +1145,15 @@
         };
 
         vm.changeFilter = function (filter) {
-            if (filter)
+            if (filter) {
                 vm.savedJobChainFilter.selected = filter.name;
-            else
+                vm.jobChainFilters.selectedView = true;
+            }
+            else {
                 vm.savedJobChainFilter.selected = filter;
-            vm.jobChainFilters.selectedView = true;
+                vm.jobChainFilters.selectedView = false;
+            }
+
             selectedFiltered = filter;
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
@@ -1344,7 +1348,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
 
-                angular.forEach (vm.events[0].eventSnapshots, function(event) {
+                angular.forEach(vm.events[0].eventSnapshots, function (event) {
 
                     if (event.eventType.indexOf("Order") !== -1 || event.eventType == 'JobChainNodeActionChanged' || (event.eventType == 'JobChainStateChanged' && event.state != 'closed') || event.eventType == 'JobStateChanged') {
                         if (event.path != undefined) {
@@ -1421,7 +1425,7 @@
                             });
                         }
                     }
-                    if (event.eventType.indexOf("FileBased") !== -1) {
+                    if (event.eventType.indexOf("FileBased") !== -1 && (event.objectType=="JOBCHAIN" || event.objectType=="ORDER")) {
 
                         if (t1) {
                             $timeout.cancel(t1);
@@ -1449,16 +1453,16 @@
                             } else {
                                 path[0] = event.path;
                             }
-                             if(vm.allJobChains.length>0) {
-                                 for (var j = 0; j < vm.allJobChains.length; j++) {
-                                     if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allJobChains[j].path.substring(0, vm.allJobChains[j].path.lastIndexOf('/'))) {
-                                         navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
-                                         break;
-                                     }
-                                 }
-                             }else{
-                                 navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
-                             }
+                            if (vm.allJobChains.length > 0) {
+                                for (var j = 0; j < vm.allJobChains.length; j++) {
+                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allJobChains[j].path.substring(0, vm.allJobChains[j].path.lastIndexOf('/'))) {
+                                        navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
+                                        break;
+                                    }
+                                }
+                            } else {
+                                navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
+                            }
 
                             $timeout.cancel(t1);
                         }, 5000);
@@ -1474,8 +1478,8 @@
                 if (vm.tree[i].path != path) {
                     traverseTreeForUpdateJobChain(vm.tree[i], path);
                 } else {
-                    if(vm.tree[i].selected1)
-                    expandFolderData1(vm.tree[i]);
+                    if (vm.tree[i].selected1)
+                        expandFolderData1(vm.tree[i]);
                     break;
                 }
             }
@@ -1487,8 +1491,8 @@
                     if (data.folders[i].path != path) {
                         traverseTreeForUpdateJobChain(data.folders[i], path);
                     } else {
-                        if(data.folders[i].selected1)
-                        expandFolderData1(data.folders[i]);
+                        if (data.folders[i].selected1)
+                            expandFolderData1(data.folders[i]);
                         break;
                     }
                 }
@@ -1702,7 +1706,7 @@
             });
         }
 
-                function expandFolderData1(data) {
+        function expandFolderData1(data) {
 
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -1720,7 +1724,7 @@
             });
         }
 
-function volatileFolderData(data1, obj) {
+        function volatileFolderData(data1, obj) {
 
             if (selectedFiltered) {
                 obj = parseDate(obj);
@@ -2422,11 +2426,14 @@ function volatileFolderData(data1, obj) {
         };
 
         vm.changeFilter = function (filter) {
-            if (filter)
+            if (filter) {
                 vm.savedJobFilter.selected = filter.name;
-            else
+                vm.jobFilters.selectedView = true;
+            }
+            else {
                 vm.savedJobFilter.selected = filter;
-            vm.jobFilters.selectedView = true;
+                vm.jobFilters.selectedView = false;
+            }
             selectedFiltered = filter;
 
             SavedFilter.setJob(vm.savedJobFilter);
@@ -2444,6 +2451,7 @@ function volatileFolderData(data1, obj) {
                 }
             }
 
+
             vm.isLoading1 = false;
             vm.showTaskPanel = value;
             var jobs = {};
@@ -2456,21 +2464,29 @@ function volatileFolderData(data1, obj) {
                 vm.isLoading1 = true;
             });
 
-            if (value.numOfQueuedTasks > 0) {
-                jobs = {};
-                jobs.jobschedulerId = vm.schedulerIds.selected;
-                jobs.jobs = [];
-                jobs.jobs.push({job: value.path});
-                JobService.getJobsP(jobs).then(function (res) {
-                    JobService.get(jobs).then(function (result) {
+            if (value.numOfQueuedTasks > 0 || value.numOfRunningTasks > 0) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.jobs = [];
+                obj.jobs.push({job: value.path});
+                JobService.getJobsP(obj).then(function (res) {
+                    JobService.get(obj).then(function (result) {
                         if (res.jobs.length > 0 && result.jobs.length > 0)
                             vm.showTaskPanel = angular.merge(res.jobs[0], result.jobs[0]);
                         else if (res.jobs.length == 0 && result.jobs.length != 0)
                             vm.showTaskPanel = result.jobs[0];
                         else
                             vm.showTaskPanel = res.jobs[0];
-                    }, function (err) {
+                        value.runningTasks = vm.showTaskPanel.runningTasks;
 
+                    }, function (err) {
+                        vm.showTaskPanel = res.jobs[0];
+                        value.runningTasks = vm.showTaskPanel.runningTasks;
+                    });
+                }, function () {
+                    JobService.get(obj).then(function (result) {
+                        vm.showTaskPanel = angular.merge(value, result.jobs[0]);
+                        value.runningTasks = vm.showTaskPanel.runningTasks;
                     });
                 });
             }
@@ -2630,34 +2646,95 @@ function volatileFolderData(data1, obj) {
         };
 
 
-        vm.end = function (task) {
-
-            TaskService.end({taskId: task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-
-            });
-            vm.reset();
-        };
-        vm.killTask = function (task) {
-            TaskService.kill({taskId: task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-
-            });
-            vm.reset();
-        };
-        vm.terminateTask = function (task) {
-            TaskService.terminate({taskId: task.taskId, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+        vm.end = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            jobs.jobs.push({job: path});
+            jobs.taskIds.push({taskId: task.taskId});
+            TaskService.end(jobs).then(function (res) {
 
             });
             vm.reset();
         };
-        vm.terminateTaskWithTimeout = function (task) {
-            TaskService.terminateWith(task.taskId, {
-                jobschedulerId: vm.schedulerIds.selected,
-                timeout: vm.timeout
-            }).then(function (res) {
+        vm.killTask = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            jobs.jobs.push({job: path});
+            jobs.taskIds.push({taskId: task.taskId});
+            TaskService.kill(jobs).then(function (res) {
 
             });
             vm.reset();
         };
+        vm.terminateTask = function (task,path) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            jobs.jobs.push({job: path});
+            jobs.taskIds.push({taskId: task.taskId});
+            TaskService.terminate(jobs).then(function (res) {
+
+            });
+            vm.reset();
+        };
+        function terminateTaskWithTimeout(job,task,path) {
+
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            if (!task) {
+
+                if (!job) {
+                    angular.forEach(vm.object.jobs, function (value) {
+                        jobs.jobs.push({job: value.path});
+                    });
+                } else {
+                    jobs.jobs.push({job: job.path});
+                }
+            } else {
+                jobs.taskIds = [];
+                jobs.jobs.push({job: path});
+                jobs.taskIds.push({taskId: task.taskId});
+            }
+
+            jobs.timeout = vm.timeout;
+            TaskService.terminateWith(jobs).then(function (res) {
+
+            });
+            vm.reset();
+        }
+        vm.terminateTaskWithTimeout = function (job,task,path) {
+            if(job){
+                vm.job = job;
+            }else if(task && path) {
+                vm.task = task;
+                vm.path = path;
+            }
+            else{
+                vm.taskJobs = vm.object.jobs;
+            }
+
+            vm.timeout =10;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/terminate-task-timeout-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                terminateTaskWithTimeout(job,task,path);
+            }, function () {
+                vm.reset();
+            });
+
+        };
+
         vm.killAllTask = function (job) {
             var jobs = {};
             jobs.jobs = [];
@@ -2669,9 +2746,7 @@ function volatileFolderData(data1, obj) {
             } else {
                 jobs.jobs.push({job: job.path});
             }
-            TaskService.killAll(vm.object.jobs).then(function (res) {
-
-            }, function (err) {
+            TaskService.killAll(jobs).then(function (res) {
 
             });
             vm.reset();
@@ -2687,32 +2762,11 @@ function volatileFolderData(data1, obj) {
             } else {
                 jobs.jobs.push({job: job.path});
             }
-            TaskService.terminateAll(vm.object.jobs).then(function (res) {
-
-            }, function (err) {
+            TaskService.terminateAll(jobs).then(function (res) {
 
             });
             vm.reset();
         };
-        vm.terminateAllTaskWithTimeout = function (job) {
-            var jobs = {};
-            jobs.jobs = [];
-            jobs.jobschedulerId = vm.schedulerIds.selected;
-            if (!job) {
-                angular.forEach(vm.object.jobs, function (value) {
-                    jobs.jobs.push({job: value.path});
-                });
-            } else {
-                jobs.jobs.push({job: job.path});
-            }
-            TaskService.terminateWithAll(vm.object.jobs).then(function (res) {
-
-            }, function (err) {
-
-            });
-            vm.reset();
-        };
-
 
         function setRunTime(job) {
             var jobs = {};
@@ -2825,8 +2879,18 @@ function volatileFolderData(data1, obj) {
                                     obj.jobs.push({job: value2.path});
 
                                     JobService.get(obj).then(function (res) {
-                                        if (res.jobs) {
-                                            vm.allJobs[index] = angular.merge(vm.allJobs[index], res.jobs[0]);
+                                        if (res.jobs && res.jobs.length > 0) {
+
+                                            res.jobs[0].title = vm.allJobs[index].title;
+                                            res.jobs[0].isOrderJob = vm.allJobs[index].isOrderJob;
+                                            res.jobs[0].hasDescription = vm.allJobs[index].hasDescription;
+                                            res.jobs[0].estimatedDuration = vm.allJobs[index].estimatedDuration;
+                                            res.jobs[0].maxTasks = vm.allJobs[index].maxTasks;
+                                            vm.allJobs[index] = res.jobs[0];
+                                            if (vm.showTaskPanel && (vm.showTaskPanel.path = value2.path)) {
+                                                vm.showTaskPanel = vm.allJobs[index];
+                                            }
+
                                         }
                                     });
                                     if (vm.showTaskPanel && (vm.showTaskPanel.path = value2.path)) {
@@ -2842,7 +2906,7 @@ function volatileFolderData(data1, obj) {
                         }
 
                     }
-                    if (value1.eventType.indexOf("FileBased") !== -1) {
+                    if (value1.eventType.indexOf("FileBased") !== -1 && (value1.objectType=="JOB" || value1.objectType=="ORDER")) {
                         if (t1) {
                             $timeout.cancel(t1);
                         }
@@ -2864,22 +2928,22 @@ function volatileFolderData(data1, obj) {
                                 }
                             );
 
-                             var path = [];
+                            var path = [];
                             if (value1.path.indexOf(",") > -1) {
                                 path = value1.path.split(",");
                             } else {
                                 path[0] = value1.path;
                             }
-                             if(vm.allJobs.length>0) {
-                                 for (var i = 0; i < vm.allJobs.length; i++) {
-                                     if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allJobs[i].path.substring(0, vm.allJobs[i].path.lastIndexOf('/'))) {
-                                         navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
-                                         break;
-                                     }
-                                 }
-                             }else{
-                                 navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
-                             }
+                            if (vm.allJobs.length > 0) {
+                                for (var i = 0; i < vm.allJobs.length; i++) {
+                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allJobs[i].path.substring(0, vm.allJobs[i].path.lastIndexOf('/'))) {
+                                        navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
+                                        break;
+                                    }
+                                }
+                            } else {
+                                navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
+                            }
 
 
                             $timeout.cancel(t1);
@@ -2896,8 +2960,8 @@ function volatileFolderData(data1, obj) {
                 if (vm.tree[i].path != path) {
                     traverseTreeForUpdateJob(vm.tree[i], path);
                 } else {
-                    if(vm.tree[i].selected1)
-                    expandFolderData1(vm.tree[i]);
+                    if (vm.tree[i].selected1)
+                        expandFolderData1(vm.tree[i]);
                     break;
                 }
             }
@@ -2909,8 +2973,8 @@ function volatileFolderData(data1, obj) {
                     if (data.folders[i].path != path) {
                         traverseTreeForUpdateJob(data.folders[i], path);
                     } else {
-                        if(data.folders[i].selected1)
-                        expandFolderData1(data.folders[i]);
+                        if (data.folders[i].selected1)
+                            expandFolderData1(data.folders[i]);
                         break;
                     }
                 }

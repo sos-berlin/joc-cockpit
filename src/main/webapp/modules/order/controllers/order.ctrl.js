@@ -2126,11 +2126,15 @@
         };
 
         vm.changeFilter = function (filter) {
-            if (filter)
+            if (filter) {
                 vm.savedOrderFilter.selected = filter.name;
-            else
+                vm.orderFilters.selectedView = true;
+            }
+
+            else {
                 vm.savedOrderFilter.selected = filter;
-            vm.orderFilters.selectedView = true;
+                vm.orderFilters.selectedView = false;
+            }
             selectedFiltered = filter;
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
@@ -2278,13 +2282,8 @@
                 angular.forEach(vm.events[0].eventSnapshots, function(value1) {
                     if (value1.path != undefined && value1.eventType.indexOf("Order") !== -1) {
                         angular.forEach(vm.allOrders, function (value2, index) {
-                             var path = [];
-                            if (value1.path.indexOf(",") > -1) {
-                                path = value1.path.split(",");
-                            } else {
-                                path[0] = value1.path;
-                            }
-                            if (value2.path == path[0]) {
+
+                            if (value2.path == value1.path) {
 
                                 var obj = {};
                                 obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -2292,6 +2291,7 @@
                                 obj.jobChain = value2.jobChain;
                                 obj.compact = true;
                                 OrderService.getOrder(obj).then(function (res) {
+                                    console.log(res)
                                     if (res.order) {
                                         vm.allOrders[index] = angular.merge(vm.allOrders[index], res.order);
                                     }
@@ -2324,7 +2324,7 @@
                             }
                             if(vm.allOrders.length>0) {
                                 for (var j = 0; j < vm.allOrders.length; j++) {
-                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allOrders[j].path.substring(0, vm.allOrders[j].path.lastIndexOf('/'))) {
+                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allOrders[j].jobChain.substring(0, vm.allOrders[j].jobChain.lastIndexOf('/'))) {
                                         navFullTreeForUpdateOrder(path[0].substring(0, path[0].lastIndexOf('/')));
                                         break;
                                     }
@@ -3131,6 +3131,58 @@
             vm.task.filter.sortBy = propertyName;
         };
 
+        function setTaskDateRange(filter) {
+            if(vm.task.filter.date == 'all'){
+
+            } else if (vm.task.filter.date == 'today') {
+                var from = new Date();
+                var to = new Date();
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setSeconds(0);
+                from.setMilliseconds(0);
+                to.setDate(to.getDate() + 1);
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setSeconds(0);
+                to.setMilliseconds(0);
+
+
+                filter.dateFrom = from;
+                filter.dateTo = to;
+
+            }else{
+                filter.dateFrom = vm.task.filter.date;
+            }
+            return filter;
+        }
+
+        function setOrderDateRange(filter) {
+            if(vm.order.filter.date == 'all'){
+
+            } else if (vm.order.filter.date == 'today') {
+                var from = new Date();
+                var to = new Date();
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setSeconds(0);
+                from.setMilliseconds(0);
+                to.setDate(to.getDate() + 1);
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setSeconds(0);
+                to.setMilliseconds(0);
+
+
+                filter.dateFrom = from;
+                filter.dateTo = to;
+
+            }else{
+                filter.dateFrom = vm.order.filter.date;
+            }
+            return filter;
+        }
+
         vm.jobHistory = jobHistory;
         function jobHistory(filter) {
             vm.isLoading = false;
@@ -3141,7 +3193,7 @@
             if (selectedFiltered2) {
                 filter = jobParseDate(filter);
             }else {
-                filter.dateFrom = vm.task.filter.date == 'all' ? undefined : vm.task.filter.date;
+                filter = setTaskDateRange(filter);
                 if (vm.task.filter.historyStates != 'all') {
                     filter.historyStates = [];
                     filter.historyStates.push(vm.task.filter.historyStates);
@@ -3164,7 +3216,7 @@
                 if (selectedFiltered1) {
                     filter = orderParseDate(filter);
                 }else {
-                    filter.dateFrom = vm.order.filter.date == 'all' ? undefined : vm.order.filter.date;
+                    filter = setOrderDateRange(filter);
                     if (vm.order.filter.historyStates != 'all') {
                         filter.historyStates = [];
                         filter.historyStates.push(vm.order.filter.historyStates);
@@ -3741,21 +3793,27 @@
 
         vm.changeFilter = function (filter) {
             if (vm.historyFilters.type == 'jobChain') {
-                if (filter)
+                if (filter) {
                     vm.savedHistoryFilter.selected = filter.name;
-                else
+                    vm.historyFilters.order.selectedView = true;
+                }
+                else {
                     vm.savedHistoryFilter.selected = filter;
-                vm.historyFilters.order.selectedView =true;
+                    vm.historyFilters.order.selectedView = false;
+                }
                 selectedFiltered1 = filter;
 
                 vm.historyFilterObj.order = vm.savedHistoryFilter;
 
             } else {
-                if (filter)
+                if (filter) {
                     vm.savedJobHistoryFilter.selected = filter.name;
-                else
+                    vm.historyFilters.task.selectedView = true;
+                }
+                else {
                     vm.savedJobHistoryFilter.selected = filter;
-                vm.historyFilters.task.selectedView = true;
+                    vm.historyFilters.task.selectedView = false;
+                }
                 selectedFiltered2 = filter;
 
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
@@ -3912,7 +3970,7 @@
                             if (selectedFiltered1) {
                                 filter = orderParseDate(filter);
                             }else {
-                                filter.dateFrom = vm.order.filter.date == 'all' ? undefined : vm.order.filter.date;
+                                filter = setOrderDateRange(filter);
                                 if (vm.order.filter.historyStates != 'all') {
                                     filter.historyStates = [];
                                     filter.historyStates.push(vm.order.filter.historyStates);
@@ -3937,7 +3995,7 @@
                             if (selectedFiltered2) {
                                 filter = jobParseDate(filter);
                             }else {
-                                filter.dateFrom = vm.task.filter.date == 'all' ? undefined : vm.task.filter.date;
+                                filter = setTaskDateRange(filter);
                                 if (vm.task.filter.historyStates != 'all') {
                                     filter.historyStates = [];
                                     filter.historyStates.push(vm.task.filter.historyStates);

@@ -7,11 +7,11 @@
             <td ng-class="{'text-primary' : row.branch.selected1}">
                 <table class="fixed">
                     <tr class="indented">
-                        <td>
-                            <a class="text-hover-primary" ng-click="user_clicks_branch(row.branch)" style="width: 16px">
+                        <td width="11">
+                            <a class="text-hover-primary" ng-click="user_clicks_branch(row.branch)">
                                 <i ng-if="!row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-right fa-lg"></i>
                                 <i ng-if="row.branch.expanded && row.branch.folders.length>0" ng-click="row.branch.expanded = !row.branch.expanded" class="tree-icon fa fa-angle-down fa-lg"></i>
-                                <i ng-if="row.branch.folders.length==0"  class="p-l-sm"></i>
+                                <i ng-if="row.branch.folders.length==0"></i>
                             </a>
                         </td>
                         <td style="white-space: nowrap">

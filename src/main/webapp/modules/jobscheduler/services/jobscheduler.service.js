@@ -163,7 +163,8 @@
             },
             getRunTime: function (filter) {
                 var deferred = $q.defer();
-                var Schedule = $resource('schedule/run_time');
+                var Schedule = $resource('schedule/configuration');
+                filter.mime=['XML']
                 Schedule.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

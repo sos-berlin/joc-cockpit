@@ -380,7 +380,7 @@
                 });
                 return deferred.promise;
             },
-            terminateWith: function (taskId, filter) {
+            terminateWith: function (filter) {
                 var deferred = $q.defer();
                 var Job = $resource('tasks/terminate_within');
                 Job.save(filter,function (res) {
@@ -390,7 +390,7 @@
                 });
                 return deferred.promise;
             },
-              kill: function (taskId, filter) {
+              kill: function (filter) {
                 var deferred = $q.defer();
                 var Job = $resource('tasks/kill');
                 Job.save(filter,function (res) {

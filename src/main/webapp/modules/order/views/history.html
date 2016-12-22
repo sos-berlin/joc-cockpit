@@ -39,9 +39,11 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-
                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': order.filter.date=='all'}" translate>button.all
+                            </button>
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" uib-btn-radio="'today'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': order.filter.date=='today'}" translate>button.today
                             </button>
                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': order.filter.date=='-1h'}" translate>button.last1
@@ -61,6 +63,9 @@
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="order.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                         ng-class="{'btn-primary': order.filter.date=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                        ng-class="{'btn-primary': order.filter.date=='today', 'disable-link':savedHistoryFilter.selected}" translate>button.today
                                 </a>
                                 <a class="dropdown-item" ng-model="order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                         ng-class="{'btn-primary': order.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}" translate>button.last1
@@ -124,6 +129,9 @@
                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.date=='all'}" translate>button.all
                             </button>
+                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                    ng-class="{'btn-primary': task.filter.date=='today'}" translate>button.today
+                            </button>
                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': task.filter.date=='-1h'}" translate>button.last1
                             </button>
@@ -142,6 +150,9 @@
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                         ng-class="{'btn-primary': task.filter.date=='all'}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                   ng-class="{'btn-primary': task.filter.date=='today'}" translate>button.today
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                         ng-class="{'btn-primary': task.filter.date=='-1h'}" translate>button.last1
@@ -256,9 +267,9 @@
                         </thead>
                         <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
                         <tr  class="cursor">
-                            <td ng-click="showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-down" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up" ng-if="hidePanel && showPanel.historyId == history.historyId" ng-click="hidePanelFuc();$event.stopPropagation()"></i>
+                            <td class="nowrap" ng-click="showLogWindow(history,null)">
+                                <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="hidePanel && showPanel.historyId == history.historyId" ng-click="hidePanelFuc();$event.stopPropagation()"></i>
                                 <span ng-bind="history.orderId"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null)"><a ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="history.jobChain"></a></td>

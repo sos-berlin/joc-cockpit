@@ -727,7 +727,33 @@
   "QUEUE_AT": "queue_at",
   "FIX_PRIORITY": "fix_priority",
   "ROUND_ROBIN": "round_robin",
-  "SINGLE_AGENT": "single_agent"
+  "SINGLE_AGENT": "single_agent",
+  "label.since": "since",
+  "label.terminateTask": "Terminate Task",
+  "label.withTimeout": "With Timeout",
+  "message.taskTerminateMessage": "Should the task not terminate within the specified timeout then it will be killed.",
+  "label.selectAll": "Select all",
+  "label.taskStarted": "Task Started",
+  "label.taskEnded": "Task Ended",
+  "label.taskClosed": "Task Closed",
+  "label.jobStopped": "Job Stopped",
+  "label.jobPending": "Job Pending",
+  "label.jobChainStopped": "Job Chain Stopped",
+  "label.jobChainPending": "Job Chain Pending",
+  "label.jobChainUnstopped": "Job Chain Unstopped",
+  "label.orderStarted": "Order Started",
+  "label.orderStepStarted": "Order Step Started",
+  "label.orderStepEnded": "Order Step Ended",
+  "label.orderNodeChanged": "Order Node Changed",
+  "label.orderResumed": "Order Resumed",
+  "label.orderSetback": "Order Setback",
+  "label.task": "Task",
+  "label.orderPositive": "Order-Positive",
+  "label.orderNegative": "Order-Negative",
+  "label.onProcessing": "On Processing"
 }
+
+
+
 
 

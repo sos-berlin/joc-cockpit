@@ -100,13 +100,24 @@
                         $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
                         vm.isProcessing = false;
                     });
+                $window.sessionStorage.$SOS$EVENTFILTER=JSON.stringify( [
+              'JobChainStopped',  'OrderStarted',  'OrderSetback',
+             'OrderSuspended'
+            ]);
+              $window.sessionStorage.$SOS$EVENTFILTERTASKCOUNT=0;
+          $window.sessionStorage.$SOS$EVENTFILTERJOBCOUNT=0;
+
+            $window.sessionStorage.$SOS$EVENTFILTERJOBCHAINCOUNT=1;
+        $window.sessionStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT=1;
+        $window.sessionStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT=2;
+                $window.sessionStorage.$SOS$ALLEVENT=null;
             }
         };
 
     }
 
-    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource"];
-    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource) {
+    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope'];
+    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource, $scope) {
         var vm = this;
 
         vm.zones = moment.tz.names();
@@ -153,6 +164,394 @@
         };
 
 
-    }
+        /*$scope.tasks = [
+         'TaskStarted',
+         'TaskEnded',
+         'TaskClosed'
 
+         ];*/
+
+        $scope.tasks = [
+            {value: 'TaskStarted', label: "label.taskStarted"},
+            {value: 'TaskEnded', label: "label.taskEnded"},
+            {value: 'TaskClosed', label: "label.taskClosed"}
+        ];
+        $scope.jobs = [
+            {value: 'JobStopped', label: "label.jobStopped"},
+            {value: 'JobPending', label: "label.jobPending"}
+        ];
+        $scope.jobChains = [
+            {value: 'JobChainStopped', label: "label.jobChainStopped"},
+            {value: 'JobChainPending', label: "label.jobChainPending"},
+            {value: 'JobChainRunning', label: "label.jobChainUnstopped"}
+        ];
+
+          $scope.positiveOrders = [
+            {value: 'OrderStarted', label: "label.orderStarted"},
+            {value: 'OrderStepStarted', label:"label.orderStepStarted"},
+            {value: 'OrderStepEnded', label: "label.orderStepEnded"},
+            {value: 'OrderNodeChanged', label:"label.orderNodeChanged"},
+            {value: 'OrderResumed', label: "label.orderResumed"}
+        ];
+
+           $scope.negativeOrders = [
+            {value: 'OrderSetback', label: "label.orderSetback"},
+            {value: 'OrderSuspended', label:"label.orderSuspended"}
+
+        ];
+
+
+
+        if ($window.sessionStorage.$SOS$EVENTFILTER != undefined) {
+            $scope.eventFilter = JSON.parse($window.sessionStorage.$SOS$EVENTFILTER);
+            $scope.tasks.count = $window.sessionStorage.$SOS$EVENTFILTERTASKCOUNT;
+            $scope.jobs.count = $window.sessionStorage.$SOS$EVENTFILTERJOBCOUNT;
+            $scope.jobChains.count = $window.sessionStorage.$SOS$EVENTFILTERJOBCHAINCOUNT;
+            $scope.positiveOrders.count = $window.sessionStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT;
+            $scope.negativeOrders.count = $window.sessionStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT;
+
+            if ($scope.tasks.length == $scope.tasks.count) {
+                $scope.selectAllTaskModel = true;
+            }
+            if ($scope.jobs.length == $scope.jobs.count) {
+                $scope.selectAllJobModel = true;
+            }
+            if ($scope.jobChains.length == $scope.jobChains.count) {
+                $scope.selectAllJobChainModel = true;
+            }
+              if ($scope.positiveOrders.length == $scope.positiveOrders.count) {
+                $scope.selectAllPositiveOrderModel = true;
+            }
+               if ($scope.negativeOrders.length == $scope.negativeOrders.count) {
+                $scope.selectAllNegativeOrderModel = true;
+            }
+
+
+        } else {
+            $scope.eventFilter = [
+              'JobChainStopped',  'OrderStarted',  'OrderSetback',
+             'OrderSuspended'
+            ];
+            $scope.tasks.count = 0;
+            $scope.jobs.count = 0;
+             $scope.jobChains.count=1;
+            $scope.positiveOrders.count=1;
+            $scope.negativeOrders.count=2;
+        }
+
+
+        vm.selectAllTaskFunction = function (value) {
+
+            if (value) {
+
+                angular.forEach($scope.tasks, function (value1, index1) {
+                     var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2, index2) {
+
+
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+
+                    });
+
+                    if (flag) {
+
+                        $scope.eventFilter.push(value1.value);
+
+                    }
+                });
+
+
+                $scope.tasks.count = $scope.tasks.length;
+            }
+            else {
+
+                angular.forEach($scope.tasks, function (value1, index1) {
+
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+
+
+                });
+                $scope.tasks.count = 0;
+
+            }
+
+
+        }
+
+
+        vm.selectTaskFunction = function (checked) {
+            if (checked) {
+                $scope.tasks.count++;
+
+            }
+            else {
+                $scope.tasks.count--;
+
+            }
+
+            if ($scope.tasks.length == $scope.tasks.count) {
+                $scope.selectAllTaskModel = true;
+            } else {
+                $scope.selectAllTaskModel = false;
+            }
+
+        }
+
+
+        vm.selectAllJobFunction = function (value) {
+
+            if (value) {
+
+                angular.forEach($scope.jobs, function (value1, index1) {
+                      var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2, index2) {
+
+
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+
+                    });
+
+                    if (flag) {
+
+                        $scope.eventFilter.push(value1.value);
+
+                    }
+                });
+
+
+                $scope.jobs.count = $scope.jobs.length;
+            }
+            else {
+
+                angular.forEach($scope.jobs, function (value1, index1) {
+
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+
+
+                });
+                $scope.jobs.count = 0;
+
+            }
+
+
+        }
+
+        vm.selectJobFunction = function (checked) {
+            if (checked) {
+                $scope.jobs.count++;
+
+            }
+            else {
+                $scope.jobs.count--;
+
+            }
+
+            if ($scope.jobs.length == $scope.jobs.count) {
+                $scope.selectAllJobModel = true;
+            } else {
+                $scope.selectAllJobModel = false;
+            }
+
+        }
+
+
+           vm.selectAllJobChainFunction = function (value) {
+
+            if (value) {
+
+                angular.forEach($scope.jobChains, function (value1, index1) {
+                     var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2, index2) {
+
+
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+
+                    });
+
+                    if (flag) {
+
+                        $scope.eventFilter.push(value1.value);
+
+                    }
+                });
+
+
+                $scope.jobChains.count = $scope.jobChains.length;
+            }
+            else {
+
+                angular.forEach($scope.jobChains, function (value1, index1) {
+
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+
+
+                });
+                $scope.jobChains.count = 0;
+
+            }
+
+
+        }
+
+        vm.selectJobChainFunction = function (checked) {
+            if (checked) {
+                $scope.jobChains.count++;
+
+            }
+            else {
+                $scope.jobChains.count--;
+
+            }
+
+            if ($scope.jobChains.length == $scope.jobChains.count) {
+                $scope.selectAllJobChainModel = true;
+            } else {
+                $scope.selectAllJobChainModel = false;
+            }
+
+        }
+
+
+
+         vm.selectAllPositiveOrderFunction = function (value) {
+
+            if (value) {
+
+                angular.forEach($scope.positiveOrders, function (value1, index1) {
+                     var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2, index2) {
+
+
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+
+                    });
+
+                    if (flag) {
+
+                        $scope.eventFilter.push(value1.value);
+
+                    }
+                });
+
+
+                $scope.positiveOrders.count = $scope.positiveOrders.length;
+            }
+            else {
+
+                angular.forEach($scope.positiveOrders, function (value1, index1) {
+
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+
+
+                });
+                $scope.positiveOrders.count = 0;
+
+            }
+
+
+        }
+
+        vm.selectPositiveOrderFunction = function (checked) {
+            if (checked) {
+                $scope.positiveOrders.count++;
+
+            }
+            else {
+                $scope.positiveOrders.count--;
+
+            }
+
+            if ($scope.positiveOrders.length == $scope.positiveOrders.count) {
+                $scope.selectAllPositiveOrderModel = true;
+            } else {
+                $scope.selectAllPositiveOrderModel = false;
+            }
+
+        }
+
+
+            vm.selectAllNegativeOrdersFunction = function (value) {
+
+            if (value) {
+
+                angular.forEach($scope.negativeOrders, function (value1, index1) {
+                    var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2, index2) {
+
+
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+
+                    });
+
+                    if (flag) {
+
+                        $scope.eventFilter.push(value1.value);
+
+                    }
+                });
+
+
+                $scope.negativeOrders.count = $scope.negativeOrders.length;
+            }
+            else {
+
+                angular.forEach($scope.negativeOrders, function (value1, index1) {
+
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+
+
+                });
+                $scope.negativeOrders.count = 0;
+
+            }
+
+
+        }
+
+        vm.selectNegativeOrderFunction = function (checked) {
+            if (checked) {
+                $scope.negativeOrders.count++;
+
+            }
+            else {
+                $scope.negativeOrders.count--;
+
+            }
+
+            if ($scope.negativeOrders.length == $scope.negativeOrders.count) {
+                $scope.selectAllNegativeOrderModel = true;
+            } else {
+                $scope.selectAllNegativeOrderModel = false;
+            }
+
+        }
+
+
+        var watcher = $scope.$watchCollection('eventFilter', function () {
+            $window.sessionStorage.$SOS$EVENTFILTERTASKCOUNT = $scope.tasks.count;
+            $window.sessionStorage.$SOS$EVENTFILTER = JSON.stringify($scope.eventFilter);
+            $window.sessionStorage.$SOS$EVENTFILTERJOBCOUNT = $scope.jobs.count;
+            $window.sessionStorage.$SOS$EVENTFILTERJOBCHAINCOUNT = $scope.jobChains.count;
+             $window.sessionStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT = $scope.positiveOrders.count;
+            $window.sessionStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT = $scope.negativeOrders.count;
+
+
+        });
+
+        $scope.$on('$destroy', function () {
+            watcher();
+
+        });
+
+    }
 })();
