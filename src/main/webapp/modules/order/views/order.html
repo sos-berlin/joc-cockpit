@@ -442,10 +442,10 @@
                     </div>
 
                     </div>
-                    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+                    <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
                         <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                     </div>
-                    <div ng-if="isLoading && !loading && folderPath && allOrders.length==0" class="text-center m-t h6">
+                    <div ng-if="isLoading && !loading && folderPath && allOrders.length==0" class="text-center m-t m-b-lg h6">
                         <span class="text-primary">"{{folderPath}}"</span>
                         <span translate>message.emptyFolder</span>
                     </div>
@@ -454,7 +454,7 @@
                     </div>
                     <div class="hide " ng-class="{'show': isLoading}" >
                         <div class="row hide" ng-show="showLogPanel" ng-class="{'show': pageView=='list'}">
-                            <div class="col-md-12 hide" ng-class="{show: isLoading1}">
+                            <div class="col-md-12">
                                 <div class="box white">
                                     <div class="box-header">
                                         <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted">{{showLogPanel.title}}</i></span>
@@ -514,9 +514,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
-                            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
                         </div>
                     </div>
                 </div>

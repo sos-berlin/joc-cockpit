@@ -732,16 +732,18 @@
   "label.jobChainStopped": "Job Chain Stopped",
   "label.jobChainPending": "Job Chain Pending",
   "label.jobChainUnstopped": "Job Chain Unstopped",
-  "label.orderStarted": "Order Started",
-  "label.orderStepStarted": "Order Step Started",
-  "label.orderStepEnded": "Order Step Ended",
-  "label.orderNodeChanged": "Order Node Changed",
-  "label.orderResumed": "Order Resumed",
-  "label.orderSetback": "Order Setback",
-  "label.task": "Task",
-  "label.orderPositive": "Order-Positive",
-  "label.orderNegative": "Order-Negative",
-  "label.onProcessing": "On Processing"
+   "label.orderStarted": "Order Started",
+    "label.orderStepStarted": "Order Step Started",
+    "label.orderStepEnded": "Order Step Ended",
+    "label.orderNodeChanged": "Order Node Changed",
+    "label.orderResumed": "Order Resumed",
+    "label.orderSetback": "Order Setback",
+    "label.orderSuspended": "Order Suspended",
+    "label.task": "Task",
+    "label.orderSuccess": "Order-Success",
+     "label.orderFailed": "Order-Failed",
+    "label.onProcessing" :"On Processing",
+     "button.markAllAsRead" :"Mark all as read"
 }
 
 

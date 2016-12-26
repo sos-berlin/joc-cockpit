@@ -111,6 +111,7 @@
         $window.sessionStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT=1;
         $window.sessionStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT=2;
                 $window.sessionStorage.$SOS$ALLEVENT=null;
+
             }
         };
 

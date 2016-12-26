@@ -193,15 +193,12 @@
                 obj.state = vm.agentsFilters.filter.state == '0' ? 0 : vm.agentsFilters.filter.state == '1' ? 1 : 2;
             }
 
-            obj.folders = [
-                {folder: data.path, recursive: false}
-            ];
+            obj.folders = [{folder: data.path, recursive: true}];
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
                 vm.agentClusters = result.agentClusters;
                 vm.loading = false;
                 startTraverseNodeA(data);
             }, function () {
-
                 vm.loading = false;
             });
         };
@@ -318,26 +315,23 @@
                 {folder: data.path, recursive: false}
             ];
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
-                // vm.agentClusters = result.agentClusters;
-                angular.forEach(result.agentClusters, function (value) {
-                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/')) || data.path == value.path.substring(0, value.path.lastIndexOf('/') + 1)) {
-                        data.agentClusters.push(value);
-                        value.path1 = data.path;
-                        vm.allAgentClusters.push(value);
-                    }
+                 data.agentClusters = result.agentClusters;
+                angular.forEach(data.agentClusters, function (value) {
+                    value.path1 = data.path;
+                    vm.allAgentClusters.push(value);
                 });
                 vm.loading = false;
                 vm.folderPathA = data.name || '/';
-                //startTraverseNodeA(data);
             }, function () {
                 vm.loading = false;
+                vm.folderPathA = data.name || '/';
             });
         }
 
         function startTraverseNodeA(data) {
             vm.allAgentClusters = [];
             function recursive(data) {
-                data.expanded = !0;
+                data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
                 data.agentClusters = [];
                 angular.forEach(vm.agentClusters, function (value) {
@@ -349,12 +343,10 @@
                 });
 
                 data.selected1 = true;
-
                 angular.forEach(data.folders, function (a) {
                     recursive(a);
                 });
             }
-
             recursive(data);
         }
 
@@ -455,7 +447,7 @@
         function startTraverseNodeL(data) {
             vm.allLocks = [];
             function recursive(data) {
-                data.expanded = !0;
+                data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
                 data.locks = [];
                 angular.forEach(vm.locks, function (value) {
@@ -581,6 +573,7 @@ function volatileFolderDataL(data, obj) {
                         }
                     }
                     angular.forEach(data.locks, function (value) {
+
                         value.path1 = data.path;
                         temp.push(value);
                     });
@@ -923,7 +916,7 @@ function volatileFolderDataL(data, obj) {
         function startTraverseNodeP(data) {
             vm.allProcessClasses = [];
             function recursive(data) {
-                data.expanded = !0;
+                data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
 
                 data.processClasses = [];
@@ -1264,7 +1257,7 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
- function volatileFolderData(data, obj) {
+        function volatileFolderData(data, obj) {
             if (vm.schdeuleFilters.filter.state != 'all') {
                 obj.state = [];
                 obj.state.push(vm.schdeuleFilters.filter.state);
@@ -1428,10 +1421,8 @@ function volatileFolderDataL(data, obj) {
 
             vm.allSchedules = [];
             function recursive(data) {
-                data.expanded = !0;
+                data.expanded = true;
                 data.folders = orderBy(data.folders, 'name');
-                vm.folderPathS = data.name || '/';
-
                 data.schedules = [];
                 angular.forEach(vm.schedules, function (value) {
                     if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
@@ -2042,8 +2033,8 @@ function volatileFolderDataL(data, obj) {
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', '$interval', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, $interval, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService) {
         var vm = $scope;
         var bgColorArray = [];
 
@@ -2058,7 +2049,7 @@ function volatileFolderDataL(data, obj) {
             angular.forEach(data, function (value) {
                 var result = {};
 
-                result.numOfAgents = value.numOfAgents.any;
+                result.count = 1;
                 if (value.state._text == "ALL_AGENTS_ARE_RUNNING") {
 
                     result._text = "label.healthyAgentCluster";
@@ -2071,7 +2062,7 @@ function volatileFolderDataL(data, obj) {
                 if (results.length > 0) {
                     for (var i = 0; i < results.length; i++) {
                         if (results[i]._text == result._text) {
-                            result.numOfAgents = results[i].numOfAgents + value.numOfAgents.any;
+                            result.count = result.count + results[i].count;
                             results.splice(i, 1);
                             break;
                         }
@@ -2123,7 +2114,6 @@ function volatileFolderDataL(data, obj) {
         function prepareAgentClusterData(result) {
             var agentArray1 = [];
             vm.YAxisDomain = [0, 3];
-            //vm.YAxisDomain[0] = 0;
 
             angular.forEach(groupBy(result), function (value) {
 
@@ -2136,7 +2126,7 @@ function volatileFolderDataL(data, obj) {
                 }
                 agentArray1.push({
                     key: value._text,
-                    y: value.numOfAgents
+                    y: value.count
                 });
             });
             vm.agentClusterData = agentArray1;
@@ -2156,8 +2146,6 @@ function volatileFolderDataL(data, obj) {
 
         vm.yAxisTickFormatFunction = function () {
             return function (d) {
-
-
                 if (d % 1 === 0) {
                     return d3.format(',f')(d);
 
@@ -2172,6 +2160,14 @@ function volatileFolderDataL(data, obj) {
                 return d.key;
             }
         };
+
+        vm.toolTipContentFunction = function() {
+            return function (key, x) {
+                return '<h3>' + gettextCatalog.getString(key) + '</h3>' +
+                    '<p>' + d3.format(',f')(x) + '</p>'
+            }
+        };
+
 
 
         var format = d3.format(',.0f');
@@ -2950,7 +2946,7 @@ function volatileFolderDataL(data, obj) {
 
         }
 
-        function prepareGanttData(data2) {
+        function prepareGanttData(data2, flag) {
 
             var minNextStartTime;
             var maxEndTime;
@@ -3023,10 +3019,12 @@ function volatileFolderDataL(data, obj) {
             vm.data = orderBy(orders, 'plannedStartTime');
             // console.info("data:" + JSON.stringify(vm.data));
 
+            if(flag)
             promise1 = $timeout(function () {
                 $('#div').animate({
                     scrollLeft: $("#gantt-current-date-line").offset().left
                 }, 500);
+                $timeout.cancel(promise1);
             }, 4000);
         }
 
@@ -3060,7 +3058,7 @@ function volatileFolderDataL(data, obj) {
                 vm.plans = res.planItems;
 
                 //if (vm.pageView == 'grid')
-                prepareGanttData(vm.plans);
+                prepareGanttData(vm.plans,true);
                 vm.isLoading = true;
                 vm.showSpinner = false;
                 $scope.stopSpin();
@@ -3099,7 +3097,7 @@ function volatileFolderDataL(data, obj) {
             vm.dailyPlanFilters.filter.sortBy = propertyName;
             if (vm.pageView == 'grid') {
                 vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
-                prepareGanttData(vm.plans);
+                prepareGanttData(vm.plans,true);
             }
         };
 
@@ -3204,9 +3202,9 @@ function volatileFolderDataL(data, obj) {
 
         vm.favorite = function (filter) {
             vm.savedDailyPlanFilter.favorite = filter.name;
-            vm.savedDailyPlanFilter.selected = filter.name;
+           // vm.savedDailyPlanFilter.selected = filter.name;
             vm.dailyPlanFilters.selectedView = true;
-            selectedFiltered = filter;
+           // selectedFiltered = filter;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
             vm.load();

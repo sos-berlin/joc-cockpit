@@ -370,6 +370,12 @@
                     }
 
                     angular.forEach(data.jobChains, function (value) {
+                         for (var x = 0; x < temp.length; x++) {
+                            if (temp[x].path1 == data.path && temp[x].path ==value.path) {
+                                temp[x].splice(x,1);
+                                break;
+                            }
+                        }
                         value.path1 = data.path;
                         temp.push(value);
                     });
@@ -1073,9 +1079,9 @@
 
         vm.favorite = function (filter) {
             vm.savedJobChainFilter.favorite = filter.name;
-            vm.savedJobChainFilter.selected = filter.name;
+            //vm.savedJobChainFilter.selected = filter.name;
             vm.jobChainFilters.selectedView = true;
-            selectedFiltered = filter;
+            //selectedFiltered = filter;
             SavedFilter.setJobChain(vm.savedJobChainFilter);
             SavedFilter.save();
             vm.load();
@@ -1232,9 +1238,6 @@
             filter.jobschedulerId = $scope.schedulerIds.selected;
             JobChainService.histories(filter).then(function (res) {
                 vm.historys = res.history;
-                vm.isLoading1 = true;
-            }, function () {
-                vm.isLoading1 = true;
             });
         };
 
@@ -1537,7 +1540,6 @@
 
         if (vm.jobFilters.selectedView)
             vm.savedJobFilter.selected = vm.savedJobFilter.favorite;
-        console.log(vm.jobFilters.selectedView)
 
         if (vm.savedJobFilter.selected) {
             angular.forEach(vm.savedJobFilter.list, function (value) {
@@ -1546,6 +1548,7 @@
                 }
             });
         }
+
 
         vm.expanding_property = {
             field: "name"
@@ -1767,6 +1770,10 @@
                     });
                     if (flag)
                         vm.allJobs.push(value);
+
+                    if(value.path == vm.jobFilters.showTaskPanel) {
+                        vm.showTaskFuc(value);
+                    }
                 });
 
                 vm.folderPath = data1.name || '/';
@@ -1787,6 +1794,10 @@
                         });
                         if (flag)
                             vm.allJobs.push(value);
+
+                        if(value.path == vm.jobFilters.showTaskPanel) {
+                            vm.showTaskFuc(vm.allJobs[i]);
+                        }
                     });
                 }
                 vm.folderPath = data1.name || '/';
@@ -1828,7 +1839,6 @@
 
                 var temp = [];
                 if (data.jobs.length > 0) {
-
                     for (var x = 0; x < vm.allJobs.length; x++) {
                         if (vm.allJobs[x].path1 != data.path) {
                             temp.push(vm.allJobs[x]);
@@ -1858,6 +1868,12 @@
                     }
 
                     angular.forEach(data.jobs, function (value) {
+                         for (var x = 0; x < temp.length; x++) {
+                            if (temp[x].path1 == data.path && temp[x].path ==value.path) {
+                                temp[x].splice(x,1);
+                                break;
+                            }
+                        }
                         value.path1 = data.path;
                         temp.push(value);
                     });
@@ -1948,7 +1964,6 @@
         function previousTreeState() {
             vm.allJobs = [];
             angular.forEach(vm.tree, function (value) {
-
                 checkExpand(value);
             });
         }
@@ -2288,7 +2303,7 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
-                scope: vm,
+                scope: vm
             });
         };
 
@@ -2356,9 +2371,10 @@
         };
 
         vm.favorite = function (filter) {
-            vm.savedJobFilter.favorite = filter;
-            vm.savedJobFilter.selected = filter;
+            vm.savedJobFilter.favorite = filter.name;
+            //vm.savedJobFilter.selected = filter.name;
             vm.jobFilters.selectedView = true;
+           // selectedFiltered = filter;
             SavedFilter.setJob(vm.savedJobFilter);
             SavedFilter.save();
 
@@ -2443,7 +2459,6 @@
 
         };
 
-        vm.isLoading1 = true;
         vm.showTaskFuc = function (value, isRunning) {
             if (isRunning) {
                 if (value.numOfRunningTasks == 0) {
@@ -2452,16 +2467,13 @@
             }
 
 
-            vm.isLoading1 = false;
             vm.showTaskPanel = value;
             var jobs = {};
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.job = value.path;
             JobService.history(jobs).then(function (res) {
                 vm.taskHistory = res.history;
-                vm.isLoading1 = true;
             }, function () {
-                vm.isLoading1 = true;
             });
 
             if (value.numOfQueuedTasks > 0 || value.numOfRunningTasks > 0) {
@@ -2494,8 +2506,11 @@
                 getQueueOrders(jobs);
 
             vm.isRunning = isRunning;
+            vm.jobFilters.showTaskPanel = vm.showTaskPanel.path;
 
         };
+
+
         function getQueueOrders(jobs) {
             JobService.getQueueOrders(jobs).then(function (res) {
                 vm.queueOrders = res.job;
@@ -2522,6 +2537,7 @@
 
         vm.hideTaskPanel = function () {
             vm.showTaskPanel = undefined;
+            vm.jobFilters.showTaskPanel = undefined;
         };
 
 
@@ -2882,6 +2898,7 @@
                                         if (res.jobs && res.jobs.length > 0) {
 
                                             res.jobs[0].title = vm.allJobs[index].title;
+                                            res.jobs[0].path1 = vm.allJobs[index].path1;
                                             res.jobs[0].isOrderJob = vm.allJobs[index].isOrderJob;
                                             res.jobs[0].hasDescription = vm.allJobs[index].hasDescription;
                                             res.jobs[0].estimatedDuration = vm.allJobs[index].estimatedDuration;

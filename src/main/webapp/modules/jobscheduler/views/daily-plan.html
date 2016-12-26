@@ -128,10 +128,10 @@
     </div>
 </div>
 <div class="scroll-y max-ht">
-    <div class="padding p-b-0">
+    <div class="padding p-b-0 p-t">
         <div class="row m-b-sm">
-            <div class="col-md-12">
-                <div class="pull-right">
+            <div class="col-lg-10 col-md-10 col-sm-12">
+                <div class="">
                 <span class="m-r-sm" translate>label.from</span>
                 <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date" style="width: 125px;background-position: 100px"
                        ng-model="dailyPlanFilters.filter.from"
@@ -151,6 +151,9 @@
                        placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
                 </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-12">
+                <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="filterString">
             </div>
         </div>
         <div class="hide p-t-xs" ng-class="{'show': isLoading }">
@@ -262,7 +265,7 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in plans | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
                                 <td>
                                     <a class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></a>
                                     <a class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></a>
@@ -283,11 +286,11 @@
 
                             </tbody>
                         </table>
-                        <ul ng-show="plans.length > dailyPlanFilters.pageSize" uib-pagination total-items="plans.length"
+                        <ul ng-show="filtered.length > dailyPlanFilters.pageSize" uib-pagination total-items="filtered.length"
                             ng-model="dailyPlanFilters.currentPage" items-per-page='dailyPlanFilters.pageSize' ng-change="pageChange()"
                             class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-right" ng-show="plans.length > 10">
+                        <div class="pull-right" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': dailyPlanFilters.pageSize=='10'}">10

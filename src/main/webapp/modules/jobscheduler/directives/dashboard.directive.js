@@ -401,7 +401,7 @@
 
                                 '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="'+supervisor.jobschedulerId+'">' + supervisor.jobschedulerId +
                                 '</span></div>' +
-                                '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
+                                '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
                                 '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.data.jobscheduler.state.
                                 _text + '</span></div>'+
@@ -497,7 +497,7 @@
                                     '</div>' +
                                     '</div> </div>' +
                                     '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.jobschedulerId+'">' + master.jobschedulerId +
-                                    '</span></div><div class="text-sm text-left p-t-xs p-b-xs p-l-sm">' + master.host + ':' + master.port  + '</div>' +
+                                    '</span></div><div class="text-sm text-left p-t-xs p-l-sm">' + master.host + ':' + master.port  + '</div>' +
                                         '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
                                     '</div>';
 

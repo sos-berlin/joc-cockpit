@@ -341,11 +341,11 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="isLoading && !loading && folderPath && allJobs.length==0" class="text-center m-t h6">
+            <div ng-if="isLoading && !loading && folderPath && allJobs.length==0" class="text-center m-t m-b-lg h6">
                     <span class="text-primary">"{{folderPath}}"</span>
                     <span translate>message.emptyFolder</span>
             </div>
-            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+            <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
             <div ng-if="!isLoading" class="text-center m-t-lg">
@@ -353,7 +353,7 @@
             </div>
             <div class="hide " ng-class="{'show': isLoading}" >
                 <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
-                    <div class="col-md-12 hide" ng-class="{'show':isLoading1}">
+                    <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
                                 <span class="text">{{showTaskPanel.path}} <i ng-if="showTaskPanel.title">-</i> <i class="text-sm text-muted">{{showTaskPanel.title}}</i></span>

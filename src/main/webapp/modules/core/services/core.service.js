@@ -30,6 +30,7 @@
         tabs._job.currentPage = '1';
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
+        tabs._job.showTaskPanel = undefined;
 
         tabs._dashboard = {};
         tabs._dashboard.filter = {};
@@ -47,7 +48,7 @@
         tabs._daliyPlan.filter.range = "today";
         tabs._daliyPlan.range = 'period';
         tabs._daliyPlan.reverse = false;
-        tabs._daliyPlan.pageSize = '10';
+        tabs._daliyPlan.pageSize = '25';
         tabs._daliyPlan.currentPage = '1';
         tabs._daliyPlan.selectedView = true;
 
@@ -60,6 +61,7 @@
         tabs._order.currentPage = '1';
         tabs._order.expand_to = [];
         tabs._order.selectedView = true;
+        tabs._order.showLogPanel = undefined;
 
         tabs._order1 = {};
         tabs._order1.filter = {};

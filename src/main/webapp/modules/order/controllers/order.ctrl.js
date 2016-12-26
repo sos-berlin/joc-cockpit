@@ -533,6 +533,8 @@
             else {
                 $('.rect').css('border-width', '1px');
             }
+
+            console.log("Slider value "+vm.slider.value);
         });
 
         vm.isLoading = true;
@@ -666,28 +668,45 @@
 
         vm.setHeight = setHeight;
 
-        function setHeight() {
+       function setHeight() {
             if (vm.fitToScreen) {
                 var windowWidth = $(window).innerWidth();
-                var totalNodsWidth = vm.totalNodes * 230;
-                var totalLineWidth = vm.totalLineWidth * 52;
-                var totalValue = 166 + totalNodsWidth + totalLineWidth;
-                totalValue = totalValue / 100;
-                windowWidth = windowWidth / totalValue;
-                if(windowWidth>150){
-                    windowWidth =150;
+                var windowHeight = $(window).innerHeight();
+                var maxLeft = 0;
+                var maxTop = 0;
+
+                angular.forEach(vm.coords,function(coord){
+                    if(coord.left && coord.left>maxLeft){
+                        maxLeft = coord.left;
+                    }
+                    if(coord.top && coord.top>maxTop){
+                        maxTop = coord.top;
+                    }
+                })
+                if(maxTop<windowHeight && maxLeft+230 < windowWidth){
+                    return;
                 }
-                vm.slider.value = windowWidth;
-                setFlowDigramWidth();
+
+
+                 if(windowWidth/(maxLeft+ 230) < windowHeight/maxTop){
+                     vm.slider.value = windowWidth/(maxLeft+ 230);
+                 }else{
+                     vm.slider.value = windowWidth/(maxLeft+ 230);
+                 }
+                vm.slider.value = vm.slider.value*100;
+                if(vm.slider.value>150){
+                    vm.slider.value =150;
+                }
+                setFlowDiagramWidth();
             } else {
                 vm.slider.value = 100;
-                setFlowDigramWidth();
+                setFlowDiagramWidth();
             }
         }
 
         vm.$watch("fitToScreen", setHeight);
 
-        function setFlowDigramWidth() {
+        function setFlowDiagramWidth() {
             $("#zoomCn").css("zoom", vm.slider.value / 100);
             $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
             $("#zoomCn").css("transform-origin", "0 0");
@@ -1644,6 +1663,12 @@
                         }
                     }
                     angular.forEach(data.orders, function (value) {
+                         for (var x = 0; x < temp.length; x++) {
+                            if (temp[x].path1 == data.path && temp[x].path ==value.path) {
+                                temp[x].splice(x,1);
+                                break;
+                            }
+                        }
                         value.path1 = data.path;
                         temp.push(value);
                     });
@@ -2058,9 +2083,9 @@
 
         vm.favorite = function (filter) {
             vm.savedOrderFilter.favorite = filter.name;
-            vm.savedOrderFilter.selected = filter.name;
+            //vm.savedOrderFilter.selected = filter.name;
             vm.orderFilters.selectedView = true;
-            selectedFiltered = filter;
+            //selectedFiltered = filter;
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
 
@@ -2291,7 +2316,6 @@
                                 obj.jobChain = value2.jobChain;
                                 obj.compact = true;
                                 OrderService.getOrder(obj).then(function (res) {
-                                    console.log(res)
                                     if (res.order) {
                                         vm.allOrders[index] = angular.merge(vm.allOrders[index], res.order);
                                     }
@@ -3003,9 +3027,8 @@
             });
         }
 
-        vm.isLoading1 = true;
+
         vm.showLogFuc = function (value) {
-            vm.isLoading1 = false;
             var orders = {};
             orders = {};
             orders.orders = [];
@@ -3014,18 +3037,18 @@
 
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
-                vm.isLoading1 = true;
-            }, function () {
-                vm.isLoading1 = true;
             });
 
             vm.showLogPanel = value;
+            vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
+        if(vm.orderFilters && vm.orderFilters.showLogPanel){
+             vm.showLogFuc(vm.orderFilters.showLogPanel);
+        }
 
-
-        vm.showLogPanel = undefined;
         vm.hideLogPanel = function () {
             vm.showLogPanel = undefined;
+            vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
         vm.limitNum = 5;
@@ -3441,10 +3464,6 @@
         };
 
 
-        vm.hideLogPanel = function () {
-            vm.showLogPanel = undefined;
-        };
-
         vm.showPanel = '';
         vm.showPanelFuc = function (value) {
             vm.showPanel = value;
@@ -3681,16 +3700,16 @@
         vm.favorite = function (filter) {
             if (vm.historyFilters.type == 'jobChain') {
                 vm.savedHistoryFilter.favorite = filter.name;
-                vm.savedHistoryFilter.selected = filter.name;
+                //vm.savedHistoryFilter.selected = filter.name;
                 vm.historyFilters.order.selectedView =true;
                 vm.historyFilterObj.order = vm.savedHistoryFilter;
-                selectedFiltered1 = filter;
+                //selectedFiltered1 = filter;
             } else {
                 vm.savedJobHistoryFilter.favorite = filter.name;
-                vm.savedJobHistoryFilter.selected = filter.name;
+                //vm.savedJobHistoryFilter.selected = filter.name;
                 vm.historyFilters.task.selectedView = true;
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-                selectedFiltered2 = filter;
+                //selectedFiltered2 = filter;
             }
 
             SavedFilter.setHistory(vm.historyFilterObj);

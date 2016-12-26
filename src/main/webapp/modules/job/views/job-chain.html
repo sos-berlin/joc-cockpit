@@ -226,7 +226,7 @@
                 </div>
                 <div class="hide box p-a" ng-class="{'show': pageView=='list' && allJobChains.length>0}">
                     <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
-                        <table class="table table-hover table-bordered " id="jobChainTableId">
+                        <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
                             <thead>
                             <tr>
                                 <th class="noExl">
@@ -388,10 +388,10 @@
                                                        ng-class="[colorFunction(node.state._text=='SKIPPED'|| node.state._text=='STOPPED'? node.state.severity:node.job.state.severity)]"></i>-->
                                                    {{node.name}} </span>
                                                 </td>
-                                                <td ng-controller="OrderFunctionCtrl">
+                                                <td>
                                                     <a class="text-hover-primary" ng-click="showJob(node.job.path)">{{node.job.path}}</a>
                                                     <div class="p-l-sm">
-                                                    <div ng-repeat="order in node.orders | limitTo : limitNum">
+                                                    <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'">
                                                         <span>
                                                             <span class="text-sm">
                                                                 <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} <i class="text-muted text-xs" ng-if="order.title">- {{order.title}}</i> - <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
@@ -527,7 +527,7 @@
 
                     </div>
                 </div>
-                <div ng-if="isLoading && !loading && folderPath && allJobChains.length==0" class="text-center m-t h6">
+                <div ng-if="isLoading && !loading && folderPath && allJobChains.length==0" class="text-center m-t m-b-lg h6">
                     <span class="text-primary">"{{folderPath}}"</span>
                     <span translate>message.emptyFolder</span>
                 </div>
@@ -535,12 +535,12 @@
             <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
-            <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+            <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
             <div class="hide " ng-class="{'show': isLoading && permission.JobChain.view.history}">
                 <div class="row hide" ng-show="showHistoryPanel" ng-class="{'show': pageView=='list'}">
-                    <div class="col-md-12 hide" ng-class="{show: isLoading1}">
+                    <div class="col-md-12">
                         <div class="box white">
                             <div class="box-header">
                                 <span class="text">{{showHistoryPanel.path}}: {{showHistoryPanel.name}} <i
