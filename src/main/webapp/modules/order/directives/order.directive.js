@@ -31,7 +31,7 @@
                         ordersData.push(obj);
                         count++;
                         if (count === Object.keys(res).length) {
-                            console.log(ordersData)
+                          
                             vm.ordersData = ordersData;
                         }
                     }
@@ -155,7 +155,7 @@
 
                 scope.$on("drawJobChainFlowDiagram", function () {
                     arrangeItems();
-                    //draw();
+                   // draw();
                 });
 
 
@@ -221,7 +221,7 @@
                         angular.forEach(jobChainData2.nodes, function (item2, index2) {
                             if (item2.nextNode == item.name) {
                                 scope.jobChainData.nodes.splice(last, 0, item2);
-                                jobChainData2.nodes.splice(index2, 1);
+                                jobChainData2.nodes[index2].removed=true;
 
                             }
                         })
@@ -229,7 +229,17 @@
                         if (cursor < scope.jobChainData.nodes.length) {
                             getPrevious(cursor);
                         } else {
+                             //console.log("Second iteration "+JSON.stringify(scope.jobChainData));
+                            var temp =[];
+                            angular.forEach(jobChainData2.nodes, function (item, index) {
+                            if (!item.removed) {
+                                temp.push(item);
+
+                            }
+                        })
+                            jobChainData2.nodes=temp;
                             getNext2(0);
+
                         }
                     }
 
@@ -257,7 +267,12 @@
                         if (index < scope.jobChainData.nodes.length) {
                             getNext2(index);
                         } else if(!gotNext){
+                           // console.log("Third iteration "+JSON.stringify(scope.jobChainData));
+                            if(jobChainData2.nodes.length>0){
+                                scope.jobChainData.nodes = scope.jobChainData.nodes.concat(jobChainData2.nodes);
+                            }
                              draw();
+
                         }
                     }
                 }
@@ -278,7 +293,7 @@
                     scope.coords = coords;
                     scope.margin = margin;
                     var rectangleTemplate = '';
-                    var iTop = 100;
+                    var iTop = 170;
                     var top = iTop;
                     var avatarTop = rectH / 2 - avatarW / 2 + top;
                     scope.errorNodeIndex = -1;
@@ -1396,7 +1411,7 @@
                         });
 
                         if (vm.jobChainData.nodes.length - 1 == index) {
-                            vm.limitNum = 3;
+                            vm.limitNum = 5;
                             vm.showOrderPanel = '';
                             getInfo(0);
                             updateJobChain();
@@ -1678,7 +1693,10 @@
                     }
 
                     function addLabel(orders, name) {
-
+                        var blockEllipsisFlowOrder ='block-ellipsis-flow-order';
+                        if(orders.length>3){
+                            blockEllipsisFlowOrder ='block-ellipsis-flow-order1';
+                        }
                         angular.forEach(orders, function (order, index) {
                             var node = document.getElementById(name);
 
@@ -1686,19 +1704,19 @@
                                 if (index > vm.limitNum - 1) {
                                     if (orders.length - 1 == index) {
                                         var container = document.getElementById('lbl-order-' + order.state);
-                                        container.style['top'] = node.offsetTop - container.clientHeight - 25 + 'px';
+                                        container.style['top'] = node.offsetTop - container.clientHeight - 15 + 'px';
                                         var label = document.createElement('div');
                                         label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
                                         + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
                                         var top = container.offsetTop;
                                         container.appendChild(label);
-                                        if (node.offsetTop - container.offsetTop < 75) {
+                                        if (node.offsetTop - container.offsetTop < 90) {
                                             container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                         }
                                         container.appendChild(label);
                                         var more = document.getElementById('more');
                                         var less = document.getElementById('less');
-                                        if (vm.showOrderPanel != name && orders.length > 3) {
+                                        if (vm.showOrderPanel != name && orders.length > 5) {
                                             more.className = 'show cursor text-xs';
                                             less.className = 'hide cursor text-xs';
                                         }
@@ -1708,7 +1726,7 @@
                                             showOrderPanelFun(orders.length, name, more, less, order);
                                         });
 
-                                        if (vm.showOrderPanel == name && orders.length > 3) {
+                                        if (vm.showOrderPanel == name && orders.length > 5) {
                                             less.className = 'show cursor text-xs';
                                             more.className = 'hide cursor text-xs';
                                         }
@@ -1748,7 +1766,7 @@
                                     }
 
                                     label.innerHTML = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' +
-                                    '<span class="block-ellipsis-flow-order show-block v-m p-r-xs" >'+ order.orderId+'</span>'
+                                    '<span class="'+blockEllipsisFlowOrder+' show-block v-m p-r-xs" title="'+order.orderId+'">'+ order.orderId+'</span>'
                                         + '<span id="date-' + order.orderId + '"  class="show-block v-m text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="btn-group dropdown"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
@@ -1770,7 +1788,7 @@
                                         + '</div></div>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
-                                    if (node.offsetTop - container.offsetTop < 75) {
+                                    if (node.offsetTop - container.offsetTop < 90) {
                                         container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
                                     container.appendChild(label);
@@ -1809,7 +1827,7 @@
                                     }
 
                                     label.innerHTML = '<div><span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle ' + color + '"></i> ' +
-                                    '<span class="block-ellipsis-flow-order show-block v-m p-r-xs" >'+ order.orderId+'</span>'
+                                    '<span class="'+blockEllipsisFlowOrder+' show-block v-m p-r-xs" title="'+order.orderId+'">'+ order.orderId+'</span>'
                                         + '<span id="date-' + order.orderId + '" class="show-block v-m text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="btn-group dropdown"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
@@ -1833,25 +1851,25 @@
                                     label.style['top'] = node.offsetTop - label.clientHeight - 5 + 'px';
                                     label.style['height'] = 'auto';
                                     label.style['min-height'] = '35px';
-                                    label.style['max-height'] = '90px';
+                                    label.style['max-height'] = '115px';
                                     label.style['overflow'] = 'auto';
                                 }
 
                                 if (orders.length - 1 == index && orders.length == vm.limitNum) {
                                     var container = document.getElementById('lbl-order-' + order.state);
-                                    container.style['top'] = node.offsetTop - container.clientHeight - 15 + 'px';
+                                    container.style['top'] = node.offsetTop - container.clientHeight - 5 + 'px';
                                     var label = document.createElement('div');
                                     label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
                                         + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
-                                    if (node.offsetTop - container.offsetTop < 75) {
+                                    if (node.offsetTop - container.offsetTop < 90) {
                                         container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
                                     container.appendChild(label);
                                     var more = document.getElementById('more');
                                     var less = document.getElementById('less');
-                                    if (vm.showOrderPanel != name && orders.length > 3) {
+                                    if (vm.showOrderPanel != name && orders.length > 5) {
                                         more.className = 'show cursor text-xs';
                                         less.className = 'hide cursor text-xs';
                                     }
@@ -1861,7 +1879,7 @@
                                         showOrderPanelFun(orders.length, name, more, less, order);
                                     });
 
-                                    if (vm.showOrderPanel == name && orders.length > 3) {
+                                    if (vm.showOrderPanel == name && orders.length > 5) {
                                         less.className = 'show cursor text-xs';
                                         more.className = 'hide cursor text-xs';
                                     }
@@ -2058,7 +2076,7 @@
                 }
 
                 function hideOrderPanelFuc(more, less) {
-                    vm.limitNum = 3;
+                    vm.limitNum = 5;
                     vm.showOrderPanel = '';
 
                     less.className = 'hide cursor text-xs';

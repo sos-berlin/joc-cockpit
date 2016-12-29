@@ -22,9 +22,11 @@
          * @param $q
          * @param $location
          * @param SOSAuth
+         * @param $window
+         * @param $rootScope
          * @returns {*}
          */
-        var checkLoggedin = function ($q, $location, SOSAuth, $window) {
+        var checkLoggedin = function ($q, $location, SOSAuth, $window, $rootScope) {
             // Initialize a new promise
             var deferred = $q.defer();
 
@@ -32,6 +34,37 @@
             if (SOSAuth.accessTokenId) {
                 $window.sessionStorage.setItem('$SOS$URL', null);
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', {});
+
+                if($window.sessionStorage.$SOS$NAVIGATEOBJ && ($window.sessionStorage.$SOS$NAVIGATEOBJ != 'null' || $window.sessionStorage.$SOS$NAVIGATEOBJ != null)) {
+                    try{
+                        var obj = JSON.parse($window.sessionStorage.$SOS$NAVIGATEOBJ);
+
+                        if(obj) {
+                            if (obj.tab == 'JOB') {
+                                $rootScope.job_expand_to = {
+                                    name: obj.name,
+                                    path: obj.path
+                                };
+                                $location.path('/jobs');
+                            } else if (obj.tab == 'ORDER') {
+                                $rootScope.order_expand_to = {
+                                    name: obj.name,
+                                    path: obj.path
+                                };
+                                $location.path('/allOrders');
+                            } else if (obj.tab == 'JOBCHAIN') {
+                                $rootScope.expand_to = {
+                                    name: obj.name,
+                                    path: obj.path
+                                };
+                                $location.path('/jobChains');
+                            }
+                            $window.sessionStorage.$SOS$NAVIGATEOBJ = null;
+                        }
+                    }catch(e){
+                        console.log(e)
+                    }
+                }
                 deferred.resolve();
             }
             // Not Authenticated
@@ -42,7 +75,7 @@
             }
             return deferred.promise;
         };
-        checkLoggedin.$inject = ['$q', '$location', 'SOSAuth', '$window'];
+        checkLoggedin.$inject = ['$q', '$location', 'SOSAuth', '$window','$rootScope'];
 
 
         /**

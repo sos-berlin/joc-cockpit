@@ -2717,7 +2717,9 @@ function volatileFolderDataL(data, obj) {
         vm.savedDailyPlanFilter.list = vm.savedDailyPlanFilter.list || [];
 
         if (vm.dailyPlanFilters.selectedView)
-            vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.favorite;
+            vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.selected || vm.savedDailyPlanFilter.favorite;
+        else
+            vm.savedDailyPlanFilter.selected = undefined;
 
         if (vm.savedDailyPlanFilter.selected) {
             angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
@@ -2742,8 +2744,8 @@ function volatileFolderDataL(data, obj) {
                 to.setMilliseconds(0);
                 vm.currentDateValue = new Date();
             } else if (range == 'next-24-hours') {
-                from.setDate(from.getDate() + 1);
-                to.setDate(to.getDate() + 2);
+                from.setDate(from.getDate());
+                to.setDate(to.getDate() + 1);
                 vm.currentDateValue = from;
             }
             vm.dailyPlanFilters.filter.from = from;
@@ -3117,7 +3119,6 @@ function volatileFolderDataL(data, obj) {
 
                 if (vm.savedDailyPlanFilter.list.length == 1) {
                     vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
-                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
                     vm.dailyPlanFilters.selectedView = true;
                     vm.load();
                 }

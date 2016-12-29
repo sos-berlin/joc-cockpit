@@ -14,6 +14,7 @@
         .directive('toggleView', toggleView)
         .directive('letterAvatar', letterAvatar)
         .directive('time', time)
+        .directive('time1', time1)
 
 
         .constant('defaultAvatarSettings', {
@@ -767,6 +768,7 @@
     function time($timeout, $filter) {
 
         return function (scope, element, attrs) {
+
             var time = attrs.time;
 
             var timeoutId = '';
@@ -793,6 +795,36 @@
             updateLater();
         };
 
+    }
+
+    time1.$inject = ['$timeout', '$filter'];
+    function time1($timeout, $filter) {
+
+        return function (scope, element, attrs) {
+            var time = attrs.time1;
+            var timeoutId = '';
+            var intervalLength = 1000 * 30; // 30 seconds
+            var filter = $filter('timeDifferenceFilter');
+
+            function updateTime() {
+                element.text(filter(time));
+            }
+
+            function updateLater() {
+                timeoutId = $timeout(function () {
+                    updateTime();
+                    updateLater();
+                }, intervalLength);
+            }
+
+            element.bind('$destroy', function () {
+                $timeout.cancel(timeoutId);
+            });
+
+            updateTime();
+            if (time)
+                updateLater();
+        };
     }
 
 

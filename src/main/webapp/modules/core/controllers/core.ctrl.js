@@ -15,15 +15,14 @@
         .controller('CommonLogCtrl', CommonLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal','$location','toasty'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal,$location,toasty) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty) {
         var vm = $scope;
         vm.schedulerIds = {};
 
         vm.app = {
             name: 'JobScheduler'
         };
-
 
 
         /**
@@ -122,7 +121,7 @@
                 var subHeaderHt = 58;
                 var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
-                $('.max-ht2').css('height', ht -50 + 'px');
+                $('.max-ht2').css('height', ht - 50 + 'px');
                 $('.max-tree-ht').css('height', ht - 42 + 'px');
             } else {
                 $('.max-ht').css('height', 'auto');
@@ -197,11 +196,11 @@
         }
 
         vm.showLogWindow = function (order, task) {
-            if ((task && !vm.permission.Job.view.taskLog) ||(order && !vm.permission.Order.view.orderLog)) {
-                    toasty.warning({
-                            title: 'Permission denied',
-                            timeout: 6000
-                        });
+            if ((task && !vm.permission.Job.view.taskLog) || (order && !vm.permission.Order.view.orderLog)) {
+                toasty.warning({
+                    title: 'Permission denied',
+                    timeout: 6000
+                });
                 return;
             }
 
@@ -239,11 +238,11 @@
             }
         };
 
-        vm.showJobChain = function(jobChain){
-            var path = jobChain.substring(0,jobChain.lastIndexOf('/')) || '/';
+        vm.showJobChain = function (jobChain) {
+            var path = jobChain.substring(0, jobChain.lastIndexOf('/')) || '/';
             var name = '';
-            if(path!='/')
-            name = path.substring(path.lastIndexOf('/')+1,path.length);
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.expand_to = {
                 name: name,
                 path: path
@@ -251,7 +250,7 @@
             $location.path('/jobChains')
         };
 
-        vm.isEmpty  = function(obj) {
+        vm.isEmpty = function (obj) {
             for (var key in obj) {
                 if (obj.hasOwnProperty(key))
                     return false;
@@ -259,11 +258,11 @@
             return true;
         };
 
-        vm.showJob = function(job){
-            var path = job.substring(0,job.lastIndexOf('/')) || '/';
+        vm.showJob = function (job) {
+            var path = job.substring(0, job.lastIndexOf('/')) || '/';
             var name = '';
-            if(path!='/')
-            name = path.substring(path.lastIndexOf('/')+1,path.length);
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.job_expand_to = {
                 name: name,
                 path: path
@@ -313,13 +312,20 @@
                 vm.logout();
             }
             try {
-                if ($rootScope.clientLogFilter.state)
+                if ($rootScope.clientLogFilter.state) {
                     $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
+                    if((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0){
+                        $window.localStorage.clientLogs.splice(1,100);
+                    }
+                }
             } catch (e) {
-                $window.localStorage.clientLogs = {};
+                $rootScope.clientLogs = [];
+                $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
             }
 
-        }, 1000);
+            $window.sessionStorage.$SOS$TABS = JSON.stringify(CoreService.getTabs());
+
+        }, 1200);
 
 
         vm.refreshSession = function () {
@@ -337,14 +343,15 @@
         });
         var logout = false;
         vm.logout = function () {
-
             logout = true;
             UserService.logout();
             SOSAuth.clearUser();
             SOSAuth.clearStorage();
+            CoreService.setDefaultTab();
             $location.path('/login').search({});
             $window.localStorage.clientLogs = {};
             $window.sessionStorage.$SOS$JOBSCHEDULE = null;
+            $window.sessionStorage.$SOS$ALLEVENT = null;
         };
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
@@ -386,9 +393,9 @@
                         SOSAuth.save();
 
                         $rootScope.$broadcast('reloadUser');
-                        if($location.path().match('jobChainDetails/')){
-                           $location.path('/').search({});
-                        }else {
+                        if ($location.path().match('jobChainDetails/')) {
+                            $location.path('/').search({});
+                        } else {
 
                             $timeout(function () {
                                 $window.location.reload();
@@ -414,7 +421,7 @@
                 $state.go('app.resources.processClasses');
             } else if (vm.resourceFilters.state == 'schedules' && vm.permission.Schedule.view.status) {
                 $state.go('app.resources.schedules');
-            } else if(vm.permission.Lock.view.status){
+            } else if (vm.permission.Lock.view.status) {
                 $state.go('app.resources.locks');
             }
 
@@ -438,7 +445,7 @@
 
             var obj = {};
             obj.jobscheduler = [];
-            if(!vm.eventsRequest || vm.eventsRequest.length==0) {
+            if (!vm.eventsRequest || vm.eventsRequest.length == 0) {
                 for (var i = 0; i < jobScheduler.length; i++) {
                     if (vm.schedulerIds.selected == jobScheduler[i]) {
                         obj.jobscheduler.push(
@@ -450,17 +457,17 @@
                         );
                     }
                 }
-            }else{
+            } else {
                 obj.jobscheduler = vm.eventsRequest;
             }
 
             CoreService.getEvents(obj).then(function (res) {
                 vm.eventsRequest = [];
                 for (var i = 0; i < res.events.length; i++) {
-                    if(res.events[i].jobschedulerId == vm.schedulerIds.selected) {
+                    if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
                         vm.events = [];
                         vm.events.push(res.events[i]);
-                         $rootScope.$broadcast('event-started', {events: vm.events});
+                        $rootScope.$broadcast('event-started', {events: vm.events});
                     }
                     vm.allEvents = res.events;
                     $timeout(function () {
@@ -468,10 +475,13 @@
                         $rootScope.$broadcast('event-all', {events: vm.allEvents});
                     }, 2000);
 
-                    vm.eventsRequest.push({jobschedulerId : res.events[i].jobschedulerId, eventId : res.events[i].eventId });
+                    vm.eventsRequest.push({
+                        jobschedulerId: res.events[i].jobschedulerId,
+                        eventId: res.events[i].eventId
+                    });
                 }
-                if(logout == false)
-                vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                if (logout == false)
+                    vm.changeEvent(vm.schedulerIds.jobschedulerIds);
 
             }, function (err) {
                 if (logout == false && (err.status == 420 || err.status == 434)) {
@@ -496,88 +506,31 @@
                 $scope.allSessionEvent = JSON.parse($window.sessionStorage.$SOS$ALLEVENT);
 
             }
-
         }
+
         $scope.$on('event-all', function () {
-            var eventFilter = JSON.parse($window.sessionStorage.$SOS$EVENTFILTER);
+            if ($window.localStorage.$SOS$EVENTFILTER) {
+                var eventFilter = JSON.parse($window.localStorage.$SOS$EVENTFILTER);
 
-            for (var i = 0; i < vm.allEvents.length; i++) {
+                for (var i = 0; i < vm.allEvents.length; i++) {
 
-                if (vm.events && vm.allEvents[i] && vm.allEvents[i].eventSnapshots != undefined) {
+                    if (vm.events && vm.allEvents[i] && vm.allEvents[i].eventSnapshots != undefined) {
 
-                    for (var j = 0; j <= vm.allEvents[i].eventSnapshots.length - 1; j++) {
+                        for (var j = 0; j <= vm.allEvents[i].eventSnapshots.length - 1; j++) {
 
-                        if (vm.allEvents[i].eventSnapshots[j].eventType != 'JobStateChanged' && vm.allEvents[i].eventSnapshots[j].eventType != 'JobChainStateChanged' && eventFilter.indexOf(vm.allEvents[i].eventSnapshots[j].eventType) != -1) {
-
-                            var eventByPath = {};
-                            eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
-
-                            eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
-                            if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
-                                eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
-
-                            } else {
-                                eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
-                            }
-                            eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
-                            eventByPath.events = [];
-                            eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
-
-                            for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                eventByPath.events[m].read = false;
-                            }
-
-
-                            var flag = true;
-
-                            if ($scope.allSessionEvent.group != undefined)
-                                for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
-
-                                    if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-
-                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                            if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
-
-                                                $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
-
-                                                $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                                eventByPath.events[m].read = false;
-
-                                                $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
-                                            }
-                                        }
-                                        flag = false;
-
-                                    }
-
-                                }
-
-                            if (flag) {
-
-                                eventByPath.readCount = 1;
-                                $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-
-                                $scope.allSessionEvent.group.push(eventByPath);
-
-
-                            }
-                        } else if (vm.allEvents[i].eventSnapshots[j].eventType == 'JobStateChanged') {
-                            var type = "Job" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
-
-                            if (eventFilter.indexOf(type) != -1) {
+                            if (vm.allEvents[i].eventSnapshots[j].eventType != 'JobStateChanged' && vm.allEvents[i].eventSnapshots[j].eventType != 'JobChainStateChanged' && eventFilter.indexOf(vm.allEvents[i].eventSnapshots[j].eventType) != -1) {
 
                                 var eventByPath = {};
                                 eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
 
                                 eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
-                                eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
                                 if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
                                     eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
 
                                 } else {
                                     eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
                                 }
+                                eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
                                 eventByPath.events = [];
                                 eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
 
@@ -585,7 +538,9 @@
                                     eventByPath.events[m].read = false;
                                 }
 
+
                                 var flag = true;
+
                                 if ($scope.allSessionEvent.group != undefined)
                                     for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
 
@@ -594,11 +549,12 @@
                                             for (var m = 0; m <= eventByPath.events.length - 1; m++) {
                                                 if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
+                                                    $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+
                                                     $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
                                                     $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
                                                     eventByPath.events[m].read = false;
 
-                                                    $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
                                                     $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
                                                 }
                                             }
@@ -610,70 +566,128 @@
 
                                 if (flag) {
 
-                                    $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
                                     eventByPath.readCount = 1;
+                                    $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
 
                                     $scope.allSessionEvent.group.push(eventByPath);
 
 
                                 }
+                            } else if (vm.allEvents[i].eventSnapshots[j].eventType == 'JobStateChanged') {
+                                var type = "Job" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
 
-                            }
+                                if (eventFilter.indexOf(type) != -1) {
 
-                        } else if (vm.allEvents[i].eventSnapshots[j].eventType == 'JobChainStateChanged') {
+                                    var eventByPath = {};
+                                    eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
 
-                            var type = "JobChain" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
+                                    eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
+                                    eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
+                                    if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
+                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
 
-                            if (eventFilter.indexOf(type) != -1) {
+                                    } else {
+                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
+                                    }
+                                    eventByPath.events = [];
+                                    eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
 
-                                var eventByPath = {};
-                                eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
-                                eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
+                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                        eventByPath.events[m].read = false;
+                                    }
 
-                                eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
-                                if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
-                                    eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
+                                    var flag = true;
+                                    if ($scope.allSessionEvent.group != undefined)
+                                        for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
 
-                                } else {
-                                    eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
-                                }
-                                eventByPath.events = [];
-                                eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
+                                            if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
 
-                                for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                    eventByPath.events[m].read = false;
-                                }
+                                                for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                    if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
-                                var flag = true;
-                                if ($scope.allSessionEvent.group != undefined)
-                                    for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
+                                                        $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
+                                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                        eventByPath.events[m].read = false;
 
-                                        if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-
-                                            for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
-
-                                                    $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                    $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                                    eventByPath.events[m].read = false;
-
-                                                    $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
-                                                    $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                        $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                        $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                    }
                                                 }
+                                                flag = false;
+
                                             }
-                                            flag = false;
 
                                         }
 
+                                    if (flag) {
+
+                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                        eventByPath.readCount = 1;
+
+                                        $scope.allSessionEvent.group.push(eventByPath);
+
+
                                     }
 
-                                if (flag) {
+                                }
+
+                            } else if (vm.allEvents[i].eventSnapshots[j].eventType == 'JobChainStateChanged') {
+
+                                var type = "JobChain" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
+
+                                if (eventFilter.indexOf(type) != -1) {
+
+                                    var eventByPath = {};
+                                    eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
+                                    eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
+
+                                    eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
+                                    if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
+                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
+
+                                    } else {
+                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
+                                    }
+                                    eventByPath.events = [];
+                                    eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
+
+                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                        eventByPath.events[m].read = false;
+                                    }
+
+                                    var flag = true;
+                                    if ($scope.allSessionEvent.group != undefined)
+                                        for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
+
+                                            if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
+
+                                                for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                    if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
+
+                                                        $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
+                                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                        eventByPath.events[m].read = false;
+
+                                                        $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                        $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                    }
+                                                }
+                                                flag = false;
+
+                                            }
+
+                                        }
+
+                                    if (flag) {
 
 
-                                    eventByPath.readCount = 1;
-                                    $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                        eventByPath.readCount = 1;
+                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
 
-                                    $scope.allSessionEvent.group.push(eventByPath);
+                                        $scope.allSessionEvent.group.push(eventByPath);
+
+
+                                    }
 
 
                                 }
@@ -684,99 +698,117 @@
 
                         }
 
-
                     }
 
                 }
 
+                $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
             }
-
-            $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
-
-
-        })
-
+        });
 
         vm.showEvent = false;
         vm.expandNotification = function (group) {
-
-            if (vm.showEvent == true) {
-
-                vm.showEvent = false;
-            } else {
-
-                vm.showEvent = true;
-            }
+            vm.showEvent = !vm.showEvent;
             vm.showGroupEvent = group;
             $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
 
         };
         vm.collapseNotification = function () {
-
-            if (vm.showEvent == true) {
-
-
-                vm.showEvent = false;
-            } else {
-
-
-                vm.showEvent = true;
-            }
+            vm.showEvent = !vm.showEvent;
             $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
-
         };
-
 
         vm.updateAllEvent = function (event) {
             $scope.allSessionEvent = [];
             $scope.allSessionEvent = event;
-
-        }
+        };
         vm.readEvent = function (group, event, allSessionEvent) {
-
             if (event.read == false) {
                 event.read = true;
                 group.readCount--;
                 allSessionEvent.eventUnReadCount--;
             }
+        };
+        vm.viewObject = function (group,event,allSessionEvent) {
+             if (event.read == false) {
+                 event.read = true;
+                 group.readCount--;
+                 allSessionEvent.eventUnReadCount--;
+             }
+            event.navigate = true;
 
+            var p =event.path.substring(0, event.path.lastIndexOf('/'));
 
-        }
+            if(vm.schedulerIds.selected != group.jobschedulerId) {
+                $window.sessionStorage.$SOS$NAVIGATEOBJ = JSON.stringify({tab:event.objectType, path:p, name:p.substring(p.lastIndexOf('/')+1,p.length)});
+                vm.changeScheduler(group.jobschedulerId);
+            } else {
+                if (event.objectType == 'JOB') {
+                    $rootScope.job_expand_to = {
+                        name: p.substring(p.lastIndexOf('/') + 1, p.length),
+                        path: p
+                    };
+
+                    if ($location.path() == '/jobs') {
+
+                        $rootScope.$broadcast('reloadObject');
+                    } else {
+                        $location.path('/jobs');
+                    }
+
+                } else if (event.objectType == 'ORDER') {
+                    $rootScope.order_expand_to = {
+                        name: p.substring(p.lastIndexOf('/') + 1, p.length),
+                        path: p
+                    };
+                    if ($location.path() == '/allOrders') {
+                        $rootScope.$broadcast('reloadObject');
+                    } else {
+                        $location.path('/allOrders');
+                    }
+
+                } else if (event.objectType == 'JOBCHAIN') {
+                    $rootScope.expand_to = {
+                        name: p.substring(p.lastIndexOf('/') + 1, p.length),
+                        path: p
+                    };
+                    if ($location.path() == '/jobChains') {
+                        $rootScope.$broadcast('reloadObject');
+                    } else {
+                        $location.path('/jobChains');
+                    }
+
+                }
+            }
+            $('li .dropdown').removeClass('open');
+        };
+
         vm.makeAllGroupEventRead = function (allSessionEvent) {
-      if (allSessionEvent.group != undefined) {
+            if (allSessionEvent.group != undefined) {
                 for (var i = 0; i <= allSessionEvent.group.length - 1; i++) {
-
                     allSessionEvent.group[i].readCount = 0;
                     if (allSessionEvent.group[i].events != undefined)
                         for (var k = 0; k <= allSessionEvent.group[i].events.length - 1; k++) {
                             allSessionEvent.group[i].events[k].read = true;
 
                         }
-
                 }
                 allSessionEvent.eventUnReadCount = 0;
             }
-
-
             $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify(allSessionEvent);
-      }
-   vm.makeAllEventRead = function (allSessionEvent, showGroupEvent) {
+        };
 
+        vm.makeAllEventRead = function (allSessionEvent, showGroupEvent) {
             if (showGroupEvent != undefined) {
                 for (var i = 0; i <= showGroupEvent.events.length - 1; i++) {
-
                     if (showGroupEvent.events[i].read == false) {
                         allSessionEvent.eventUnReadCount--;
                     }
                     showGroupEvent.events[i].read = true;
-
-
                 }
-
                 showGroupEvent.readCount = 0;
-
             }
-    }
+        };
 
 
         $scope.$on('$destroy', function () {

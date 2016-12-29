@@ -16,7 +16,7 @@
                 <form method="post" name="loginForm" ng-submit="lc.login()" class="p-t-sm p-b-sm p-l-xs p-r-xs">
                     <div class="md-form-group">
                         <input type="text" class="md-input" ng-model="lc.user.username" required>
-                        <label class="font14" translate>label.userName</label>
+                        <label class="font14" translate>label.account</label>
                     </div>
                     <div class="md-form-group">
                         <input type="password" class="md-input" autocomplete="off" ng-model="lc.user.password" required>
@@ -32,7 +32,7 @@
                        <!-- <a href class="text-primary _500 pull-right" translate>button.forgotPassword?</a>-->
                     </div>
                     <button type="submit" class="btn btn-primary btn-block p-x-md"
-                            ng-disabled="loginForm.$invalid || isProcessing" id="loginBtn" translate>button.logIn
+                            ng-disabled="loginForm.$invalid" id="loginBtn" translate>button.logIn
                     </button>
                 </form>
             </div>

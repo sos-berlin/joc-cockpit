@@ -8,8 +8,8 @@
     angular.module('app')
         .service('OrderService', OrderService);
 
-    OrderService.$inject = ["$resource", "$q"];
-    function OrderService($resource, $q) {
+    OrderService.$inject = ["$resource", "$q","$window"];
+    function OrderService($resource, $q, $window) {
         return {
             jobSelected:undefined,
             get: function (filter) {
@@ -218,7 +218,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
-                filter.limit=30;
+                filter.limit=$window.localStorage.$SOS$MAXHISTORYPERORDER;
                 var History = $resource('order/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);

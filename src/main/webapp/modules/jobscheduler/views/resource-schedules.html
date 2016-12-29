@@ -3,15 +3,13 @@
 </div>
 <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="tree.length>0">
     <div>
-        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
-            <i class="fa fa-angle-down fa-lg"></i>
-            <span translate>button.expandAll</span>
+        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+            <i class="fa fa-angle-double-down fa-lg"></i>
         </button>
-        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
-            <i class="fa fa-angle-up fa-lg"></i>
-            <span translate>button.collapseAll</span>
+        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+            <i class="fa fa-angle-double-up fa-lg"></i>
         </button>
-        <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
         <tree tree-data="tree"
               tree-control="my_tree"
               expand-on="expanding_property1"

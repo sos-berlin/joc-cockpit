@@ -80,7 +80,7 @@
                 </div>
             </div>
             <div class="hide" ng-class={show:orderFilters.pageView=='grid'}>
-                <div class="p-t-sm" >
+                <div class="p-a p-b-0" >
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
                                   on-remove="onRemove($item)"
@@ -103,7 +103,7 @@
                         <tr>
                             <th>
                                 <label class="md-check lg-check">
-                                    <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
+                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-click="checkAll1()"><i
                                         class="primary"></i>
                                     </label>
                                 </th>
@@ -120,8 +120,9 @@
                             <tr>
                                 <td width="40">
                                     <label class="md-check">
-                                        <input type="checkbox" data-checklist-model="object.nodes"
-                                               data-checklist-value="node"><i class="primary"></i>
+                                        <input type="checkbox" data-checklist-model="object1.nodes"
+                                               data-checklist-value="node" data-checklist-comparator=".name" ><i class="primary"></i>
+
                                     </label>
                                 </td>
                                 <td>
@@ -134,24 +135,25 @@
 
                                     <div>
                                         <div ng-repeat="order in node.orders | limitTo : limitNum">
-                                                        <span>
-                                                            <span class="text-sm">
-                                                                <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} <i
-                                                                    class="text-muted text-xs" ng-if="order.title">-
-                                                                {{order.title}}</i> -  <span class="label"
-                                                                                             ng-class="bgColorFunction(order.processingState.severity)"
-                                                                                             ng-bind="order.processingState._text | translate"></span>
-                                                                <span class="hide text-success text-xs"
-                                                                      ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
-                                                                (<span time="{{order.nextStartTime}}"></span>)</span>
-                                                                <span class="hide text-success text-xs"
-                                                                      ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
-                                                                      translate>label.nextStartNever</span>
-                                                                <span class="hide text-success text-xs"
-                                                                      ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span
-                                                                        time="{{order.startedAt}}"></span>)</span>
-                                                            </span>
-                                                        </span>
+                                            <span>
+                                                <span class="text-sm">
+                                                    <span>{{'label.order'| translate}}:&nbsp;</span>{{order.orderId}} <i
+                                                        class="text-muted text-xs" ng-if="order.title">-
+                                                    {{order.title}}</i> -
+                                                    <span class="label" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                                    <span class="hide text-success text-xs"
+                                                          ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}} {{order.nextStartTime | stringToDate}}
+                                                        (<span time="{{order.nextStartTime}}"></span>)
+                                                    </span>
+                                                    <span class="hide text-success text-xs"
+                                                          ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                                          translate>label.nextStartNever</span>
+                                                    <span class="hide text-success text-xs"
+                                                          ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}
+                                                        (<span time="{{order.startedAt}}"></span>)
+                                                    </span>
+                                                </span>
+                                            </span>
 
                                             <div class="btn-group dropdown ">
                                                 <button type="button" class="btn-drop more-option-h"
@@ -268,7 +270,7 @@
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
-                                <span class="text">{{'label.orderHistory' | translate}} </span>
+                                <span class="text">{{'label.history' | translate}} </span>
                             </div>
                             <div class="box-tool">
                                 <ul class="nav text-muted text-md">
@@ -308,7 +310,7 @@
                                         </tbody>
                                     </table>
                                     <div ng-if="orderHistory.history.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
-                                        message.noOrderHistoryFound
+                                        message.noJobChainHistoryFound
                                     </div>
                                 </div>
                             </div>

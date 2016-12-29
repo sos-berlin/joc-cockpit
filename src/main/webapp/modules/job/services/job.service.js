@@ -10,8 +10,8 @@
         .service('JobService', JobService)
         .service('TaskService', TaskService);
 
-    JobChainService.$inject = ["$resource", "$q"];
-    function JobChainService($resource, $q) {
+    JobChainService.$inject = ["$resource", "$q","$window"];
+    function JobChainService($resource, $q,$window) {
         return {
             selectedJobChain:undefined,
             get: function (filter) {
@@ -88,7 +88,7 @@
              histories: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/history');
-                 filter.maxLastHistoryItems =30;
+                 filter.maxLastHistoryItems =$window.localStorage.$SOS$MAXORDERPERJOBCHAIN;
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -109,8 +109,8 @@
         }
     }
 
-    JobService.$inject = ["$resource", "$q"];
-    function JobService($resource, $q) {
+    JobService.$inject = ["$resource", "$q","$window"];
+    function JobService($resource, $q,$window) {
         return {
             get: function (filter) {
                 var deferred = $q.defer();
@@ -294,7 +294,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
-                filter.maxLastHistoryItems=30;
+                filter.maxLastHistoryItems=$window.localStorage.$SOS$MAXHISTORYPERTASK;
                 var Job = $resource('job/history');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);

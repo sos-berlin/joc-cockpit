@@ -61,7 +61,7 @@
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedJobFilter.list.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: savedJobFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedJobFilter.list track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -90,15 +90,13 @@
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
             <div>
-                <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
-                    <i class="fa fa-angle-down fa-lg"></i>
-                    <span translate>button.expandAll</span>
+                <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                    <i class="fa fa-angle-double-down fa-lg"></i>
                 </button>
-                <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
-                    <i class="fa fa-angle-up fa-lg"></i>
-                    <span translate>button.collapseAll</span>
+                <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                    <i class="fa fa-angle-double-up fa-lg"></i>
                 </button>
-                <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                 <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property" on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
                       expand-node="expandNode(branch)" collapse-node="collapseNode(branch)" template-url="modules/core/template/tree.html">
                 </tree>
@@ -247,11 +245,11 @@
                             <tbody>
                             <tr ng-repeat="job in allJobs | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize | orderBy:jobFilters.filter.sortBy:jobFilters.reverse" ng-class="{'light-bg':showTaskPanel == job}">
                                 <td class="noExl">
-                                        <label class="md-check">
-                                            <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
-                                        </label>
-                                    </td>
-                                    <td>
+                                    <label class="md-check">
+                                        <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
+                                    </label>
+                                </td>
+                                <td>
                                       <a class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':job.isOrderJob!=true}" ng-bind="job.name"></a>
                                         <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
                                         <div class="p-l-sm" ng-if="job.runningTasks" ng-repeat="task in job.runningTasks">
@@ -426,7 +424,7 @@
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
-                                                        <th translate>label.id</th>
+                                                        <th translate>label.taskId</th>
                                                         <th translate>label.enqueued</th>
                                                         <th translate>label.plannedStart</th>
                                                     </tr>
@@ -483,7 +481,7 @@
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.pid</th>
-                                                        <th translate>label.id</th>
+                                                        <th translate>label.taskId</th>
                                                         <th translate>label.cause</th>
                                                         <th ng-if="showTaskPanel.isOrderJob==true" translate>label.order</th>
                                                         <th translate>label.processSteps</th>
@@ -562,14 +560,13 @@
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
 
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" >
-                        <i class="fa fa-angle-down fa-lg"></i>
-                        <span translate>button.expandAll</span>
-                    </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
-                        <i class="fa fa-angle-up fa-lg"></i>
-                        <span translate>button.collapseAll</span>
-                    </button>
+
+                          <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                            <i class="fa fa-angle-double-down fa-lg"></i>
+                        </button>
+                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                           <i class="fa fa-angle-double-up fa-lg"></i>
+                        </button>
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"

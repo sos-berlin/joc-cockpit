@@ -80,7 +80,7 @@
                                    ng-repeat="filter in savedJobChainFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
                                                        ng-if="savedJobChainFilter.selected == filter.name"
-                                                       class="fa fa-times-circle-o remove"></i>
+                                                       class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -110,15 +110,13 @@
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
                     <div>
-                        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
-                            <i class="fa fa-angle-down fa-lg"></i>
-                            <span translate>button.expandAll</span>
+                        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                            <i class="fa fa-angle-double-down fa-lg"></i>
                         </button>
-                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
-                            <i class="fa fa-angle-up fa-lg"></i>
-                            <span translate>button.collapseAll</span>
+                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                           <i class="fa fa-angle-double-up fa-lg"></i>
                         </button>
-                        <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                       <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                         <tree tree-data="tree"
                                 tree-control="my_tree"
                                 view-orders="viewOrders(jobChain)"
@@ -203,7 +201,8 @@
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs">
-                                        <a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i>
+                                        <a class="text-hover-primary text-ellipsis1" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a>
+                                        <i ng-if="!jobChain.processClass">-</i>
                                         <span class="m-l" ng-if="jobChain.distributed" translate>label.distributed</span>
                                     </div>
                                 </div>
@@ -231,7 +230,7 @@
                             <tr>
                                 <th class="noExl">
                                     <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()">
+                                        <input type="checkbox" ng-model="jobChainCheckAll.checkbox" ng-click="jobChainCheckAll()">
                                         <i class="primary"></i>
                                     </label>
                                 </th>
@@ -349,9 +348,6 @@
                                             <a class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="addOrder(jobChain);" translate>button.addOrder</a>
-                                            <a class="hide dropdown-item"
-                                               ng-class="{show:permission.Order.start, 'disable-link':jobChain.numOfOrders==0}"
-                                               ng-click="startOrder(jobChain);" translate>button.manageOrders</a>
                                             <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="viewCalendar(jobChain);" translate>button.showCalendar</a>
@@ -558,7 +554,7 @@
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item">
                                             <a class="nav-link active" href data-toggle="tab" data-target="#tab2"
-                                               translate>label.orderHistory</a>
+                                               translate>label.history</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -597,7 +593,7 @@
                                                 </table>
                                                 <div ng-if="historys.length==0"
                                                      class="text-center m-t-md h6 text-uppercase" translate>
-                                                    message.noOrderHistoryFound
+                                                    message.noJobChainHistoryFound
                                                 </div>
                                             </div>
                                         </div>
@@ -618,13 +614,12 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" >
-                        <i class="fa fa-angle-down fa-lg"></i>
-                        <span translate>button.expandAll</span>
+                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+
                     </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
-                       <i class="fa fa-angle-up fa-lgo"></i>
-                        <span translate>button.collapseAll</span>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
+                       <i class="fa fa-angle-double-up fa-lg"></i>
                     </button>
                     <tree
                             tree-data="filterTree1"

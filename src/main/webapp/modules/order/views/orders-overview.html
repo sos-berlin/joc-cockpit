@@ -204,16 +204,12 @@
                                             <i class="fa fa-step-forward text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.resume</span>
                                         </a>
-                                        <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text != 'RUNNING' && !order.historyId}" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
+                                        <a href class="text-hover-color pull-right"  ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                            ng-click="suspendOrder(order)">
                                             <i class="fa fa-pause text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.suspend</span>
                                         </a>
-                                        <a ng-click="showLogWindow(order)" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
-                                           ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
-                                            <i class="fa fa-file-text text-black-lt"></i>
-                                            <span class="text-black-lt" translate>button.viewLog</span>
-                                        </a>
+
                                     </div>
                                 </div>
                             </div>
@@ -414,7 +410,7 @@
                 </div>
                 <div class="hide " ng-class="{'show': isLoading}" >
                     <div class="row hide" ng-show="showLogPanel" ng-class="{'show': pageView=='list'}">
-                        <div class="col-md-12 hide" ng-class="{show: isLoading1}">
+                        <div class="col-md-12">
                             <div class="box white">
                                 <div class="box-header">
                                     <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted">{{showLogPanel.title}}</i></span>

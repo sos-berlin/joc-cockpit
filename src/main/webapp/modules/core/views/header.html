@@ -11,7 +11,6 @@
 
     <!-- nabar right -->
     <ul class="nav navbar-nav pull-right ">
-
         <li class="nav-item dropdown">
             <a class="nav-link text-white" data-toggle="dropdown">
              <span class="avatar w-32">
@@ -40,104 +39,98 @@
     </ul>
     <!-- / navbar right -->
 
-    <ul class="nav navbar-nav pull-right " style="padding-right: 20px">
-
-        <li class="nav-item dropdown">
+    <ul class="nav navbar-nav pull-right p-r">
+        <li class="nav-item dropdown p-r-xs">
             <a class="nav-link text-white" data-toggle="dropdown" ng-click="updateAllEvent(allSessionEvent)">
-
-              <span class="text-left p-l-xs">
+                <span class="text-left p-l-xs">
                    <span class="label label-sm up notification" ng-if="allSessionEvent.eventUnReadCount>0"
                          ng-bind="allSessionEvent.eventUnReadCount"></span>
                     <i class="fa fa-lg fa-bell-o fa-grey"></i>
 
               </span>
             </a>
-
             <div class="dropdown-menu pull-right dropdown-ac" id="notification" ng-init="showEvent=false">
-
-
-                <div class="scrollable" style="max-height: 300px;width: 700px ;margin-left: 0px;padding-top:10px">
-
+                <div class="scrollable" style="max-height: 300px;width: 680px ;margin-left: 0;padding-top:10px">
                     <div>
                         <div class="col-sm-6" ng-if="showEvent==false || showEvent==undefined">
-                            <h5 style="margin: 8px 0px 0px 2px"><span>Notifications </span></h5>
+                            <h5 style="padding-top: 7px; margin-bottom: 0"><span translate>label.notifications </span></h5>
                         </div>
                         <div class="col-sm-6 cursor" ng-click="collapseNotification()" ng-if="showEvent==true">
-                            <h5 style="margin: 8px 0px 0px 2px"><i class=" fa fa-angle-left "></i>
-                                <span>Back to notifications </span></h5>
+                            <h5 style="padding-top: 7px; margin-bottom: 0"><i class=" fa fa-angle-left "></i>
+                                <span translate>label.backToNotifications </span></h5>
                         </div>
-
-
                         <div class="col-sm-6 ">
-
-
                             <div class="btn-group m-l-sm pull-right" ng-if="showEvent==false || showEvent==undefined">
-                            <button class="btn btn-grey btn-sm btn-primary active"  ng-click="makeAllGroupEventRead(allSessionEvent)"
-                                      translate>button.markAllAsRead
-                            </button>
-                                </div>
-
-                             <div class="btn-group m-l-sm pull-right" ng-if="showEvent==true">
-                            <button class="btn btn-grey btn-sm btn-primary active"  ng-click="makeAllEventRead(allSessionEvent,showGroupEvent)" translate>button.markAllAsRead
-                            </button>
-                                </div>
-
+                                <button class="btn btn-grey btn-sm btn-primary active"  ng-click="makeAllGroupEventRead(allSessionEvent)"
+                                          translate>button.markAllAsRead
+                                </button>
+                            </div>
+                            <div class="btn-group m-l-sm pull-right" ng-if="showEvent==true">
+                                <button class="btn btn-grey btn-sm btn-primary active"  ng-click="makeAllEventRead(allSessionEvent,showGroupEvent)" translate>button.markAllAsRead
+                                </button>
+                            </div>
                         </div>
                     </div>
-
-
                 </div>
                 <hr>
-                <table class="  table-hover" style="margin-left: 25px; margin-bottom: 1rem">
+                <div style="max-height: 300px; overflow: auto">
+                    <table class="table-hover" style="margin-left: 16px; margin-bottom: 12px; width: 94%">
+                        <tbody>
+                        <tr ng-repeat="group in allSessionEvent.group | orderBy:'-eventId'">
+                            <td ng-click="expandNotification(group)" class="cursor" ng-show="!showEvent">
+                                <span>
+                                    <span class="_600" ng-if="group.readCount>9">{{group.readCount}}</span>
+                                    <span class="_600" ng-if="group.readCount<9">0{{group.readCount}}</span>
+                                    new events on <span class="text-black-dk">{{group.jobschedulerId}}</span>
+                                    <span class="text-capitalize">{{group.objectType | lowercase}}:</span>
+                                    <span class="text-primary">{{group.path}}</span>
+                                    <span class="text-muted" time1="{{group.eventId/1000}}"></span>
+                                </span>
+                                <i class="cursor  fa fa-angle-right"></i>
 
-                    <tbody>
+                            </td>
+                        </tr>
+                        <tr ng-if="showEvent==true">
+                            <td style="font-size: 14px;padding-bottom: 6px">
+                                <span class="text-capitalize">{{showGroupEvent.objectType | lowercase}}</span>
+                                {{showGroupEvent.path}}
+                                <span class="_600">{{showGroupEvent.readCount}}</span>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="value in showGroupEvent.events | orderBy:'-eventId' track by $index" ng-if="showEvent==true" style="margin-top: 10px">
+                            <td>
+                                <span class="cursor p-l p-r" ng-if="value.read==false" ng-click="readEvent(showGroupEvent,value,allSessionEvent)">
+                                    <i class="fa fa-angle-right text-orange _600 fa-lg" ng-if="value.navigate"></i>
+                                    <span class="text-capitalize">{{value.objectType | lowercase}}:</span>
+                                    <span class="text-primary">{{value.path}}</span>
+                                    {{value.eventType}}
+                                    <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
 
+                                </span>
+                                <span class="p-l p-r text-black-lt" ng-if="value.read==true">
+                                    <i class="fa fa-angle-right text-orange _600 fa-lg" ng-if="value.navigate"></i>
+                                    <span class="text-capitalize">{{value.objectType | lowercase}}:</span>
+                                    <span class="text-primary">{{value.path}}</span>
+                                    {{value.eventType}}
+                                    <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="p-r-sm">
+                                    <i class="cursor fa fa-file-o" ng-click="viewObject(showGroupEvent,value,allSessionEvent)" uib-tooltip="{{'tooltip.viewObject' | translate}}"></i>
 
-                    <tr ng-repeat="group in allSessionEvent.group | orderBy:'-eventId'">
-                        <td ng-click="expandNotification(group)" style="cursor: pointer ;" ng-show="!showEvent">
-    <span>
-    {{group.readCount}} new events on {{group.jobschedulerId}} <span class="text-capitalize">{{group.objectType | lowercase}}</span>  {{group.path}} {{(group.eventId/1000) | timeDifference}}
-
-    </span>
-
-
-                            <i class="cursor  fa fa-angle-right"></i>
-
-                        </td>
-
-                    </tr>
-                    <tr ng-if="showEvent==true">
-                        <td style="font-weight:bold;font-size: 14px"><span class="text-capitalize">{{showGroupEvent.objectType | lowercase}}</span>
-                            {{showGroupEvent.path | splitString}} {{showGroupEvent.readCount}}
-
-
-                        </td>
-                    </tr>
-                    <tr ng-repeat="value in showGroupEvent.events  | orderBy:'-eventId'" ng-if="showEvent==true" style="margin-top: 10px">
-
-
-                        <td>
-                        <span class="cursor" style="padding: 0px 0px 0px 12px;font-weight:bold;"
-                              ng-if="value.read==false" ng-click="readEvent(showGroupEvent,value,allSessionEvent)"><span
-                                class="text-capitalize">{{value.objectType | lowercase}}</span> {{value.path | splitString}} {{value.eventType}}
-                      <span>{{(value.eventId/1000) | date:'dd.MM.yyyy HH:mm:ss'}}</span></span>
-
-                        <span style="padding: 0px 0px 0px 12px;" ng-if="value.read==true"><span class="text-capitalize">{{value.objectType | lowercase}}</span> {{value.path | splitString}} {{value.eventType}}
-                      <span>{{(value.eventId/1000) | date:'dd.MM.yyyy HH:mm:ss'}}</span></span>
-
-
-                        </td>
-
-                    </tr>
-                    </tbody>
-                </table>
-
-
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-
+                <div class="text-center text m-t m-b h6 text-uppercase" ng-if="!allSessionEvent.group || allSessionEvent.group.length==0" translate>
+                    message.noNotificationFound
+                </div>
+            </div>
         </li>
     </ul>
-
 
     <!-- navbar collapse -->
     <div class="collapse navbar-toggleable-custom" id="navbar1">

@@ -423,7 +423,6 @@
   "message.oops": "OOPS",
   "message.pageNotExist": "表示するページがありません",
   "message.goToTheDashboard": "ダッシュボードに移動",
-  "message.loginError": "ユーザー名かパスワードが違います",
   "message.noJobsFound": "ジョブが見つかりません",
   "message.noOrdersFound": "オーダーが見つかりません",
   "message.noJobChainsFound": "ジョブチェーンがありません",
@@ -610,10 +609,6 @@
   "label.enterScheduleName": "Schedule Name",
   "label.waitingOrders": "Waiting Orders",
   "label.lateOrders": "Late Orders",
-  "label.lateOrdersSuccess": "Late Success Orders",
-  "label.lateOrdersError": "Late Error Orders",
-  "label.successOrders": "Success Orders",
-  "label.errorOrders": "Error Orders",
   "label.dateFilter": "Date Filter",
   "label.processPlanned": "Process Planned",
   "label.jobPlanned": "Job Planned",
@@ -662,6 +657,7 @@
   "message.noScheduleFound": "no schedule found",
   "message.noAgentClusterFound": "no agentCluster found",
   "message.noPlanFound": "no plan found",
+  "message.noNotificationFound": "no notification found",
   "message.noRunningTasksFound": "no running task found",
   "message.noLocksFound": "no lock found",
   "message.noTaskHistoryFound": "no task history found",
@@ -723,6 +719,7 @@
   "label.terminateTask": "Terminate Task",
   "label.withTimeout": "With Timeout",
   "message.taskTerminateMessage": "Should the task not terminate within the specified timeout then it will be killed.",
+  "message.loginError": "Account or password is wrong",
   "label.selectAll": "Select all",
   "label.taskStarted": "Task Started",
   "label.taskEnded": "Task Ended",
@@ -732,48 +729,32 @@
   "label.jobChainStopped": "Job Chain Stopped",
   "label.jobChainPending": "Job Chain Pending",
   "label.jobChainUnstopped": "Job Chain Unstopped",
-   "label.orderStarted": "Order Started",
-    "label.orderStepStarted": "Order Step Started",
-    "label.orderStepEnded": "Order Step Ended",
-    "label.orderNodeChanged": "Order Node Changed",
-    "label.orderResumed": "Order Resumed",
-    "label.orderSetback": "Order Setback",
-    "label.orderSuspended": "Order Suspended",
-    "label.task": "Task",
-    "label.orderSuccess": "Order-Success",
-     "label.orderFailed": "Order-Failed",
-    "label.onProcessing" :"On Processing",
-     "button.markAllAsRead" :"Mark all as read"
+  "label.orderStarted": "Order Started",
+  "label.orderStepStarted": "Order Step Started",
+  "label.orderStepEnded": "Order Step Ended",
+  "label.orderNodeChanged": "Order Node Changed",
+  "label.orderResumed": "Order Resumed",
+  "label.orderSetback": "Order Setback",
+  "label.eventFilter": "Event Filter",
+  "label.notifications": "Notifications",
+  "label.backToNotifications": "Back to notifications",
+  "label.task": "Task",
+  "label.onProcessing": "On Processing",
+  "button.markAllAsRead": "Mark all as read",
+  "label.account": "Account",
+  "label.maxNumberOfHistoryEntriesPerTask": "Max. number of history entries per task",
+  "label.maxNumberOfHistoryEntriesPerOrder": "Max. number of history entries per order",
+  "label.maxNumberOfHistoryEntriesPerJobchain": "Max. number of history entries per job chain",
+  "label.maxNumberOfOrdersPerJobChain": "Max. number of orders per job chain",
+  "message.noJobChainHistoryFound": "no job chain history found",
+  "label.lateOrdersSuccess": "Late Successful Orders",
+  "label.failedOrders": "Failed Orders",
+  "label.successfulOrders": "Successful Orders",
+  "label.lateOrdersFailed": "Failed Late Orders",
+  "button.logInAgain": "Log In Again",
+  "tooltip.deactivateCustomization": "Deactivate Customization",
+  "tooltip.viewObject": "View Object",
+  "tooltip.expandAll": "Expand All",
+  "tooltip.collapseAll": "Collapse All",
+  "tooltip.hideTree": "Hide Tree Panel"
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -114,7 +114,7 @@
                                    ng-repeat="filter in savedDailyPlanFilter.list track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
                                                        ng-if="savedDailyPlanFilter.selected == filter.name"
-                                                       class="fa fa-times-circle-o remove"></i>
+                                                       class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -332,13 +332,11 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();expandAll();" >
-                        <i class="fa fa-angle-down fa-lg"></i>
-                        <span translate>button.expandAll</span>
+                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
                     </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
-                       <i class="fa fa-angle-up fa-lg"></i>
-                        <span translate>button.collapseAll</span>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
+                       <i class="fa fa-angle-double-up fa-lg"></i>
                     </button>
                     <tree
                             tree-data="tree"

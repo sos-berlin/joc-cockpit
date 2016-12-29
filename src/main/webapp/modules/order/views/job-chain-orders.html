@@ -1,4 +1,4 @@
-<div class="m-t-sm">
+<div>
     <div class="hide-block sidebar-btn resize-cursor">
         <i  class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
     </div>
@@ -8,7 +8,7 @@
     <div id="rightPanel">
         <div ng-controller="OrderFunctionCtrl">
             <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
-                <div class="hide m-t-xs" ng-class="{'show': pageView=='grid'}">
+                <div class="hide" ng-class="{'show': pageView=='grid'}">
                     <div class="row">
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 " ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" >
                             <div class="box card" >
@@ -88,16 +88,12 @@
                                             <i class="fa fa-step-forward text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.resume</span>
                                         </a>
-                                        <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text != 'RUNNING' && !order.historyId}" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
+                                        <a href class="text-hover-color pull-right" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                            ng-click="suspendOrder(order)">
                                             <i class="fa fa-pause text-black-lt"></i>
                                             <span class="text-black-lt" translate>button.suspend</span>
                                         </a>
-                                        <a ng-click="showLogWindow(order)" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
-                                           ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
-                                            <i class="fa fa-file-text text-black-lt"></i>
-                                            <span class="text-black-lt" translate>button.viewLog</span>
-                                        </a>
+
                                     </div>
                                 </div>
                             </div>
@@ -290,11 +286,11 @@
                  <div ng-if="isLoading && orders.length==0" class="text-center m-t h6 text-uppercase" translate>message.noOrdersFound</div>
             </div>
             <div class="hide " ng-class="{'show': isLoading}" >
-                    <div class="row" ng-show="showLogPanel">
-                        <div class="col-md-12 hide" ng-class="{show: isLoading1}">
+                <div class="row" ng-show="showLogPanel">
+                        <div class="col-md-12">
                             <div class="box white">
                                 <div class="box-header">
-                                    <span class="text">{{showLogPanel.jobChain.substring(showLogPanel.jobChain.lastIndexOf('/')+1)}} : {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted">{{showLogPanel.title}}</i></span>
+                                    <span class="text"><b>{{'label.orderHistory' | translate}}</b> : {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted">{{showLogPanel.title}}</i></span>
                                 </div>
                                 <div class="box-tool">
                                     <ul class="nav text-muted text-md">
@@ -304,16 +300,7 @@
                                     </ul>
                                 </div>
                                  <div class="box-body p-t b-t" >
-                                    <div class="b-b">
-                                      <ul class="nav nav-tabs">
-                                        <li class="nav-item">
-                                          <a class="nav-link active" href data-toggle="tab" data-target="#tab2" translate>label.orderHistory</a>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                     <div class="tab-content p-a m-b-md">
-                                      <div class="tab-pane animated fadeIn active" id="tab2">
-                                          <div class="row">
+                                     <div class="">
                                               <div class="table-responsive">
                                                   <table class="table table-striped table-bordered ">
                                                     <thead>
@@ -346,14 +333,9 @@
                                                 </div>
                                             </div>
                                           </div>
-                                      </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
-                        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
                     </div>
                 </div>
                 <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">

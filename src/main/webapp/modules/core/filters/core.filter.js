@@ -11,8 +11,7 @@
         .filter('durationFromCurrent', durationFromCurrent)
         .filter('startFrom', startFrom)
         .filter('remainingTime', remainingTime).
-        filter('timeDifference', timeDifference).
-        filter('splitString', splitString);
+        filter('timeDifferenceFilter', timeDifferenceFilter);
 
 
     fromNow.$inject =['$window'];
@@ -101,6 +100,13 @@
         }
     }
 
+    function startFrom() {
+        return function (data, start) {
+             if(!data) return;
+            return data.slice(start);
+        }
+    }
+
     remainingTime.$inject =['$window'];
     function remainingTime($window) {
         return function (d1) {
@@ -134,16 +140,10 @@
         }
     }
 
-    function startFrom() {
-        return function (data, start) {
-             if(!data) return;
-            return data.slice(start);
-        }
-    }
-
-        timeDifference.$inject = [];
-    function timeDifference() {
+    timeDifferenceFilter.$inject = [];
+    function timeDifferenceFilter() {
         return function (date) {
+
             if (!date) return;
             var time = date,
                 timeNow = new Date().getTime(),
@@ -170,18 +170,5 @@
         }
     }
 
-    splitString.$inject = [];
-    function splitString() {
-        return function (string) {
-
-            if (string.indexOf(',') != -1) {
-                return string.substring(0, string.lastIndexOf(','));
-
-            } else {
-                return string;
-            }
-
-        }
-    }
 
 })();

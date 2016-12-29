@@ -8,9 +8,11 @@
         .service('CoreService', CoreService)
         .service('SavedFilter', SavedFilter);
 
-    CoreService.$inject = ['$window','$resource', '$q'];
-    function CoreService($window,$resource, $q) {
-        var _view = 'grid', _sideView = false, tabs = {};
+    CoreService.$inject = ['$window', '$resource', '$q'];
+    function CoreService($window, $resource, $q) {
+
+        var _view = 'grid', _sideView = false, tabs = {}, tempTabs = {};
+
         tabs._jobChain = {};
         tabs._jobChain.filter = {};
         tabs._jobChain.filter.state = 'ALL';
@@ -137,6 +139,143 @@
         tabs._resource.schedules.expand_to = [];
         tabs._resource.state = 'agent';
 
+        tempTabs._jobChain = {};
+        tempTabs._jobChain.filter = {};
+        tempTabs._jobChain.filter.state = 'ALL';
+        tempTabs._jobChain.filter.sortBy = 'name';
+        tempTabs._jobChain.reverse = false;
+        tempTabs._jobChain.pageSize = '10';
+        tempTabs._jobChain.currentPage = '1';
+        tempTabs._jobChain.expand_to = [];
+        tempTabs._jobChain.selectedView = true;
+
+        tempTabs._job = {};
+        tempTabs._job.filter = {};
+        tempTabs._job.filter.state = 'ALL';
+        tempTabs._job.filter.sortBy = 'name';
+        tempTabs._job.reverse = false;
+        tempTabs._job.pageSize = '10';
+        tempTabs._job.currentPage = '1';
+        tempTabs._job.expand_to = [];
+        tempTabs._job.selectedView = true;
+        tempTabs._job.showTaskPanel = undefined;
+
+        tempTabs._dashboard = {};
+        tempTabs._dashboard.filter = {};
+        tempTabs._dashboard.filter.range = "today";
+        tempTabs._dashboard.filter.orderRange = "today";
+        tempTabs._dashboard.filter.orderSummaryfrom = "today";
+        tempTabs._dashboard.filter.orderSummaryto = "today";
+        tempTabs._dashboard.filter.orderRange = "today";
+        tempTabs._dashboard.filter.label = 'button.today';
+
+        tempTabs._daliyPlan = {};
+        tempTabs._daliyPlan.filter = {};
+        tempTabs._daliyPlan.filter.status = 'ALL';
+        tempTabs._daliyPlan.filter.sortBy = 'processedPlan';
+        tempTabs._daliyPlan.filter.range = "today";
+        tempTabs._daliyPlan.range = 'period';
+        tempTabs._daliyPlan.reverse = false;
+        tempTabs._daliyPlan.pageSize = '25';
+        tempTabs._daliyPlan.currentPage = '1';
+        tempTabs._daliyPlan.selectedView = true;
+
+        tempTabs._order = {};
+        tempTabs._order.filter = {};
+        tempTabs._order.filter.state = 'ALL';
+        tempTabs._order.filter.sortBy = 'orderId';
+        tempTabs._order.reverse = false;
+        tempTabs._order.pageSize = '10';
+        tempTabs._order.currentPage = '1';
+        tempTabs._order.expand_to = [];
+        tempTabs._order.selectedView = true;
+        tempTabs._order.showLogPanel = undefined;
+
+        tempTabs._order1 = {};
+        tempTabs._order1.filter = {};
+        tempTabs._order1.filter.sortBy = 'orderId';
+        tempTabs._order1.reverse = false;
+        tempTabs._order1.pageSize = '10';
+
+        tempTabs._orderDetail = {};
+        tempTabs._orderDetail.overview = true;
+        tempTabs._orderDetail.filter = {};
+        tempTabs._orderDetail.filter.sortBy = 'orderId';
+        tempTabs._orderDetail.reverse = false;
+        tempTabs._orderDetail.pageSize = '10';
+        tempTabs._orderDetail.currentPage = '1';
+        tempTabs._orderDetail.pageView = 'grid';
+        tempTabs._orderDetail.showErrorNodes = true;
+        tempTabs._orderDetail.fitToScreen = false;
+
+        tempTabs._history = {};
+        tempTabs._history.order = {};
+        tempTabs._history.type = 'jobChain';
+        tempTabs._history.order.filter = {};
+        tempTabs._history.order.filter.historyStates = 'all';
+        tempTabs._history.order.filter.date = 'today';
+        tempTabs._history.order.filter.sortBy = 'startTime';
+        tempTabs._history.order.sortReverse = false;
+        tempTabs._history.order.pageSize = '25';
+        tempTabs._history.order.currentPage = '1';
+        tempTabs._history.order.selectedView = true;
+        tempTabs._history.task = {};
+        tempTabs._history.task.filter = {};
+        tempTabs._history.task.filter.historyStates = 'all';
+        tempTabs._history.task.filter.date = 'today';
+        tempTabs._history.task.filter.sortBy = 'startTime';
+        tempTabs._history.task.sortReverse = false;
+        tempTabs._history.task.pageSize = '25';
+        tempTabs._history.task.currentPage = '1';
+        tempTabs._history.task.selectedView = true;
+
+
+        tempTabs._resource = {};
+        tempTabs._resource.agents = {};
+        tempTabs._resource.agents.filter = {};
+        tempTabs._resource.agents.filter.state = 'all';
+        tempTabs._resource.agents.filter.sortBy = 'path';
+        tempTabs._resource.agents.reverse = false;
+        tempTabs._resource.agents.pageSize = '25';
+        tempTabs._resource.agents.currentPage = '1';
+        tempTabs._resource.agents.expand_to = [];
+        tempTabs._resource.locks = {};
+        tempTabs._resource.locks.filter = {};
+        tempTabs._resource.locks.filter.state = 'all';
+        tempTabs._resource.locks.filter.sortBy = 'name';
+        tempTabs._resource.locks.reverse = false;
+        tempTabs._resource.locks.pageSize = '25';
+        tempTabs._resource.locks.currentPage = '1';
+        tempTabs._resource.locks.expand_to = [];
+        tempTabs._resource.processClasses = {};
+        tempTabs._resource.processClasses.filter = {};
+        tempTabs._resource.processClasses.filter.state = 'all';
+        tempTabs._resource.processClasses.filter.sortBy = 'name';
+        tempTabs._resource.processClasses.reverse = false;
+        tempTabs._resource.processClasses.pageSize = '25';
+        tempTabs._resource.processClasses.currentPage = '1';
+        tempTabs._resource.processClasses.expand_to = [];
+        tempTabs._resource.schedules = {};
+        tempTabs._resource.schedules.filter = {};
+        tempTabs._resource.schedules.filter.state = 'all';
+        tempTabs._resource.schedules.filter.sortBy = 'name';
+        tempTabs._resource.schedules.reverse = false;
+        tempTabs._resource.schedules.pageSize = '25';
+        tempTabs._resource.schedules.currentPage = '1';
+        tempTabs._resource.schedules.expand_to = [];
+        tempTabs._resource.state = 'agent';
+
+        if ($window.sessionStorage.$SOS$TABS) {
+            try {
+                var obj = JSON.parse($window.sessionStorage.$SOS$TABS);
+                if(obj){
+                    tabs = obj;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
 
         if ($window.sessionStorage.$SOS$VIEW) {
             _view = $window.sessionStorage.$SOS$VIEW;
@@ -171,6 +310,12 @@
             },
             getSideView: function () {
                 return !_sideView;
+            },
+            setDefaultTab: function () {
+                tabs = tempTabs;
+            },
+            getTabs: function () {
+               return tabs;
             },
             getJobTab: function () {
                 return tabs._job;

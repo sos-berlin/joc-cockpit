@@ -16,7 +16,7 @@
                         </td>
                         <td style="white-space: nowrap">
                             <span class="p-l-sm tree-label"  ng-click="on_user_click(row.branch)">
-                                <span ng-class="{'p-r-sm' : row.branch.expanded}">
+                                <span>
                                     <i ng-if="!row.branch.expanded" class="fa fa-folder"></i>
                                     <i ng-if="row.branch.expanded && row.branch.folders.length>0" class="fa fa-folder-open"></i>
                                     <i ng-if="row.branch.expanded && row.branch.folders.length==0" class="fa fa-folder"></i>
@@ -25,8 +25,8 @@
                             </span>
                         </td>
                         <td style="padding-right: 20px" ng-if="row.branch.folders.length>0">
-                            <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()" ng-if="!row.branch.expanded"> <i class="text-xs p-l-sm fa fa-expand p-r-xs"></i> </span>
-                            <span ng-click="collapseNode({branch:row.branch});$event.stopPropagation()" ng-if="row.branch.expanded"> <i class="text-xs fa fa-compress"></i></span>
+                            <span ng-click="expandNode({branch:row.branch});$event.stopPropagation()"> <i class="expand-collapse fa fa-angle-double-down"></i> </span>
+                            <span class="m-l" ng-click="collapseNode({branch:row.branch});$event.stopPropagation()"> <i class="expand-collapse fa fa-angle-double-up"></i></span>
                         </td>
                     </tr>
                 </table>

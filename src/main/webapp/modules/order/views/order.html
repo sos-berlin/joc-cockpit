@@ -99,7 +99,7 @@
                                 <a class="dropdown-item" ng-click="editFilters()" ng-if="savedOrderFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedOrderFilter.list.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedOrderFilter.list track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -134,15 +134,13 @@
                 </div>
                 <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
                     <div>
-                        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" >
-                            <i class="fa fa-angle-down fa-lg"></i>
-                            <span translate>button.expandAll</span>
+                             <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                            <i class="fa fa-angle-double-down fa-lg"></i>
                         </button>
-                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" >
-                            <i class="fa fa-angle-up fa-lg"></i>
-                            <span translate>button.collapseAll</span>
+                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                           <i class="fa fa-angle-double-up fa-lg"></i>
                         </button>
-                        <a class="text m-l-xs resize-cursor"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()"></i></a>
+                        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                         <tree
                                 tree-data="tree"
                                 tree-control="my_tree"
@@ -228,7 +226,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    <div class="box-footer b-t">
+                                        <div class="box-footer b-t">
                                             <div>
                                                 <a href class="hide text-left primary-text-hover-color" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') "
                                                    ng-class="{'show-block':permission.Order.start}" ng-click="start(order)">
@@ -240,15 +238,10 @@
                                                     <i class="fa fa-step-forward text-black-lt"></i>
                                                     <span class="text-black-lt" translate>button.resume</span>
                                                 </a>
-                                                <a href class="text-hover-color" ng-class="{'pull-right' : order.processingState._text != 'RUNNING' && !order.historyId}" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
+                                                <a href class="text-hover-color pull-right" ng-if="(order.processingState._text && order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                                    ng-click="suspendOrder(order)">
                                                     <i class="fa fa-pause text-black-lt"></i>
                                                     <span class="text-black-lt" translate>button.suspend</span>
-                                                </a>
-                                                <a ng-click="showLogWindow(order)" ng-if="order.historyId" class="hide text-right primary-text-hover-color"
-                                                   ng-class="{'show-inline':permission.Order.view.orderLog,'pull-right':permission.Order.suspend}">
-                                                    <i class="fa fa-file-text text-black-lt"></i>
-                                                    <span class="text-black-lt" translate>button.viewLog</span>
                                                 </a>
                                             </div>
                                         </div>
@@ -334,7 +327,7 @@
                                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
 
                                                 <a class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                                <i class="text-muted">{{:: order.title}}</i></a>
+                                                <i class="text-muted">{{order.title}}</i></a>
                                             </td>
                                             <td><a class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></a></td>
                                             <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
@@ -527,14 +520,13 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                   <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" >
-                        <i class="fa fa-angle-down fa-lg"></i>
-                        <span translate>button.expandAll</span>
+                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
                     </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
-                       <i class="fa fa-angle-up fa-lg"></i>
-                        <span translate>button.collapseAll</span>
+                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
                     </button>
+
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"

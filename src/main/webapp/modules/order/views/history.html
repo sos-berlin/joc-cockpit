@@ -88,7 +88,7 @@
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedHistoryFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedHistoryFilter.list.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedHistoryFilter.list track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -175,7 +175,7 @@
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobHistoryFilter.list.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="savedJobHistoryFilter.list.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: savedJobHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedJobHistoryFilter.list track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove"></i>
+                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -456,11 +456,11 @@
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
                     <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();expandAll();" >
-                        <i class="fa fa-angle-down fa-lg"></i>
+                        <i class="fa fa-angle-double-down fa-lg"></i>
                         <span translate>button.expandAll</span>
                     </button>
                     <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
-                       <i class="fa fa-angle-up fa-lg"></i>
+                       <i class="fa fa-angle-double-up fa-lg"></i>
                         <span translate>button.collapseAll</span>
                     </button>
                     <tree

@@ -18,7 +18,7 @@
                 <div class="box p-a p-b-lg">
                    <h5 translate>label.userDetails</h5>
                    <div class="row m-t">
-                       <div class="col-sm-2"><span class="text-dark" translate>label.userName</span></div>
+                       <div class="col-sm-3"><span class="text-dark" translate>label.userName</span></div>
                        <div class="col-sm-6">
                           <span class="text-black-lt">{{permission.user}}</span>
                        </div>
@@ -26,13 +26,13 @@
                    <hr>
                    <h5 translate>label.preferences</h5>
                    <div class="row m-t">
-                       <div class="col-sm-2 text-dark form-control-label" translate>label.language</div>
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.language</div>
                        <div class="col-sm-3">
                           <select class="form-control w-xl" ng-model="upc.perferences.locale" ng-change="upc.setLocale()"  ng-options="locale as locale.name for locale in upc.locales"></select>
                        </div>
                    </div>
                    <div class="row m-t-sm">
-                       <div class="col-sm-2 text-dark form-control-label" translate>label.timeZone</div>
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.timeZone</div>
                        <div class="col-sm-3">
                            <select class="form-control w-xl"  ng-model="upc.perferences.zone" ng-change="upc.setTimeZone()">
                                 <option value="{{upc.timezone}}">local ({{upc.timezone}})</option>
@@ -43,8 +43,8 @@
                        </div>
                    </div>
                    <div class="row m-t-sm">
-                       <div class="col-sm-2 text-dark form-control-label" translate>label.dateTimeFormat</div>
-                       <div class="col-sm-10">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.dateTimeFormat</div>
+                       <div class="col-sm-9">
 
                            <select class="form-control w-xl" ng-model="upc.perferences.dateFormat" ng-change="upc.setDateFormat()">
                                <option value="DD.MM.YYYY HH:mm:ss">Default (DD.MM.YYYY HH:mm:ss)</option>
@@ -160,14 +160,32 @@
                            <div class="help-block">HH - 24 hour time, hh - 12 hour time, A - am and pm, mm - minutes, ss - seconds</div>
                        </div>
                    </div>
-                    <div class="row m-t">
-                       <div class="col-sm-2 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
+                   <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
                        <div class="col-sm-3">
                           <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxRecords" ng-blur="upc.changePerferences()">
                        </div>
                    </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerOrder</div>
+                       <div class="col-sm-3">
+                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxHistoryPerOrder" ng-blur="upc.changePerferences()">
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerTask</div>
+                       <div class="col-sm-3">
+                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxHistoryPerTask" ng-blur="upc.changePerferences()">
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerJobchain</div>
+                       <div class="col-sm-3">
+                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxOrderPerJobchain" ng-blur="upc.changePerferences()">
+                       </div>
+                   </div>
                    <div class="row m-t">
-                       <div class="col-sm-2 text-dark" translate>label.showLogs</div>
+                       <div class="col-sm-3 text-dark" translate>label.showLogs</div>
                        <div class="col-sm-3">
                            <label class="md-check w">
                                <input type="radio" name="radio" ng-model="upc.perferences.isNewWindow" value="newWindow" ng-change="upc.changePerferences()">
@@ -180,92 +198,84 @@
                        </div>
                    </div>
                    <hr>
+                   <h5 translate>label.eventFilter</h5>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark " translate>label.task</span></div>
+                       <div class="col-sm-9">
+                            <span class="md-check w-md">
+                                <input type="checkbox" ng-model="selectAllTaskModel"
+                                       ng-change="upc.selectAllTaskFunction(selectAllTaskModel)"/> <i class="primary"></i> <span translate>label.selectAll</span>
+                            </span>
+                            <span class="md-check w-md" ng-repeat="task in tasks">
+                                <input type="checkbox" checklist-model="eventFilter" checklist-value="task.value"
+                                       ng-change="upc.selectTaskFunction(checked)"/><i class="primary"></i>
+                                <span >{{task.label | translate}} </span>
+                            </span>
+                        </div>
+                   </div>
+                   <div class="row m-t">
+                    <div class="col-sm-3"><span class="text-dark " translate>label.job</span></div>
+                       <div class="col-sm-9">
+                        <span class="md-check w-md">
+                            <input type="checkbox" ng-model="selectAllJobModel"
+                                   ng-change="upc.selectAllJobFunction(selectAllJobModel)"/> <i class="primary"></i> <span translate>label.selectAll</span>
+                        </span>
+                        <span class="md-check w-md" ng-repeat="job in jobs">
+                            <input type="checkbox" checklist-model="eventFilter" checklist-value="job.value" ng-change="upc.selectJobFunction(checked)"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
+                        </span>
+                    </div>
+                   </div>
+                   <div class="row m-t">
+                    <div class="col-sm-3"><span class="text-dark " translate>label.jobChain</span></div>
+                    <div class="col-sm-9">
+                        <span class="md-check  w-md">
+                            <input type="checkbox" ng-model="selectAllJobChainModel"
+                                   ng-change="upc.selectAllJobChainFunction(selectAllJobChainModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+                        <span class="md-check  w-md" ng-repeat="jobChain in jobChains">
+                            <input type="checkbox" checklist-model="eventFilter" checklist-value="jobChain.value"
+                                   ng-change="upc.selectJobChainFunction(checked)"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
+                        </span>
+                    </div>
+                   </div>
+                   <div class="row m-t">
+                        <div class="col-sm-12 m-b-sm" >
+                            <span class="text-dark" translate>label.successfulOrders</span>
+                        </div>
+                        <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.onProcessing </span></div>
+                        <div class="col-sm-9">
+                            <span class="md-check w-md">
+                                <input type="checkbox" ng-model="selectAllPositiveOrderModel" ng-change="upc.selectAllPositiveOrderFunction(selectAllPositiveOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
+                            <span class="md-check w-md" ng-repeat="positiveOrder in positiveOrders" ng-class="{'m-l-xs m-t-sm' : $index == positiveOrders.length-1}">
+                                <input type="checkbox" checklist-model="eventFilter" checklist-value="positiveOrder.value" ng-change="upc.selectPositiveOrderFunction(checked)"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
+                            </span>
+                        </div>
+
+                    </div>
+                   <div class="row m-t">
+                        <div class="col-sm-12 m-b-sm" ><span class="text-dark" translate>label.failedOrders</span></div>
+                        <div class="col-sm-3 "><span class="text-dark p-l-md" translate>label.onProcessing</span></div>
+                        <div class="col-sm-9">
+                            <span class="md-check w-md">
+                                <input type="checkbox" ng-model="selectAllNegativeOrderModel" ng-change="upc.selectAllNegativeOrdersFunction(selectAllNegativeOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span>
+                            </span>
+                            <span class="md-check w-md" ng-repeat="negativeOrder in negativeOrders" >
+                                <input type="checkbox" checklist-model="eventFilter" checklist-value="negativeOrder.value"
+                                       ng-change="upc.selectNegativeOrderFunction(checked)"/><i class="primary"></i>  <span>{{negativeOrder.label  | translate}}</span>
+                            </span>
+                        </div>
+
+                    </div>
+                   <hr>
                    <h5 translate>label.roles</h5>
                    <div class="row m-t-sm">
                        <div class="col-sm-6">
-                           <div class="m-t-sm" ng-repeat="permission in permission.SOSPermissionRoles.SOSPermissionRole">
-                               <div class="col-sm-3 text-black-lt">{{permission}}</div>
+                           <div class="m-t-sm" ng-repeat="role in permission.SOSPermissionRoles.SOSPermissionRole">
+                               <div class="col-sm-3 text-black-lt">{{role}}</div>
                            </div>
                        </div>
                    </div>
                    <hr>
-
-                    <h5 translate>Event filter</h5>
-
-<div class="row m-t">
-    <div class="col-sm-2"><span class="text-dark " translate>label.task</span></div>
-    <div class="col-sm-10" style="padding-left: 20px ">
-        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllTaskModel"
-                                                     ng-change="upc.selectAllTaskFunction(selectAllTaskModel)"/> <i class="primary"></i> <span translate>label.selectAll</span>
-
-        </span>
-                     <span class="col-sm-2 md-check  text-black-lt" ng-repeat="task in tasks">
-                         <input type="checkbox" checklist-model="eventFilter" checklist-value="task.value"
-                                ng-change="upc.selectTaskFunction(checked)"/><i class="primary"></i>
-                         <span >{{task.label | translate}} </span>
-                     </span>
-
-    </div>
-
-</div>
-
-<div class="row m-t">
-    <div class="col-sm-2"><span class="text-dark " translate>label.job</span></div>
-    <div class="col-sm-10" style="padding-left: 20px ">
-        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllJobModel"
-                                                     ng-change="upc.selectAllJobFunction(selectAllJobModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
-                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="job in jobs">
-                    <input type="checkbox" checklist-model="eventFilter" checklist-value="job.value"
-                           ng-change="upc.selectJobFunction(checked)"/> <i class="primary"></i> <span>{{job.label | translate}}</span>
-                                </span>
-    </div>
-
-</div>
-<div class="row m-t">
-    <div class="col-sm-2"><span class="text-dark " translate>label.jobChain</span></div>
-    <div class="col-sm-10" style="padding-left: 20px ">
-        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllJobChainModel"
-                                                     ng-change="upc.selectAllJobChainFunction(selectAllJobChainModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
-                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="jobChain in jobChains">
-                     <input type="checkbox" checklist-model="eventFilter" checklist-value="jobChain.value"
-                            ng-change="upc.selectJobChainFunction(checked)"/> <i class="primary"></i> <span>{{jobChain.label  | translate}}</span>
-                                 </span>
-    </div>
-
-</div>
-
-
-
-<div class="row m-t">
-    <div class="col-sm-12" ><span class="text-dark" translate>label.orderSuccess</span></div>
-    <div class="col-sm-2" style="padding-left: 5%  "><span class="text-dark " translate>label.onProcessing </span></div>
-    <div class="col-sm-10" style="padding-left: 20px ">
-        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllPositiveOrderModel"
-                                                     ng-change="upc.selectAllPositiveOrderFunction(selectAllPositiveOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
-                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="positiveOrder in positiveOrders">
-                     <input type="checkbox" checklist-model="eventFilter" checklist-value="positiveOrder.value"
-                            ng-change="upc.selectPositiveOrderFunction(checked)"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
-                                 </span>
-    </div>
-
-</div>
-
-
-<div class="row m-t">
-    <div class="col-sm-12" ><span class="text-dark" translate>label.orderFailed</span></div>
-    <div class="col-sm-2" style="padding-left: 5%  "><span class="text-dark " translate>label.onProcessing</span></div>
-    <div class="col-sm-10" style="padding-left: 20px ">
-        <span class="col-sm-2 md-check  text-black-lt"><input type="checkbox" ng-model="selectAllNegativeOrderModel"
-                                                     ng-change="upc.selectAllNegativeOrdersFunction(selectAllNegativeOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
-                            <span class="col-sm-2 md-check  text-black-lt" ng-repeat="negativeOrder in negativeOrders">
-                     <input type="checkbox" checklist-model="eventFilter" checklist-value="negativeOrder.value"
-                            ng-change="upc.selectNegativeOrderFunction(checked)"/><i class="primary"></i>  <span>{{negativeOrder.label  | translate}}</span>
-                                 </span>
-    </div>
-
-</div>
-
-<hr>                   <h5 translate>label.permissions</h5>
+                   <h5 translate>label.permissions</h5>
                    <div class="row m-t">
                        <div class="col-sm-2"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
                        <div class="col-sm-10">
