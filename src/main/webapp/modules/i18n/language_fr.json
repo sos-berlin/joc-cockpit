@@ -305,7 +305,7 @@
   "label.absoluteRepeatEndEnd": "Répétition abosolue Fin - Fin",
   "label.zoom": "Zoom",
   "label.showErrorNodes": "Visualiser les Noeuds Erreur",
-  "label.noOfJobs": "Nombre des Tâches",
+  "label.noOfJobs": "Nombre des Noeuds",
   "label.noOfOrders": "Nombre des Ordres",
   "label.agent": "Agent",
   "label.agentCluster": "Cluster Agent",
