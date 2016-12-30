@@ -11,7 +11,7 @@
     CoreService.$inject = ['$window', '$resource', '$q'];
     function CoreService($window, $resource, $q) {
 
-        var _view = 'grid', _sideView = false, tabs = {}, tempTabs = {};
+        var _view = 'grid', _sideView = false, tabs = {}, tempTabs = {},dashboard={};
 
         tabs._jobChain = {};
         tabs._jobChain.filter = {};
@@ -33,15 +33,6 @@
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
         tabs._job.showTaskPanel = undefined;
-
-        tabs._dashboard = {};
-        tabs._dashboard.filter = {};
-        tabs._dashboard.filter.range = "today";
-        tabs._dashboard.filter.orderRange = "today";
-        tabs._dashboard.filter.orderSummaryfrom = "today";
-        tabs._dashboard.filter.orderSummaryto = "today";
-        tabs._dashboard.filter.orderRange = "today";
-        tabs._dashboard.filter.label = 'button.today';
 
         tabs._daliyPlan = {};
         tabs._daliyPlan.filter = {};
@@ -103,7 +94,6 @@
         tabs._history.task.currentPage = '1';
         tabs._history.task.selectedView = true;
 
-
         tabs._resource = {};
         tabs._resource.agents = {};
         tabs._resource.agents.filter = {};
@@ -159,15 +149,6 @@
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
         tempTabs._job.showTaskPanel = undefined;
-
-        tempTabs._dashboard = {};
-        tempTabs._dashboard.filter = {};
-        tempTabs._dashboard.filter.range = "today";
-        tempTabs._dashboard.filter.orderRange = "today";
-        tempTabs._dashboard.filter.orderSummaryfrom = "today";
-        tempTabs._dashboard.filter.orderSummaryto = "today";
-        tempTabs._dashboard.filter.orderRange = "today";
-        tempTabs._dashboard.filter.label = 'button.today';
 
         tempTabs._daliyPlan = {};
         tempTabs._daliyPlan.filter = {};
@@ -265,7 +246,27 @@
         tempTabs._resource.schedules.expand_to = [];
         tempTabs._resource.state = 'agent';
 
-        if ($window.sessionStorage.$SOS$TABS) {
+        dashboard._dashboard = {};
+        dashboard._dashboard.filter = {};
+        dashboard._dashboard.filter.range = "today";
+        dashboard._dashboard.filter.orderRange = "today";
+        dashboard._dashboard.filter.orderSummaryfrom = "today";
+        dashboard._dashboard.filter.orderSummaryto = "today";
+        dashboard._dashboard.filter.orderRange = "today";
+        dashboard._dashboard.filter.label = 'button.today';
+
+        if ($window.localStorage.$SOS$DASHBOARDTABS) {
+            try {
+                var obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
+                if(obj){
+                    dashboard = obj;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+/*        if ($window.sessionStorage.$SOS$TABS) {
             try {
                 var obj = JSON.parse($window.sessionStorage.$SOS$TABS);
                 if(obj){
@@ -274,7 +275,7 @@
             } catch (e) {
                 console.log(e);
             }
-        }
+        }*/
 
 
         if ($window.sessionStorage.$SOS$VIEW) {
@@ -317,6 +318,9 @@
             getTabs: function () {
                return tabs;
             },
+            getDashboard: function () {
+               return dashboard;
+            },
             getJobTab: function () {
                 return tabs._job;
             },
@@ -343,7 +347,7 @@
                 return tabs._history;
             },
             getDashboardTab: function () {
-                return tabs._dashboard;
+                return dashboard._dashboard;
             },
 
             getResourceTab: function () {

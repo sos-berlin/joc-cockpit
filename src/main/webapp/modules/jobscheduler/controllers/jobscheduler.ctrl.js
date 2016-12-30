@@ -2108,7 +2108,7 @@ function volatileFolderDataL(data, obj) {
             });
 
         };
-        if (vm.permission.ProcessClass.view.status)
+        if (vm.permission && vm.permission.ProcessClass.view.status)
             vm.getAgentClusterRunningTask();
 
         function prepareAgentClusterData(result) {
@@ -2485,7 +2485,7 @@ function volatileFolderDataL(data, obj) {
             })
         };
 
-        if (vm.permission.DailyPlan.view.status)
+        if (vm.permission && vm.permission.DailyPlan.view.status)
             vm.getDailyPlans();
 
 
@@ -2729,6 +2729,9 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
+        vm.$on('resetDailyPlanDate',function(){
+           vm.getPlans ();
+        });
         function setDateRange(range) {
             var from = new Date();
             var to = new Date();

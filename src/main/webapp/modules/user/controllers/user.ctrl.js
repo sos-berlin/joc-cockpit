@@ -29,7 +29,10 @@
                 }
             }, function (err) {
                 $rootScope.$broadcast('reloadUser');
-                $rootScope.error = err.data.message;
+                if(err.data && err.data.message)
+                    $rootScope.error = err.data.message;
+                else
+                   $rootScope.error = err.message;
                 $location.path('/error');
             });
         }

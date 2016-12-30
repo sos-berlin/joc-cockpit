@@ -287,10 +287,19 @@
 
         vm.currentTime = moment();
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
-
+        var resetDate = true;
         var interval = $interval(function () {
             --count;
             vm.currentTime = moment();
+            if (vm.currentTime.format("H") == "0" && resetDate) {
+                console.log("Reset Daily Plan Date");
+                $rootScope.$broadcast('resetDailyPlanDate');
+                resetDate = false;
+            }
+            if (vm.currentTime.format("H") !== "0") {
+                resetDate = true;
+            }
+
             var s = parseInt((count) % 60),
                 m = parseInt((count / (60)) % 60);
             if (m > 0 && m < 10) {
@@ -323,9 +332,10 @@
                 $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
             }
 
-            $window.sessionStorage.$SOS$TABS = JSON.stringify(CoreService.getTabs());
+         //   $window.sessionStorage.$SOS$TABS = JSON.stringify(CoreService.getTabs());
+            $window.localStorage.$SOS$DASHBOARDTABS = JSON.stringify(CoreService.getDashboard());
 
-        }, 1200);
+        }, 1000);
 
 
         vm.refreshSession = function () {
@@ -509,7 +519,9 @@
         }
 
         $scope.$on('event-all', function () {
+
             if ($window.localStorage.$SOS$EVENTFILTER) {
+
                 var eventFilter = JSON.parse($window.localStorage.$SOS$EVENTFILTER);
 
                 for (var i = 0; i < vm.allEvents.length; i++) {
@@ -679,25 +691,17 @@
                                         }
 
                                     if (flag) {
-
-
                                         eventByPath.readCount = 1;
                                         $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
 
                                         $scope.allSessionEvent.group.push(eventByPath);
 
-
                                     }
-
 
                                 }
 
-
                             }
-
-
                         }
-
                     }
 
                 }

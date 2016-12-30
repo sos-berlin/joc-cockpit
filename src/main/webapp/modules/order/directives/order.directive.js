@@ -31,7 +31,6 @@
                         ordersData.push(obj);
                         count++;
                         if (count === Object.keys(res).length) {
-                          
                             vm.ordersData = ordersData;
                         }
                     }
