@@ -4,13 +4,13 @@
  <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeAgent.length>0">
      <div>
 
-         <button class="btn btn-grey btn-sm" ng-click="my_tree_agent.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+         <a class="text" ng-click="my_tree_agent.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
              <i class="fa fa-angle-double-down fa-lg"></i>
-         </button>
-         <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree_agent.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+         </a>
+         <a class="text m-l-xs" ng-click="my_tree_agent.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
              <i class="fa fa-angle-double-up fa-lg"></i>
-         </button>
-         <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+         </a>
+         <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
          <tree tree-data="treeAgent"
                tree-control="my_tree_agent"
                expand-on="expanding_propertyA"
@@ -170,8 +170,9 @@
                         </tr>
                         </tbody>
                     </table>
-                    <ul ng-show="allAgentClusters.length > agentsFilters.pageSize" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='agentsFilters.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                    <div class="pull-right" ng-show="allAgentClusters.length > 10">
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allAgentClusters.length > 10}"><span translate>label.total</span> {{allAgentClusters.length}} <span translate>label.agentClustersFound</span></div>
+                    <ul ng-show="allAgentClusters.length > agentsFilters.pageSize" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='agentsFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                    <div class="pull-left" ng-show="allAgentClusters.length > 10">
                         <div class="btn-group m-r-xxs">
                             <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'10'"
                                     ng-class="{'primary': agentsFilters.pageSize=='10'}" >10

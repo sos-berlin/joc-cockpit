@@ -9,22 +9,22 @@
                 'de': {
                     lang: 'de',
                     country: 'DE',
-                    name: gettextCatalog.getString('Deutsch ( German )')
+                    name: 'German'
                 },
                 'en': {
                     lang: 'en',
                     country: 'US',
-                    name: gettextCatalog.getString('English')
+                    name: 'English'
                 },
                 'fr': {
                     lang: 'fr',
                     country: 'FR',
-                    name: gettextCatalog.getString('French')
+                    name: 'French'
                 },
                 'ja': {
                     lang: 'ja',
                     country: 'JA',
-                    name: gettextCatalog.getString('Japanese')
+                    name: 'Japanese'
                 }
             };
             var lang = $window.localStorage.$SOS$LANG || navigator.language || navigator.userLanguage;
@@ -49,14 +49,18 @@
                 $window.localStorage.$SOS$MAXHISTORYPERORDER = 30;
             }
             if (!$window.localStorage.$SOS$MAXHISTORYPERTASK) {
-                $window.localStorage.$SOS$MAXHISTORYPERTASK = 30;
+                $window.localStorage.$SOS$MAXHISTORYPERTASK = 10;
+            }
+            if (!$window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN) {
+                $window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN = 30;
             }
             if (!$window.localStorage.$SOS$MAXORDERPERJOBCHAIN) {
-                $window.localStorage.$SOS$MAXORDERPERJOBCHAIN = 30;
+                $window.localStorage.$SOS$MAXORDERPERJOBCHAIN = 5;
             }
             if (!$window.localStorage.$SOS$ISNEWWINDOW) {
                 $window.localStorage.$SOS$ISNEWWINDOW = 'newWindow';
             }
+
 
             if (!$window.localStorage.$SOS$EVENTFILTER) {
                 $window.localStorage.$SOS$EVENTFILTER = JSON.stringify([

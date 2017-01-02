@@ -110,13 +110,13 @@
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
                     <div>
-                        <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <a class="text m-r-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                             <i class="fa fa-angle-double-down fa-lg"></i>
-                        </button>
-                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        </a>
+                        <a class="text" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                            <i class="fa fa-angle-double-up fa-lg"></i>
-                        </button>
-                       <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+                        </a>
+                       <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                         <tree tree-data="tree"
                                 tree-control="my_tree"
                                 view-orders="viewOrders(jobChain)"
@@ -149,13 +149,14 @@
                                             <i ng-if="jobChain.distributed" class="fa fa-chain"></i>
                                             <a class="text-hover-primary" uib-tooltip="{{jobChain.title}}"
                                                ng-class="{'text-danger':jobChain.state._text == 'STOPPED', 'text-success':jobChain.state._text == 'RUNNING'}"
-                                               ng-click="viewOrdersDetail(jobChain)" ng-bind="jobChain.name"></a>
+                                               ng-click="viewFlowDiagram(jobChain)" ng-bind="jobChain.name"></a>
                                         </div>
                                         <div class="btn-group dropdown pull-right abt-dropdown">
                                             <a href class="more-option text-black-lt" data-toggle="dropdown">
                                                     <i class="text fa fa-ellipsis-h"></i></a>
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
-                                                   <a ng-click="viewOrdersDetail(jobChain)" class="dropdown-item" translate>button.showDetailView</a>
+                                                   <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item" translate>button.showDetailView</a>
+                                                   <a ng-click="viewOrders(jobChain)" class="dropdown-item" translate>button.jobChainOrders</a>
                                                     <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                                            class="hide dropdown-item"
                                                            ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -224,7 +225,7 @@
                     </div>
                 </div>
                 <div class="hide box p-a" ng-class="{'show': pageView=='list' && allJobChains.length>0}">
-                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
+                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight">
                         <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
                             <thead>
                             <tr>
@@ -340,7 +341,8 @@
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                            <a ng-click="viewOrdersDetail(jobChain)" class="dropdown-item" translate>button.showDetailView</a>
+                                            <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item" translate>button.showDetailView</a>
+                                            <a ng-click="viewOrders(jobChain)" class="dropdown-item" translate>button.jobChainOrders</a>
                                             <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                                class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -437,13 +439,11 @@
                                                         </div>
                                                     </div>
                                                     <i class="cursor text-xs"
-                                                       ng-if="showOrderPanel != node.name && node.orders && node.orders.length>5"
-                                                       ng-click="showOrderPanelFuc(node.orders.length, node.name)" ><span translate>label.showMore</span><br></i>
-                                                    <i class="cursor text-xs"
-                                                       ng-if="showOrderPanel == node.name && node.orders && node.orders.length>5"
-                                                       ng-click="hideOrderPanelFuc()" ><span translate>label.showLess</span><br></i>
+                                                       ng-if="node.orders && node.orders.length>limitNum"
+                                                       ng-click="showOrderPanelFuc(jobChain.path)" ><span translate>label.showMoreOrders</span><br></i>
+
                                                     </div>
-                                                    <table class="table table-hover table-bordered m-t-xs" ng-if="node.job.runningTasks">
+                                                    <table class="table table-hover table-bordered m-t-xs m-b-sm" ng-if="node.job.runningTasks">
                                                     <thead>
                                                     <tr>
                                                         <th class="text-xs" translate>label.pid</th>
@@ -469,7 +469,7 @@
                                                                         <i class="fa fa-ellipsis-h"></i></button>
                                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                                                         <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
-                                                                        <a class="dropdown-item" ng-if="permission.Job.view.endAllTasks" ng-click="end(task,node.job.path)" translate>button.end</a>
+                                                                        <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,node.job.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,node.job.path)" translate>button.killImmediately</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,node.job.path)" translate>button.terminate</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,node.job.path)" translate>button.terminateWithTimeout</a>
@@ -535,11 +535,12 @@
                             </tr>
                             </tbody>
                         </table>
+                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobChains.length > 10}"><span translate>label.total</span> {{allJobChains.length}} <span translate>label.jobChainsFound</span></div>
                         <ul ng-show="allJobChains.length > jobChainFilters.pageSize" uib-pagination total-items="allJobChains.length"
-                            ng-model="jobChainFilters.currentPage" items-per-page='jobChainFilters.pageSize' class="pagination-sm m-t-0" max-size="5"
+                            ng-model="jobChainFilters.currentPage" items-per-page='jobChainFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
                             ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-right" ng-show="allJobChains.length > 10">
+                        <div class="pull-left" ng-show="allJobChains.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': jobChainFilters.pageSize=='10'}">10
@@ -554,6 +555,7 @@
                                         ng-class="{'primary': jobChainFilters.pageSize=='100'}">100
                                 </button>
                             </div>
+
                         </div>
 
                     </div>
@@ -649,13 +651,13 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
+                    <a class="text m-r-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
 
-                    </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
+                    </a>
+                    <a class="text" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
                        <i class="fa fa-angle-double-up fa-lg"></i>
-                    </button>
+                    </a>
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"

@@ -134,13 +134,13 @@
                 </div>
                 <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
                     <div>
-                             <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <a class="text" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                             <i class="fa fa-angle-double-down fa-lg"></i>
-                        </button>
-                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        </a>
+                        <a class="text m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                            <i class="fa fa-angle-double-up fa-lg"></i>
-                        </button>
-                        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+                        </a>
+                        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                         <tree
                                 tree-data="tree"
                                 tree-control="my_tree"
@@ -414,8 +414,9 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                            <div class="pull-right" ng-show="allOrders.length > 10">
+                            <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}"><span translate>label.total</span> {{allOrders.length}} <span translate>label.ordersFound</span></div>
+                            <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                            <div class="pull-left" ng-show="allOrders.length > 10">
                                     <div class="btn-group m-r-xxs">
                                         <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'10'"
                                                 ng-class="{'primary': orderFilters.pageSize=='10'}" >10
@@ -520,12 +521,12 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
-                    </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                         <i class="fa fa-angle-double-up fa-lg"></i>
-                    </button>
+                    </a>
 
                     <tree
                             tree-data="filterTree1"

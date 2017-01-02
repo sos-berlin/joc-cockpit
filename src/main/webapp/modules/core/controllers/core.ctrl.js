@@ -140,7 +140,17 @@
         $(window).resize(function () {
             vm.calculateHeight();
             vm.checkNavHeader();
-        });
+
+              if(document.getElementById('agent-cluster-status')){
+                  var a= document.getElementById('agent-cluster-status').clientHeight
+              }
+             if(document.getElementById('agent-running-task')){
+                  var b= document.getElementById('agent-running-task').clientHeight
+              }
+            if(a+b > 320) {
+                $('#master-cluster-status').css('height', (a + b - 20) + 'px');
+            }
+           });
 
         vm.username = SOSAuth.currentUserData;
         setPermission();
@@ -256,6 +266,14 @@
                     return false;
             }
             return true;
+        };
+
+        vm.about = function () {
+            $uibModal.open({
+                templateUrl: 'modules/core/template/about-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm
+            });
         };
 
         vm.showJob = function (job) {
@@ -800,7 +818,12 @@
                 allSessionEvent.eventUnReadCount = 0;
             }
             $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify(allSessionEvent);
+
+
         };
+
+
+
 
         vm.makeAllEventRead = function (allSessionEvent, showGroupEvent) {
             if (showGroupEvent != undefined) {
@@ -813,6 +836,11 @@
                 showGroupEvent.readCount = 0;
             }
         };
+
+
+
+
+
 
 
         $scope.$on('$destroy', function () {

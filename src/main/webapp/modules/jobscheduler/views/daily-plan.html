@@ -153,7 +153,7 @@
                 </div>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-12">
-                <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="filterString">
+                <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="q">
             </div>
         </div>
         <div class="hide p-t-xs" ng-class="{'show': isLoading }">
@@ -265,7 +265,7 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in filtered = (plans | filter: filterString:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
                                 <td>
                                     <a class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></a>
                                     <a class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></a>
@@ -286,11 +286,13 @@
 
                             </tbody>
                         </table>
+                        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && plans.length !==0)}" translate>message.noDataMatched</div>
+                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': plans.length > 10}"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
                         <ul ng-show="filtered.length > dailyPlanFilters.pageSize" uib-pagination total-items="filtered.length"
                             ng-model="dailyPlanFilters.currentPage" items-per-page='dailyPlanFilters.pageSize' ng-change="pageChange()"
-                            class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false"
+                            class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-right" ng-show="filtered.length > 10">
+                        <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': dailyPlanFilters.pageSize=='10'}">10
@@ -307,11 +309,6 @@
                             </div>
                         </div>
                     </div>
-
-
-              <!--  <div class=" text-center m-t text-uppercase text-orange"
-                     ng-class="{'show': (temp.length>0 && (!plans||plans.length ==0))}" translate>message.noDataMatched
-                </div>-->
             </div>
         </div>
         <div class=" text-center m-t text-uppercase "
@@ -332,12 +329,12 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
-                    </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
                        <i class="fa fa-angle-double-up fa-lg"></i>
-                    </button>
+                    </a>
                     <tree
                             tree-data="tree"
                             tree-control="filter_tree"

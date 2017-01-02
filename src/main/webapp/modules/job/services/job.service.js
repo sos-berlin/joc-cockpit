@@ -88,7 +88,7 @@
              histories: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/history');
-                 filter.maxLastHistoryItems =$window.localStorage.$SOS$MAXORDERPERJOBCHAIN;
+                 filter.maxLastHistoryItems =$window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN;
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

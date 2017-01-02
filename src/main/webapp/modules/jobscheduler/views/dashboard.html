@@ -16,7 +16,7 @@
         <div class="row m-t-sm">
             <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" >
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" id="agent-cluster-status">
                         <div class="box" style="max-height: 180px">
                             <div class="box-header b-b">
                                 <h3 translate>label.agentClusterStatus</h3>
@@ -55,7 +55,7 @@
                                 </div>
                         </div>
                     </div>
-                    <div class="col-md-12" ng-show="permission.ProcessClass.view.status">
+                    <div class="col-md-12" id="agent-running-task" ng-show="permission.ProcessClass.view.status" >
                         <div class="box">
                             <div class="box-header b-b">
                                 <h3 translate>label.agentClusterRunningTasks</h3>
@@ -93,7 +93,7 @@
             <div class="col-xxl-8 col-lg-7 col-md-12 col-sm-12">
                  <div class="row" >
                      <div class="col-md-12" >
-                        <div class=" box" >
+                        <div class=" box" id="master-cluster-status">
                             <div class="box-header b-b">
                                 <h3 translate>label.masterClusterStatus</h3>
                             </div>

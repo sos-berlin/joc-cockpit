@@ -10,8 +10,8 @@
         .filter('duration', duration)
         .filter('durationFromCurrent', durationFromCurrent)
         .filter('startFrom', startFrom)
-        .filter('remainingTime', remainingTime).
-        filter('timeDifferenceFilter', timeDifferenceFilter);
+        .filter('remainingTime', remainingTime)
+        .filter('timeDifferenceFilter', timeDifferenceFilter);
 
 
     fromNow.$inject =['$window'];
@@ -34,8 +34,8 @@
         }
     }
 
-    duration.$inject =['$window'];
-    function duration($window) {
+    duration.$inject =['$window', 'gettextCatalog'];
+    function duration($window, gettextCatalog) {
         return function (d1, d2) {
             if (!d1 || !d2) return '-';
 
@@ -58,13 +58,13 @@
                     return d + 'd ' + h + 'h ' + m + 'm ' + s + 's';
                 }
             } else {
-                return 'less than a sec';
+                return gettextCatalog.getString('label.lessThanSec');
             }
         }
     }
 
-    durationFromCurrent.$inject =['$window'];
-    function durationFromCurrent($window) {
+    durationFromCurrent.$inject =['$window','gettextCatalog'];
+    function durationFromCurrent($window,gettextCatalog) {
         return function (d1, d2) {
             if (!d1) {
                 d1=new Date();
@@ -95,7 +95,7 @@
                         return d + 'day';
                 }
             } else {
-                return 'never' ;
+                return gettextCatalog.getString('never') ;
             }
         }
     }
@@ -140,8 +140,8 @@
         }
     }
 
-    timeDifferenceFilter.$inject = [];
-    function timeDifferenceFilter() {
+    timeDifferenceFilter.$inject = ['gettextCatalog'];
+    function timeDifferenceFilter(gettextCatalog) {
         return function (date) {
 
             if (!date) return;
@@ -153,19 +153,19 @@
                 hours = Math.floor(minutes / 60),
                 days = Math.floor(hours / 24);
             if (days > 1) {
-                return days + " days ago";
+                return days + ' ' +gettextCatalog.getString("label.dayAgo");
             } else if (days == 1) {
-                return "1 day ago"
+                return "1 "+gettextCatalog.getString("label.dayAgo");
             } else if (hours > 1) {
-                return hours + " hours ago";
+                return hours +' ' +gettextCatalog.getString("label.hourAgo");
             } else if (hours == 1) {
-                return "an hour ago";
+                return gettextCatalog.getString("label.anHourAgo");
             } else if (minutes > 1) {
-                return minutes + " minutes ago";
+                return minutes +' ' +gettextCatalog.getString("label.minuteAgo");
             } else if (minutes == 1) {
-                return "a minute ago";
+                return gettextCatalog.getString("label.aMinuteAgo");
             } else {
-                return "a few seconds ago";
+                return gettextCatalog.getString("label.fewSecondsAgo");
             }
         }
     }

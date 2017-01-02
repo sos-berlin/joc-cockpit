@@ -22,6 +22,7 @@
         tabs._jobChain.currentPage = '1';
         tabs._jobChain.expand_to = [];
         tabs._jobChain.selectedView = true;
+     
 
         tabs._job = {};
         tabs._job.filter = {};
@@ -196,7 +197,7 @@
         tempTabs._history.order.filter.historyStates = 'all';
         tempTabs._history.order.filter.date = 'today';
         tempTabs._history.order.filter.sortBy = 'startTime';
-        tempTabs._history.order.sortReverse = false;
+        tempTabs._history.order.sortReverse = true;
         tempTabs._history.order.pageSize = '25';
         tempTabs._history.order.currentPage = '1';
         tempTabs._history.order.selectedView = true;
@@ -205,7 +206,7 @@
         tempTabs._history.task.filter.historyStates = 'all';
         tempTabs._history.task.filter.date = 'today';
         tempTabs._history.task.filter.sortBy = 'startTime';
-        tempTabs._history.task.sortReverse = false;
+        tempTabs._history.task.sortReverse = true;
         tempTabs._history.task.pageSize = '25';
         tempTabs._history.task.currentPage = '1';
         tempTabs._history.task.selectedView = true;

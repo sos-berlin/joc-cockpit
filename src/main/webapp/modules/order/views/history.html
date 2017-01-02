@@ -325,10 +325,9 @@
                      </tr>
                         </tbody>
                     </table>
-                    <div ng-if="isLoading && historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noOrderHistoryFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
-                    <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="filtered.length > 10">
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': historys.length > 10}"><span translate>label.total</span> {{filtered.length}} <span translate>label.historiesFound</span></div>
+                    <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': order.pageSize=='10'}" >10
@@ -344,6 +343,8 @@
                                 </button>
                             </div>
                     </div>
+                    <div ng-if="isLoading && historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noOrderHistoryFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
             <div class="m-t-sm box p-a" ng-show="historyFilters.type == 'job'">
@@ -421,11 +422,9 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div ng-if="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
-
-                     <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" ng-change="pageChange()" items-per-page='task.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="jobFiltered.length > 10">
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': jobHistorys.length > 10}"><span translate>label.total</span> {{jobFiltered.length}} <span translate>label.historiesFound</span></div>
+                     <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" ng-change="pageChange()" items-per-page='task.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-left" ng-show="jobFiltered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': task.pageSize=='10'}" >10
@@ -441,6 +440,8 @@
                                 </button>
                             </div>
                     </div>
+                    <div ng-if="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (jobFiltered.length===0 && jobHistorys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
         </div>
@@ -455,14 +456,12 @@
         <div class="modal-content">
             <div class="modal-body p-a" style="height: 550px; overflow: auto">
                 <div>
-                    <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();expandAll();" >
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
-                        <span translate>button.expandAll</span>
-                    </button>
-                    <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" >
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                        <i class="fa fa-angle-double-up fa-lg"></i>
-                        <span translate>button.collapseAll</span>
-                    </button>
+                    </a>
                     <tree
                             tree-data="tree"
                             tree-control="filter_tree"

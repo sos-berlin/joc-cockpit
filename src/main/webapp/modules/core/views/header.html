@@ -4,8 +4,8 @@
         <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
-    <a class="navbar-brand white ">
-        <img src="images/jobscheduler-logo.png" alt=".">
+    <a class="navbar-brand white">
+        <img class="cursor" ng-click="about()" src="images/jobscheduler-logo.png" alt=".">
     </a>
     <!-- / brand -->
 
@@ -90,7 +90,7 @@
 
                             </td>
                         </tr>
-                        <tr ng-if="showEvent==true">
+                        <tr class="_600" ng-if="showEvent==true">
                             <td style="font-size: 14px;padding-bottom: 6px">
                                 <span class="text-capitalize">{{showGroupEvent.objectType | lowercase}}</span>
                                 {{showGroupEvent.path}}
@@ -99,16 +99,14 @@
                         </tr>
                         <tr ng-repeat="value in showGroupEvent.events | orderBy:'-eventId' track by $index" ng-if="showEvent==true" style="margin-top: 10px">
                             <td>
-                                <span class="cursor p-l p-r" ng-if="value.read==false" ng-click="readEvent(showGroupEvent,value,allSessionEvent)">
-                                    <i class="fa fa-angle-right text-orange _600 fa-lg" ng-if="value.navigate"></i>
+                                <span class="cursor p-l p-r _600" ng-if="value.read==false" ng-click="readEvent(showGroupEvent,value,allSessionEvent)">
                                     <span class="text-capitalize">{{value.objectType | lowercase}}:</span>
                                     <span class="text-primary">{{value.path}}</span>
                                     {{value.eventType}}
                                     <span class="text-muted">{{(value.eventId/1000) | stringToDate}}</span>
 
                                 </span>
-                                <span class="p-l p-r text-black-lt" ng-if="value.read==true">
-                                    <i class="fa fa-angle-right text-orange _600 fa-lg" ng-if="value.navigate"></i>
+                                <span class="p-l p-r" ng-if="value.read==true">
                                     <span class="text-capitalize">{{value.objectType | lowercase}}:</span>
                                     <span class="text-primary">{{value.path}}</span>
                                     {{value.eventType}}

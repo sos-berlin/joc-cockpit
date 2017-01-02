@@ -2201,6 +2201,15 @@ function volatileFolderDataL(data, obj) {
                         vm.clusterStatusData = clusterStatusData;
                         $rootScope.$broadcast('clusterStatusDataChanged');
                     }, 100);
+                    if (document.getElementById('agent-cluster-status')) {
+                        var a = document.getElementById('agent-cluster-status').clientHeight
+                    }
+                    if (document.getElementById('agent-running-task')) {
+                        var b = document.getElementById('agent-running-task').clientHeight
+                    }
+                    if (a + b > 320) {
+                        $('#master-cluster-status').css('height', (a + b - 20) + 'px');
+                    }
 
                 });
             });

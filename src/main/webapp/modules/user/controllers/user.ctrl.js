@@ -129,9 +129,9 @@
         vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
         vm.perferences.maxHistoryPerOrder = parseInt($window.localStorage.$SOS$MAXHISTORYPERORDER);
         vm.perferences.maxHistoryPerTask = parseInt($window.localStorage.$SOS$MAXHISTORYPERTASK);
+        vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
         vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
-
 
 
         vm.setLocale = function () {
@@ -162,22 +162,28 @@
             } else {
                 $window.localStorage.$SOS$MAXRECORDS = parseInt(vm.perferences.maxRecords);
             }
-            if (isNaN(parseInt(vm.perferences.maxRecords))) {
+            if (isNaN(parseInt(vm.perferences.maxHistoryPerOrder))) {
                 vm.perferences.maxHistoryPerOrder = parseInt($window.localStorage.$SOS$MAXHISTORYPERORDER);
             } else {
                 $window.localStorage.$SOS$MAXHISTORYPERORDER = parseInt(vm.perferences.maxHistoryPerOrder);
             }
-            if (isNaN(parseInt(vm.perferences.maxRecords))) {
+            if (isNaN(parseInt(vm.perferences.maxHistoryPerTask))) {
                 vm.perferences.maxHistoryPerTask = parseInt($window.localStorage.$SOS$MAXHISTORYPERTASK);
             } else {
                 $window.localStorage.$SOS$MAXHISTORYPERTASK = parseInt(vm.perferences.maxHistoryPerTask);
             }
-            if (isNaN(parseInt(vm.perferences.maxRecords))) {
+            if (isNaN(parseInt(vm.perferences.maxOrderPerJobchain))) {
                 vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
             } else {
                 $window.localStorage.$SOS$MAXORDERPERJOBCHAIN = parseInt(vm.perferences.maxOrderPerJobchain);
             }
+            if (isNaN(parseInt(vm.perferences.maxHistoryPerJobchain))) {
+                vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
+            } else {
+                $window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN = parseInt(vm.perferences.maxHistoryPerJobchain);
+            }
         };
+
         $scope.tasks = [
             {value: 'TaskStarted', label: "label.taskStarted"},
             {value: 'TaskEnded', label: "label.taskEnded"},
@@ -209,28 +215,28 @@
 
 
 
-            $scope.eventFilter = JSON.parse($window.localStorage.$SOS$EVENTFILTER);
-            $scope.tasks.count = $window.localStorage.$SOS$EVENTFILTERTASKCOUNT;
-            $scope.jobs.count = $window.localStorage.$SOS$EVENTFILTERJOBCOUNT;
-            $scope.jobChains.count = $window.localStorage.$SOS$EVENTFILTERJOBCHAINCOUNT;
-            $scope.positiveOrders.count = $window.localStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT;
-            $scope.negativeOrders.count = $window.localStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT;
+        $scope.eventFilter = JSON.parse($window.localStorage.$SOS$EVENTFILTER);
+        $scope.tasks.count = $window.localStorage.$SOS$EVENTFILTERTASKCOUNT;
+        $scope.jobs.count = $window.localStorage.$SOS$EVENTFILTERJOBCOUNT;
+        $scope.jobChains.count = $window.localStorage.$SOS$EVENTFILTERJOBCHAINCOUNT;
+        $scope.positiveOrders.count = $window.localStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT;
+        $scope.negativeOrders.count = $window.localStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT;
 
-            if ($scope.tasks.length == $scope.tasks.count) {
-                $scope.selectAllTaskModel = true;
-            }
-            if ($scope.jobs.length == $scope.jobs.count) {
-                $scope.selectAllJobModel = true;
-            }
-            if ($scope.jobChains.length == $scope.jobChains.count) {
-                $scope.selectAllJobChainModel = true;
-            }
-            if ($scope.positiveOrders.length == $scope.positiveOrders.count) {
-                $scope.selectAllPositiveOrderModel = true;
-            }
-            if ($scope.negativeOrders.length == $scope.negativeOrders.count) {
-                $scope.selectAllNegativeOrderModel = true;
-            }
+        if ($scope.tasks.length == $scope.tasks.count) {
+            $scope.selectAllTaskModel = true;
+        }
+        if ($scope.jobs.length == $scope.jobs.count) {
+            $scope.selectAllJobModel = true;
+        }
+        if ($scope.jobChains.length == $scope.jobChains.count) {
+            $scope.selectAllJobChainModel = true;
+        }
+        if ($scope.positiveOrders.length == $scope.positiveOrders.count) {
+            $scope.selectAllPositiveOrderModel = true;
+        }
+        if ($scope.negativeOrders.length == $scope.negativeOrders.count) {
+            $scope.selectAllNegativeOrderModel = true;
+        }
 
 
         vm.selectAllTaskFunction = function (value) {

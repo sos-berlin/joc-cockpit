@@ -208,12 +208,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <i class="cursor text-xs"
-                                           ng-if="showOrderPanel != node.name && node.orders && node.orders.length>5"
-                                           ng-click="showOrderPanelFuc(node.orders.length, node.name)"><span translate>label.showMore</span><br></i>
-                                        <i class="cursor text-xs"
-                                           ng-if="showOrderPanel == node.name && node.orders && node.orders.length>5"
-                                           ng-click="hideOrderPanelFuc()"><span translate>label.showLess</span><br></i>
+                                       <i class="cursor text-xs"
+                                                       ng-if="node.orders && node.orders.length>limitNum"
+                                                       ng-click="showOrderPanelFuc(jobChain.path)" ><span translate>label.showMoreOrders</span><br></i>
+
                                     </div>
 
                                 </td>

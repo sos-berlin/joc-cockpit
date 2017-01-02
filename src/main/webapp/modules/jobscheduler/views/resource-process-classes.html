@@ -3,13 +3,13 @@
 </div>
 <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeProcess.length>0">
     <div>
-        <button class="btn btn-grey btn-sm" ng-click="my_tree_process.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+        <a class="text" ng-click="my_tree_process.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
             <i class="fa fa-angle-double-down fa-lg"></i>
-        </button>
-        <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree_process.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+        </a>
+        <a class="text m-l-xs" ng-click="my_tree_process.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
             <i class="fa fa-angle-double-up fa-lg"></i>
-        </button>
-        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+        </a>
+        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
         <tree tree-data="treeProcess"
               tree-control="my_tree_process"
               expand-on="expanding_propertyP"
@@ -111,8 +111,9 @@
                     </tr>
                     </tbody>
                 </table>
-                <ul ng-show="allProcessClasses.length > processFilters.pageSize" uib-pagination total-items="allProcessClasses.length" ng-model="processFilters.currentPage" items-per-page='processFilters.pageSize' class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                <div class="pull-right" ng-show="allProcessClasses.length > 10">
+                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allProcessClasses.length > 10}"><span translate>label.total</span> {{allProcessClasses.length}} <span translate>label.processClassesFound</span></div>
+                <ul ng-show="allProcessClasses.length > processFilters.pageSize" uib-pagination total-items="allProcessClasses.length" ng-model="processFilters.currentPage" items-per-page='processFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-left" ng-show="allProcessClasses.length > 10">
                     <div class="btn-group m-r-xxs">
                         <button class="btn btn-default white btn-sm" ng-model="processFilters.pageSize" uib-btn-radio="'10'"
                                 ng-class="{'primary': processFilters.pageSize=='10'}" >10

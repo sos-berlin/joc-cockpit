@@ -381,8 +381,9 @@
                                 </tr>
                             </tbody>
                         </table>
-                    <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                    <div class="pull-right" ng-show="allOrders.length > 10">
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}"><span translate>label.total</span> {{allOrders.length}} <span translate>label.ordersFound</span></div>
+                    <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0 pull-right text-sm" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-left" ng-show="allOrders.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': orderFilters.pageSize=='10'}" >10

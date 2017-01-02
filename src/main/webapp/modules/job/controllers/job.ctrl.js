@@ -9,9 +9,11 @@
         .controller('JobCtrl', JobCtrl);
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
-        "toasty", "gettextCatalog", "DailyPlanService", "$rootScope", "CoreService", "$timeout","TaskService"];
+
+        "toasty", "gettextCatalog", "DailyPlanService", "$rootScope", "CoreService", "$timeout","TaskService","$window"];
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
-                          toasty, gettextCatalog, DailyPlanService, $rootScope, CoreService, $timeout,TaskService) {
+                          toasty, gettextCatalog, DailyPlanService, $rootScope, CoreService, $timeout,TaskService,$window) {
+
         var vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
 
@@ -736,13 +738,13 @@
         };
 
         /**--------------- Actions -----------------------------*/
-        vm.viewOrders = function (jobChain) {
+        vm.viewOrders = function (jobChain) {vm.savedJobChainFilter.selected = vm.savedJobChainFilter.selected
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/jobChainDetails/orders').search({path: jobChain.path});
         };
 
-        vm.viewOrdersDetail = function (jobChain) {
+        vm.viewFlowDiagram = function (jobChain) {
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/jobChainDetails/overview').search({path: jobChain.path});
@@ -961,6 +963,11 @@
                 vm.reset();
             });
         };
+vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
+        $rootScope.$on('angular-resizable.resizeEnd',function(event,args){
+            console.log("Height "+args.height);
+             $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT = args.height;
+        })
 
         vm.reset = function () {
             vm.jobChainCheckAll.checkbox = false;

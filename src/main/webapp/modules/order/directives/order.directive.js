@@ -529,8 +529,8 @@
                             host +
                             '</div >' +
                             '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                            '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="' + btnClass + '" ></i> <span translate>' + op1 + '</span></a>' +
-                            '<a href class=" pull-right ' + op2Cls + ' " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
+                            '<a href class="pull-left w-half ' + op1Cls + '" id="' + btnId1 + '" ><i class="' + btnClass + '" ></i> <span translate>' + op1 + '</span></a>' +
+                            '<a href class=" pull-right text-right w-half ' + op2Cls + ' " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
                             '</div>' +
                             '</div>';
                         }
@@ -661,8 +661,8 @@
                                     '<span class="show-inline" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
                                     '</div>' + '</div>' +
                                     '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                    '<a href class="text-left ' + op1Cls + '" id="' + btnId1 + '" ><i class="' + btnClass + '" ></i> <span translate>' + op1 + '</span></a>' +
-                                    '<a href class=" pull-right ' + op2Cls + ' " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
+                                    '<a href class="pull-left w-half ' + op1Cls + '" id="' + btnId1 + '" ><i class="' + btnClass + '" ></i> <span translate>' + op1 + '</span></a>' +
+                                    '<a href class=" pull-right text-right w-half ' + op2Cls + ' " id="' + btnId2 + '" ><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
                                     '</div>' +
                                     '</div>';
                                 }
@@ -832,7 +832,8 @@
                 'onOrderAction': '&',
                 'coords':'='
             },
-            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', function ($scope, $interval, gettextCatalog, $timeout, $filter, SOSAuth) {
+            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', '$compile','$location',
+                function ($scope, $interval, gettextCatalog, $timeout, $filter, SOSAuth,$compile,$location) {
                 var vm = $scope;
                 vm.left = 0;
                 vm.object = {};
@@ -1692,50 +1693,48 @@
                     }
 
                     function addLabel(orders, name) {
-                        var blockEllipsisFlowOrder ='block-ellipsis-flow-order';
-                        if(orders.length>3){
-                            blockEllipsisFlowOrder ='block-ellipsis-flow-order1';
+                        vm.limitNum = $window.localStorage.$SOS$MAXORDERPERJOBCHAIN;
+                        var blockEllipsisFlowOrder = 'block-ellipsis-flow-order';
+                        if (orders.length > 3) {
+                            blockEllipsisFlowOrder = 'block-ellipsis-flow-order1';
                         }
                         angular.forEach(orders, function (order, index) {
                             var node = document.getElementById(name);
 
                             if (node) {
-                                if (index > vm.limitNum - 1) {
-                                    if (orders.length - 1 == index) {
-                                        var container = document.getElementById('lbl-order-' + order.state);
-                                        container.style['top'] = node.offsetTop - container.clientHeight - 15 + 'px';
-                                        var label = document.createElement('div');
-                                        label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
-                                        + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
-                                        var top = container.offsetTop;
-                                        container.appendChild(label);
-                                        if (node.offsetTop - container.offsetTop < 90) {
-                                            container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
-                                        }
-                                        container.appendChild(label);
-                                        var more = document.getElementById('more');
-                                        var less = document.getElementById('less');
-                                        if (vm.showOrderPanel != name && orders.length > 5) {
-                                            more.className = 'show cursor text-xs';
-                                            less.className = 'hide cursor text-xs';
-                                        }
+                                 if (index > vm.limitNum ) {
+                                     return;
+                                 }
+                                if (index == vm.limitNum ) {
+                                    console.log("Here 01");
+                                    var container = document.getElementById('lbl-order-' + order.state);
+                                    var label = document.createElement('div');
+                                    label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMoreOrders") + '</span><br></i>';
+                                    var top = container.offsetTop;
+                                    container.appendChild(label);
 
-                                        var showMore = document.querySelector("#more");
-                                        showMore.addEventListener('click', function (e) {
-                                            showOrderPanelFun(orders.length, name, more, less, order);
-                                        });
-
-                                        if (vm.showOrderPanel == name && orders.length > 5) {
-                                            less.className = 'show cursor text-xs';
-                                            more.className = 'hide cursor text-xs';
-                                        }
-
-                                        var showLess = document.querySelector("#less");
-                                        showLess.addEventListener('click', function (e) {
-                                            hideOrderPanelFuc(more, less);
-                                        });
+                                    if (index <= 5) {
+                                        container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
+                                    if (index == 5) {
+                                        container.style['max-height'] = container.clientHeight+container.firstChild.clientHeight + 'px';
+                                    }
+
+
+                                    var more = document.getElementById('more');
+
+                                    if (vm.showOrderPanel != name && orders.length > vm.limitNum) {
+                                        more.className = 'show cursor text-xs';
+
+                                    }
+
+                                    more.addEventListener('click', function (e) {
+                                        showOrderPanelFun(order.jobChain);
+                                    });
+
+
                                     return;
+
                                 }
                                 var container = document.getElementById('lbl-order-' + order.state);
                                 if (container && container.childNodes.length > 0) {
@@ -1753,13 +1752,15 @@
                                     var diff = 0;
                                     var time = 0;
                                     if (order.startedAt) {
-                                        diff = '+' + $filter('durationFromCurrent')(order.startedAt);
+                                        diff = '+<span time="' + order.startedAt + '"></span>';
                                         time = order.startedAt;
                                     } else {
+
                                         if ($filter('durationFromCurrent')(undefined, order.nextStartTime) == 'never')
-                                            diff = $filter('durationFromCurrent')(undefined, order.nextStartTime);
+                                            diff = 'never';
                                         else
-                                            diff = '-' + $filter('durationFromCurrent')(undefined, order.nextStartTime);
+                                            diff = '-<span time="' + order.nextStartTime + '"></span>';
+
 
                                         time = order.nextStartTime;
                                     }
@@ -1769,7 +1770,7 @@
                                         + '<span id="date-' + order.orderId + '"  class="show-block v-m text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="btn-group dropdown"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
-                                        + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2.5 + 'px; left:' + node.offsetLeft + 'px !important">'
+                                        + '<div class="dropdown-menu dropdown-ac" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2 + 'px; left:' + node.offsetLeft * 1.2 + 'px !important">'
                                         + '<a class="hide" id="log-' + order.orderId + '" >' + gettextCatalog.getString("button.viewLog") + '</a>'
                                         + '<a class="hide" id="configuration-' + order.orderId + '">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
                                         + '<a class="hide" id="ordernow-' + order.orderId + '">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
@@ -1787,12 +1788,16 @@
                                         + '</div></div>';
                                     var top = container.offsetTop;
                                     container.appendChild(label);
-                                    if (node.offsetTop - container.offsetTop < 90) {
+                                    if (index <= 4) {
                                         container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
                                     }
                                     container.appendChild(label);
-                                } else {
+                                    if (index == 4) {
+                                        container.style['max-height'] = container.clientHeight + 'px';
+                                    }
 
+                                    $compile(label)(vm);
+                                } else {
                                     if (order.processingState && order.processingState._text == 'RUNNING') {
                                         node.className = node.className.replace(/border-.*/, 'border-green');
                                     }
@@ -1812,14 +1817,14 @@
                                     var diff = 0;
                                     var time = 0;
                                     if (order.startedAt) {
-                                        diff = '+' + $filter('durationFromCurrent')(order.startedAt);
+                                        diff = '+<span time="' + order.startedAt + '"></span>';
                                         time = order.startedAt;
                                     } else {
 
                                         if ($filter('durationFromCurrent')(undefined, order.nextStartTime) == 'never')
-                                            diff = $filter('durationFromCurrent')(undefined, order.nextStartTime);
+                                            diff = 'never';
                                         else
-                                            diff = '-' + $filter('durationFromCurrent')(undefined, order.nextStartTime);
+                                            diff = '-<span time="' + order.nextStartTime + '"></span>';
 
 
                                         time = order.nextStartTime;
@@ -1830,7 +1835,7 @@
                                         + '<span id="date-' + order.orderId + '" class="show-block v-m text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="btn-group dropdown"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
-                                        + '<div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2.5 + 'px; left:' + node.offsetLeft + 'px !important">'
+                                        + '<div class="dropdown-menu dropdown-ac" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2 + 'px; left:' + node.offsetLeft * 1.2+ 'px !important">'
                                         + '<a class="hide" id="log-' + order.orderId + '">' + gettextCatalog.getString("button.viewLog") + '</a>'
                                         + '<a class="hide" id="configuration-' + order.orderId + '">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
                                         + '<a class="hide" id="ordernow-' + order.orderId + '">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
@@ -1847,47 +1852,14 @@
                                         + '<a class="hide" id="orderdelete-' + order.orderId + '">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
                                         + '</div></div></div>';
                                     mainContainer.appendChild(label);
+                                    $compile(label)(vm);
                                     label.style['top'] = node.offsetTop - label.clientHeight - 5 + 'px';
                                     label.style['height'] = 'auto';
                                     label.style['min-height'] = '35px';
-                                    label.style['max-height'] = '115px';
                                     label.style['overflow'] = 'auto';
                                 }
 
-                                if (orders.length - 1 == index && orders.length == vm.limitNum) {
-                                    var container = document.getElementById('lbl-order-' + order.state);
-                                    container.style['top'] = node.offsetTop - container.clientHeight - 5 + 'px';
-                                    var label = document.createElement('div');
-                                    label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMore") + '</span><br></i>'
-                                        + '<i id="less" class="hide"><span >' + gettextCatalog.getString("label.showLess") + '</span><br></i>';
-                                    var top = container.offsetTop;
-                                    container.appendChild(label);
-                                    if (node.offsetTop - container.offsetTop < 90) {
-                                        container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
-                                    }
-                                    container.appendChild(label);
-                                    var more = document.getElementById('more');
-                                    var less = document.getElementById('less');
-                                    if (vm.showOrderPanel != name && orders.length > 5) {
-                                        more.className = 'show cursor text-xs';
-                                        less.className = 'hide cursor text-xs';
-                                    }
 
-                                    var showMore = document.querySelector("#more");
-                                    showMore.addEventListener('click', function (e) {
-                                        showOrderPanelFun(orders.length, name, more, less, order);
-                                    });
-
-                                    if (vm.showOrderPanel == name && orders.length > 5) {
-                                        less.className = 'show cursor text-xs';
-                                        more.className = 'hide cursor text-xs';
-                                    }
-
-                                    var showLess = document.querySelector("#less");
-                                    showLess.addEventListener('click', function (e) {
-                                        hideOrderPanelFuc(more, less);
-                                    });
-                                }
                             }
 
                             var orderLog = document.getElementById('log-' + order.orderId);
@@ -2065,22 +2037,9 @@
                     }
                 }
 
-                function showOrderPanelFun(num, name, more, less, order) {
-                    vm.limitNum = num;
-                    vm.showOrderPanel = name;
-
-                    less.className = 'show cursor text-xs';
-                    more.className = 'hide cursor text-xs';
-                    updateJobChain();
-                }
-
-                function hideOrderPanelFuc(more, less) {
-                    vm.limitNum = 5;
-                    vm.showOrderPanel = '';
-
-                    less.className = 'hide cursor text-xs';
-                    more.className = 'show cursor text-xs';
-                    updateJobChain();
+                function showOrderPanelFun(path) {
+                    
+                    $location.path('/jobChainDetails/orders').search({path: path});
                 }
 
                 vm.$on('bulkOperationCompleted', function (event, args) {

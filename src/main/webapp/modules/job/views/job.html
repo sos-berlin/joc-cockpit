@@ -90,13 +90,13 @@
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
             <div>
-                <button class="btn btn-grey btn-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                <a class="text" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                     <i class="fa fa-angle-double-down fa-lg"></i>
-                </button>
-                <button class="btn btn-grey btn-sm m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                </a>
+                <a class="text m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                     <i class="fa fa-angle-double-up fa-lg"></i>
-                </button>
-                <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px; top:2px"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+                </a>
+                <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
                 <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property" on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
                       expand-node="expandNode(branch)" collapse-node="collapseNode(branch)" template-url="modules/core/template/tree.html">
                 </tree>
@@ -261,9 +261,9 @@
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                                <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
                                                     <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
-                                                    <a class="dropdown-item" ng-if="permission.Job.view.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
+                                                    <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,showTaskPanel.path)" translate>button.terminate</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,showTaskPanel.path)" translate>button.terminateWithTimeout</a>
@@ -318,8 +318,9 @@
                                 </tbody>
 
                             </table>
-                        <ul ng-show="allJobs.length > jobFilters.pageSize" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-right" ng-show="allJobs.length > 10">
+                         <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}"><span translate>label.total</span> {{allJobs.length}} <span translate>label.jobsFound</span></div>
+                        <ul ng-show="allJobs.length > jobFilters.pageSize" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                        <div class="pull-left" ng-show="allJobs.length > 10">
                                 <div class="btn-group  m-r-xxs">
                                     <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'10'"
                                             ng-class="{'primary': jobFilters.pageSize=='10'}" >10
@@ -505,7 +506,7 @@
                                                                             class="fa fa-ellipsis-h"></i></button>
                                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                                                         <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
-                                                                        <a class="dropdown-item" ng-if="permission.Job.view.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
+                                                                        <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,showTaskPanel.path)" translate>button.terminate</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,showTaskPanel.path)" translate>button.terminateWithTimeout</a>
@@ -561,12 +562,12 @@
 
                 <div>
 
-                          <button class="btn btn-grey btn-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                          <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                             <i class="fa fa-angle-double-down fa-lg"></i>
-                        </button>
-                        <button class="btn btn-grey btn-sm m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        </a>
+                        <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
                            <i class="fa fa-angle-double-up fa-lg"></i>
-                        </button>
+                        </a>
                     <tree
                             tree-data="filterTree1"
                             tree-control="filter_tree"
