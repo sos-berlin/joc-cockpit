@@ -11,7 +11,7 @@
     CoreService.$inject = ['$window', '$resource', '$q'];
     function CoreService($window, $resource, $q) {
 
-        var _view = 'grid', _sideView = false, tabs = {}, tempTabs = {},dashboard={};
+        var _view = 'grid', _sideView = false, tabs = {}, tempTabs = {}, dashboard = {};
 
         tabs._jobChain = {};
         tabs._jobChain.filter = {};
@@ -22,7 +22,7 @@
         tabs._jobChain.currentPage = '1';
         tabs._jobChain.expand_to = [];
         tabs._jobChain.selectedView = true;
-     
+
 
         tabs._job = {};
         tabs._job.filter = {};
@@ -81,7 +81,7 @@
         tabs._history.order.filter.historyStates = 'all';
         tabs._history.order.filter.date = 'today';
         tabs._history.order.filter.sortBy = 'startTime';
-        tabs._history.order.sortReverse = false;
+        tabs._history.order.sortReverse = true;
         tabs._history.order.pageSize = '25';
         tabs._history.order.currentPage = '1';
         tabs._history.order.selectedView = true;
@@ -90,7 +90,7 @@
         tabs._history.task.filter.historyStates = 'all';
         tabs._history.task.filter.date = 'today';
         tabs._history.task.filter.sortBy = 'startTime';
-        tabs._history.task.sortReverse = false;
+        tabs._history.task.sortReverse = true;
         tabs._history.task.pageSize = '25';
         tabs._history.task.currentPage = '1';
         tabs._history.task.selectedView = true;
@@ -101,7 +101,7 @@
         tabs._resource.agents.filter.state = 'all';
         tabs._resource.agents.filter.sortBy = 'path';
         tabs._resource.agents.reverse = false;
-        tabs._resource.agents.pageSize = '25';
+        tabs._resource.agents.pageSize = '10';
         tabs._resource.agents.currentPage = '1';
         tabs._resource.agents.expand_to = [];
         tabs._resource.locks = {};
@@ -109,7 +109,7 @@
         tabs._resource.locks.filter.state = 'all';
         tabs._resource.locks.filter.sortBy = 'name';
         tabs._resource.locks.reverse = false;
-        tabs._resource.locks.pageSize = '25';
+        tabs._resource.locks.pageSize = '10';
         tabs._resource.locks.currentPage = '1';
         tabs._resource.locks.expand_to = [];
         tabs._resource.processClasses = {};
@@ -117,7 +117,7 @@
         tabs._resource.processClasses.filter.state = 'all';
         tabs._resource.processClasses.filter.sortBy = 'name';
         tabs._resource.processClasses.reverse = false;
-        tabs._resource.processClasses.pageSize = '25';
+        tabs._resource.processClasses.pageSize = '10';
         tabs._resource.processClasses.currentPage = '1';
         tabs._resource.processClasses.expand_to = [];
         tabs._resource.schedules = {};
@@ -125,7 +125,7 @@
         tabs._resource.schedules.filter.state = 'all';
         tabs._resource.schedules.filter.sortBy = 'name';
         tabs._resource.schedules.reverse = false;
-        tabs._resource.schedules.pageSize = '25';
+        tabs._resource.schedules.pageSize = '10';
         tabs._resource.schedules.currentPage = '1';
         tabs._resource.schedules.expand_to = [];
         tabs._resource.state = 'agent';
@@ -218,7 +218,7 @@
         tempTabs._resource.agents.filter.state = 'all';
         tempTabs._resource.agents.filter.sortBy = 'path';
         tempTabs._resource.agents.reverse = false;
-        tempTabs._resource.agents.pageSize = '25';
+        tempTabs._resource.agents.pageSize = '10';
         tempTabs._resource.agents.currentPage = '1';
         tempTabs._resource.agents.expand_to = [];
         tempTabs._resource.locks = {};
@@ -226,7 +226,7 @@
         tempTabs._resource.locks.filter.state = 'all';
         tempTabs._resource.locks.filter.sortBy = 'name';
         tempTabs._resource.locks.reverse = false;
-        tempTabs._resource.locks.pageSize = '25';
+        tempTabs._resource.locks.pageSize = '10';
         tempTabs._resource.locks.currentPage = '1';
         tempTabs._resource.locks.expand_to = [];
         tempTabs._resource.processClasses = {};
@@ -234,7 +234,7 @@
         tempTabs._resource.processClasses.filter.state = 'all';
         tempTabs._resource.processClasses.filter.sortBy = 'name';
         tempTabs._resource.processClasses.reverse = false;
-        tempTabs._resource.processClasses.pageSize = '25';
+        tempTabs._resource.processClasses.pageSize = '10';
         tempTabs._resource.processClasses.currentPage = '1';
         tempTabs._resource.processClasses.expand_to = [];
         tempTabs._resource.schedules = {};
@@ -242,7 +242,7 @@
         tempTabs._resource.schedules.filter.state = 'all';
         tempTabs._resource.schedules.filter.sortBy = 'name';
         tempTabs._resource.schedules.reverse = false;
-        tempTabs._resource.schedules.pageSize = '25';
+        tempTabs._resource.schedules.pageSize = '10';
         tempTabs._resource.schedules.currentPage = '1';
         tempTabs._resource.schedules.expand_to = [];
         tempTabs._resource.state = 'agent';
@@ -259,25 +259,13 @@
         if ($window.localStorage.$SOS$DASHBOARDTABS) {
             try {
                 var obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
-                if(obj){
+                if (obj) {
                     dashboard = obj;
                 }
             } catch (e) {
                 console.log(e);
             }
         }
-
-/*        if ($window.sessionStorage.$SOS$TABS) {
-            try {
-                var obj = JSON.parse($window.sessionStorage.$SOS$TABS);
-                if(obj){
-                    tabs = obj;
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }*/
-
 
         if ($window.sessionStorage.$SOS$VIEW) {
             _view = $window.sessionStorage.$SOS$VIEW;
@@ -288,7 +276,6 @@
         if ($window.sessionStorage.$SOS$SIDEVIEW == 'true' || $window.sessionStorage.$SOS$SIDEVIEW == true) {
             _sideView = $window.sessionStorage.$SOS$SIDEVIEW;
         } else {
-
             $window.sessionStorage.$SOS$SIDEVIEW = false;
         }
 
@@ -317,10 +304,10 @@
                 tabs = tempTabs;
             },
             getTabs: function () {
-               return tabs;
+                return tabs;
             },
             getDashboard: function () {
-               return dashboard;
+                return dashboard;
             },
             getJobTab: function () {
                 return tabs._job;

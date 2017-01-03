@@ -103,15 +103,6 @@
             $('.sidebar-btn').hide();
         };
 
-        vm.showPanel = '';
-        vm.showPanelFuc = function (value) {
-            vm.showPanel = value;
-            vm.hidePanel = true;
-        };
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location", "CoreService", "$uibModal"];
@@ -602,16 +593,6 @@
         }
 
 
-        vm.showPanel = '';
-        vm.showPanelFuc = function (value) {
-            vm.showPanel = value;
-            vm.hidePanel = true;
-        };
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
-
         vm.isLoading1 = false;
 
         function loadHistory() {
@@ -793,6 +774,14 @@
             }
 
             if (action == 'start order at') {
+                var orders = {};
+                orders.orders = [];
+
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
                 vm.order = order;
                 vm.order.date = new Date();
                 vm.order.time = new Date();
@@ -2555,16 +2544,6 @@
             vm.reset();
         };
 
-        vm.showPanel = '';
-        vm.showPanelFuc = function (value) {
-            vm.showPanel = value;
-            vm.hidePanel = true;
-        };
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
-
         vm.showLeftPanel = function () {
             CoreService.setSideView(false);
             $('#rightPanel').removeClass('fade-in m-l-0');
@@ -2596,8 +2575,8 @@
     }
 
 
-    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", "ScheduleService", '$timeout', "DailyPlanService", "JobChainService","$window","$location"];
-    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, ScheduleService, $timeout, DailyPlanService, JobChainService,$window,$location) {
+    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", "ScheduleService", '$timeout', "DailyPlanService", "JobChainService", "$window", "$location"];
+    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, ScheduleService, $timeout, DailyPlanService, JobChainService, $window, $location) {
         var vm = $scope;
 
         var promise1;
@@ -2709,7 +2688,14 @@
         }
 
         vm.startOrder = function (order) {
+            var orders = {};
+            orders.orders = [];
 
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            OrderService.get(orders).then(function (res) {
+                order = angular.merge(order, res.orders[0]);
+            });
             vm.order = order;
             vm.order.date = new Date();
             vm.order.time = new Date();
@@ -2805,14 +2791,7 @@
             orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, runTime: order.runTime});
 
             OrderService.setRunTime(orders).then(function (res) {
-                var orders = {};
-                orders.orders = [];
-                orders.compact = true;
-                orders.jobschedulerId = $scope.schedulerIds.selected;
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
-                OrderService.get(orders).then(function (res) {
-                    order = angular.merge(order, res.orders[0]);
-                });
+
             }, function (err) {
                 console.log(err);
             });
@@ -3040,6 +3019,24 @@
         }
 
 
+        vm.showPanel = '';
+        vm.showPanelFuc = function (order) {
+            vm.showPanel = order.path;
+            var orders = {};
+            orders.orders = [];
+
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            OrderService.get(orders).then(function (res) {
+                order = angular.merge(order, res.orders[0]);
+            });
+            vm.hidePanel = true;
+        };
+        vm.hidePanelFuc = function () {
+            vm.showPanel = '';
+            vm.hidePanel = !vm.hidePanel;
+        };
+
         vm.showLogFuc = function (value) {
             var orders = {};
             orders = {};
@@ -3066,7 +3063,7 @@
         vm.limitNum = $window.localStorage.$SOS$MAXORDERPERJOBCHAIN;
         vm.showOrderPanel = '';
         vm.showOrderPanelFuc = function (path) {
-             $location.path('/jobChainDetails/orders').search({path: path});
+            $location.path('/jobChainDetails/orders').search({path: path});
         };
 
         $scope.$on('event-started', function () {

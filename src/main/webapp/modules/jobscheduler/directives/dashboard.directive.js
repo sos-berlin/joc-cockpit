@@ -5,8 +5,8 @@
         .directive('dailyPlanOverview', dailyPlanOverview);
 
 
-    clusterStatusView.$inject = ["$compile", "$sce","$window"];
-    function clusterStatusView($compile, $sce, $window) {
+    clusterStatusView.$inject = ["$compile", "$sce","$window","$rootScope"];
+    function clusterStatusView($compile, $sce, $window,$rootScope) {
 
         return {
             restrict: 'E',
@@ -153,7 +153,7 @@
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
                                             var span = document.getElementById('sp' + master.host + master.port);
                                             master.state = nMaster.state;
-
+                                            master.startedAt = nMaster.startedAt;
                                             if (master.state && refresh) {
                                                 refreshMasterState(master);
                                             }
@@ -163,7 +163,9 @@
                                         }
                                     })
                                 })
+                                $rootScope.$broadcast('reloadScheduleDetail', supervisor);
                             })
+
 
                         }, function (err) {
                              getTemporaryData2(undefined, refresh);
@@ -184,7 +186,7 @@
                             angular.forEach(res.masters, function (nMaster, rIndex) {
                                 if (nMaster.host == master.host && nMaster.port == master.port) {
                                     master.state = nMaster.state;
-                                     
+                                    master.startedAt = nMaster.startedAt;
                                     if (master.state && refresh) {
                                         refreshMasterState(master);
                                     }
@@ -202,6 +204,7 @@
 
                             }
                         })
+                        $rootScope.$broadcast('reloadScheduleDetail', scope.clusterStatusData.members);
 
                     }
 

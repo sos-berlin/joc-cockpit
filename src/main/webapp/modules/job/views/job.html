@@ -70,12 +70,12 @@
 
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobs.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isOrderJob || isStart" ng-if="permission.Job.start" translate>button.startTask</button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.start" translate>button.startTask</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.stop" ng-click="stopAll();" translate>button.stop</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.unstop" ng-click="unStopAll()" translate>button.unstop</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStart" ng-if="permission.Job.kill" ng-click="killAllTask()" translate>button.killAllTasksImmediately</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStart" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask()" translate>button.terminateAllTasks</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStart" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout()" translate>button.terminateAllTasksWithTimeout</button>
+                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="permission.Job.kill" ng-click="killAllTask()" translate>button.killAllTasksImmediately</button>
+                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask()" translate>button.terminateAllTasks</button>
+                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout()" translate>button.terminateAllTasksWithTimeout</button>
                     </div>
 
                 </div>
@@ -129,9 +129,9 @@
                                                 <a class="dropdown-item" ng-click="setRunTime(job)" ng-if="permission.Job.setRunTime" translate>button.setRunTime</a>
                                                 <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
                                                 <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING'}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING'}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING'}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                         </div>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-sm" >
@@ -308,9 +308,9 @@
                                                 <a class="dropdown-item" ng-click="setRunTime(job)" ng-show="permission.Job.setRunTime" translate>button.setRunTime</a>
                                                 <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
                                                 <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.ordersSummary.pending != undefinded}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING'}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING'}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
+                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING'}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                             </div>
                                         </div>
                                     </td>
@@ -389,7 +389,7 @@
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
-                                                        <th translate>label.id</th>
+                                                        <th translate>label.taskId</th>
                                                         <th translate>label.status</th>
                                                         <th translate>label.started</th>
                                                         <th translate>label.ended</th>
@@ -450,7 +450,7 @@
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
-                                                        <th translate>label.id</th>
+                                                        <th translate>label.orderId</th>
                                                         <th translate>label.jobChain</th>
                                                         <th translate>label.status</th>
                                                         <th translate>label.nextStart</th>

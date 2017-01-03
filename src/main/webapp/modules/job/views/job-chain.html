@@ -603,7 +603,6 @@
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
-                                                        <!--<th translate>label.id</th>-->
                                                         <th translate>label.orderId</th>
                                                         <th translate>label.status</th>
                                                         <th translate>label.startTime</th>
@@ -615,10 +614,9 @@
                                                     <tbody>
                                                     <tr ng-repeat="history in historys"
                                                         ng-click="showLogWindow(history,null)" class="cursor">
-                                                        <!-- <td ng-bind="history.historyId"></td>-->
                                                         <td ng-bind="history.orderId"></td>
-                                                        <td><span class="label"
-                                                                  ng-bind="history.state._text | translate"
+                                                        <td>
+                                                            <span class="label" ng-bind="history.state._text | translate"
                                                                   ng-class="bgColorFunction(history.state.severity)"></span>
                                                         </td>
                                                         <td ng-bind="history.startTime | stringToDate"></td>

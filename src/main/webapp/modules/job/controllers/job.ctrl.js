@@ -2344,24 +2344,26 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
             checkbox: false
         };
 
+
+
         var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.allCheck.checkbox = newNames.length == vm.allJobs.slice((vm.jobFilters.pageSize * (vm.jobFilters.currentPage - 1)), (vm.jobFilters.pageSize * vm.jobFilters.currentPage)).length;
 
-                vm.isOrderJob = false;
+                vm.isTasks = false;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 vm.isStart = false;
                 angular.forEach(newNames, function (value) {
-                    if (value.isOrderJob) {
-                        vm.isOrderJob = true;
+                    if (value.state && value.state._text == 'RUNNING') {
+                        vm.isTasks = true;
                     }
                     if (value.state && value.state._text == 'STOPPED') {
                         vm.isStopped = true;
                     } else {
                         vm.isUnstopped = true;
                     }
-                    if (value.ordersSummary && value.ordersSummary.pending != undefined) {
+                    if ((value.ordersSummary && value.ordersSummary.pending != undefined)) {
                         vm.isStart = true;
                     }
                 });
@@ -2406,16 +2408,14 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
 
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
-            $('#rightPanel1 .parent .child').removeClass('col-lg-4').addClass('col-lg-3');
-            $('#rightPanel1 .parent .child').removeClass('col-xxl-3').addClass('col-xxl-2');
+            $('#rightPanel1 .parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
             $('#leftPanel').hide();
             $('.sidebar-btn').show();
         };
 
         vm.showLeftPanel = function () {
             $('#rightPanel1').removeClass('fade-in m-l-0');
-            $('#rightPanel1 .parent .child').addClass('col-lg-4').removeClass('col-lg-3');
-            $('#rightPanel1 .parent .child').addClass('col-xxl-3').removeClass('col-xxl-2');
+            $('#rightPanel1 .parent .child').addClass('col-xxl-3 col-lg-4').removeClass('col-xxl-2 col-lg-3');
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
 

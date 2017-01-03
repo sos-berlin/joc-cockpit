@@ -17,7 +17,7 @@
             <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" >
                 <div class="row">
                     <div class="col-md-12" id="agent-cluster-status">
-                        <div class="box" style="max-height: 180px">
+                        <div class="box" style="max-height: 186px">
                             <div class="box-header b-b">
                                 <h3 translate>label.agentClusterStatus</h3>
                             </div>
@@ -46,7 +46,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-7" ng-if="agentClusterData.length>0">
-                                        <ul class="status-list m-l-sm" ng-class="{'m-top-132': agentClusterData.length==1, 'm-top-122': agentClusterData.length==2 }">
+                                        <ul class="status-list p-l" ng-class="{'m-top-132': agentClusterData.length==1, 'm-top-122': agentClusterData.length==2 }">
                                             <li id="{{data.key}}" ng-repeat="data in agentClusterData | orderBy: 'key'" class="p-a-xs ">
                                                 <i class="fa fa-stop {{data.key.substring(6)}}"></i>
                                                 <a href="" ng-click="setLabel(data.key)" > {{data.key | translate}}</a></li>
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="divClusterStatusWidget" class="box-body " style="min-height: 330px">
+                            <div id="divClusterStatusWidget" class="box-body ">
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()"
                                                    on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
                             </div>

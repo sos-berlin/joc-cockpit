@@ -279,7 +279,7 @@
 
 
                 function draw() {
-                    console.log("Drawing chain");
+
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
@@ -524,8 +524,8 @@
                             '<a href="" id="' + btnId5 + '"  class="dropdown-item bg-hover-color ' + op5Cls + '" translate>' + op5 + '</a>' +
                             '<a href="" id="' + btnId6 + '"  class="dropdown-item' + op6Cls + '" translate>' + op6 + '</a>' +
                             '</div></div></div>'
-                            + '<div class="text-left text-muted p-t-sm ">' + jobName +
-                            '</div>' +
+                            + '<div class="text-left text-muted p-t-sm "><a class="text-hover-primary" id="navigateToJobBtn_'+item.name+'">' + jobName +
+                            '</a></div>' +
                             host +
                             '</div >' +
                             '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
@@ -826,6 +826,7 @@
                 'getJobInfo': '&',
                 'onAction': '&',
                 'showConfiguration': '&',
+                'showJob': '&',
                 'orders': '=',
                 'getJobChain': '&',
                 'permission': '=',
@@ -848,7 +849,7 @@
                 vm.selectedNodes = [];
 
                 vm.drawConnections = function () {
-                    console.log("Drawing connection ");
+
                     jobChainPath = vm.jobChainData.path;
                     mainContainer = document.getElementById('zoomCn');
                     var errorNode;
@@ -905,7 +906,7 @@
                     }
 
                     angular.forEach(vm.jobChainData.nodes, function (item, index) {
-                        console.log("Node "+item.name);
+                        //  console.log("Node "+item.name);
                         var div1 = document.getElementById(item.name);
                         var div2 = document.getElementById(item.nextNode);
                         pDiv = undefined;
@@ -931,7 +932,7 @@
                             x2 = div2.offsetLeft;
                             y2 = div2.offsetTop;
                         }
-                        ////console.log("top: " + y1 + " left: " + x1 + " width: " + div1.clientWidth + " height: " + div2.clientHeight);
+                        //console.log("top: " + y1 + " left: " + x1 + " width: " + div1.clientWidth + " height: " + div2.clientHeight);
                         if (index == 0) {
                             var avatar = document.getElementById(vm.startId);
                             node = document.createElement('div');
@@ -1409,6 +1410,12 @@
 
 
                         });
+                        var navigateToJobBtnId = '#navigateToJobBtn_' + item.name;
+                        var navigateToJobBtn = document.querySelector(navigateToJobBtnId);
+
+                        navigateToJobBtn.addEventListener('click', function (e) {
+                            vm.showJob({job: item.job.path});
+                        });
 
                         if (vm.jobChainData.nodes.length - 1 == index) {
                             vm.limitNum = 5;
@@ -1418,6 +1425,8 @@
                         }
 
                     })
+
+
                 };
 
 
@@ -1504,7 +1513,7 @@
 
 
                 vm.$on('reloadJobChain', function (event, args) {
-                    console.log("Updating job chain ");
+                    //console.log("Updating job chain ");
                     vm.jobChain = JSON.parse(SOSAuth.jobChain);
                     var temp = vm.jobChainData.nodes;
                     vm.jobChainData = angular.copy(vm.jobChain);
@@ -1588,7 +1597,7 @@
                                         btn1.className = btn1.className.replace(/disable-link/g, '');
                                         btn5.className = btn5.className.replace(/disable-link/g, '');
                                     }
-                                    console.log("btn1 class name " + btn1.className);
+                                   // console.log("btn1 class name " + btn1.className);
                                     btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                                     btn6.innerHTML = gettextCatalog.getString('button.skipNode');
                                     if (!vm.permission.JobChain.skipJobChainNode) {
@@ -1663,7 +1672,7 @@
                             //console.log("In get orders 02 ");
                             addLabel(node.orders, node.name);
                         }
-                    })
+                    });
 
 
                     function colorFunction(d) {
@@ -1706,7 +1715,7 @@
                                      return;
                                  }
                                 if (index == vm.limitNum ) {
-                                    console.log("Here 01");
+
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     var label = document.createElement('div');
                                     label.innerHTML = '<i id="more" class="hide"><span >' + gettextCatalog.getString("label.showMoreOrders") + '</span><br></i>';

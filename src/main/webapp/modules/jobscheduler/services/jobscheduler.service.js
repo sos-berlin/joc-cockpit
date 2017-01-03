@@ -164,7 +164,7 @@
             getRunTime: function (filter) {
                 var deferred = $q.defer();
                 var Schedule = $resource('schedule/configuration');
-                filter.mime=['XML']
+                filter.mime=['XML'];
                 Schedule.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -250,14 +250,13 @@
                 return deferred.promise;
             },
             getSupervisorP: function (jobschedulerId) {
-                console.log("getSupervisorP ");
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/supervisor/p');
                 JobScheduler.save(jobschedulerId, function (resP) {
                     JobScheduler = $resource('jobscheduler/supervisor');
                     JobScheduler.save(jobschedulerId, function (res) {
                         resP.jobscheduler.state = res.jobscheduler.state;
-                        resP.jobscheduler.os.distribution = 'Linux release 7.2.1511';
+                        resP.jobscheduler.startedAt = res.jobscheduler.startedAt;
                         deferred.resolve(resP);
                     }, function (err) {
                         deferred.resolve(resP);

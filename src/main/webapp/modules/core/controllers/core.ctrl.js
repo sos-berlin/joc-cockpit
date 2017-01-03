@@ -233,7 +233,6 @@
                         throw new Error('PopUp Blocker is active');
                     }
                 } catch (e) {
-                    console.log(e)
                     popUpBlocker = true;
                     throw new Error(e.message);
                 }
@@ -277,6 +276,7 @@
         };
 
         vm.showJob = function (job) {
+
             var path = job.substring(0, job.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')

@@ -1998,16 +1998,6 @@ function volatileFolderDataL(data, obj) {
 
         };
 
-        vm.showPanel = '';
-        vm.showPanelFuc = function (value) {
-            vm.showPanel = value;
-            vm.hidePanel = true;
-        };
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
-
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
@@ -2196,7 +2186,6 @@ function volatileFolderDataL(data, obj) {
                 getClusterMembersP().then(function (res) {
                     clusterStatusData.members = res;
                     vm.clusterStatusData = clusterStatusData;
-                    $rootScope.$broadcast('reloadScheduleDetail', vm.clusterStatusData.members);
                     interval = $timeout(function () {
                         vm.clusterStatusData = clusterStatusData;
                         $rootScope.$broadcast('clusterStatusDataChanged');

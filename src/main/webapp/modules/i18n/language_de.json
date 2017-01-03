@@ -757,7 +757,7 @@
   "tooltip.expandAll": "Alles ausklappen",
   "tooltip.collapseAll": "Alles einklappen",
   "tooltip.hideTree": "Baumansicht einklappen",
-   "label.dayAgo": "day ago",
+  "label.dayAgo": "day ago",
   "label.hourAgo": "hour ago",
   "label.anHourAgo": "an hour ago",
   "label.minuteAgo": "minute ago",
@@ -775,5 +775,6 @@
   "label.agentClustersFound": "agent clusters found",
   "label.total": "Total ",
   "label.about": "About ",
-  "label.showMoreOrders": "show more orders"
+  "label.showMoreOrders": "show more orders",
+  "label.release": "Release"
 }

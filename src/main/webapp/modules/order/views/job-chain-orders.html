@@ -173,7 +173,7 @@
                                             </td>
                                             <td class="nowrap">
                                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="showPanel != order.path"
-                                                   ng-click="showPanelFuc(order.path)"></i>
+                                                   ng-click="showPanelFuc(order)"></i>
                                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
                                                 <a class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                                 <i class="text-muted">{{order.title}}</i></a>
@@ -254,7 +254,7 @@
                                                     <tr>
                                                         <td>{{order._type | translate}}</td>
                                                         <td>{{order.endState || '-'}}</td>
-                                                        <td>{{order.priority || '-'}}</td>
+                                                        <td>{{order.priority}}</td>
                                                         <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
                                                         <td>{{order.taskId || '-'}}</td>
                                                     </tr>
