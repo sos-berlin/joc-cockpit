@@ -779,12 +779,12 @@
   "label.release": "Release",
   "label.orderIds": "Order Ids",
   "placeholder.enterJobChainPath": "Enter Job Chain Path",
-  "placeholder.enterJobs": "Enter multiple job by comma separated ",
-  "placeholder.enterOrderIds": "Enter multiple order id by comma separated",
-  "placeholder.setStartDate": "Set start date",
-  "placeholder.setEndDate": "Set end date",
-  "placeholder.startTime": "start time",
-  "placeholder.endTime": "end time",
+  "placeholder.enterJobs": "Enter multiple Jobs separated by comma ",
+  "placeholder.enterOrderIds": "Enter multiple Order IDs separated by comma",
+  "placeholder.setStartDate": "Set start time",
+  "placeholder.setEndDate": "Set end time",
+  "placeholder.startTime": "Start Time",
+  "placeholder.endTime": "End Time",
   "placeholder.processExecuted": "now-600, today or 08:00am to 08:00pm",
-  "label.processExecuted": "Process Executed"
+  "label.processExecuted": "Process executed"
 }
