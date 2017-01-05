@@ -22,13 +22,12 @@
             'rzModule',
             'angularResizable',
             'mgcrea.ngStrap',
-            'nvd3ChartDirectives',
+            'nvd3',
             'ncy-angular-breadcrumb',
             'gantt',
             'gantt.tooltips',
             'gantt.table',
-            'ngFileSaver',
-	        'ngCookies'
+            'ngFileSaver'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs=[];

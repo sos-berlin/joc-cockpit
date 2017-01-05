@@ -776,5 +776,15 @@
   "label.total": "Total",
   "label.about": "About",
   "label.showMoreOrders": "show more Orders",
-  "label.release": "Release"
+  "label.release": "Release",
+  "label.orderIds": "Order Ids",
+  "placeholder.enterJobChainPath": "Enter Job Chain Path",
+  "placeholder.enterJobs": "Enter multiple job by comma separated ",
+  "placeholder.enterOrderIds": "Enter multiple order id by comma separated",
+  "placeholder.setStartDate": "Set start date",
+  "placeholder.setEndDate": "Set end date",
+  "placeholder.startTime": "start time",
+  "placeholder.endTime": "end time",
+  "placeholder.processExecuted": "now-600, today or 08:00am to 08:00pm",
+  "label.processExecuted": "Process Executed"
 }

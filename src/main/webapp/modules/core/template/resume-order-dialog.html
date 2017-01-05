@@ -6,13 +6,13 @@
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row">
-                <label class="col-sm-3" translate>label.orderId</label>
+                <label class="col-sm-4" translate>label.orderId</label>
                 <label class="col-sm-6">{{order.orderId}}</label>
             </div>
             <div class="form-group row m-b-sm" ng-repeat="param in order.params">
                 <div class="col-sm-12 m-b-sm _600" ng-if="$index==0" translate>label.changeParameters</div>
 
-                <label class="col-sm-3 form-control-label">{{param.name}}</label>
+                <label class="col-sm-4 form-control-label">{{param.name}}</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control " ng-model="param.value" placeholder="{{'placeholder.value' | translate}}">
                 </div>
@@ -21,9 +21,9 @@
                 <div class="col-md-12" translate>label.declareNewParameters</div>
             </div>
             <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index">
-                <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                <div class="col-sm-9 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                <div class="col-sm-3 m-b-sm">
+                <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                <div class="col-sm-4 m-b-sm">
                     <input type="text" class="form-control " ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                 </div>
                 <div class="col-sm-6 m-b-sm">

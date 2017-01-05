@@ -184,7 +184,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allSchedules.length > 10}"><span translate>label.total</span> {{allSchedules.length}} <span translate>label.schedulesFound</span></div>
+                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allSchedules.length > 10}" ng-if="allSchedules.length >0"><span translate>label.total</span> {{allSchedules.length}} <span translate>label.schedulesFound</span></div>
                 <ul ng-show="allSchedules.length > schdeuleFilters.pageSize" uib-pagination total-items="allSchedules.length"
                     ng-model="schdeuleFilters.currentPage" items-per-page='schdeuleFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
                     ng-change="pageChange()" boundary-link-numbers="true" rotate="false"

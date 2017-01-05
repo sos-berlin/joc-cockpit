@@ -435,18 +435,6 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            },
-            getSampleTimespans: function () {
-                return [
-                    {
-                        from: new Date(2013, 9, 21, 8, 0, 0),
-                        to: new Date(2013, 9, 25, 15, 0, 0),
-                        name: 'Sprint 1 Timespan'
-                        //priority: undefined,
-                        //classes: [],
-                        //data: undefined
-                    }
-                ];
             }
         }
     }

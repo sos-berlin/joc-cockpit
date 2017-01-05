@@ -153,7 +153,7 @@
                 </div>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-12">
-                <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="q">
+                <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="margin-top: -3px">
             </div>
         </div>
         <div class="hide p-t-xs" ng-class="{'show': isLoading }">
@@ -267,8 +267,8 @@
                             <tbody >
                             <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
                                 <td>
-                                    <a class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></a>
-                                    <a class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></a>
+                                    <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></span>
+                                    <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></span>
                                 </td>
                                 <td><span ng-bind="plan.orderId"></span></td>
                                 <td>
@@ -287,7 +287,7 @@
                             </tbody>
                         </table>
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && plans.length !==0)}" translate>message.noDataMatched</div>
-                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': plans.length > 10}"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
+                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': plans.length > 10}" ng-if="plans.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
                         <ul ng-show="filtered.length > dailyPlanFilters.pageSize" uib-pagination total-items="filtered.length"
                             ng-model="dailyPlanFilters.currentPage" items-per-page='dailyPlanFilters.pageSize' ng-change="pageChange()"
                             class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"

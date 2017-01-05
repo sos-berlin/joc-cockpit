@@ -16,7 +16,7 @@
                         </thead>
                         <tbody >
                             <tr class="start-on-hover" ng-repeat="filter in filters.list">
-                                <td width="12%">{{$index+1}}</td>
+                                <td>{{$index+1}}</td>
                                 <td>
                                     <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite == filter.name" href="" ng-click="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
                                     <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name" href="" ng-click="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
@@ -32,9 +32,8 @@
                                     </div>
                                 </td>
                             </tr>
-
                         </tbody>
-                    </table>
+                </table>
             </div>
         </div>
     </div>

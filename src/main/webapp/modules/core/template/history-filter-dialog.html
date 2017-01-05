@@ -6,7 +6,7 @@
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-               <label class="col-sm-3 form-control-label" translate>label.filterName</label>
+               <label class="col-sm-4 form-control-label" translate>label.filterName</label>
                <div class=" col-sm-6">
                    <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" ng-blur="checkFilterName()">
                    <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
@@ -20,38 +20,38 @@
             </div>
 
             <div class="form-group row" ng-show="historyFilters.type == 'jobChain'">
-               <label class="col-sm-3 form-control-label" translate>label.regex</label>
+               <label class="col-sm-4 form-control-label" translate>label.regex</label>
                <div class=" col-sm-6">
                    <input type="text" ng-disabled="historyFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="historyFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="historyFilter.paths.length>0">
-                <div class="col-sm-offset-3 col-sm-9" style="max-height: 140px; overflow: auto">
+                <div class="col-sm-offset-4 col-sm-8" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in historyFilter.paths track by $index">
                             <span class="">{{path}}</span>
                     </div>
                 </div>
             </div>
             <div class="form-group row" ng-show="historyFilters.type == 'job'">
-               <label class="col-sm-3 form-control-label" translate>label.jobName</label>
+               <label class="col-sm-4 form-control-label" translate>label.jobName</label>
                <div class=" col-sm-6">
                    <input type="text" class="form-control" placeholder="{{'placeholder.jobRegex' | translate}}" ng-model="historyFilter.regex">
                </div>
             </div>
 
             <div class="form-group row m-t-sm" >
-           <label class="col-sm-3 form-control-label" translate>label.processPlanned</label>
+           <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
            <div class=" col-sm-6">
-            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="historyFilter.planned"
-                   ng-disabled="historyFilter.fromDate ||historyFilter.fromTime || historyFilter.toDate ||historyFilter.toTime" ng-blur="checkPlanned()">
+            <input type="text" name="planned" class="form-control" placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="historyFilter.planned"
+                   ng-blur="checkPlanned()">
                 <div class="help-block text-danger" ng-if="!validPlanned">
                   <div translate>message.invalid</div>
                </div>
            </div>
         </div>
-            <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.from</label>
+<!--            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.from</label>
 
                 <div class="col-sm-8">
                          <input class="form-control input-date" ng-model="historyFilter.fromDate" ng-disabled="historyFilter.planned"
@@ -61,18 +61,18 @@
                         data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.to</label>
+                <label class="col-sm-4 form-control-label" translate>label.to</label>
                 <div class="col-sm-8">
                     <input class="form-control input-date" ng-model="historyFilter.toDate" ng-disabled="historyFilter.planned"
                            data-date-format="yyyy-MM-dd" data-autoclose="1" data-min-date="{{historyFilter.fromDate}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
                 <input class="form-control input-time" ng-model="historyFilter.toTime" ng-disabled="historyFilter.planned"
                        data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text"></div>
 
-            </div>
+            </div>-->
             <div class="form-group row">
-                <label class="col-sm-3 " translate>label.status</label>
+                <label class="col-sm-4 " translate>label.status</label>
 
-                <div class="col-sm-9">
+                <div class="col-sm-8">
                     <label class="md-check w">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'INCOMPLETE'">
                         <i class="primary"></i><span translate>label.incomplete</span>
@@ -81,16 +81,16 @@
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'SUCCESSFUL'">
                         <i class="primary"></i><span translate>label.successful</span>
                     </label>
-                    <label class="md-check">
+                    <label class="md-check m-t w">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'FAILED'">
                         <i class="primary"></i><span translate>label.failed</span>
                     </label>
                 </div>
             </div>
 <!--            <div class="form-group row">
-            <label class="col-sm-3" translate>label.sharedFilter</label>
+            <label class="col-sm-4" translate>label.sharedFilter</label>
 
-                <div class="col-sm-9">
+                <div class="col-sm-8">
                     <label class="md-check">
                         <input type="checkbox" model="historyFilter.shared" >
                         <i class="primary"></i>

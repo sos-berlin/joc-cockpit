@@ -326,10 +326,10 @@
                                                    ng-click="showPanelFuc(order)"></i>
                                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
 
-                                                <a class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                                <i class="text-muted">{{order.title}}</i></a>
+                                                <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                                <i class="text-muted">{{order.title}}</i></span>
                                             </td>
-                                            <td><a class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></a></td>
+                                            <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
                                             <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                                 <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                             </td>
@@ -414,7 +414,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}"><span translate>label.total</span> {{allOrders.length}} <span translate>label.ordersFound</span></div>
+                            <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}" ng-if="allOrders.length >0"><span translate>label.total</span> {{allOrders.length}} <span translate>label.ordersFound</span></div>
                             <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                             <div class="pull-left" ng-show="allOrders.length > 10">
                                     <div class="btn-group m-r-xxs">

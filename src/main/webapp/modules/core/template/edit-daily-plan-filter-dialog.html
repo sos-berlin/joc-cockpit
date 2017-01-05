@@ -7,7 +7,7 @@
     <form name="form" role="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                <label class="col-sm-3 form-control-label" translate>label.filterName</label>
+                <label class="col-sm-4 form-control-label" translate>label.filterName</label>
 
                 <div class=" col-sm-6">
                     <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="Name" name="filterName"
@@ -25,7 +25,7 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.regex</label>
+                <label class="col-sm-4 form-control-label" translate>label.regex</label>
 
                 <div class=" col-sm-6">
                     <input ng-disabled="dailyPlanFilter.paths.length>0" type="text" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
@@ -35,27 +35,23 @@
                     <i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="dailyPlanFilter.paths.length>0">
-                <div class="col-sm-offset-3 col-sm-9" style="max-height: 140px; overflow: auto">
+                <div class="col-sm-offset-4 col-sm-8" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in dailyPlanFilter.paths track by $index">
                         <span class="">{{path}}</span>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.processName</label>
-
+                <label class="col-sm-4 form-control-label" translate>label.processName</label>
                 <div class=" col-sm-6">
                     <input type="text" class="form-control" placeholder="{{'placeholder.dailyPlannedNameField' | translate}}"
                            ng-model="dailyPlanFilter.processPlanned">
                 </div>
-
             </div>
-
-
             <div class="form-group row " ng-class="{'m-b-sm': dailyPlanFilter.radio == 'planned' }">
-                <label class="col-sm-3 " translate>label.orderState</label>
+                <label class="col-sm-4 " translate>label.orderState</label>
 
-                <div class=" col-md-9" ng-init="dailyPlanFilter.radio = 'current'">
+                <div class=" col-sm-8" ng-init="dailyPlanFilter.radio = 'current'">
                     <div>
                         <label class="md-check w">
                             <input type="radio" name="radio" ng-model="dailyPlanFilter.radio" value="current">
@@ -77,7 +73,7 @@
                                    data-checklist-value="'LATE'">
                             <i class="primary"></i><span translate>label.late</span>
                         </label>
-                        <label class="md-check ">
+                        <label class="md-check m-t w">
                             <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
                                    data-checklist-value="'EXECUTED'">
                             <i class="primary"></i><span translate>label.executed</span>
@@ -87,7 +83,7 @@
             </div>
 
             <div class="form-group row m-t-sm" ng-show="dailyPlanFilter.radio == 'planned'">
-                <label class="col-sm-3 form-control-label" translate>label.processPlanned</label>
+                <label class="col-sm-4 form-control-label" translate>label.processPlanned</label>
 
                 <div class=" col-sm-6">
                     <input type="text" name="planned" class="form-control"
@@ -102,7 +98,7 @@
 
             </div>
             <div class="form-group row" ng-show="dailyPlanFilter.radio == 'planned'">
-                <label class="col-sm-3 form-control-label" translate>label.from</label>
+                <label class="col-sm-4 form-control-label" translate>label.from</label>
 
                 <div class="col-sm-8">
                     <input class="form-control input-date" ng-model="dailyPlanFilter.fromDate"
@@ -116,7 +112,7 @@
                            type="text"></div>
             </div>
             <div class="form-group row" ng-show="dailyPlanFilter.radio == 'planned'">
-                <label class="col-sm-3 form-control-label" translate>label.to</label>
+                <label class="col-sm-4 form-control-label" translate>label.to</label>
 
                 <div class="col-sm-8">
                     <input class="form-control input-date" ng-model="dailyPlanFilter.toDate"
@@ -131,7 +127,7 @@
 
 
 <!--            <div class="form-group row">
-                <label class="col-sm-3" translate>label.sharedFilter</label>
+                <label class="col-sm-4" translate>label.sharedFilter</label>
 
                 <div class="col-sm-6">
                     <label class="md-check">

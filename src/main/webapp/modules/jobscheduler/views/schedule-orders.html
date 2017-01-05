@@ -331,7 +331,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': orders.length > 10}"><span translate>label.total</span> {{orders.length}} <span translate>label.ordersFound</span></div>
+                                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': orders.length > 10}" ng-if="orders.length >0"><span translate>label.total</span> {{orders.length}} <span translate>label.ordersFound</span></div>
                                      <ul ng-show="orders.length > orderFilters.pageSize" uib-pagination total-items="orders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                                      <div class="pull-left" ng-show="orders.length > 10">
                                         <div class="btn-group m-r-xxs">

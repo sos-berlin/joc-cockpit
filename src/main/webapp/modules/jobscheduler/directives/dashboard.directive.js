@@ -5,8 +5,8 @@
         .directive('dailyPlanOverview', dailyPlanOverview);
 
 
-    clusterStatusView.$inject = ["$compile", "$sce","$window","$rootScope"];
-    function clusterStatusView($compile, $sce, $window,$rootScope) {
+    clusterStatusView.$inject = ["$compile", "$sce", "$window", "$rootScope"];
+    function clusterStatusView($compile, $sce, $window, $rootScope) {
 
         return {
             restrict: 'E',
@@ -30,6 +30,7 @@
                     scope.vMargin = vMargin;
                     supervisedMasters = [];
                 }
+
                 init();
 
                 var mainTemplate = '<div class="text-center" id="clusterStatusContainer" style="position: relative; height: 360px;width: 100%;overflow: auto;"> ';
@@ -45,12 +46,12 @@
                         init();
                         prepareData();
                     } else {
-                            $("#clusterStatusContainer").remove();
-                            template = mainTemplate;
-                            template += '<div style="position: absolute;top: 50%;left: 40%;" class="h6 text-u-c" translate>message.noDataAvailable</div>';
-                            template = template + '</div>';
-                            template = $compile(template)(scope);
-                            elem.append(template);
+                        $("#clusterStatusContainer").remove();
+                        template = mainTemplate;
+                        template += '<div style="position: absolute;top: 50%;left: 40%;" class="h6 text-u-c" translate>message.noDataAvailable</div>';
+                        template = template + '</div>';
+                        template = $compile(template)(scope);
+                        elem.append(template);
 
                     }
                 }
@@ -82,7 +83,7 @@
                         }
 
                         supervisedMasters.push(index);
-                         var nMaster = {};
+                        var nMaster = {};
                         if (supervisors.indexOf(master.supervisor.jobschedulerId) >= 0) {
 
                             scope.clusterStatusData.supervisors[supervisors.indexOf(master.supervisor.jobschedulerId)].masters.push(angular.copy(master, nMaster));
@@ -152,8 +153,8 @@
                                     angular.forEach(res.masters, function (nMaster, rIndex) {
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
                                             var span = document.getElementById('sp' + master.host + master.port);
-                                            master.state = nMaster.state;
-                                            master.startedAt = nMaster.startedAt;
+                                            supervisor.masters[index].state = nMaster.state;
+                                            supervisor.masters[index].startedAt = nMaster.startedAt;
                                             if (master.state && refresh) {
                                                 refreshMasterState(master);
                                             }
@@ -168,8 +169,8 @@
 
 
                         }, function (err) {
-                             getTemporaryData2(undefined, refresh);
-                                   console.log("Error in getting refresh");
+                            getTemporaryData2(undefined, refresh);
+                            console.log("Error in getting refresh");
                         })
 
                     }
@@ -180,30 +181,30 @@
                             drawFlow();
                         }
 
-                        if(res)
-                        angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
+                        if (res)
+                            angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
 
-                            angular.forEach(res.masters, function (nMaster, rIndex) {
-                                if (nMaster.host == master.host && nMaster.port == master.port) {
-                                    master.state = nMaster.state;
-                                    master.startedAt = nMaster.startedAt;
-                                    if (master.state && refresh) {
+                                angular.forEach(res.masters, function (nMaster, rIndex) {
+                                    if (nMaster.host == master.host && nMaster.port == master.port) {
+                                        scope.clusterStatusData.members.masters[index].state = nMaster.state;
+                                        scope.clusterStatusData.members.masters[index].startedAt = nMaster.startedAt;
+                                        if (master.state && refresh) {
+                                            refreshMasterState(master);
+                                        }
+                                    }
+                                    if (scope.clusterStatusData.members.masters.length - 1 == index && res.masters.length - 1 == rIndex && !refresh) {
+                                        drawFlow();
+                                    }
+                                })
+
+                                if (refresh && (refresh.state == 'stopping' || refresh.state == 'starting') && res.masters.length == 0) {
+                                    if (master.state._text !== ' ') {
+                                        master.state._text = refresh.state;
                                         refreshMasterState(master);
                                     }
-                                }
-                                if (scope.clusterStatusData.members.masters.length - 1 == index && res.masters.length - 1 == rIndex && !refresh) {
-                                    drawFlow();
+
                                 }
                             })
-
-                            if(refresh && (refresh.state=='stopping'||refresh.state=='starting') && res.masters.length==0){
-                                if(master.state._text!==' '){
-                                    master.state._text=refresh.state;
-                                refreshMasterState(master);
-                                }
-
-                            }
-                        })
                         $rootScope.$broadcast('reloadScheduleDetail', scope.clusterStatusData.members);
 
                     }
@@ -213,11 +214,12 @@
 
                         var span = document.getElementById('sp' + master.host + master.port);
                         var dState = document.getElementById('state' + master.host + master.port);
-                        if(dState){
-                            dState.innerHTML= master.state._text;
+                        if (dState) {
+                            dState.innerHTML = master.state._text;
                         }
                         if (master.state && span) {
-
+                            var popover = document.getElementById('popover'+master.host+master.port);
+                             popover.innerHTML=moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
@@ -227,8 +229,8 @@
 
                                     if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
                                         if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response'
-                                            || master.state._text.toLowerCase()=='stopping' ||master.state._text.toLowerCase()=='terminating'||
-                                            master.state._text.toLowerCase()=='starting' ||master.state._text.toLowerCase()==' ') {
+                                            || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'terminating' ||
+                                            master.state._text.toLowerCase() == 'starting' || master.state._text.toLowerCase() == ' ') {
                                             var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
                                             span.className = span.className.replace(/text-.+/, cls);
                                             dState.className = dState.className.replace(/text-.+/, cls);
@@ -237,12 +239,12 @@
                                         } else if (master.state._text.toLowerCase() == 'waiting_for_activation') {
                                             span.className = span.className.replace(/text-.+/, " text-black-lt");
                                             dState.className = dState.className.replace(/text-.+/, " text-black-lt");
-                                            anchor.className = anchor.className+' disable-link';
+                                            anchor.className = anchor.className + ' disable-link';
                                             connectLink(master.host, master.port);
                                         }
                                         else if (master.state._text.toLowerCase() == 'running') {
                                             span.className = span.className.replace(/text-.+/, "text-success");
-                                             dState.className = dState.className.replace(/text-.+/, " text-success");
+                                            dState.className = dState.className.replace(/text-.+/, " text-success");
                                             anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
                                             if (results[2] == 'continue') {
                                                 anchor.className = anchor.className.replace('show', 'hide');
@@ -273,6 +275,8 @@
                     function refreshSupervisorState(supervisor) {
                         if (supervisor.data.jobscheduler.state) {
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
+                             var popover = document.getElementById('popover'+supervisor.host+supervisor.port);
+                             popover.innerHTML=moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
@@ -358,7 +362,7 @@
                             }
                             scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
-                                '<br>Started at : ' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '<br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
+                                '<br>Started at : <span id="popover'+ supervisor.host + supervisor.port+'">' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
 
 
                             var sClassRunning = 'text-success';
@@ -382,6 +386,35 @@
                                 disableClass = 'disable-link';
                             }
 
+
+                            //permission
+                            /* if (scope.permission.JobschedulerMasterCluster.restart) {
+                             orderLog.className = 'show dropdown-item';
+                             }*/
+                            var restarTerminatetClass1 = 'hide';
+                            var restarAbortClass1 = 'hide';
+                            var abortClass1 = 'hide';
+                            var terminateClass1 = 'hide';
+
+                            if (scope.permission.JobschedulerMaster.restart.terminate) {
+                                restarTerminatetClass1 = 'show';
+                            }
+                            if (scope.permission.JobschedulerMaster.restart.abort) {
+                                restarAbortClass1 = 'show';
+                            }
+                            if (scope.permission.JobschedulerMaster.abort) {
+                                abortClass1 = 'show';
+                            }
+                            if (scope.permission.JobschedulerMaster.terminate) {
+                                terminateClass1 = 'show';
+                            }
+                            if (!scope.permission.JobschedulerMaster.pause) {
+                                pauseClass = 'hide';
+                            }
+                            if (!scope.permission.JobschedulerMaster.continue) {
+                                continueClass = 'hide';
+                            }
+
                             lastId = supervisor.host + supervisor.port;
                             template = template +
 
@@ -392,22 +425,22 @@
                                 '</span> <div class="btn-group dropdown pull-right" >' +
                                 '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + abortClass1 + ' '+ disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
+                                '<a class="dropdown-item ' + disableClass + ' ' + restarAbortClass1 +  '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass +' ' + restarTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass +' ' + restarTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
                                 '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                                 '</div>' +
                                 '</div></div>' +
 
-                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="'+supervisor.jobschedulerId+'">' + supervisor.jobschedulerId +
+                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
                                 '</span></div>' +
                                 '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                                 '</span></div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="'+sClassRunning+'">' + supervisor.data.jobscheduler.state.
-                                _text + '</span></div>'+
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '">' + supervisor.data.jobscheduler.state.
+                                    _text + '</span></div>' +
                                 '</div> ';
 
                             var masterTemplate = '';
@@ -434,15 +467,14 @@
                                 var disableClass = '';
 
 
-
                                 if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     classRunning = 'text-danger';
 
                                 } else if (master.state && master.state._text.toLowerCase() != 'running') {
                                     classRunning = 'text-black-lt';
 
-                                }else if (master.state && (master.state._text.toLowerCase() == ' '
-                                    || master.state._text.toLowerCase() == 'stopping'|| master.state._text.toLowerCase() == 'starting'
+                                } else if (master.state && (master.state._text.toLowerCase() == ' '
+                                    || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'starting'
                                     || master.state._text.toLowerCase() == 'terminating')) {
                                     classRunning = 'text-warn';
 
@@ -455,7 +487,7 @@
 
                                 scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                     '<br>Version : ' + master.version +
-                                    '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
+                                    '<br>Started at :<span id="popover'+ master.host + master.port+'"> ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
                                 if (master.state && master.state._text.toLowerCase() == 'paused') {
@@ -464,23 +496,49 @@
                                 }
 
                                 var precedence = '';
-                               if (master.clusterType && master.clusterType._type == 'PASSIVE') {
-                                if (master.clusterType.precedence == 0) {
-                                    name = 'PRIMARY';
-                                } else {
-                                     name = 'BACKUP';
+                                if (master.clusterType && master.clusterType._type == 'PASSIVE') {
+                                    if (master.clusterType.precedence == 0) {
+                                        name = 'PRIMARY';
+                                    } else {
+                                        name = 'BACKUP';
+                                    }
+
+                                } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
+                                    name = 'JobScheduler JS' + (index + 1);
+
                                 }
-
-                            } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
-                                name = 'JobScheduler JS' + (index + 1);
-
-                            }
-                                if(master.clusterType._type=="PASSIVE" && !master.state){
+                                if (master.clusterType._type == "PASSIVE" && !master.state) {
                                     console.log("IN passive no master state find");
-                                    master.state={};
-                                    master.state._text=' ';
+                                    master.state = {};
+                                    master.state._text = ' ';
                                 }
-                                lastId=master.host + master.port;
+
+                                var restarTerminatetClass1 = 'hide';
+                                var restarAbortClass1 = 'hide';
+                                var abortClass1 = 'hide';
+                                var terminateClass1 = 'hide';
+
+                                if (scope.permission.JobschedulerMaster.restart.terminate) {
+                                    restarTerminatetClass1 = 'show';
+                                }
+                                if (scope.permission.JobschedulerMaster.restart.abort) {
+                                    restarAbortClass1 = 'show';
+                                }
+                                if (scope.permission.JobschedulerMaster.abort) {
+                                    abortClass1 = 'show';
+                                }
+                                if (scope.permission.JobschedulerMaster.terminate) {
+                                    terminateClass1 = 'show';
+                                }
+                                if (!scope.permission.JobschedulerMaster.pause) {
+                                    pauseClass = 'hide';
+                                }
+                                if (!scope.permission.JobschedulerMaster.continue) {
+                                    continueClass = 'hide';
+                                }
+
+
+                                lastId = master.host + master.port;
                                 masterTemplate = '<div  uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
 
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
@@ -490,18 +548,18 @@
                                     '</span>' + '<div class="btn-group dropdown pull-right" >' +
                                     '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="dropdown-item bg-hover-color '+ terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item ' +  abortClass1 +' ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
+                                    '<a class="dropdown-item ' +  restarAbortClass1 +' ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' +  restarTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' +  restarTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="dropdown-item ' +  pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
                                     '</div> </div>' +
-                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.jobschedulerId+'">' + master.jobschedulerId +
-                                    '</span></div><div class="text-sm text-left p-t-xs p-l-sm">' + master.host + ':' + master.port  + '</div>' +
-                                        '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
+                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
+                                    '</span></div><div class="text-sm text-left p-t-xs p-l-sm">' + master.host + ':' + master.port + '</div>' +
+                                    '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="' + classRunning + '">' + master.state._text + '</span></div>' +
                                     '</div>';
 
                                 if (index == 0) {
@@ -538,118 +596,142 @@
 
                         angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
 
-                            if(master){
+                            if (master) {
 
-                            var c = "cluster-rect";
-                            if (zeroSupervisor && index == 0) {
-                                mLeft = mLeft + margin;
-                            } else {
-                                mLeft = mLeft + margin + rWidth;
-                            }
-
-                            if (scope.clusterStatusData.members.masters - 1 == index) {
-                                c = "cluster-rect";
-                            }
-                            if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
-
-                                c = c + " yellow-border";
-                            }
-                            var name = '';
-                            if (master.clusterType && master.clusterType._type == 'PASSIVE') {
-                                if (master.clusterType.precedence == 0) {
-                                    name = 'PRIMARY';
+                                var c = "cluster-rect";
+                                if (zeroSupervisor && index == 0) {
+                                    mLeft = mLeft + margin;
                                 } else {
-                                     name = 'BACKUP';
+                                    mLeft = mLeft + margin + rWidth;
                                 }
 
-                            } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
-                                name = 'JobScheduler JS' + (index + 1);
+                                if (scope.clusterStatusData.members.masters - 1 == index) {
+                                    c = "cluster-rect";
+                                }
+                                if (new Date().getTime() - new Date(master.surveyDate).getTime() < 2000) {
 
-                            }
+                                    c = c + " yellow-border";
+                                }
+                                var name = '';
+                                if (master.clusterType && master.clusterType._type == 'PASSIVE') {
+                                    if (master.clusterType.precedence == 0) {
+                                        name = 'PRIMARY';
+                                    } else {
+                                        name = 'BACKUP';
+                                    }
 
-                                if(master.clusterType._type=="PASSIVE" && !master.state){
-                                    master.state={};
-                                    master.state._text=' ';
+                                } else if (master.clusterType && master.clusterType._type == 'ACTIVE') {
+                                    name = 'JobScheduler JS' + (index + 1);
+
+                                }
+
+                                if (master.clusterType._type == "PASSIVE" && !master.state) {
+                                    master.state = {};
+                                    master.state._text = ' ';
                                 }
                                 var pauseClass = 'show';
-                            var continueClass = 'hide';
-                            var disableClass = '';
-                            var classRunning = 'text-success';
-                                console.log("STATE "+ master.state._text);
-                            if (master.state && master.state._text.toLowerCase() == 'stopped') {
-                                classRunning = 'text-danger';
-                                disableClass = 'disable-link';
-                            }else if (master.state && (master.state._text == ' '
-                                    || master.state._text.toLowerCase() == 'stopping'|| master.state._text.toLowerCase() == 'starting'
+                                var restarTerminatetClass1 = 'hide';
+                                var restarAbortClass1 = 'hide';
+                                var abortClass1 = 'hide';
+                                var terminateClass1 = 'hide';
+
+
+                                var continueClass = 'hide';
+                                var disableClass = '';
+                                var classRunning = 'text-success';
+                                console.log("STATE " + master.state._text);
+                                if (master.state && master.state._text.toLowerCase() == 'stopped') {
+                                    classRunning = 'text-danger';
+                                    disableClass = 'disable-link';
+                                } else if (master.state && (master.state._text == ' '
+                                    || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'starting'
                                     || master.state._text.toLowerCase() == 'terminating')) {
                                     classRunning = 'text-warn';
-                                 disableClass = 'disable-link';
+                                    disableClass = 'disable-link';
 
                                 }
-                            else if (master.state && master.state._text.toLowerCase() != 'running') {
-                                classRunning = 'text-black-lt';
-                            }
+                                else if (master.state && master.state._text.toLowerCase() != 'running') {
+                                    classRunning = 'text-black-lt';
+                                }
 
 
-                            if (master.state && master.state._text.toLowerCase() == 'paused') {
-                                pauseClass = 'hide';
-                                continueClass = 'show';
-                            }
+                                if (master.state && master.state._text.toLowerCase() == 'paused') {
+                                    pauseClass = 'hide';
+                                    continueClass = 'show';
+                                }
 
 
-                                lastId=master.host + master.port;
+                                lastId = master.host + master.port;
 
 
-                            scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                '<br>Version : ' + master.version +
-                                '<br>Started at : ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
-                            var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
-                                'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
-                                '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
-                                '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
-                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a class="dropdown-item bg-hover-color ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
-                                '</div></div>' +
-                                '</span></div>' +
-                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="'+master.jobschedulerId+'">' + master.jobschedulerId +
-                                '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="'+classRunning+'">' + master.state._text + '</span></div>'+
+                                if (scope.permission.JobschedulerMaster.restart.terminate) {
+                                    restarTerminatetClass1 = 'show';
+                                }
+                                if (scope.permission.JobschedulerMaster.restart.abort) {
+                                    restarAbortClass1 = 'show';
+                                }
+                                if (scope.permission.JobschedulerMaster.abort) {
+                                    abortClass1 = 'show';
+                                }
+                                if (scope.permission.JobschedulerMaster.terminate) {
+                                    terminateClass1 = 'show';
+                                }
+                                if (!scope.permission.JobschedulerMaster.pause) {
+                                    pauseClass = 'hide';
+                                }
+                                if (!scope.permission.JobschedulerMaster.continue) {
+                                    continueClass = 'hide';
+                                }
+                                scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                    '<br>Version : ' + master.version +
+                                    '<br>Started at : <span id="popover'+ master.host + master.port+'">' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
+                                var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
+                                    'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
+                                    '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
+                                    '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
+                                    '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                    '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                                    '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + abortClass1 + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + restarAbortClass1 + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + restarTerminatetClass1 + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + restarTerminatetClass1 + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="dropdown-item ' + pauseClass + ' '  + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                    '</div></div>' +
+                                    '</span></div>' +
+                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
+                                    '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
+                                    '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="' + classRunning + '">' + master.state._text + '</span></div>' +
 
-                                '</div>';
+                                    '</div>';
 
-                            if (index == 0) {
-                                template = template + '<div   id="masterContainer">' + masterTemplate;
-                            }
-                            else {
-                                template = template + masterTemplate;
-                            }
+                                if (index == 0) {
+                                    template = template + '<div   id="masterContainer">' + masterTemplate;
+                                }
+                                else {
+                                    template = template + masterTemplate;
+                                }
 
-                            if (scope.clusterStatusData.members.masters.length - 1 == index) {
-                                if (scope.clusterStatusData.database) {
-                                    drawFlowForDatabase();
-                                } else {
-                                    template = template + masterTemplate + '</div></div>';
-                                    template = $compile(template)(scope);
-                                    elem.append(template);
+                                if (scope.clusterStatusData.members.masters.length - 1 == index) {
+                                    if (scope.clusterStatusData.database) {
+                                        drawFlowForDatabase();
+                                    } else {
+                                        template = template + masterTemplate + '</div></div>';
+                                        template = $compile(template)(scope);
+                                        elem.append(template);
+                                    }
+
                                 }
 
                             }
-
-                        }
                         })
                     }
 
                     function drawFlowForDatabase() {
                         var c = "cluster-rect";
                         mLeft = mLeft + margin + rWidth;
-                        var dTop = top - rHeight / 2 -10;
+                        var dTop = top - rHeight / 2 - 10;
 
                         if (new Date().getTime() - new Date(scope.clusterStatusData.database.surveyDate).getTime() < 2000) {
 
@@ -685,56 +767,56 @@
                     }
 
 
-                    function alignToCenter(){
-                        var containerCt=$("#divClusterStatusWidget").height()/2;
-                        var containerHCt=$("#divClusterStatusWidget").width()/2;
-                        var diagramHCt = (parseInt(document.getElementById('database').style.left.replace('px',''))+$("#database").width()-margin)/2;
-                        var diagramCt = (document.getElementById(lastId).offsetTop+document.getElementById(lastId).clientHeight+vMargin/2)/2;
-                        if(containerCt>diagramCt || containerHCt > diagramHCt){
-                            var diff =  (containerCt-diagramCt);
-                            var diffH=(containerHCt-diagramHCt);
+                    function alignToCenter() {
+                        var containerCt = $("#divClusterStatusWidget").height() / 2;
+                        var containerHCt = $("#divClusterStatusWidget").width() / 2;
+                        var diagramHCt = (parseInt(document.getElementById('database').style.left.replace('px', '')) + $("#database").width() - margin) / 2;
+                        var diagramCt = (document.getElementById(lastId).offsetTop + document.getElementById(lastId).clientHeight + vMargin / 2) / 2;
+                        if (containerCt > diagramCt || containerHCt > diagramHCt) {
+                            var diff = (containerCt - diagramCt);
+                            var diffH = (containerHCt - diagramHCt);
                             angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, sIndex) {
-                                if(diff>0){
-                                    document.getElementById(supervisor.host+supervisor.port).style.top=
-                                    parseInt(document.getElementById(supervisor.host+supervisor.port).style.top.replace('px',''))+diff+'px';
+                                if (diff > 0) {
+                                    document.getElementById(supervisor.host + supervisor.port).style.top =
+                                        parseInt(document.getElementById(supervisor.host + supervisor.port).style.top.replace('px', '')) + diff + 'px';
                                 }
-                                if(diffH>0){
-                                    document.getElementById(supervisor.host+supervisor.port).style.left=
-                                    parseInt(document.getElementById(supervisor.host+supervisor.port).style.left.replace('px',''))+diffH+'px';
+                                if (diffH > 0) {
+                                    document.getElementById(supervisor.host + supervisor.port).style.left =
+                                        parseInt(document.getElementById(supervisor.host + supervisor.port).style.left.replace('px', '')) + diffH + 'px';
                                 }
 
                                 angular.forEach(supervisor.masters, function (master, index) {
-                                     if(diff>0){
-                                          document.getElementById(master.host+master.port).style.top=
-                                    parseInt(document.getElementById(master.host+master.port).style.top.replace('px',''))+diff+'px';
-                                     }
-                                    if(diffH>0){
-                                         document.getElementById(master.host+master.port).style.left=
-                                    parseInt(document.getElementById(master.host+master.port).style.left.replace('px',''))+diff+'px';
+                                    if (diff > 0) {
+                                        document.getElementById(master.host + master.port).style.top =
+                                            parseInt(document.getElementById(master.host + master.port).style.top.replace('px', '')) + diff + 'px';
+                                    }
+                                    if (diffH > 0) {
+                                        document.getElementById(master.host + master.port).style.left =
+                                            parseInt(document.getElementById(master.host + master.port).style.left.replace('px', '')) + diff + 'px';
                                     }
 
                                 })
                             });
 
                             angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
-                                if(diff>0){
-                                   document.getElementById(master.host+master.port).style.top=
-                                    parseInt(document.getElementById(master.host+master.port).style.top.replace('px',''))+diff+'px';
+                                if (diff > 0) {
+                                    document.getElementById(master.host + master.port).style.top =
+                                        parseInt(document.getElementById(master.host + master.port).style.top.replace('px', '')) + diff + 'px';
                                 }
-                                if(diffH>0){
-                                    document.getElementById(master.host+master.port).style.left=
-                                    parseInt(document.getElementById(master.host+master.port).style.left.replace('px',''))+diff+'px';
+                                if (diffH > 0) {
+                                    document.getElementById(master.host + master.port).style.left =
+                                        parseInt(document.getElementById(master.host + master.port).style.left.replace('px', '')) + diff + 'px';
                                 }
 
                             });
-                            if(diff>0){
-                                document.getElementById('database').style.top=
-                                    parseInt(document.getElementById('database').style.top.replace('px',''))+diff+'px';
+                            if (diff > 0) {
+                                document.getElementById('database').style.top =
+                                    parseInt(document.getElementById('database').style.top.replace('px', '')) + diff + 'px';
                             }
-                            if(diffH>0){
+                            if (diffH > 0) {
 
-                                document.getElementById('database').style.left=
-                                    parseInt(document.getElementById('database').style.left.replace('px',''))+diffH+'px';
+                                document.getElementById('database').style.left =
+                                    parseInt(document.getElementById('database').style.left.replace('px', '')) + diffH + 'px';
                             }
 
                         }
@@ -747,7 +829,8 @@
                 clusterStatusData: '=',
                 getSupervisorDetails: '&',
                 onRefresh: '&',
-                onOperation: '&'
+                onOperation: '&',
+                permission: '='
 
             },
             controller: ["$scope", "$interval", function ($scope, $interval) {
@@ -791,8 +874,8 @@
                                     host: results[3],
                                     port: results[4]
                                 });
-                                if(results[2]!=='terminateAndRestartWithin'){
-                                      changeToWaiting(results[3], results[4]);
+                                if (results[2] !== 'terminateAndRestartWithin') {
+                                    changeToWaiting(results[3], results[4]);
                                 }
 
                                 //vm.getSupervisor(true);
@@ -819,8 +902,8 @@
 
                         angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
                             if (master.host == host && master.port == port) {
-                                if(!master.state){
-                                   master.state={};
+                                if (!master.state) {
+                                    master.state = {};
                                 }
                                 master.state._text = 'waiting_for_response';
                                 vm.refreshMasterState(master);
@@ -964,10 +1047,10 @@
                             }
                             var vMargin = vm.vMargin;
 
-                                        if (masterRect) {
-                                            var mLeft = masterRect.offsetLeft;
-                                            var mTop = masterRect.offsetTop;
-                                        }
+                            if (masterRect) {
+                                var mLeft = masterRect.offsetLeft;
+                                var mTop = masterRect.offsetTop;
+                            }
 
                             var databaseRect = document.getElementById('database');
                             if (!databaseRect) {
@@ -1022,25 +1105,26 @@
 
                 }
 
-                vm.$on('event-started', function (event,args) {
-            if (args.events && args.events.length > 0) {
+                vm.$on('event-started', function (event, args) {
+                    if (args.events && args.events.length > 0) {
 
-                angular.forEach(args.events[0].eventSnapshots, function (value1) {
-                    if (value1.eventType.indexOf("SchedulerStateChanged") !== -1) {
-                         console.log("Event here "+JSON.stringify(value1));
+                        angular.forEach(args.events[0].eventSnapshots, function (value1) {
+                            if (value1.eventType.indexOf("SchedulerStateChanged") !== -1) {
+                                console.log("Event here " + JSON.stringify(value1));
 
-                        vm.getSupervisor(value1);
+                                vm.getSupervisor(value1);
+                            }
+
+                        });
                     }
 
                 });
-            }
-
-        });
             }]
         }
     }
+
     dailyPlanOverview.$inject = [];
-    function dailyPlanOverview () {
+    function dailyPlanOverview() {
         return {
             restrict: 'E',
             scope: {
@@ -1051,21 +1135,21 @@
                 executed: '=',
                 error: '=',
                 total: '=',
-                day:"=",
+                day: "=",
                 width: "="
             },
             template: '<div class="plan-overview bg-dimgrey" style="width:{{width[0]}}%">\n'
-                +'<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan({filter:1,day:day})" ><span class="text-white" translate>label.waitingOrders</span> - {{waiting |number:1}} %  </a></label></div>'
-                +'<div class="plan-overview text-white bg-gold" style="width:{{width[1]}}%">\n'
-                +'<label class="hide text-white plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.lateOrders</span> - {{late |number:1}} % </a></label></div>'
-                +'<div class="plan-overview text-white bg-green1" style="width:{{width[3]}}%">\n'
-                +'<label class="hide text-white plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.lateOrdersSuccess</span> - {{lateSuccess |number:1}} % </a></label></div>'
-                +'<div class="plan-overview text-white bg-crimson1" style="width:{{width[5]}}%">\n'
-                +'<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.lateOrdersFailed</span> - {{lateError |number:1}} % </a></label></div>'
-                +'<div class="plan-overview text-white bg-green" style="width:{{width[2]}}%">\n'
-                +'<label class="hide text-white plan-status" ng-class="{\'show\': executed > 0}" uib-tooltip="{{executed*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.successfulOrders</span> - {{executed |number:1}} % </a></label></div>'
-                +'<div class="plan-overview text-white bg-crimson" style="width:{{width[4]}}%">\n'
-                +'<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.failedOrders</span> - {{error |number:1}} % </a></label></div>'
+            + '<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan({filter:1,day:day})" ><span class="text-white" translate>label.waitingOrders</span> - {{waiting |number:1}} %  </a></label></div>'
+            + '<div class="plan-overview text-white bg-gold" style="width:{{width[1]}}%">\n'
+            + '<label class="hide text-white plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.lateOrders</span> - {{late |number:1}} % </a></label></div>'
+            + '<div class="plan-overview text-white bg-green1" style="width:{{width[3]}}%">\n'
+            + '<label class="hide text-white plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.lateOrdersSuccess</span> - {{lateSuccess |number:1}} % </a></label></div>'
+            + '<div class="plan-overview text-white bg-crimson1" style="width:{{width[5]}}%">\n'
+            + '<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.lateOrdersFailed</span> - {{lateError |number:1}} % </a></label></div>'
+            + '<div class="plan-overview text-white bg-green" style="width:{{width[2]}}%">\n'
+            + '<label class="hide text-white plan-status" ng-class="{\'show\': executed > 0}" uib-tooltip="{{executed*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.successfulOrders</span> - {{executed |number:1}} % </a></label></div>'
+            + '<div class="plan-overview text-white bg-crimson" style="width:{{width[4]}}%">\n'
+            + '<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.failedOrders</span> - {{error |number:1}} % </a></label></div>'
         }
     }
 })();

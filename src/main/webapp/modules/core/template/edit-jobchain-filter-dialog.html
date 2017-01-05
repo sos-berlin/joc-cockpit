@@ -6,7 +6,7 @@
     <form name="form" role="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-               <label class="col-sm-3 form-control-label" translate>label.filterName</label>
+               <label class="col-sm-4 form-control-label" translate>label.filterName</label>
                <div class=" col-sm-6">
                    <input type="text" uib-tooltip="Max: 25 characters" tooltip-trigger="focus" class="form-control" placeholder="{{'placeholder.name' | translate}}" ng-model="jobChainFilter.name" name="filterName" ng-maxlength="25" ng-blur="checkFilterName()" required>
                    <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
@@ -20,34 +20,34 @@
             </div>
 
             <div class="form-group row">
-               <label class="col-sm-3 form-control-label" translate>label.regex</label>
+               <label class="col-sm-4 form-control-label" translate>label.regex</label>
                <div class=" col-sm-6">
                    <input type="text" class="form-control" ng-disabled="jobChainFilter.paths.length>0"  placeholder="{{'placeholder.regexAndChooseTree' | translate}} " ng-model="jobChainFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href=""  ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="jobChainFilter.paths.length>0">
-                <div class="col-sm-offset-3 col-sm-9" style="max-height: 140px; overflow: auto">
+                <div class="col-sm-offset-4 col-sm-8" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in jobChainFilter.paths track by $index">
                             <span class="">{{path}}</span>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
-               <label class="col-sm-3 form-control-label" translate>label.runningOn</label>
+               <label class="col-sm-4 form-control-label" translate>label.runningOn</label>
                <div class=" col-sm-6">
                    <input type="text" class="form-control" placeholder="Name of agent cluster" ng-model="jobChainFilter.agentName">
                </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 " translate>label.jobChainState</label>
-                <div class=" col-md-9">
+                <label class="col-sm-4 " translate>label.jobChainState</label>
+                <div class=" col-sm-8">
                     <label class="md-check w">
                         <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'ACTIVE'">
                         <i class="primary"></i>
                         <span translate>label.active</span>
                     </label>
-                    <label class="md-check">
+                    <label class="md-check w">
                         <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'STOPPED'">
                         <i class="primary"></i>
                         <span translate>label.stopped</span>
@@ -55,7 +55,7 @@
                 </div>
             </div>
 <!--            <div class="form-group row">
-                <label class="col-sm-3" translate>label.sharedFilter</label>
+                <label class="col-sm-4" translate>label.sharedFilter</label>
 
                     <div class="col-sm-9">
                         <label class="md-check">

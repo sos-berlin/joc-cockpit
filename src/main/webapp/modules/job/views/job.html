@@ -250,9 +250,9 @@
                                     </label>
                                 </td>
                                 <td>
-                                      <a class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':job.isOrderJob!=true}" ng-bind="job.name"></a>
+                                      <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':job.isOrderJob!=true}" ng-bind="job.name"></span>
                                         <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
-                                        <div class="p-l-sm" ng-if="job.runningTasks" ng-repeat="task in job.runningTasks">
+                                        <div class="p-l-sm noExl" ng-if="job.runningTasks" ng-repeat="task in job.runningTasks">
                                             <span class="text-xs">
                                                 <span translate>label.task</span>:
                                                 <span class="text-primary">{{task.taskId}}</span> -
@@ -263,10 +263,10 @@
                                                         class="fa fa-ellipsis-h"></i></button>
                                                 <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
                                                     <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
-                                                    <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,showTaskPanel.path)" translate>button.terminate</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,showTaskPanel.path)" translate>button.terminateWithTimeout</a>
+                                                    <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,job.path)" translate>button.end</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,job.path)" translate>button.killImmediately</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,job.path)" translate>button.terminate</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,job.path)" translate>button.terminateWithTimeout</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -276,15 +276,15 @@
                                         <span uib-tooltip="{{job.stateText}}" class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span>
                                     </td>
                                     <td>
-                                        <a ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></a>
+                                        <span ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
                                         <span ng-if="!job.usedInJobChains">0</span>
                                     </td>
                                     <td>
-                                        <a ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
+                                        <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
                                             <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
                                             <i class="text-black ">of</i>
                                             <span class="text-black _600"  ng-bind="job.maxTasks || 1"></span>
-                                        </a>
+                                        </span>
                                         <span ng-if="!job.numOfRunningTasks">
                                             <span ng-bind="job.numOfRunningTasks || 0"></span>
                                             <i class="text-black" translate>of</i>
@@ -318,7 +318,7 @@
                                 </tbody>
 
                             </table>
-                         <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}"><span translate>label.total</span> {{allJobs.length}} <span translate>label.jobsFound</span></div>
+                         <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}" ng-if="allJobs.length >0"><span translate>label.total</span> {{allJobs.length}} <span translate>label.jobsFound</span></div>
                         <ul ng-show="allJobs.length > jobFilters.pageSize" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                         <div class="pull-left" ng-show="allJobs.length > 10">
                                 <div class="btn-group  m-r-xxs">

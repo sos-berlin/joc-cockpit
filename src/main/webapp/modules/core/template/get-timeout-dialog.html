@@ -6,7 +6,7 @@
     <form name="form" ng-submit="ok()" novalidate>
     <div class="modal-body p-a">
         <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-           <label class="col-sm-3 form-control-label" translate>label.enterTimeout</label>
+           <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
            <div class=" col-sm-6">
                 <input type="number" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" >
                <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">

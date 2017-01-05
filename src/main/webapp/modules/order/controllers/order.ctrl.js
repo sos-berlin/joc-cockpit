@@ -3102,10 +3102,24 @@
         vm.historyFilters = CoreService.getHistoryTab();
         vm.order = vm.historyFilters.order;
         vm.task = vm.historyFilters.task;
+         if (!vm.order.filter.historyStates) {
+                vm.order.filter.historyStates = 'all';
+
+            }if(!vm.order.filter.date){
+                vm.order.filter.date = 'today';
+            }
+            if (!vm.task.filter.historyStates) {
+                vm.task.filter.historyStates = 'all';
+            }if(!vm.task.filter.date){
+                vm.task.filter.date = 'today';
+            }
 
         vm.object = {};
         vm.tree = [];
         var selectedFiltered1, selectedFiltered2;
+
+        vm.jobChainSearch = {};
+        vm.jobSearch = {};
 
         var promise1;
 
@@ -3151,9 +3165,6 @@
         }
 
         /**--------------- sorting and pagination -------------------*/
-        vm.pageChange = function () {
-            vm.object = {};
-        };
         vm.sortBy = function (propertyName) {
             vm.order.sortReverse = !vm.order.sortReverse;
             vm.order.filter.sortBy = propertyName;
@@ -3265,15 +3276,162 @@
             }
         };
 
+        function isEmpty(obj) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
+        }
+
+        vm.search = function () {
+            vm.loading = true;
+            var filter = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                limit: parseInt($window.localStorage.$SOS$MAXRECORDS)
+            };
+
+            if (vm.historyFilters.type == 'job') {
+                vm.task.filter.historyStates = '';
+                vm.task.filter.date = '';
+                if (vm.jobSearch.job) {
+                    filter.jobs = [];
+                    var s = vm.jobSearch.job.replace(/,\s+/g, ',');
+                    var jobs = s.split(',');
+                    angular.forEach(jobs, function (value) {
+                        filter.jobs.push({job: value})
+                    });
+                }
+                if (vm.jobSearch.states && vm.jobSearch.states.length > 0) {
+                    filter.historyStates = vm.jobSearch.states;
+
+                }
+                if (vm.jobSearch.from) {
+                    var fromDate = new Date(vm.jobSearch.from);
+                    if (vm.jobSearch.fromTime) {
+
+                        fromDate.setHours(vm.jobSearch.fromTime.getHours());
+                        fromDate.setMinutes(vm.jobSearch.fromTime.getMinutes());
+                        fromDate.setSeconds(vm.jobSearch.fromTime.getSeconds());
+                        fromDate.setMilliseconds(0);
+                    } else {
+                        fromDate.setHours(0);
+                        fromDate.setMinutes(0);
+                        fromDate.setSeconds(0);
+                        fromDate.setMilliseconds(0);
+                    }
+                    filter.dateFrom = fromDate;
+                }
+                if (vm.jobSearch.to) {
+                    var toDate = new Date(vm.jobSearch.to);
+                    if (vm.jobSearch.toTime) {
+
+                        toDate.setHours(vm.jobSearch.toTime.getHours());
+                        toDate.setMinutes(vm.jobSearch.toTime.getMinutes());
+                        toDate.setSeconds(vm.jobSearch.toTime.getSeconds());
+                        toDate.setMilliseconds(0);
+                    } else {
+                        toDate.setHours(0);
+                        toDate.setMinutes(0);
+                        toDate.setSeconds(0);
+                        toDate.setMilliseconds(0);
+                    }
+                    filter.dateTo = toDate;
+                }
+
+                TaskService.histories(filter).then(function (res) {
+                    vm.jobHistorys = res.history;
+                    filterJobData();
+                    vm.loading = false;
+                }, function () {
+                    vm.loading = false;
+                });
+            } else {
+                vm.order.filter.historyStates = '';
+                vm.order.filter.date = '';
+                if (vm.jobChainSearch.jobChain && vm.jobChainSearch.orderIds) {
+                    filter.orders = [];
+                    var orderIds = vm.jobChainSearch.orderIds.split(',');
+                    angular.forEach(orderIds, function (value) {
+                        filter.orders.push({jobChain: vm.jobChainSearch.jobChain, orderId: value})
+                    });
+                }
+                if (vm.jobChainSearch.states && vm.jobChainSearch.states.length > 0) {
+                    filter.historyStates = vm.jobChainSearch.states;
+
+                }
+                if (vm.jobChainSearch.from) {
+                    var fromDate = new Date(vm.jobChainSearch.from);
+                    if (vm.jobChainSearch.fromTime) {
+
+                        fromDate.setHours(vm.jobChainSearch.fromTime.getHours());
+                        fromDate.setMinutes(vm.jobChainSearch.fromTime.getMinutes());
+                        fromDate.setSeconds(vm.jobChainSearch.fromTime.getSeconds());
+                        fromDate.setMilliseconds(0);
+                    } else {
+                        fromDate.setHours(0);
+                        fromDate.setMinutes(0);
+                        fromDate.setSeconds(0);
+                        fromDate.setMilliseconds(0);
+                    }
+                    filter.dateFrom = fromDate;
+                }
+                if (vm.jobChainSearch.to) {
+                    var toDate = new Date(vm.jobChainSearch.to);
+                    if (vm.jobChainSearch.toTime) {
+
+                        toDate.setHours(vm.jobChainSearch.toTime.getHours());
+                        toDate.setMinutes(vm.jobChainSearch.toTime.getMinutes());
+                        toDate.setSeconds(vm.jobChainSearch.toTime.getSeconds());
+                        toDate.setMilliseconds(0);
+                    } else {
+                        toDate.setHours(0);
+                        toDate.setMinutes(0);
+                        toDate.setSeconds(0);
+                        toDate.setMilliseconds(0);
+                    }
+                    filter.dateTo = toDate;
+                }
+
+                OrderService.histories(filter).then(function (res) {
+                    vm.historys = res.history;
+                    filterData();
+                    vm.loading = false;
+                }, function () {
+                    vm.loading = false;
+                });
+            }
+        };
+
+        vm.cancel = function () {
+            if (!vm.order.filter.historyStates) {
+                vm.order.filter.historyStates = 'all';
+
+            }if(!vm.order.filter.date){
+                vm.order.filter.date = 'today';
+            }
+            if (!vm.task.filter.historyStates) {
+                vm.task.filter.historyStates = 'all';
+            }if(!vm.task.filter.date){
+                vm.task.filter.date = 'today';
+            }
+            vm.showSearchPanel = false;
+            if (vm.historyFilters.type == 'job') {
+                vm.jobSearch = {};
+            } else {
+                vm.jobChainSearch = {};
+            }
+        };
+
 
         function orderParseDate(obj) {
             if (selectedFiltered1.regex) {
                 obj.regex = selectedFiltered1.regex;
             }
             if (selectedFiltered1.paths && selectedFiltered1.paths.length > 0) {
-                obj.orders = [];
+                obj.folders = [];
                 angular.forEach(selectedFiltered1.paths, function (value) {
-                    obj.orders.push({jobChain: value});
+                    obj.folders.push({folder: value, recursive: true});
                 })
             }
             if (selectedFiltered1.state && selectedFiltered1.state.length > 0) {
@@ -3283,11 +3441,11 @@
             var fromDate;
             var toDate;
             if (selectedFiltered1.planned) {
-                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered1.planned)) {
+                if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(selectedFiltered1.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(selectedFiltered1.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() + seconds);
+                    var seconds = parseInt(/^\s*(now\-)(\d+)\s*$/i.exec(selectedFiltered1.planned)[2]);
+                    toDate.setSeconds(toDate.getSeconds() - seconds);
                 } else if (/^\s*(Today)\s*$/i.test(selectedFiltered1.planned)) {
                     fromDate = new Date();
 
@@ -3303,7 +3461,7 @@
                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered1.planned);
                     fromDate = new Date();
                     if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                        fromDate.setHours(parseInt(time[1]) + 12);
+                        fromDate.setHours(parseInt(time[1]) - 12);
                     } else {
                         fromDate.setHours(parseInt(time[1]));
                     }
@@ -3311,34 +3469,12 @@
                     fromDate.setMinutes(parseInt(time[2]));
                     toDate = new Date();
                     if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                        toDate.setHours(parseInt(time[4]) + 12);
+                        toDate.setHours(parseInt(time[4]) - 12);
                     } else {
                         toDate.setHours(parseInt(time[4]));
                     }
                     toDate.setMinutes(parseInt(time[5]));
                 }
-            }
-
-            if (selectedFiltered1.fromDate) {
-                if (selectedFiltered1.fromTime) {
-                    fromDate = new Date(selectedFiltered1.fromDate);
-                    selectedFiltered1.fromTime = new Date(selectedFiltered1.fromTime);
-                    fromDate.setHours(selectedFiltered1.fromTime.getHours());
-                    fromDate.setMinutes(selectedFiltered1.fromTime.getMinutes());
-                    fromDate.setSeconds(selectedFiltered1.fromTime.getSeconds());
-                }
-
-            }
-            if (selectedFiltered1.toDate) {
-                if (selectedFiltered1.toTime) {
-                    toDate = new Date(selectedFiltered1.toDate);
-                    selectedFiltered1.toTime = new Date(selectedFiltered1.toTime);
-                    toDate.setHours(selectedFiltered1.toTime.getHours());
-                    toDate.setMinutes(selectedFiltered1.toTime.getMinutes());
-                    toDate.setSeconds(selectedFiltered1.toTime.getSeconds());
-                }
-
-
             }
 
             if (fromDate && toDate) {
@@ -3349,17 +3485,21 @@
         }
 
         function jobParseDate(obj) {
-            if (selectedFiltered1.regex) {
-                obj.regex = selectedFiltered1.regex;
+            if (selectedFiltered2.regex) {
+                obj.regex = selectedFiltered2.regex;
             }
+            if (selectedFiltered2.state && selectedFiltered2.state.length > 0) {
+                obj.historyStates = selectedFiltered2.state;
+            }
+
             var fromDate;
             var toDate;
             if (selectedFiltered2.planned) {
-                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered2.planned)) {
+                if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(selectedFiltered2.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(selectedFiltered2.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() + seconds);
+                    var seconds = parseInt(/^\s*(now\-)(\d+)\s*$/i.exec(selectedFiltered2.planned)[2]);
+                    toDate.setSeconds(toDate.getSeconds() - seconds);
                 } else if (/^\s*(Today)\s*$/i.test(selectedFiltered2.planned)) {
                     fromDate = new Date();
 
@@ -3375,7 +3515,7 @@
                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered2.planned);
                     fromDate = new Date();
                     if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                        fromDate.setHours(parseInt(time[1]) + 12);
+                        fromDate.setHours(parseInt(time[1]) - 12);
                     } else {
                         fromDate.setHours(parseInt(time[1]));
                     }
@@ -3383,7 +3523,7 @@
                     fromDate.setMinutes(parseInt(time[2]));
                     toDate = new Date();
                     if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                        toDate.setHours(parseInt(time[4]) + 12);
+                        toDate.setHours(parseInt(time[4]) - 12);
                     } else {
                         toDate.setHours(parseInt(time[4]));
                     }
@@ -3391,27 +3531,6 @@
                 }
             }
 
-            if (selectedFiltered2.fromDate) {
-                if (selectedFiltered2.fromTime) {
-                    fromDate = new Date(selectedFiltered2.fromDate);
-                    selectedFiltered2.fromTime = new Date(selectedFiltered2.fromTime);
-                    fromDate.setHours(selectedFiltered2.fromTime.getHours());
-                    fromDate.setMinutes(selectedFiltered2.fromTime.getMinutes());
-                    fromDate.setSeconds(selectedFiltered2.fromTime.getSeconds());
-                }
-
-            }
-            if (selectedFiltered2.toDate) {
-                if (selectedFiltered2.toTime) {
-                    toDate = new Date(selectedFiltered2.toDate);
-                    selectedFiltered2.toTime = new Date(selectedFiltered2.toTime);
-                    toDate.setHours(selectedFiltered2.toTime.getHours());
-                    toDate.setMinutes(selectedFiltered2.toTime.getMinutes());
-                    toDate.setSeconds(selectedFiltered2.toTime.getSeconds());
-                }
-
-
-            }
 
             if (fromDate && toDate) {
                 obj.dateFrom = fromDate;
@@ -3431,7 +3550,6 @@
         }
 
         function checkIgnoreList() {
-            vm.object = {};
             var tempData = [];
             if (vm.savedIgnoreList.isEnable && (vm.savedIgnoreList.jobChains.length > 0 || vm.savedIgnoreList.orders.length > 0)) {
                 angular.forEach(vm.historys, function (res) {
@@ -3453,7 +3571,6 @@
 
 
         function checkJobIgnorelist() {
-            vm.object = {};
             var tempData = [];
             if (vm.savedIgnoreList.isEnable && vm.savedIgnoreList.jobs.length > 0) {
                 angular.forEach(vm.jobHistorys, function (res) {
@@ -3469,6 +3586,22 @@
         }
 
         vm.loadHistory = function () {
+            if (!vm.order.filter.historyStates) {
+                vm.order.filter.historyStates = 'all';
+
+            }if(!vm.order.filter.date){
+                vm.order.filter.date = 'today';
+            }
+            if (!vm.task.filter.historyStates) {
+                vm.task.filter.historyStates = 'all';
+            }if(!vm.task.filter.date){
+                vm.task.filter.date = 'today';
+            }
+            if (vm.historyFilters.type == 'job') {
+                vm.jobSearch = {};
+            } else {
+                vm.jobChainSearch = {};
+            }
             vm.init({jobschedulerId: $scope.schedulerIds.selected})
         };
 
@@ -3509,19 +3642,11 @@
         };
 
         /**--------------- Checkbox functions -------------*/
-        vm.allCheck = {
-            checkbox: false
-        };
 
-
-        vm.reset = function () {
-            vm.allCheck.checkbox = false;
-            vm.object = {};
-        };
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.historyFilter.planned || /^\s*$/i.test(vm.historyFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.historyFilter.planned) || /^\s*(now)\s*$/i.test(vm.historyFilter.planned) || /^\s*(Today)\s*$/i.test(vm.historyFilter.planned)
+            if (!vm.historyFilter.planned || /^\s*$/i.test(vm.historyFilter.planned) || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.historyFilter.planned) || /^\s*(now)\s*$/i.test(vm.historyFilter.planned) || /^\s*(Today)\s*$/i.test(vm.historyFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.historyFilter.planned)) {
             } else {
                 vm.validPlanned = false;
@@ -3870,31 +3995,6 @@
 
         contextmenu();
 
-        vm.addToIgnorelist = function () {
-
-            if (vm.historyFilters.type == 'jobChain') {
-                angular.forEach(vm.object.historys, function (res) {
-                    if (vm.savedIgnoreList.orders.indexOf(res.orderId) === -1) {
-                        vm.savedIgnoreList.orders.push(res.orderId);
-                    }
-                });
-
-                filterData();
-            } else {
-                angular.forEach(vm.object.jobHistorys, function (res) {
-
-                    if (vm.savedIgnoreList.jobs.indexOf(res.jobs) === -1) {
-                        vm.savedIgnoreList.jobs.push(res.job);
-                    }
-
-                });
-                filterJobData();
-            }
-            SavedFilter.setIgnoreList(vm.savedIgnoreList);
-            SavedFilter.save();
-        };
-
-
         vm.addOrderToIgnoreList = function (name) {
             vm.savedIgnoreList.orders.push(name);
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
@@ -4003,10 +4103,16 @@
                                 }
                             }
                             filter.limit = parseInt($window.localStorage.$SOS$MAXRECORDS);
-                            OrderService.histories(filter).then(function (res) {
-                                vm.historys = res.history;
-                                filterData();
-                            });
+                            if (!isEmpty(vm.jobChainSearch)) {
+                                vm.search();
+                            } else {
+
+
+                                OrderService.histories(filter).then(function (res) {
+                                    vm.historys = res.history;
+                                    filterData();
+                                });
+                            }
 
                             $timeout.cancel(int);
                         }, 5000);
@@ -4028,10 +4134,14 @@
                                 }
                             }
                             filter.limit = parseInt($window.localStorage.$SOS$MAXRECORDS);
-                            TaskService.histories(filter).then(function (res) {
-                                vm.jobHistorys = res.history;
-                                filterJobData();
-                            });
+                            if (!isEmpty(vm.jobSearch)) {
+                                vm.search();
+                            } else {
+                                TaskService.histories(filter).then(function (res) {
+                                    vm.jobHistorys = res.history;
+                                    filterJobData();
+                                });
+                            }
 
                             $timeout.cancel(int1);
                         }, 5000);

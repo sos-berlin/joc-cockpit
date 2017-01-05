@@ -119,7 +119,7 @@
                         </tr>
                         </tbody>
                     </table>
-                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allLocks.length > 10}"><span translate>label.total</span> {{allLocks.length}} <span translate>label.locksFound</span></div>
+                <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allLocks.length > 10}" ng-if="allLocks.length >0"><span translate>label.total</span> {{allLocks.length}} <span translate>label.locksFound</span></div>
                 <ul ng-show="allLocks.length > locksFilters.pageSize" uib-pagination total-items="allLocks.length" ng-model="locksFilters.currentPage" items-per-page='locksFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-left" ng-show="allLocks.length > 10">
                         <div class="btn-group m-r-xxs">

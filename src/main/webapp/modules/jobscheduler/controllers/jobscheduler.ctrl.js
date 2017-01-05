@@ -1202,8 +1202,8 @@ function volatileFolderDataL(data, obj) {
 
         function volatileInformation(obj, expandNode) {
             if (vm.schdeuleFilters.filter.state != 'all') {
-                obj.state = [];
-                obj.state.push(vm.schdeuleFilters.filter.state);
+                obj.states = [];
+                obj.states.push(vm.schdeuleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
                 if (vm.schedules.length > 0) {
@@ -1259,8 +1259,8 @@ function volatileFolderDataL(data, obj) {
 
         function volatileFolderData(data, obj) {
             if (vm.schdeuleFilters.filter.state != 'all') {
-                obj.state = [];
-                obj.state.push(vm.schdeuleFilters.filter.state);
+                obj.states = [];
+                obj.states.push(vm.schdeuleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
 
@@ -1316,8 +1316,8 @@ function volatileFolderDataL(data, obj) {
 
         function volatileFolderData1(data, obj) {
             if (vm.schdeuleFilters.filter.state != 'all') {
-                obj.state = [];
-                obj.state.push(vm.schdeuleFilters.filter.state);
+                obj.states = [];
+                obj.states.push(vm.schdeuleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
 
@@ -2076,6 +2076,112 @@ function volatileFolderDataL(data, obj) {
             });
         };
 
+        vm.barOptions = {
+            chart: {
+                type: 'discreteBarChart',
+                height: 180,
+                margin: {
+                    top: 20,
+                    right: 20,
+                    bottom: 50,
+                    left: 50
+                },
+                x: function (d) {
+                    return d.label;
+                },
+                y: function (d) {
+                    return d.value;
+                },
+                yAxis: {tickFormat: yAxisTickFormatFunction()},
+                xAxis: {rotateLabels: -35},
+                valueFormat: function (d) {
+                    return d3.format(',.4f')(d);
+                },
+                tooltip: {
+                    enabled: true,
+                    duration: 0,
+                    contentGenerator: function (d) {
+                        return '<h3>' + gettextCatalog.getString(d.data.label) + '</h3>' +
+                            '<p>' + d.data.value + '</p>';
+                    }
+                },
+                discretebar: {
+                    dispatch: {
+                        elementClick: function (e) {
+
+                            var key = '';
+                            angular.forEach(vm.agentClusters, function (value) {
+
+                                if (e.data.label == value.path) {
+
+                                    if (value.state._text.toLowerCase() == "label.healthyAgentCluster") {
+                                        key = 'healthy';
+                                    } else if (value.state._text.toLowerCase() == "label.unhealthyAgentCluster") {
+                                        key = 'unhealthy';
+                                    } else {
+                                        key = 'unreachable';
+                                    }
+                                        $state.go('app.resources.agentClusters', {type: key});
+                                }
+                            });
+                        }
+
+                    }
+                },
+                duration: 500,
+                interactive: true,
+                noData: gettextCatalog.getString('message.noDataFound')
+
+            }
+        }
+
+        vm.pieOptions = {
+            "chart": {
+                id: "agentClusterId",
+                type: 'pieChart',
+                x: xFunction(),
+                y: yFunction(),
+                width: 180,
+                height: 180,
+                pieLabelsOutside: false,
+                showLabels: true,
+                labelType: 'percent',
+                showLegend: false,
+                noData: gettextCatalog.getString('message.noDataFound'),
+                color: function (d, i) {
+                    console.log("Color function " + bgColorArray[i]);
+                    return bgColorArray[i];
+                },
+
+                tooltip: {
+                    enabled: true,
+                    duration: 0,
+                    contentGenerator: function (d) {
+                        return '<h3>' + gettextCatalog.getString(d.data.key) + '</h3>' +
+                            '<p>' + d.data.y + '</p>';
+                    }
+                },
+                pie: {
+                    dispatch: {
+                        elementClick: function (e) {
+                            var key = '';
+                            if (e.data.key == "label.healthyAgentCluster") {
+                                key = 'healthy';
+                            } else if (e.data.key == "label.unhealthyAgentCluster") {
+                                key = 'unhealthy';
+                            } else {
+                                key = 'unreachable';
+                            }
+                            $state.go('app.resources.agentClusters', {type: key});
+                        }
+
+                    }
+                }
+
+
+            }
+
+        };
         vm.getAgentClusterRunningTask = function () {
             var agentArray = [];
             ResourceService.getProcessClass({
@@ -2085,7 +2191,7 @@ function volatileFolderDataL(data, obj) {
                 if (res.processClasses) {
                     vm.processClasses = res.processClasses;
                     angular.forEach(vm.processClasses, function (value) {
-                        agentArray.push([value.path, value.numOfProcesses]);
+                        agentArray.push({label: value.path, value: value.numOfProcesses});
                     });
                     vm.agentStatusChart = [
                         {
@@ -2093,6 +2199,7 @@ function volatileFolderDataL(data, obj) {
                             "values": agentArray
                         }
                     ];
+                    vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 40;
 
                 }
             });
@@ -2123,18 +2230,18 @@ function volatileFolderDataL(data, obj) {
         }
 
 
-        vm.xFunction = function () {
+        function xFunction() {
             return function (d) {
                 return d.key;
             };
         };
-        vm.yFunction = function () {
+        function yFunction() {
             return function (d) {
                 return d.y;
             };
         };
 
-        vm.yAxisTickFormatFunction = function () {
+        function yAxisTickFormatFunction() {
             return function (d) {
                 if (d % 1 === 0) {
                     return d3.format(',f')(d);
@@ -2151,13 +2258,12 @@ function volatileFolderDataL(data, obj) {
             }
         };
 
-        vm.toolTipContentFunction = function() {
+        function toolTipContentFunction() {
             return function (key, x) {
                 return '<h3>' + gettextCatalog.getString(key) + '</h3>' +
                     '<p>' + d3.format(',f')(x) + '</p>'
             }
         };
-
 
 
         var format = d3.format(',.0f');
@@ -2168,11 +2274,6 @@ function volatileFolderDataL(data, obj) {
             }
         };
 
-        vm.colorFunction = function () {
-            return function (d, i) {
-                return bgColorArray[i];
-            };
-        };
 
         prepareClusterStatusData();
         var clusterStatusData = {};
@@ -2727,8 +2828,8 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
-        vm.$on('resetDailyPlanDate',function(){
-           vm.getPlans ();
+        vm.$on('resetDailyPlanDate', function () {
+            vm.getPlans();
         });
         function setDateRange(range) {
             var from = new Date();
@@ -2867,12 +2968,12 @@ function volatileFolderDataL(data, obj) {
                     obj.regex = selectedFiltered.regex;
 
                 if (selectedFiltered.state && selectedFiltered.state.length > 0) {
-                    obj.state = [];
+                    obj.states = [];
                     if (selectedFiltered.state.indexOf('WAITING') !== -1) {
-                        obj.state.push("PLANNED");
+                        obj.states.push("PLANNED");
                     } else if (selectedFiltered.state.indexOf('EXECUTED') !== -1) {
-                        obj.state.push("SUCCESSFUL");
-                        obj.state.push("FAILED");
+                        obj.states.push("SUCCESSFUL");
+                        obj.states.push("FAILED");
                     }
                     if (selectedFiltered.state.indexOf('LATE') !== -1) {
                         obj.late = true;
@@ -2900,7 +3001,7 @@ function volatileFolderDataL(data, obj) {
                         fromDate = new Date();
                         toDate = new Date();
                     } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(selectedFiltered.planned)) {
-                        var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered.planned)
+                        var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered.planned);
                         fromDate = new Date();
                         if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
                             fromDate.setHours(parseInt(time[1]) + 12);
@@ -3022,13 +3123,13 @@ function volatileFolderDataL(data, obj) {
             vm.data = orderBy(orders, 'plannedStartTime');
             // console.info("data:" + JSON.stringify(vm.data));
 
-            if(flag)
-            promise1 = $timeout(function () {
-                $('#div').animate({
-                    scrollLeft: $("#gantt-current-date-line").offset().left
-                }, 500);
-                $timeout.cancel(promise1);
-            }, 4000);
+            if (flag)
+                promise1 = $timeout(function () {
+                    $('#div').animate({
+                        scrollLeft: $("#gantt-current-date-line").offset().left
+                    }, 500);
+                    $timeout.cancel(promise1);
+                }, 4000);
         }
 
         vm.load = function () {
@@ -3061,7 +3162,7 @@ function volatileFolderDataL(data, obj) {
                 vm.plans = res.planItems;
 
                 //if (vm.pageView == 'grid')
-                prepareGanttData(vm.plans,true);
+                prepareGanttData(vm.plans, true);
                 vm.isLoading = true;
                 vm.showSpinner = false;
                 $scope.stopSpin();
@@ -3100,7 +3201,7 @@ function volatileFolderDataL(data, obj) {
             vm.dailyPlanFilters.filter.sortBy = propertyName;
             if (vm.pageView == 'grid') {
                 vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
-                prepareGanttData(vm.plans,true);
+                prepareGanttData(vm.plans, true);
             }
         };
 
@@ -3204,9 +3305,9 @@ function volatileFolderDataL(data, obj) {
 
         vm.favorite = function (filter) {
             vm.savedDailyPlanFilter.favorite = filter.name;
-           // vm.savedDailyPlanFilter.selected = filter.name;
+            // vm.savedDailyPlanFilter.selected = filter.name;
             vm.dailyPlanFilters.selectedView = true;
-           // selectedFiltered = filter;
+            // selectedFiltered = filter;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
             vm.load();

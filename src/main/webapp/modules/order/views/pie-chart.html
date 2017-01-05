@@ -1,22 +1,9 @@
 
 <div >
-    <nvd3-pie-chart
-            id="exampleId"
-            data="ordersData"
-            x="xFunction()"
-            y="yFunction()"
-            width="{{ width }}"
-            height="{{ height }}"
-            pieLabelsOutside="false"
-            showLabels="true"
-            labelType="percent"
-            tooltips="true"
-            tooltipcontent="toolTipContentFunction()"
-            noData="{{'message.noDataAvailable' | translate}}"
-            useInteractiveGuideLine="true"
-            color="colorFunction()">
-        <svg></svg>
-    </nvd3-pie-chart>
+    <nvd3  options="pieOptions"
+            data="ordersData" config="{refreshDataOnly:true}" >
+
+    </nvd3>
     <div class="left-sidebar-btn resize-cursor"><i  class="fa fa-angle-double-left p-l-sm" ng-click="hidePanel()"></i></div>
     <div class="order-panel" style="margin-top: -10px;">
         <div class="all">

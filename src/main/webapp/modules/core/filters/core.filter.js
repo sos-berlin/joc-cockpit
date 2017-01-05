@@ -51,7 +51,7 @@
                 if (d == 0 && h != 0) {
                     return h + 'h ' + m + 'm ' + s + 's';
                 } else if (h == 0 && m != 0) {
-                    return m + 'm ' + s + ' s';
+                    return m + 'm ' + s + 's';
                 } else if (d == 0 && h == 0 && m == 0) {
                     return s + ' sec';
                 } else {

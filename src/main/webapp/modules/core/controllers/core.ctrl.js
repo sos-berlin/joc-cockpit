@@ -241,7 +241,7 @@
                 if (order && order.historyId && order.orderId) {
                     url = '#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
                 } else if (task && task.taskId) {
-                    url = '#/job/log/' + task.taskId + '&job=' + task.job;
+                    url = '#/job/log/' + task.taskId + '?job=' + task.job;
                 }
                 window.open(url, '_blank');
             }

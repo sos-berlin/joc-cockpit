@@ -21,25 +21,13 @@
                             <div class="box-header b-b">
                                 <h3 translate>label.agentClusterStatus</h3>
                             </div>
-                                <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}">
-                                    <div class="col-xs-offset-1 col-xs-4" ng-class="{'col-xs-11': agentClusterData.length==0}">
-                                        <div ng-class="{'hide': agentClusterData.length==0}">
-                                            <nvd3-pie-chart
-                                                    id="agentClusterId"
-                                                    data="agentClusterData"
-                                                    x="xFunction()"
-                                                    y="yFunction()"
-                                                    width="300"
-                                                    height="300"
-                                                    pieLabelsOutside="false"
-                                                    showLabels="true"
-                                                    labelType="percent"
-                                                    tooltips="true"
-                                                    tooltipcontent="toolTipContentFunction()"
-                                                    noData="{{'message.noDataAvailable' | translate}}"
-                                                    color="colorFunction()">
-                                                <svg height="180"></svg>
-                                            </nvd3-pie-chart>
+                            <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}">
+                                <div class="col-xs-offset-1 col-xs-4"
+                                     ng-class="{'col-xs-11': agentClusterData.length==0}">
+                                    <div ng-class="{'hide': agentClusterData.length==0}">
+                                        <nvd3 options="pieOptions"
+                                                data="agentClusterData" config="{refreshDataOnly:true}">
+                                        </nvd3>
                                         </div>
                                         <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 60px; color: #000 !important;text-align: center; font-size: 15px">
                                             {{'message.noDataAvailable' | translate}}
@@ -67,24 +55,10 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div>
-
-                                <nvd3-discrete-bar-chart
-                                        data="agentStatusChart"
-                                        id="agentClusterStatus"
-                                        width="550"
-                                        height="200"
-                                        yAxisTickFormat="yAxisTickFormatFunction()"
-                                        valueFormat="valueFormatFunction()"
-                                        interactive="true"
-                                        showXAxis="true"
-                                        showYAxis="true"
-                                        margin="{bottom:70, right: 25,left: 40, top:20}"
-                                        forceY="{{YAxisDomain}}"
-                                        noData="{{'message.noDataAvailable' | translate}}"
-                                        showValues="true">
-                                    <svg></svg>
-                                </nvd3-discrete-bar-chart>
+                            <div style="overflow: auto;width: 100%">
+                               <nvd3 options="barOptions"
+                                        data="agentStatusChart">
+                                </nvd3>
                             </div>
                         </div>
                     </div>
@@ -108,7 +82,7 @@
                                 </div>
                             </div>
                             <div id="divClusterStatusWidget" class="box-body ">
-                              <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()"
+                              <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()" permission="permission"
                                                    on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
                             </div>
                         </div>

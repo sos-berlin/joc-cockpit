@@ -6,20 +6,20 @@
      <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.orderId</label>
+                <label class="col-sm-4 form-control-label" translate>label.orderId</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" placeholder="{{'placeholder.orderId' | translate}}" required ng-model="order.orderId">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.orderTitle</label>
+                <label class="col-sm-4 form-control-label" translate>label.orderTitle</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control " placeholder="{{'placeholder.title' | translate}} " ng-model="order.title">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 " translate>label.startTime</label>
-                <div class=" col-md-9" ng-init="order.at = 'now'">
+                <label class="col-sm-4 " translate>label.startTime</label>
+                <div class=" col-md-8" ng-init="order.at = 'now'">
                     <label class="md-check ">
                         <input type="radio" name="radio" ng-model="order.at" value="now">
                         <i class="primary"></i><span translate>label.now</span>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="form-group row" ng-if="order.at == 'later'">
-                <label class="col-sm-3 form-control-label"  translate>label.enterDateAndTime</label>
+                <label class="col-sm-4 form-control-label"  translate>label.enterDateAndTime</label>
 
                 <div class="col-sm-8">
                      <input ng-required="order.at == 'later'" class="form-control input-date" ng-model="order.fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="{{'placeholder.setDate' | translate}}" bs-datepicker type="text">
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.startStep</label>
+                <label class="col-sm-4 form-control-label" translate>label.startStep</label>
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="order.state"
                             ng-options="node.name as node.name for node in _jobChain.nodes">
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label" translate>label.endStep</label>
+                <label class="col-sm-4 form-control-label" translate>label.endStep</label>
                 <div class="col-sm-6">
                     <select class="form-control" ng-model="order.endstate"
                             ng-options="node.name as node.name for node in _jobChain.nodes">
@@ -58,9 +58,9 @@
             </div>
             <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index">
 
-                <div class="col-sm-3 m-b-sm" ng-if="$index==0" translate>label.name</div>
-                <div class="col-sm-9 m-b-sm" ng-if="$index==0" translate>label.value</div>
-                <div class="col-sm-3 m-b-sm">
+                <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
+                <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>
+                <div class="col-sm-4 m-b-sm">
                     <input type="text" class="form-control" ng-model="param.name" placeholder="{{'placeholder.name' | translate}} {{$index+1}}">
                 </div>
 

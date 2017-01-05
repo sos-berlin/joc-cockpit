@@ -10,8 +10,8 @@
         .controller('UserProfileCtrl', UserProfileCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog', '$cookies'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog, $cookies) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
@@ -29,20 +29,19 @@
                 }
             }, function (err) {
                 $rootScope.$broadcast('reloadUser');
-                if(err.data && err.data.message)
+                if (err.data && err.data.message)
                     $rootScope.error = err.data.message;
                 else
-                   $rootScope.error = err.message;
+                    $rootScope.error = err.message;
                 $location.path('/error');
             });
         }
 
-        if ($cookies.getObject('$SOS$REMEMBERME') != undefined) {
-            vm.user.username = $cookies.getObject('$SOS$USERNAME');
-            vm.user.password = $cookies.getObject('$SOS$PASSWORD');
-            vm.rememberMe = $cookies.getObject('$SOS$REMEMBERME');
+        if ($window.localStorage.$SOS$REMEMBERME) {
+            vm.user.username = $window.localStorage.$SOS$USERNAME;
+            vm.user.password = $window.localStorage.$SOS$PASSWORD;
+            vm.rememberMe = $window.localStorage.$SOS$REMEMBERME;
         }
-
 
         function getPermissions() {
 
@@ -82,13 +81,13 @@
                             SOSAuth.accessTokenId = response.accessToken;
                             SOSAuth.rememberMe = vm.rememberMe;
                             if (vm.rememberMe) {
-                                $cookies.putObject("$SOS$USERNAME", vm.user.username);
-                                $cookies.putObject("$SOS$PASSWORD", vm.user.password);
-                                $cookies.putObject("$SOS$REMEMBERME", vm.rememberMe);
+                                $window.localStorage.$SOS$USERNAME = vm.user.username;
+                                $window.localStorage.$SOS$PASSWORD = vm.user.password;
+                                $window.localStorage.$SOS$REMEMBERME = vm.rememberMe;
                             } else {
-                                $cookies.remove("$SOS$USERNAME");
-                                $cookies.remove("$SOS$PASSWORD");
-                                $cookies.remove("$SOS$REMEMBERME");
+                                $window.localStorage.$SOS$USERNAME = null;
+                                $window.localStorage.$SOS$PASSWORD = null;
+                                $window.localStorage.$SOS$REMEMBERME = null;
                             }
 
                             SOSAuth.setUser(response);
@@ -104,7 +103,7 @@
                     }, function () {
                         vm.loginError = 'message.loginError';
                         $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
-                         $('#loginBtn').attr("disabled", false);
+                        $('#loginBtn').attr("disabled", false);
 
                     });
             }

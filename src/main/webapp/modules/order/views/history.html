@@ -95,16 +95,16 @@
                     </div>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'job'}">
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.historyStates=='all'}" translate>button.allStatus
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESS'" ng-click="loadHistory()"
-                                    ng-class="{'btn-primary': task.filter.historyStates=='SUCCESS'}" translate>button.successful
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
+                                    ng-class="{'btn-primary': task.filter.historyStates=='SUCCESSFUL'}" translate>button.successful
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.historyStates=='FAILED'}" translate>button.failed
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
                             </button>
                         </div>
@@ -112,36 +112,36 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item " ng-model="task.filter.historyStates" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': task.filter.historyStates=='all'}" translate>button.allStatus
+                                   ng-class="{'btn-primary': task.filter.historyStates=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
                                 </a>
-                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESS'"
-                                   ng-class="{'btn-primary': task.filter.historyStates=='SUCCESS'}" translate>button.successful
+                                <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'SUCCESSFUL'"
+                                   ng-class="{'btn-primary': task.filter.historyStates=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': task.filter.historyStates=='FAILED'}" translate>button.failed
+                                   ng-class="{'btn-primary': task.filter.historyStates=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.historyStates" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': task.filter.historyStates=='INCOMPLETE'}" translate>button.incomplete
+                                   ng-class="{'btn-primary': task.filter.historyStates=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
                                 </a>
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
                                     ng-class="{'btn-primary': task.filter.date=='all'}" translate>button.all
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': task.filter.date=='today'}" translate>button.today
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': task.filter.date=='-1h'}" translate>button.last1
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-12h'"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-12h'"
                                     ng-class="{'btn-primary': task.filter.date=='-12h'}" translate>button.last12
                             </button>
-                            <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
+                            <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
                                     ng-class="{'btn-primary': task.filter.date=='-1d'}" translate>button.last24
                             </button>
-                             <button class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
+                             <button ng-disabled="savedJobHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
                                     ng-class="{'btn-primary': task.filter.date=='-1w'}" translate>button.lastWeak
                             </button>
                         </div>
@@ -149,22 +149,22 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="task.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
-                                        ng-class="{'btn-primary': task.filter.date=='all'}" translate>button.all
+                                        ng-class="{'btn-primary': task.filter.date=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.all
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
-                                   ng-class="{'btn-primary': task.filter.date=='today'}" translate>button.today
+                                   ng-class="{'btn-primary': task.filter.date=='today', 'disable-link':savedJobHistoryFilter.selected}" translate>button.today
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
-                                        ng-class="{'btn-primary': task.filter.date=='-1h'}" translate>button.last1
+                                        ng-class="{'btn-primary': task.filter.date=='-1h', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last1
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
-                                        ng-class="{'btn-primary': task.filter.date=='-12h'}" translate>button.last12
+                                        ng-class="{'btn-primary': task.filter.date=='-12h', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last12
                                 </a>
                                 <a class="dropdown-item" ng-model="task.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
-                                        ng-class="{'btn-primary': task.filter.date=='-1d'}" translate>button.last24
+                                        ng-class="{'btn-primary': task.filter.date=='-1d', 'disable-link':savedJobHistoryFilter.selected}" translate>button.last24
                                 </a>
                                 <a class="dropdown-item" ng-model="task.order.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
-                                        ng-class="{'btn-primary': task.filter.date=='-1w'}" translate>button.lastWeak
+                                        ng-class="{'btn-primary': task.filter.date=='-1w', 'disable-link':savedJobHistoryFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>
@@ -189,29 +189,147 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0" >
         <div class="row m-b">
-                 <div class="col-lg-10 col-md-8 col-sm-6">
-                     <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                         <li class="nav-item">
-                            <a class="nav-link" ng-class="{'active': historyFilters.type=='jobChain'}" ng-model="historyFilters.type"
-                                        uib-btn-radio="'jobChain'">
-                                <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.order</span></span>
-                            </a>
-                        </li>
-                         <li class="nav-item dropdown-separator">
-                            <span class="separator"></span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" ng-class="{'active': historyFilters.type=='job'}" ng-model="historyFilters.type"
-                                        uib-btn-radio="'job'" ng-click="jobHistory()">
-                                <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>
-                            </a>
-                        </li>
-                     </ul>
+            <div class="col-md-8 col-sm-6">
+                <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                    <li class="nav-item">
+                        <a class="nav-link" ng-class="{'active': historyFilters.type=='jobChain'}" ng-model="historyFilters.type"
+                           uib-btn-radio="'jobChain'">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.order</span></span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown-separator">
+                        <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" ng-class="{'active': historyFilters.type=='job'}" ng-model="historyFilters.type"
+                           uib-btn-radio="'job'" ng-click="jobHistory()">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="btn btn-sm inline pull-right m-l" ng-class="{'btn-grey': showSearchPanel}" ng-click="showSearchPanel=true" ><span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i></div>
+                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+            </div>
+        </div>
+        <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
 
+            <div class="col-md-12" ng-show="historyFilters.type == 'jobChain'">
+                <div class="box p-a m-b-xs">
+                    <form name="form" ng-submit="search()">
+                        <div class="form-group row m-t">
+                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 180px;background-position: 155px" ng-model="jobChainSearch.from"
+                                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}}" data-min-date="{{jobChainSearch.to}}" data-max-date="{{currentTime}}"
+                                       bs-datepicker type="text">
+                                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time m-l" ng-model="jobChainSearch.fromTime" data-time-format="HH:mm:ss"
+                                       data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (hh:mm:ss)" bs-timepicker type="text" style="width: 170px;background-position: 145px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 180px;background-position: 155px"
+                                       ng-model="jobChainSearch.to" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}}" data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
+                                       bs-datepicker type="text">
+                                <input class="form-control input-time m-l" ng-model="jobChainSearch.toTime" data-time-format="HH:mm:ss"
+                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (hh:mm:ss)" bs-timepicker type="text" style="width: 170px;background-position: 145px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 " translate>label.status</label>
+
+                            <div class="col-sm-9">
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobChainSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <i class="primary"></i><span translate>label.incomplete</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobChainSearch.states" data-checklist-value="'SUCCESSFUL'">
+                                    <i class="primary"></i><span translate>label.successful</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobChainSearch.states" data-checklist-value="'FAILED'">
+                                    <i class="primary"></i><span translate>label.failed</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.jobChain</label>
+                            <div class="col-sm-6">
+                                    <input type="text" class="form-control" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="jobChainSearch.jobChain">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.orderIds</label>
+                            <div class="col-sm-6">
+                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}" ng-model="jobChainSearch.orderIds" ng-blur="checkValue(jobSearch.job)">
+                            </div>
+                        </div>
+                        <div class="form-group m-t m-b-xs">
+                            <button type="submit" class="btn btn-primary btn-sm" translate>button.search</button>
+                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6">
-                    <input type="search" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString">
+            </div>
+            <div class="col-md-12" ng-show="historyFilters.type == 'job'">
+                <div class="box p-a m-b-xs">
+                    <form name="form" ng-submit="search()">
+                        <div class="form-group row m-t">
+                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 180px;background-position: 155px" ng-model="jobSearch.from"
+                                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}}" data-min-date="{{jobSearch.to}}" data-max-date="{{currentTime}}"
+                                       bs-datepicker type="text">
+                                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time m-l" ng-model="jobSearch.fromTime" data-time-format="HH:mm:ss"
+                                       data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (hh:mm:ss)" bs-timepicker type="text" style="width: 170px;background-position: 145px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 180px;background-position: 155px"
+                                       ng-model="jobSearch.to" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}}" data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
+                                       bs-datepicker type="text">
+                                <input class="form-control input-time m-l" ng-model="jobSearch.toTime" data-time-format="HH:mm:ss"
+                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (hh:mm:ss)" bs-timepicker type="text" style="width: 170px;background-position: 145px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 " translate>label.status</label>
+
+                            <div class="col-sm-9">
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <i class="primary"></i><span translate>label.incomplete</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'SUCCESSFUL'">
+                                    <i class="primary"></i><span translate>label.successful</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'FAILED'">
+                                    <i class="primary"></i><span translate>label.failed</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.job</label>
+                            <div class="col-sm-6">
+                                    <input type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}" ng-model="jobSearch.job" ng-blur="checkValue(jobSearch.job)">
+                            </div>
+                        </div>
+
+                        <div class="form-group m-t m-b-xs">
+                            <button type="submit" class="btn btn-primary btn-sm" translate>button.search</button>
+                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+                        </div>
+                    </form>
                 </div>
+            </div>
         </div>
         <div class="hide"  ng-class="{'show': isLoading}">
             <div class="m-t-sm box p-a" ng-show="historyFilters.type == 'jobChain'" >
@@ -272,7 +390,9 @@
                                 <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="hidePanel && showPanel.historyId == history.historyId" ng-click="hidePanelFuc();$event.stopPropagation()"></i>
                                 <span ng-bind="history.orderId"></span>
                             </td>
-                            <td ng-click="showLogWindow(history,null)"><a ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="history.jobChain"></a></td>
+                            <td ng-click="showLogWindow(history,null)">
+                                <span ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="history.jobChain"></span>
+                            </td>
                             <td ng-click="showLogWindow(history,null)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(history.state.severity)" ng-bind="history.state._text | translate"></span></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.endTime | stringToDate"></td>
@@ -325,8 +445,8 @@
                      </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': historys.length > 10}"><span translate>label.total</span> {{filtered.length}} <span translate>label.historiesFound</span></div>
-                    <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.historiesFound</span></div>
+                    <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'10'"
@@ -403,7 +523,9 @@
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-bind="jobHistory.taskId"></span>
                             </td>
-                            <td ng-click="showLogWindow(null,jobHistory)"><a ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></a></td>
+                            <td ng-click="showLogWindow(null,jobHistory)">
+                                <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></span>
+                            </td>
                             <td ng-click="showLogWindow(null,jobHistory)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.endTime | stringToDate"></td>
@@ -422,8 +544,8 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': jobHistorys.length > 10}"><span translate>label.total</span> {{jobFiltered.length}} <span translate>label.historiesFound</span></div>
-                     <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" ng-change="pageChange()" items-per-page='task.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': jobFiltered.length > 10}" ng-if="jobFiltered.length >0"><span translate>label.total</span> {{jobFiltered.length}} <span translate>label.historiesFound</span></div>
+                     <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" items-per-page='task.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="jobFiltered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'10'"
