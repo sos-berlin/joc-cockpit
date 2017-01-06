@@ -45,7 +45,7 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" id="menu{{$index}}">
                                                   <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                           ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"

@@ -32,15 +32,16 @@
                 if (err.data && err.data.message)
                     $rootScope.error = err.data.message;
                 else
-                    $rootScope.error = err.message;
+                    $rootScope.error = err.data.error.message;
+                console.log(err)
                 $location.path('/error');
             });
         }
 
-        if ($window.localStorage.$SOS$REMEMBERME) {
+        if ($window.localStorage.$SOS$REMEMBERME == 'true' || $window.localStorage.$SOS$REMEMBERME == true) {
             vm.user.username = $window.localStorage.$SOS$USERNAME;
             vm.user.password = $window.localStorage.$SOS$PASSWORD;
-            vm.rememberMe = $window.localStorage.$SOS$REMEMBERME;
+            vm.rememberMe = true;
         }
 
         function getPermissions() {
@@ -203,7 +204,8 @@
             {value: 'OrderStepStarted', label: "label.orderStepStarted"},
             {value: 'OrderStepEnded', label: "label.orderStepEnded"},
             {value: 'OrderNodeChanged', label: "label.orderNodeChanged"},
-            {value: 'OrderResumed', label: "label.orderResumed"}
+            {value: 'OrderResumed', label: "label.orderResumed"},
+            {value: 'OrderFinished', label: "label.orderFinished"}
         ];
 
         $scope.negativeOrders = [

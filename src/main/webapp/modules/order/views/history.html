@@ -209,7 +209,12 @@
                 </ul>
             </div>
             <div class="col-md-4 col-sm-6">
-                <div class="btn btn-sm inline pull-right m-l" ng-class="{'btn-grey': showSearchPanel}" ng-click="showSearchPanel=true" ><span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i></div>
+                <div class="btn btn-sm inline pull-right m-l" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </div>
+                <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </div>
                 <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
             </div>
         </div>
@@ -445,7 +450,10 @@
                      </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.historiesFound</span></div>
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                        <span translate ng-if="filtered.length >1">label.historiesFound</span>
+                        <span translate ng-if="filtered.length ==1">label.historyFound</span>
+                    </div>
                     <ul ng-show="filtered.length > order.pageSize" uib-pagination total-items="filtered.length" ng-model="order.currentPage" items-per-page='order.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
@@ -544,7 +552,10 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': jobFiltered.length > 10}" ng-if="jobFiltered.length >0"><span translate>label.total</span> {{jobFiltered.length}} <span translate>label.historiesFound</span></div>
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': jobFiltered.length > 10}" ng-if="jobFiltered.length >0"><span translate>label.total</span> {{jobFiltered.length}}
+                        <span translate ng-if="jobFiltered.length >1">label.historiesFound</span>
+                        <span translate ng-if="jobFiltered.length ==1">label.historyFound</span>
+                    </div>
                      <ul ng-show="jobFiltered.length > task.pageSize" uib-pagination total-items="jobFiltered.length" ng-model="task.currentPage" items-per-page='task.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="jobFiltered.length > 10">
                             <div class="btn-group m-r-xxs">

@@ -206,6 +206,7 @@
         }
 
         vm.showLogWindow = function (order, task) {
+            refreshParent();
             if ((task && !vm.permission.Job.view.taskLog) || (order && !vm.permission.Order.view.orderLog)) {
                 toasty.warning({
                     title: 'Permission denied',
@@ -215,9 +216,11 @@
             }
 
             if ($window.localStorage.$SOS$ISNEWWINDOW == 'newWindow') {
+
                 var url = null;
                 try {
                     if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
+
                         if (order && order.historyId && order.orderId)
                             url = '#/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
                         else if (task && task.taskId)
@@ -232,6 +235,7 @@
                         popUpBlocker = true;
                         throw new Error('PopUp Blocker is active');
                     }
+
                 } catch (e) {
                     popUpBlocker = true;
                     throw new Error(e.message);

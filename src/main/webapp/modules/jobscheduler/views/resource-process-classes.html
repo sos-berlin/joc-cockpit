@@ -111,7 +111,10 @@
                     </tr>
                     </tbody>
                 </table>
-                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allProcessClasses.length > 10}" ng-if="allProcessClasses.length >0"><span translate>label.total</span> {{allProcessClasses.length}} <span translate>label.processClassesFound</span></div>
+                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allProcessClasses.length > 10}" ng-if="allProcessClasses.length >0"><span translate>label.total</span> {{allProcessClasses.length}}
+                     <span translate ng-if="allProcessClasses.length >1">label.processClassesFound</span>
+                     <span translate ng-if="allProcessClasses.length ==1">label.processClassFound</span>
+                 </div>
                 <ul ng-show="allProcessClasses.length > processFilters.pageSize" uib-pagination total-items="allProcessClasses.length" ng-model="processFilters.currentPage" items-per-page='processFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-left" ng-show="allProcessClasses.length > 10">
                     <div class="btn-group m-r-xxs">

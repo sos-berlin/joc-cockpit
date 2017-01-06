@@ -318,7 +318,10 @@
                                 </tbody>
 
                             </table>
-                         <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}" ng-if="allJobs.length >0"><span translate>label.total</span> {{allJobs.length}} <span translate>label.jobsFound</span></div>
+                         <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}" ng-if="allJobs.length >0"><span translate>label.total</span> {{allJobs.length}}
+                             <span translate  ng-if="allJobs.length >1">label.jobsFound</span>
+                             <span translate  ng-if="allJobs.length ==1">label.jobFound</span>
+                         </div>
                         <ul ng-show="allJobs.length > jobFilters.pageSize" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                         <div class="pull-left" ng-show="allJobs.length > 10">
                                 <div class="btn-group  m-r-xxs">

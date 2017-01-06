@@ -249,14 +249,11 @@
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(data.jobChains, function (jobChains) {
-                        if (jobChains.path.substring(0, 1) != '/') {
-                            jobChains.path = '/' + jobChains.path;
-                        }
 
-                        angular.forEach(res.jobChains, function (jobChainData) {
+                        for(var i = 0; i<res.jobChains.length;i++) {
                             var flag1 = true;
-                            if (jobChains.path == jobChainData.path) {
-                                jobChains = angular.merge(jobChains, jobChainData);
+                            if (jobChains.path == res.jobChains[i].path) {
+                                jobChains = angular.merge(jobChains, res.jobChains[i]);
                                 if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
                                     if (!jobChains.processClass.match(selectedFiltered.agentName)) {
                                         flag1 = false;
@@ -264,9 +261,9 @@
                                 }
                                 if (flag1)
                                     data1.push(jobChains);
-
+                                break;
                             }
-                        })
+                        }
                     });
 
                 } else {
@@ -289,11 +286,13 @@
                         var flag = true;
                         value.path1 = data.path;
 
-                        angular.forEach(vm.allJobChains, function (value1) {
-                            if (value.path == value1.path) {
+                        for(var i = 0; i<vm.allJobChains.length;i++) {
+                            if (value.path == vm.allJobChains[i].path) {
                                 flag = false;
+                                break;
                             }
-                        });
+
+                        }
                         if (flag)
                             vm.allJobChains.push(value);
                     });
@@ -309,11 +308,13 @@
                         var flag = true;
                         value.path1 = data.path;
 
-                        angular.forEach(vm.allJobChains, function (value1) {
-                            if (value.path == value1.path) {
+                        for(var i = 0; i<vm.allJobChains.length;i++) {
+                            if (value.path == vm.allJobChains[i].path) {
                                 flag = false;
+                                 break;
                             }
-                        });
+
+                        }
                         if (flag)
                             vm.allJobChains.push(value);
                     });
@@ -341,14 +342,11 @@
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(data.jobChains, function (jobChains) {
-                        if (jobChains.path.substring(0, 1) != '/') {
-                            jobChains.path = '/' + jobChains.path;
-                        }
 
-                        angular.forEach(res.jobChains, function (jobChainData) {
+                        for(var i = 0; i<res.jobChains.length;i++) {
                             var flag1 = true;
-                            if (jobChains.path == jobChainData.path) {
-                                jobChains = angular.merge(jobChains, jobChainData);
+                            if (jobChains.path == res.jobChains[i].path) {
+                                jobChains = angular.merge(jobChains, res.jobChains[i]);
                                 if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
                                     if (!jobChains.processClass.match(selectedFiltered.agentName)) {
                                         flag1 = false;
@@ -356,9 +354,10 @@
                                 }
                                 if (flag1)
                                     data1.push(jobChains);
+                                break;
 
                             }
-                        })
+                        }
                     });
 
                 } else {
@@ -442,7 +441,7 @@
         }
 
 
-        var i = 1, splitPath = [];
+        var count = 1, splitPath = [];
 
         function checkExpand(data) {
 
@@ -463,9 +462,9 @@
                 for (var x = 0; x < data.folders.length; x++) {
                     if (vm.expand_to) {
 
-                        if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) == splitPath[i] && i < splitPath.length) {
+                        if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) == splitPath[count] && count < splitPath.length) {
                             i = i + 1;
-                            splitPath[i] = splitPath[i - 1] + '/' + splitPath[i];
+                            splitPath[count] = splitPath[count - 1] + '/' + splitPath[count];
 
                             data.folders[x].expanded = true;
                             if (vm.expand_to.name == data.folders[x].name) {
@@ -548,16 +547,14 @@
                         if (result.jobChains && result.jobChains.length > 0 && res.jobChains && res.jobChains.length > 0) {
                             var x = [];
                             angular.forEach(result.jobChains, function (jobChains) {
-                                if (jobChains.path.substring(0, 1) != '/') {
-                                    jobChains.path = '/' + jobChains.path;
-                                }
-
-                                angular.forEach(res.jobChains, function (jobChainData) {
-                                    if (jobChains.path == jobChainData.path) {
-                                        jobChains = angular.merge(jobChains, jobChainData);
+                                for(var i = 0; i<res.jobChains.length;i++) {
+                                    if (jobChains.path == res.jobChains[i].path) {
+                                        jobChains = angular.merge(jobChains, res.jobChains[i]);
                                         x.push(jobChains);
+                                        break;
                                     }
-                                });
+
+                                }
                             });
                             data.jobChains = x;
                         } else {
@@ -640,14 +637,12 @@
                 var data = [];
                 if (vm.jobChains && vm.jobChains.length > 0) {
                     angular.forEach(vm.jobChains, function (jobChains) {
-                        if (jobChains.path.substring(0, 1) != '/') {
-                            jobChains.path = '/' + jobChains.path;
-                        }
+                        for(var i = 0; i<res.jobChains.length;i++) {
 
-                        angular.forEach(res.jobChains, function (jobChainData) {
+
                             var flag1 = true;
-                            if (jobChains.path == jobChainData.path) {
-                                jobChains = angular.merge(jobChains, jobChainData);
+                            if (jobChains.path == res.jobChains[i].path) {
+                                jobChains = angular.merge(jobChains, res.jobChains[i]);
                                 if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
                                     if (!jobChains.processClass.match(selectedFiltered.agentName)) {
                                         flag1 = false;
@@ -656,9 +651,9 @@
                                 if (flag1) {
                                     data.push(jobChains);
                                 }
-
+                                break;
                             }
-                        })
+                        }
                     });
                 } else {
                     angular.forEach(res.jobChains, function (jobChainData) {
@@ -738,7 +733,7 @@
         };
 
         /**--------------- Actions -----------------------------*/
-        vm.viewOrders = function (jobChain) {vm.savedJobChainFilter.selected = vm.savedJobChainFilter.selected
+        vm.viewOrders = function (jobChain) {
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/jobChainDetails/orders').search({path: jobChain.path});
@@ -791,15 +786,13 @@
                 if (res && res.orders) {
                     if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
                         angular.forEach(vm.orders, function (orders) {
-                            if (orders.path.substring(0, 1) != '/') {
-                                orders.path = '/' + orders.path;
-                            }
-                            angular.forEach(res.orders, function (orderData) {
+                            for(var i = 0; i<res.orders.length;i++){
                                 if (orders.path == orderData.path) {
                                     orders = angular.merge(orders, orderData);
                                     data.push(orders);
+                                    break;
                                 }
-                            })
+                            }
                         });
                         vm.orders = data;
                     } else {
@@ -1500,6 +1493,8 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                                              if (res.jobChain) {
                                                  res.jobChain.path1 = angular.copy(value2.path1);
                                                  res.jobChain.distributed = angular.copy(value2.distributed);
+                                                 res.jobChain.title = angular.copy(value2.title);
+                                                 res.jobChain.endNodes = angular.copy(value2.endNodes);
                                                  res.jobChain.show = angular.copy(value2.show);
                                                  vm.allJobChains[index] = res.jobChain;
                                                  angular.forEach(res.jobChain.nodes, function(val,index) {
@@ -1529,15 +1524,14 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                                              if (res && res.orders) {
                                                  if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
                                                      angular.forEach(vm.orders, function (orders) {
-                                                         if (orders.path.substring(0, 1) != '/') {
-                                                             orders.path = '/' + orders.path;
-                                                         }
-                                                         angular.forEach(res.orders, function (orderData) {
-                                                             if (orders.path == orderData.path) {
-                                                                 orders = angular.merge(orders, orderData);
+
+                                                         for(var i = 0; i<res.orders.length;i++){
+                                                             if (orders.path == res.orders[i].path) {
+                                                                 orders = angular.merge(orders, res.orders[i]);
                                                                  data.push(orders);
+                                                                 break;
                                                              }
-                                                         })
+                                                         }
                                                      });
                                                      vm.orders = data;
                                                  } else {
@@ -1892,15 +1886,14 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 var data = [];
                 if (data1.jobs && data1.jobs.length > 0) {
                     angular.forEach(data1.jobs, function (jobs) {
-                        if (jobs.path.substring(0, 1) != '/') {
-                            jobs.path = '/' + jobs.path;
-                        }
-                        angular.forEach(res.jobs, function (jobData) {
-                            if (jobs.path == jobData.path) {
-                                jobs = angular.merge(jobs, jobData);
+
+                        for(var i = 0; i<res.jobs.length;i++) {
+                            if (jobs.path == res.jobs[i].path) {
+                                jobs = angular.merge(jobs, res.jobs[i]);
                                 data.push(jobs);
+                                break;
                             }
-                        })
+                        }
                     });
                     data1.jobs = data;
                 } else {
@@ -1945,11 +1938,12 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                         var flag = true;
                         value.path1 = data1.path;
 
-                        angular.forEach(vm.allJobs, function (value1) {
-                            if (value.path == value1.path) {
+                        for(var i = 0; i<vm.allJobs.length;i++) {
+                            if (value.path == vm.allJobs[i].path) {
                                 flag = false;
+                                break;
                             }
-                        });
+                        }
                         if (flag)
                             vm.allJobs.push(value);
 
@@ -1980,15 +1974,14 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 var data1 = [];
                 if (data.jobs && data.jobs.length > 0) {
                     angular.forEach(data.jobs, function (jobs) {
-                        if (jobs.path.substring(0, 1) != '/') {
-                            jobs.path = '/' + jobs.path;
-                        }
-                        angular.forEach(res.jobs, function (jobData) {
-                            if (jobs.path == jobData.path) {
-                                jobs = angular.merge(jobs, jobData);
+
+                        for(var i = 0; i<res.jobs.length;i++) {
+                            if (jobs.path == res.jobs[i].path) {
+                                jobs = angular.merge(jobs, res.jobs[i]);
                                 data1.push(jobs);
+                                break;
                             }
-                        })
+                        }
                     });
                     data.jobs = data1;
                 } else {
@@ -2154,16 +2147,13 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                         if (result.jobs && result.jobs.length > 0 && res.jobs && res.jobs.length > 0) {
                             var x = [];
                             angular.forEach(result.jobs, function (jobs) {
-                                if (jobs.path.substring(0, 1) != '/') {
-                                    jobs.path = '/' + jobs.path;
-                                }
 
-                                angular.forEach(res.jobs, function (jobData) {
-                                    if (jobs.path == jobData.path) {
-                                        jobs = angular.merge(jobs, jobData);
+                                for(var i = 0; i<res.jobs.length;i++) {
+                                    if (jobs.path == res.jobs[i].path) {
+                                        jobs = angular.merge(jobs, res.jobs[i]);
                                         x.push(jobs);
                                     }
-                                });
+                                }
                             });
                             data.jobs = x;
                         } else {
@@ -2298,15 +2288,14 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 var data = [];
                 if (vm.jobs && vm.jobs.length > 0) {
                     angular.forEach(vm.jobs, function (jobs) {
-                        if (jobs.path.substring(0, 1) != '/') {
-                            jobs.path = '/' + jobs.path;
-                        }
-                        angular.forEach(res.jobs, function (jobData) {
-                            if (jobs.path == jobData.path) {
-                                jobs = angular.merge(jobs, jobData);
+
+                       for(var i = 0; i<res.jobs.length;i++) {
+                            if (jobs.path == res.jobs[i].path) {
+                                jobs = angular.merge(jobs, res.jobs[i]);
                                 data.push(jobs);
+                                break;
                             }
-                        })
+                        }
                     });
                     vm.jobs = data;
                 } else {

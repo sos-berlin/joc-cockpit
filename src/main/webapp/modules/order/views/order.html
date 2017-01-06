@@ -128,7 +128,7 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="m-t-sm">
-           <div ng-controller="OrderFunctionCtrl">
+           <div>
                 <div class="hide-block sidebar-btn resize-cursor">
                     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
                 </div>
@@ -153,7 +153,7 @@
                         </tree>
                     </div>
                 </div>
-                <div id="rightPanel1">
+                <div id="rightPanel1" ng-controller="OrderFunctionCtrl">
                     <div class="hide " ng-class="{'show': isLoading}" ng-hide="loading">
                         <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
                             <div ng-repeat="(key, value) in allOrders  | groupBy: 'path1'">
@@ -176,7 +176,7 @@
                                                         <i class="text fa fa-ellipsis-h"></i></a>
                                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                                         <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                           ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
@@ -351,7 +351,7 @@
                                                         class="fa fa-ellipsis-h"></i></button>
                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" id="menu{{$index}}">
                                                        <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                           ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
@@ -414,7 +414,10 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}" ng-if="allOrders.length >0"><span translate>label.total</span> {{allOrders.length}} <span translate>label.ordersFound</span></div>
+                            <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}" ng-if="allOrders.length >0"><span translate>label.total</span> {{allOrders.length}}
+                                <span translate ng-if="allOrders.length >1">label.ordersFound</span>
+                                <span translate ng-if="allOrders.length ==1">label.orderFound</span>
+                            </div>
                             <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                             <div class="pull-left" ng-show="allOrders.length > 10">
                                     <div class="btn-group m-r-xxs">
@@ -510,6 +513,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

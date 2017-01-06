@@ -26,7 +26,7 @@
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
                                                      <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                           ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
@@ -201,7 +201,7 @@
                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28"
                                                          role="menu">
                                                               <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                           ng-if="order.historyId" ng-class="{'show-inline':permission.Order.view.orderLog}"
+                                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
@@ -264,7 +264,10 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': orders.length > 10}" ng-if="orders.length >0"><span translate>label.total</span> {{orders.length}} <span translate>label.ordersFound</span></div>
+                                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': orders.length > 10}" ng-if="orders.length >0"><span translate>label.total</span> {{orders.length}}
+                                     <span translate ng-if="orders.length >1">label.ordersFound</span>
+                                     <span translate ng-if="orders.length ==1">label.orderFound</span>
+                                 </div>
                                  <ul ng-show="orders.length > orderFilters.pageSize" uib-pagination total-items="orders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                                  <div class="pull-left" ng-show="orders.length > 10">
                                     <div class="btn-group m-r-xxs">

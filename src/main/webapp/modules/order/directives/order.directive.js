@@ -131,7 +131,7 @@
                 y: vm.yFunction(),
                 width: vm.width,
                 height: vm.height,
-                pieLabelsOutside: false,
+                labelsOutside: false,
                 showLabels: true,
                 groupSpacing: 0.5,
                 labelType: 'percent',
@@ -299,13 +299,34 @@
                         if (index < scope.jobChainData.nodes.length) {
                             getNext2(index);
                         } else if (!gotNext) {
-                            // console.log("Third iteration "+JSON.stringify(scope.jobChainData));
+
                             if (jobChainData2.nodes.length > 0) {
                                 scope.jobChainData.nodes = scope.jobChainData.nodes.concat(jobChainData2.nodes);
+
                             }
-                            draw();
+                            checkForEndNodes(0);
 
                         }
+                    }
+
+                    function checkForEndNodes(index) {
+                        var endNode = scope.jobChainData.endNodes[index];
+
+                        angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
+                            var found = false;
+                            if (item2.name == endNode.name) {
+                                scope.jobChainData.endNodes.splice(index, 1);
+                                index--;
+                            }
+                        })
+                        index++;
+                        if (index < scope.jobChainData.endNodes.length) {
+
+                            checkForEndNodes(index)
+                        } else {
+                            draw();
+                        }
+
                     }
                 }
 
@@ -376,6 +397,9 @@
                                 + '" translate>label.start</span>' +
                                 '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
+                        }else{
+                            var last =  coords.length-1;
+                            left = coords[last].left+margin + rectW;
                         }
 
                         //console.log("Name " + item.name);
@@ -394,7 +418,7 @@
 
                         }
 
-                        if (scope.errorNodes.indexOf(item.name) < 0) {
+
                             if (splitRegex.test(item.name)) {
                                 isSplitted = true;
                                 coords[index].name = splitRegex.exec(item.name)[2];
@@ -440,6 +464,8 @@
 
                                     }
                                 })
+
+
                             }
 
 
@@ -545,10 +571,10 @@
 
                             rectangleTemplate = rectangleTemplate +
                                 '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect border-grey" >' +
-                                '<div style="padding: 10px;padding-bottom: 5px"><div><span class="md-check md-check1" >' +
+                                '<div style="padding: 10px;padding-bottom: 5px"><div class="block-ellipsis-job"><span class="md-check md-check1" >' +
                                 '<input type="checkbox"  id="' + chkId + '">' +
                                 '<i class="ch-purple"></i>' +
-                                '<span ><i></i></span><span class="_500">' + nodeName + '</span></span>' +
+                                '<span ><i></i></span><span class="_500 block-ellipsis-job" title="' + item.name + '">' + nodeName + '</span></span>' +
                                 '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a id="' + btnId4 + '" class="dropdown-item ' + op4Cls + '" translate>button.showConfiguration</a>' +
@@ -556,7 +582,7 @@
                                 '<a href="" id="' + btnId5 + '"  class="dropdown-item bg-hover-color ' + op5Cls + '" translate>' + op5 + '</a>' +
                                 '<a href="" id="' + btnId6 + '"  class="dropdown-item' + op6Cls + '" translate>' + op6 + '</a>' +
                                 '</div></div></div>'
-                                + '<div class="text-left text-muted p-t-sm "><a class="text-hover-primary" id="navigateToJobBtn_' + item.name + '">' + jobName +
+                                + '<div class="text-left text-muted p-t-sm block-ellipsis-job"><a class="text-hover-primary" title="' + item.job.path + '" id="navigateToJobBtn_' + item.name + '">' + jobName +
                                 '</a></div>' +
                                 host +
                                 '</div >' +
@@ -565,151 +591,20 @@
                                 '<a href class=" pull-right text-right w-half ' + op2Cls + ' " id="' + btnId2 + '"><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
                                 '</div>' +
                                 '</div>';
-                        }
+                        
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
                         }
-                        //console.log("Here name " + JSON.stringify(coords[index]));
 
 
                         if (index == scope.jobChainData.nodes.length - 1) {
                             //console.log("At last " + coords[index].left);
-                            drawErrorNodes(index);
+                            drawEndNodes(index);
                         }
 
 
                     });
 
-                    function drawErrorNodes() {
-                        //console.log("Drawing error nodes " + scope.errorNodeIndex);
-
-
-                        if (scope.errorNodeIndex != -1) {
-                            var item = scope.jobChainData.nodes[scope.errorNodeIndex];
-                            coords[scope.errorNodeIndex].left = 0;
-                            coords.map(function (obj) {
-                                if (coords[scope.errorNodeIndex].left < obj.left) {
-                                    coords[scope.errorNodeIndex].top = obj.top + rectH + 50;
-                                    coords[scope.errorNodeIndex].left = obj.left;
-                                }
-
-                            });
-                            for (var i = scope.errorNodeIndex; i < scope.jobChainData.nodes.length; i++) {
-                                if (scope.errorNodes.indexOf(scope.jobChainData.nodes[i].nextNode)) {
-                                    var chkId = 'chk' + item.name.replace(':', '__');
-                                    var btnId1 = 'btn1' + item.name.replace(':', '__');
-                                    var btnId2 = 'btn2' + item.name.replace(':', '__');
-                                    var btnId3 = 'btn3' + item.name.replace(':', '__');
-                                    var btnId4 = 'btn4' + item.name.replace(':', '__');
-                                    var btnId5 = 'btn5' + item.name.replace(':', '__');
-                                    var btnId6 = 'btn6' + item.name.replace(':', '__');
-                                    var op1 = "button.stopNode";
-                                    var op2 = "button.skipNode";
-                                    var op3 = "button.stopJob";
-                                    var op5 = "button.stopNode";
-                                    var op6 = "button.skipNode";
-                                    var op1Cls = "text-hover-color";
-                                    var op2Cls = "";
-                                    var op3Cls = "";
-                                    var op4Cls = "";
-                                    var op5Cls = "";
-                                    var op6Cls = "";
-                                    var item = scope.jobChainData.nodes[i];
-
-
-                                    item.state = item.state || {};
-                                    item.job.state = item.job.state || {};
-                                    item.state._text = item.state._text || "ACTIVE";
-                                    item.job.state._text = item.job.state._text || "ACTIVE";
-                                    //item.state._text = "stopped";
-                                    if (item.state._text.toLowerCase() != "active") {
-                                        if (item.state._text.toLowerCase() == "skipped") {
-                                            op2 = "button.unskipNode";
-                                            op6 = "button.unskipNode";
-
-                                        } else if (item.state._text.toLowerCase() == "stopped") {
-                                            op1 = "button.unstopNode";
-                                            op5 = "button.unstopNode";
-                                            op1Cls = "";
-                                        }
-
-                                    } else {
-                                        if (item.job.state._text.toLowerCase() == "running") {
-                                        } else if (item.job.state._text.toLowerCase() == "pending") {
-                                        } else if (item.job.state._text.toLowerCase() == "stopped") {
-
-                                            op3 = "button.unstopJob";
-                                        }
-                                    }
-
-                                    var btnClass = 'fa fa-stop';
-                                    if (op1 == 'button.unstopNode') {
-                                        btnClass = 'fa fa-play';
-                                    }
-
-                                    if (op1 == "button.stopNode" && !scope.permission.JobChain.stopJobChainNode) {
-                                        op1Cls = op1Cls + " disable-link";
-                                        op5Cls = op5Cls + " disable-link";
-                                    } else if (op1 == "button.unstopNode" && !scope.permission.JobChain.processJobChainNode) {
-                                        op1Cls = op1Cls + " disable-link";
-                                        op5Cls = op5Cls + " disable-link";
-                                    }
-
-                                    if (op2 == "button.skipNode" && !scope.permission.JobChain.skipJobChainNode) {
-                                        op2Cls = op2Cls + " disable-link";
-                                        op6Cls = op6Cls + " disable-link";
-                                    } else if (op2 == "button.unskipNode" && !scope.permission.JobChain.processJobChainNode) {
-                                        op2Cls = op2Cls + " disable-link";
-                                        op6Cls = op6Cls + " disable-link";
-                                    }
-
-                                    if (op3 == "button.stopJob" && !scope.permission.Job.stop) {
-                                        op3Cls = op3Cls + " disable-link";
-                                    } else if (op3 == "button.unstopJob" && !scope.permission.Job.unstop) {
-                                        op3Cls = op3Cls + " disable-link";
-                                    }
-
-                                    if (!scope.permission.JobChain.view.configuration) {
-                                        op4Cls = op4Cls + " disable-link";
-                                    }
-
-                                    var statusCls;
-                                    rectangleTemplate = rectangleTemplate +
-                                        '<div id="' + item.name + '" style="position:absolute;left:' + coords[scope.errorNodeIndex].left + 'px;top:' + coords[scope.errorNodeIndex].top + 'px"  class="rect error-node" >' +
-                                        '<div><div><span class="md-check md-check1" style="padding-left: 20px;">' +
-                                        '<input type="checkbox"  id="' + chkId + '">' +
-                                        '<i class="ch-purple"></i>' +
-                                        '<span ><i class="' + statusCls + '"></i></span><span class="_500">' + item.name + '</span></span>' +
-                                        '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
-                                        '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                        '<a id="' + btnId4 + '" class="dropdown-item ' + op4Cls + '" translate>button.showConfiguration</a>' +
-                                        '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color ' + op3Cls + '" translate>' + op3 + '</a>' +
-                                        '<a href="" id="' + btnId5 + '"  class="dropdown-item bg-hover-color ' + op5Cls + '" translate>' + op5 + '</a>' +
-                                        '<a href="" id="' + btnId6 + '"  class="dropdown-item' + op6Cls + '" translate>' + op6 + '</a>' +
-                                        '</div></div></div>'
-                                        + '<div class="text-left text-muted p-t-sm"><span class="">' + item.name + '</span></div>' +
-                                        '<div class="text-left text-muted p-t-xs "><span id="' + 'ppc' + item.name + '" class="show"><i class="fa fa-server "></i>' +
-                                        '<span id="' + 'pc' + item.name + '" class="p-l-sm"></span></span>' +
-                                        '<span class="show-inline" id="' + 'plk' + item.name + '"><i class="fa fa-lock m-l"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
-                                        '</div>' + '</div>' +
-                                        '<div style="position: absolute; margin-left: -10px; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                        '<a href class="pull-left w-half ' + op1Cls + '" id="' + btnId1 + '"><i class="' + btnClass + '" ></i> <span translate >' + op1 + '</span></a>' +
-                                        '<a href class=" pull-right text-right w-half ' + op2Cls + ' " id="' + btnId2 + '"><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
-                                        '</div>' +
-                                        '</div>';
-                                }
-
-                                if (i == scope.jobChainData.nodes.length - 1) {
-                                    drawEndNodes();
-                                }
-                            }
-
-                        } else {
-                            drawEndNodes();
-                        }
-
-
-                    }
 
                     function drawEndNodes() {
 
@@ -872,8 +767,9 @@
                     vm.object = {};
                     var splitRegex = new RegExp('(.+):(.+)');
                     var pDiv;
-                    vm.hSpace = 8;
-                    vm.border = 2;
+                    vm.vSpace = 20;
+                    vm.hSpace = 20;
+                    vm.border = 1;
                     var chkId;
                     var btnId;
                     var jobChainPath;
@@ -941,6 +837,7 @@
                             //  console.log("Node "+item.name);
                             var div1 = document.getElementById(item.name);
                             var div2 = document.getElementById(item.nextNode);
+                            var errNode = document.getElementById(item.errorNode);
                             pDiv = undefined;
                             // console.log("Item " + item.name);
                             if (index > 0 && splitRegex.test(item.name)) {
@@ -1024,8 +921,7 @@
                             }
 
 
-                            if (vm.errorNodes.indexOf(item.name) < 0) {
-                                if (div2) {
+                            if (div2) {
 
                                     if (pDiv && pDiv.offsetTop > div1.offsetTop) {
                                         //console.log("Previous is below for " + item.name);
@@ -1195,254 +1091,312 @@
 
                                 }
 
-                                if (errorNode) {
-                                    var firstTop = 0;
-                                    var splitted = false;
-                                    //console.log("For item " + item.name);
-                                    vm.coords.map(function (obj) {
-                                        // console.log("Obj "+JSON.stringify(obj));
-                                        if (firstTop == 0) {
-                                            firstTop = obj.top;
-                                        } else if (obj.actual == item.name && (firstTop > obj.top || firstTop < obj.top)) {
-                                            //   console.log("firsttop "+firstTop);
-                                            splitted = true;
-                                        }
-                                    });
 
-                                    if (splitted) {
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'error-link');
-                                        node.style['top'] = div1.offsetTop + div1.clientHeight + vm.borderTop + 'px';
-                                        node.style['left'] = div1.offsetLeft + div1.clientWidth / 2 + 'px';
-                                        node.style['width'] = '2px';
-                                        node.style['border-left'] = '2px dashed #f44455';
-                                        node.style['height'] = vm.splitMargin / 2 + 'px';
-                                        mainContainer.appendChild(node);
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'error-link');
-                                        node.style['top'] = div1.offsetTop + div1.clientHeight + vm.splitMargin / 2 + vm.borderTop + 'px';
-                                        node.style['left'] = div1.offsetLeft + div1.clientWidth / 2 + 'px';
-                                        node.style['border-top'] = '2px dashed #f44455';
-                                        node.style['width'] = div1.clientWidth / 2 + vm.margin / 2 + vm.hSpace + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'error-link');
-                                        node.style['top'] = div1.offsetTop + div1.clientHeight + vm.splitMargin / 2 + vm.borderTop + 'px';
-                                        node.style['left'] = div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace + 'px';
-                                        node.style['width'] = '2px';
-                                        node.style['height'] = errorNode.offsetTop + errorNode.clientHeight / 2 - (div1.offsetTop + div1.clientHeight + 5 * vm.borderTop ) + 'px';
-                                        node.style['border-left'] = '2px dashed #f44455';
-                                        mainContainer.appendChild(node);
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'error-link');
-                                        node.style['top'] = errorNode.offsetTop + errorNode.clientHeight / 2 + 'px';
-                                        node.style['left'] = div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace + 'px';
-                                        node.style['border-top'] = '2px dashed #f44455';
-                                        node.style['width'] = errorNode.offsetLeft - (div1.offsetLeft + div1.clientWidth + vm.margin / 2 + vm.hSpace) + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
-                                    } else {
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'error-link');
-                                        node.style['border-left'] = '2px dashed #f44455';
-                                        node.style['top'] = y1 + div1.clientHeight + 5 + 'px';
-                                        node.style['left'] = x1 + div1.clientWidth / 2 + 'px';
-                                        node.style['width'] = '2px';
-                                        if (errorNode.offsetLeft == div1.offsetLeft) {
-                                            node.style['height'] = errorNode.offsetTop - (div1.offsetTop + div1.clientHeight + 5) + 'px';
-                                        } else {
-                                            node.style['height'] = errorNode.offsetTop + errorNode.clientHeight / 2 - (y1 + div1.clientHeight + 5) + 'px';
-                                        }
+                            if (errNode) {
+                              //  console.log("Found err Node for " + item.name);
+                                if (div1.offsetTop > errNode.offsetTop) {
+                                    //console.log("Drawing err for02 " + item.name + " " + item.nextNode);
+                                    //console.log("Offset is lesser " + div1.id);
 
-                                        mainContainer.appendChild(node);
+                                    var top = errNode.offsetTop + errNode.clientHeight / 2;
+                                    var left = errNode.offsetLeft - vm.margin / 2;
+                                    var width = vm.margin / 2;
+                                    var height = 2;
+
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
 
 
-                                        var width = errorNode.offsetLeft - (x1 + div1.clientWidth / 2);
-                                        //console.log("Width " + width);
-                                        var left = x1 + div1.clientWidth / 2;
-                                        if (width > 0) {
-                                            node = document.createElement('div');
-                                            node.setAttribute('class', 'error-link');
-                                            node.style['border-top'] = '2px dashed #f44455';
-                                            node.style['top'] = errorNode.offsetTop + errorNode.clientHeight / 2 + 'px';
-                                            node.style['left'] = left + 'px';
-                                            node.style['width'] = width + 'px';
-                                            node.style['height'] = '2px';
-                                            mainContainer.appendChild(node);
-                                        }
+                                    height = div1.offsetTop + div1.clientHeight / 2 - top;
+
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
+
+                                    top = top + height;
+                                    left = div1.offsetLeft + div1.clientWidth + vm.border;
+                                    width = errNode.offsetLeft - vm.margin / 2 - left + vm.border / 2;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+                                } else if (errNode.offsetTop + errNode.clientHeight > div1.offsetTop + div1.clientHeight) {
+                                    //console.log("Drawing next for01 " + item.name + " " + item.nextNode);
+                                    //console.log("Offset is greater " + div1.id);
+                                    var top = div1.offsetTop + div1.clientHeight + vm.border;
+                                    var left = div1.offsetLeft + div1.clientWidth / 2;
+                                    var width = errNode.offsetLeft - left - vm.margin / 2;
+                                    var height = vm.vSpace;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-left'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
+
+                                    top = top + height;
+
+                                    width = div1.clientWidth / 2 + vm.hSpace;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-top'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+                                    left = left + width;
+                                    height = errNode.offsetTop + errNode.clientWidth / 2 - top;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-left'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
+
+
+                                    width = errNode.offsetLeft - left;
+                                    top = top + height;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-top'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+
+                                } else {
+                                    //console.log("Offset is equal " + div1.id);
+                                     var node1=div1;
+                                    var node2=errNode;
+                                    if(div1.offsetLeft>errNode.offsetLeft){
+                                        node1=errNode;
+                                    var node2=div1;
                                     }
+                                    var top = node1.offsetTop + node1.clientHeight + vm.border;
+                                    var left = node1.offsetLeft + node1.clientWidth / 2;
+                                    var width = node2.offsetLeft - left - vm.margin / 2;
+                                    var height = vm.vSpace+5;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-left'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
 
+                                    top = top + height;
 
+                                    width = node2.offsetLeft - node1.offsetLeft;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-top'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+                                    left = node2.offsetLeft + node2.clientWidth / 2;
+                                    height = top - node2.offsetTop - errNode.clientHeight;
+                                    top = node2.offsetTop + node2.clientHeight;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'error-link');
+                                    node.style['border-left'] = '2px dashed #f44455';
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
                                 }
-
-                            } else {
-                                //console.log("Final error node");
-                                node = document.createElement('div');
-                                node.setAttribute('class', 'error-link');
-                                node.style['border-top'] = '2px dashed #f44455';
-                                node.style['top'] = errorNode.offsetTop + errorNode.clientHeight / 2 + 'px';
-                                node.style['left'] = errorNode.offsetLeft + errorNode.clientWidth + 'px';
-                                node.style['width'] = finalErrorNode.offsetLeft - (div1.offsetLeft + div1.clientWidth) + 'px';
-                                node.style['height'] = '2px';
-                                mainContainer.appendChild(node);
-
                             }
 
 
-                            chkId = '#chk' + item.name.replace(':', '__');
+                           // console.log("It's here " + item.name);
+                            chkId = 'chk' + item.name.replace(':', '__');
 
-                            var chk = document.querySelector(chkId);
-                            chk.addEventListener('change', function () {
-                                //console.log("It's here");
-                                if (chk.checked) {
-                                    //console.log("It's checked");
-                                    vm.onAdd({$item: item});
-                                    vm.selectedNodes.push(item);
-                                } else {
-                                    //console.log("It's unchecked");
-                                    vm.onRemove({$item: item});
-                                    angular.forEach(vm.selectedNodes, function (node, index) {
-                                        if (node.name == item.name) {
-                                            vm.selectedNodes.splice(index, 1);
-                                        }
-                                    })
-                                }
-                            });
+                            var chk = document.getElementById(chkId);
+                            if (chk)
+                                chk.addEventListener('change', function () {
+                                    //console.log("It's here");
+                                    if (chk.checked) {
+                                        //console.log("It's checked");
+                                        vm.onAdd({$item: item});
+                                        vm.selectedNodes.push(item);
+                                    } else {
+                                        //console.log("It's unchecked");
+                                        vm.onRemove({$item: item});
+                                        angular.forEach(vm.selectedNodes, function (node, index) {
+                                            if (node.name == item.name) {
+                                                vm.selectedNodes.splice(index, 1);
+                                            }
+                                        })
+                                    }
+                                });
 
                             //console.log("Name " + item.name + " Replace " + item.name.replace(':', '__'));
 
-                            var btnId1 = '#btn1' + item.name.replace(':', '__');
+                            var btnId1 = 'btn1' + item.name.replace(':', '__');
 
-                            var btn1 = document.querySelector(btnId1);
-                            btn1.addEventListener('click', function () {
-                                if (item.job.path) {
-                                    if (btn1.textContent.trim() == gettextCatalog.getString('button.stopNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'stop node'
-                                        })
-                                    } else if (btn1.textContent.trim() == gettextCatalog.getString('button.unstopNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'unstop node'
-                                        })
+                            var btn1 = document.getElementById(btnId1);
+                            if (btn1)
+                                btn1.addEventListener('click', function (e) {
+
+                                    if (item.job.path) {
+                                        if (btn1.textContent.trim() == gettextCatalog.getString('button.stopNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'stop node'
+                                            })
+                                        } else if (btn1.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'unstop node'
+                                            })
+                                        }
+
                                     }
 
-                                }
 
+                                });
 
-                            });
+                            var btnId2 = 'btn2' + item.name.replace(':', '__');
 
-                            var btnId2 = '#btn2' + item.name.replace(':', '__');
+                            var btn2 = document.getElementById(btnId2);
+                            if (btn2)
+                                btn2.addEventListener('click', function (e) {
 
-                            var btn2 = document.querySelector(btnId2);
-                            btn2.addEventListener('click', function () {
-                                if (item.job.path) {
-                                    if (btn2.textContent.trim() == gettextCatalog.getString('button.skipNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'skip'
-                                        })
-                                    } else if (btn2.textContent.trim() == gettextCatalog.getString('button.unskipNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'unskip'
-                                        })
+                                    if (item.job.path) {
+                                        if (btn2.textContent.trim() == gettextCatalog.getString('button.skipNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'skip'
+                                            })
+                                        } else if (btn2.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'unskip'
+                                            })
+                                        }
+
                                     }
 
-                                }
 
+                                });
 
-                            });
+                            var btnId = 'btn3' + item.name.replace(':', '__');
 
-                            var btnId = '#btn3' + item.name.replace(':', '__');
+                            var btn3 = document.getElementById(btnId);
+                            if (btn3)
+                                btn3.addEventListener('click', function (e) {
 
-                            var btn3 = document.querySelector(btnId);
-                            btn3.addEventListener('click', function () {
-                                if (item.job.path) {
-                                    if (btn3.textContent.trim() == gettextCatalog.getString('button.stopJob')) {
-                                        vm.onAction({
-                                            path: item.job.path,
-                                            node: item.name,
-                                            action: 'stop job'
-                                        })
-                                    } else if (btn3.textContent.trim() == gettextCatalog.getString('button.unstopJob')) {
-                                        vm.onAction({
-                                            path: item.job.path,
-                                            node: item.name,
-                                            action: 'unstop job'
-                                        })
+                                    if (item.job.path) {
+                                        if (btn3.textContent.trim() == gettextCatalog.getString('button.stopJob')) {
+                                            vm.onAction({
+                                                path: item.job.path,
+                                                node: item.name,
+                                                action: 'stop job'
+                                            })
+                                        } else if (btn3.textContent.trim() == gettextCatalog.getString('button.unstopJob')) {
+                                            vm.onAction({
+                                                path: item.job.path,
+                                                node: item.name,
+                                                action: 'unstop job'
+                                            })
+                                        }
                                     }
-                                }
-                            });
+                                });
 
-                            var btnId4 = '#btn4' + item.name.replace(':', '__');
+                            var btnId4 = 'btn4' + item.name.replace(':', '__');
 
-                            var btn4 = document.querySelector(btnId4);
-                            btn4.addEventListener('click', function () {
-                                if (item.job.path) {
-                                    vm.showConfiguration({type: 'job', path: item.job.path, name: item.name});
-                                }
-                            });
-
-                            var btnId5 = '#btn5' + item.name.replace(':', '__');
-
-                            var btn5 = document.querySelector(btnId5);
-                            btn5.addEventListener('click', function () {
-                                if (item.job.path) {
-                                    if (btn5.textContent.trim() == gettextCatalog.getString('button.stopNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'stop node'
-                                        })
-                                    } else if (btn5.textContent.trim() == gettextCatalog.getString('button.unstopNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'unstop node'
-                                        })
+                            var btn4 = document.getElementById(btnId4);
+                            if (btn4)
+                                btn4.addEventListener('click', function (e) {
+                                    if (item.job.path) {
+                                        vm.showConfiguration({type: 'job', path: item.job.path, name: item.name});
                                     }
+                                });
 
-                                }
+                            var btnId5 = 'btn5' + item.name.replace(':', '__');
 
+                            var btn5 = document.getElementById(btnId5);
+                            if (btn5)
+                                btn5.addEventListener('click', function (e) {
 
-                            });
+                                    if (item.job.path) {
+                                        if (btn5.textContent.trim() == gettextCatalog.getString('button.stopNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'stop node'
+                                            })
+                                        } else if (btn5.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'unstop node'
+                                            })
+                                        }
 
-                            var btnId6 = '#btn6' + item.name.replace(':', '__');
-
-                            var btn6 = document.querySelector(btnId6);
-                            btn6.addEventListener('click', function () {
-                                if (item.job.path) {
-                                    if (btn6.textContent.trim() == gettextCatalog.getString('button.skipNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'skip'
-                                        })
-                                    } else if (btn6.textContent.trim() == gettextCatalog.getString('button.unskipNode')) {
-                                        vm.onAction({
-                                            path: jobChainPath,
-                                            node: item.name,
-                                            action: 'unskip'
-                                        })
                                     }
 
-                                }
+
+                                });
+
+                            var btnId6 = 'btn6' + item.name.replace(':', '__');
+
+                            var btn6 = document.getElementById(btnId6);
+                            if (btn6)
+                                btn6.addEventListener('click', function (e) {
+
+                                    if (item.job.path) {
+                                        if (btn6.textContent.trim() == gettextCatalog.getString('button.skipNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'skip'
+                                            })
+                                        } else if (btn6.textContent.trim() == gettextCatalog.getString('button.proceedNode')) {
+                                            vm.onAction({
+                                                path: jobChainPath,
+                                                node: item.name,
+                                                action: 'unskip'
+                                            })
+                                        }
+
+                                    }
 
 
-                            });
-
+                                });
                             var navigateToJobBtnId = 'navigateToJobBtn_' + item.name;
                             var navigateToJobBtn = document.getElementById(navigateToJobBtnId);
-
                             if (navigateToJobBtn)
-                                navigateToJobBtn.addEventListener('click', function () {
+                                navigateToJobBtn.addEventListener('click', function (e) {
                                     vm.showJob({job: item.job.path});
                                 });
 
@@ -1541,7 +1495,7 @@
                     }
 
 
-                    vm.$on('reloadJobChain', function () {
+                    vm.$on('reloadJobChain', function (event, args) {
                         //console.log("Updating job chain ");
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
                         if (vm.jobChainData)
@@ -1570,22 +1524,22 @@
                         if (!mainContainer) {
                             return;
                         }
-                        angular.forEach(vm.jobChainData.nodes, function (node) {
+                        angular.forEach(vm.jobChainData.nodes, function (node, index) {
                             nodeCount++;
                             var rect = document.getElementById(node.name);
                             var label = document.getElementById('lbl-order-' + node.name);
                             if (rect) {
-                                var btnId1 = '#btn1' + node.name.replace(':', '__');
-                                var btn1 = document.querySelector(btnId1);
-                                var btnId2 = '#btn2' + node.name.replace(':', '__');
-                                var btn2 = document.querySelector(btnId2);
-                                var btnId = '#btn3' + node.name.replace(':', '__');
-                                var btnId5 = '#btn5' + node.name.replace(':', '__');
-                                var btn5 = document.querySelector(btnId5);
-                                var btnId6 = '#btn6' + node.name.replace(':', '__');
-                                var btn6 = document.querySelector(btnId6);
+                                var btnId1 = 'btn1' + node.name.replace(':', '__');
+                                var btn1 = document.getElementById(btnId1);
+                                var btnId2 = 'btn2' + node.name.replace(':', '__');
+                                var btn2 = document.getElementById(btnId2);
+                                var btnId = 'btn3' + node.name.replace(':', '__');
+                                var btnId5 = 'btn5' + node.name.replace(':', '__');
+                                var btn5 = document.getElementById(btnId5);
+                                var btnId6 = 'btn6' + node.name.replace(':', '__');
+                                var btn6 = document.getElementById(btnId6);
 
-                                var btn3 = document.querySelector(btnId);
+                                var btn3 = document.getElementById(btnId);
                                 if (node.state._text.toLowerCase() != "active") {
                                     if (node.state._text.toLowerCase() == "skipped") {
                                         rect.className = rect.className.replace(/border-.*/, 'border-dark-orange');
@@ -1650,7 +1604,7 @@
 
                                     }
 
-                                } else {
+                                } else if (btn1) {
 
                                     rect.className = rect.className.replace(/border-.*/, 'border-grey');
                                     btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
@@ -2100,8 +2054,8 @@
                         //console.log("Bulk operation completed " + JSON.stringify(args));
                         if (args.operation == 'stopJobs' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
-                                var btnId3 = '#btn3' + node.name.replace(':', '__');
-                                var btn3 = document.querySelector(btnId3);
+                                var btnId3 = 'btn3' + node.name.replace(':', '__');
+                                var btn3 = document.getElementById(btnId3);
                                 var div1 = document.getElementById(node.name);
                                 btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
                                 btn3.title = gettextCatalog.getString('button.unstopJob');
@@ -2110,8 +2064,8 @@
                             })
                         } else if (args.operation == 'unstopJobs' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
-                                var btnId3 = '#btn3' + node.name.replace(':', '__');
-                                var btn3 = document.querySelector(btnId3);
+                                var btnId3 = 'btn3' + node.name.replace(':', '__');
+                                var btn3 = document.getElementById(btnId3);
                                 var div1 = document.getElementById(node.name);
                                 btn3.innerHTML = gettextCatalog.getString('button.stopJob');
                                 btn3.title = gettextCatalog.getString('button.stopJob');
@@ -2121,10 +2075,10 @@
                         }
                         else if (args.operation == 'stopNodes' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
-                                var btnId1 = '#btn1' + node.name.replace(':', '__');
-                                /*var btnId2 = '#btn2' + node.name.replace(':', '__');*/
-                                var btn1 = document.querySelector(btnId1);
-                                /*var btn2 = document.querySelector(btnId2);*/
+                                var btnId1 = 'btn1' + node.name.replace(':', '__');
+                                /*var btnId2 = 'btn2' + node.name.replace(':', '__');*/
+                                var btn1 = document.getElementById(btnId1);
+                                /*var btn2 = document.getElementById(btnId2);*/
                                 var div1 = document.getElementById(node.name);
                                 btn1.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.unstopNode');
                                 btn1.title = gettextCatalog.getString('button.unstopNode');
@@ -2134,8 +2088,8 @@
                             })
                         } else if (args.operation == 'unstopNodes' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
-                                var btnId1 = '#btn1' + node.name.replace(':', '__');
-                                var btn1 = document.querySelector(btnId1);
+                                var btnId1 = 'btn1' + node.name.replace(':', '__');
+                                var btn1 = document.getElementById(btnId1);
                                 var div1 = document.getElementById(node.name);
                                 btn1.innerHTML = '<i class="fa fa-stop"></i> ' + gettextCatalog.getString('button.stopNode');
                                 btn1.title = gettextCatalog.getString('button.stopNode');
@@ -2145,10 +2099,10 @@
 
                         } else if (args.operation == 'skipNodes' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
-                                /* var btnId1 = '#btn1' + node.name.replace(':', '__');*/
-                                var btnId2 = '#btn2' + node.name.replace(':', '__');
-                                /*var btn1 = document.querySelector(btnId1);*/
-                                var btn2 = document.querySelector(btnId2);
+                                /* var btnId1 = 'btn1' + node.name.replace(':', '__');*/
+                                var btnId2 = 'btn2' + node.name.replace(':', '__');
+                                /*var btn1 = document.getElementById(btnId1);*/
+                                var btn2 = document.getElementById(btnId2);
                                 var div1 = document.getElementById(node.name);
                                 btn2.innerHTML = '<i class="fa fa-play"></i> ' + gettextCatalog.getString('button.unskipNode');
                                 btn2.title = gettextCatalog.getString('button.unskipNode');
@@ -2157,8 +2111,8 @@
                             })
                         } else if (args.operation == 'unskipNodes' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
-                                var btnId2 = '#btn1' + node.name.replace(':', '__');
-                                var btn2 = document.querySelector(btnId2);
+                                var btnId2 = 'btn1' + node.name.replace(':', '__');
+                                var btn2 = document.getElementById(btnId2);
                                 var div1 = document.getElementById(node.name);
                                 btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                                 btn2.title = gettextCatalog.getString('button.skipNode');
@@ -2168,7 +2122,7 @@
                         }
 
                         angular.forEach(vm.selectedNodes, function (node) {
-                            var chkId = '#chk' + node.name.replace(':', '__');
+                            var chkId = 'chk' + node.name.replace(':', '__');
                             //console.log("chkId " + chkId);
                             $(chkId).attr("checked", false);
                         });

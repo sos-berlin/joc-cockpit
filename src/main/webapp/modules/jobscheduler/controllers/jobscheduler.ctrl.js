@@ -1822,7 +1822,6 @@ function volatileFolderDataL(data, obj) {
             }).then(function (result) {
                 angular.forEach(result.orders, function (value) {
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
-                    console.log(value.path1)
                 });
                 vm.orders = result.orders;
                 vm.isLoading = true;
@@ -2143,13 +2142,12 @@ function volatileFolderDataL(data, obj) {
                 y: yFunction(),
                 width: 180,
                 height: 180,
-                pieLabelsOutside: false,
+                labelsOutside: false,
                 showLabels: true,
                 labelType: 'percent',
                 showLegend: false,
                 noData: gettextCatalog.getString('message.noDataFound'),
                 color: function (d, i) {
-                    console.log("Color function " + bgColorArray[i]);
                     return bgColorArray[i];
                 },
 
@@ -2386,7 +2384,7 @@ function volatileFolderDataL(data, obj) {
         //vm.getAgentClusterP();
         var states = [];
         vm.clusterAction = function (objectType, action, host, port) {
-            //console.log("objectType " + objectType + " action " + action + " object " + host + port);
+
             if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
                 JobSchedulerService.terminate(host, port, $scope.schedulerIds.selected).then(function (res) {
                     success('stopped', host, port);
@@ -2486,10 +2484,7 @@ function volatileFolderDataL(data, obj) {
         };
 
         function success(state, host, port) {
-            //console.log("Here02 " + host + port);
             states[host + port] = state;
-            //console.log("Here02 states " + states[host + port]);
-
         }
 
         /*-------------Menu active function call-------------------*/

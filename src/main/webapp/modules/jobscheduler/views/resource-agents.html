@@ -170,7 +170,10 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allAgentClusters.length > 10}" ng-if="allAgentClusters.length >0"><span translate>label.total</span> {{allAgentClusters.length}} <span translate>label.agentClustersFound</span></div>
+                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allAgentClusters.length > 10}" ng-if="allAgentClusters.length >0"><span translate>label.total</span> {{allAgentClusters.length}}
+                        <span translate ng-if="allAgentClusters.length >1">label.agentClustersFound</span>
+                        <span translate ng-if="allAgentClusters.length ==1">label.agentClusterFound</span>
+                    </div>
                     <ul ng-show="allAgentClusters.length > agentsFilters.pageSize" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='agentsFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                     <div class="pull-left" ng-show="allAgentClusters.length > 10">
                         <div class="btn-group m-r-xxs">

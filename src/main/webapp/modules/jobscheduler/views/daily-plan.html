@@ -152,7 +152,7 @@
                        ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
                 </div>
             </div>
-            <div class="col-lg-2 col-md-2 col-sm-12">
+            <div class="col-lg-2 col-md-2 col-sm-12 hide" ng-class="{'show': pageView=='list'}" >
                 <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="margin-top: -3px">
             </div>
         </div>

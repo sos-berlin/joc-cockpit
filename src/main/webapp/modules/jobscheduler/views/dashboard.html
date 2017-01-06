@@ -55,11 +55,16 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div style="overflow: auto;width: 100%">
-                               <nvd3 options="barOptions"
-                                        data="agentStatusChart">
+
+
+                                <div style="overflow: auto;width: 100%">
+
+                                <nvd3 options="barOptions"
+                                        data="agentStatusChart"
+                                        on-ready="barChartReadyCallback">
+
                                 </nvd3>
-                            </div>
+</div>
                         </div>
                     </div>
                 </div>
@@ -241,4 +246,5 @@
 
     </div>
 </div>
+
 
