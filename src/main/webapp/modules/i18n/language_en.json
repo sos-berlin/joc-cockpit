@@ -796,5 +796,5 @@
   "placeholder.endTime": "End Time",
   "placeholder.processExecuted": "now-600, today or 08:00am to 08:00pm",
   "label.processExecuted": "Process executed",
-  "label.orderFinished": "Order Finished"
+  "label.orderFinished": "Order completed"
 }
