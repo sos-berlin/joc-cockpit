@@ -141,11 +141,11 @@
                             <div class="box card">
                                 <div class="box-body">
                                     <div>
-                                        <label class="md-check pos-abt">
+                                        <label class="md-check pos-abt" ng-if="permission.JobChain.stop || permission.JobChain.unstop">
                                             <input type="checkbox" data-checklist-model="object.jobChains"
                                                    data-checklist-value="jobChain"><i class="primary"></i>
                                         </label>
-                                        <div class="text-left m-l-md block-ellipsis">
+                                        <div class="text-left block-ellipsis" ng-class="{'m-l-md' : permission.JobChain.stop || permission.JobChain.unstop}">
                                             <i ng-if="jobChain.distributed" class="fa fa-chain"></i>
                                             <a class="text-hover-primary" uib-tooltip="{{jobChain.title}}"
                                                ng-class="{'text-danger':jobChain.state._text == 'STOPPED', 'text-success':jobChain.state._text == 'RUNNING'}"
@@ -165,8 +165,8 @@
                                                        ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                            ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                                     <a class="hide dropdown-item"
-                                                       ng-class="{show:permission.Order.start, 'disable-link':jobChain.numOfOrders==0}"
-                                                       ng-click="startOrder(jobChain);" translate>button.manageOrders</a>
+                                                       ng-class="{show:jobChain.numOfOrders>0}"
+                                                       ng-click="showOrders(jobChain);" translate>button.manageOrders</a>
                                                     <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                        ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                            ng-click="viewCalendar(jobChain);" translate>button.showCalendar</a>
@@ -208,17 +208,19 @@
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">
-                                    <a href class="hide text-left primary-text-hover-color"
-                                       ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
-                                       ng-click="addOrder(jobChain);">
-                                        <i class="fa fa-plus-square-o text-black-lt"></i>
-                                        <span class="text-black-lt" translate>button.addOrder</span>
-                                    </a>
-                                    <a href class="text-right primary-text-hover-color" ng-if="permission.DailyPlan.view.status"
-                                       ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
-                                       ng-click="viewCalendar(jobChain);">
-                                        <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.showCalendar</span>
-                                    </a>
+                                    <div>
+                                        <a href class="hide text-left primary-text-hover-color"
+                                           ng-class="{'show-block':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                           ng-click="addOrder(jobChain);">
+                                            <i class="fa fa-plus-square-o text-black-lt"></i>
+                                            <span class="text-black-lt" translate>button.addOrder</span>
+                                        </a>
+                                        <a href class="text-right primary-text-hover-color" ng-if="permission.DailyPlan.view.status"
+                                           ng-class="{'pull-right':permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                           ng-click="viewCalendar(jobChain);">
+                                            <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt" translate>button.showCalendar</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -229,7 +231,7 @@
                         <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
                             <thead>
                             <tr>
-                                <th class="noExl">
+                                <th class="noExl" ng-if="permission.JobChain.stop || permission.JobChain.unstop">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="jobChainCheckAll.checkbox" ng-click="jobChainCheckAll()">
                                         <i class="primary"></i>
@@ -310,7 +312,7 @@
                             </thead>
                             <tbody ng-repeat="jobChain in allJobChains | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse" ng-class="{'light-bg':jobChain.show}">
                             <tr>
-                                <td class="noExl">
+                                <td class="noExl" ng-if="permission.JobChain.stop || permission.JobChain.unstop">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.jobChains"
                                                data-checklist-value="jobChain"><i class="primary"></i>
@@ -423,7 +425,7 @@
                                                         <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
-                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration, 'disable-link':order._type=='AD_HOC'}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                            ng-click="start(order)" translate>button.startOrderNow</a>

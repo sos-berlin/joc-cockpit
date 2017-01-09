@@ -814,7 +814,7 @@
             });
         }
 
-        vm.startOrder = function (jobChain) {
+        vm.showOrders = function (jobChain) {
             vm.jobChain = jobChain;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -2210,7 +2210,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
+                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
                 } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
                     fromDate = new Date();
@@ -2719,12 +2719,15 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
             });
             vm.reset();
         };
-        function startAt(job) {
+
+
+        function startAt(job, paramObject) {
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             var obj = {};
             obj.params = job.params;
+            obj.job = job.path;
 
             if (job.date && job.time) {
                 job.date.setHours(job.time.getHours());
@@ -2732,8 +2735,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 job.date.setSeconds(job.time.getSeconds());
             }
 
-            obj.job = job.path;
-            obj.at = moment.utc(order.date).format();
+            obj.at = moment.utc(job.date).format();
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
@@ -2758,7 +2760,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                startAt(job);
+                startAt(vm.job, vm.paramObject);
             }, function () {
                 vm.reset();
             });

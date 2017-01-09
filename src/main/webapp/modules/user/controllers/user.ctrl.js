@@ -33,7 +33,7 @@
                     $rootScope.error = err.data.message;
                 else
                     $rootScope.error = err.data.error.message;
-                console.log(err)
+
                 $location.path('/error');
             });
         }

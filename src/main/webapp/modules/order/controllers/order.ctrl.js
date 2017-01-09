@@ -1852,7 +1852,7 @@
                 if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\+)(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
+                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
                 } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
                     fromDate = new Date();
@@ -3453,11 +3453,22 @@
             var fromDate;
             var toDate;
             if (selectedFiltered1.planned) {
-                if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(selectedFiltered1.planned)) {
+                 if (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(selectedFiltered1.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\-)(\d+)\s*$/i.exec(selectedFiltered1.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() - seconds);
+                    var hours = (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.exec(selectedFiltered1.planned)[2]);
+                    fromDate.setHours(toDate.getHours() - hours);
+                }
+                else if (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(selectedFiltered1.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                    var days = (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.exec(selectedFiltered1.planned)[2]);
+                    fromDate.setDate(toDate.getDate() - days);
+                } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(selectedFiltered1.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                    var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(selectedFiltered1.planned)[2]);
+                    fromDate.setSeconds(toDate.getSeconds() - seconds);
                 } else if (/^\s*(Today)\s*$/i.test(selectedFiltered1.planned)) {
                     fromDate = new Date();
 
@@ -3503,15 +3514,27 @@
             if (selectedFiltered2.state && selectedFiltered2.state.length > 0) {
                 obj.historyStates = selectedFiltered2.state;
             }
+            console.log(selectedFiltered2)
 
             var fromDate;
             var toDate;
             if (selectedFiltered2.planned) {
-                if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(selectedFiltered2.planned)) {
+                  if (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(selectedFiltered2.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\-)(\d+)\s*$/i.exec(selectedFiltered2.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() - seconds);
+                    var hours = (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.exec(selectedFiltered2.planned)[2]);
+                    fromDate.setHours(toDate.getHours() - hours);
+                }
+                else if (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(selectedFiltered2.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                    var days = (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.exec(selectedFiltered2.planned)[2]);
+                    fromDate.setDate(toDate.getDate() - days);
+                } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(selectedFiltered2.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                    var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(selectedFiltered2.planned)[2]);
+                    fromDate.setSeconds(toDate.getSeconds() - seconds);
                 } else if (/^\s*(Today)\s*$/i.test(selectedFiltered2.planned)) {
                     fromDate = new Date();
 
@@ -3658,7 +3681,7 @@
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.historyFilter.planned || /^\s*$/i.test(vm.historyFilter.planned) || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.historyFilter.planned) || /^\s*(now)\s*$/i.test(vm.historyFilter.planned) || /^\s*(Today)\s*$/i.test(vm.historyFilter.planned)
+            if (!vm.historyFilter.planned || /^\s*$/i.test(vm.historyFilter.planned) || /^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(vm.historyFilter.planned) || /^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(vm.historyFilter.planned) || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.historyFilter.planned) || /^\s*(now)\s*$/i.test(vm.historyFilter.planned) || /^\s*(Today)\s*$/i.test(vm.historyFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.historyFilter.planned)) {
             } else {
                 vm.validPlanned = false;
@@ -3758,7 +3781,6 @@
                     }
                     vm.historyFilterObj.order = vm.savedHistoryFilter;
 
-
                 } else {
                     angular.forEach(vm.savedJobHistoryFilter.list, function (value, index) {
                         if (value.name == filter.name) {
@@ -3775,8 +3797,6 @@
                         vm.savedJobHistoryFilter.favorite = vm.historyFilter.name;
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-
-
                 }
 
                 SavedFilter.setHistory(vm.historyFilterObj);

@@ -76,7 +76,7 @@
                 <div style="max-height: 300px; overflow: auto">
                     <table class="table-hover" style="margin-left: 16px; margin-bottom: 12px; width: 94%">
                         <tbody>
-                        <tr ng-repeat="group in allSessionEvent.group | orderBy:'-eventId'">
+                        <tr ng-repeat="group in allSessionEvent.group | orderBy:'-eventId' track by $index">
                             <td ng-click="expandNotification(group)" class="cursor" ng-show="!showEvent">
                                 <span>
                                     <span class="_600" ng-if="group.readCount>9">{{group.readCount}}</span>

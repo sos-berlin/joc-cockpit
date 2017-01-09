@@ -14,11 +14,11 @@
                             <div class="box card" >
                             <div class="box-body">
                                 <div>
-                                    <label class="md-check pos-abt">
+                                    <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                         <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i
-                                            class="primary"></i></label>
-
-                                    <div class="text-left m-l-md block-ellipsis" >
+                                            class="primary"></i>
+                                    </label>
+                                    <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start}">
                                         <span uib-tooltip="{{order.title}}">{{order.orderId}}</span></div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
@@ -28,7 +28,7 @@
                                                      <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
-                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration, 'disable-link':order._type=='AD_HOC'}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                            ng-click="start(order)" translate>button.startOrderNow</a>
@@ -105,7 +105,7 @@
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>
-                                        <th class="noExl">
+                                        <th class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i
                                                     class="primary"></i>
@@ -165,7 +165,7 @@
                                     </thead>
                                     <tbody ng-repeat="order in orders | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" ng-class="{'light-bg':showLogPanel == order}">
                                         <tr>
-                                            <td class="noExl">
+                                            <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                                 <label class="md-check">
                                                     <input type="checkbox" data-checklist-model="object.orders"
                                                            data-checklist-value="order"><i class="primary"></i>
@@ -203,7 +203,7 @@
                                                               <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                                            translate>button.viewLog</a>
-                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" ng-if="order._type !='AD_HOC'" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration}" translate>button.showConfiguration</a>
+                                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration, 'disable-link':order._type=='AD_HOC'}" translate>button.showConfiguration</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.start"
                                                            ng-click="start(order)" translate>button.startOrderNow</a>

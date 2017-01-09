@@ -113,10 +113,10 @@
                              ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse">
                             <div class="box card" >
                                 <div class="box-body">
-                                    <label class="md-check pos-abt">
+                                    <label class="md-check pos-abt" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
                                         <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                     </label>
-                                    <div class="text-left m-l-md block-ellipsis" >
+                                    <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate}">
                                         <span uib-tooltip="{{job.title}}" ng-class="{'text-u-l':job.isOrderJob!=true}"  ng-bind="job.name"></span>
                                     </div>
                                     <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -174,7 +174,7 @@
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
                             <tr>
-                                <th class="noExl">
+                                <th class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                     </label>
@@ -244,7 +244,7 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="job in allJobs | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize | orderBy:jobFilters.filter.sortBy:jobFilters.reverse" ng-class="{'light-bg':showTaskPanel == job}">
-                                <td class="noExl">
+                                <td class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                     </label>

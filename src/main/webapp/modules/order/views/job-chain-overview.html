@@ -117,8 +117,8 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="node in jobChain.nodes">
-                            <tr>
+                            <tbody >
+                            <tr ng-repeat="node in jobChain.nodes">
                                 <td width="40">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object1.nodes"
@@ -201,7 +201,7 @@
                                                        ng-if="order.processingState._text == 'SETBACK' && permission.Order.removeSetback "
                                                        ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                     <a href class="dropdown-item"
-                                                       ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST'"
+                                                       ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                        ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                     <a href class="dropdown-item bg-hover-color"
                                                        ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
@@ -299,7 +299,18 @@
                                     </div>
                                 </td>
                             </tr>
-
+                            <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
+                                <td></td>
+                                <td colspan="7">
+                                    <div class="text-sm text-l-c" ng-repeat="order in jobChain.fileOrderSources">
+                                        <span  ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
+                                        <span>{{'label.directory' | translate}}:</span>{{order.directory}}&nbsp;
+                                        <span>{{'label.pattern' | translate}}:</span>{{order.regex}}&nbsp;
+                                        <span>{{'label.delay' | translate}}:</span>{{order.delayAfterError}}&nbsp;
+                                        <span>{{'label.repeat' | translate}}:</span>{{order.repeat}}
+                                    </div>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
 

@@ -337,7 +337,7 @@
             </div>
         </div>
         <div class="hide"  ng-class="{'show': isLoading}">
-            <div class="m-t-sm box p-a" ng-show="historyFilters.type == 'jobChain'" >
+            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'jobChain'" >
                 <div class="table-responsive" context-menu="menuOptions">
                     <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
@@ -475,7 +475,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-            <div class="m-t-sm box p-a" ng-show="historyFilters.type == 'job'">
+            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'job'">
                 <div class="table-responsive" context-menu="menuOptions">
                     <table class="table table-hover table-bordered " id="job">
                         <thead>

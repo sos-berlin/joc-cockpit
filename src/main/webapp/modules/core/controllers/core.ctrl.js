@@ -24,7 +24,6 @@
             name: 'JobScheduler'
         };
 
-
         /**
          * Exception Logging Service, currently only used by the $exceptionHandler
          * it preserves the default behaviour ( logging to the console) but
@@ -354,8 +353,14 @@
                 $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
             }
 
-         //   $window.sessionStorage.$SOS$TABS = JSON.stringify(CoreService.getTabs());
             $window.localStorage.$SOS$DASHBOARDTABS = JSON.stringify(CoreService.getDashboard());
+            try {
+                if((1024 * 1024) -unescape(encodeURIComponent(JSON.stringify($window.sessionStorage.$SOS$ALLEVENT))).length<0){
+                     $window.sessionStorage.$SOS$ALLEVENT.splice(1,100);
+                }
+            }catch (e) {
+
+            }
 
         }, 1000);
 

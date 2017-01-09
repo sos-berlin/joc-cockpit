@@ -44,17 +44,16 @@
                          <toggle-view ng-show="!orderFilters.overview"></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block' :object.orders.length>0}">
-                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}" ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i>
-                            <span class="hidden-sm-down" translate>button.deleteOrder</span>
-                        </button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}" ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i>
-                            <span class="hidden-sm-down" translate>button.suspendOrder</span></button>
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i>
-                            <span class="hidden-sm-down" translate>button.resetOrder</span>
-                        </button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}" ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i>
-                            <span class="hidden-sm-down" translate>button.startOrderNow</span>
-                        </button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
+                                 ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
+                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
+                                 ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span class="hidden-sm-down" translate>button.suspendOrder</span></button>
+                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.resume}"
+                                 ng-disabled="resumeSelected" ng-click="resumeAllOrder()"><i class="fa fa-step-forward"></i> <span class="hidden-sm-down" translate>button.resumeOrder</span></button>
+                         <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.reset}"
+                                 ng-disabled="resetSelected" ng-click="resetAllOrder()"><i class="fa fa-repeat"></i> <span class="hidden-sm-down" translate>button.resetOrder</span></button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.start}"
+                                 ng-disabled="runningSelected" ng-click="startAllOrder()"><i class="fa fa-play"></i> <span class="hidden-sm-down" translate>button.startOrderNow</span></button>
                      </div>
                 </div>
             </div>

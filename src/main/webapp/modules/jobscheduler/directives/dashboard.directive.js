@@ -218,8 +218,14 @@
                             dState.innerHTML = master.state._text;
                         }
                         if (master.state && span) {
-                            var popover = document.getElementById('popover'+master.host+master.port);
-                             popover.innerHTML=moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+
+                            var rect = document.getElementById(master.host+master.port);
+                            var popoverTemplate = 'Architecture01 : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                '<br>Version : ' + master.version +
+                                '<br>Started at : <span>' +
+                                moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +
+                                '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                            rect.setAttribute('data-content',popoverTemplate);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
@@ -230,7 +236,7 @@
                                     if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
                                         if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response'
                                             || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'terminating' ||
-                                            master.state._text.toLowerCase() == 'starting' || master.state._text.toLowerCase() == ' ') {
+                                            master.state._text.toLowerCase() == 'starting' || master.state._text.toLowerCase() == ' ' || master.state._text.toLowerCase() == 'unreachable') {
                                             var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
                                             span.className = span.className.replace(/text-.+/, cls);
                                             dState.className = dState.className.replace(/text-.+/, cls);
@@ -261,9 +267,6 @@
                                             }
                                             connectLink(master.host, master.port);
 
-                                        } else if (master.state._text.toLowerCase() == 'unreachable') {
-                                            //disconnectLink(master.host, master.port);
-
                                         }
                                     }
                                 }
@@ -275,8 +278,15 @@
                     function refreshSupervisorState(supervisor) {
                         if (supervisor.data.jobscheduler.state) {
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
-                             var popover = document.getElementById('popover'+supervisor.host+supervisor.port);
-                             popover.innerHTML=moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                             var rect = document.getElementById(supervisor.host+supervisor.port);
+                            var popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+
+                                '<br>Version : ' + supervisor.data.jobscheduler.version +
+                                '<br>Started at : <span>' +
+                                moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  +
+                                '</span><br> Survey Date: ' +
+                                moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                            rect.setAttribute('data-content',popoverTemplate);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
@@ -360,9 +370,11 @@
 
                                 c = c + " yellow-border";
                             }
-                            scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+
+                            var popoverTemplate= 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
-                                '<br>Started at : <span id="popover'+ supervisor.host + supervisor.port+'">' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
+                                '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
 
 
                             var sClassRunning = 'text-success';
@@ -386,21 +398,22 @@
                                 disableClass = 'disable-link';
                             }
 
-
-                            //permission
-                            /* if (scope.permission.JobschedulerMasterCluster.restart) {
-                             orderLog.className = 'show dropdown-item';
-                             }*/
-                            var restarTerminatetClass1 = 'hide';
-                            var restarAbortClass1 = 'hide';
+                            var restartTerminatetClass1 = 'hide';
+                            var restartAbortClass1 = 'hide';
                             var abortClass1 = 'hide';
                             var terminateClass1 = 'hide';
 
+                            var downDownClass = 'hide';
+                                if(scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
+                                    scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
+                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue){
+                                    downDownClass = 'show';
+                                }
                             if (scope.permission.JobschedulerMaster.restart.terminate) {
-                                restarTerminatetClass1 = 'show';
+                                restartTerminatetClass1 = 'show';
                             }
                             if (scope.permission.JobschedulerMaster.restart.abort) {
-                                restarAbortClass1 = 'show';
+                                restartAbortClass1 = 'show';
                             }
                             if (scope.permission.JobschedulerMaster.abort) {
                                 abortClass1 = 'show';
@@ -418,18 +431,18 @@
                             lastId = supervisor.host + supervisor.port;
                             template = template +
 
-                                ' <div class="cluster-rect" uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
+                                ' <div class="cluster-rect" data-toggle="popover"  trigger="hover" data-content="'+popoverTemplate+'"' +
                                 'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
                                 '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
                                 '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
                                 '</span> <div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                '<a href class=" more-option '+downDownClass+'" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                 '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                 '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
                                 '<a class="dropdown-item ' + abortClass1 + ' '+ disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
-                                '<a class="dropdown-item ' + disableClass + ' ' + restarAbortClass1 +  '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass +' ' + restarTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass +' ' + restarTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 +  '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass +' ' + restartTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + disableClass +' ' + restartTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
                                 '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
                                 '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                                 '</div>' +
@@ -485,9 +498,9 @@
                                 }
 
 
-                                scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                     '<br>Version : ' + master.version +
-                                    '<br>Started at :<span id="popover'+ master.host + master.port+'"> ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
+                                    '<br>Started at :<span> ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
                                 if (master.state && master.state._text.toLowerCase() == 'paused') {
@@ -513,16 +526,23 @@
                                     master.state._text = ' ';
                                 }
 
-                                var restarTerminatetClass1 = 'hide';
-                                var restarAbortClass1 = 'hide';
+                                var restartTerminatetClass1 = 'hide';
+                                var restartAbortClass1 = 'hide';
                                 var abortClass1 = 'hide';
                                 var terminateClass1 = 'hide';
 
+                                var downDownClass = 'hide';
+                                if(scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
+                                    scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
+                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue){
+                                    downDownClass = 'show';
+                                }
+
                                 if (scope.permission.JobschedulerMaster.restart.terminate) {
-                                    restarTerminatetClass1 = 'show';
+                                    restartTerminatetClass1 = 'show';
                                 }
                                 if (scope.permission.JobschedulerMaster.restart.abort) {
-                                    restarAbortClass1 = 'show';
+                                    restartAbortClass1 = 'show';
                                 }
                                 if (scope.permission.JobschedulerMaster.abort) {
                                     abortClass1 = 'show';
@@ -537,22 +557,22 @@
                                     continueClass = 'hide';
                                 }
 
+                                lastId=master.host + master.port;
+                                masterTemplate = '<div  data-toggle="popover" trigger="hover" data-content="'+popoverTemplate+'" ' +
 
-                                lastId = master.host + master.port;
-                                masterTemplate = '<div  uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter" ' +
 
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                     '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '"></span>' +
                                     '<div class="text-left  p-t-sm p-l-sm ">' +
                                     '<span>' + name +
                                     '</span>' + '<div class="btn-group dropdown pull-right" >' +
-                                    '<a href class=" more-option " data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                    '<a href class=" more-option '+downDownClass+'" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color '+ terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' +  abortClass1 +' ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                    '<a class="dropdown-item ' +  restarAbortClass1 +' ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' +  restarTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' +  restarTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="dropdown-item ' +  restartAbortClass1 +' ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' +  restartTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' +  restartTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
                                     '<a class="dropdown-item ' +  pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div>' +
@@ -630,8 +650,8 @@
                                     master.state._text = ' ';
                                 }
                                 var pauseClass = 'show';
-                                var restarTerminatetClass1 = 'hide';
-                                var restarAbortClass1 = 'hide';
+                                var restartTerminatetClass1 = 'hide';
+                                var restartAbortClass1 = 'hide';
                                 var abortClass1 = 'hide';
                                 var terminateClass1 = 'hide';
 
@@ -660,15 +680,20 @@
                                     continueClass = 'show';
                                 }
 
-
                                 lastId = master.host + master.port;
 
-
+                                var downDownClass = 'hide';
+                                if(scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
+                                    scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
+                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue){
+                                    downDownClass = 'show';
+                                }
                                 if (scope.permission.JobschedulerMaster.restart.terminate) {
-                                    restarTerminatetClass1 = 'show';
+                                    restartTerminatetClass1 = 'show';
+
                                 }
                                 if (scope.permission.JobschedulerMaster.restart.abort) {
-                                    restarAbortClass1 = 'show';
+                                    restartAbortClass1 = 'show';
                                 }
                                 if (scope.permission.JobschedulerMaster.abort) {
                                     abortClass1 = 'show';
@@ -682,20 +707,20 @@
                                 if (!scope.permission.JobschedulerMaster.continue) {
                                     continueClass = 'hide';
                                 }
-                                scope.popoverTemplate = $sce.trustAsHtml('Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                    '<br>Version : ' + master.version +
-                                    '<br>Started at : <span id="popover'+ master.host + master.port+'">' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '<br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
-                                var masterTemplate = '<div uib-popover-html="popoverTemplate" popover-placement="right" popover-trigger="mouseenter"' +
+                                var popoverTemplate = 'Architecture01 : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                '<br>Version : ' + master.version +
+                                '<br>Started at : <span id="'+'popover0011'+'">' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                var masterTemplate = '<div data-toggle="popover"   data-content=\''+popoverTemplate+'\'' +
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                     '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
                                     '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
-                                    '<a href class=" more-option" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                    '<a href class="more-option '+downDownClass+'" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' + disableClass + ' ' + abortClass1 + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + restarAbortClass1 + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + restarTerminatetClass1 + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + restarTerminatetClass1 + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
                                     '<a class="dropdown-item ' + pauseClass + ' '  + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
                                     '</div></div>' +
@@ -744,9 +769,9 @@
                         } else if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text.toLowerCase() == 'running') {
                             classRunning = 'text-black-lt';
                         }
-                        scope.popoverTemplate1 = $sce.trustAsHtml(' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT));
+                        var popoverTemplate = ' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
 
-                        var masterTemplate = '<div uib-popover-html="popoverTemplate1" popover-placement="left" popover-trigger="mouseenter" ' +
+                        var masterTemplate = '<div data-toggle="popover"  data-placement="top" data-content="'+popoverTemplate+'" ' +
 
                             'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
@@ -759,7 +784,13 @@
                             '</div>';
 
 
-                        template = template + '<div   id="masterContainer">' + masterTemplate + '</div></div>';
+                        template = template + '<div   id="masterContainer">' + masterTemplate + '</div></div>'+
+                         ' <script>'+
+   ' $(document).ready(function(){'+
+    '$(\'[data-toggle="popover"]\').popover({html:true,trigger:"hover"});'+
+'});'+
+
+'</script>';
                         template = $compile(template)(scope);
                         elem.append(template);
                         alignToCenter();
@@ -1139,17 +1170,17 @@
                 width: "="
             },
             template: '<div class="plan-overview bg-dimgrey" style="width:{{width[0]}}%">\n'
-            + '<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan({filter:1,day:day})" ><span class="text-white" translate>label.waitingOrders</span> - {{waiting |number:1}} %  </a></label></div>'
+            + '<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:1,day:day})" ><span class="text-white" translate>label.waitingOrders</span> - {{waiting |number:1}} %  </a></label></div>'
             + '<div class="plan-overview text-white bg-gold" style="width:{{width[1]}}%">\n'
-            + '<label class="hide text-white plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.lateOrders</span> - {{late |number:1}} % </a></label></div>'
+            + '<label class="hide text-white plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.lateOrders</span> - {{late |number:1}} % </a></label></div>'
             + '<div class="plan-overview text-white bg-green1" style="width:{{width[3]}}%">\n'
-            + '<label class="hide text-white plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.lateOrdersSuccess</span> - {{lateSuccess |number:1}} % </a></label></div>'
+            + '<label class="hide text-white plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.lateOrdersSuccess</span> - {{lateSuccess |number:1}} % </a></label></div>'
             + '<div class="plan-overview text-white bg-crimson1" style="width:{{width[5]}}%">\n'
-            + '<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.lateOrdersFailed</span> - {{lateError |number:1}} % </a></label></div>'
+            + '<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.lateOrdersFailed</span> - {{lateError |number:1}} % </a></label></div>'
             + '<div class="plan-overview text-white bg-green" style="width:{{width[2]}}%">\n'
-            + '<label class="hide text-white plan-status" ng-class="{\'show\': executed > 0}" uib-tooltip="{{executed*total/100 | number:0}} out of {{total}}"><a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.successfulOrders</span> - {{executed |number:1}} % </a></label></div>'
+            + '<label class="hide text-white plan-status" ng-class="{\'show\': executed > 0}" uib-tooltip="{{executed*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.successfulOrders</span> - {{executed |number:1}} % </a></label></div>'
             + '<div class="plan-overview text-white bg-crimson" style="width:{{width[4]}}%">\n'
-            + '<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link" ui-sref="app.dailyPlan()" > <span class="text-white" translate>label.failedOrders</span> - {{error |number:1}} % </a></label></div>'
+            + '<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.failedOrders</span> - {{error |number:1}} % </a></label></div>'
         }
     }
 })();
