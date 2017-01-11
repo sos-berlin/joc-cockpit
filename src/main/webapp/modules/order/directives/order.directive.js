@@ -99,7 +99,6 @@
                 };
 
 
-
                 vm.$on('reloadSnapshot', function () {
                     loadSnapshot();
                 });
@@ -124,59 +123,58 @@
                 }
 
                 vm.pieOptions = {
-            "chart": {
-                id: "agentClusterId",
-                type: 'pieChart',
-                x: vm.xFunction(),
-                y: vm.yFunction(),
-                width: vm.width,
-                height: vm.height,
-                labelsOutside: false,
-                showLabels: true,
-                groupSpacing: 0.5,
-                labelType: 'percent',
-                showLegend: false,
-                noData: "No data found",
-                color: function (d, i) {
+                    "chart": {
+                        id: "agentClusterId",
+                        type: 'pieChart',
+                        x: vm.xFunction(),
+                        y: vm.yFunction(),
+                        width: vm.width,
+                        height: vm.height,
+                        labelsOutside: false,
+                        showLabels: true,
+                        groupSpacing: 0.5,
+                        labelType: 'percent',
+                        showLegend: false,
+                        noData: "No data found",
+                        color: function (d, i) {
 
-                        if (d.key == 'running') {
-                            return '#7ab97a';
-                        } else if (d.key == 'suspended') {
-                            return '#e86680';
-                        } else if (d.key == 'setbacks') {
-                            return '#99b2df';
-                        } else if (d.key == 'waitingForResource') {
-                            return '#ffa366';
-                        } else if (d.key == 'blacklist') {
-                            return '#b966b9';
+                            if (d.key == 'running') {
+                                return '#7ab97a';
+                            } else if (d.key == 'suspended') {
+                                return '#e86680';
+                            } else if (d.key == 'setbacks') {
+                                return '#99b2df';
+                            } else if (d.key == 'waitingForResource') {
+                                return '#ffa366';
+                            } else if (d.key == 'blacklist') {
+                                return '#b966b9';
+                            }
+                            else if (d.key == 'pending') {
+                                return 'rgba(255, 195, 0, 0.9)';
+                            }
+
+                        },
+
+
+                        tooltip: {
+                            enabled: true,
+                            contentGenerator: vm.toolTipContentFunction()
+                        },
+                        pie: {
+                            dispatch: {
+                                elementClick: function (e) {
+                                }
+
+                            }
                         }
-                        else if (d.key == 'pending') {
-                            return 'rgba(255, 195, 0, 0.9)';
-                        }
 
-                },
-
-
-                tooltip: {
-                    enabled: true,
-                    contentGenerator: vm.toolTipContentFunction()
-                },
-                pie: {
-                    dispatch: {
-                        elementClick: function (e) {
-                        }
 
                     }
+
                 }
-
-
-            }
-
-        }
             }]
         };
     }
-
 
     flowDiagram.$inject = ["$compile", "$window", "gettextCatalog", "$timeout"];
     function flowDiagram($compile, $window, gettextCatalog, $timeout) {
@@ -190,7 +188,6 @@
                     // draw();
                 });
 
-
                 function arrangeItems() {
                     scope.jobChainData = angular.copy(scope.jobChain);
                     scope.jobChainData.nodes = [];
@@ -199,7 +196,7 @@
                     var isNext = false;
                     var lastIndex = 0;
                     var isFirstNode = false;
-                    var firstIndex = 0;
+                    var firstIndex = -1;
 
                     angular.forEach(scope.jobChain.nodes, function (item, index) {
 
@@ -207,19 +204,19 @@
                             isFirstNode = true;
                         }
                         angular.forEach(scope.jobChain.nodes, function (item2, index2) {
-                            if (item2.nextNode == item.name) {
+                            if (item2.nextNode == item.name || item2.errorNode == item.name) {
                                 isFirstNode = false;
-
                             }
 
-                        })
+                        });
 
                         if (isFirstNode && !(/(.+):(.+)/.test(item.name))) {
                             firstIndex = index;
-
                         }
-                    })
-
+                    });
+                    if(firstIndex == -1){
+                        firstIndex = 0;
+                    }
 
                     scope.jobChainData.nodes[0] = angular.copy(scope.jobChain.nodes[firstIndex]);
                     jobChainData2.nodes.splice(firstIndex, 1);
@@ -240,7 +237,7 @@
                                 getNext(index);
                             }
 
-                        })
+                        });
                         if (!gotNext) {
                             getPrevious(1);
                         }
@@ -256,19 +253,19 @@
                                 jobChainData2.nodes[index2].removed = true;
 
                             }
-                        })
+                        });
                         cursor++;
                         if (cursor < scope.jobChainData.nodes.length) {
                             getPrevious(cursor);
                         } else {
-                            //console.log("Second iteration "+JSON.stringify(scope.jobChainData));
+
                             var temp = [];
                             angular.forEach(jobChainData2.nodes, function (item, index) {
                                 if (!item.removed) {
                                     temp.push(item);
 
                                 }
-                            })
+                            });
                             jobChainData2.nodes = temp;
                             getNext2(0);
 
@@ -280,53 +277,56 @@
                         var item = scope.jobChainData.nodes[index];
                         havingNext = false;
                         isNext = false;
-                        angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
-                            if (item.nextNode == item2.name) {
-                                gotNext = true;
-                                scope.jobChainData.nodes.splice(index + 1, 0, item2);
-                                if (index2 > index) {
-                                    index++;
-                                    scope.jobChainData.nodes.splice(index2 + 1, 1);
-                                } else {
-                                    index--;
-                                    scope.jobChainData.nodes.splice(index2, 1);
+                        if (item) {
+                            angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
+                                if (item.nextNode == item2.name) {
+                                    gotNext = true;
+                                    scope.jobChainData.nodes.splice(index + 1, 0, item2);
+                                    if (index2 > index) {
+                                        index++;
+                                        scope.jobChainData.nodes.splice(index2 + 1, 1);
+                                    } else {
+                                        index--;
+                                        scope.jobChainData.nodes.splice(index2, 1);
+                                    }
                                 }
-                            }
-                        })
+                            });
+                        }
                         if (!gotNext) {
                             index++;
                         }
                         if (index < scope.jobChainData.nodes.length) {
                             getNext2(index);
                         } else if (!gotNext) {
-
                             if (jobChainData2.nodes.length > 0) {
                                 scope.jobChainData.nodes = scope.jobChainData.nodes.concat(jobChainData2.nodes);
 
                             }
+
                             checkForEndNodes(0);
 
                         }
                     }
 
                     function checkForEndNodes(index) {
-                        var endNode = scope.jobChainData.endNodes[index];
-
-                        angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
-                            var found = false;
-                            if (item2.name == endNode.name) {
-                                scope.jobChainData.endNodes.splice(index, 1);
-                                index--;
+                        if (scope.jobChainData.endNodes) {
+                            var endNode = scope.jobChainData.endNodes[index];
+                            if (endNode) {
+                                angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
+                                    var found = false;
+                                    if (item2 && (item2.name == endNode.name)) {
+                                        scope.jobChainData.endNodes.splice(index, 1);
+                                        index--;
+                                    }
+                                });
                             }
-                        })
+                        }
                         index++;
-                        if (index < scope.jobChainData.endNodes.length) {
-
+                        if (scope.jobChainData.endNodes && (index < scope.jobChainData.endNodes.length)) {
                             checkForEndNodes(index)
                         } else {
                             draw();
                         }
-
                     }
                 }
 
@@ -359,7 +359,6 @@
                     var splitRegex = new RegExp('(.+):(.+)');
                     var orderLeft = left;
 
-
                     angular.forEach(scope.jobChainData.fileOrderSources, function (orderSource, index) {
                         if (index == 0) {
                             orderLeft = margin + avatarW;
@@ -373,18 +372,17 @@
                         if (index == scope.jobChainData.fileOrderSources.length - 1) {
                             rectangleTemplate = rectangleTemplate + '</tbody></table></div>';
                         }
-
-
                     });
 
                     if (scope.jobChainData.fileOrderSources && scope.jobChainData.fileOrderSources.length > 0) {
-
-
                         top = top + rectH + 50;
                     }
 
 
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
+                        if(!item){
+                            return;
+                        }
                         scope.startId = "start";
                         if (item.name == 'start') {
                             scope.startId = "start" + index;
@@ -397,13 +395,11 @@
                                 + '" translate>label.start</span>' +
                                 '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
-                        }else{
-                            var last =  coords.length-1;
-                            left = coords[last].left+margin + rectW;
+                        } else {
+                            var last = coords.length - 1;
+                            left = coords[last].left + margin + rectW;
                         }
 
-                        //console.log("Name " + item.name);
-                        //console.log(splitRegex.test(item.name));
                         coords[index] = {};
                         coords[index].isParallel = false;
                         coords[index].parallels = 0;
@@ -415,193 +411,212 @@
                         coords[index].left = left;
                         if (scope.errorNodes.indexOf(item.name) >= 0 && scope.errorNodeIndex == -1) {
                             scope.errorNodeIndex = index;
-
                         }
 
+                        if (splitRegex.test(item.name)) {
+                            isSplitted = true;
+                            coords[index].name = splitRegex.exec(item.name)[2];
+                            coords[index].isParallel = true;
+                            coords.map(function (obj) {
 
-                            if (splitRegex.test(item.name)) {
-                                isSplitted = true;
-                                coords[index].name = splitRegex.exec(item.name)[2];
-                                coords[index].isParallel = true;
-                                coords.map(function (obj) {
-                                    // //console.log("Matched.... "+splitRegex.exec(item.name)[1]);
-                                    if (obj.name == splitRegex.exec(item.name)[1]) {
-                                        ////console.log("Matched.... "+obj.name);
-                                        obj.parallels = obj.parallels + 1;
-                                        coords[index].parent = obj.actual;
-                                        coords[index].left = obj.left + rectW + margin;
-                                        if (obj.parallels == 1) {
-                                            coords[index].top = obj.top - rectH / 2 - splitMargin / 2;
-
-                                        }
-                                        else if (obj.parallels == 2) {
-                                            coords[index].top = obj.top + rectH / 2 + splitMargin / 2;
-                                        }
-                                        else if (obj.parallels % 2 == 0) {
-                                            coords[index].top = obj.top + rectH / 2 + splitMargin / 2 + (rectH + splitMargin) * (obj.parallels - 3);
-
-                                        } else if (obj.parallels % 2 != 0) {
-                                            coords[index].top = obj.top - rectH / 2 - splitMargin / 2 - (rectH + splitMargin) * (obj.parallels - 2);
-
-                                        }
-                                    }
-                                })
-                            } else if (index > 0) {
-                                var matched = false;
-                                //console.log("Not split " + item.name);
-                                var mIndex = -1;
-                                coords.map(function (obj) {
-
-                                    if (obj.next == item.name && coords[index].left <= obj.left) {
-                                        //console.log("Matched for " + JSON.stringify(obj) + " " + item.name);
-                                        coords[index].left = obj.left + margin + rectW;
-                                        coords[index].parent = obj.actual;
-                                        if (!matched) {
-                                            //console.log("set top " + obj.top);
-                                            coords[index].top = obj.top;
-                                        }
-                                        matched = true;
+                                if (obj.name == splitRegex.exec(item.name)[1]) {
+                                    obj.parallels = obj.parallels + 1;
+                                    coords[index].parent = obj.actual;
+                                    coords[index].left = obj.left + rectW + margin;
+                                    if (obj.parallels == 1) {
+                                        coords[index].top = obj.top - rectH / 2 - splitMargin / 2;
 
                                     }
-                                })
+                                    else if (obj.parallels == 2) {
+                                        coords[index].top = obj.top + rectH / 2 + splitMargin / 2;
+                                    }
+                                    else if (obj.parallels % 2 == 0) {
+                                        coords[index].top = obj.top + rectH / 2 + splitMargin / 2 + (rectH + splitMargin) * (obj.parallels - 3);
 
+                                    } else if (obj.parallels % 2 != 0) {
+                                        coords[index].top = obj.top - rectH / 2 - splitMargin / 2 - (rectH + splitMargin) * (obj.parallels - 2);
 
-                            }
-
-
-                            var jobName;
-
-                            var host;
-
-                            if (item.job) {
-                                scope.jobPaths.push(item.job.path);
-                                jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
-                                jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
-                                jobName = '<span><i class="fa fa-file1"></i><span class="">' + jobName + '</span></span>';
-                                host = '<div class="text-left text-muted p-t-xs ">' +
-                                    '<span id="' + 'ppc' + item.name + '" class="show-inline"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                                    '<span id="' + 'plk' + item.name + '" class="pull-right show-inline"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
-                                    '</div>';
-                            } else if (item.jobChain) {
-                                jobName = '<span><i class="fa fa-list"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
-                            }
-
-                            var nodeName = item.name;
-
-
-                            nodeName = nodeName.length > 26 ? nodeName.substring(0, 26) + '..' : nodeName;
-
-
-                            // //console.log("For item " + item.name + " " + pLeft + " " + pTop);
-                            var chkId = 'chk' + item.name.replace(':', '__');
-                            var btnId1 = 'btn1' + item.name.replace(':', '__');
-                            var btnId2 = 'btn2' + item.name.replace(':', '__');
-                            var btnId3 = 'btn3' + item.name.replace(':', '__');
-                            var btnId4 = 'btn4' + item.name.replace(':', '__');
-                            var btnId5 = 'btn5' + item.name.replace(':', '__');
-                            var btnId6 = 'btn6' + item.name.replace(':', '__');
-                            var op1 = "button.stopNode";
-                            var op2 = "button.skipNode";
-                            var op3 = "button.stopJob";
-                            var op5 = "button.stopNode";
-                            var op6 = "button.skipNode";
-                            var op1Cls = "text-hover-color";
-                            var op2Cls = "";
-                            var op3Cls = "";
-                            var op4Cls = "";
-                            var op5Cls = "";
-                            var op6Cls = "";
-
-
-                            item.state = item.state || {};
-                            item.job.state = item.job.state || {};
-                            item.state._text = item.state._text || "ACTIVE";
-                            item.job.state._text = item.job.state._text || "ACTIVE";
-                            //item.state._text = "stopped";
-                            if (item.state._text.toLowerCase() != "active") {
-                                if (item.state._text.toLowerCase() == "skipped") {
-                                    op2 = "button.unskipNode";
-                                    op6 = "button.unskipNode";
-
-                                } else if (item.state._text.toLowerCase() == "stopped") {
-                                    op1 = "button.unstopNode";
-                                    op5 = "button.unstopNode";
-                                    op1Cls = "";
+                                    }
                                 }
+                            })
+                        } else if (index > 0) {
+                            var matched = false;
+                            var mIndex = -1;
+                            coords.map(function (obj) {
 
-                            } else {
-                                if (item.job.state._text.toLowerCase() == "running") {
-                                } else if (item.job.state._text.toLowerCase() == "pending") {
-                                } else if (item.job.state._text.toLowerCase() == "stopped") {
+                                if (obj.next == item.name && coords[index].left <= obj.left) {
+                                    coords[index].left = obj.left + margin + rectW;
+                                    coords[index].parent = obj.actual;
+                                    if (!matched) {
+                                        coords[index].top = obj.top;
+                                    }
+                                    matched = true;
 
-                                    op3 = "button.unstopJob";
                                 }
-                            }
+                            })
+                        }
 
-                            var btnClass = 'fa fa-stop';
-                            if (op1 == 'button.unstopNode') {
-                                btnClass = 'fa fa-play';
-                            }
+                        var jobName;
 
-                            if (op1 == "button.stopNode" && !scope.permission.JobChain.stopJobChainNode) {
-                                op1Cls = op1Cls + " disable-link";
-                                op5Cls = op5Cls + " disable-link";
-                            } else if (op1 == "button.unstopNode" && !scope.permission.JobChain.processJobChainNode) {
-                                op1Cls = op1Cls + " disable-link";
-                                op5Cls = op5Cls + " disable-link";
-                            }
+                        var host;
 
-                            if (op2 == "button.skipNode" && !scope.permission.JobChain.skipJobChainNode) {
-                                op2Cls = op2Cls + " disable-link";
-                                op6Cls = op6Cls + " disable-link";
-                            } else if (op2 == "button.unskipNode" && !scope.permission.JobChain.processJobChainNode) {
-                                op2Cls = op2Cls + " disable-link";
-                                op6Cls = op6Cls + " disable-link";
-                            }
-
-                            if (op3 == "button.stopJob" && !scope.permission.Job.stop) {
-                                op3Cls = op3Cls + " disable-link";
-                            } else if (op3 == "button.unstopJob" && !scope.permission.Job.unstop) {
-                                op3Cls = op3Cls + " disable-link";
-                            }
-
-                            if (!scope.permission.JobChain.view.configuration) {
-                                op4Cls = op4Cls + " disable-link";
-                            }
-
-                            rectangleTemplate = rectangleTemplate +
-                                '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect border-grey" >' +
-                                '<div style="padding: 10px;padding-bottom: 5px"><div class="block-ellipsis-job"><span class="md-check md-check1" >' +
-                                '<input type="checkbox"  id="' + chkId + '">' +
-                                '<i class="ch-purple"></i>' +
-                                '<span ><i></i></span><span class="_500 block-ellipsis-job" title="' + item.name + '">' + nodeName + '</span></span>' +
-                                '<div class="btn-group dropdown pull-right abt-dropdown "><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
-                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a id="' + btnId4 + '" class="dropdown-item ' + op4Cls + '" translate>button.showConfiguration</a>' +
-                                '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color ' + op3Cls + '" translate>' + op3 + '</a>' +
-                                '<a href="" id="' + btnId5 + '"  class="dropdown-item bg-hover-color ' + op5Cls + '" translate>' + op5 + '</a>' +
-                                '<a href="" id="' + btnId6 + '"  class="dropdown-item' + op6Cls + '" translate>' + op6 + '</a>' +
-                                '</div></div></div>'
-                                + '<div class="text-left text-muted p-t-sm block-ellipsis-job"><a class="text-hover-primary" title="' + item.job.path + '" id="navigateToJobBtn_' + item.name + '">' + jobName +
-                                '</a></div>' +
-                                host +
-                                '</div >' +
-                                '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
-                                '<a href class="pull-left w-half ' + op1Cls + '" id="' + btnId1 + '"><i class="' + btnClass + '" ></i> <span translate>' + op1 + '</span></a>' +
-                                '<a href class=" pull-right text-right w-half ' + op2Cls + ' " id="' + btnId2 + '"><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
-                                '</div>' +
+                        if (item.job) {
+                            scope.jobPaths.push(item.job.path);
+                            jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
+                            //jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
+                            jobName = '<span>' + jobName + '</span>';
+                            host = '<div class="text-left text-muted p-t-xs ">' +
+                                '<span id="' + 'ppc' + item.name + '" class="hide"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
+                                '<span id="' + 'plk' + item.name + '" class="pull-right hide"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
                                 '</div>';
-                        
+                        } else if (item.jobChain) {
+                            jobName = '<span><i class="fa fa-list"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
+                        }
+
+                        var nodeName = item.name;
+
+                       // nodeName = nodeName.length > 26 ? nodeName.substring(0, 26) + '..' : nodeName;
+
+                        var chkId = 'chk' + item.name.replace(':', '__');
+                        var btnId1 = 'btn1' + item.name.replace(':', '__');
+                        var btnId2 = 'btn2' + item.name.replace(':', '__');
+                        var btnId3 = 'btn3' + item.name.replace(':', '__');
+                        var btnId4 = 'btn4' + item.name.replace(':', '__');
+                        var btnId5 = 'btn5' + item.name.replace(':', '__');
+                        var btnId6 = 'btn6' + item.name.replace(':', '__');
+                        var op1 = "button.stopNode";
+                        var op2 = "button.skipNode";
+                        var op3 = "button.stopJob";
+                        var op5 = "button.stopNode";
+                        var op6 = "button.skipNode";
+                        var op1Cls = "text-hover-color";
+                        var op2Cls = "";
+                        var op3Cls = "";
+                        var op4Cls = "";
+                        var op5Cls = "";
+                        var op6Cls = "";
+
+                        item.state = item.state || {};
+                        item.job.state = item.job.state || {};
+                        item.state._text = item.state._text || "ACTIVE";
+                        item.job.state._text = item.job.state._text || "ACTIVE";
+                        //item.state._text = "stopped";
+                        if (item.state._text.toLowerCase() != "active") {
+                            if (item.state._text.toLowerCase() == "skipped") {
+                                op2 = "button.unskipNode";
+                                op6 = "button.unskipNode";
+
+                            } else if (item.state._text.toLowerCase() == "stopped") {
+                                op1 = "button.unstopNode";
+                                op5 = "button.unstopNode";
+                                op1Cls = "";
+                            }
+
+                        } else {
+                            if (item.job.state._text.toLowerCase() == "running") {
+                            } else if (item.job.state._text.toLowerCase() == "pending") {
+                            } else if (item.job.state._text.toLowerCase() == "stopped") {
+
+                                op3 = "button.unstopJob";
+                            }
+                        }
+
+                        var btnClass = 'fa fa-stop';
+                        if (op1 == 'button.unstopNode') {
+                            btnClass = 'fa fa-play';
+                        }
+
+                        if (op1 == "button.stopNode" && !scope.permission.JobChain.stopJobChainNode) {
+                            op1Cls = op1Cls + " disable-link";
+                            op5Cls = op5Cls + " disable-link";
+                        } else if (op1 == "button.unstopNode" && !scope.permission.JobChain.processJobChainNode) {
+                            op1Cls = op1Cls + " disable-link";
+                            op5Cls = op5Cls + " disable-link";
+                        }
+
+                        if (op2 == "button.skipNode" && !scope.permission.JobChain.skipJobChainNode) {
+                            op2Cls = op2Cls + " disable-link";
+                            op6Cls = op6Cls + " disable-link";
+                        } else if (op2 == "button.unskipNode" && !scope.permission.JobChain.processJobChainNode) {
+                            op2Cls = op2Cls + " disable-link";
+                            op6Cls = op6Cls + " disable-link";
+                        }
+
+                        if ((op3 == "button.stopJob" && !scope.permission.Job.stop) || (item.job.configurationStatus && item.job.configurationStatus.severity==2)) {
+                            op3Cls = op3Cls + " disable-link";
+                        } else if ((op3 == "button.unstopJob" && !scope.permission.Job.unstop) || (item.job.configurationStatus && item.job.configurationStatus.severity==2)) {
+                            op3Cls = op3Cls + " disable-link";
+                        }
+                        if ((item.job.configurationStatus && item.job.configurationStatus.severity==2)) {
+                            op4Cls = op4Cls + " disable-link";
+                        }
+
+                        if (!scope.permission.JobChain.stopJobChainNode && !scope.permission.JobChain.processJobChainNode) {
+                            op1Cls = op1Cls + " hide";
+                            op5Cls = op5Cls + " hide";
+                        }
+
+                        if (!scope.permission.JobChain.skipJobChainNode && !scope.permission.JobChain.processJobChainNode) {
+                            op2Cls = op2Cls + " hide";
+                            op6Cls = op6Cls + " hide";
+                        }
+
+                        if (!scope.permission.Job.stop && !scope.permission.Job.unstop) {
+                            op3Cls = op3Cls + " hide";
+                        }
+                        if (!scope.permission.Job.view.configuration) {
+                            op4Cls = op4Cls + " hide";
+                        }
+
+                        var permissionClass = 'hide';
+                        var permissionClassDropDown = 'hide';
+                        var mL;
+                        if (scope.permission.Job.stop || scope.permission.Job.unstop || scope.permission.JobChain.stopJobChainNode
+                            || scope.permission.JobChain.processJobChainNode || scope.permission.JobChain.skipJobChainNode || scope.permission.JobChain.processJobChainNode) {
+                            permissionClass = 'show-line';
+                            mL = 'm-l-md';
+                        }
+
+                        if (scope.permission.Job.view.configuration || scope.permission.Job.stop || scope.permission.Job.unstop || scope.permission.JobChain.stopJobChainNode
+                            || scope.permission.JobChain.processJobChainNode || scope.permission.JobChain.skipJobChainNode || scope.permission.JobChain.processJobChainNode) {
+                            permissionClassDropDown = 'show-line';
+                            mL = 'm-l-md';
+                        }
+                        var msg ='';
+                        if(item.job.configurationStatus && item.job.configurationStatus.message){
+                            msg=item.job.configurationStatus.message;
+                        }
+
+                        rectangleTemplate = rectangleTemplate +
+                            '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + coords[index].left + 'px;top:' + coords[index].top + 'px;"  class="rect border-grey" >' +
+                            '<div style="padding: 10px;padding-bottom: 5px">' +
+                            '<div class="block-ellipsis-job">' +
+                            '<label class="md-check md-check1 pos-abt ' + permissionClass + '" ><input type="checkbox"  id="' + chkId + '"><i class="ch-purple"></i></label>' +
+                            '<span class="_500 block-ellipsis ' + mL + '" title="' + item.name + '">' + nodeName + '</span>' +
+                            '<div class="btn-group dropdown pull-right abt-dropdown ' + permissionClassDropDown + '"><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
+                            '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                            '<a id="' + btnId4 + '" class="dropdown-item ' + op4Cls + '" translate>button.showConfiguration</a>' +
+                            '<a href="" id="' + btnId3 + '"  class="dropdown-item bg-hover-color ' + op3Cls + '" translate>' + op3 + '</a>' +
+                            '<a href="" id="' + btnId5 + '"  class="dropdown-item bg-hover-color ' + op5Cls + '" translate>' + op5 + '</a>' +
+                            '<a href="" id="' + btnId6 + '"  class="dropdown-item' + op6Cls + '" translate>' + op6 + '</a>' +
+                            '</div></div></div>'
+                            + '<div class="text-left text-muted p-t-sm block-ellipsis-job"><a class="text-hover-primary" title="' + item.job.path + '" id="navigateToJobBtn_' + item.name + '">' + jobName +
+                            '</a><div class="text-sm crimson" translate>'+msg+ '</div></div>' +
+                            host +
+                            '</div >' +
+                            '<div style="position: absolute; bottom: 0; padding: 6px 10px; background: #f5f7fb; border-top: 2px solid #eeeeee;  width: 100%; ">' +
+                            '<a href class="pull-left w-half ' + op1Cls + '" id="' + btnId1 + '"><i class="' + btnClass + '" ></i> <span translate>' + op1 + '</span></a>' +
+                            '<a href class=" pull-right text-right w-half ' + op2Cls + ' " id="' + btnId2 + '"><i class="fa fa-step-forward"></i>  <span translate>' + op2 + '</span> </a>' +
+                            '</div>' +
+                            '</div>';
+
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
                         }
 
-
                         if (index == scope.jobChainData.nodes.length - 1) {
-                            //console.log("At last " + coords[index].left);
                             drawEndNodes(index);
                         }
-
 
                     });
 
@@ -624,7 +639,6 @@
                         });
 
                         angular.forEach(scope.jobChainData.endNodes, function (endNode, index) {
-                            //console.log("Drawing error nodes01");
                             scope.endNodes.push(endNode.name);
                             var item = scope.jobChainData.endNodes[index];
                             coords[length].left = left + rectW + margin;
@@ -632,9 +646,7 @@
 
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
                                 coords[length].top = top + rectH + 50 + rectH / 2 - avatarW / 2;
-                                //console.log("Present top "+coords[length].top);
                                 coords.map(function (obj) {
-                                    //console.log("Object top "+obj.top);
                                     if (coords[length].top < obj.top) {
                                         coords[length].top = obj.top + rectH + margin;
                                     }
@@ -675,7 +687,7 @@
 
                         });
                         height = window.innerHeight - 300;
-                        /*console.log("height .. " + height);*/
+
                         rectangleTemplate = '<div id="mainContainer"  style="position: relative;min-height: ' + height + 'px; height: ' + height + 'px;width: 100%;overflow: auto;" ><div id="zoomCn">' + rectangleTemplate + '</div></div>';
                         var compiledHtml = $compile(rectangleTemplate)(scope);
                         element.append(compiledHtml);
@@ -805,7 +817,7 @@
 
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
-                            //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
+
                             node.style['top'] = top - div2.clientHeight - 3 + 'px';
                             node.style['left'] = div2.offsetLeft + div2.clientWidth / 2 + 'px';
                             node.style['width'] = left - div1.clientWidth / 2 - 15 + 'px';
@@ -814,7 +826,7 @@
 
                             node = document.createElement('div');
                             node.setAttribute('class', 'h-line next-link');
-                            //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
+
                             node.style['top'] = top - div2.clientHeight - 3 + 'px';
                             node.style['left'] = div2.offsetLeft + div2.clientWidth / 2 + 'px';
                             node.style['width'] = 2 + 'px';
@@ -834,19 +846,16 @@
                         }
 
                         angular.forEach(vm.jobChainData.nodes, function (item, index) {
-                            //  console.log("Node "+item.name);
+
                             var div1 = document.getElementById(item.name);
                             var div2 = document.getElementById(item.nextNode);
                             var errNode = document.getElementById(item.errorNode);
                             pDiv = undefined;
-                            // console.log("Item " + item.name);
+
                             if (index > 0 && splitRegex.test(item.name)) {
                                 vm.coords.map(function (obj) {
-                                    //console.log(" obj "+JSON.stringify(obj)+" "+item.name);
                                     if (obj.actual == item.name) {
-                                        //console.log("Previous found for " + obj.name + " " + item.name);
                                         pDiv = document.getElementById(obj.parent);
-                                        //console.log("Previous found for " + item.name + " " + pDiv);
                                     }
                                 })
                             }
@@ -861,12 +870,12 @@
                                 x2 = div2.offsetLeft;
                                 y2 = div2.offsetTop;
                             }
-                            //console.log("top: " + y1 + " left: " + x1 + " width: " + div1.clientWidth + " height: " + div2.clientHeight);
+
                             if (index == 0) {
                                 var avatar = document.getElementById(vm.startId);
                                 node = document.createElement('div');
                                 node.setAttribute('class', 'h-line next-link');
-                                //console.log("Avatar left " + avatar.clientWidth + " " + avatar.offsetLeft);
+
                                 node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
                                 node.style['left'] = 32 + 'px';
                                 node.style['width'] = div1.offsetLeft - avatar.offsetLeft - 32 + 'px';
@@ -908,11 +917,11 @@
                                 mainContainer.appendChild(node);
 
                                 node = document.createElement('i');
-                                node.setAttribute('id', 'chevron');
+                                node.setAttribute('id', 'chevron' + item.name);
                                 node.setAttribute('class', 'fa fa-chevron-down');
                                 mainContainer.appendChild(node);
 
-                                var i = document.getElementById('chevron');
+                                var i = document.getElementById('chevron' + item.name);
                                 i.style['position'] = 'absolute';
                                 i.style['top'] = top + height - vm.borderTop - i.clientHeight / 2 + 'px';
                                 i.style['left'] = left - i.clientWidth / 2 + 'px';
@@ -924,7 +933,7 @@
                             if (div2) {
 
                                     if (pDiv && pDiv.offsetTop > div1.offsetTop) {
-                                        //console.log("Previous is below for " + item.name);
+
                                         var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                         var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                         width = vm.margin / 2;
@@ -957,7 +966,6 @@
                                         node.style['height'] = '2px';
                                         mainContainer.appendChild(node);
                                     } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
-                                        //console.log("Previous is above for " + item.name);
                                         var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                         var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                         var width = vm.margin / 2;
@@ -994,8 +1002,6 @@
                                     }
 
                                     if (div1.offsetTop > div2.offsetTop) {
-                                        // console.log("Drawing next for02 " + item.name + " " + item.nextNode);
-                                        //console.log("Offset is lesser " + div1.id);
                                         var top = div2.offsetTop + div2.clientHeight / 2;
                                         var left = div2.offsetLeft - vm.margin / 2;
                                         var width = vm.margin / 2;
@@ -1032,7 +1038,6 @@
                                         mainContainer.appendChild(node);
 
                                     } else if (div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
-                                        //console.log("Drawing next for01 " + item.name + " " + item.nextNode);
                                         var top = div1.offsetTop + div1.clientHeight / 2;
                                         var left = div1.offsetLeft + div1.clientWidth;
                                         var width = div2.offsetLeft - left - vm.margin / 2;
@@ -1077,7 +1082,6 @@
                                         if (vm.jobChainData.nodes.length - 1 > index && parallels > 0) {
 
                                         } else {
-                                            //console.log("Drawing next for " + item.name + " " + item.nextNode);
                                             node = document.createElement('div');
                                             node.setAttribute('class', 'h-line next-link');
                                             node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
@@ -1093,11 +1097,7 @@
 
 
                             if (errNode) {
-                              //  console.log("Found err Node for " + item.name);
                                 if (div1.offsetTop > errNode.offsetTop) {
-                                    //console.log("Drawing err for02 " + item.name + " " + item.nextNode);
-                                    //console.log("Offset is lesser " + div1.id);
-
                                     var top = errNode.offsetTop + errNode.clientHeight / 2;
                                     var left = errNode.offsetLeft - vm.margin / 2;
                                     var width = vm.margin / 2;
@@ -1134,8 +1134,6 @@
                                     mainContainer.appendChild(node);
 
                                 } else if (errNode.offsetTop + errNode.clientHeight > div1.offsetTop + div1.clientHeight) {
-                                    //console.log("Drawing next for01 " + item.name + " " + item.nextNode);
-                                    //console.log("Offset is greater " + div1.id);
                                     var top = div1.offsetTop + div1.clientHeight + vm.border;
                                     var left = div1.offsetLeft + div1.clientWidth / 2;
                                     var width = errNode.offsetLeft - left - vm.margin / 2;
@@ -1186,7 +1184,6 @@
 
 
                                 } else {
-                                    //console.log("Offset is equal " + div1.id);
                                      var node1=div1;
                                     var node2=errNode;
                                     if(div1.offsetLeft>errNode.offsetLeft){
@@ -1232,20 +1229,15 @@
                                 }
                             }
 
-
-                           // console.log("It's here " + item.name);
                             chkId = 'chk' + item.name.replace(':', '__');
 
                             var chk = document.getElementById(chkId);
                             if (chk)
                                 chk.addEventListener('change', function () {
-                                    //console.log("It's here");
                                     if (chk.checked) {
-                                        //console.log("It's checked");
                                         vm.onAdd({$item: item});
                                         vm.selectedNodes.push(item);
                                     } else {
-                                        //console.log("It's unchecked");
                                         vm.onRemove({$item: item});
                                         angular.forEach(vm.selectedNodes, function (node, index) {
                                             if (node.name == item.name) {
@@ -1254,8 +1246,6 @@
                                         })
                                     }
                                 });
-
-                            //console.log("Name " + item.name + " Replace " + item.name.replace(':', '__'));
 
                             var btnId1 = 'btn1' + item.name.replace(':', '__');
 
@@ -1414,12 +1404,10 @@
 
 
                     function getInfo(index) {
-                        //console.log("For index " + index);
                         var node = vm.jobChainData.nodes[index];
-                        if (node.job && node.job.path) {
+                        if (node.job && node.job.path && (!node.job.configurationStatus || node.job.configurationStatus.severity !=2)) {
                             vm.getJobInfo({filter: {compact: true, job: node.job.path}}).then(function (res) {
 
-                                //console.log("Name " + node.name);
                                 var span = document.getElementById('lk' + node.name);
                                 var pSpan = document.getElementById('plk' + node.name);
                                 if (res.job.locks && res.job.locks.length > 0) {
@@ -1431,10 +1419,9 @@
                                         span.textContent = node.locks[0].path.substring(node.locks[0].path.lastIndexOf('/') + 1, node.locks[0].path.length)
                                             + extra;
                                     } else if (node.locks[0] && node.locks[0].path) {
-                                        var extra = node.locks.length - 1 > 0 ? ' and ' + node.locks.length + ' more' : ''
+                                        var extra = node.locks.length - 1 > 0 ? ' and ' + node.locks.length + ' more' : '';
                                         span.textContent = node.locks[0].path + extra;
                                     }
-                                    //console.log("Lock span " + span.textContent);
 
                                 } else {
                                     pSpan.className = pSpan.className.replace("show-inline", "hide");
@@ -1451,7 +1438,6 @@
                                     } else if (node.processClass) {
                                         span01.textContent = node.processClass;
                                     }
-//console.log("Pc span " + span01.textContent);
                                 } else {
                                     pSpan01.className = pSpan01.className.replace("show-inline", "hide");
                                     span01.textContent = '--';
@@ -1473,10 +1459,8 @@
                     vm.$watch("showErrorNodes", toggleErrorNodes);
 
                     function toggleErrorNodes() {
-                        //console.log("Show error nodes " + vm.showErrorNodes);
                         var errorElms = document.getElementsByClassName("error-link");
                         var errorNodes = document.getElementsByClassName("error-node");
-                        //console.log("Length " + errorElms.length);
                         if (vm.showErrorNodes) {
                             angular.forEach(errorElms, function (elm) {
                                 elm.style['display'] = 'block';
@@ -1496,7 +1480,6 @@
 
 
                     vm.$on('reloadJobChain', function (event, args) {
-                        //console.log("Updating job chain ");
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
                         if (vm.jobChainData)
                             var temp = vm.jobChainData.nodes;
@@ -1506,7 +1489,7 @@
 
                         angular.forEach(vm.jobChain.nodes, function (item, index1) {
                             angular.forEach(vm.jobChainData.nodes, function (item2, index2) {
-                                if (item.name == item2.name) {
+                                if (item2 && (item.name == item2.name)) {
                                     vm.jobChainData.nodes[index2] = item;
                                 }
                                 if (index1 == vm.jobChain.nodes.length - 1 && vm.jobChainData.nodes.length - 1 == index2) {
@@ -1588,7 +1571,7 @@
                                             btn1.className = btn1.className.replace(/disable-link/g, '');
                                             btn5.className = btn5.className.replace(/disable-link/g, '');
                                         }
-                                        // console.log("btn1 class name " + btn1.className);
+
                                         btn2.innerHTML = '<i class="fa fa-step-forward"></i> ' + gettextCatalog.getString('button.skipNode');
                                         btn2.title = gettextCatalog.getString('button.skipNode');
                                         btn6.innerHTML = gettextCatalog.getString('button.skipNode');
@@ -1640,23 +1623,24 @@
                                         btn3.className = btn3.className.replace(/disable-link/g, '');
                                     }
 
+                                    if (node.job && node.job.state) {
+                                        if (node.job.state._text.toLowerCase() == "running") {
+                                            rect.className = rect.className.replace(/border-.*/, 'border-gey');
+                                        } else if (node.job.state._text.toLowerCase() == "pending") {
+                                            rect.className = rect.className.replace(/border-.*/, 'border-grey');
+                                        } else if (node.job.state._text.toLowerCase() == "stopped") {
+                                            rect.className = rect.className.replace(/border-.*/, 'border-red');
+                                            btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
+                                            btn3.title = gettextCatalog.getString('button.unstopJob');
+                                            rect.className = rect.className.replace(/border-.*/, 'border-red');
+                                            btn3.className = btn3.className.replace('bg-hover-color', '');
+                                            if (!vm.permission.Job.unstop) {
+                                                btn3.className = btn3.className + " disable-link";
+                                            } else {
+                                                btn3.className = btn3.className.replace(/disable-link/g, '');
+                                            }
 
-                                    if (node.job.state._text.toLowerCase() == "running") {
-                                        rect.className = rect.className.replace(/border-.*/, 'border-gey');
-                                    } else if (node.job.state._text.toLowerCase() == "pending") {
-                                        rect.className = rect.className.replace(/border-.*/, 'border-grey');
-                                    } else if (node.job.state._text.toLowerCase() == "stopped") {
-                                        rect.className = rect.className.replace(/border-.*/, 'border-red');
-                                        btn3.innerHTML = gettextCatalog.getString('button.unstopJob');
-                                        btn3.title = gettextCatalog.getString('button.unstopJob');
-                                        rect.className = rect.className.replace(/border-.*/, 'border-red');
-                                        btn3.className = btn3.className.replace('bg-hover-color', '');
-                                        if (!vm.permission.Job.unstop) {
-                                            btn3.className = btn3.className + " disable-link";
-                                        } else {
-                                            btn3.className = btn3.className.replace(/disable-link/g, '');
                                         }
-
                                     }
                                 }
 
@@ -1668,7 +1652,6 @@
 
 
                             if (node.orders && node.orders.length > 0) {
-                                //console.log("In get orders 02 ");
                                 addLabel(node.orders, node.name);
                             }
                         });
@@ -1745,16 +1728,21 @@
 
                                     }
                                     var container = document.getElementById('lbl-order-' + order.state);
+                                    var permissionClass = 'hide';
+
+                                    if (vm.permission.Order.view.configuration || (vm.permission.Order.view.orderLog && order.historyId) || vm.permission.Order.start || vm.permission.Order.setState
+                                        || vm.permission.Order.setRunTime || vm.permission.Order.suspend || vm.permission.Order.resume
+                                        || vm.permission.Order.reset || vm.permission.Order.removeSetback || vm.permission.Order.delete.permanent) {
+                                        permissionClass = 'show-line';
+                                    }
+
                                     if (container && container.childNodes.length > 0) {
-                                        //console.log("Found container and child nodes "+container.childNodes.length);
-                                        /*container.style['top'] = node.offsetTop - container.clientHeight + 'px';*/
-                                        if (order.processingState._text == 'RUNNING') {
+                                        if (order.processingState && order.processingState._text == 'RUNNING') {
                                             node.className = node.className.replace(/border-.*/, 'border-green');
                                         }
-
                                         var label = document.createElement('div');
                                         var color = '';
-                                        if (order.processingState.severity > -1) {
+                                        if (order.processingState && order.processingState.severity > -1) {
                                             color = colorFunction(order.processingState.severity);
                                         }
                                         var diff = 0;
@@ -1777,7 +1765,7 @@
                                             '<span class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
                                             + '<span id="date-' + order.orderId + '"  class="show-block v-m text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + ' (' + diff + ')</span>'
                                             + '</span>'
-                                            + '<div class="btn-group dropdown"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                            + '<div class="btn-group dropdown ' + permissionClass + '"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                             + '<div class="dropdown-menu dropdown-ac" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2 + 'px; left:' + node.offsetLeft * 1.2 + 'px !important">'
                                             + '<a class="hide" id="log-' + order.orderId + '" >' + gettextCatalog.getString("button.viewLog") + '</a>'
                                             + '<a class="hide" id="configuration-' + order.orderId + '">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
@@ -1842,7 +1830,7 @@
                                             '<span class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
                                             + '<span id="date-' + order.orderId + '" class="show-block v-m text-success text-xs"> ' + moment(time).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + ' (' + diff + ')</span>'
                                             + '</span>'
-                                            + '<div class="btn-group dropdown"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                            + '<div class="btn-group dropdown ' + permissionClass + '"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                             + '<div class="dropdown-menu dropdown-ac" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2 + 'px; left:' + node.offsetLeft * 1.2 + 'px !important">'
                                             + '<a class="hide" id="log-' + order.orderId + '">' + gettextCatalog.getString("button.viewLog") + '</a>'
                                             + '<a class="hide" id="configuration-' + order.orderId + '">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
@@ -2051,7 +2039,6 @@
                     }
 
                     vm.$on('bulkOperationCompleted', function (event, args) {
-                        //console.log("Bulk operation completed " + JSON.stringify(args));
                         if (args.operation == 'stopJobs' && args.status == 'success') {
                             angular.forEach(vm.selectedNodes, function (node) {
                                 var btnId3 = 'btn3' + node.name.replace(':', '__');
@@ -2123,7 +2110,6 @@
 
                         angular.forEach(vm.selectedNodes, function (node) {
                             var chkId = 'chk' + node.name.replace(':', '__');
-                            //console.log("chkId " + chkId);
                             $(chkId).attr("checked", false);
                         });
                         vm.selectedNodes = [];

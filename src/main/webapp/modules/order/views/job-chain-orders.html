@@ -20,7 +20,9 @@
                                     </label>
                                     <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start}">
                                         <span uib-tooltip="{{order.title}}">{{order.orderId}}</span></div>
-                                    <div class="btn-group dropdown pull-right abt-dropdown ">
+                                    <div class="btn-group dropdown pull-right abt-dropdown " ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
+                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
+                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
                                         <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                             <i class="text fa fa-ellipsis-h"></i></a>
 
@@ -160,7 +162,7 @@
                                             <i ng-show="orderFilters.filter.sortBy == 'nextStartTime' && orderFilters.reverse"
                                                class="fa fa-caret-down "></i></a>
                                         </th>
-                                        <th class="noExl"></th>
+
                                     </tr>
                                     </thead>
                                     <tbody ng-repeat="order in orders | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" ng-class="{'light-bg':showLogPanel == order}">
@@ -194,7 +196,9 @@
                                                     <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                             </td>
-                                            <td class="noExl">
+                                            <td class="noExl" ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
+                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
+                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
                                                 <div class="btn-group dropdown ">
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>

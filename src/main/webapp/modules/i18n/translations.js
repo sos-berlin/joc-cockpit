@@ -60,6 +60,9 @@
             if (!$window.localStorage.$SOS$ISNEWWINDOW) {
                 $window.localStorage.$SOS$ISNEWWINDOW = 'newWindow';
             }
+            if(!$window.localStorage.$SOS$SHOWTASKS){
+                $window.localStorage.$SOS$SHOWTASKS = true;
+            }
 
 
             if (!$window.localStorage.$SOS$EVENTFILTER) {

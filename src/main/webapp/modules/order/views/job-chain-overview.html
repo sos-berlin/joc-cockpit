@@ -102,9 +102,10 @@
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
-                            <th>
+                            <th ng-if="permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
+                                    || permission.JobChain.processJobChainNode || permission.JobChain.skipJobChainNode || permission.JobChain.processJobChainNode">
                                 <label class="md-check lg-check">
-                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-click="checkAll1()"><i
+                                    <input type="checkbox" ng-model="allCheck1.checkbox" ng-click="checkAllJobChains()"><i
                                         class="primary"></i>
                                     </label>
                                 </th>
@@ -114,12 +115,13 @@
                                 <th translate>label.nodeStatus</th>
                                 <th translate>label.nextNode</th>
                                 <th translate>label.errorNode</th>
-                                <th></th>
+
                             </tr>
                             </thead>
                             <tbody >
                             <tr ng-repeat="node in jobChain.nodes">
-                                <td width="40">
+                                <td width="40" ng-if="permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
+                                    || permission.JobChain.processJobChainNode || permission.JobChain.skipJobChainNode || permission.JobChain.processJobChainNode">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object1.nodes"
                                                data-checklist-value="node" data-checklist-comparator=".name" ><i class="primary"></i>
@@ -156,7 +158,9 @@
                                                 </span>
                                             </span>
 
-                                            <div class="btn-group dropdown ">
+                                            <div class="btn-group dropdown " ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
+                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
+                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
                                                 <button type="button" class="btn-drop more-option-h"
                                                         data-toggle="dropdown"><i
                                                         class="fa fa-ellipsis-h"></i></button>
@@ -265,26 +269,29 @@
                                         </tbody>
                                     </table>
                                 </td>
-                                <td><span class="label" ng-class="bgColorFunction(node.job.state.severity)"
-                                          ng-bind="node.job.state._text | translate"></span></td>
+                                <td>
+                                    <span class="label" ng-if="node.job.state" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span>
+                                    <span class="label" ng-if="node.job.configurationStatus" ng-class="bgColorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>
+                                </td>
                                 <td><span class="label" ng-class="bgColorFunction(node.state.severity)"
                                           ng-bind="node.state._text | translate"></span></td>
                                 <td ng-bind="node.nextNode"></td>
                                 <td ng-bind="node.errorNode"></td>
-                                <td width="40">
+                                <td width="40" ng-if="permission.Job.view.configuration || permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
+                                    || permission.JobChain.processJobChainNode || permission.JobChain.skipJobChainNode || permission.JobChain.processJobChainNode">
                                     <div class="btn-group dropdown">
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28 "
                                              role="menu">
-                                            <a class="dropdown-item" ng-click="showConfiguration('job',node.job.path,node.job.name)" translate>button.showConfiguration</a>
-                                            <a class="dropdown-item bg-hover-color"
+                                            <a class="dropdown-item" ng-class="{'disable-link':node.job.configurationStatus.severity ==2}" ng-if="permission.Job.view.configuration" ng-click="showConfiguration('job',node.job.path,node.job.name)" translate>button.showConfiguration</a>
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':node.job.configurationStatus.severity ==2}"
                                                ng-if="node.job.state._text.toLowerCase() != 'stopped' && permission.Job.stop"
                                                ng-click="stopJob(node)"
                                                translate>button.stopJob</a>
                                             <a class="dropdown-item" ng-if="node.job.state._text.toLowerCase() == 'stopped' && permission.Job.unstop"
-                                               ng-click="unstopJob(node)" translate>button.unstopJob</a>
+                                               ng-click="unstopJob(node)" ng-class="{'disable-link':node.job.configurationStatus.severity ==2}" translate>button.unstopJob</a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="node.state._text.toLowerCase() != 'stopped' && permission.JobChain.stopJobChainNode"
                                                ng-click="stopNode(node,jobChain)" translate>button.stopNode</a>
@@ -316,7 +323,7 @@
 
                     </div>
 
-                <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t p-b-md h6 text-uppercase" translate>
                         message.noNodesFound
                     </div>
                 </div>
@@ -366,7 +373,7 @@
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <div ng-if="orderHistory.history.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                    <div ng-if="orderHistory.history.length==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
                                         message.noJobChainHistoryFound
                                     </div>
                                 </div>

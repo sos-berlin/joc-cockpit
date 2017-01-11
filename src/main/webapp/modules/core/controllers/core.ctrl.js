@@ -262,6 +262,32 @@
             $location.path('/jobChains')
         };
 
+        vm.showJob = function (job) {
+            var path = job.substring(0, job.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $rootScope.job_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/jobs')
+        };
+
+        vm.showOrderLink = function (order) {
+            var path = order.substring(0, order.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $rootScope.order_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/allOrders')
+        };
+
+
+
         vm.isEmpty = function (obj) {
             for (var key in obj) {
                 if (obj.hasOwnProperty(key))
@@ -277,20 +303,6 @@
                 scope: vm
             });
         };
-
-        vm.showJob = function (job) {
-
-            var path = job.substring(0, job.lastIndexOf('/')) || '/';
-            var name = '';
-            if (path != '/')
-                name = path.substring(path.lastIndexOf('/') + 1, path.length);
-            $rootScope.job_expand_to = {
-                name: name,
-                path: path
-            };
-            $location.path('/jobs')
-        };
-
 
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
@@ -313,7 +325,6 @@
             --count;
             vm.currentTime = moment();
             if (vm.currentTime.format("H") == "0" && resetDate) {
-                console.log("Reset Daily Plan Date");
                 $rootScope.$broadcast('resetDailyPlanDate');
                 resetDate = false;
             }
@@ -2617,8 +2628,6 @@
                                 }
                             }
                         }
-                    } else {
-                        console.log('TODO')
                     }
                 });
             }
@@ -2876,13 +2885,10 @@
                     if (run_time.monthdays.weekday && run_time.monthdays.weekday.length > 0) {
 
                         angular.forEach(run_time.monthdays.weekday, function (res1) {
-                            console.log(res1);
                             if (!angular.isArray(res1)) {
                                 if (angular.equals(res1._which, vm.updateTime.obj._which) && angular.equals(res1._day, vm.updateTime.obj._day)) {
                                     removeExistingPeriod(res1);
                                 }
-                            } else {
-                                console.log('TODO');
                             }
                         });
                     }
@@ -2919,7 +2925,6 @@
                     run_time.month = [];
                     if (temp)
                         run_time.month.push(temp);
-                    console.log('Month is not an array....')
                 } else {
 
                     angular.forEach(run_time.month, function (res) {
@@ -2998,8 +3003,6 @@
                                     } else {
                                         run_time.monthdays.weekday.push(value);
                                     }
-                                } else {
-                                    console.log('TODO')
                                 }
                             });
 
@@ -3024,8 +3027,6 @@
                                     } else {
                                         run_time.monthdays.weekday.push(value);
                                     }
-                                } else {
-                                    console.log('TODO');
                                 }
                             });
 
@@ -3717,7 +3718,6 @@
 
 
         vm.editPeriod = function (period, index) {
-            console.log(period);
             var runTime = period;
             vm.runTime = {};
 

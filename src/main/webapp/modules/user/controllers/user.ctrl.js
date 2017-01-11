@@ -132,7 +132,7 @@
         vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
         vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
-
+        vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
 
         vm.setLocale = function () {
             vm.locale = vm.perferences.locale;
@@ -156,6 +156,7 @@
         };
         vm.changePerferences = function () {
             $window.localStorage.$SOS$ISNEWWINDOW = vm.perferences.isNewWindow;
+            $window.localStorage.$SOS$SHOWTASKS = vm.perferences.showTasks;
 
             if (isNaN(parseInt(vm.perferences.maxRecords))) {
                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);

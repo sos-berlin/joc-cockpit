@@ -16,7 +16,6 @@
                             <th><span translate>label.startedAt</span></th>
                             <th><span translate>label.runningSince</span></th>
                             <th><span translate>label.nextStartTime</span></th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="order in orders | orderBy:orderId">
@@ -39,7 +38,9 @@
                                     <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                             </td>
-                            <td>
+                            <td ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
+                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
+                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
                                 <div class="btn-group dropdown ">
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>

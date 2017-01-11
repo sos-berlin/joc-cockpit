@@ -794,7 +794,10 @@
   "placeholder.setEndDate": "Entrer la date de fin",
   "placeholder.startTime": "Date de démarrage",
   "placeholder.endTime": "Date de fin",
-  "placeholder.processExecuted": "now-600, today ou 08:00am à 08:00pm",
+  "placeholder.processExecuted": "now-600,,-1h,-1d, today ou 08:00am à 08:00pm",
   "label.processExecuted": "Processus executé",
-  "label.orderFinished": "Ordre complet"
+  "label.orderFinished": "Ordre complet",
+  "label.showTasks": "Show Tasks",
+  "label.ignoreListFilters": "Ignore List Filters",
+  "button.remove": "Remove"
 }

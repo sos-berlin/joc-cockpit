@@ -57,7 +57,6 @@
                 }
 
                 scope.$on("clusterStatusDataChanged", function () {
-                   // console.log("Changed ");
                     refresh();
 
                 });
@@ -170,7 +169,6 @@
 
                         }, function (err) {
                             getTemporaryData2(undefined, refresh);
-                           // console.log("Error in getting refresh");
                         })
 
                     }
@@ -521,7 +519,6 @@
 
                                 }
                                 if (master.clusterType._type == "PASSIVE" && !master.state) {
-                                   // console.log("IN passive no master state find");
                                     master.state = {};
                                     master.state._text = ' ';
                                 }
@@ -659,7 +656,6 @@
                                 var continueClass = 'hide';
                                 var disableClass = '';
                                 var classRunning = 'text-success';
-                               // console.log("STATE " + master.state._text);
                                 if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     classRunning = 'text-danger';
                                     disableClass = 'disable-link';
@@ -1141,8 +1137,6 @@
 
                         angular.forEach(args.events[0].eventSnapshots, function (value1) {
                             if (value1.eventType.indexOf("SchedulerStateChanged") !== -1) {
-                               // console.log("Event here " + JSON.stringify(value1));
-
                                 vm.getSupervisor(value1);
                             }
 

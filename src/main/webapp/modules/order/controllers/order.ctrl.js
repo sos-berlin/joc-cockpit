@@ -125,7 +125,6 @@
 
         vm.onAdd = function (item) {
             promise1 = $timeout(function () {
-                //console.log("On add 01");
                 if (item) {
                     vm.selectedNodes.push(item);
                 }
@@ -135,7 +134,7 @@
                 vm.isActiveNode = false;
                 vm.isPendingJob = false;
                 angular.forEach(vm.selectedNodes, function (value) {
-                    console.log(value.name + " state " + value.state._text + " job state " + value.job.state._text);
+
                     if (value.state && value.state._text == 'STOPPED') {
                         vm.isStoppedNode = true;
                     }
@@ -310,16 +309,13 @@
                     var parent = splitRegex.exec(job.name)[1];
                     parentRegex = new RegExp("(.+):" + parent);
                     if (parentRegex.test(node.name)) {
-                        //console.log("Padding for01 "+job.name+" is "+node.padding);
                         job.padding = node.padding + 10;
                         padding = job.padding;
                     } else if (parent == node.name) {
-                        //console.log("Padding for02 "+job.name+" is "+node.padding + "parent :: " + parent);
                         job.padding = node.padding + 10;
                         padding = job.padding;
                     }
                 } else if (node.nextNode == job.name && !matched) {
-                    //console.log("Padding for03 " + job.name + " is " + node.padding);
                     matched = true;
                     job.padding = node.padding;
                     padding = job.padding;
@@ -570,12 +566,13 @@
         });
 
         vm.checkAllJobChains = function () {
+
             if (vm.allCheck1.checkbox && vm.jobChain) {
-                vm.object.nodes = vm.jobChain.nodes;
+                vm.object1.nodes = vm.jobChain.nodes;
             } else {
                 vm.object1.nodes = [];
             }
-            vm.selectedNodes = angular.copy(vm.object.nodes);
+            vm.selectedNodes = angular.copy(vm.object1.nodes);
         };
         $scope.compareFn = function (obj1, obj2) {
             return obj1.name === obj2.name;
@@ -637,8 +634,8 @@
 
         function setHeight() {
             if (vm.fitToScreen) {
-                var windowWidth = $(window).innerWidth();
-                var windowHeight = $(window).innerHeight();
+                var windowWidth=document.getElementById("mainContainer").clientWidth;
+                var windowHeight = document.getElementById("mainContainer").clientHeight;
                 var maxLeft = 0;
                 var maxTop = 0;
 
@@ -650,15 +647,15 @@
                         maxTop = coord.top;
                     }
                 });
+
                 if (maxTop < windowHeight && maxLeft + 230 < windowWidth) {
                     return;
                 }
 
-
-                if (windowWidth / (maxLeft + 230) < windowHeight / maxTop) {
+                if (windowWidth / (maxLeft + 230) > windowHeight / maxTop) {
                     vm.slider.value = windowWidth / (maxLeft + 230);
                 } else {
-                    vm.slider.value = windowWidth / (maxLeft + 230);
+                    vm.slider.value = windowHeight / maxTop;
                 }
                 vm.slider.value = vm.slider.value * 100;
                 if (vm.slider.value > 150) {
@@ -1047,7 +1044,7 @@
 
         } else {
             toasty.error({
-                title: gettextCatalog.getString('message.oops'),
+                title: '',
                 msg: gettextCatalog.getString('message.incorrectJobChainPath'),
                 timeout: 0
             });
@@ -1161,13 +1158,20 @@
                 obj.at = 'now';
             }
 
-            if (paramObject.length > 0) {
-                obj.params = paramObject;
+            if (paramObject && paramObject.params.length > 0) {
+                obj.params = paramObject.params;
             }
             orders.orders.push(obj);
             OrderService.addOrder(orders).then(function (res) {
-                vm.object.orders = [];
+                JobChainService.getJobChain({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    jobChain: vm.jobChain.path
+                }).then(function (res) {
+                    vm.jobChain = angular.merge(vm.jobChain, res.jobChain);
+                });
+
             });
+            vm.object.orders = [];
 
         }
 
@@ -1179,7 +1183,7 @@
                 vm.schedules = res.schedules;
             });
 
-            vm._jobChain = vm.jobChain;
+            vm._jobChain = angular.copy(vm.jobChain);
 
             JobChainService.getJobChainP({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -2696,7 +2700,14 @@
             }
             orders.orders.push(obj);
             OrderService.startOrder(orders).then(function (res) {
+                var obj = {};
+                obj.orders = [];
 
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(obj).then(function (res) {
+                    order.nextStartTime = res.orders[0].nextStartTime;
+                });
             });
             vm.reset();
         }
@@ -3127,6 +3138,8 @@
 
         vm.jobChainSearch = {};
         vm.jobSearch = {};
+        var jobChainSearch = false;
+        var jobSearch = false;
 
         var promise1;
 
@@ -3283,14 +3296,6 @@
             }
         };
 
-        function isEmpty(obj) {
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key))
-                    return false;
-            }
-            return true;
-        }
-
         vm.search = function (flag) {
             if(!flag)
             vm.loading = true;
@@ -3354,6 +3359,7 @@
                 }, function () {
                     vm.loading = false;
                 });
+                jobSearch = true;
             } else {
                 vm.order.filter.historyStates = '';
                 vm.order.filter.date = '';
@@ -3412,6 +3418,7 @@
                 }, function () {
                     vm.loading = false;
                 });
+                jobChainSearch = true;
             }
         };
 
@@ -3430,8 +3437,10 @@
             vm.showSearchPanel = false;
             if (vm.historyFilters.type == 'job') {
                 vm.jobSearch = {};
+                jobSearch = true;
             } else {
                 vm.jobChainSearch = {};
+                jobChainSearch = true;
             }
         };
 
@@ -3514,7 +3523,6 @@
             if (selectedFiltered2.state && selectedFiltered2.state.length > 0) {
                 obj.historyStates = selectedFiltered2.state;
             }
-            console.log(selectedFiltered2)
 
             var fromDate;
             var toDate;
@@ -3703,8 +3711,6 @@
             modalInstance.result.then(function () {
                 if (vm.historyFilters.type == 'jobChain') {
                     vm.savedHistoryFilter.list.push(vm.historyFilter);
-
-
                     if (vm.savedHistoryFilter.list.length == 1) {
                         vm.savedHistoryFilter.selected = vm.historyFilter.name;
                         vm.historyFilters.order.selectedView = true;
@@ -3712,12 +3718,8 @@
                         vm.init({jobschedulerId: $scope.schedulerIds.selected});
                     }
                     vm.historyFilterObj.order = vm.savedHistoryFilter;
-
-
                 } else {
                     vm.savedJobHistoryFilter.list.push(vm.historyFilter);
-
-
                     if (vm.savedJobHistoryFilter.list.length == 1) {
                         vm.savedJobHistoryFilter.selected = vm.historyFilter.name;
                         vm.historyFilters.task.selectedView = true;
@@ -3725,7 +3727,6 @@
                         vm.init({jobschedulerId: $scope.schedulerIds.selected});
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-
                 }
                 SavedFilter.setHistory(vm.historyFilterObj);
                 SavedFilter.save();
@@ -4062,8 +4063,8 @@
 
                 });
             } else {
-                toasty.warning({
-                    title: 'Ignore list is empty!',
+                toasty.info({
+                    title: gettextCatalog.getString('message.noDataAvailable'),
                     msg: ''
                 });
             }
@@ -4074,19 +4075,19 @@
             vm.savedIgnoreList.orders.splice(vm.savedIgnoreList.orders.indexOf(name), 1);
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
             SavedFilter.save();
-            filterData();
+            vm.init({jobschedulerId: $scope.schedulerIds.selected});
         };
         vm.removeJobChainIgnoreList = function (name) {
             vm.savedIgnoreList.jobChains.splice(vm.savedIgnoreList.jobChains.indexOf(name), 1);
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
             SavedFilter.save();
-            filterData();
+            vm.init({jobschedulerId: $scope.schedulerIds.selected});
         };
         vm.removeJobIgnoreList = function (name) {
             vm.savedIgnoreList.jobs.splice(vm.savedIgnoreList.jobs.indexOf(name), 1);
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
             SavedFilter.save();
-            filterJobData();
+            vm.init({jobschedulerId: $scope.schedulerIds.selected});
         };
 
         vm.resetIgnoreList = function () {
@@ -4094,11 +4095,7 @@
             vm.savedIgnoreList.isEnable = false;
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
             SavedFilter.save();
-            if (vm.historyFilters.type == 'jobChain') {
-                filterData();
-            } else {
-                filterJobData();
-            }
+            vm.init({jobschedulerId: $scope.schedulerIds.selected});
         };
 
         vm.enableDisableIgnoreList = function (isEnable) {
@@ -4135,11 +4132,9 @@
                                 }
                             }
                             filter.limit = parseInt($window.localStorage.$SOS$MAXRECORDS);
-                            if (!isEmpty(vm.jobChainSearch)) {
+                            if (jobChainSearch) {
                                 vm.search(true);
                             } else {
-
-
                                 OrderService.histories(filter).then(function (res) {
                                     vm.historys = res.history;
                                     filterData();
@@ -4166,7 +4161,7 @@
                                 }
                             }
                             filter.limit = parseInt($window.localStorage.$SOS$MAXRECORDS);
-                            if (!isEmpty(vm.jobSearch)) {
+                            if (jobSearch) {
                                 vm.search(true);
                             } else {
                                 TaskService.histories(filter).then(function (res) {

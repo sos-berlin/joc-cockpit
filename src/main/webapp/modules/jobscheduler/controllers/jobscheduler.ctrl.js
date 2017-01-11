@@ -2082,7 +2082,7 @@ function volatileFolderDataL(data, obj) {
                 margin: {
                     top: 20,
                     right: 20,
-                    bottom: 50,
+                    bottom: 70,
                     left: 50
                 },
                 x: function (d) {
@@ -2092,7 +2092,7 @@ function volatileFolderDataL(data, obj) {
                     return d.value;
                 },
                 yAxis: {tickFormat: yAxisTickFormatFunction()},
-                xAxis: {rotateLabels: -40},
+                xAxis: {rotateLabels: -30},
                 valueFormat: function (d) {
                     return d3.format(',.4f')(d);
                 },
@@ -2825,7 +2825,6 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
-        console.info($stateParams);
         if ($stateParams.filter != null) {
             if ($stateParams.filter == 1) {
                 vm.dailyPlanFilters.filter.status = 'WAITING';
@@ -3072,53 +3071,61 @@ function volatileFolderDataL(data, obj) {
             $scope.ordersNoDuplicate = [];
             data2 = orderBy(data2, 'plannedStartTime', false);
 
-            var groupJobChain = alasql('SELECT * FROM ?  GROUP BY jobChain', [data2]);
-
+            var groupJobChain =[];
+            for(var i=0;i<data2.length;i++) {
+                if (groupJobChain.length>0) {
+                    var flag = false;
+                    for (var j = 0; j < groupJobChain.length; j++) {
+                        if(groupJobChain[j].jobChain == data2[i].jobChain && groupJobChain[j].orderId == data2[i].orderId){
+                            flag =true;
+                        }
+                    }
+                    if(!flag){
+                       groupJobChain.push(data2[i]);
+                    }
+                }else{
+                    groupJobChain.push(data2[i]);
+                }
+            }
 
             for (var index = 0; index < groupJobChain.length; index++) {
                 var i = 0;
                 orders[index] = {};
                 orders[index].tasks = [];
-                for (var index1 = 0; index1 < data2.length; index1++) {
 
-                    if (groupJobChain[index].jobChain == data2[index1].jobChain) {
 
-                        orders[index].tasks[i] = {};
-                        if (data2[index1].job != undefined) {
-                            orders[index].name = data2[index1].job;
-                            orders[index].orderId = '-';
-                        } else {
-                            orders[index].name = data2[index1].jobChain.substring(data2[index1].jobChain);
-                            orders[index].orderId = data2[index1].orderId;
-                        }
-
-                        vm.plans[index].processedPlanned = orders[index].name;
-                        orders[index].tasks[i].name = orders[index].name;
-
-                        vm.plans[index].status = data2[index1].state._text;
-                        if (data2[index1].state._text == 'SUCCESSFUL') {
-                            orders[index].tasks[i].color = "#7ab97a";
-                        } else if (data2[index1].state._text == 'FAILED') {
-                            orders[index].tasks[i].color = "#e86680";
-                        }
-                        else if (data2[index1].late) {
-                            orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
-                        }
-
-                        orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
-
-                        if (!minNextStartTime || minNextStartTime > new Date(data2[index1].plannedStartTime)) {
-                            minNextStartTime = new Date(data2[index1].plannedStartTime);
-                        }
-                        if (!maxEndTime || maxEndTime < new Date(data2[index1].expectedEndTime)) {
-                            maxEndTime = new Date(data2[index1].expectedEndTime);
-                        }
-                        orders[index].tasks[i].to = new Date(data2[index1].expectedEndTime);
-                        i++;
-
-                    }
+                orders[index].tasks[i] = {};
+                if (groupJobChain[index].job != undefined) {
+                    orders[index].name = groupJobChain[index].job;
+                    orders[index].orderId = '-';
+                } else {
+                    orders[index].name = groupJobChain[index].jobChain.substring(groupJobChain[index].jobChain);
+                    orders[index].orderId = groupJobChain[index].orderId;
                 }
 
+                vm.plans[index].processedPlanned = orders[index].name;
+                orders[index].tasks[i].name = orders[index].name;
+
+                vm.plans[index].status = groupJobChain[index].state._text;
+                if (groupJobChain[index].state._text == 'SUCCESSFUL') {
+                    orders[index].tasks[i].color = "#7ab97a";
+                } else if (groupJobChain[index].state._text == 'FAILED') {
+                    orders[index].tasks[i].color = "#e86680";
+                }
+                else if (groupJobChain[index].late) {
+                    orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
+                }
+
+                orders[index].tasks[i].from = new Date(groupJobChain[index].plannedStartTime);
+
+                if (!minNextStartTime || minNextStartTime > new Date(groupJobChain[index].plannedStartTime)) {
+                    minNextStartTime = new Date(groupJobChain[index].plannedStartTime);
+                }
+                if (!maxEndTime || maxEndTime < new Date(groupJobChain[index].expectedEndTime)) {
+                    maxEndTime = new Date(groupJobChain[index].expectedEndTime);
+                }
+                orders[index].tasks[i].to = new Date(groupJobChain[index].expectedEndTime);
+                i++;
             }
 
             if (minNextStartTime) {
@@ -3135,7 +3142,6 @@ function volatileFolderDataL(data, obj) {
             }
 
             vm.data = orderBy(orders, 'plannedStartTime');
-            // console.info("data:" + JSON.stringify(vm.data));
 
             if (flag)
                 promise1 = $timeout(function () {
@@ -3364,8 +3370,7 @@ function volatileFolderDataL(data, obj) {
             $('#treeModal').modal('show');
             JobChainService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
-                compact: true,
-                types: ['ORDER']
+                compact: true
             }).then(function (res) {
                 vm.tree = res.folders;
             }, function (err) {

@@ -40,7 +40,7 @@
 
 
         $rootScope.$on('event-jobChains', function (event, values) {
-            vm.expand_to = values;
+            $rootScope.expand_to = values;
         });
         if (vm.savedJobChainFilter.selected) {
             for (var i = 0; i < vm.savedJobChainFilter.list.length; i++) {
@@ -200,17 +200,24 @@
             obj.folders = [
                 {folder: data.path, recursive: false}
             ];
-            if (data.jobChains && data.jobChains.length > 0) {
+
+            JobChainService.getJobChainsP(obj).then(function (result) {
+                if(data.jobChains && data.jobChains.length>0){
+                    angular.forEach(result.jobChains, function(newValue, index){
+                        angular.forEach(data.jobChains, function(oldValue){
+                            if(newValue.path == oldValue.path) {
+                                result.jobChains[index].path1 = oldValue.path1;
+                                result.jobChains[index].show = oldValue.show;
+                            }
+                        });
+                    });
+                }
+                data.jobChains = result.jobChains;
                 volatileFolderData(data, obj);
-            } else {
-                JobChainService.getJobChainsP(obj).then(function (result) {
-                    data.jobChains = result.jobChains;
-                    volatileFolderData(data, obj);
-                }, function (err) {
-                    vm.loading = false;
-                    volatileFolderData(data, obj);
-                });
-            }
+            }, function (err) {
+                vm.loading = false;
+                volatileFolderData(data, obj);
+            });
         }
 
         function expandFolderData1(data) {
@@ -463,14 +470,14 @@
                     if (vm.expand_to) {
 
                         if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) == splitPath[count] && count < splitPath.length) {
-                            i = i + 1;
+                            count = count + 1;
                             splitPath[count] = splitPath[count - 1] + '/' + splitPath[count];
 
                             data.folders[x].expanded = true;
                             if (vm.expand_to.name == data.folders[x].name) {
                                 data.folders[x].selected1 = true;
                                 vm.flag = false;
-                                i = 1;
+                                count = 1;
                                 splitPath = [];
 
                             }
@@ -745,7 +752,7 @@
             $location.path('/jobChainDetails/overview').search({path: jobChain.path});
         };
 
-        vm.viewCalendar = function (jobChain) {
+        vm.showCalendar = function (jobChain) {
             vm._jobChain = jobChain;
             vm.planItems = [];
             DailyPlanService.getPlans({
@@ -838,7 +845,7 @@
             });
         };
 
-        function addOrder(order, paramObject) {
+        function addOrder(order, paramObject,jobChain) {
             var orders = {};
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.orders = [];
@@ -854,7 +861,6 @@
             if (order.title)
                 obj.title = order.title;
 
-
             if (order.fromDate && order.fromTime) {
                 order.fromDate.setHours(order.fromTime.getHours());
                 order.fromDate.setMinutes(order.fromTime.getMinutes());
@@ -867,13 +873,34 @@
                 obj.at = 'now';
             }
 
-            if (paramObject.length > 0) {
-                obj.params = paramObject;
+            if (paramObject && paramObject.params.length > 0) {
+                obj.params = paramObject.params;
             }
             orders.orders.push(obj);
-            OrderService.addOrder(orders).then(function (res) {
-                vm.reset();
+
+           OrderService.addOrder(orders).then(function (res) {
+
+                JobChainService.getJobChain({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    jobChain: jobChain.path
+                }).then(function (res) {
+                    jobChain = angular.merge(jobChain, res.jobChain);
+                    angular.forEach(jobChain.nodes, function (val, index) {
+                        if (val.job && val.job.state && val.job.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS === 'true') {
+
+                            JobService.get({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                jobs: [{job: val.job.path}]
+                            }).then(function (res1) {
+                                jobChain.nodes[index].job = angular.merge(jobChain.nodes[index].job, res1.jobs[0]);
+                            });
+                        }
+                    });
+                });
+
+
             });
+            vm.reset();
         }
 
         vm.addOrder = function (jobChain) {
@@ -884,13 +911,15 @@
                 vm.schedules = res.schedules;
             });
 
-            vm._jobChain = jobChain;
+            vm._jobChain = angular.copy(jobChain);
+
 
             JobChainService.getJobChainP({
                 jobschedulerId: vm.schedulerIds.selected,
                 jobChain: jobChain.path
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
+
             });
 
             vm.order = {};
@@ -904,7 +933,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                addOrder(vm.order, vm.paramObject);
+                addOrder(vm.order, vm.paramObject,jobChain);
             }, function () {
 
             });
@@ -956,11 +985,10 @@
                 vm.reset();
             });
         };
-vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
+        vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
         $rootScope.$on('angular-resizable.resizeEnd',function(event,args){
-            console.log("Height "+args.height);
              $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT = args.height;
-        })
+        });
 
         vm.reset = function () {
             vm.jobChainCheckAll.checkbox = false;
@@ -1221,7 +1249,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
             }).then(function (res) {
                 jobChain = angular.merge(jobChain, res.jobChain);
                 angular.forEach(jobChain.nodes, function (val, index) {
-                    if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
+                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS==='true') {
 
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
@@ -1498,7 +1526,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                                                  res.jobChain.show = angular.copy(value2.show);
                                                  vm.allJobChains[index] = res.jobChain;
                                                  angular.forEach(res.jobChain.nodes, function(val,index) {
-                                                     if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
+                                                     if (val.job && val.job.state && val.job.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS==='true') {
 
                                                          JobService.get({
                                                              jobschedulerId: vm.schedulerIds.selected,
@@ -1638,16 +1666,15 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
     }
 
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
-        "gettextCatalog", "$state", "CoreService", "$timeout"];
+        "gettextCatalog", "$state", "CoreService", "$timeout","$window"];
     function JobCtrl($scope, $rootScope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
-                     gettextCatalog, $state, CoreService, $timeout) {
+                     gettextCatalog, $state, CoreService, $timeout,$window) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
+        vm.showTask =  $window.localStorage.$SOS$SHOWTASKS =='true';
 
         $rootScope.$on('event-jobs', function (event, values) {
-            console.info("event-jobs" + JSON.stringify(values));
-            vm.job_expand_to = values;
-
+            $rootScope.job_expand_to = values;
         });
 
         vm.object = {};
@@ -1811,7 +1838,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                         value.path1 = data.path;
 
 
-                        if(value.state._text == 'RUNNING') {
+                        if(value.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS==='true') {
 
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
@@ -1910,7 +1937,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                         if (value.path == value1.path) {
                             flag = false;
                         }
-                        if(flag && value1.state._text == 'RUNNING') {
+                        if(flag && value1.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS==='true') {
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: value1.path}]
@@ -2055,7 +2082,7 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
             });
         }
 
-        var i = 1, splitPath = [];
+        var count = 1, splitPath = [];
 
         function checkExpand(data) {
             if (data.selected1) {
@@ -2073,15 +2100,15 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                 for (var x = 0; x < data.folders.length; x++) {
                     if (vm.expand_to) {
 
-                        if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) == splitPath[i] && i < splitPath.length) {
-                            i = i + 1;
-                            splitPath[i] = splitPath[i - 1] + '/' + splitPath[i];
+                        if (vm.flag && data.folders[x].path.substring(1, data.folders[x].path.length) == splitPath[count] && count < splitPath.length) {
+                            count = count + 1;
+                            splitPath[count] = splitPath[count - 1] + '/' + splitPath[count];
 
                             data.folders[x].expanded = true;
                             if (vm.expand_to.name == data.folders[x].name) {
                                 data.folders[x].selected1 = true;
                                 vm.flag = false;
-                                i = 1;
+                                count = 1;
                                 splitPath = [];
 
                             }
@@ -2353,6 +2380,8 @@ vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
                         vm.isUnstopped = true;
                     }
                     if ((value.ordersSummary && value.ordersSummary.pending != undefined)) {
+                        vm.isStart = true;
+                    } else if(value.configurationStatus && value.configurationStatus.severity==2){
                         vm.isStart = true;
                     }
                 });

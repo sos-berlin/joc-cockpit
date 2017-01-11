@@ -42,7 +42,7 @@
                                     <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
-                                <div class="btn-group dropdown pull-right abt-dropdown ">
+                                <div class="btn-group dropdown pull-right abt-dropdown " ng-if="permission.Schedule.view.configuration || permission.Schedule.edit">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
@@ -61,18 +61,18 @@
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.noOfOrders </span>:
                                 <a ng-if="schedule.usedByOrders.length>0" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark text-hover-primary" ng-bind="schedule.usedByOrders.length"></a>
-                                <span class="text-dark text-hover-primary" ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
+                                <span class="text-dark" ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
                                 <span translate>label.noOfJobs </span>:
-                                <a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-if="schedule.usedByJobs.length>0" class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length"></a>
-                                <span class="text-dark text-hover-primary" ng-if="!schedule.usedByJobs.length || schedule.usedByJobs.length==0"></span>
+                                <!--<a href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-if="schedule.usedByJobs.length>0" class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length">--></a>
+                                <span class="text-dark" ng-bind="schedule.usedByJobs.length || 0"></span>
                             </div>
                         </div>
-                        <div class="box-footer b-t" ng-if="permission.Schedule.edit">
+                        <div class="box-footer b-t" >
                             <div>
-                                <a href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
-                                <a href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
+                                <a ng-if="permission.Schedule.edit" href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.substitute</span></a>
+                                <a ng-if="permission.Schedule.edit" href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
                             </div>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
                             <i ng-show="schdeuleFilters.filter.sortBy == 'subsituteBy' && schdeuleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th></th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -160,13 +160,13 @@
                             <span ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
                         </td>
                         <td>
-                            <a ng-if="schedule.usedByJobs.length>0" class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a>
-                            <span ng-if="!schedule.usedByJobs.length || schedule.usedByJobs.length==0">0</span>
+                            <!--<a ng-if="schedule.usedByJobs.length>0" class="text-hover-primary" href="#/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a>-->
+                            <span ng-bind="schedule.usedByJobs.length || 0"></span>
                         </td>
                         <td ng-bind="schedule.validityFrom || 'never'"></td>
                         <td ng-bind="schedule.validityTo || 'never'"></td>
                         <td ng-bind="schedule.subsituteBy || 'never'"></td>
-                        <td>
+                        <td ng-if="permission.Schedule.view.configuration || permission.Schedule.edit">
                             <div class="btn-group dropdown">
                                 <a class="more-option-h" href data-toggle="dropdown"><i
                                         class="fa fa-ellipsis-h"></i></a>
