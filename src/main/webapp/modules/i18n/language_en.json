@@ -786,7 +786,7 @@
   "label.about": "About",
   "label.showMoreOrders": "show more Orders",
   "label.release": "Release",
-  "label.orderIds": "Order Ids",
+  "label.orderIds": "Order IDs",
   "placeholder.enterJobChainPath": "Enter Job Chain Path",
   "placeholder.enterJobs": "Enter multiple Jobs separated by comma ",
   "placeholder.enterOrderIds": "Enter multiple Order IDs separated by comma",
@@ -794,10 +794,10 @@
   "placeholder.setEndDate": "Set end time",
   "placeholder.startTime": "Start Time",
   "placeholder.endTime": "End Time",
-  "placeholder.processExecuted": "now-600,,-1h,-1d, today or 08:00am to 08:00pm",
+  "placeholder.processExecuted": "now-600, -1h, -1d, today or 08:00am to 08:00pm",
   "label.processExecuted": "Process executed",
   "label.orderFinished": "Order completed",
-  "label.showTasks": "Show Tasks",
-  "label.ignoreListFilters": "Ignore List Filters",
+  "label.showTasks": "Show Tasks immediately in views",
+  "label.ignoreListFilters": "Filters for Ignore List",
   "button.remove": "Remove"
 }
