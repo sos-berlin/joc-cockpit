@@ -110,6 +110,9 @@
         vm.treeHandler = function (data) {
             vm.reset();
             navFullTree();
+            if(vm.showHistoryPanel && (vm.showHistoryPanel.path1 != data.path)){
+                vm.showHistoryPanel ='';
+            }
             data.selected1 = true;
             data.jobChains = [];
             vm.allJobChains = [];
@@ -127,6 +130,9 @@
         vm.expandNode = function (data) {
             vm.reset();
             navFullTree();
+            if(vm.showHistoryPanel && (vm.showHistoryPanel.path1 != data.path)){
+                vm.showHistoryPanel ='';
+            }
             vm.allJobChains = [];
             vm.loading = true;
             vm.folderPath = data.name || '/';
@@ -879,7 +885,6 @@
             orders.orders.push(obj);
 
            OrderService.addOrder(orders).then(function (res) {
-
                 JobChainService.getJobChain({
                     jobschedulerId: vm.schedulerIds.selected,
                     jobChain: jobChain.path
@@ -897,8 +902,6 @@
                         }
                     });
                 });
-
-
             });
             vm.reset();
         }
@@ -1260,12 +1263,9 @@
                     }
                 });
             });
-
-
             for (var i = 0; i < vm.tree.length; i++) {
                 if (vm.tree[i].path.match(jobChain.path1) || jobChain.path1.match(vm.tree[i].path)) {
                     traverseToSelectedJobChain(vm.tree[i], jobChain);
-
                 }
             }
 
@@ -1772,6 +1772,9 @@
         vm.treeHandler = function (data) {
             vm.reset();
             navFullTree();
+            if(vm.showTaskPanel && (vm.showTaskPanel.path1 != data.path)){
+                vm.hideTaskPanel();
+            }
             data.selected1 = true;
             data.jobs = [];
             vm.allJobs = [];
@@ -1788,6 +1791,10 @@
         vm.expandNode = function (data) {
             vm.reset();
             navFullTree();
+
+            if(vm.showTaskPanel && (vm.showTaskPanel.path1 != data.path)){
+                vm.hideTaskPanel();
+            }
             vm.allJobs = [];
             vm.loading = true;
             vm.folderPath = data.name || '/';
@@ -3083,7 +3090,7 @@
                                                 res.jobs[0].estimatedDuration = vm.allJobs[index].estimatedDuration;
                                                 res.jobs[0].maxTasks = vm.allJobs[index].maxTasks;
                                                 vm.allJobs[index] = res.jobs[0];
-                                                if (vm.showTaskPanel && (vm.showTaskPanel.path = value2.path)) {
+                                                if (vm.showTaskPanel && (vm.showTaskPanel.path == value2.path)) {
                                                     vm.showTaskPanel = vm.allJobs[index];
                                                 }
 

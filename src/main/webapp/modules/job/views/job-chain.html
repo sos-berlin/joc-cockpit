@@ -188,12 +188,13 @@
                                         <span  ng-if="jobChain.numOfNodes<=1 || !jobChain.numOfNodes" ng-bind="'label.job' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs">
-                                        <a ng-if="jobChain.numOfOrders>1" class="text-hover-primary" ng-click="viewOrders(jobChain)">
+                                        <a ng-if="jobChain.numOfOrders>0" class="text-hover-primary" ng-click="viewOrders(jobChain)">
                                             <span class="text-black _600" ng-bind="jobChain.numOfOrders"></span>
-                                            <span ng-bind="'label.orders' | translate"></span>
+                                            <span ng-if="jobChain.numOfOrders>1" ng-bind="'label.orders' | translate"></span>
+                                            <span ng-if="jobChain.numOfOrders==1" ng-bind="'label.order' | translate"></span>
                                         </a>
-                                        <span ng-if="jobChain.numOfOrders<=1 || !jobChain.numOfOrders">
-                                            <span class="text-black _600">0</span>
+                                        <span ng-if="jobChain.numOfOrders<1 || !jobChain.numOfOrders">
+                                            <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0">0</span>
                                             <span ng-bind="'label.order' | translate"></span>
                                         </span>
                                     </div>
@@ -511,7 +512,7 @@
                                                 </td>
                                                 <td>
                                                     <span class="label" ng-if="node.job.state" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span>
-                                                    <span class="label" ng-if="node.job.configurationStatus" ng-class="bgColorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>
+                                                    <span class="label" ng-if="node.job.configurationStatus" ng-class="colorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>
                                                 </td>
                                                 <td><span class="label" ng-class="bgColorFunction(node.state.severity)"
                                                           ng-bind="node.state._text | translate"></span></td>

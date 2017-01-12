@@ -181,6 +181,7 @@ var deregisterWatchers = function(labelWatcherArray) {
 };
 
 function BreadcrumbDirective($interpolate, $breadcrumb, $rootScope) {
+
     var $$templates = {
         bootstrap2: '<ul class="breadcrumb">' +
             '<li ng-repeat="step in steps" ng-switch="$last || !!step.abstract" ng-class="{active: $last}">' +
@@ -189,7 +190,7 @@ function BreadcrumbDirective($interpolate, $breadcrumb, $rootScope) {
             '<span class="divider" ng-hide="$last">/</span>' +
             '</li>' +
             '</ul>',
-        bootstrap3: '<ol class="breadcrumb">' +
+        bootstrap3: '<ol class="breadcrumb"><li ng-click="goBack()"><a><i title="back" class="fa fa-arrow-circle-left" style="font-size: 18px"></i></a></li>' +
             '<li ng-repeat="step in steps" ng-class="{active: $last}" ng-switch="$last || !!step.abstract">' +
             '<a ng-switch-when="false" href="{{step.ncyBreadcrumbLink}}">{{step.ncyBreadcrumbLabel}}</a>' +
             '<span ng-switch-when="true">{{step.ncyBreadcrumbLabel}}</span>' +
@@ -223,6 +224,11 @@ function BreadcrumbDirective($interpolate, $breadcrumb, $rootScope) {
                             step.ncyBreadcrumbLabel = step.name;
                         }
                     });
+                };
+                scope.goBack = function(){
+                   console.log('goBack') ;
+                    var history_api = typeof history.pushState !== 'undefined';
+                   console.log(history_api) ;
                 };
 
                 $rootScope.$on('$viewContentLoaded', function (event) {

@@ -226,6 +226,9 @@
                     function getNext(index) {
                         var gotNext = false;
                         var item = scope.jobChainData.nodes[index];
+                        if(!item){
+                            return;
+                        }
                         havingNext = false;
                         isNext = false;
                         angular.forEach(jobChainData2.nodes, function (item2, index2) {
@@ -355,7 +358,7 @@
                     var splitMargin = 40;
                     scope.splitMargin = splitMargin;
                     var height = 500;
-                    scope.borderTop = 5;
+                    scope.borderTop = 1;
                     var splitRegex = new RegExp('(.+):(.+)');
                     var orderLeft = left;
 
@@ -378,7 +381,7 @@
                         top = top + rectH + 50;
                     }
 
-
+                    console.log(scope.jobChainData)
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
                         if(!item){
                             return;
@@ -637,14 +640,23 @@
                                 left = obj.left;
                             }
                         });
-
+                          var endErrorNodes = 0;
+                        var endSuccessNodes=0;
                         angular.forEach(scope.jobChainData.endNodes, function (endNode, index) {
+
                             scope.endNodes.push(endNode.name);
                             var item = scope.jobChainData.endNodes[index];
                             coords[length].left = left + rectW + margin;
+                             if(index!==0){
+                                    coords[length+index] = {};
+                                    coords[length+index].left = left + rectW + margin;
+                                }
+
+
 
 
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
+                                endErrorNodes++;
                                 coords[length].top = top + rectH + 50 + rectH / 2 - avatarW / 2;
                                 coords.map(function (obj) {
                                     if (coords[length].top < obj.top) {
@@ -661,9 +673,19 @@
                                     'style="position: absolute;left: ' + coords[length].left + 'px;top: ' + coords[length].top + 'px' + '"> </span>';
 
                             } else {
-                                coords[length].top = avatarTop;
-                                var labelTop = avatarTop - 25;
-                                var labelLeft = coords[length].left + avatarW / 2 - endNode.name.length * 3;
+                                endSuccessNodes++;
+                                coords[length+index].top = avatarTop;
+                                if(endSuccessNodes>1){
+                                    coords.map(function (obj) {
+                                    //console.log("Object top "+obj.top);
+                                    if (coords[length+index].top < obj.top) {
+                                        coords[length+index].top = obj.top + rectH + margin;
+                                    }
+
+                                });
+                                }
+                                var labelTop = coords[length+index].top - 25;
+                                var labelLeft = coords[length+index].left + avatarW / 2 - endNode.name.length * 3;
                                 rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-success" ' +
                                     'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
                                     '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
@@ -749,10 +771,7 @@
                     }
 
                     function drawLinks() {
-                        var timeout = $timeout(function () {
-                            scope.drawConnections();
-                            $timeout.cancel(timeout);
-                        }, 500)
+                      scope.drawConnections();
                     }
 
                 }
@@ -932,168 +951,226 @@
 
                             if (div2) {
 
-                                    if (pDiv && pDiv.offsetTop > div1.offsetTop) {
+                                if (pDiv && pDiv.offsetTop > div1.offsetTop) {
 
-                                        var top = pDiv.offsetTop + pDiv.clientHeight / 2;
-                                        var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
-                                        width = vm.margin / 2;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
+                                    var top = pDiv.offsetTop + pDiv.clientHeight / 2;
+                                    var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
+                                    width = vm.margin / 2;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
 
-                                        top = div1.offsetTop + div1.clientHeight / 2;
-                                        left = div1.offsetLeft - vm.margin / 2;
-                                        height = pDiv.offsetTop + pDiv.clientHeight / 2 - top;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = '2px';
-                                        node.style['height'] = height + 'px';
-                                        mainContainer.appendChild(node);
-
-
-                                        width = left - pDiv.offsetLeft - pDiv.clientWidth;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
-                                    } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
-                                        var top = pDiv.offsetTop + pDiv.clientHeight / 2;
-                                        var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
-                                        var width = vm.margin / 2;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
-
-                                        left = left + vm.margin / 2;
-                                        height = div1.offsetTop + div1.clientHeight / 2 - top;
-
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = '2px';
-                                        node.style['height'] = height + 'px';
-                                        mainContainer.appendChild(node);
-
-                                        top = top + height;
-                                        width = left - div1.offsetLeft;
+                                    top = div1.offsetTop + div1.clientHeight / 2;
+                                    left = div1.offsetLeft - vm.margin / 2;
+                                    height = pDiv.offsetTop + pDiv.clientHeight / 2 - top;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
 
 
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
-                                    }
+                                    width = left - pDiv.offsetLeft - pDiv.clientWidth;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+                                } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
+                                    var top = pDiv.offsetTop + pDiv.clientHeight / 2;
+                                    var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
+                                    var width = vm.margin / 2;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
 
-                                    if (div1.offsetTop > div2.offsetTop) {
-                                        var top = div2.offsetTop + div2.clientHeight / 2;
-                                        var left = div2.offsetLeft - vm.margin / 2;
-                                        var width = vm.margin / 2;
-                                        var height = 2;
+                                    left = left + vm.margin / 2;
+                                    height = div1.offsetTop + div1.clientHeight / 2 - top;
 
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
+
+                                    top = top + height;
+                                    width = left - div1.offsetLeft;
 
 
-                                        height = div1.offsetTop + div1.clientHeight / 2 - top;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+                                }
 
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = '2px';
-                                        node.style['height'] = height + 'px';
-                                        mainContainer.appendChild(node);
+                                if (div1.offsetTop > div2.offsetTop) {
+                                    var top = div2.offsetTop + div2.clientHeight / 2;
+                                    var left = div2.offsetLeft - vm.margin / 2;
+                                    var width = vm.margin / 2;
+                                    var height = 2;
 
-                                        top = top + height;
-                                        left = div1.offsetLeft + div1.clientWidth + vm.border;
-                                        width = div2.offsetLeft - vm.margin / 2 - left + vm.border / 2;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
 
-                                    } else if (div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
-                                        var top = div1.offsetTop + div1.clientHeight / 2;
-                                        var left = div1.offsetLeft + div1.clientWidth;
-                                        var width = div2.offsetLeft - left - vm.margin / 2;
-                                        var height = 1;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
 
-                                        left = left + width;
+                                    height = div1.offsetTop + div1.clientHeight / 2 - top;
 
-                                        height = div2.offsetTop + div2.clientHeight / 2 - top;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = '2px';
-                                        node.style['height'] = height + 'px';
-                                        mainContainer.appendChild(node);
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
 
-                                        top = top + height;
-                                        width = div1.offsetLeft - left;
-                                        node = document.createElement('div');
-                                        node.setAttribute('class', 'h-line next-link');
-                                        node.style['top'] = top + 'px';
-                                        node.style['left'] = left + 'px';
-                                        node.style['width'] = width + 'px';
-                                        node.style['height'] = '2px';
-                                        mainContainer.appendChild(node);
+                                    top = top + height;
+                                    left = div1.offsetLeft + div1.clientWidth + vm.border;
+                                    width = div2.offsetLeft - vm.margin / 2 - left + vm.border / 2;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
 
+                                } else if (div1.clientHeight==div2.clientHeight && div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
+
+                                    var top = div1.offsetTop + div1.clientHeight / 2;
+                                    var left = div1.offsetLeft + div1.clientWidth;
+                                    var width = div2.offsetLeft - left - vm.margin / 2;
+                                    var height = 1;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+                                    left = left + width;
+
+                                    height = div2.offsetTop + div2.clientHeight / 2 - top;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = '2px';
+                                    node.style['height'] = height + 'px';
+                                    mainContainer.appendChild(node);
+
+                                    top = top + height;
+                                    width = div1.offsetLeft - left;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+
+                                } else if (index<vm.jobChain.nodes.length-1 && div2.offsetTop  > div1.offsetTop) {
+                                    var top = div1.offsetTop + div1.clientHeight / 2;
+                                    var left = div1.offsetLeft + div1.clientWidth;
+                                    console.log(vm.margin);
+                                    var width =  vm.margin / 2;
+                                    var height = 1;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] = width + 'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+                                    left =left+width;
+                                    top = top-div1.clientHeight/2-vm.vSpace;
+                                    height=div1.offsetTop+div1.clientHeight/2-top+2*vm.border;
+                                    node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] =  '2px';
+                                    node.style['height'] = height+'px';
+                                    mainContainer.appendChild(node);
+
+                                    width = div2.offsetLeft-left-vm.margin/2;
+                                     node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] =  width+'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+                                    left=left+width;
+                                     height = div1.offsetTop+div1.clientHeight/2-top+  vm.borderTop ;
+                                     node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] =  '2px';
+                                    node.style['height'] = height+'px';
+                                    mainContainer.appendChild(node);
+
+                                    top=top+height;
+                                     width = div2.offsetLeft-left;
+                                     node = document.createElement('div');
+                                    node.setAttribute('class', 'h-line next-link');
+                                    node.style['top'] = top + 'px';
+                                    node.style['left'] = left + 'px';
+                                    node.style['width'] =  width+'px';
+                                    node.style['height'] = '2px';
+                                    mainContainer.appendChild(node);
+
+
+
+
+                                } else {
+                                    var parallels = 0;
+                                    vm.coords.map(function (obj) {
+                                        if (obj.actual == item.name) {
+                                            parallels = obj.parallels;
+                                        }
+                                    });
+                                    if (vm.jobChainData.nodes.length - 1 > index && parallels > 0) {
 
                                     } else {
-                                        var parallels = 0;
-                                        vm.coords.map(function (obj) {
-                                            if (obj.actual == item.name) {
-                                                parallels = obj.parallels;
-                                            }
-                                        });
-                                        if (vm.jobChainData.nodes.length - 1 > index && parallels > 0) {
-
-                                        } else {
-                                            node = document.createElement('div');
-                                            node.setAttribute('class', 'h-line next-link');
-                                            node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
-                                            node.style['left'] = x1 + div1.clientWidth + 'px';
-                                            node.style['width'] = x2 - x1 - div1.clientWidth + 'px';
-                                            node.style['height'] = '2px';
-                                            mainContainer.appendChild(node);
-                                        }
-
+                                        node = document.createElement('div');
+                                        node.setAttribute('class', 'h-line next-link');
+                                        node.style['top'] = y1 + div1.clientHeight / 2 + vm.borderTop + 'px';
+                                        node.style['left'] = x1 + div1.clientWidth + 'px';
+                                        node.style['width'] = x2 - x1 - div1.clientWidth + 'px';
+                                        node.style['height'] = '2px';
+                                        mainContainer.appendChild(node);
                                     }
 
                                 }
+
+                            }
 
 
                             if (errNode) {
@@ -1184,16 +1261,16 @@
 
 
                                 } else {
-                                     var node1=div1;
-                                    var node2=errNode;
-                                    if(div1.offsetLeft>errNode.offsetLeft){
-                                        node1=errNode;
-                                    var node2=div1;
+                                    var node1 = div1;
+                                    var node2 = errNode;
+                                    if (div1.offsetLeft > errNode.offsetLeft) {
+                                        node1 = errNode;
+                                        var node2 = div1;
                                     }
                                     var top = node1.offsetTop + node1.clientHeight + vm.border;
                                     var left = node1.offsetLeft + node1.clientWidth / 2;
                                     var width = node2.offsetLeft - left - vm.margin / 2;
-                                    var height = vm.vSpace+5;
+                                    var height = vm.vSpace + 10;
                                     node = document.createElement('div');
                                     node.setAttribute('class', 'error-link');
                                     node.style['border-left'] = '2px dashed #f44455';

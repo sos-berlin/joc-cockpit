@@ -799,5 +799,6 @@
   "label.orderFinished": "Order completed",
   "label.showTasks": "Show Tasks immediately in views",
   "label.ignoreListFilters": "Filters for Ignore List",
-  "button.remove": "Remove"
+  "button.remove": "Remove",
+  "label.ignoreList": "Ignore List"
 }

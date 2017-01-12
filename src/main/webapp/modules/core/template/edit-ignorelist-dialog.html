@@ -11,24 +11,27 @@
                        <table class="table table-hover table-bordered " >
                         <thead>
                         <tr>
-                            <th>{{'label.order' | translate}}/{{'label.job' | translate}}/{{'label.jobChain' | translate}}</th>
+                            <th>
+                                <span ng-if="historyFilters.type != 'job'">{{'label.order' | translate}}/{{'label.jobChain' | translate}}</span>
+                                <span ng-if="historyFilters.type == 'job'">{{'label.job' | translate}}</span>
+                            </th>
                             <th translate>label.action</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="order in savedIgnoreList.orders">
+                            <tr ng-repeat="order in savedIgnoreList.orders" ng-if="historyFilters.type != 'job'">
                                 <td>{{order}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeOrderIgnoreList(order)" translate>button.remove</a>
                                 </td>
                             </tr>
-                            <tr ng-repeat="jobChain in savedIgnoreList.jobChains">
+                            <tr ng-repeat="jobChain in savedIgnoreList.jobChains" ng-if="historyFilters.type != 'job'">
                                 <td>{{jobChain}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeJobChainIgnoreList(jobChain)" translate>button.remove</a>
                                 </td>
                             </tr>
-                            <tr ng-repeat="job in savedIgnoreList.jobs">
+                            <tr ng-repeat="job in savedIgnoreList.jobs" ng-if="historyFilters.type == 'job'">
                                 <td>{{job}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeJobIgnoreList(job)" translate>button.remove</a>

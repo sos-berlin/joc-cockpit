@@ -23,7 +23,6 @@
         tabs._jobChain.expand_to = [];
         tabs._jobChain.selectedView = true;
 
-
         tabs._job = {};
         tabs._job.filter = {};
         tabs._job.filter.state = 'ALL';
@@ -72,6 +71,7 @@
         tabs._orderDetail.currentPage = '1';
         tabs._orderDetail.pageView = 'grid';
         tabs._orderDetail.showErrorNodes = true;
+        tabs._orderDetail.showLogPanel = undefined;
         tabs._orderDetail.fitToScreen = false;
 
         tabs._history = {};
@@ -189,6 +189,7 @@
         tempTabs._orderDetail.pageView = 'grid';
         tempTabs._orderDetail.showErrorNodes = true;
         tempTabs._orderDetail.fitToScreen = false;
+        tempTabs._orderDetail.showLogPanel = undefined;
 
         tempTabs._history = {};
         tempTabs._history.order = {};

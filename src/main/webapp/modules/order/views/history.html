@@ -180,6 +180,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="btn-group dropdown m-r-sm">
+                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}}</button>
+                        <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                            <a class="dropdown-item" ng-if="(savedIgnoreList.jobChains.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'jobChain'" href ng-click="editIgnoreList()" translate>button.editIgnoreList</a>
+                            <a class="dropdown-item" ng-if="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'job'" href ng-click="editIgnoreList()" translate>button.editIgnoreList</a>
+                            <a class="dropdown-item" href ng-click="enableDisableIgnoreList()" ng-if="!savedIgnoreList.isEnable" translate>button.enableIgnoreList</a>
+                            <a class="dropdown-item" href ng-click="enableDisableIgnoreList()" ng-if="savedIgnoreList.isEnable" translate>button.disableIgnoreList</a>
+                            <a class="dropdown-item" href ng-click="resetIgnoreList()" translate>button.resetIgnoreList</a>
+
+                        </div>
+                    </div>
                     <button class="btn btn-grey btn-sm " id="exportToExcelBtn" ng-click="exportToExcel()"><img src="images/share.png" class="p-b-xs"> </button>
                 </div>
             </div>
@@ -189,7 +200,7 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0" >
         <div class="row m-b">
-            <div class="col-md-8 col-sm-6">
+            <div class="col-md-6 col-sm-4">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='jobChain'}" ng-model="historyFilters.type"
@@ -208,7 +219,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="col-md-4 col-sm-6">
+            <div class="col-md-6 col-sm-8">
                 <div class="btn btn-sm inline pull-right m-l" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </div>
@@ -338,7 +349,7 @@
         </div>
         <div class="hide"  ng-class="{'show': isLoading}">
             <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'jobChain'" >
-                <div class="table-responsive" context-menu="menuOptions">
+                <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
                             <tr>
@@ -409,8 +420,8 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                         <a class="dropdown-item" target="_blank" href="#/order/log/{{history.historyId}}/{{history.orderId}}?jobChain={{history.jobChain}}" translate>button.showLogInNewTab</a>
-                                        <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addOrderToIgnoreList(history.orderId)" translate>button.addOrderToIgnoreList</a>
-                                        <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addOrderToIgnoreList(history.orderId)" translate>button.addOrderToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
                                     </div>
                                 </div>
                             </td>
@@ -476,7 +487,7 @@
                 </div>
             </div>
             <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'job'">
-                <div class="table-responsive" context-menu="menuOptions">
+                <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="job">
                         <thead>
                             <tr>
@@ -545,7 +556,7 @@
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                         <a class="dropdown-item" target="_blank" href="#/job/log/{{jobHistory.taskId}}?job={{jobHistory.job}}" translate>button.showLogInNewTab</a>
-                                        <a class="dropdown-item" ng-class="{'disable-link': !savedIgnoreList.isEnable}" ng-click="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
                                     </div>
                                 </div>
                             </td>
@@ -616,3 +627,19 @@
         </div>
     </div>
 </div>
+<script>
+$('.table-responsive').on('shown.bs.dropdown', function (e) {
+    var $table = $(this),
+        $menu = $(e.target).find('.dropdown-menu'),
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
+  });
+
+  $('.table-responsive').on('hide.bs.dropdown', function () {
+    $(this).css("padding-bottom", 0);
+  });
+
+</script>

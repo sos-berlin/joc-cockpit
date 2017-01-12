@@ -799,5 +799,6 @@
   "label.orderFinished": "Auftrag beendet",
   "label.showTasks": "Prozesse in Sichten sofort anzeigen",
   "label.ignoreListFilters": "Filter für Ausschlussliste",
-  "button.remove": "Löschen"
+  "button.remove": "Löschen",
+  "label.ignoreList": "Ignore List"
 }

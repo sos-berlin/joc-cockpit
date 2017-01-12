@@ -533,13 +533,13 @@
 
             }, function (err) {
                 if (logout == false && (err.status == 420 || err.status == 434)) {
-                    if (eventTimeOut)
+                    if (eventTimeOut) {
                         $timeout.cancel(eventTimeOut);
+                    }
                     eventTimeOut = $timeout(function () {
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                         $timeout.cancel(eventTimeOut);
                     }, 2000);
-
                 }
             })
         };

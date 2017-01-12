@@ -799,5 +799,6 @@
   "label.orderFinished": "Ordre complet",
   "label.showTasks": "Visualiser les Processus immédiatement avec les vues",
   "label.ignoreListFilters": "Filtres pour la liste des ignorés",
-  "button.remove": "Supprimer"
+  "button.remove": "Supprimer",
+  "label.ignoreList": "Ignore List"
 }
