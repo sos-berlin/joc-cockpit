@@ -237,7 +237,7 @@
   "label.endNode": "Noeud final",
   "label.executedBy": "Exécuté par",
   "label.processedBy": "Traité par",
-  "label.processName": "Nom Processus",
+  "label.processName": "Chaîne des Tâches ou Tâches",
   "label.name": "Nom",
   "label.value": "Valeur",
   "label.calendarViewForPlannedOrders": "Visualiser le Calendrier des Ordres planifiés",
@@ -551,7 +551,7 @@
   "label.keywords": "Mots clés",
   "label.directory": "Répertoire",
   "label.sr": "No. de série",
-  "label.regex": "Expression Régulière",
+  "label.regex": "Expression Régulière our Dossiers",
   "label.regexAndChooseTree": "Expression Régulière ou Dossiers",
   "label.on": "Activé",
   "label.off": "Desactivé",
@@ -770,7 +770,7 @@
   "label.jobFound": "Tâche trouvé",
   "label.ordersFound": "Ordres trouvé",
   "label.orderFound": "Ordre trouvé",
-  "label.plansFound": "entrées trouvé dans le Plans Quotidien",
+  "label.plansFound": "entrées trouvé dans le Plan Quotidien",
   "label.planFound": "entrée trouvé dans le Plan Quotidien",
   "label.historiesFound": "entrées trouvé dans l'Historique",
   "label.historyFound": "entrée trouvé dans l'Historique",
@@ -800,5 +800,5 @@
   "label.showTasks": "Visualiser les Processus immédiatement avec les vues",
   "label.ignoreListFilters": "Filtres pour la liste des ignorés",
   "button.remove": "Supprimer",
-  "label.ignoreList": "Ignore List"
+  "label.ignoreList": "Liste des ignorés"
 }

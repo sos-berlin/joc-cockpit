@@ -238,7 +238,7 @@
   "label.endNode": "Endknoten",
   "label.executedBy": "Ausgeführt durch",
   "label.processedBy": "Verarbeitet durch",
-  "label.processName": "Prozessname",
+  "label.processName": "Job-Ketten oder Jobs",
   "label.name": "Name",
   "label.value": "Wert",
   "label.calendarViewForPlannedOrders": "Kalenderansicht für eingeplante Aufträge",
@@ -555,7 +555,7 @@
   "label.keywords": "Schlagwörter",
   "label.directory": "Verzeichnis",
   "label.sr": "Lfd. Nr.",
-  "label.regex": "Regulärer Ausdruck",
+  "label.regex": "Regulärer Ausdruck oder Ordner",
   "label.regexAndChooseTree": "Regulärer Ausdruck oder Ordner",
   "label.on": "An",
   "label.off": "Aus",
@@ -619,9 +619,9 @@
   "message.noTaskHistoryFound": "keine Prozesshistorie vorhanden",
   "message.noNodesFound": "keine Knoten vorhanden",
   "message.noEnqueuedTasksFound": "keine Prozesse in Warteschlange vorhanden",
-  "message.noQueueOrdersFound": "keine Auftrüge in Warteschlange vorhanden",
-  "message.noOrderHistoryFound": "keine Auftragshistorie vorhanden",
-  "message.noJobChainHistoryFound": "keine Job-Kettenhistorie vorhanden",
+  "message.noQueueOrdersFound": "keine Aufträge in Warteschlange vorhanden",
+  "message.noOrderHistoryFound": "keine Historie der Aufträge vorhanden",
+  "message.noJobChainHistoryFound": "keine Historie der Job-Ketten vorhanden",
   "message.notAllowed": "Nicht zugelassen!",
   "message.requiredError": "Diese Eingabe ist verpflichtend",
   "message.tooLongError": "Eingegebener Wert zu lang",
@@ -800,5 +800,5 @@
   "label.showTasks": "Prozesse in Sichten sofort anzeigen",
   "label.ignoreListFilters": "Filter für Ausschlussliste",
   "button.remove": "Löschen",
-  "label.ignoreList": "Ignore List"
+  "label.ignoreList": "Ausschlussliste"
 }
