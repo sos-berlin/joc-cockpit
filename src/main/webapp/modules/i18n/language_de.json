@@ -238,7 +238,7 @@
   "label.endNode": "Endknoten",
   "label.executedBy": "Ausgeführt durch",
   "label.processedBy": "Verarbeitet durch",
-  "label.processName": "Prozessname",
+  "label.processName": "Job-Ketten oder Jobs",
   "label.name": "Name",
   "label.value": "Wert",
   "label.calendarViewForPlannedOrders": "Kalenderansicht für eingeplante Aufträge",
@@ -555,7 +555,7 @@
   "label.keywords": "Schlagwörter",
   "label.directory": "Verzeichnis",
   "label.sr": "Lfd. Nr.",
-  "label.regex": "Regulärer Ausdruck",
+  "label.regex": "Regulärer Ausdruck oder Ordner",
   "label.regexAndChooseTree": "Regulärer Ausdruck oder Ordner",
   "label.on": "An",
   "label.off": "Aus",
@@ -800,5 +800,5 @@
   "label.showTasks": "Prozesse in Sichten sofort anzeigen",
   "label.ignoreListFilters": "Filter für Ausschlussliste",
   "button.remove": "Löschen",
-  "label.ignoreList": "Ignore List"
+  "label.ignoreList": "Ausschlussliste"
 }
