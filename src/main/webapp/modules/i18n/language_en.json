@@ -588,7 +588,7 @@
   "label.newWindow": "New Window",
   "label.fileOrders": "File Orders",
   "label.since": "since",
-  "label.maxNumberOfHistoryEntries": "Max. number of history entries",
+  "label.maxNumberOfHistoryEntries": "Max. number of History entries",
   "label.maxNumberOfHistoryEntriesPerTask": "Max. number of History entries per Task",
   "label.maxNumberOfHistoryEntriesPerOrder": "Max. number of History entries per Order",
   "label.maxNumberOfHistoryEntriesPerJobchain": "Max. number of History entries per Job Chain",
