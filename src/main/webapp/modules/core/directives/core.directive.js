@@ -442,34 +442,38 @@
     time.$inject = ['$timeout', '$filter'];
     function time($timeout, $filter) {
 
-        return function (scope, element, attrs) {
+        return {
+            link: function (scope, element, attrs) {
 
-            var time = attrs.time;
+                var time = attrs.time;
+                 attrs.$observe('time', function (data) {
+                    time = data;
+                }, true);
 
-            var timeoutId = '';
-            var intervalLength = 1000 * 5; // 5 seconds
-            var filter = $filter('remainingTime');
+                var timeoutId = '';
+                var intervalLength = 1000 * 5; // 5 seconds
+                var filter = $filter('remainingTime');
 
-            function updateTime() {
-                element.text(filter(time));
-            }
+                function updateTime() {
+                    element.text(filter(time));
+                }
 
-            function updateLater() {
-                timeoutId = $timeout(function () {
-                    updateTime();
+                function updateLater() {
+                    timeoutId = $timeout(function () {
+                        updateTime();
+                        updateLater();
+                    }, intervalLength);
+                }
+
+                element.bind('$destroy', function () {
+                    $timeout.cancel(timeoutId);
+                });
+
+                updateTime();
+                if (time)
                     updateLater();
-                }, intervalLength);
             }
-
-            element.bind('$destroy', function () {
-                $timeout.cancel(timeoutId);
-            });
-
-            updateTime();
-            if(time)
-            updateLater();
-        };
-
+        }
     }
 
     time1.$inject = ['$timeout', '$filter'];

@@ -56,7 +56,7 @@
             return $rootScope.clientLogFilter.status.indexOf(log.level) !== -1;
         };
         vm.redirectToNewTab = function () {
-            $window.open('#/client-logs', '_blank');
+            $window.open('#!/client-logs', '_blank');
         };
 
         var watcher = vm.$watchCollection('clientLogFilter', function (newNames, oldValues) {
@@ -221,9 +221,9 @@
                     if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
 
                         if (order && order.historyId && order.orderId)
-                            url = '#/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
+                            url = '#!/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
                         else if (task && task.taskId)
-                            url = '#/show_log?taskId=' + task.taskId + '&job=' + task.job;
+                            url = '#!/show_log?taskId=' + task.taskId + '&job=' + task.job;
                         else {
                             return;
                         }
@@ -242,9 +242,9 @@
             } else {
                 var url = null;
                 if (order && order.historyId && order.orderId) {
-                    url = '#/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
+                    url = '#!/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
                 } else if (task && task.taskId) {
-                    url = '#/job/log/' + task.taskId + '?job=' + task.job;
+                    url = '#!/job/log/' + task.taskId + '?job=' + task.job;
                 }
                 window.open(url, '_blank');
             }
@@ -4201,6 +4201,7 @@
 
     CommonLogCtrl.$inject = ['$scope', '$location', 'OrderService', 'TaskService', '$sce'];
     function CommonLogCtrl($scope, $location, OrderService, TaskService, $sce) {
+
         var vm = $scope;
         var object = $location.search();
         if (object.orderId) {

@@ -181,7 +181,7 @@
                         </div>
                     </div>
                     <div class="btn-group dropdown m-r-sm">
-                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}}</button>
+                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
                         <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item" ng-if="(savedIgnoreList.jobChains.length > 0 || savedIgnoreList.orders.length > 0) && historyFilters.type == 'jobChain'" href ng-click="editIgnoreList()" translate>button.editIgnoreList</a>
                             <a class="dropdown-item" ng-if="savedIgnoreList.jobs.length > 0 && historyFilters.type == 'job'" href ng-click="editIgnoreList()" translate>button.editIgnoreList</a>
@@ -419,7 +419,7 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a class="dropdown-item" target="_blank" href="#/order/log/{{history.historyId}}/{{history.orderId}}?jobChain={{history.jobChain}}" translate>button.showLogInNewTab</a>
+                                        <a class="dropdown-item" target="_blank" href="#!/order/log/{{history.historyId}}/{{history.orderId}}?jobChain={{history.jobChain}}" translate>button.showLogInNewTab</a>
                                         <a class="dropdown-item" ng-click="addOrderToIgnoreList(history.orderId)" translate>button.addOrderToIgnoreList</a>
                                         <a class="dropdown-item" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
                                     </div>
@@ -555,7 +555,7 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a class="dropdown-item" target="_blank" href="#/job/log/{{jobHistory.taskId}}?job={{jobHistory.job}}" translate>button.showLogInNewTab</a>
+                                        <a class="dropdown-item" target="_blank" href="#!/job/log/{{jobHistory.taskId}}?job={{jobHistory.job}}" translate>button.showLogInNewTab</a>
                                         <a class="dropdown-item" ng-click="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
                                     </div>
                                 </div>
