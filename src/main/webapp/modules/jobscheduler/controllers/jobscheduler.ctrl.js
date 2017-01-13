@@ -971,6 +971,10 @@ function volatileFolderDataL(data, obj) {
                 scope: vm,
                 size: 'lg'
             });
+            modalInstance.result.then(function () {
+                  }, function () {
+
+            });
         };
 
 
@@ -1206,14 +1210,18 @@ function volatileFolderDataL(data, obj) {
                 obj.states.push(vm.schdeuleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
+                var data = [];
                 if (vm.schedules.length > 0) {
                     angular.forEach(vm.schedules, function (schedule) {
-                        angular.forEach(res.schedules, function (scheduleData) {
-                            if (schedule.name == scheduleData.name) {
-                                schedule = angular.merge(schedule, scheduleData);
+                        for (var i = 0; i < res.schedules.length; i++) {
+                            if (schedule.name == res.schedules[i].name) {
+                                schedule = angular.merge(schedule, res.schedules[i]);
+                                data.push(schedule);
+                                break;
                             }
-                        });
+                        }
                     });
+                    vm.schedules = data;
                 } else {
                     vm.schedules = res.schedules;
                 }
@@ -1263,15 +1271,18 @@ function volatileFolderDataL(data, obj) {
                 obj.states.push(vm.schdeuleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
-
-                if (data.schedules.length > 0 && data.schedules.length == res.schedules.length) {
+                var data1 = [];
+                if (data.schedules && data.schedules.length > 0) {
                     angular.forEach(data.schedules, function (schedule) {
-                        angular.forEach(res.schedules, function (scheduleData) {
-                            if (schedule.name == scheduleData.name) {
-                                schedule = angular.merge(schedule, scheduleData);
+                        for (var i = 0; i < res.schedules.length; i++) {
+                            if (schedule.name == res.schedules[i].name) {
+                                schedule = angular.merge(schedule, res.schedules[i]);
+                                data1.push(schedule);
+                                break;
                             }
-                        });
+                        }
                     });
+                    data.schedules = data1;
                 } else {
                     data.schedules = res.schedules;
                 }
@@ -1320,15 +1331,18 @@ function volatileFolderDataL(data, obj) {
                 obj.states.push(vm.schdeuleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
-
+                var data1 = [];
                 if (data.schedules.length > 0) {
                     angular.forEach(data.schedules, function (schedule) {
-                        angular.forEach(res.schedules, function (scheduleData) {
-                            if (schedule.name == scheduleData.name) {
-                                schedule = angular.merge(schedule, scheduleData);
+                        for (var i = 0; i < res.schedules.length; i++) {
+                            if (schedule.name == res.schedules[i].name) {
+                                schedule = angular.merge(schedule, res.schedules[i]);
+                                data1.push(schedule);
+                                break;
                             }
-                        });
+                        }
                     });
+                    data.schedules = data1;
                 } else {
                     data.schedules = res.schedules;
                 }
@@ -3237,6 +3251,10 @@ function volatileFolderDataL(data, obj) {
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
         };
 

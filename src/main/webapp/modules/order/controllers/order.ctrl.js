@@ -25,14 +25,14 @@
         function loadJobOrderV(obj) {
             OrderService.get(obj).then(function (res) {
                 var data = [];
-                if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
-                    angular.forEach(vm.orders, function (orders) {
+                if (vm.orders && vm.orders.length > 0) {
+                    angular.forEach(vm.orders, function (order) {
                         for (var i = 0; i < res.orders.length; i++) {
                             if (orders.path == res.orders[i].path) {
-                                res.orders[i].title = angular.copy(orders.title);
-                                res.orders[i].params = angular.copy(orders.params);
-                                orders = res.orders[i];
-                                data.push(orders);
+                                res.orders[i].title = angular.copy(order.title);
+                                res.orders[i].params = angular.copy(order.params);
+                                order = res.orders[i];
+                                data.push(order);
                                 break;
                             }
                         }
@@ -129,8 +129,8 @@
 
     }
 
-    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location", "CoreService", "$uibModal"];
-    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location, CoreService, $uibModal) {
+    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location", "CoreService", "$uibModal","$window"];
+    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location, CoreService, $uibModal,$window) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -800,6 +800,10 @@
                 size: 'lg',
                 backdrop: 'static'
             });
+            modalInstance.result.then(function () {
+                  }, function () {
+
+            });
         }
 
         vm.onOrderAction = function (order, action) {
@@ -1153,6 +1157,10 @@
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
 
         }
@@ -1578,7 +1586,7 @@
             OrderService.get(obj).then(function (res) {
 
                 var data1 = [];
-                if (data.orders.length > 0 && data.orders.length > res.orders.length) {
+                if (data.orders && data.orders.length > 0) {
                     angular.forEach(data.orders, function (orders) {
 
                         for(var i = 0; i<res.orders.length;i++){
@@ -1818,7 +1826,7 @@
                 obj1.folders = [{folder: data.path, recursive: false}];
                 OrderService.getOrdersP(obj1).then(function (result) {
                     OrderService.get(obj).then(function (res) {
-                        if (result.orders && result.orders.length > 0 && res.orders && res.orders.length > 0) {
+                        if (result.orders && result.orders.length > 0) {
                             var x = [];
                             angular.forEach(result.orders, function (orders) {
                                 for (var i = 0; i < res.orders.length; i++) {
@@ -1966,15 +1974,15 @@
             OrderService.get(obj).then(function (res) {
 
                 var data = [];
-                if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
-                    angular.forEach(vm.orders, function (orders) {
+                if (vm.orders && vm.orders.length > 0) {
+                    angular.forEach(vm.orders, function (order) {
 
                         for (var i = 0; i < res.orders.length; i++) {
-                            if (orders.path == res.orders[i].path) {
-                                res.orders[i].title = angular.copy(orders.title);
-                                res.orders[i].path1 = angular.copy(orders.path1);
-                                orders = res.orders[i];
-                                data.push(orders);
+                            if (order.path == res.orders[i].path) {
+                                res.orders[i].title = angular.copy(order.title);
+                                res.orders[i].path1 = angular.copy(order.path1);
+                                order = res.orders[i];
+                                data.push(order);
                                 break;
                             }
                         }
@@ -2094,6 +2102,10 @@
                 controller: 'DialogCtrl',
                 scope: vm
             });
+                         modalInstance.result.then(function () {
+                  }, function () {
+
+            });
         };
 
         vm.editFilter = function (filter) {
@@ -2178,9 +2190,18 @@
 
 
         vm.getTreeStructure = function () {
-            if (vm.filterTree) {
-                vm.filterTree1 = angular.copy(vm.filterTree);
-            }
+              OrderService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                folders: folders,
+                types: ['ORDER']
+            }).then(function (res) {
+                vm.filterTree1 = res.folders;
+
+            }, function () {
+                $('#treeModal').modal('hide');
+            });
+
             $('#treeModal').modal('show');
         };
 
@@ -3101,12 +3122,16 @@
         };
 
         function openCalendar() {
-            $uibModal.open({
+           var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
         }
 
@@ -3166,9 +3191,9 @@
     }
 
     HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "toasty", "$timeout", "gettextCatalog",
-        "JobChainService", "orderByFilter", "CoreService", "$window"];
+        "JobService", "orderByFilter", "CoreService", "$window"];
     function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, toasty, $timeout, gettextCatalog,
-                         JobChainService, orderBy, CoreService, $window) {
+                         JobService, orderBy, CoreService, $window) {
         var vm = $scope;
         vm.historyFilters = CoreService.getHistoryTab();
         vm.order = vm.historyFilters.order;
@@ -3574,6 +3599,13 @@
                 obj.historyStates = selectedFiltered2.state;
             }
 
+            if (selectedFiltered2.paths && selectedFiltered2.paths.length > 0) {
+                obj.folders = [];
+                angular.forEach(selectedFiltered2.paths, function (value) {
+                    obj.folders.push({folder: value, recursive: true});
+                })
+            }
+
             var fromDate;
             var toDate;
             if (selectedFiltered2.planned) {
@@ -3803,6 +3835,10 @@
                 controller: 'DialogCtrl',
                 scope: vm
             });
+             modalInstance.result.then(function () {
+                  }, function () {
+
+            });
 
 
         };
@@ -3960,17 +3996,27 @@
 
         vm.getTreeStructure = function () {
             $('#treeModal').modal('show');
-
-            JobChainService.tree({
-                jobschedulerId: vm.schedulerIds.selected,
-                compact: true,
-                types: ['JOBCHAIN']
-            }).then(function (res) {
-                vm.tree = res.folders;
-            }, function (err) {
-
-            });
-
+            if (vm.historyFilters.type == 'jobChain') {
+                OrderService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: ['ORDER']
+                }).then(function (res) {
+                    vm.tree = res.folders;
+                }, function (err) {
+                    $('#treeModal').modal('hide');
+                });
+            } else {
+                JobService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: ['JOB']
+                }).then(function (res) {
+                    vm.tree = res.folders
+                }, function () {
+                    $('#treeModal').modal('hide');
+                });
+            }
         };
 
 

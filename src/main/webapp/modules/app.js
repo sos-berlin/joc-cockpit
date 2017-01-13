@@ -46,6 +46,9 @@
                 limit: 1
             });
         }])
+        .config(['$qProvider', function ($qProvider) {
+            $qProvider.errorOnUnhandledRejections(false);
+        }])
         .config(['$provide', function ($provide) {
             $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
                 return function (exception, cause) {

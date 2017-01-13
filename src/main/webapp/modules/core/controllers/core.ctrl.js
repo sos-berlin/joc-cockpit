@@ -180,11 +180,15 @@
             vm.name = name;
             vm.type = type;
             vm.path = path;
-            $uibModal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/show-configuration.html',
                 controller: 'ConfigurationCtrl',
                 scope: vm,
                 size: 'lg'
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
         };
 
@@ -297,10 +301,14 @@
         };
 
         vm.about = function () {
-            $uibModal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/about-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
         };
 

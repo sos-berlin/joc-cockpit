@@ -557,7 +557,7 @@
                 JobChainService.getJobChainsP(obj1).then(function (result) {
                     JobChainService.get(obj).then(function (res) {
 
-                        if (result.jobChains && result.jobChains.length > 0 && res.jobChains && res.jobChains.length > 0) {
+                        if (result.jobChains && result.jobChains.length > 0) {
                             var x = [];
                             angular.forEach(result.jobChains, function (jobChains) {
                                 for(var i = 0; i<res.jobChains.length;i++) {
@@ -788,6 +788,10 @@
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
             vm.reset();
 
@@ -1054,6 +1058,10 @@
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
         };
 
@@ -2178,7 +2186,7 @@
                 obj1.folders = [{folder: data.path, recursive: false}];
                 JobService.getJobsP(obj1).then(function (result) {
                     JobService.get(obj).then(function (res) {
-                        if (result.jobs && result.jobs.length > 0 && res.jobs && res.jobs.length > 0) {
+                        if (result.jobs && result.jobs.length > 0) {
                             var x = [];
                             angular.forEach(result.jobs, function (jobs) {
 
@@ -2487,6 +2495,10 @@
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
+            });
+            modalInstance.result.then(function () {
+                  }, function () {
+
             });
         };
 

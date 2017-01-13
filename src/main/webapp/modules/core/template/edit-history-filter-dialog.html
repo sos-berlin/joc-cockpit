@@ -22,7 +22,14 @@
             <div class="form-group row hide" ng-class="{'show':historyFilters.type == 'jobChain'}">
                <label class="col-sm-4 form-control-label" translate>label.regex</label>
                <div class=" col-sm-6">
-                   <input type="text"  ng-disabled="historyFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="historyFilter.regex">
+                   <input type="text" ng-disabled="historyFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="historyFilter.regex">
+               </div>
+               <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+            </div>
+            <div class="form-group row hide" ng-class="{'show':historyFilters.type == 'job'}">
+               <label class="col-sm-4 form-control-label" translate>label.regex</label>
+               <div class=" col-sm-6">
+                   <input type="text" ng-disabled="historyFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="historyFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
@@ -33,13 +40,6 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row hide" ng-class="{'show':historyFilters.type == 'job'}">
-               <label class="col-sm-4 form-control-label" translate>label.regex</label>
-               <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="{{'placeholder.jobRegex' | translate}}" ng-model="historyFilter.regex">
-               </div>
-            </div>
-
             <div class="form-group row m-t-sm" >
            <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
            <div class=" col-sm-6">
