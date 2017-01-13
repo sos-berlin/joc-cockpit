@@ -1264,7 +1264,7 @@ function volatileFolderDataL(data, obj) {
             }
             ScheduleService.get(obj).then(function (res) {
 
-                if (data.schedules.length > 0) {
+                if (data.schedules.length > 0 && data.schedules.length == res.schedules.length) {
                     angular.forEach(data.schedules, function (schedule) {
                         angular.forEach(res.schedules, function (scheduleData) {
                             if (schedule.name == scheduleData.name) {

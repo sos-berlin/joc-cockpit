@@ -1,3 +1,8 @@
+<style>
+    .rg-bottom{
+        margin-bottom: -18px!important;
+    }
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="box p-l p-r">
@@ -79,8 +84,8 @@
                     </div>
                 </div>
             </div>
-            <div class="hide" ng-class={show:orderFilters.pageView=='grid'}>
-                <div class="p-a p-b-0" >
+            <div class="hide" ng-class={show:orderFilters.pageView=='grid'} resizable r-directions="['bottom']" r-height="500" style="overflow: auto;width: 100%">
+                <div>
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
                                   on-remove="onRemove($item)"

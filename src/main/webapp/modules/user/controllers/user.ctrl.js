@@ -18,6 +18,8 @@
         $rootScope.error = '';
 
 
+
+
         function getSchedulerIds(response) {
             JobSchedulerService.getSchedulerIds().then(function (res) {
                 if (res && !res.data) {
@@ -39,8 +41,10 @@
         }
 
         if ($window.localStorage.$SOS$REMEMBERME == 'true' || $window.localStorage.$SOS$REMEMBERME == true) {
-            vm.user.username = $window.localStorage.$SOS$USERNAME;
-            vm.user.password = $window.localStorage.$SOS$PASSWORD;
+            var urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$USERNAME.toString(), '$SOSJOBSCHEDULER');
+            var pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$PASSWORD.toString(), '$SOSJOBSCHEDULER');
+            vm.user.username = urs.toString(CryptoJS.enc.Utf8);
+            vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
             vm.rememberMe = true;
         }
 
@@ -82,8 +86,10 @@
                             SOSAuth.accessTokenId = response.accessToken;
                             SOSAuth.rememberMe = vm.rememberMe;
                             if (vm.rememberMe) {
-                                $window.localStorage.$SOS$USERNAME = vm.user.username;
-                                $window.localStorage.$SOS$PASSWORD = vm.user.password;
+                                var urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
+                                var pwd = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
+                                $window.localStorage.$SOS$USERNAME = urs;
+                                $window.localStorage.$SOS$PASSWORD = pwd;
                                 $window.localStorage.$SOS$REMEMBERME = vm.rememberMe;
                             } else {
                                 $window.localStorage.$SOS$USERNAME = null;
