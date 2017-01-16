@@ -741,7 +741,7 @@
   "label.orderNodeChanged": "Order Node Changed",
   "label.orderResumed": "Order Resumed",
   "label.orderSetback": "Order Setback",
-  "label.eventFilter": "Event Filter",
+  "label.eventFilter": "Notification Filter",
   "label.notifications": "Notifications",
   "label.backToNotifications": "Back to Notifications",
   "label.lateOrders": "Late Orders",

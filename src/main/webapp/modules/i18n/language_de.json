@@ -741,7 +741,7 @@
   "label.orderNodeChanged": "Auftragsstatus geändert",
   "label.orderResumed": "Auftrag fortgesetzt",
   "label.orderSetback": "Auftrag in Wiederholung",
-  "label.eventFilter": "Ereignisfilter",
+  "label.eventFilter": "Filter für Benachrichtigungen",
   "label.notifications": "Benachrichtigungen",
   "label.backToNotifications": "Zurück zu den Benachrichtigungen",
   "label.lateOrders": "Verspätete Auftrage",

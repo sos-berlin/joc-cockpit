@@ -743,7 +743,7 @@
   "label.orderNodeChanged": "Noeud d'Ordre Modifié",
   "label.orderResumed": "Ordre Repris",
   "label.orderSetback": "Ordre Reporté",
-  "label.eventFilter": "Filtre d'événement",
+  "label.eventFilter": "Filtre de Notification",
   "label.notifications": "Notifications",
   "label.backToNotifications": "Retourner aux notifications",
   "label.failedOrders": "Ordres Echoués",
