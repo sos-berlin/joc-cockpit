@@ -653,7 +653,7 @@
   "placeholder.value": "Wert",
   "placeholder.search": "Suche",
   "placeholder.dailyPlannedNameField": "Name des Tagesplans oder Auswahl eines Plans",
-  "placeholder.processPlanned": "now+600, today oder 08:00am bis 08:00pm",
+  "placeholder.processPlanned": "now+600, 1h, 1d, today oder 08:00am bis 08:00pm",
   "placeholder.regex": "Auftragskennung oder regulärer Ausdruck",
   "placeholder.jobRegex": "Name des Jobs oder regulärer Ausdruck",
   "placeholder.orderRegexAndChooseTree": "Auftragskennung, regulärer Ausdruck oder Auswahl",
@@ -800,5 +800,13 @@
   "label.showTasks": "Prozesse in Sichten sofort anzeigen",
   "label.ignoreListFilters": "Filter für Ausschlussliste",
   "button.remove": "Löschen",
-  "label.ignoreList": "Ausschlussliste"
+  "label.ignoreList": "Ausschlussliste",
+  "label.regularExpression": "Regular Expression",
+  "placeholder.regularExpression": "Regular Expression",
+  "label.folders": "Folders",
+  "label.repeatType": "Repeat Type",
+  "label.singleStartMode": "single_start",
+  "label.startStartRepeatMode": "start_start_repeat",
+  "label.startEndRepeatMode": "start_end_repeat",
+  "label.showOrders": "Show Orders immediately in views"
 }

@@ -193,7 +193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    vm.dateClicked = function(date) {
-
+console.log('>>>>>>>>>>>>>>>>>>>>>')
 	      var rawDate = moment(date).toDate();
 
 	      var nextView = {

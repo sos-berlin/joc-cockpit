@@ -34,9 +34,34 @@
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="historyFilter.paths.length>0">
-                <div class="col-sm-offset-4 col-sm-8" style="max-height: 140px; overflow: auto">
+                 <label class="col-sm-4" translate>label.folders</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in historyFilter.paths track by $index">
-                            <span class="">{{path}}</span>
+                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="historyFilter.jobChains.length>0">
+                <label class="col-sm-4" translate>label.jobChains</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                    <div ng-repeat="jobChain in historyFilter.jobChains track by $index">
+                            <span class="">{{jobChain}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(jobChain,'jobChain')"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="historyFilter.orders.length>0">
+                <label class="col-sm-4" translate>label.orders</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                    <div ng-repeat="order in historyFilter.orders track by $index">
+                            <span class="">{{order.orderId}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(order,'order')"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="historyFilter.jobs.length>0">
+                <label class="col-sm-4" translate>label.jobs</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                    <div ng-repeat="job in historyFilter.jobs track by $index">
+                            <span class="">{{job}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(job,'job')"></i>
                     </div>
                 </div>
             </div>
@@ -62,7 +87,7 @@
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'SUCCESSFUL'">
                         <i class="primary"></i><span translate>label.successful</span>
                     </label>
-                    <label class="md-check m-t w">
+                    <label class="md-check w">
                         <input type="checkbox" data-checklist-model="historyFilter.state" data-checklist-value="'FAILED'">
                         <i class="primary"></i><span translate>label.failed</span>
                     </label>

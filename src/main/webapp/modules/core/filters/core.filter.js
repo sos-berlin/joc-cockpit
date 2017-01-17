@@ -8,6 +8,7 @@
         .filter('fromNow', fromNow)
         .filter('stringToDate', stringToDate)
         .filter('duration', duration)
+        .filter('convertTime', convertTime)
         .filter('durationFromCurrent', durationFromCurrent)
         .filter('startFrom', startFrom)
         .filter('remainingTime', remainingTime)
@@ -60,6 +61,20 @@
             } else {
                 return gettextCatalog.getString('label.lessThanSec');
             }
+        }
+    }
+
+
+    function convertTime() {
+        return function (seconds) {
+
+            var s = parseInt((seconds) % 60),
+                m = parseInt((seconds / 60) % 60),
+                h = parseInt((seconds / (60 * 60)) % 24);
+            h = h>9 ? h : '0'+h;
+            m = m>9 ? m : '0'+m;
+            s = s>9 ? s : '0'+s;
+            return h + ':' + m + ':' + s;
         }
     }
 

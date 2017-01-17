@@ -28,7 +28,7 @@
                 <label class="col-sm-4 form-control-label" translate>label.regex</label>
 
                 <div class=" col-sm-6">
-                    <input ng-disabled="jobFilter.paths.length>0" type="text" class="form-control"
+                    <input type="text" class="form-control"
                            placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
                            ng-model="jobFilter.regex">
                 </div>
@@ -36,9 +36,10 @@
                         class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="jobFilter.paths.length>0">
-                <div class="col-sm-offset-4 col-sm-8" style="max-height: 140px; overflow: auto">
+                <label class="col-sm-4" translate>label.folders</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in jobFilter.paths track by $index">
-                        <span class="">{{path}}</span>
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
                     </div>
                 </div>
             </div>
@@ -67,7 +68,7 @@
                                    data-checklist-value="'RUNNING'">
                             <i class="primary"></i><span translate>label.running</span>
                         </label>
-                        <label class="md-check m-t w">
+                        <label class="md-check w">
                             <input type="checkbox" data-checklist-model="jobFilter.state"
                                    data-checklist-value="'STOOPED'">
                             <i class="primary"></i><span translate>label.stopped</span>

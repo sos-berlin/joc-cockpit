@@ -392,7 +392,7 @@
                             '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
                             '<table class="table table-hover table-bordered" ><thead > <tr>' +
                             '<th> <span translate>label.sr </span> </th><th> <span translate>label.directory </span> </th>' +
-                            '<th> <span translate>label.regex</span> </th></tr></thead>'
+                            '<th> <span translate>label.regularExpression</span> </th></tr></thead>'
                         }
                         rectangleTemplate = rectangleTemplate + '<tbody> <tr> <td>' + parseInt(index + 1) + ' </td><td>' + orderSource.directory + ' </td><td>' + orderSource.regex + ' </td></tr>';
                         if (index == scope.jobChainData.fileOrderSources.length - 1) {

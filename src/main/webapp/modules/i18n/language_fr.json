@@ -640,7 +640,7 @@
   "placeholder.value": "Valeur",
   "placeholder.search": "Chercher",
   "placeholder.dailyPlannedNameField": "Nom du processus planifié ou sélectionner par l'arbre",
-  "placeholder.processPlanned": "now+600, Today ou 08:00am à 08:00pm",
+  "placeholder.processPlanned": "now+600, 1h, 1d, Today ou 08:00am à 08:00pm",
   "placeholder.regex": "Nom de l'Ordre ou expression régulière",
   "placeholder.jobRegex": "Nom de la Tâche ou expression régulière",
   "placeholder.orderRegexAndChooseTree": "Nom de l'Ordre, expression régulière ou sélectionner par l'arbre",
@@ -800,5 +800,13 @@
   "label.showTasks": "Visualiser les Processus immédiatement avec les vues",
   "label.ignoreListFilters": "Filtres pour la liste des ignorés",
   "button.remove": "Supprimer",
-  "label.ignoreList": "Liste des ignorés"
+  "label.ignoreList": "Liste des ignorés",
+  "label.regularExpression": "Regular Expression",
+  "placeholder.regularExpression": "Regular Expression",
+  "label.folders": "Folders",
+  "label.repeatType": "Repeat Type",
+  "label.singleStartMode": "single_start",
+  "label.startStartRepeatMode": "start_start_repeat",
+  "label.startEndRepeatMode": "start_end_repeat",
+  "label.showOrders": "Show Orders immediately in views"
 }

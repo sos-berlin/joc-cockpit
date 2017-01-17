@@ -17,9 +17,6 @@
         vm.rememberMe = false;
         $rootScope.error = '';
 
-
-
-
         function getSchedulerIds(response) {
             JobSchedulerService.getSchedulerIds().then(function (res) {
                 if (res && !res.data) {
@@ -40,9 +37,9 @@
             });
         }
 
-        if ($window.localStorage.$SOS$REMEMBERME == 'true' || $window.localStorage.$SOS$REMEMBERME == true) {
-            var urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$USERNAME.toString(), '$SOSJOBSCHEDULER');
-            var pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$PASSWORD.toString(), '$SOSJOBSCHEDULER');
+        if ($window.localStorage.$SOS$REMEMBER == 'true' || $window.localStorage.$SOS$REMEMBER == true) {
+            var urs = CryptoJS.AES.decrypt($window.localStorage.$SOS$FOO.toString(), '$SOSJOBSCHEDULER');
+            var pwd = CryptoJS.AES.decrypt($window.localStorage.$SOS$BOO.toString(), '$SOSJOBSCHEDULER');
             vm.user.username = urs.toString(CryptoJS.enc.Utf8);
             vm.user.password = pwd.toString(CryptoJS.enc.Utf8);
             vm.rememberMe = true;
@@ -88,13 +85,15 @@
                             if (vm.rememberMe) {
                                 var urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
                                 var pwd = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
-                                $window.localStorage.$SOS$USERNAME = urs;
-                                $window.localStorage.$SOS$PASSWORD = pwd;
-                                $window.localStorage.$SOS$REMEMBERME = vm.rememberMe;
+                                $window.localStorage.$SOS$FOO = urs;
+                                $window.localStorage.$SOS$USERNA = 'null';
+                                $window.localStorage.$SOS$BOO = pwd;
+                                $window.localStorage.$SOS$PASSWORD = 'null';
+                                $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                             } else {
-                                $window.localStorage.$SOS$USERNAME = null;
-                                $window.localStorage.$SOS$PASSWORD = null;
-                                $window.localStorage.$SOS$REMEMBERME = null;
+                                $window.localStorage.$SOS$FOO = null;
+                                $window.localStorage.$SOS$BOO = null;
+                                $window.localStorage.$SOS$REMEMBER = null;
                             }
 
                             SOSAuth.setUser(response);
@@ -139,6 +138,7 @@
         vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
         vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
+        vm.perferences.showOrders = $window.localStorage.$SOS$SHOWORDERS === 'true';
 
         vm.setLocale = function () {
             vm.locale = vm.perferences.locale;
@@ -163,6 +163,7 @@
         vm.changePerferences = function () {
             $window.localStorage.$SOS$ISNEWWINDOW = vm.perferences.isNewWindow;
             $window.localStorage.$SOS$SHOWTASKS = vm.perferences.showTasks;
+            $window.localStorage.$SOS$SHOWORDERS = vm.perferences.showOrders;
 
             if (isNaN(parseInt(vm.perferences.maxRecords))) {
                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);

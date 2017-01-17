@@ -22,14 +22,15 @@
             <div class="form-group row">
                <label class="col-sm-4 form-control-label" translate>label.regex</label>
                <div class=" col-sm-6">
-                   <input type="text" ng-disabled="jobChainFilter.paths.length>0" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobChainFilter.regex">
+                   <input type="text" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobChainFilter.regex">
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>
             <div class="form-group row" ng-if="jobChainFilter.paths.length>0">
-                <div class="col-sm-offset-4 col-sm-8" style="max-height: 140px; overflow: auto">
+                <label class="col-sm-4" translate>label.folders</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                     <div ng-repeat="path in jobChainFilter.paths track by $index">
-                            <span class="">{{path}}</span>
+                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
                     </div>
                 </div>
             </div>

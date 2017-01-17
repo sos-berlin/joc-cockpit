@@ -10,7 +10,6 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-
     ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "gettextCatalog", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout"];
     function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, gettextCatalog, ScheduleService, $uibModal, CoreService, $interval, $timeout) {
         var vm = $scope;
@@ -1773,7 +1772,6 @@ function volatileFolderDataL(data, obj) {
         });
     }
 
-
     ScheduleOrderCtrl.$inject = ["$scope", "$rootScope", "ScheduleService", "$stateParams", "$location", "OrderService", "$uibModal", "CoreService"];
     function ScheduleOrderCtrl($scope, $rootScope, ScheduleService, $stateParams, $location, OrderService, $uibModal, CoreService) {
         var vm = $scope;
@@ -2106,7 +2104,7 @@ function volatileFolderDataL(data, obj) {
                     return d.value;
                 },
                 yAxis: {tickFormat: yAxisTickFormatFunction()},
-                xAxis: {rotateLabels: -30},
+                xAxis: {rotateLabels: -35},
                 valueFormat: function (d) {
                     return d3.format(',.4f')(d);
                 },
@@ -2138,7 +2136,6 @@ function volatileFolderDataL(data, obj) {
                                 }
                             });
                         }
-
                     }
                 },
                 duration: 500,
@@ -2146,7 +2143,7 @@ function volatileFolderDataL(data, obj) {
                 noData: gettextCatalog.getString('message.noDataFound')
 
             }
-        }
+        };
 
         vm.pieOptions = {
             "chart": {
@@ -2164,7 +2161,6 @@ function volatileFolderDataL(data, obj) {
                 color: function (d, i) {
                     return bgColorArray[i];
                 },
-
                 tooltip: {
                     enabled: true,
                     duration: 0,
@@ -2212,7 +2208,7 @@ function volatileFolderDataL(data, obj) {
                         }
                     ];
                     if(vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length>10){
-                        vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 40;
+                        vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
 
 
@@ -2260,11 +2256,9 @@ function volatileFolderDataL(data, obj) {
             return function (d) {
                 if (d % 1 === 0) {
                     return d3.format(',f')(d);
-
                 } else {
                     return;
                 }
-
             };
         }
         vm.descriptionFunction = function () {
@@ -2280,15 +2274,12 @@ function volatileFolderDataL(data, obj) {
             }
         }
 
-
         var format = d3.format(',.0f');
         vm.valueFormatFunction = function () {
             return function (d) {
-
                 return format(d);
             }
         };
-
 
         prepareClusterStatusData();
         var clusterStatusData = {};
@@ -2397,7 +2388,7 @@ function volatileFolderDataL(data, obj) {
 
         vm.loadOrderSnapshot();
         vm.getAgentCluster();
-        //vm.getAgentClusterP();
+
         var states = [];
         vm.clusterAction = function (objectType, action, host, port) {
 
@@ -2467,7 +2458,6 @@ function volatileFolderDataL(data, obj) {
                 });
 
             }
-
 
             function clusterSuccess(state) {
 
@@ -2557,13 +2547,9 @@ function volatileFolderDataL(data, obj) {
                 to.setSeconds(0);
                 to.setMilliseconds(0);
             } else if (range == 'next-24-hours') {
-
                 from.setDate(from.getDate() + 1);
-
                 to.setDate(to.getDate() + 2);
-
             }
-
             vm.dashboardFilters.filter.from = from;
             vm.dashboardFilters.filter.to = to;
         }
@@ -2810,16 +2796,12 @@ function volatileFolderDataL(data, obj) {
         });
     }
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', 'JobChainService', '$stateParams', 'CoreService'];
-    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, JobChainService, $stateParams, CoreService) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', '$stateParams', 'CoreService','$window'];
+    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, $stateParams, CoreService,$window) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
 
-        vm.showPanel = '';
-        vm.showLogPanel = undefined;
-        vm.object = {};
-        vm.tree = [];
         var selectedFiltered;
         var promise1;
 
@@ -2901,7 +2883,6 @@ function volatileFolderDataL(data, obj) {
 
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
-
             $('#dailyPlanTableId').table2excel({
                 exclude: ".noExl",
                 filename: "jobscheduler-dailyplan",
@@ -2910,11 +2891,10 @@ function volatileFolderDataL(data, obj) {
                 exclude_links: false,
                 exclude_inputs: false
             });
-
             $('#exportToExcelBtn').attr("disabled", false);
         };
 
-
+        vm.dataFormate =$window.localStorage.$SOS$DATEFORMAT;
         vm.options = {
             mode: 'custom',
             scale: 'hour',
@@ -2928,17 +2908,14 @@ function volatileFolderDataL(data, obj) {
             columnsHeaders: {
                 'model.name': gettextCatalog.getString('label.jobChain') + '/' + gettextCatalog.getString('label.job'),
                 'model.orderId': gettextCatalog.getString('label.orderId')
-                //'model.status': gettextCatalog.getString('label.status')
             },
             columnsClasses: {
                 'model.name': 'gantt-column-name',
                 'model.orderId': 'gantt-column-from'
-                // 'model.status': 'gantt-column-to'
             },
             columnsHeaderContents: {
                 'model.name': '{{getHeader()}}',
                 'model.orderId': '{{getHeader()}}'
-                // 'model.status': '{{getHeader()}}'
             },
             autoExpand: 'none',
             taskOutOfRange: 'truncate',
@@ -2964,7 +2941,7 @@ function volatileFolderDataL(data, obj) {
         vm.canAutoWidth = function (scale) {
             if (scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/)) {
                 return false;
-            }
+            }else
             return true;
         };
 
@@ -2989,92 +2966,91 @@ function volatileFolderDataL(data, obj) {
 
         function applySavedFilter(obj) {
 
-            if (selectedFiltered) {
+            if (selectedFiltered.regex)
+                obj.regex = selectedFiltered.regex;
 
-                if (selectedFiltered.regex)
-                    obj.regex = selectedFiltered.regex;
-
-                if (selectedFiltered.state && selectedFiltered.state.length > 0) {
-                    obj.states = [];
-                    if (selectedFiltered.state.indexOf('WAITING') !== -1) {
-                        obj.states.push("PLANNED");
-                    } else if (selectedFiltered.state.indexOf('EXECUTED') !== -1) {
-                        obj.states.push("SUCCESSFUL");
-                        obj.states.push("FAILED");
-                    }
-                    if (selectedFiltered.state.indexOf('LATE') !== -1) {
-                        obj.late = true;
-                    }
-
+            if (selectedFiltered.state && selectedFiltered.state.length > 0) {
+                obj.states = [];
+                if (selectedFiltered.state.indexOf('WAITING') !== -1) {
+                    obj.states.push("PLANNED");
+                } else if (selectedFiltered.state.indexOf('EXECUTED') !== -1) {
+                    obj.states.push("SUCCESSFUL");
+                    obj.states.push("FAILED");
+                }
+                if (selectedFiltered.state.indexOf('LATE') !== -1) {
+                    obj.late = true;
                 }
 
-                var fromDate;
-                var toDate;
+            }
 
-                if (selectedFiltered.planned) {
-                    if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
-                        toDate.setSeconds(toDate.getSeconds() + seconds);
-                    } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
-                        fromDate = new Date();
-                        fromDate.setHours(0);
-                        fromDate.setMinutes(0);
-                        toDate = new Date();
-                        toDate.setHours(23);
-                        toDate.setMinutes(59);
-                    } else if (/^\s*(now)\s*$/i.test(selectedFiltered.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(selectedFiltered.planned)) {
-                        var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered.planned);
-                        fromDate = new Date();
-                        if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                            fromDate.setHours(parseInt(time[1]) + 12);
-                        } else {
-                            fromDate.setHours(parseInt(time[1]));
-                        }
+            var fromDate;
+            var toDate;
 
-                        fromDate.setMinutes(parseInt(time[2]));
-                        toDate = new Date();
-                        if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                            toDate.setHours(parseInt(time[4]) + 12);
-                        } else {
-                            toDate.setHours(parseInt(time[4]));
-                        }
-                        toDate.setMinutes(parseInt(time[5]));
+            if (selectedFiltered.planned) {
+                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(selectedFiltered.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
+                    toDate.setSeconds(toDate.getSeconds() + seconds);
+                } else if (/^\s*\d+[d,h]\s*$/i.test(selectedFiltered.planned)) {
+                    obj.dateFrom = selectedFiltered.planned;
+                } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
+                    fromDate = new Date();
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    toDate = new Date();
+                    toDate.setHours(23);
+                    toDate.setMinutes(59);
+                } else if (/^\s*(now)\s*$/i.test(selectedFiltered.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(selectedFiltered.planned)) {
+                    var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(selectedFiltered.planned);
+                    fromDate = new Date();
+                    if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                        fromDate.setHours(parseInt(time[1]) + 12);
+                    } else {
+                        fromDate.setHours(parseInt(time[1]));
                     }
-                }
 
-                if (selectedFiltered.fromDate) {
-                    if (selectedFiltered.fromTime) {
-                        fromDate = new Date(selectedFiltered.fromDate);
-                        selectedFiltered.fromTime = new Date(selectedFiltered.fromTime);
-                        fromDate.setHours(selectedFiltered.fromTime.getHours());
-                        fromDate.setMinutes(selectedFiltered.fromTime.getMinutes());
-                        fromDate.setSeconds(selectedFiltered.fromTime.getSeconds());
+                    fromDate.setMinutes(parseInt(time[2]));
+                    toDate = new Date();
+                    if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                        toDate.setHours(parseInt(time[4]) + 12);
+                    } else {
+                        toDate.setHours(parseInt(time[4]));
                     }
-                }
-
-                if (selectedFiltered.toDate) {
-                    if (selectedFiltered.toTime) {
-                        toDate = new Date(selectedFiltered.toDate);
-                        selectedFiltered.toTime = new Date(selectedFiltered.toTime);
-                        toDate.setHours(selectedFiltered.toTime.getHours());
-                        toDate.setMinutes(selectedFiltered.toTime.getMinutes());
-                        toDate.setSeconds(selectedFiltered.toTime.getSeconds());
-                    }
-                }
-
-
-                if (fromDate && toDate) {
-                    obj.dateFrom = fromDate;
-                    obj.dateTo = toDate;
+                    toDate.setMinutes(parseInt(time[5]));
                 }
             }
-            return obj;
 
+            if (selectedFiltered.fromDate) {
+                if (selectedFiltered.fromTime) {
+                    fromDate = new Date(selectedFiltered.fromDate);
+                    selectedFiltered.fromTime = new Date(selectedFiltered.fromTime);
+                    fromDate.setHours(selectedFiltered.fromTime.getHours());
+                    fromDate.setMinutes(selectedFiltered.fromTime.getMinutes());
+                    fromDate.setSeconds(selectedFiltered.fromTime.getSeconds());
+                }
+            }
+
+            if (selectedFiltered.toDate) {
+                if (selectedFiltered.toTime) {
+                    toDate = new Date(selectedFiltered.toDate);
+                    selectedFiltered.toTime = new Date(selectedFiltered.toTime);
+                    toDate.setHours(selectedFiltered.toTime.getHours());
+                    toDate.setMinutes(selectedFiltered.toTime.getMinutes());
+                    toDate.setSeconds(selectedFiltered.toTime.getSeconds());
+                }
+            }
+
+
+            if (fromDate && toDate) {
+                obj.dateFrom = fromDate;
+                obj.dateTo = toDate;
+            }
+
+            return obj;
         }
 
         function prepareGanttData(data2, flag) {
@@ -3139,6 +3115,22 @@ function volatileFolderDataL(data, obj) {
                     maxEndTime = new Date(groupJobChain[index].expectedEndTime);
                 }
                 orders[index].tasks[i].to = new Date(groupJobChain[index].expectedEndTime);
+                if (groupJobChain[index].startMode == 0) {
+                    orders[index].startMode = 'label.singleStartMode';
+                } else if (groupJobChain[index].startMode == 0) {
+                    orders[index].startMode = 'label.startStartRepeatMode';
+                } else {
+                    orders[index].startMode = 'label.startEndRepeatMode';
+                }
+                if(groupJobChain[index].period.repeat) {
+                    var s = parseInt((groupJobChain[index].period.repeat) % 60),
+                        m = parseInt((groupJobChain[index].period.repeat / 60) % 60),
+                        h = parseInt((groupJobChain[index].period.repeat / (60 * 60)) % 24);
+                    h = h > 9 ? h : '0' + h;
+                    m = m > 9 ? m : '0' + m;
+                    s = s > 9 ? s : '0' + s;
+                    orders[index].repeat = h + ':' + m + ':' + s;
+                }
                 i++;
             }
 
@@ -3167,6 +3159,7 @@ function volatileFolderDataL(data, obj) {
         }
 
         vm.load = function () {
+            isLoaded= false;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
 
@@ -3190,20 +3183,18 @@ function volatileFolderDataL(data, obj) {
                 }
             }
             vm.showSpinner = true;
-            $scope.startSpin();
 
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
 
-                //if (vm.pageView == 'grid')
                 prepareGanttData(vm.plans, true);
                 vm.isLoading = true;
+                isLoaded= true;
                 vm.showSpinner = false;
-                $scope.stopSpin();
             }, function (err) {
                 vm.isLoading = true;
+                isLoaded= true;
                 vm.showSpinner = false;
-                $scope.stopSpin();
             })
         };
 
@@ -3226,15 +3217,25 @@ function volatileFolderDataL(data, obj) {
                 templateUrl: 'modules/core/template/daily-plan-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
+                if (vm.dailyPlanFilter.radio == 'current') {
+                    vm.dailyPlanFilter.fromDate = undefined;
+                    vm.dailyPlanFilter.fromTime = undefined;
+                    vm.dailyPlanFilter.toDate = undefined;
+                    vm.dailyPlanFilter.toTime = undefined;
+                    vm.dailyPlanFilter.planned = undefined;
+                } else if (vm.dailyPlanFilter.radio == 'planned') {
+                    vm.dailyPlanFilter.state = undefined;
+                }
                 vm.savedDailyPlanFilter.list.push(vm.dailyPlanFilter);
 
                 if (vm.savedDailyPlanFilter.list.length == 1) {
                     vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
                     vm.dailyPlanFilters.selectedView = true;
+                    selectedFiltered = vm.dailyPlanFilter;
                     vm.load();
                 }
                 SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
@@ -3261,12 +3262,11 @@ function volatileFolderDataL(data, obj) {
         vm.editFilter = function (filter) {
             vm.filterName = filter.name;
             vm.dailyPlanFilter = angular.copy(filter);
-            vm.paths = vm.dailyPlanFilter.paths;
-            vm.object.paths = vm.paths;
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
                 controller: 'DialogCtrl',
+                size: 'lg',
                 scope: vm
             });
             modalInstance.result.then(function () {
@@ -3275,7 +3275,6 @@ function volatileFolderDataL(data, obj) {
                         vm.savedDailyPlanFilter.list[index] = vm.dailyPlanFilter;
                     }
                 });
-
                 if (vm.savedDailyPlanFilter.selected == vm.filterName) {
                     vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
                     selectedFiltered = vm.dailyPlanFilter;
@@ -3285,8 +3284,6 @@ function volatileFolderDataL(data, obj) {
                 if (vm.savedDailyPlanFilter.favorite == vm.filterName) {
                     vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
                 }
-
-
                 SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
                 SavedFilter.save();
                 vm.filterName = undefined;
@@ -3322,9 +3319,7 @@ function volatileFolderDataL(data, obj) {
 
         vm.favorite = function (filter) {
             vm.savedDailyPlanFilter.favorite = filter.name;
-            // vm.savedDailyPlanFilter.selected = filter.name;
             vm.dailyPlanFilters.selectedView = true;
-            // selectedFiltered = filter;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
             vm.load();
@@ -3337,7 +3332,6 @@ function volatileFolderDataL(data, obj) {
         };
         vm.checkFilterName = function () {
             vm.isUnique = true;
-
             angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
                 if (!vm.filterName) {
                     if (vm.dailyPlanFilter.name == value.name) {
@@ -3371,73 +3365,20 @@ function volatileFolderDataL(data, obj) {
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.dailyPlanFilter.planned || /^\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(Today)\s*$/i.test(vm.dailyPlanFilter.planned)
+            if (!vm.dailyPlanFilter.planned || /^\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*\d+[d,h]\s*$/i.test(vm.dailyPlanFilter.planned)  || /^\s*(now)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(Today)\s*$/i.test(vm.dailyPlanFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.dailyPlanFilter.planned)) {
             } else {
                 vm.validPlanned = false;
             }
         };
 
-        vm.filter_tree = {};
-        vm.object.paths = [];
-        vm.expanding_property = {
-            field: "name"
-        };
-        vm.getTreeStructure = function () {
-
-            $('#treeModal').modal('show');
-            JobChainService.tree({
-                jobschedulerId: vm.schedulerIds.selected,
-                compact: true
-            }).then(function (res) {
-                vm.tree = res.folders;
-            }, function (err) {
-                $('#treeModal').modal('hide');
-            });
-        };
-
-
-        vm.treeExpand = function (data) {
-            angular.forEach(vm.object.paths, function (value) {
-                if (data.path == value) {
-                    if (data.folders.length > 0) {
-                        angular.forEach(data.folders, function (res) {
-                            vm.object.paths.push(res.path);
-                        });
-                    }
-                }
-            });
-        };
-
-
-        var watcher = $scope.$watchCollection('object.paths', function (newNames) {
-            if (newNames && newNames.length > 0) {
-                vm.paths = newNames;
-            }
-        });
-
-        vm.addJobChainPaths = function () {
-            vm.dailyPlanFilter.paths = vm.paths;
-        };
-
-        vm.startSpin = function () {
-            if (vm.showSpinner) {
-                vm.showSpinner1 = true;
-            }
-        };
-
-        vm.stopSpin = function () {
-            if (!vm.showSpinner) {
-                vm.showSpinner1 = false;
-            }
-        };
-
-
         var int = '';
+         var isLoaded= true;
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished') {
+                    if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && isLoaded) {
+                         isLoaded= false;
                         if (int) {
                             $timeout.cancel(int);
                         }
@@ -3448,12 +3389,9 @@ function volatileFolderDataL(data, obj) {
                         break;
                     }
                 }
-
         });
 
-
         vm.getPlansByEvents = function () {
-
             if (vm.dailyPlanFilters.range != 'period') {
                 vm.dailyPlanFilters.filter.range = undefined;
             }
@@ -3489,15 +3427,17 @@ function volatileFolderDataL(data, obj) {
 
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
+                isLoaded= true;
                 prepareGanttData(vm.plans);
-            })
+            },function(){
+                isLoaded= true;
+            });
         };
 
 
         vm.$on('$destroy', function () {
             if (promise1)
                 $timeout.cancel(promise1);
-            watcher();
             if (int)
                 $timeout.cancel(int);
         });

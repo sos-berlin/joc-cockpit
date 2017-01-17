@@ -191,7 +191,7 @@
                                          contents="options.columnsContents"
                                          header-contents="options.columnsHeaderContents">
                             </gantt-table>
-                            <gantt-tooltips></gantt-tooltips>
+                            <gantt-tooltips date-format="dataFormate"></gantt-tooltips>
                         </div>
                     </div>
 
@@ -224,6 +224,18 @@
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'late' && !dailyPlanFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('late')"><a><span translate>label.repeatType</span>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'startMode' && !dailyPlanFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'startMode' && dailyPlanFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('period.repeat')"><a><span translate>label.repeatInterval</span>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'period.repeat' && !dailyPlanFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'period.repeat' && dailyPlanFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                  <th ng-click="sortBy('plannedStartTime')"><a><span translate>label.plannedStart</span>
@@ -275,6 +287,12 @@
                                     <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>
                                 <td><span ng-if="plan.late==true" translate>label.late</span></td>
+                                <td>
+                                    <span ng-if="plan.startMode ==0" translate>label.singleStartMode</span>
+                                    <span ng-if="plan.startMode ==1" translate>label.startStartRepeatMode</span>
+                                    <span ng-if="plan.startMode ==2" translate>label.startEndRepeatMode</span>
+                                </td>
+                                <td><span ng-if="plan.period.repeat">{{plan.period.repeat | convertTime}}</span></td>
                                 <td><span ng-bind="plan.plannedStartTime | stringToDate"></span></td>
                                 <td><span ng-bind="plan.expectedEndTime | stringToDate"></span></td>
 
@@ -287,7 +305,7 @@
                             </tbody>
                         </table>
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && plans.length !==0)}" translate>message.noDataMatched</div>
-                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': plans.length > 10}" ng-if="plans.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
+                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': plans.length > 10}" ng-if="plans.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
                         <ul ng-show="filtered.length > dailyPlanFilters.pageSize" uib-pagination total-items="filtered.length"
                             ng-model="dailyPlanFilters.currentPage" items-per-page='dailyPlanFilters.pageSize' ng-change="pageChange()"
                             class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"
@@ -306,6 +324,9 @@
                                 <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': dailyPlanFilters.pageSize=='100'}">100
                                 </button>
+                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'1000'"
+                                        ng-class="{'primary': dailyPlanFilters.pageSize=='1000'}">1000
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -322,37 +343,5 @@
         </div>
     </div>
 </div>
-<div ng-if="showSpinner1 && isLoading" class="loading-img1"></div>
+<div ng-if="showSpinner && isLoading" class="loading-img1"></div>
 
-<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body p-a" style="height: 550px; overflow: auto">
-                <div>
-                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
-                        <i class="fa fa-angle-double-down fa-lg"></i>
-                    </a>
-                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'button.collapseAll' | translate}}">
-                       <i class="fa fa-angle-double-up fa-lg"></i>
-                    </a>
-                    <tree
-                            tree-data="tree"
-                            tree-control="filter_tree"
-                            object="object"
-                            icon-leaf     = "fa fa-folder"
-                            icon-expand   = "fa fa-folder"
-                            icon-collapse = "fa fa-folder-open"
-                            expand-on="expanding_property"
-                            on-select="treeExpand(branch)"
-                            on-click="treeExpand(branch)"
-                            template-url="modules/core/template/tree-filter-structure.html">
-                    </tree>
-                </div>
-            </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
-                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
-            </div>
-        </div>
-    </div>
-</div>

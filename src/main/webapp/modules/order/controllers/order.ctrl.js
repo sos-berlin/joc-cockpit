@@ -1380,6 +1380,7 @@
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
+
         var selectedFiltered;
 
         vm.reset = function () {
@@ -1392,7 +1393,6 @@
             vm.savedOrderFilter.selected = vm.savedOrderFilter.selected || vm.savedOrderFilter.favorite;
         else
             vm.savedOrderFilter.selected = undefined;
-
 
         if (vm.savedOrderFilter.selected) {
             angular.forEach(vm.savedOrderFilter.list, function (value) {
@@ -1900,7 +1900,9 @@
                     toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
+                } else if(/^\s*\d+[d,h]\s*$/i.test(selectedFiltered.planned)){
+                    obj.dateFrom = selectedFiltered.planned;
+                }else if (/^\s*(Today)\s*$/i.test(selectedFiltered.planned)) {
                     fromDate = new Date();
 
                     fromDate.setHours(0);
@@ -2047,8 +2049,6 @@
             vm.orderFilters.filter.sortBy = propertyName;
         };
 
-        vm.radio = {};
-        vm.radio.radio = 'current';
         vm.applyFilter = function () {
             vm.orderFilter = {};
             vm.isUnique = true;
@@ -2056,6 +2056,7 @@
                 templateUrl: 'modules/core/template/order-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                 size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -2088,7 +2089,7 @@
         vm.validPlanned = true;
         vm.checkPlanned = function () {
             vm.validPlanned = true;
-            if (!vm.orderFilter.planned || /^\s*$/i.test(vm.orderFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.orderFilter.planned) || /^\s*(now)\s*$/i.test(vm.orderFilter.planned) || /^\s*(Today)\s*$/i.test(vm.orderFilter.planned)
+            if (!vm.orderFilter.planned || /^\s*$/i.test(vm.orderFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.orderFilter.planned) || /^\s*\d+[d,h]\s*$/i.test(vm.orderFilter.planned) || /^\s*(now)\s*$/i.test(vm.orderFilter.planned) || /^\s*(Today)\s*$/i.test(vm.orderFilter.planned)
                 || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.orderFilter.planned)) {
             } else {
                 vm.validPlanned = false;
@@ -2102,8 +2103,8 @@
                 controller: 'DialogCtrl',
                 scope: vm
             });
-                         modalInstance.result.then(function () {
-                  }, function () {
+            modalInstance.result.then(function () {
+            }, function () {
 
             });
         };
@@ -2118,6 +2119,7 @@
                 templateUrl: 'modules/core/template/edit-order-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                 size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -2126,12 +2128,10 @@
                         vm.savedOrderFilter.list[index] = vm.orderFilter;
                     }
                 });
-
                 if (vm.savedOrderFilter.selected == vm.filterName) {
                     vm.savedOrderFilter.selected = vm.orderFilter.name;
                     selectedFiltered = vm.orderFilter;
                     vm.orderFilters.selectedView = true;
-
                     vm.load();
                 }
                 if (vm.savedOrderFilter.favorite == vm.filterName) {
@@ -2173,12 +2173,9 @@
 
         vm.favorite = function (filter) {
             vm.savedOrderFilter.favorite = filter.name;
-            //vm.savedOrderFilter.selected = filter.name;
             vm.orderFilters.selectedView = true;
-            //selectedFiltered = filter;
             SavedFilter.setOrder(vm.savedOrderFilter);
             SavedFilter.save();
-
             vm.load();
         };
 
@@ -2193,7 +2190,6 @@
               OrderService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                folders: folders,
                 types: ['ORDER']
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
@@ -2230,6 +2226,10 @@
         vm.addJobChainPaths = function () {
             vm.orderFilter.paths = vm.paths;
         };
+        vm.remove = function(object){
+            vm.orderFilter.paths.splice(object, 1);
+        };
+
 
         vm.checkFilterName = function () {
             vm.isUnique = true;
@@ -2663,11 +2663,13 @@
             $('#leftPanel').show();
             $('.sidebar-btn').hide();
         };
+        var waitForResponse = true;
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1 && waitForResponse) {
+                        waitForResponse = false;
                         var obj = {};
                         obj.jobschedulerId = $scope.schedulerIds.selected;
                         obj.compact = true;
@@ -2678,7 +2680,10 @@
                                 value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
                             });
                             vm.allOrders = res.orders;
+                            waitForResponse = true;
 
+                        }, function(){
+                            waitForResponse = true;
                         });
                         $rootScope.$broadcast('reloadSnapshot');
                         break;
@@ -3195,6 +3200,7 @@
     function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, toasty, $timeout, gettextCatalog,
                          JobService, orderBy, CoreService, $window) {
         var vm = $scope;
+
         vm.historyFilters = CoreService.getHistoryTab();
         vm.order = vm.historyFilters.order;
         vm.task = vm.historyFilters.task;
@@ -3212,6 +3218,9 @@
 
         vm.object = {};
         vm.tree = [];
+        vm.tree1 = [];
+        var isLoaded= true;
+
         var selectedFiltered1, selectedFiltered2;
 
         vm.jobChainSearch = {};
@@ -3342,12 +3351,15 @@
                 vm.jobHistorys = res.history;
                 filterJobData();
                 vm.isLoading = true;
+                isLoaded= true;
             }, function () {
                 vm.isLoading = true;
+                isLoaded= true;
             });
         }
 
         vm.init = function (filter) {
+            isLoaded= false;
             if (vm.historyFilters.type == 'job') {
                 jobHistory(filter);
             } else {
@@ -3365,8 +3377,10 @@
                     vm.historys = res.history;
                     filterData();
                     vm.isLoading = true;
+                    isLoaded= true;
                 }, function () {
                     vm.isLoading = true;
+                    isLoaded= true;
                 });
             }
         };
@@ -3431,8 +3445,10 @@
                     vm.jobHistorys = res.history;
                     filterJobData();
                     vm.loading = false;
+                    isLoaded= true;
                 }, function () {
                     vm.loading = false;
+                    isLoaded= true;
                 });
                 jobSearch = true;
             } else {
@@ -3490,8 +3506,10 @@
                     vm.historys = res.history;
                     filterData();
                     vm.loading = false;
+                    isLoaded= true;
                 }, function () {
                     vm.loading = false;
+                    isLoaded= true;
                 });
                 jobChainSearch = true;
             }
@@ -3529,6 +3547,32 @@
                 angular.forEach(selectedFiltered1.paths, function (value) {
                     obj.folders.push({folder: value, recursive: true});
                 })
+            }
+            if ((selectedFiltered1.jobChains && selectedFiltered1.jobChains.length > 0) || (selectedFiltered1.orders && selectedFiltered1.orders.length > 0)) {
+                obj.orders = [];
+
+                angular.forEach(selectedFiltered1.orders, function (value) {
+                    obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
+                });
+                if (!selectedFiltered1.orders || selectedFiltered1.orders.length == 0) {
+                    angular.forEach(selectedFiltered1.jobChains, function (value) {
+                        obj.orders.push({jobChain: value});
+                    });
+                } else {
+                    for (var i = 0; i < selectedFiltered1.jobChains.length; i++) {
+                        for (var j = 0; j < obj.orders.length; j++) {
+                            var flag = true;
+                            if (obj.orders[j].jobChain == selectedFiltered1.jobChains[i]) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            obj.orders.push({jobChain: selectedFiltered1.jobChains[i]});
+                        }
+                    }
+                }
+
             }
             if (selectedFiltered1.state && selectedFiltered1.state.length > 0) {
                 obj.historyStates = selectedFiltered1.state;
@@ -3605,7 +3649,14 @@
                     obj.folders.push({folder: value, recursive: true});
                 })
             }
+            if (selectedFiltered2.jobs && selectedFiltered2.jobs.length > 0) {
+                obj.jobs = [];
 
+                angular.forEach(selectedFiltered2.jobs, function (value) {
+                    obj.jobs.push({job: value});
+                });
+
+            }
             var fromDate;
             var toDate;
             if (selectedFiltered2.planned) {
@@ -3759,16 +3810,22 @@
 
 
         vm.exportToExcel = function () {
-
             $('#exportToExcelBtn').attr("disabled", true);
+
+            var fileName = 'jobscheduler-order-history-report';
+            if (vm.historyFilters.type == 'job') {
+                fileName = 'jobscheduler-task-history-report';
+
+            }
             $('#' + vm.historyFilters.type).table2excel({
                 exclude: ".noExl",
-                filename: "jobscheduler-order-history-report",
+                filename: fileName,
                 fileext: ".xls",
                 exclude_img: false,
                 exclude_links: false,
                 exclude_inputs: false
             });
+
             $('#exportToExcelBtn').attr("disabled", false);
         };
 
@@ -3794,6 +3851,7 @@
                 templateUrl: 'modules/core/template/history-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                 size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -3848,11 +3906,15 @@
             vm.historyFilter = angular.copy(filter);
             vm.paths = vm.historyFilter.paths;
             vm.object.paths = vm.paths;
+            vm.object.orders = vm.orders;
+            vm.object.jobChains = vm.jobChains;
+            vm.object.jobs = vm.jobs;
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-history-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
+                 size: 'lg',
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
@@ -3995,6 +4057,11 @@
         vm.filter_tree = {};
 
         vm.getTreeStructure = function () {
+
+            vm.paths=[];
+            vm.jobChains=[];
+            vm.orders=[];
+            vm.jobs=[];
             $('#treeModal').modal('show');
             if (vm.historyFilters.type == 'jobChain') {
                 OrderService.tree({
@@ -4019,29 +4086,82 @@
             }
         };
 
-
-        vm.treeExpand = function (data) {
-            data.folders = orderBy(data.folders, 'name');
-            angular.forEach(vm.object.paths, function (value) {
-                if (data.path == value) {
-                    if (data.folders.length > 0) {
-                        angular.forEach(data.folders, function (res) {
-                            vm.object.paths.push(res.path);
-                        });
-                    }
-                }
-            });
+        vm.treeHandler = function (data) {
+            if (vm.historyFilters.type == 'jobChain') {
+                data.jobChains = [];
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.compact = true;
+                obj.folders = [{folder: data.path, recursive: false}];
+                OrderService.getOrdersP(obj).then(function (result) {
+                    data.jobChains = result.orders;
+                });
+            } else {
+                data.jobs = [];
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.compact = true;
+                obj.folders = [{folder: data.path, recursive: false}];
+                JobService.getJobsP(obj).then(function (result) {
+                    data.jobs = result.jobs;
+                });
+            }
         };
 
+        vm.treeHandler1 = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
         vm.object.paths = [];
+        vm.object.orders = [];
+        vm.object.jobChains = [];
+        vm.object.jobs = [];
         var watcher6 = $scope.$watchCollection('object.paths', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.paths = newNames;
             }
         });
+        var watcher7 = $scope.$watchCollection('object.orders', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.orders =[];
+                angular.forEach(newNames, function(v){
+                    vm.orders.push({orderId:v.orderId, jobChain:v.jobChain});
+                    if(vm.jobChains.length>0 && vm.jobChains.indexOf(v.jobChain) === -1) {
+                        vm.jobChains.push(v.jobChain);
+                    }else{
+                       vm.jobChains.push(v.jobChain);
+                    }
+                });
+            }
+        });
+        var watcher8 = $scope.$watchCollection('object.jobChains', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.jobChains = newNames;
+            }
+        });
+        var watcher9 = $scope.$watchCollection('object.jobs', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.jobs =newNames;
+            }
+        });
 
         vm.addJobChainPaths = function () {
             vm.historyFilter.paths = vm.paths;
+            vm.historyFilter.orders = vm.orders;
+            vm.historyFilter.jobChains = vm.jobChains;
+            vm.historyFilter.jobs = vm.jobs;
+        };
+        vm.remove = function(object , type){
+            if(type=='jobChain'){
+                vm.historyFilter.jobChains.splice(object, 1);
+            }else if(type=='job'){
+                vm.historyFilter.jobs.splice(object, 1);
+            }else if(type=='order'){
+                vm.historyFilter.orders.splice(object, 1);
+            }else{
+                vm.historyFilter.paths.splice(object, 1);
+            }
         };
 
         vm.checkFilterName = function () {
@@ -4184,7 +4304,9 @@
         };
 
         vm.resetIgnoreList = function () {
-            vm.savedIgnoreList = {};
+            vm.savedIgnoreList.orders = [];
+            vm.savedIgnoreList.jobChains = [];
+            vm.savedIgnoreList.jobs = [];
             vm.savedIgnoreList.isEnable = false;
             SavedFilter.setIgnoreList(vm.savedIgnoreList);
             SavedFilter.save();
@@ -4208,7 +4330,8 @@
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && vm.historyFilters.type == 'jobChain') {
+                    if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && vm.historyFilters.type == 'jobChain' && isLoaded) {
+                        isLoaded= false;
                         if (int) {
                             $timeout.cancel(int);
                         }
@@ -4232,13 +4355,17 @@
                                 OrderService.histories(filter).then(function (res) {
                                     vm.historys = res.history;
                                     filterData();
+                                    isLoaded= true;
+                                },function(){
+                                    isLoaded= true;
                                 });
                             }
 
                             $timeout.cancel(int);
                         }, 5000);
                         break;
-                    } else if (vm.events[0].eventSnapshots[i].eventType == 'TaskClosed' && vm.historyFilters.type == 'job') {
+                    } else if (vm.events[0].eventSnapshots[i].eventType == 'TaskClosed' && vm.historyFilters.type == 'job' && isLoaded) {
+                        isLoaded= false;
                         if (int1) {
                             $timeout.cancel(int1);
                         }
@@ -4261,6 +4388,9 @@
                                 TaskService.histories(filter).then(function (res) {
                                     vm.jobHistorys = res.history;
                                     filterJobData();
+                                    isLoaded= true;
+                                },function(){
+                                    isLoaded= true;
                                 });
                             }
 
@@ -4274,6 +4404,9 @@
 
         $scope.$on('$destroy', function () {
             watcher6();
+            watcher7();
+            watcher8();
+            watcher9();
             if (promise1) {
                 $timeout.cancel(promise1);
             }

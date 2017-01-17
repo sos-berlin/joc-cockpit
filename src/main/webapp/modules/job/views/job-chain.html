@@ -568,7 +568,7 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allJobChains.length > 10}" ng-if="allJobChains.length >0"><span translate>label.total</span> {{allJobChains.length}}
+                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allJobChains.length > 10}" ng-if="allJobChains.length >0"><span translate>label.total</span> {{allJobChains.length}}
                             <span translate ng-if="allJobChains.length >1">label.jobChainsFound</span>
                             <span translate ng-if="allJobChains.length ==1">label.jobChainFound</span>
                         </div>
@@ -590,10 +590,11 @@
                                 <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': jobChainFilters.pageSize=='100'}">100
                                 </button>
+                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'1000'"
+                                        ng-class="{'primary': jobChainFilters.pageSize=='1000'}">1000
+                                </button>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
                 <div ng-if="isLoading && !loading && folderPath && allJobChains.length==0" class="text-center m-t m-b-lg h6">
@@ -679,9 +680,9 @@
 </div>
 
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body p-a" style="height: 550px; overflow: auto">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
                 <div>
                     <a class="text m-r-sm" ng-click="filter_tree.expand_all();" uib-tooltip="{{'button.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>

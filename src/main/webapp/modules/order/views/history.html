@@ -419,7 +419,6 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a class="dropdown-item" target="_blank" href="#!/order/log/{{history.historyId}}/{{history.orderId}}?jobChain={{history.jobChain}}" translate>button.showLogInNewTab</a>
                                         <a class="dropdown-item" ng-click="addOrderToIgnoreList(history.orderId)" translate>button.addOrderToIgnoreList</a>
                                         <a class="dropdown-item" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
                                     </div>
@@ -461,7 +460,7 @@
                      </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
                         <span translate ng-if="filtered.length >1">label.historiesFound</span>
                         <span translate ng-if="filtered.length ==1">label.historyFound</span>
                     </div>
@@ -479,6 +478,9 @@
                                 </button>
                                 <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': order.pageSize=='100'}">100
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'1000'"
+                                        ng-class="{'primary': order.pageSize=='1000'}">1000
                                 </button>
                             </div>
                     </div>
@@ -555,7 +557,6 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a class="dropdown-item" target="_blank" href="#!/job/log/{{jobHistory.taskId}}?job={{jobHistory.job}}" translate>button.showLogInNewTab</a>
                                         <a class="dropdown-item" ng-click="addJobToIgnoreList(jobHistory.job)" translate>button.addJobToIgnoreList</a>
                                     </div>
                                 </div>
@@ -563,7 +564,7 @@
                         </tr>
                         </tbody>
                     </table>
-                    <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': jobFiltered.length > 10}" ng-if="jobFiltered.length >0"><span translate>label.total</span> {{jobFiltered.length}}
+                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': jobFiltered.length > 10}" ng-if="jobFiltered.length >0"><span translate>label.total</span> {{jobFiltered.length}}
                         <span translate ng-if="jobFiltered.length >1">label.historiesFound</span>
                         <span translate ng-if="jobFiltered.length ==1">label.historyFound</span>
                     </div>
@@ -582,6 +583,9 @@
                                 <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': task.pageSize=='100'}">100
                                 </button>
+                                <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'1000'"
+                                        ng-class="{'primary': task.pageSize=='1000'}">1000
+                                </button>
                             </div>
                     </div>
                     <div ng-if="isLoading && jobHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noTaskHistoryFound</div>
@@ -595,10 +599,11 @@
     </div>
 </div>
 <div ng-if="loading" class="loading-img1"></div>
+
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body p-a" style="height: 550px; overflow: auto">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
                 <div>
                     <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
@@ -614,8 +619,8 @@
                             icon-expand   = "fa fa-folder"
                             icon-collapse = "fa fa-folder-open"
                             expand-on="expanding_property"
-                            on-select="treeExpand(branch)"
-                            on-click="treeExpand(branch)"
+                            on-select="treeHandler1(branch)"
+                            on-click="treeHandler(branch)"
                             template-url="modules/core/template/tree-filter-structure.html">
                     </tree>
                 </div>
@@ -627,6 +632,7 @@
         </div>
     </div>
 </div>
+
 <script>
 $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),

@@ -13,7 +13,7 @@
     SOSAuth.$inject = ['$window'];
     function SOSAuth($window) {
 
-        var props = ['accessTokenId', 'currentUserData','sessionTimeout','jobChain','permission','scheduleIds'];
+        var props = ['accessTokenId', 'currentUserData', 'sessionTimeout', 'jobChain', 'permission', 'scheduleIds'];
 
         var propsPrefix = '$SOS$';
 
@@ -24,6 +24,7 @@
             });
             this.rememberMe = undefined;
         }
+
         SOSAuth.prototype.save = function () {
             var self = this;
             var storage = this.rememberMe ? $window.localStorage : $window.sessionStorage;
@@ -36,8 +37,8 @@
             this.accessTokenId = userData.accessToken;
             this.currentUserData = userData.user;
             this.sessionTimeout = userData.sessionTimeout;
-            if(permission)
-            this.permission = JSON.stringify(permission);
+            if (permission)
+                this.permission = JSON.stringify(permission);
         };
 
         SOSAuth.prototype.setPermission = function (permission) {
@@ -58,11 +59,11 @@
             $window.sessionStorage.setItem('$SOS$URLPARAMS', {});
         };
 
-         SOSAuth.prototype.setJobChain = function (jobChain) {
-             this.jobChain = jobChain;
-              var self =this;
-              var prop = 'jobChain';
-             save($window.sessionStorage, prop, self[prop]);
+        SOSAuth.prototype.setJobChain = function (jobChain) {
+            this.jobChain = jobChain;
+            var self = this;
+            var prop = 'jobChain';
+            save($window.sessionStorage, prop, self[prop]);
         };
 
         SOSAuth.prototype.getJobChain = function () {
@@ -132,8 +133,8 @@
         };
     }
 
-    UserService.$inject = ["$resource","$q", "$http", "Base64"];
-    function UserService($resource,$q, $http, Base64) {
+    UserService.$inject = ["$resource", "$q", "$http", "Base64"];
+    function UserService($resource, $q, $http, Base64) {
 
         return {
 
@@ -153,7 +154,7 @@
                 return deferred.promise;
             },
             touch: function () {
-               var deferred = $q.defer();
+                var deferred = $q.defer();
                 var Touch = $resource('touch');
 
                 Touch.save({}, function (res) {
@@ -180,6 +181,90 @@
                 var Permission = $resource('security/joc_cockpit_permissions');
 
                 Permission.save({jobschedulerId: id}, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            configuration: function (object) {
+                var deferred = $q.defer();
+                var Configuration = $resource('configuration');
+
+                Configuration.save(object, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            saveConfiguration: function (object) {
+                var deferred = $q.defer();
+                var Configuration = $resource('configuration/save');
+
+                Configuration.save(object, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            deleteConfiguration: function (object) {
+                var deferred = $q.defer();
+                var Configuration = $resource('configuration/delete');
+
+                Configuration.save(object, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            shareConfiguration: function (object) {
+                var deferred = $q.defer();
+                var Configuration = $resource('configuration/share');
+
+                Configuration.save(object, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            privateConfiguration: function (object) {
+                var deferred = $q.defer();
+                var Configuration = $resource('configuration/make_private');
+
+                Configuration.save(object, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            configurations: function (object) {
+                var deferred = $q.defer();
+                var Configurations = $resource('configurations');
+
+                Configurations.save(object, function (res) {
+                    deferred.resolve(res);
+                }, function (error) {
+                    deferred.reject(error);
+                });
+
+                return deferred.promise;
+            },
+            sharedConfiguration: function (object) {
+                var deferred = $q.defer();
+                var Shared = $resource('configuration/shared');
+
+                Shared.save(object, function (res) {
                     deferred.resolve(res);
                 }, function (error) {
                     deferred.reject(error);

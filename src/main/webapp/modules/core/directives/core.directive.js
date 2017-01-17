@@ -15,7 +15,6 @@
         .directive('time', time)
         .directive('time1', time1)
 
-
         .constant('defaultAvatarSettings', {
             alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
             textColor: '#ffffff',
@@ -43,28 +42,33 @@
         };
     }
 
-    ngSpinnerBar.$inject = ["$rootScope", "$state", "SOSAuth", "$window"];
-    function ngSpinnerBar($rootScope, $state, SOSAuth, $window) {
+    ngSpinnerBar.$inject = ["$rootScope", "$state", "SOSAuth"];
+    function ngSpinnerBar($rootScope, $state, SOSAuth) {
         return {
             link: function (scope, element) {
                 // by default hide the spinner bar
                 element.addClass('hide'); // hide spinner bar by default
                 var startTime, endTime;
                 // display the spinner bar whenever the route changes(the content part started loading)
-                $rootScope.$on('$stateChangeStart', function (event, toState) {
+                $rootScope.$on('$stateChangeStart', function (event, toState, toParam, fromState) {
                     element.removeClass('hide'); // show spinner bar
 
                     if (toState.url === '/jobChainDetails') {
                         $state.go('app.jobChainDetails.orders');
                         event.preventDefault();
+                        return;
                     }
-                    else if (toState.url === '/resources') {
+                    else if (toState.url === '/resources' && fromState.name != "app.resources.agentClusters") {
                         $state.go('app.resources.agentClusters');
                         event.preventDefault();
+                        return;
+                    }else if(toState.url === '/resources' && fromState.name == "app.resources.agentClusters"){
+                        element.addClass('hide');
+                         event.preventDefault();
+                        return;
                     }
-                    if (!(toState.url == '/jobChain' || toState.url == '/orders' || toState.url == '/overview')) {
+                    if (!(toState.url == '/jobChain' || toState.url == '/orders')) {
                         SOSAuth.jobChain = undefined;
-                        // $window.sessionStorage.$SOS$TREE = {};
                     }
                     if ($rootScope.clientLogFilter.state) {
                         startTime = new Date();
@@ -446,11 +450,13 @@
             link: function (scope, element, attrs) {
 
                 var time = attrs.time;
-                 attrs.$observe('time', function (data) {
+                 var timeoutId = '';
+                attrs.$observe('time', function (data) {
                     time = data;
+                    if(!timeoutId)
+                    updateLater();
                 }, true);
 
-                var timeoutId = '';
                 var intervalLength = 1000 * 5; // 5 seconds
                 var filter = $filter('remainingTime');
 
@@ -505,6 +511,5 @@
                 updateLater();
         };
     }
-
 
 })();

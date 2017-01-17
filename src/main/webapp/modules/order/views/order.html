@@ -110,7 +110,7 @@
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
                           <!--<button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()" translate>button.reset</button>-->
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
-                                  ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
+                                  ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
                                  ng-disabled="suspendSelected" ng-click="suspendAllOrder()"><i class="fa fa-stop"></i> <span class="hidden-sm-down" translate>button.suspendOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.resume}"
@@ -419,7 +419,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}" ng-if="allOrders.length >0"><span translate>label.total</span> {{allOrders.length}}
+                            <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}" ng-if="allOrders.length >0"><span translate>label.total</span> {{allOrders.length}}
                                 <span translate ng-if="allOrders.length >1">label.ordersFound</span>
                                 <span translate ng-if="allOrders.length ==1">label.orderFound</span>
                             </div>
@@ -437,6 +437,9 @@
                                         </button>
                                         <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'100'"
                                                 ng-class="{'primary': orderFilters.pageSize=='100'}">100
+                                        </button>
+                                        <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'1000'"
+                                                ng-class="{'primary': orderFilters.pageSize=='1000'}">1000
                                         </button>
                                     </div>
                                 </div>
@@ -524,9 +527,9 @@
 </div>
 
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-body p-a" style="height: 550px; overflow: auto">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
                 <div>
                     <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>

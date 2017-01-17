@@ -140,16 +140,16 @@
             vm.calculateHeight();
             vm.checkNavHeader();
 
-              if(document.getElementById('agent-cluster-status')){
-                  var a= document.getElementById('agent-cluster-status').clientHeight
-              }
-             if(document.getElementById('agent-running-task')){
-                  var b= document.getElementById('agent-running-task').clientHeight
-              }
-            if(a+b > 320) {
+            if (document.getElementById('agent-cluster-status')) {
+                var a = document.getElementById('agent-cluster-status').clientHeight
+            }
+            if (document.getElementById('agent-running-task')) {
+                var b = document.getElementById('agent-running-task').clientHeight
+            }
+            if (a + b > 320) {
                 $('#master-cluster-status').css('height', (a + b - 20) + 'px');
             }
-           });
+        });
 
         vm.username = SOSAuth.currentUserData;
         setPermission();
@@ -187,7 +187,7 @@
                 size: 'lg'
             });
             modalInstance.result.then(function () {
-                  }, function () {
+            }, function () {
 
             });
         };
@@ -291,7 +291,6 @@
         };
 
 
-
         vm.isEmpty = function (obj) {
             for (var key in obj) {
                 if (obj.hasOwnProperty(key))
@@ -307,7 +306,7 @@
                 scope: vm
             });
             modalInstance.result.then(function () {
-                  }, function () {
+            }, function () {
 
             });
         };
@@ -363,8 +362,8 @@
             try {
                 if ($rootScope.clientLogFilter.state) {
                     $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
-                    if((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0){
-                        $window.localStorage.clientLogs.splice(1,100);
+                    if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0) {
+                        $window.localStorage.clientLogs.splice(1, 100);
                     }
                 }
             } catch (e) {
@@ -374,16 +373,22 @@
 
             $window.localStorage.$SOS$DASHBOARDTABS = JSON.stringify(CoreService.getDashboard());
             try {
-                if((1024 * 1024) -unescape(encodeURIComponent(JSON.stringify($window.sessionStorage.$SOS$ALLEVENT))).length<0){
-                     $window.sessionStorage.$SOS$ALLEVENT.splice(1,100);
+                if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.sessionStorage.$SOS$ALLEVENT))).length < 0) {
+                    $window.sessionStorage.$SOS$ALLEVENT.splice(1, 100);
                 }
-            }catch (e) {
+            } catch (e) {
 
             }
 
         }, 1000);
 
 
+        /*        UserService.configurations({
+         jobschedulerId: vm.schedulerIds.selected,
+         user: 'root'
+         }).then(function (res) {
+         console.log(res)
+         });*/
         vm.refreshSession = function () {
             UserService.touch().then(function (res) {
                 if (res && res.ok)
@@ -452,7 +457,6 @@
                         if ($location.path().match('jobChainDetails/')) {
                             $location.path('/').search({});
                         } else {
-
                             $timeout(function () {
                                 $window.location.reload();
                             }, 5);
@@ -494,7 +498,7 @@
 
 
         vm.eventId = '';
-        var eventTimeOut = '';
+        var eventTimeOut = '', broadcastTimeOut = '';
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
@@ -526,9 +530,12 @@
                         $rootScope.$broadcast('event-started', {events: vm.events});
                     }
                     vm.allEvents = res.events;
-                    $timeout(function () {
-
+                    if (broadcastTimeOut) {
+                        $timeout.cancel(broadcastTimeOut);
+                    }
+                    broadcastTimeOut = $timeout(function () {
                         $rootScope.$broadcast('event-all', {events: vm.allEvents});
+                        $timeout.cancel(broadcastTimeOut);
                     }, 2000);
 
                     vm.eventsRequest.push({
@@ -779,18 +786,22 @@
                 allSessionEvent.eventUnReadCount--;
             }
         };
-        vm.viewObject = function (group,event,allSessionEvent) {
-             if (event.read == false) {
-                 event.read = true;
-                 group.readCount--;
-                 allSessionEvent.eventUnReadCount--;
-             }
+        vm.viewObject = function (group, event, allSessionEvent) {
+            if (event.read == false) {
+                event.read = true;
+                group.readCount--;
+                allSessionEvent.eventUnReadCount--;
+            }
             event.navigate = true;
 
-            var p =event.path.substring(0, event.path.lastIndexOf('/'));
+            var p = event.path.substring(0, event.path.lastIndexOf('/'));
 
-            if(vm.schedulerIds.selected != group.jobschedulerId) {
-                $window.sessionStorage.$SOS$NAVIGATEOBJ = JSON.stringify({tab:event.objectType, path:p, name:p.substring(p.lastIndexOf('/')+1,p.length)});
+            if (vm.schedulerIds.selected != group.jobschedulerId) {
+                $window.sessionStorage.$SOS$NAVIGATEOBJ = JSON.stringify({
+                    tab: event.objectType,
+                    path: p,
+                    name: p.substring(p.lastIndexOf('/') + 1, p.length)
+                });
                 vm.changeScheduler(group.jobschedulerId);
             } else {
                 if (event.objectType == 'JOB') {
@@ -850,9 +861,6 @@
 
         };
 
-
-
-
         vm.makeAllEventRead = function (allSessionEvent, showGroupEvent) {
             if (showGroupEvent != undefined) {
                 for (var i = 0; i <= showGroupEvent.events.length - 1; i++) {
@@ -865,16 +873,12 @@
             }
         };
 
-
-
-
-
-
-
         $scope.$on('$destroy', function () {
             $interval.cancel(interval);
             if (eventTimeOut)
                 $timeout.cancel(eventTimeOut);
+            if (broadcastTimeOut)
+                $timeout.cancel(broadcastTimeOut);
         });
     }
 

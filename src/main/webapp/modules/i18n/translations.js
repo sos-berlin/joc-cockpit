@@ -64,7 +64,6 @@
                 $window.localStorage.$SOS$SHOWTASKS = true;
             }
 
-
             if (!$window.localStorage.$SOS$EVENTFILTER) {
                 $window.localStorage.$SOS$EVENTFILTER = JSON.stringify([
                     'JobChainStopped', 'OrderStarted', 'OrderSetback',
