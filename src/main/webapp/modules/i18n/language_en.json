@@ -796,7 +796,7 @@
   "placeholder.endTime": "End Time",
   "placeholder.processExecuted": "now-600, -1h, -1d, today or 08:00am to 08:00pm",
   "label.processExecuted": "Process executed",
-  "label.orderFinished": "Order completed",
+  "label.orderFinished": "Order finished",
   "label.showTasks": "Show Tasks immediately in views",
   "label.ignoreListFilters": "Filters for Ignore List",
   "button.remove": "Remove",
