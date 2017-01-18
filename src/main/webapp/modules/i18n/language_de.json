@@ -801,12 +801,12 @@
   "label.ignoreListFilters": "Filter für Ausschlussliste",
   "button.remove": "Löschen",
   "label.ignoreList": "Ausschlussliste",
-  "label.regularExpression": "Regular Expression",
-  "placeholder.regularExpression": "Regular Expression",
-  "label.folders": "Folders",
-  "label.repeatType": "Repeat Type",
+  "label.regularExpression": "Regulärer Ausdruck",
+  "placeholder.regularExpression": "Regulärer Ausdruck",
+  "label.folders": "Ordner",
+  "label.repeatType": "Startart",
   "label.singleStartMode": "single_start",
   "label.startStartRepeatMode": "start_start_repeat",
   "label.startEndRepeatMode": "start_end_repeat",
-  "label.showOrders": "Show Orders immediately in views"
+  "label.showOrders": "Aufträge in Sichten sofort anzeigen"
 }
