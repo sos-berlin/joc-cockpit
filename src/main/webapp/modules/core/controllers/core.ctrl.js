@@ -192,6 +192,19 @@
             });
         };
 
+        if (!$window.localStorage.log_window_wt) {
+            $window.localStorage.log_window_wt = 1000;
+        }
+        if (!$window.localStorage.log_window_ht) {
+            $window.localStorage.log_window_ht = 200;
+        }
+        if (!$window.localStorage.log_window_x) {
+            $window.localStorage.log_window_x = 100;
+        }
+        if (!$window.localStorage.log_window_y) {
+            $window.localStorage.log_window_y = 200;
+        }
+
         var newWindow = null, windowWidth = '1000', windowHeight = '200', windowTop = '200', windowLeft = '50',
             windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no',
             popUpBlocker = false;
@@ -199,6 +212,7 @@
         $window.onunload = refreshParent;
         function refreshParent() {
             try {
+                calWindowSize();
                 if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
                     newWindow.close();
                 }
@@ -232,7 +246,7 @@
                             return;
                         }
 
-                        newWindow = $window.open(url, "Order Log", 'top=' + windowTop + ',left=' + windowLeft + ',width=' + windowWidth + ',innerwidth=' + windowWidth + ',height=' + windowHeight + ',innerheight=' + windowHeight + windowProperties, true);
+                        newWindow = $window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
                     }
                     if (typeof newWindow == 'undefined' || newWindow == null) {
                         popUpBlocker = true;
@@ -253,6 +267,15 @@
                 window.open(url, '_blank');
             }
         };
+
+        function calWindowSize() {
+            if (newWindow) {
+                $window.localStorage.log_window_wt = newWindow.innerWidth;
+                $window.localStorage.log_window_ht = newWindow.innerHeight;
+                $window.localStorage.log_window_x = newWindow.screenX;
+                $window.localStorage.log_window_y = newWindow.screenY;
+            }
+        }
 
         vm.showJobChain = function (jobChain) {
             var path = jobChain.substring(0, jobChain.lastIndexOf('/')) || '/';
@@ -324,6 +347,33 @@
     function HeaderCtrl($scope, UserService, JobSchedulerService, $interval, toasty, SOSAuth, $rootScope, $location, gettextCatalog, $window, $state, $uibModalStack, CoreService, $timeout) {
         var vm = $scope;
         toasty.clear();
+
+        function getDateFormate() {
+            vm.dataFormat = $window.localStorage.$SOS$DATEFORMAT;
+            if (vm.dataFormat.match('HH:mm')) {
+                vm.dataFormat = vm.dataFormat.replace('HH:mm', '');
+            }
+            else if (vm.dataFormat.match('hh:mm')) {
+                vm.dataFormat = vm.dataFormat.replace('hh:mm', '');
+            }
+
+            if (vm.dataFormat.match(':ss')) {
+                vm.dataFormat = vm.dataFormat.replace(':ss', '');
+            }
+            if (vm.dataFormat.match('A')) {
+                vm.dataFormat = vm.dataFormat.replace('A', '');
+            }
+            if (vm.dataFormat.match('|')) {
+                vm.dataFormat = vm.dataFormat.replace('|', '');
+            }
+            vm.dataFormat =vm.dataFormat.replace('YY', 'yy');
+            vm.dataFormat =vm.dataFormat.replace('YY', 'yy');
+            vm.dataFormat =vm.dataFormat.replace('D', 'd');
+            vm.dataFormat =vm.dataFormat.replace('D', 'd');
+            vm.dataFormat =vm.dataFormat.trim();
+        }
+        getDateFormate();
+
 
         vm.currentTime = moment();
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
@@ -401,6 +451,7 @@
             var date = new Date(vm.selectedJobScheduler.startedAt);
             date.setSeconds(date.getSeconds() + 1);
             vm.selectedJobScheduler.startedAt = date;
+            getDateFormate();
         });
         var logout = false;
         vm.logout = function () {
@@ -498,7 +549,7 @@
 
 
         vm.eventId = '';
-        var eventTimeOut = '', broadcastTimeOut = '';
+        var eventTimeOut = '';
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
@@ -529,20 +580,15 @@
                         vm.events.push(res.events[i]);
                         $rootScope.$broadcast('event-started', {events: vm.events});
                     }
-                    vm.allEvents = res.events;
-                    if (broadcastTimeOut) {
-                        $timeout.cancel(broadcastTimeOut);
-                    }
-                    broadcastTimeOut = $timeout(function () {
-                        $rootScope.$broadcast('event-all', {events: vm.allEvents});
-                        $timeout.cancel(broadcastTimeOut);
-                    }, 2000);
-
                     vm.eventsRequest.push({
                         jobschedulerId: res.events[i].jobschedulerId,
                         eventId: res.events[i].eventId
                     });
                 }
+
+                vm.allEvents = res.events;
+                $rootScope.$broadcast('event-all', {events: vm.allEvents});
+
                 if (logout == false)
                     vm.changeEvent(vm.schedulerIds.jobschedulerIds);
 
@@ -754,6 +800,7 @@
                                 }
 
                             }
+                            console.log(vm.allEvents[i].eventSnapshots[j].eventType)
                         }
                     }
 
@@ -877,8 +924,6 @@
             $interval.cancel(interval);
             if (eventTimeOut)
                 $timeout.cancel(eventTimeOut);
-            if (broadcastTimeOut)
-                $timeout.cancel(broadcastTimeOut);
         });
     }
 
@@ -992,8 +1037,8 @@
 
     }
 
-    RuntimeEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", "toasty", "$timeout"];
-    function RuntimeEditorDialogCtrl($scope, $uibModalInstance, toasty, $timeout) {
+    RuntimeEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", "toasty", "$timeout",'gettextCatalog'];
+    function RuntimeEditorDialogCtrl($scope, $uibModalInstance, toasty, $timeout,gettextCatalog) {
         var vm = $scope;
         var dom_parser = new DOMParser();
         vm.ok = function () {
@@ -1041,10 +1086,10 @@
         var x2js = new X2JS();
 
         vm.editor.when_holiday_options = {
-            'previous_non_holiday': 'previous non holiday',
-            'next_non_holiday': 'next non holiday',
-            'suppress': 'suppress execution (default)',
-            'ignore_holiday': 'ignore holiday'
+            'previous_non_holiday': gettextCatalog.getString('previous non holiday'),
+            'next_non_holiday': gettextCatalog.getString('next non holiday'),
+            'suppress': gettextCatalog.getString('suppress execution (default)'),
+            'ignore_holiday': gettextCatalog.getString('ignore holiday')
         };
 
         function stringToTime(str) {

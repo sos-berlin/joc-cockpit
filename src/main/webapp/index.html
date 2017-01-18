@@ -1,8 +1,48 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app"  ng-strict-di>
+<!--
+/********************************************************* begin of preamble
+**
+** Copyright (C) 2003-2016 Software- und Organisations-Service GmbH.
+** All rights reserved.
+**
+** This file may be used under the terms of either the
+**
+**   GNU General Public License version 2.0 (GPL)
+**
+**   as published by the Free Software Foundation
+**   http://www.gnu.org/licenses/gpl-2.0.txt and appearing in the file
+**   LICENSE.GPL included in the packaging of this file.
+**
+** or the
+**
+**   Agreement for Purchase and Licensing
+**
+**   as offered by Software- und Organisations-Service GmbH
+**   in the respective terms of supply that ship with this file.
+**
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+** IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+** THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+** PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+** BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+** CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+** SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+** INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+** CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+** ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+** POSSIBILITY OF SUCH DAMAGE.
+********************************************************** end of preamble*/
+
+//-->
+<!--[if IE 8]>
+<html lang="en" class="ie8 no-js" data-ng-app="app"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" ng-app="app" ng-strict-di>
+<!--<![endif]-->
 <head>
     <meta charset="utf-8"/>
     <title>JobScheduler</title>
+    <meta charset="utf-8"/>
     <meta name="description" content="opensource, scheduler, sos, jobscheduler"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -31,18 +71,29 @@
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
     <link rel="stylesheet" href="css/style.responsive.css" type="text/css"/>
     <style type="text/css">
-      [ng-cloak] {
-        display: none;
-      }
+        [ng-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body ng-controller="AppCtrl">
+        <!--[if lt IE 9]>
+            <p class="text-center text">You are using an <strong>outdated</strong> browser. Please <a class="text-primary text-hover-primary" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
 
-<div ng-spinner-bar class="loading-img"></div>
+    <!-- BEGIN PAGE SPINNER -->
+    <div ng-spinner-bar class="loading-img"></div>
+    <!-- END PAGE SPINNER -->
+    <!-- BEGIN ACTUAL CONTENT -->
+    <div class="app" ng-cloak ui-view></div>
+    <!-- END ACTUAL CONTENT -->
 
-<div class="app" ng-cloak ui-view></div>
 <toasty></toasty>
 
+<!--[if lt IE 9]>
+<script src="js/respond.min.js"></script>
+<script src="js/excanvas.min.js"></script>
+<![endif]-->
 <!-- jQuery -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/tether/dist/js/tether.min.js"></script>
@@ -135,8 +186,8 @@
 
 <!-- endbuild -->
 <script>
-   
-    window.setTimeout(function() {
+
+    window.setTimeout(function () {
         var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
         $('body').append($fakeFrame);
         $fakeFrame.remove();

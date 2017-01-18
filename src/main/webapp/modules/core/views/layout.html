@@ -1,4 +1,3 @@
-<!-- content -->
 <div id="content" class="app-content " role="main" ng-controller="HeaderCtrl" ng-click="refreshSession()">
     <div class="w-full text-right top-header-bar white">
         <span class="m-r-sm" ><span translate>label.time</span>: <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
@@ -17,14 +16,20 @@
         </span>
 
     </div>
+    <!-- BEGIN HEADER -->
     <div class="app-header white box-shadow bg-blue-color" >
         <div ui-include="'modules/core/views/header.html'"></div>
     </div>
-    <div class="app-footer">
-        <div ui-include="'modules/core/views/footer.html'"></div>
-    </div>
+    <!-- END HEADER -->
+    <!-- BEGIN CONTENT -->
     <div class="app-body" >
         <div ui-view id="view"></div>
     </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN FOOTER -->
+    <div class="app-footer">
+        <div ui-include="'modules/core/views/footer.html'"></div>
+    </div>
+    <!-- END FOOTER -->
 </div>
-<!-- / -->
+

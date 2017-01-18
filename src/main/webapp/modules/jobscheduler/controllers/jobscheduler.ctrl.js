@@ -2043,6 +2043,10 @@ function volatileFolderDataL(data, obj) {
 
         vm.clusterStatusPollingInterval = 2 * 60 * 1000;
 
+        var isOrderOverviewLoaded = false;
+        var isOrderSummaryLoaded = false;
+        var isDailyPlanLoad = false;
+
         function groupBy(data) {
             var results = [];
             if (!(data)) return;
@@ -2074,8 +2078,6 @@ function volatileFolderDataL(data, obj) {
             });
             return results;
         }
-
-
         vm.getAgentCluster = function () {
             JobSchedulerService.getAgentCluster({
                 jobschedulerId: $scope.schedulerIds.selected
@@ -2086,6 +2088,7 @@ function volatileFolderDataL(data, obj) {
                 }
             });
         };
+        vm.getAgentCluster();
 
         vm.barOptions = {
             chart: {
@@ -2190,6 +2193,7 @@ function volatileFolderDataL(data, obj) {
             }
 
         };
+
         vm.getAgentClusterRunningTask = function () {
             var agentArray = [];
             ResourceService.getProcessClass({
@@ -2239,8 +2243,6 @@ function volatileFolderDataL(data, obj) {
             });
             vm.agentClusterData = agentArray1;
         }
-
-
         function xFunction() {
             return function (d) {
                 return d.key;
@@ -2251,7 +2253,6 @@ function volatileFolderDataL(data, obj) {
                 return d.y;
             };
         }
-
         function yAxisTickFormatFunction() {
             return function (d) {
                 if (d % 1 === 0) {
@@ -2266,14 +2267,12 @@ function volatileFolderDataL(data, obj) {
                 return d.key;
             }
         };
-
         function toolTipContentFunction() {
             return function (key, x) {
                 return '<h3>' + gettextCatalog.getString(key) + '</h3>' +
                     '<p>' + d3.format(',f')(x) + '</p>'
             }
         }
-
         var format = d3.format(',.0f');
         vm.valueFormatFunction = function () {
             return function (d) {
@@ -2283,7 +2282,6 @@ function volatileFolderDataL(data, obj) {
 
         prepareClusterStatusData();
         var clusterStatusData = {};
-
         var interval = undefined;
 
         function prepareClusterStatusData() {
@@ -2310,10 +2308,8 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
-
         vm.getSupervisor = getSupervisorDetails;
         function getSupervisorDetails() {
-
             return JobSchedulerService.getSupervisorP({jobschedulerId: $scope.schedulerIds.selected});
         }
 
@@ -2327,16 +2323,8 @@ function volatileFolderDataL(data, obj) {
         }
 
         function getDatabase() {
-
             return JobSchedulerService.getDatabase({jobschedulerId: $scope.schedulerIds.selected});
         }
-
-
-        vm.loadOrderSnapshot = function () {
-            OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                vm.snapshot = res.orders;
-            });
-        };
 
 
         $scope.$on('elementClick.directive', function (angularEvent, event) {
@@ -2384,10 +2372,6 @@ function volatileFolderDataL(data, obj) {
         vm.viewAllAgents = function () {
             $state.go('app.resources.agentClusters');
         };
-
-
-        vm.loadOrderSnapshot();
-        vm.getAgentCluster();
 
         var states = [];
         vm.clusterAction = function (objectType, action, host, port) {
@@ -2513,7 +2497,6 @@ function volatileFolderDataL(data, obj) {
         vm.criterion = {};
         vm.criterion.timeout = 60;
         vm.getTimeout = function (host, port) {
-
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
                 controller: 'DialogCtrl',
@@ -2523,14 +2506,45 @@ function volatileFolderDataL(data, obj) {
             modalInstance.result.then(function () {
                 JobSchedulerService.restartWithin(host, port, $scope.schedulerIds.selected, vm.criterion.timeout).then(function (res) {
                     success('running', host, port);
-                }, function (err) {
-
                 });
-
             }, function () {
 
             });
         };
+
+        vm.loadOrderSnapshot = function () {
+            OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                vm.snapshot = res.orders;
+                isOrderOverviewLoaded =true;
+            },function(){
+                isOrderOverviewLoaded =true;
+            });
+        };
+        vm.loadOrderSnapshot();
+
+        vm.getOrderSummary = function () {
+            var obj = {};
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+            if (vm.dashboardFilters.filter.orderRange == 'next-24-hours') {
+                setOrderDateRange(vm.dashboardFilters.filter.orderRange);
+            }
+            if (vm.dashboardFilters.filter.orderRange == 'today') {
+                setOrderDateRange(vm.dashboardFilters.filter.orderRange);
+            }
+            if (vm.dashboardFilters.filter.orderRange == "today") {
+                obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
+                obj.dateTo = vm.dashboardFilters.filter.orderSummaryto;
+            } else {
+                obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
+            }
+            OrderService.getSummary(obj).then(function (res) {
+                vm.orderSummary = res.orders;
+                isOrderSummaryLoaded =true;
+            }, function (err) {
+                isOrderSummaryLoaded =true;
+            })
+        };
+        vm.getOrderSummary();
         /*----------------- Daily plan overview -----------------*/
 
         function setDateRange(range) {
@@ -2554,7 +2568,6 @@ function volatileFolderDataL(data, obj) {
             vm.dashboardFilters.filter.to = to;
         }
 
-
         vm.getDailyPlans = function () {
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -2576,14 +2589,14 @@ function volatileFolderDataL(data, obj) {
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.planItemData = res.planItems;
                 filterData();
+                isDailyPlanLoad = true;
             }, function (err) {
-
+                 isDailyPlanLoad = true;
             })
         };
 
         if (vm.permission && vm.permission.DailyPlan.view.status)
             vm.getDailyPlans();
-
 
         function setOrderDateRange(range) {
             var from = new Date();
@@ -2599,49 +2612,13 @@ function volatileFolderDataL(data, obj) {
                 to.setSeconds(0);
                 to.setMilliseconds(0);
             } else if (range == 'next-24-hours') {
-
                 from.setDate(from.getDate() + 1);
-
                 to.setDate(to.getDate() + 2);
-
             }
 
             vm.dashboardFilters.filter.orderSummaryfrom = from;
             vm.dashboardFilters.filter.orderSummaryto = to;
         }
-
-        vm.getOrderSummary = function () {
-            var obj = {};
-            obj.jobschedulerId = $scope.schedulerIds.selected;
-            if (vm.dashboardFilters.filter.orderRange == 'next-24-hours') {
-                setOrderDateRange(vm.dashboardFilters.filter.orderRange);
-
-            }
-            if (vm.dashboardFilters.filter.orderRange == 'today') {
-                setOrderDateRange(vm.dashboardFilters.filter.orderRange);
-            }
-            if (vm.dashboardFilters.filter.orderRange == "today") {
-                obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
-                obj.dateTo = vm.dashboardFilters.filter.orderSummaryto;
-            } else {
-                obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
-            }
-            OrderService.getSummary(obj).then(function (res) {
-
-                vm.orderSummary = res.orders;
-
-                vm.orderSummary.total = vm.orderSummary.successful + vm.orderSummary.failed;
-                if (vm.orderSummary.successful == 0) {
-                    vm.orderSummary.percent = 0;
-                } else {
-                    vm.orderSummary.percent = (vm.orderSummary.successful / 1) / 100;
-                }
-
-            }, function (err) {
-
-            })
-        };
-        vm.getOrderSummary();
 
         function filterData() {
             vm.waiting = 0;
@@ -2650,11 +2627,9 @@ function volatileFolderDataL(data, obj) {
             vm.lateError = 0;
             vm.executed = 0;
             vm.error = 0;
-
             if (!vm.planItemData) {
                 return;
             }
-
             vm.totalPlanData = vm.planItemData.length;
             angular.forEach(vm.planItemData, function (value) {
                 var time;
@@ -2774,14 +2749,21 @@ function volatileFolderDataL(data, obj) {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1) {
-                        vm.loadOrderSnapshot();
-                        vm.getOrderSummary();
+                        if(isOrderOverviewLoaded) {
+                            isOrderOverviewLoaded =false;
+                            vm.loadOrderSnapshot();
+                        }
+                        if(isOrderSummaryLoaded) {
+                            isOrderSummaryLoaded=false;
+                            vm.getOrderSummary();
+                        }
                         if (vm.events[0].eventSnapshots[i].eventType == 'OrderStarted' || vm.events[0].eventSnapshots[i].eventType == 'OrderFinished')
                             vm.getAgentClusterRunningTask();
                         if (int)
                             $timeout.cancel(int);
-                        if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished')
+                        if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && isDailyPlanLoad)
                             int = $timeout(function () {
+                                isDailyPlanLoad = false;
                                 vm.getDailyPlans();
                                 $timeout.cancel(int);
                             }, 5000);
@@ -2901,9 +2883,9 @@ function volatileFolderDataL(data, obj) {
             sortMode: undefined,
             sideMode: 'TreeTable',
             daily: false,
-            maxHeight: window.innerHeight - 300,
+            maxHeight: window.innerHeight - 280,
             width: false,
-            zoom: 1,
+            zoom: 1.1,
             treeTableColumns: ['model.name', 'model.orderId'],
             columnsHeaders: {
                 'model.name': gettextCatalog.getString('label.jobChain') + '/' + gettextCatalog.getString('label.job'),
@@ -3108,6 +3090,7 @@ function volatileFolderDataL(data, obj) {
 
                 orders[index].tasks[i].from = new Date(groupJobChain[index].plannedStartTime);
 
+
                 if (!minNextStartTime || minNextStartTime > new Date(groupJobChain[index].plannedStartTime)) {
                     minNextStartTime = new Date(groupJobChain[index].plannedStartTime);
                 }
@@ -3117,11 +3100,17 @@ function volatileFolderDataL(data, obj) {
                 orders[index].tasks[i].to = new Date(groupJobChain[index].expectedEndTime);
                 if (groupJobChain[index].startMode == 0) {
                     orders[index].startMode = 'label.singleStartMode';
-                } else if (groupJobChain[index].startMode == 0) {
+                    orders[index].tasks[i].content = '<i class="fa fa-repeat1">' ;
+                } else if (groupJobChain[index].startMode == 1) {
                     orders[index].startMode = 'label.startStartRepeatMode';
+                    orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">' ;
                 } else {
                     orders[index].startMode = 'label.startEndRepeatMode';
+                    orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
+
                 }
+
+
                 if(groupJobChain[index].period.repeat) {
                     var s = parseInt((groupJobChain[index].period.repeat) % 60),
                         m = parseInt((groupJobChain[index].period.repeat / 60) % 60),

@@ -250,7 +250,8 @@
                     obj.states.push(vm.jobChainFilters.filter.state);
                 }
             }
-            if($window.localStorage.$SOS$SHOWORDERS){
+
+            if($window.localStorage.$SOS$SHOWORDERS==true || $window.localStorage.$SOS$SHOWORDERS=='true'){
                 obj.compact = false;
             }
 
@@ -259,7 +260,7 @@
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(data.jobChains, function (jobChains) {
-                        if($window.localStorage.$SOS$SHOWORDERS)
+                        if($window.localStorage.$SOS$SHOWORDERS==true || $window.localStorage.$SOS$SHOWORDERS=='true')
                         jobChains.show = true;
 
                         for(var i = 0; i<res.jobChains.length;i++) {
@@ -280,7 +281,7 @@
 
                 } else {
                     angular.forEach(res.jobChains, function (jobChainData) {
-                        if($window.localStorage.$SOS$SHOWORDERS)
+                        if($window.localStorage.$SOS$SHOWORDERS==true || $window.localStorage.$SOS$SHOWORDERS=='true')
                         jobChainData.show = true;
                         var flag1 = true;
                         if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
@@ -350,9 +351,7 @@
                     obj.states.push(vm.jobChainFilters.filter.state);
                 }
             }
-            if($window.localStorage.$SOS$SHOWORDERS){
-                obj.compact = false;
-            }
+
             JobChainService.get(obj).then(function (res) {
 
                 var data1 = [];
@@ -649,14 +648,14 @@
                     obj.states.push(vm.jobChainFilters.filter.state);
                 }
             }
-            if($window.localStorage.$SOS$SHOWORDERS){
+            if($window.localStorage.$SOS$SHOWORDERS==true || $window.localStorage.$SOS$SHOWORDERS=='true'){
                 obj.compact = false;
             }
             JobChainService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.jobChains && vm.jobChains.length > 0) {
                     angular.forEach(vm.jobChains, function (jobChains) {
-                        if($window.localStorage.$SOS$SHOWORDERS)
+                        if($window.localStorage.$SOS$SHOWORDERS==true || $window.localStorage.$SOS$SHOWORDERS=='true')
                         jobChains.show = true;
                         for(var i = 0; i<res.jobChains.length;i++) {
 
@@ -678,7 +677,7 @@
                     });
                 } else {
                     angular.forEach(res.jobChains, function (jobChainData) {
-                        if($window.localStorage.$SOS$SHOWORDERS)
+                        if($window.localStorage.$SOS$SHOWORDERS==true || $window.localStorage.$SOS$SHOWORDERS=='true')
                         jobChainData.show = true;
                         var flag1 = true;
                         if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
@@ -693,8 +692,6 @@
                     })
                 }
                 vm.jobChains = data;
-                console.log(data)
-
                 if (expandNode) {
                     startTraverseNode(expandNode);
                 }
