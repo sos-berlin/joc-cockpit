@@ -2920,6 +2920,15 @@ function volatileFolderDataL(data, obj) {
             }
         };
 
+         $(window).resize(function () {
+             var ht= $('.app-header').height()
+                + $('.app-footer').height()
+                +$('.top-header-bar').height()
+                +$('.sub-header').height()
+                +$('.sub-header-2').height()+82;
+             vm.options.maxHeight = window.innerHeight - ht;
+         });
+
         vm.canAutoWidth = function (scale) {
             if (scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/)) {
                 return false;
@@ -3053,10 +3062,10 @@ function volatileFolderDataL(data, obj) {
                         }
                     }
                     if(!flag){
-                       groupJobChain.push(data2[i]);
+                       groupJobChain.push({orderId:data2[i].orderId, jobChain:data2[i].jobChain});
                     }
                 }else{
-                    groupJobChain.push(data2[i]);
+                    groupJobChain.push({orderId:data2[i].orderId, jobChain:data2[i].jobChain});
                 }
             }
 
@@ -3064,63 +3073,61 @@ function volatileFolderDataL(data, obj) {
                 var i = 0;
                 orders[index] = {};
                 orders[index].tasks = [];
+                for (var index1 = 0; index1 < data2.length; index1++) {
+                    if (groupJobChain[index].jobChain == data2[index1].jobChain && groupJobChain[index].orderId == data2[index1].orderId) {
+                        orders[index].tasks[i] = {};
+                        if (data2[index1].job != undefined) {
+                            orders[index].name = data2[index1].job;
+                            orders[index].orderId = '-';
+                        } else {
+                            orders[index].name = data2[index1].jobChain.substring(data2[index1].jobChain);
+                            orders[index].orderId = data2[index1].orderId;
+                        }
+                        vm.plans[index].processedPlanned = orders[index].name;
+                        orders[index].tasks[i].name = orders[index].name;
 
+                        vm.plans[index].status = data2[index1].state._text;
+                        if (data2[index1].state._text == 'SUCCESSFUL') {
+                            orders[index].tasks[i].color = "#7ab97a";
+                        } else if (data2[index1].state._text == 'FAILED') {
+                            orders[index].tasks[i].color = "#e86680";
+                        }
+                        else if (data2[index1].late) {
+                            orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
+                        }
+                        orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
 
-                orders[index].tasks[i] = {};
-                if (groupJobChain[index].job != undefined) {
-                    orders[index].name = groupJobChain[index].job;
-                    orders[index].orderId = '-';
-                } else {
-                    orders[index].name = groupJobChain[index].jobChain.substring(groupJobChain[index].jobChain);
-                    orders[index].orderId = groupJobChain[index].orderId;
+                        if (!minNextStartTime || minNextStartTime > new Date(data2[index1].plannedStartTime)) {
+                            minNextStartTime = new Date(data2[index1].plannedStartTime);
+                        }
+                        if (!maxEndTime || maxEndTime < new Date(data2[index1].expectedEndTime)) {
+                            maxEndTime = new Date(data2[index1].expectedEndTime);
+                        }
+                        orders[index].tasks[i].to = new Date(data2[index1].expectedEndTime);
+
+                        if (data2[index1].startMode == 0) {
+                            orders[index].startMode = 'label.singleStartMode';
+                            orders[index].tasks[i].content = '<i class="fa fa-repeat1">';
+                        } else if (data2[index1].startMode == 1) {
+                            orders[index].startMode = 'label.startStartRepeatMode';
+                            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">';
+                        } else {
+                            orders[index].startMode = 'label.startEndRepeatMode';
+                            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
+                        }
+
+                        if (data2[index1].period.repeat) {
+                            var s = parseInt((data2[index1].period.repeat) % 60),
+                                m = parseInt((data2[index1].period.repeat / 60) % 60),
+                                h = parseInt((data2[index1].period.repeat / (60 * 60)) % 24);
+                            h = h > 9 ? h : '0' + h;
+                            m = m > 9 ? m : '0' + m;
+                            s = s > 9 ? s : '0' + s;
+                            orders[index].repeat = h + ':' + m + ':' + s;
+                        }
+                        i++;
+                    }
                 }
-
-                vm.plans[index].processedPlanned = orders[index].name;
-                orders[index].tasks[i].name = orders[index].name;
-
-                vm.plans[index].status = groupJobChain[index].state._text;
-                if (groupJobChain[index].state._text == 'SUCCESSFUL') {
-                    orders[index].tasks[i].color = "#7ab97a";
-                } else if (groupJobChain[index].state._text == 'FAILED') {
-                    orders[index].tasks[i].color = "#e86680";
-                }
-                else if (groupJobChain[index].late) {
-                    orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
-                }
-
-                orders[index].tasks[i].from = new Date(groupJobChain[index].plannedStartTime);
-
-
-                if (!minNextStartTime || minNextStartTime > new Date(groupJobChain[index].plannedStartTime)) {
-                    minNextStartTime = new Date(groupJobChain[index].plannedStartTime);
-                }
-                if (!maxEndTime || maxEndTime < new Date(groupJobChain[index].expectedEndTime)) {
-                    maxEndTime = new Date(groupJobChain[index].expectedEndTime);
-                }
-                orders[index].tasks[i].to = new Date(groupJobChain[index].expectedEndTime);
-                if (groupJobChain[index].startMode == 0) {
-                    orders[index].startMode = 'label.singleStartMode';
-                    orders[index].tasks[i].content = '<i class="fa fa-repeat1">' ;
-                } else if (groupJobChain[index].startMode == 1) {
-                    orders[index].startMode = 'label.startStartRepeatMode';
-                    orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">' ;
-                } else {
-                    orders[index].startMode = 'label.startEndRepeatMode';
-                    orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
-
-                }
-
-
-                if(groupJobChain[index].period.repeat) {
-                    var s = parseInt((groupJobChain[index].period.repeat) % 60),
-                        m = parseInt((groupJobChain[index].period.repeat / 60) % 60),
-                        h = parseInt((groupJobChain[index].period.repeat / (60 * 60)) % 24);
-                    h = h > 9 ? h : '0' + h;
-                    m = m > 9 ? m : '0' + m;
-                    s = s > 9 ? s : '0' + s;
-                    orders[index].repeat = h + ':' + m + ':' + s;
-                }
-                i++;
             }
 
             if (minNextStartTime) {

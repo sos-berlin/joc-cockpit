@@ -808,5 +808,7 @@
   "label.singleStartMode": "single_start",
   "label.startStartRepeatMode": "start_start_repeat",
   "label.startEndRepeatMode": "start_end_repeat",
-  "label.showOrders": "Visualiser les Ordres immédiatement avec les vues"
+  "label.showOrders": "Visualiser les Ordres immédiatement avec les vues",
+  "label.enterStartTime": "Enter a start time",
+  "placeholder.enterStartTime": "now + SECONDS"
 }

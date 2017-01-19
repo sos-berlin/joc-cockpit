@@ -109,9 +109,9 @@
     }
 }
 
-@media (max-width: 542px) {
+@media (max-width: 640px) {
     body {
-        min-width: 520px;
+        min-width: 640px;
         right: 0;
         left: 0;
     }

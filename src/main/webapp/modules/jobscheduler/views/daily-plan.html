@@ -129,26 +129,26 @@
 </div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0 p-t">
-        <div class="row m-b-sm">
+        <div class="row m-b-sm sub-header-2">
             <div class="col-lg-10 col-md-10 col-sm-12">
                 <div class="">
                 <span class="m-r-sm" translate>label.from</span>
-                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date" style="width: 125px;background-position: 100px"
+                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date"
                        ng-model="dailyPlanFilters.filter.from"
-                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd"
+                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
                        bs-datepicker type="text" ng-change="dailyPlanFilters.range='dateRange';getPlans()">
                 <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time" ng-model="dailyPlanFilters.filter.from" data-time-format="HH:mm:ss"
                        data-autoclose="1"
-                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 110px;background-position: 85px"
+                       placeholder="HH:MM:SS" data-length="1" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
                 <span class="m-l-sm m-r-sm" translate>label.to</span>
-                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date" style="width: 125px;background-position: 100px"
+                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date"
                        ng-model="dailyPlanFilters.filter.to"
-                       data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" data-min-date="{{dailyPlanFilters.filter.from}}"
+                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{dailyPlanFilters.filter.from}}"
                        bs-datepicker type="text" ng-change="dailyPlanFilters.range='dateRange';getPlans()">
                 <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time" ng-model="dailyPlanFilters.filter.to" data-time-format="HH:mm:ss"
                        data-autoclose="1"
-                       placeholder="hh:mm:ss" bs-timepicker type="text" style="width: 110px;background-position: 85px"
+                       placeholder="HH:MM:SS" data-length="1" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
                 </div>
             </div>

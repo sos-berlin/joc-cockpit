@@ -800,7 +800,6 @@
                                 }
 
                             }
-                            console.log(vm.allEvents[i].eventSnapshots[j].eventType)
                         }
                     }
 

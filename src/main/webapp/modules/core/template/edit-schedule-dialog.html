@@ -59,10 +59,10 @@
                        <div class="b-b">
                             <ul class="nav nav-tabs">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href data-toggle="tab" data-target="#schTab1" translate>tab.schedule</a>
+                                    <a class="nav-link active" href data-toggle="tab" data-target="#schTab1" ng-click="selectedTab ='schedule'" translate>tab.schedule</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#schTab2" translate>tab.runtime</a>
+                                    <a class="nav-link" href data-toggle="tab" data-target="#schTab2" ng-click="selectedTab ='runtime';error = {}" translate>tab.runtime</a>
                                 </li>
                             </ul>
                         </div>
@@ -89,8 +89,8 @@
                                 <div class="form-group row" ng-class="{'has-error': (error.validFromRequired)}">
                                     <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-focus="error.validFromRequired=false;error.validDate=false" name="date1" ng-model="from.date" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text">
-                                        <input  class="form-control input-time" ng-model="from.time" ng-focus="error.validDate=false" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+                                        <input class="form-control input-date" ng-focus="error.validFromRequired=false;error.validDate=false" name="date1" ng-model="from.date" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                                        <input  class="form-control input-time" ng-model="from.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
                                         <div class="help-block text-danger" ng-if="error.validFromRequired">
                                            <div translate>message.validFromError</div>
                                        </div>
@@ -99,8 +99,8 @@
                                 <div class="form-group row"  ng-class="{'has-error': (error.validDate || error.validToRequired)}">
                                     <label class="col-sm-3 form-control-label" translate>label.validTo</label>
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-focus="error.validToRequired=false;error.validDate=false" name="date2" ng-model="to.date" data-date-format="yyyy-MM-dd" data-autoclose="1" data-min-date="{{from.date}}" placeholder="yyyy-mm-dd" bs-datepicker type="text">
-                                        <input class="form-control input-time" ng-model="to.time" ng-focus="error.validDate=false" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+                                        <input class="form-control input-date" ng-focus="error.validToRequired=false;error.validDate=false" name="date2" ng-model="to.date" data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{from.date}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                                        <input class="form-control input-time" ng-model="to.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
                                         <div class="help-block text-danger" ng-if="error.validToRequired">
                                            <div translate>message.validToError</div>
                                        </div>
@@ -437,7 +437,7 @@
                             <div class="col-sm-2">
                                 <input class="form-control input-time" ng-model="runTime.period._single_start"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
+                                       data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
@@ -448,7 +448,7 @@
                             <div class="col-sm-2">
                                 <input class="form-control input-time" ng-model="runTime.period._repeat"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
+                                       data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
@@ -460,7 +460,7 @@
                             <div class="col-sm-2">
                                 <input class="form-control input-time" ng-model="runTime.period._absolute_repeat"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
+                                       data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
@@ -654,8 +654,8 @@
                     <label class="col-sm-3" translate>label.date</label>
                         <div class="col-sm-6">
                             <input class="form-control input-date" ng-model="holidayDate"
-                                   data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text"
-                                   style="width: 30%; background-position: 95% 8px;">
+                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text"
+                                   >
                             <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm" ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
                         </div>
                 </div>
@@ -664,7 +664,7 @@
                         <table class="table table-bordered" style="min-height: 100px; width: 87%">
                             <tbody>
                             <tr ng-repeat="date in holidayDates track by $index">
-                                <td>{{date  | date:'yyyy-MM-dd' || '-'}}
+                                <td>{{date  | date:dataFormat}}
 
                                     <a class="pull-right" ng-click="removeHolidayDate($index)"><i class="fa fa-times"></i></a>
                                 </td>
@@ -744,9 +744,12 @@
         <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
                 translate>button.cancel
         </button>
-        <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
+        <button ng-if="editor.hidePervious && selectedTab !='runtime'" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
                 ng-disabled="form.$invalid || error.scheduleRequired || error.validFromRequired || error.validDate || error.validToRequired"
                 ng-click="saveScheduleDetail()" translate>button.next
+        </button>
+        <button ng-if="editor.hidePervious && selectedTab =='runtime'" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
+                ng-click="editor.hideEvery =true" translate>button.next
         </button>
         <button ng-if="editor.hidePervious" ng-hide="editor.hideEvery" type="button"
                 class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.back

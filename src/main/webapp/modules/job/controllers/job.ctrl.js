@@ -888,7 +888,7 @@
             if (order.fromDate) {
                 obj.at = moment.utc(order.fromDate).format();
             } else {
-                obj.at = 'now';
+                obj.at = order.atTime;
             }
 
             if (paramObject && paramObject.params.length > 0) {
@@ -940,6 +940,7 @@
             vm.order = {};
             vm.paramObject = {};
             vm.paramObject.params = [];
+            vm.order.atTime='now+10';
 
             modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-order-dialog.html',
@@ -1673,6 +1674,15 @@
                     }
                 }
         }
+
+        vm.isValid = true;
+        vm.checkRegex = function (value) {
+            vm.isValid = true;
+            if (!value || /^\s*$/i.test(value) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value) ||  /^\s*(now)\s*$/i.test(value)) {
+            } else {
+                vm.isValid = false;
+            }
+        };
 
         $scope.$on('$destroy', function () {
             watcher1();
@@ -2798,6 +2808,7 @@
                 job.date.setSeconds(job.time.getSeconds());
             }
 
+            if (job.date)
             obj.at = moment.utc(job.date).format();
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
@@ -2812,10 +2823,9 @@
 
         vm.startAt = function (job) {
             vm.job = job;
-            vm.job.date = new Date();
-            vm.job.time = new Date();
             vm.paramObject = {};
             vm.paramObject.params = [];
+            vm.job.atTime='now+10';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/start-job-dialog.html',
                 controller: 'DialogCtrl',
@@ -3212,7 +3222,14 @@
                     }
                 }
         }
-
+        vm.isValid = true;
+        vm.checkRegex = function (value) {
+            vm.isValid = true;
+            if (!value || /^\s*$/i.test(value) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value) ||  /^\s*(now)\s*$/i.test(value)) {
+            } else {
+                vm.isValid = false;
+            }
+        };
 
         $scope.$on('$destroy', function () {
             watcher1();

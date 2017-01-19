@@ -391,7 +391,7 @@
                             <div class="col-sm-2">
                                 <input class="form-control input-time" ng-model="runTime.period._single_start"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
+                                       data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
@@ -402,7 +402,7 @@
                             <div class="col-sm-2">
                                 <input class="form-control input-time" ng-model="runTime.period._repeat"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
+                                       data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
@@ -414,7 +414,7 @@
                             <div class="col-sm-2">
                                 <input class="form-control input-time" ng-model="runTime.period._absolute_repeat"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker data-length="1"
+                                       data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"
                                        data-arrow-behavior="picker" type="text">
                             </div>
@@ -426,7 +426,7 @@
                                 <input class="form-control input-time" name="time1"
                                        ng-model="runTime.period._begin"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="{{'label.begin' | translate}}" bs-timepicker
+                                       data-autoclose="1" placeholder="{{'label.begin' | translate}} (HH:MM:SS)" bs-timepicker
                                        data-length="1"
                                        data-minute-step="1" data-arrow-behavior="picker" type="text">
                             </div>
@@ -435,7 +435,7 @@
                                 <input class="form-control input-time" name="time2"
                                        ng-model="runTime.period._end"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       data-autoclose="1" placeholder="{{'label.end' | translate}}"
+                                       data-autoclose="1" placeholder="{{'label.end' | translate}} (HH:MM:SS)"
                                        data-min-time="{{runTime.period._begin}}" bs-timepicker data-length="1"
                                        data-minute-step="1" data-arrow-behavior="picker" type="text">
                             </div>
@@ -608,8 +608,7 @@
                     <label class="col-sm-3" translate>label.date</label>
                         <div class="col-sm-6">
                             <input class="form-control input-date" ng-model="holidayDate"
-                                   data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text"
-                                   style="width: 30%; background-position: 95% 8px;">
+                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                             <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm" ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
                         </div>
                 </div>
@@ -618,8 +617,7 @@
                         <table class="table table-bordered" style="min-height: 100px; width: 87%">
                             <tbody>
                             <tr ng-repeat="date in holidayDates track by $index">
-                                <td>{{date  | date:'yyyy-MM-dd' || '-'}}
-
+                                <td>{{date | date:dataFormat}}
                                     <a class="pull-right" ng-click="removeHolidayDate($index)"><i class="fa fa-times"></i></a>
                                 </td>
                             </tr>

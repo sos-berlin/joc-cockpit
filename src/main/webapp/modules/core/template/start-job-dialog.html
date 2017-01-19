@@ -10,11 +10,36 @@
                 <label class="col-sm-6">{{job.name}} <span ng-if="job.title" class="text-muted"> - {{job.title}}</span></label>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.startTime</label>
+                <label class="col-sm-4 " translate>label.startTime</label>
+                <div class=" col-md-8" ng-init="job.at = 'now'">
+                    <label class="md-check ">
+                        <input type="radio" name="radio" ng-model="job.at" value="now">
+                        <i class="primary"></i><span translate>label.now</span>
+                    </label>
+                    <label class="md-check m-l">
+                        <input type="radio" name="radio" ng-model="job.at" value="later">
+                        <i class="primary"></i><span translate>label.scheduleForLater</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="job.at == 'now'">
+                <label class="col-sm-4 form-control-label"  translate>label.enterStartTime</label>
+
+                <div class="col-sm-6">
+                    <input ng-required="job.at == 'now'" type="text" class="form-control " ng-model="job.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}"
+                           ng-disabled="job.fromDate || job.fromTime"
+                           ng-change="checkRegex(job.atTime)">
+                    <div class="help-block text-danger" ng-if="!isValid">
+                        <div translate>message.invalid</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" ng-if="job.at == 'later'">
+                <label class="col-sm-4 form-control-label" translate>label.enterDateAndTime</label>
 
                 <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="fromDate" data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="yyyy-mm-dd" bs-datepicker type="text">
-                    <input class="form-control input-time" ng-model="fromTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="hh:mm:ss" bs-timepicker type="text">
+                    <input class="form-control input-date" ng-model="fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                    <input class="form-control input-time" ng-model="fromTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
                 </div>
             </div>
             <div class="form-group row m-b-sm " ng-repeat="param in job.params">
@@ -52,7 +77,7 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || !isValid">button.submit</button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </div>

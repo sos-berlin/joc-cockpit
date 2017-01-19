@@ -309,45 +309,6 @@
         vm.uniqueNode = 0;
         vm.totalSubNodes = 0;
 
-        function getPadding(job) {
-
-            var padding = 0;
-            var matched = false;
-
-            if (!splitRegex.test(job.name)) {
-                vm.totalNodes++;
-            } else {
-                if (!vm.uniqueNode) {
-                    vm.totalNodes++;
-                    vm.totalSubNodes++;
-                    vm.uniqueNode = splitRegex.exec(job.name)[1];
-                } else if (vm.uniqueNode != splitRegex.exec(job.name)[1]) {
-                    vm.totalNodes++;
-                    vm.totalSubNodes++;
-                    vm.uniqueNode = splitRegex.exec(job.name)[1];
-                }
-            }
-
-            vm.jobChain.nodes.map(function (node) {
-                if (splitRegex.test(job.name)) {
-                    var parent = splitRegex.exec(job.name)[1];
-                    parentRegex = new RegExp("(.+):" + parent);
-                    if (parentRegex.test(node.name)) {
-                        job.padding = node.padding + 10;
-                        padding = job.padding;
-                    } else if (parent == node.name) {
-                        job.padding = node.padding + 10;
-                        padding = job.padding;
-                    }
-                } else if (node.nextNode == job.name && !matched) {
-                    matched = true;
-                    job.padding = node.padding;
-                    padding = job.padding;
-                }
-            });
-
-            return padding;
-        }
 
         function loadJobChain() {
 
@@ -357,12 +318,6 @@
 
                 vm.jobChain = JSON.parse(SOSAuth.jobChain);
 
-                angular.forEach(vm.jobChain.nodes, function (node) {
-                    if (vm.jobChain.nodes[0]) {
-                        vm.jobChain.nodes[0].padding = 0;
-                    }
-                    getPadding(node);
-                });
                 if (vm.totalSubNodes > 0) {
                     vm.totalLineWidth = vm.totalNodes + vm.totalSubNodes;
                 } else {
@@ -730,8 +685,11 @@
                 order.date.setSeconds(order.time.getSeconds());
             }
 
+            if(order.date && order.at=='later')
+                obj.at = moment.utc(order.date).format();
+            else
+                obj.at = order.atTime;
 
-            obj.at = moment.utc(order.date).format();
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
@@ -828,11 +786,9 @@
                     order = angular.merge(order, res.orders[0]);
                 });
                 vm.order = order;
-                vm.order.date = new Date();
-                vm.order.time = new Date();
-
                 vm.paramObject = {};
                 vm.paramObject.params = [];
+                vm.order.atTime='now+10';
 
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/start-order-dialog.html',
@@ -1019,6 +975,15 @@
             }
 
 
+        };
+
+        vm.isValid = true;
+        vm.checkRegex = function (value) {
+            vm.isValid = true;
+            if (!value || /^\s*$/i.test(value) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value) ||  /^\s*(now)\s*$/i.test(value)) {
+            } else {
+                vm.isValid = false;
+            }
         };
 
     }
@@ -2791,8 +2756,10 @@
                 order.date.setSeconds(order.time.getSeconds());
             }
 
-
+            if(order.date && order.at=='later')
             obj.at = moment.utc(order.date).format();
+            else
+                obj.at = order.atTime;
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
@@ -2822,10 +2789,9 @@
                 order = angular.merge(order, res.orders[0]);
             });
             vm.order = order;
-            vm.order.date = new Date();
-            vm.order.time = new Date();
             vm.paramObject = {};
             vm.paramObject.params = [];
+            vm.order.atTime='now+10';
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/start-order-dialog.html',
@@ -2910,8 +2876,6 @@
 
             OrderService.setRunTime(orders).then(function (res) {
 
-            }, function (err) {
-                console.log(err);
             });
             vm.reset();
         }
@@ -3160,6 +3124,14 @@
             vm.hidePanel = !vm.hidePanel;
         };
 
+        vm.isValid = true;
+        vm.checkRegex = function (value) {
+            vm.isValid = true;
+            if (!value || /^\s*$/i.test(value) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value) ||  /^\s*(now)\s*$/i.test(value)) {
+            } else {
+                vm.isValid = false;
+            }
+        };
 
         vm.limitNum = $window.localStorage.$SOS$MAXORDERPERJOBCHAIN;
         vm.showOrderPanel = '';
@@ -3844,7 +3816,10 @@
 
         /**--------------- Filter -----------------------------*/
         vm.advanceFilter = function () {
-
+            vm.paths=[];
+            vm.jobChains=[];
+            vm.orders=[];
+            vm.jobs=[];
             vm.historyFilter = {};
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
@@ -3905,6 +3880,9 @@
             vm.filterName = filter.name;
             vm.historyFilter = angular.copy(filter);
             vm.paths = vm.historyFilter.paths;
+            vm.orders = vm.historyFilter.orders;
+            vm.jobChains = vm.historyFilter.jobChains;
+            vm.jobs = vm.historyFilter.jobs;
             vm.object.paths = vm.paths;
             vm.object.orders = vm.orders;
             vm.object.jobChains = vm.jobChains;
@@ -4057,11 +4035,6 @@
         vm.filter_tree = {};
 
         vm.getTreeStructure = function () {
-
-            vm.paths=[];
-            vm.jobChains=[];
-            vm.orders=[];
-            vm.jobs=[];
             $('#treeModal').modal('show');
             if (vm.historyFilters.type == 'jobChain') {
                 OrderService.tree({
@@ -4127,10 +4100,8 @@
                 vm.orders =[];
                 angular.forEach(newNames, function(v){
                     vm.orders.push({orderId:v.orderId, jobChain:v.jobChain});
-                    if(vm.jobChains.length>0 && vm.jobChains.indexOf(v.jobChain) === -1) {
+                    if(vm.jobChains.indexOf(v.jobChain) ==-1) {
                         vm.jobChains.push(v.jobChain);
-                    }else{
-                       vm.jobChains.push(v.jobChain);
                     }
                 });
             }
