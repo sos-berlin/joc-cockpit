@@ -746,9 +746,9 @@
   "label.eventFilter": "Filtre de Notification",
   "label.notifications": "Notifications",
   "label.backToNotifications": "Retourner aux notifications",
-  "label.failedOrders": "Ordres Echoués",
-  "label.successfulOrders": "Ordres Reussis",
-  "label.lateOrdersFailed": "Ordres en retard échoués",
+  "label.failedOrders": "Ordres echoués",
+  "label.successfulOrders": "Ordres reussis",
+  "label.lateOrdersFailed": "Ordres échoués en retard",
   "label.onProcessing": "En Exécution",
   "button.markAllAsRead": "Tout marquer comme lu",
   "button.logInAgain": "Se reconnecter",
@@ -809,6 +809,6 @@
   "label.startStartRepeatMode": "start_start_repeat",
   "label.startEndRepeatMode": "start_end_repeat",
   "label.showOrders": "Visualiser les Ordres immédiatement avec les vues",
-  "label.enterStartTime": "Enter a start time",
-  "placeholder.enterStartTime": "now + SECONDS"
+  "label.enterStartTime": "Entrer la date de démarrage",
+  "placeholder.enterStartTime": "now + SECONDE"
 }

@@ -809,6 +809,6 @@
   "label.startStartRepeatMode": "start_start_repeat",
   "label.startEndRepeatMode": "start_end_repeat",
   "label.showOrders": "Aufträge in Sichten sofort anzeigen",
-  "label.enterStartTime": "Enter a start time",
-  "placeholder.enterStartTime": "now + SECONDS"
+  "label.enterStartTime": "Startzeit eingeben",
+  "placeholder.enterStartTime": "now + SEKUNDEN"
 }

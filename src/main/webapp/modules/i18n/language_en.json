@@ -809,6 +809,6 @@
   "label.startStartRepeatMode": "start_start_repeat",
   "label.startEndRepeatMode": "start_end_repeat",
   "label.showOrders": "Show Orders immediately in views",
-  "label.enterStartTime": "Enter a start time",
+  "label.enterStartTime": "Enter start time",
   "placeholder.enterStartTime": "now + SECONDS"
 }
