@@ -1675,15 +1675,6 @@
                 }
         }
 
-        vm.isValid = true;
-        vm.checkRegex = function (value) {
-            vm.isValid = true;
-            if (!value || /^\s*$/i.test(value) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value) ||  /^\s*(now)\s*$/i.test(value)) {
-            } else {
-                vm.isValid = false;
-            }
-        };
-
         $scope.$on('$destroy', function () {
             watcher1();
             watcher3();
@@ -1695,9 +1686,9 @@
     }
 
     JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
-        "gettextCatalog", "$state", "CoreService", "$timeout","$window"];
+        "gettextCatalog", "$state", "CoreService", "$timeout","$window","DailyPlanService"];
     function JobCtrl($scope, $rootScope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
-                     gettextCatalog, $state, CoreService, $timeout,$window) {
+                     gettextCatalog, $state, CoreService, $timeout,$window,DailyPlanService) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.showTask =  $window.localStorage.$SOS$SHOWTASKS =='true';
@@ -2441,16 +2432,6 @@
             }
         };
 
-
-        vm.validPlanned = true;
-        vm.checkPlanned = function () {
-            vm.validPlanned = true;
-            if (!vm.jobFilter.planned || /^\s*$/i.test(vm.jobFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.jobFilter.planned) || /^\s*\d+[d,h]\s*$/i.test(vm.jobFilter.planned) || /^\s*(now)\s*$/i.test(vm.jobFilter.planned) || /^\s*(Today)\s*$/i.test(vm.jobFilter.planned)
-                || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.jobFilter.planned)) {
-            } else {
-                vm.validPlanned = false;
-            }
-        };
         /**--------------- sorting and pagination -------------------*/
         vm.pageChange = function () {
             vm.reset();
@@ -3053,7 +3034,42 @@
             vm.zones = moment.tz.names();
         };
 
+        vm.viewCalendar = function (job) {
+            vm._job = job;
+            vm.planItems = [];
+            DailyPlanService.getPlans({
+                jobschedulerId: $scope.schedulerIds.selected,
+                states: ['PLANNED'],
+                job: vm._job.path
+            }).then(function (res) {
+                vm.planItemData = res.planItems;
+                vm.planItemData.forEach(function (data) {
+                    var planData = {
+                        plannedStartTime: data.plannedStartTime,
+                        expectedEndTime: data.expectedEndTime
+                    };
+                    vm.planItems.push(planData);
+                });
 
+            }, function (err) {
+            });
+            openCalendar();
+        };
+
+        function openCalendar() {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+            }, function () {
+
+            });
+
+        }
         vm.viewAllHistories = function () {
             vm.taskHistoryTab = CoreService.getHistoryTab();
             vm.taskHistoryTab.type = 'job';
@@ -3222,14 +3238,6 @@
                     }
                 }
         }
-        vm.isValid = true;
-        vm.checkRegex = function (value) {
-            vm.isValid = true;
-            if (!value || /^\s*$/i.test(value) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(value) ||  /^\s*(now)\s*$/i.test(value)) {
-            } else {
-                vm.isValid = false;
-            }
-        };
 
         $scope.$on('$destroy', function () {
             watcher1();

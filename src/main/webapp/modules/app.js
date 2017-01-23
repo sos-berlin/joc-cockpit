@@ -31,8 +31,8 @@
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs=[];
-            $resource("config.json").get(function (data) {
-                $rootScope.configData = data;
+            $resource("version.json").get(function (data) {
+                $rootScope.versionData = data;
             });
 
         }])

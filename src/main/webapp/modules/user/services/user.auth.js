@@ -13,11 +13,9 @@
                     request: function (config) {
 
                         if (config.method == 'POST') {
-                            if($rootScope.configData) {
-                                config.url = $rootScope.configData['WEB_SERVER_URL'] + config.url;
-                            }else{
-                                config.url = 'joc/api/' + config.url;
-                            }
+                         
+                               config.url = '/joc/api/' + config.url;
+                           
 
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {

@@ -810,5 +810,12 @@
   "label.startEndRepeatMode": "start_end_repeat",
   "label.showOrders": "Aufträge in Sichten sofort anzeigen",
   "label.enterStartTime": "Startzeit eingeben",
-  "placeholder.enterStartTime": "now + SEKUNDEN"
+  "placeholder.enterStartTime": "now + SEKUNDEN",
+  "tooltip.saveLogFile": "Save",
+  "tooltip.printLogFile": "Print",
+  "message.selectFoldersOrJobChains/Orders": "Select Folders orJob Chains/Orders",
+  "message.selectFoldersOrJobs": "Select Folders or Jobs",
+  "label.theme": "Change theme",
+  "label.dark": "Dark",
+  "label.light": "Light"
 }

@@ -1134,15 +1134,12 @@
 
                 vm.$on('event-started', function (event, args) {
                     if (args.events && args.events.length > 0) {
-
                         angular.forEach(args.events[0].eventSnapshots, function (value1) {
                             if (value1.eventType.indexOf("SchedulerStateChanged") !== -1) {
                                 vm.getSupervisor(value1);
                             }
-
                         });
                     }
-
                 });
             }]
         }

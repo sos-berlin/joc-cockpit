@@ -19,7 +19,7 @@
                    <h5 translate>label.userDetails</h5>
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.userName</span></div>
-                       <div class="col-sm-6">
+                       <div class="col-sm-9">
                           <span class="text-black-lt">{{permission.user}}</span>
                        </div>
                    </div>
@@ -27,13 +27,13 @@
                    <h5 translate>label.preferences</h5>
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.language</div>
-                       <div class="col-sm-3">
+                       <div class="col-sm-9">
                           <select class="form-control w-xl" ng-model="upc.perferences.locale" ng-change="upc.setLocale()"  ng-options="locale as locale.name for locale in upc.locales"></select>
                        </div>
                    </div>
                    <div class="row m-t-sm">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.timeZone</div>
-                       <div class="col-sm-3">
+                       <div class="col-sm-9">
                            <select class="form-control w-xl"  ng-model="upc.perferences.zone" ng-change="upc.setTimeZone()">
                                 <option value="{{upc.timezone}}">local ({{upc.timezone}})</option>
                                 <option value="{{selectedJobScheduler.timeZone}}">JobScheduler ({{selectedJobScheduler.timeZone}})</option>
@@ -162,32 +162,41 @@
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
-                       <div class="col-sm-3">
-                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxRecords" ng-blur="upc.changePerferences()">
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxRecords" ng-blur="upc.changePerferences()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerOrder</div>
-                       <div class="col-sm-3">
-                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxHistoryPerOrder" ng-blur="upc.changePerferences()">
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxHistoryPerOrder" ng-blur="upc.changePerferences()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerTask</div>
-                       <div class="col-sm-3">
-                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxHistoryPerTask" ng-blur="upc.changePerferences()">
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxHistoryPerTask" ng-blur="upc.changePerferences()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerJobchain</div>
-                       <div class="col-sm-3">
-                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxHistoryPerJobchain" ng-blur="upc.changePerferences()">
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxHistoryPerJobchain" ng-blur="upc.changePerferences()">
                        </div>
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfOrdersPerJobChain</div>
-                       <div class="col-sm-3">
-                          <input type="number" min="1" class="form-control" ng-model="upc.perferences.maxOrderPerJobchain" ng-blur="upc.changePerferences()">
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxOrderPerJobchain" ng-blur="upc.changePerferences()">
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.theme</div>
+                       <div class="col-sm-6">
+                           <select class="form-control w-xl" ng-model="upc.perferences.theme" ng-change="upc.changeTheme(upc.perferences.theme)">
+                               <option value="light" translate>label.light</option>
+                               <option value="dark" translate>label.dark</option>
+                           </select>
                        </div>
                    </div>
                    <div class="row m-t">

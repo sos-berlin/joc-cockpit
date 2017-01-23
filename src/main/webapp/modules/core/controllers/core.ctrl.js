@@ -211,14 +211,14 @@
 
         $window.onunload = refreshParent;
         function refreshParent() {
+            calWindowSize();
             try {
-                calWindowSize();
-                if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
+                if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false)
                     newWindow.close();
-                }
+
             }
             catch (x) {
-                throw new Error(x.message);
+               console.log(x)
             }
         }
 
@@ -246,7 +246,8 @@
                             return;
                         }
 
-                        newWindow = $window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
+                        newWindow = window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
+                        calWindowSize();
                     }
                     if (typeof newWindow == 'undefined' || newWindow == null) {
                         popUpBlocker = true;
@@ -269,11 +270,24 @@
         };
 
         function calWindowSize() {
-            if (newWindow) {
+            if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
                 $window.localStorage.log_window_wt = newWindow.innerWidth;
-                $window.localStorage.log_window_ht = newWindow.innerHeight;
-                $window.localStorage.log_window_x = newWindow.screenX;
-                $window.localStorage.log_window_y = newWindow.screenY;
+                    $window.localStorage.log_window_ht = newWindow.innerHeight;
+                    $window.localStorage.log_window_x = newWindow.screenX;
+                    $window.localStorage.log_window_y = newWindow.screenY;
+                if(newWindow) {
+                    try {
+                        $(newWindow).unload(function () {
+                            console.log('close')
+                            $window.localStorage.log_window_wt = newWindow.innerWidth;
+                            $window.localStorage.log_window_ht = newWindow.innerHeight;
+                            $window.localStorage.log_window_x = newWindow.screenX;
+                            $window.localStorage.log_window_y = newWindow.screenY;
+                        });
+                    }catch(e){
+                        console.log(e);
+                    }
+                }
             }
         }
 
@@ -366,16 +380,18 @@
             if (vm.dataFormat.match('|')) {
                 vm.dataFormat = vm.dataFormat.replace('|', '');
             }
-            vm.dataFormat =vm.dataFormat.replace('YY', 'yy');
-            vm.dataFormat =vm.dataFormat.replace('YY', 'yy');
-            vm.dataFormat =vm.dataFormat.replace('D', 'd');
-            vm.dataFormat =vm.dataFormat.replace('D', 'd');
-            vm.dataFormat =vm.dataFormat.trim();
+            vm.dataFormat = vm.dataFormat.replace('YY', 'yy');
+            vm.dataFormat = vm.dataFormat.replace('YY', 'yy');
+            vm.dataFormat = vm.dataFormat.replace('D', 'd');
+            vm.dataFormat = vm.dataFormat.replace('D', 'd');
+            vm.dataFormat = vm.dataFormat.trim();
         }
+
         getDateFormate();
 
 
         vm.currentTime = moment();
+        $rootScope.currentYear = vm.currentTime.format(('YYYY'));
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
         var resetDate = true;
         var interval = $interval(function () {
@@ -409,16 +425,16 @@
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
                 vm.logout();
             }
-            try {
-                if ($rootScope.clientLogFilter.state) {
+            if ($rootScope.clientLogFilter.state) {
+                try {
                     $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
                     if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0) {
                         $window.localStorage.clientLogs.splice(1, 100);
                     }
+                } catch (e) {
+                    $rootScope.clientLogs = [];
+                    $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
                 }
-            } catch (e) {
-                $rootScope.clientLogs = [];
-                $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
             }
 
             $window.localStorage.$SOS$DASHBOARDTABS = JSON.stringify(CoreService.getDashboard());
@@ -432,13 +448,13 @@
 
         }, 1000);
 
-
-        /*        UserService.configurations({
+        /*UserService.configurations({
          jobschedulerId: vm.schedulerIds.selected,
          user: 'root'
          }).then(function (res) {
          console.log(res)
          });*/
+
         vm.refreshSession = function () {
             UserService.touch().then(function (res) {
                 if (res && res.ok)
@@ -501,9 +517,7 @@
                     if (res) {
                         SOSAuth.setIds(res);
                         SOSAuth.setPermission(permission);
-
                         SOSAuth.save();
-
                         $rootScope.$broadcast('reloadUser');
                         if ($location.path().match('jobChainDetails/')) {
                             $location.path('/').search({});
@@ -538,15 +552,12 @@
 
         };
 
-
         $scope.$on('$stateChangeSuccess', function () {
-
             vm.checkNavHeader();
             $uibModalStack.dismissAll();
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
         });
-
 
         vm.eventId = '';
         var eventTimeOut = '';
@@ -587,7 +598,7 @@
                 }
 
                 vm.allEvents = res.events;
-                $rootScope.$broadcast('event-all', {events: vm.allEvents});
+                filterdEvents();
 
                 if (logout == false)
                     vm.changeEvent(vm.schedulerIds.jobschedulerIds);
@@ -617,7 +628,7 @@
             }
         }
 
-        $scope.$on('event-all', function () {
+        function filterdEvents() {
 
             if ($window.localStorage.$SOS$EVENTFILTER) {
 
@@ -625,11 +636,11 @@
 
                 for (var i = 0; i < vm.allEvents.length; i++) {
 
-                    if (vm.events && vm.allEvents[i] && vm.allEvents[i].eventSnapshots != undefined) {
+                    if (vm.allEvents[i] && vm.allEvents[i].eventSnapshots != undefined) {
 
-                        for (var j = 0; j <= vm.allEvents[i].eventSnapshots.length - 1; j++) {
-
-                            if (vm.allEvents[i].eventSnapshots[j].eventType != 'JobStateChanged' && vm.allEvents[i].eventSnapshots[j].eventType != 'JobChainStateChanged' && eventFilter.indexOf(vm.allEvents[i].eventSnapshots[j].eventType) != -1) {
+                        for (var j = 0; j < vm.allEvents[i].eventSnapshots.length; j++) {
+                            var evnType = vm.allEvents[i].eventSnapshots[j].eventType;
+                            if (evnType != 'JobStateChanged' && evnType != 'JobChainStateChanged') {
 
                                 var eventByPath = {};
                                 eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
@@ -637,7 +648,6 @@
                                 eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
                                 if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
                                     eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
-
                                 } else {
                                     eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
                                 }
@@ -648,8 +658,6 @@
                                 for (var m = 0; m <= eventByPath.events.length - 1; m++) {
                                     eventByPath.events[m].read = false;
                                 }
-
-
                                 var flag = true;
 
                                 if ($scope.allSessionEvent.group != undefined)
@@ -684,7 +692,7 @@
 
 
                                 }
-                            } else if (vm.allEvents[i].eventSnapshots[j].eventType == 'JobStateChanged') {
+                            } else if (evnType == 'JobStateChanged') {
                                 var type = "Job" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
 
                                 if (eventFilter.indexOf(type) != -1) {
@@ -725,53 +733,35 @@
                                                     }
                                                 }
                                                 flag = false;
-
                                             }
-
                                         }
-
                                     if (flag) {
-
                                         $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
                                         eventByPath.readCount = 1;
-
                                         $scope.allSessionEvent.group.push(eventByPath);
-
-
                                     }
-
                                 }
-
-                            } else if (vm.allEvents[i].eventSnapshots[j].eventType == 'JobChainStateChanged') {
-
+                            } else if (evnType == 'JobChainStateChanged') {
                                 var type = "JobChain" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
-
                                 if (eventFilter.indexOf(type) != -1) {
-
                                     var eventByPath = {};
                                     eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
                                     eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
-
                                     eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
                                     if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
                                         eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
-
                                     } else {
                                         eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
                                     }
                                     eventByPath.events = [];
                                     eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
-
                                     for (var m = 0; m <= eventByPath.events.length - 1; m++) {
                                         eventByPath.events[m].read = false;
                                     }
-
                                     var flag = true;
                                     if ($scope.allSessionEvent.group != undefined)
                                         for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
-
                                             if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-
                                                 for (var m = 0; m <= eventByPath.events.length - 1; m++) {
                                                     if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
@@ -784,30 +774,21 @@
                                                     }
                                                 }
                                                 flag = false;
-
                                             }
-
                                         }
-
                                     if (flag) {
                                         eventByPath.readCount = 1;
                                         $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-
                                         $scope.allSessionEvent.group.push(eventByPath);
-
                                     }
-
                                 }
-
                             }
                         }
                     }
-
                 }
-
                 $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
             }
-        });
+        };
 
         vm.showEvent = false;
         vm.expandNotification = function (group) {
@@ -1036,8 +1017,8 @@
 
     }
 
-    RuntimeEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", "toasty", "$timeout",'gettextCatalog'];
-    function RuntimeEditorDialogCtrl($scope, $uibModalInstance, toasty, $timeout,gettextCatalog) {
+    RuntimeEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", "toasty", "$timeout", 'gettextCatalog'];
+    function RuntimeEditorDialogCtrl($scope, $uibModalInstance, toasty, $timeout, gettextCatalog) {
         var vm = $scope;
         var dom_parser = new DOMParser();
         vm.ok = function () {
@@ -1109,50 +1090,19 @@
         function removeExistingPeriod(arr) {
             if (angular.isArray(arr.period)) {
                 angular.forEach(arr.period, function (val, index) {
-                    var flag = false;
-                    if (val._single_start == vm.updateTime.obj._period._single_start) {
-                        flag = true;
-                    }
-                    if (val._absolute_repeat == vm.updateTime.obj._period._absolute_repeat) {
-                        flag = true;
-                    }
-                    if (val._repeat == vm.updateTime.obj._period._repeat) {
-                        flag = true;
-                    }
-                    if (val._begin == vm.updateTime.obj._period._begin) {
-                        flag = true;
-                    }
-                    if (val._end == vm.updateTime.obj._period._end) {
-                        flag = true;
-                    }
-                    if (val._when_holiday == vm.updateTime.obj._period._when_holiday) {
-                        flag = true;
-                    }
+                    var flag = val._single_start == vm.updateTime.obj._period._single_start || val._absolute_repeat == vm.updateTime.obj._period._absolute_repeat
+                    || val._repeat == vm.updateTime.obj._period._repeat || val._begin == vm.updateTime.obj._period._begin || val._end == vm.updateTime.obj._period._end
+                    || val._when_holiday == vm.updateTime.obj._period._when_holiday;
+
                     if (flag) {
                         arr.period.splice(index, 1);
                     }
 
                 });
             } else {
-                var flag = false;
-                if (arr.period._single_start == vm.updateTime.obj._period._single_start) {
-                    flag = true;
-                }
-                if (arr.period._absolute_repeat == vm.updateTime.obj._period._absolute_repeat) {
-                    flag = true;
-                }
-                if (arr.period._repeat == vm.updateTime.obj._period._repeat) {
-                    flag = true;
-                }
-                if (arr.period._begin == vm.updateTime.obj._period._begin) {
-                    flag = true;
-                }
-                if (arr.period._end == vm.updateTime.obj._period._end) {
-                    flag = true;
-                }
-                if (arr.period._when_holiday == vm.updateTime.obj._period._when_holiday) {
-                    flag = true;
-                }
+                var flag = arr.period._single_start == vm.updateTime.obj._period._single_start || arr.period._absolute_repeat == vm.updateTime.obj._period._absolute_repeat ||
+                    arr.period._repeat == vm.updateTime.obj._period._repeat || arr.period._begin == vm.updateTime.obj._period._begin || arr.period._end == vm.updateTime.obj._period._end
+                    || arr.period._when_holiday == vm.updateTime.obj._period._when_holiday;
                 if (flag) {
                     arr.period = undefined;
                     arr._day = undefined;
@@ -1194,28 +1144,26 @@
             if (str.length == 1) {
                 return '';
             } else {
-                if (str.substring(str.length - 1) == ',') {
+                if (str.substring(str.length - 1) == ',')
                     str = str.substring(0, str.length - 1);
-                }
+
             }
             return str + ')'
         }
 
         function getMonths(month) {
             var str = '(';
-            if (!month) {
+            if (!month)
                 return;
-            }
+
             var months = month.toString().split(' ');
 
             angular.forEach(months, function (value) {
                 if (value == 1) {
                     str = str + 'Jan,';
-                }
-                else if (value == 2) {
+                } else if (value == 2) {
                     str = str + 'Feb,';
-                }
-                else if (value == 3) {
+                } else if (value == 3) {
                     str = str + 'Mar,';
                 } else if (value == 4) {
                     str = str + 'Apr,';
@@ -4272,7 +4220,6 @@
             OrderService.log(orders).then(function (res) {
                 if (res.log)
                     vm.logs = $sce.trustAsHtml(res.log.html);
-                // vm.logs = res.log;
             }, function () {
 
             });

@@ -11,7 +11,7 @@
             <div class=" col-sm-9">
                 <div class="row">
                    <div class=" col-sm-12">
-                        <span>&copy; 2002-2017 <a class="text-primary" target="_blank" href="https://www.sos-berlin.com">Software- und Organisations-Service GmbH.</a> </span>
+                        <span>&copy; 2002-{{currentYear}} <a class="text-primary" target="_blank" href="https://www.sos-berlin.com">Software- und Organisations-Service GmbH.</a> </span>
                    </div>
                 </div>
                 <div class="p-b-xs row">
@@ -19,14 +19,14 @@
                 </div>
                 <div class="row">
                    <label class="col-sm-3" translate>label.release</label>
-                   <div class=" col-sm-6">
-                        <span>1.11.0-RC3</span>
+                   <div class=" col-sm-9">
+                        <span ng-bind="versionData.version"></span>
                    </div>
                 </div>
                 <div class="row">
                    <label class="col-sm-3">JOC Cockpit</label>
-                   <div class=" col-sm-6">
-                        <span>v0.0.31 built on 201701191830</span>
+                   <div class=" col-sm-9">
+                        <span>{{versionData.gitHash}} ({{versionData.date}})</span>
                    </div>
                 </div>
             </div>

@@ -33,12 +33,11 @@
             <div class="form-group row" ng-if="order.at == 'now'">
                 <label class="col-sm-4 form-control-label"  translate>label.enterStartTime</label>
 
-                <div class="col-sm-6">
-                    <input ng-required="order.at == 'now'" type="text" class="form-control " ng-model="order.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}"
-                           ng-disabled="order.fromDate || order.fromTime"
-                           ng-change="checkRegex(order.atTime)">
-                    <div class="help-block text-danger" ng-if="!isValid">
-                        <div translate>message.invalid</div>
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.atTime.$invalid && form.atTime.$dirty }">
+                    <input valid-date-regex ng-required="order.at == 'now'" type="text" class="form-control" name="atTime" ng-model="order.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}">
+                    <div class="help-block text-danger" ng-messages="form.atTime.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                        <div ng-message="required" translate>message.requiredError</div>
                     </div>
                 </div>
             </div>
@@ -94,7 +93,7 @@
             </div>
             <div class="form-group m-t m-b-xs">
 
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isValid" translate>button.submitOrder</button>
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submitOrder</button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </div>

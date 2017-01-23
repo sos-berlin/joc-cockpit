@@ -139,6 +139,7 @@
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
         vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
         vm.perferences.showOrders = $window.localStorage.$SOS$SHOWORDERS === 'true';
+        vm.perferences.theme = $window.localStorage.$SOS$THEME;
 
         vm.setLocale = function () {
             vm.locale = vm.perferences.locale;
@@ -190,6 +191,11 @@
             } else {
                 $window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN = parseInt(vm.perferences.maxHistoryPerJobchain);
             }
+        };
+
+        vm.changeTheme = function (theme) {
+            document.getElementById('style-color').href = 'css/' + theme + '-style.css'
+            $window.localStorage.$SOS$THEME = theme;
         };
 
         $scope.tasks = [

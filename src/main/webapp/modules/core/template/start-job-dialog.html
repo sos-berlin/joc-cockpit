@@ -25,12 +25,11 @@
             <div class="form-group row" ng-if="job.at == 'now'">
                 <label class="col-sm-4 form-control-label"  translate>label.enterStartTime</label>
 
-                <div class="col-sm-6">
-                    <input ng-required="job.at == 'now'" type="text" class="form-control " ng-model="job.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}"
-                           ng-disabled="job.fromDate || job.fromTime"
-                           ng-change="checkRegex(job.atTime)">
-                    <div class="help-block text-danger" ng-if="!isValid">
-                        <div translate>message.invalid</div>
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.atTime.$invalid && form.atTime.$dirty }">
+                    <input valid-date-regex ng-required="job.at == 'now'" type="text" class="form-control"  name="atTime"  ng-model="job.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}">
+                    <div class="help-block text-danger" ng-messages="form.atTime.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                        <div ng-message="required" translate>message.requiredError</div>
                     </div>
                 </div>
             </div>
@@ -77,7 +76,7 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid || !isValid">button.submit</button>
+                <button type="submit" class="btn btn-primary btn-sm" translate ng-disabled="form.$invalid">button.submit</button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </div>

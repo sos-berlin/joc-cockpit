@@ -206,10 +206,14 @@
                                         <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.suspended || 0"></span>
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs">
+                                    <div class="text-sm text-left text-muted p-t-xs">
                                         <a class="text-hover-primary text-ellipsis1" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a>
                                         <i ng-if="!jobChain.processClass">-</i>
-                                        <span class="m-l" ng-if="jobChain.distributed" translate>label.distributed</span>
+                                        <span class="m-l text-orange" ng-if="jobChain.distributed" translate>label.distributed</span>
+                                    </div>
+                                    <div class="text-sm text-left text-muted p-t-xs">
+                                        <span translate>label.status </span>:
+                                        <span uib-tooltip="{{jobChain.stateText}}" ng-class="colorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text | translate" ></span>
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">

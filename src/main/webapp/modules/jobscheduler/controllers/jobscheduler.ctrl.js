@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "gettextCatalog", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, gettextCatalog, ScheduleService, $uibModal, CoreService, $interval, $timeout) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout) {
         var vm = $scope;
         vm.resourceFilters = CoreService.getResourceTab();
         vm.agentsFilters = vm.resourceFilters.agents;
@@ -3106,13 +3106,13 @@ function volatileFolderDataL(data, obj) {
                         orders[index].tasks[i].to = new Date(data2[index1].expectedEndTime);
 
                         if (data2[index1].startMode == 0) {
-                            orders[index].startMode = 'label.singleStartMode';
+                            orders[index].tasks[i].startMode = 'label.singleStartMode';
                             orders[index].tasks[i].content = '<i class="fa fa-repeat1">';
                         } else if (data2[index1].startMode == 1) {
-                            orders[index].startMode = 'label.startStartRepeatMode';
+                            orders[index].tasks[i].startMode = 'label.startStartRepeatMode';
                             orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">';
-                        } else {
-                            orders[index].startMode = 'label.startEndRepeatMode';
+                        } else if (data2[index1].startMode == 2){
+                            orders[index].tasks[i].startMode = 'label.startEndRepeatMode';
                             orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
                         }
 
@@ -3123,7 +3123,7 @@ function volatileFolderDataL(data, obj) {
                             h = h > 9 ? h : '0' + h;
                             m = m > 9 ? m : '0' + m;
                             s = s > 9 ? s : '0' + s;
-                            orders[index].repeat = h + ':' + m + ':' + s;
+                            orders[index].tasks[i].repeat = h + ':' + m + ':' + s;
                         }
                         i++;
                     }
@@ -3356,16 +3356,6 @@ function volatileFolderDataL(data, obj) {
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
             vm.load();
-        };
-
-        vm.validPlanned = true;
-        vm.checkPlanned = function () {
-            vm.validPlanned = true;
-            if (!vm.dailyPlanFilter.planned || /^\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*\d+[d,h]\s*$/i.test(vm.dailyPlanFilter.planned)  || /^\s*(now)\s*$/i.test(vm.dailyPlanFilter.planned) || /^\s*(Today)\s*$/i.test(vm.dailyPlanFilter.planned)
-                || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.dailyPlanFilter.planned)) {
-            } else {
-                vm.validPlanned = false;
-            }
         };
 
         var int = '';

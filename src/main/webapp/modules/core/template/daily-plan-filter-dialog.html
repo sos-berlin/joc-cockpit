@@ -26,9 +26,12 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.regularExpression</label>
-                <div class=" col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.regularExpression' | translate}}"
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                    <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regularExpression' | translate}}"
                            ng-model="dailyPlanFilter.regex">
+                    <div class="help-block text-danger" ng-messages="form.regex.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
                 </div>
             </div>
             <div class="form-group row " ng-class="{'m-b-sm': dailyPlanFilter.radio == 'planned' }">
@@ -67,14 +70,12 @@
             <div class="form-group row m-t-sm" ng-show="dailyPlanFilter.radio == 'planned'">
                 <label class="col-sm-4 form-control-label" translate>label.processPlanned</label>
 
-                <div class=" col-sm-6">
-                    <input type="text" name="planned" class="form-control"
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                    <input valid-filter-regex type="text" name="planned" class="form-control"
                            placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="dailyPlanFilter.planned"
-                           ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime"
-                           ng-blur="checkPlanned()">
-
-                    <div class="help-block text-danger" ng-if="!validPlanned">
-                        <div translate>message.invalid</div>
+                           ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime">
+                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                 </div>
 
@@ -118,7 +119,7 @@
             </div>
             <div class="form-group m-t m-b-xs">
                 <button type="submit" class="btn btn-primary btn-sm"
-                        ng-disabled="form.$invalid || !isUnique  || !validPlanned" translate>button.saveFilter
+                        ng-disabled="form.$invalid || !isUnique" translate>button.saveFilter
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
                 </button>

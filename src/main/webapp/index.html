@@ -2,7 +2,7 @@
 <!--
 /********************************************************* begin of preamble
 **
-** Copyright (C) 2003-2016 Software- und Organisations-Service GmbH.
+** Copyright (C) 2003-2017 Software- und Organisations-Service GmbH.
 ** All rights reserved.
 **
 ** This file may be used under the terms of either the
@@ -69,6 +69,16 @@
 
     <!-- custom-->
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="css/light-style.css" type="text/css" id="style-color"/>
+
+    <script>
+        function themeInit() {
+           if (window.localStorage.getItem('$SOS$THEME')) {
+               document.getElementById('style-color').href = 'css/' + window.localStorage.getItem('$SOS$THEME') + '-style.css';
+           }
+        }
+        themeInit();
+    </script>
     <link rel="stylesheet" href="css/style.responsive.css" type="text/css"/>
     <style type="text/css">
         [ng-cloak] {
@@ -78,7 +88,7 @@
 </head>
 <body ng-controller="AppCtrl">
         <!--[if lt IE 9]>
-            <p class="text-center text">You are using an <strong>outdated</strong> browser. Please <a class="text-primary text-hover-primary" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+            <p class="text-center text m-t-lg">This browser version is not compatible to the JOC Cockpit.  Check the documentation for <a class="text-primary text-hover-primary" href="https://kb.sos-berlin.com/display/PKB/JOC+Cockpit+-+Browser+Compatibility">Browser Compatibility</a>.</p>
         <![endif]-->
 
     <!-- BEGIN PAGE SPINNER -->
@@ -147,7 +157,7 @@
 <script src="bower_components/angular-file-saver/dist/angular-file-saver.min.js"></script>
 <script src="bower_components/Blob/Blob.js"></script>
 <script src="bower_components/FileSaver/FileSaver.min.js"></script>
-<script type="text/javascript" src="bower_components/crypto-js/crypto-js.js"></script>
+<script src="bower_components/crypto-js/crypto-js.js"></script>
 <script type="text/javascript" src="js/jquery.table2excel.js"></script>
 <script type="text/javascript" src="js/stickySidebar.js"></script>
 <!-- runtime editor js files-->

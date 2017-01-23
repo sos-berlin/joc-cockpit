@@ -80,8 +80,8 @@
                     <span ng-repeat="log in clientLogs | filter:logFilter track by $index" style="font-size: 12px">
                         <span style="color: #009933;white-space:nowrap;" ng-class="{'log_error':log.level=='error'}" >{{log.logTime | date:'yyyy-MM-dd hh:mm:ss:sss'}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
                         <span style="margin-left: 5px">
-                            <pre ng-if="log.level=='error'" style='background: white; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message | json}}</pre>
-                            <pre ng-if="log.level!='error'" style='display:inline;background: white;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</pre>
+                            <pre ng-if="log.level=='error'" style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message | json}}</pre>
+                            <pre ng-if="log.level!='error'" style='display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</pre>
                         </span>
                         <br>
                     </span>

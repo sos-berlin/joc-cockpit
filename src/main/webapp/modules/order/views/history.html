@@ -281,7 +281,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label" translate>label.orderIds</label>
                             <div class="col-sm-6">
-                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}" ng-model="jobChainSearch.orderIds" ng-blur="checkValue(jobSearch.job)">
+                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}" ng-model="jobChainSearch.orderIds">
                             </div>
                         </div>
                         <div class="form-group m-t m-b-xs">
@@ -335,7 +335,7 @@
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label" translate>label.job</label>
                             <div class="col-sm-6">
-                                    <input type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}" ng-model="jobSearch.job" ng-blur="checkValue(jobSearch.job)">
+                                    <input type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}" ng-model="jobSearch.job">
                             </div>
                         </div>
 
@@ -604,6 +604,10 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div class="b-b p-b-sm m-b-sm">
+                    <span ng-if="historyFilters.type == 'jobChain'" translate>message.selectFoldersOrJobChains/Orders</span>
+                    <span ng-if="historyFilters.type != 'jobChain'" translate>message.selectFoldersOrJobs</span>
+                </div>
                 <div>
                     <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>

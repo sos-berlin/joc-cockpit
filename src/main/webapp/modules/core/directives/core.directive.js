@@ -14,6 +14,10 @@
         .directive('letterAvatar', letterAvatar)
         .directive('time', time)
         .directive('time1', time1)
+        .directive('validDateRegex', validDateRegex)
+        .directive('validRegex', validRegex)
+        .directive('validFilterRegex', validFilterRegex)
+        .directive('validHistoryFilterRegex', validHistoryFilterRegex)
 
         .constant('defaultAvatarSettings', {
             alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
@@ -62,9 +66,9 @@
                         $state.go('app.resources.agentClusters');
                         event.preventDefault();
                         return;
-                    }else if(toState.url === '/resources' && fromState.name == "app.resources.agentClusters"){
+                    } else if (toState.url === '/resources' && fromState.name == "app.resources.agentClusters") {
                         element.addClass('hide');
-                         event.preventDefault();
+                        event.preventDefault();
                         return;
                     }
                     if (!(toState.url == '/jobChain' || toState.url == '/orders')) {
@@ -450,11 +454,11 @@
             link: function (scope, element, attrs) {
 
                 var time = attrs.time;
-                 var timeoutId = '';
+                var timeoutId = '';
                 attrs.$observe('time', function (data) {
                     time = data;
-                    if(!timeoutId)
-                    updateLater();
+                    if (!timeoutId)
+                        updateLater();
                 }, true);
 
                 var intervalLength = 1000 * 5; // 5 seconds
@@ -512,4 +516,92 @@
         };
     }
 
+
+    function validDateRegex() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                element.bind('blur', function () {
+                    if (ngModel.$modelValue) {
+                        if (!ngModel.$modelValue || /^\s*$/i.test(ngModel.$modelValue) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(ngModel.$modelValue) || /^\s*(now)\s*$/i.test(ngModel.$modelValue)) {
+                            ngModel.$setValidity('invalid', true);
+                        } else {
+                            ngModel.$setValidity('invalid', false);
+                        }
+
+                    }
+                });
+                element.bind('keyup', function () {
+                    ngModel.$setValidity('invalid', true);
+                });
+            }
+        };
+    }
+
+    function validRegex() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                element.bind('blur', function () {
+                    if (ngModel.$modelValue) {
+                        try {
+                            new RegExp(ngModel.$modelValue);
+                            ngModel.$setValidity('invalid', true);
+                        } catch (e) {
+                            ngModel.$setValidity('invalid', false);
+                        }
+                    }
+                });
+                element.bind('keyup', function () {
+                    ngModel.$setValidity('invalid', true);
+                });
+            }
+        };
+    }
+
+    function validFilterRegex() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                element.bind('blur', function () {
+                    if (ngModel.$modelValue) {
+                        if (!ngModel.$modelValue || /^\s*$/i.test(ngModel.$modelValue) || /^\s*(now\s*\+)\s*(\d+)\s*$/i.test(ngModel.$modelValue) || /^\s*\d+[d,h]\s*$/i.test(ngModel.$modelValue) || /^\s*(now)\s*$/i.test(ngModel.$modelValue) || /^\s*(Today)\s*$/i.test(ngModel.$modelValue)
+                            || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(ngModel.$modelValue)) {
+                            ngModel.$setValidity('invalid', true);
+                        } else {
+                            ngModel.$setValidity('invalid', false);
+                        }
+                    }
+                });
+                element.bind('keyup', function () {
+                    ngModel.$setValidity('invalid', true);
+                });
+            }
+        };
+    }
+
+    function validHistoryFilterRegex() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                element.bind('blur', function () {
+                    if (ngModel.$modelValue) {
+                        if (!ngModel.$modelValue || /^\s*$/i.test(ngModel.$modelValue) || /^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(ngModel.$modelValue) || /^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(ngModel.$modelValue) || /^\s*(now\s*\-)\s*(\d+)\s*$/i.test(ngModel.$modelValue) || /^\s*(now)\s*$/i.test(ngModel.$modelValue) || /^\s*(Today)\s*$/i.test(ngModel.$modelValue)
+                            || /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(ngModel.$modelValue)) {
+                            ngModel.$setValidity('invalid', true);
+                        } else {
+                            ngModel.$setValidity('invalid', false);
+                        }
+                    }
+                });
+                element.bind('keyup', function () {
+                    ngModel.$setValidity('invalid', true);
+                });
+            }
+        };
+    }
 })();

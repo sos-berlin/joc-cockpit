@@ -21,8 +21,11 @@
 
             <div class="form-group row">
                <label class="col-sm-4 form-control-label" translate>label.regex</label>
-               <div class=" col-sm-6">
-                   <input type="text" class="form-control" placeholder="{{'placeholder.regexAndChooseTree' | translate}} " ng-model="jobChainFilter.regex">
+               <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                   <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}} " ng-model="jobChainFilter.regex">
+                   <div class="help-block text-danger" ng-messages="form.regex.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
                </div>
                <div class="col-sm-1  p-l-0 p-t-sm"><a href=""  ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
             </div>

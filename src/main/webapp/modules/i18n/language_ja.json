@@ -810,5 +810,12 @@
   "label.startEndRepeatMode": "start_end_repeat",
   "label.showOrders": "Show Orders immediately in views",
   "label.enterStartTime": "Enter a start time",
-  "placeholder.enterStartTime": "now + SECONDS"
+  "placeholder.enterStartTime": "now + SECONDS",
+  "tooltip.saveLogFile": "Save",
+  "tooltip.printLogFile": "Print",
+  "message.selectFoldersOrJobChains/Orders": "Select Folders orJob Chains/Orders",
+  "message.selectFoldersOrJobs": "Select Folders or Jobs",
+  "label.theme": "Change theme",
+  "label.dark": "Dark",
+  "label.light": "Light"
 }

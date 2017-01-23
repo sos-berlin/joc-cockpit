@@ -20,9 +20,9 @@
                  </h5>
             </div>
             <div class="col-md-6 ">
-                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()"><i class="fa fa-print"></i></button>
-                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()"><i class="fa fa-save"></i></button>
-                <input type="text" class="form-control inline w pull-right search-box" placeholder="{{'placeholder.search' | translate}}" ng-model="search">
+                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="print()" uib-tooltip="{{'tooltip.printLogFile' | translate}}"><i class="fa fa-print"></i></button>
+                <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()" uib-tooltip="{{'tooltip.saveLogFile'| translate}}"><i class="fa fa-save"></i></button>
+               <!-- <input type="text" class="form-control inline w pull-right search-box" placeholder="{{'placeholder.search' | translate}}" ng-model="search">-->
             </div>
         </div>
         <div class="row">
