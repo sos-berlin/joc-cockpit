@@ -763,7 +763,7 @@
   "label.minuteAgo": "minutes précédentes",
   "label.aMinuteAgo": "avant une minute",
   "label.fewSecondsAgo": "avant quelques secondes",
-  "label.lessThanSec": "avant moins d'une seconde",
+  "label.lessThanSec": "moins d'une seconde",
   "label.jobChainsFound": "Chaînes de Tâches trouvé",
   "label.jobChainFound": "Chaîne de Tâches trouvé",
   "label.jobsFound": "Tâches trouvé",
