@@ -13,9 +13,7 @@
                     request: function (config) {
 
                         if (config.method == 'POST') {
-                         
-                               config.url = '/joc/api/' + config.url;
-                           
+                            config.url = 'http://192.168.11.106:8090/joc/api/' + config.url;
 
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {

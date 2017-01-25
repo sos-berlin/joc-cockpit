@@ -817,5 +817,15 @@
   "message.selectFoldersOrJobs": "Ordner oder Jobs auswählen",
   "label.theme": "Farbschema ändern",
   "label.dark": "Dunkel",
-  "label.light": "Hell"
+  "label.light": "Hell",
+  "label.blue": "Blue",
+  "label.enableCommentsForAuditLog": "Enable Comments for Audit Log",
+  "placeholder.enterComment": "Enter your Comment",
+  "label.writeComment": "Write a Comment",
+  "label.comment": "Comment",
+  "label.selectComment": "Select Comment",
+  "label.selectPredefined": "Predefined",
+  "label.enterNew": "Enter New",
+  "label.selectComments": "Select Comment Option",
+  "label.operation": "Operation"
 }

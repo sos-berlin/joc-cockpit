@@ -2034,8 +2034,8 @@ function volatileFolderDataL(data, obj) {
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService','$window'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService,$window) {
         var vm = $scope;
         var bgColorArray = [];
 
@@ -2325,7 +2325,6 @@ function volatileFolderDataL(data, obj) {
         function getDatabase() {
             return JobSchedulerService.getDatabase({jobschedulerId: $scope.schedulerIds.selected});
         }
-
 
         $scope.$on('elementClick.directive', function (angularEvent, event) {
             var key = '';

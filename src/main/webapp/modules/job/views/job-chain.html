@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()">
-                            <img src="images/share.png" class="p-b-xs"></button>
+                            <i class="fa fa-share"></i></button>
                          <toggle-view></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
@@ -258,7 +258,7 @@
                                     <i ng-show="jobChainFilters.filter.sortBy == 'path' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.state</span>
+                                <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'state._text' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'state._text' && jobChainFilters.reverse"

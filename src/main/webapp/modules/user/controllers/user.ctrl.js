@@ -139,6 +139,7 @@
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
         vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
         vm.perferences.showOrders = $window.localStorage.$SOS$SHOWORDERS === 'true';
+        vm.perferences.auditLog = $window.localStorage.$SOS$AUDITLOG === 'true';
         vm.perferences.theme = $window.localStorage.$SOS$THEME;
 
         vm.setLocale = function () {
@@ -149,7 +150,6 @@
                 gettextCatalog.setCurrentLanguage(vm.locale.lang);
                 gettextCatalog.setStrings(vm.locale.lang, data);
             });
-
         };
 
         vm.setTimeZone = function () {
@@ -161,10 +161,16 @@
             $window.localStorage.$SOS$DATEFORMAT = vm.perferences.dateFormat;
             $rootScope.$broadcast('reloadDate');
         };
+        vm.changeTheme = function (theme) {
+            document.getElementById('style-color').href = 'css/' + theme + '-style.css';
+            $window.localStorage.$SOS$THEME = theme;
+        };
+
         vm.changePerferences = function () {
             $window.localStorage.$SOS$ISNEWWINDOW = vm.perferences.isNewWindow;
             $window.localStorage.$SOS$SHOWTASKS = vm.perferences.showTasks;
             $window.localStorage.$SOS$SHOWORDERS = vm.perferences.showOrders;
+            $window.localStorage.$SOS$AUDITLOG = vm.perferences.auditLog;
 
             if (isNaN(parseInt(vm.perferences.maxRecords))) {
                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
@@ -191,11 +197,6 @@
             } else {
                 $window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN = parseInt(vm.perferences.maxHistoryPerJobchain);
             }
-        };
-
-        vm.changeTheme = function (theme) {
-            document.getElementById('style-color').href = 'css/' + theme + '-style.css'
-            $window.localStorage.$SOS$THEME = theme;
         };
 
         $scope.tasks = [

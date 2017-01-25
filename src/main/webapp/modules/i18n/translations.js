@@ -60,8 +60,14 @@
             if (!$window.localStorage.$SOS$ISNEWWINDOW) {
                 $window.localStorage.$SOS$ISNEWWINDOW = 'newWindow';
             }
+            if (!$window.localStorage.$SOS$THEME) {
+                $window.localStorage.$SOS$THEME = 'light';
+            }
             if(!$window.localStorage.$SOS$SHOWTASKS){
                 $window.localStorage.$SOS$SHOWTASKS = true;
+            }
+            if(!$window.localStorage.$SOS$AUDITLOG){
+                $window.localStorage.$SOS$AUDITLOG = true;
             }
 
             if (!$window.localStorage.$SOS$EVENTFILTER) {
