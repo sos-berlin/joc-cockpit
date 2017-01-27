@@ -2380,67 +2380,68 @@ function volatileFolderDataL(data, obj) {
                     success('stopped', host, port);
                 }, function (err) {
 
-                });
-            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abort') {
-                JobSchedulerService.abort(host, port, $scope.schedulerIds.selected).then(function (res) {
-                    success('running', host, port);
-                }, function (err) {
+                    });
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abort') {
+                    JobSchedulerService.abort(host, port, $scope.schedulerIds.selected).then(function (res) {
+                        success('running', host, port);
+                    }, function (err) {
 
-                });
-            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abortAndRestart') {
-                JobSchedulerService.abortAndRestart(host, port, $scope.schedulerIds.selected).then(function (res) {
-                    success('running', host, port);
-                }, function (err) {
+                    });
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abortAndRestart') {
+                    JobSchedulerService.abortAndRestart(host, port, $scope.schedulerIds.selected).then(function (res) {
+                        success('running', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
-            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestart') {
-                JobSchedulerService.restart(host, port, $scope.schedulerIds.selected).then(function (res) {
-                    success('running', host, port);
-                }, function (err) {
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestart') {
+                    JobSchedulerService.restart(host, port, $scope.schedulerIds.selected).then(function (res) {
+                        success('running', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
 
-            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
-                vm.getTimeout(host, port);
-            }
-            else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
-                JobSchedulerService.pause(host, port, $scope.schedulerIds.selected).then(function (res) {
-                    success('paused', host, port);
-                }, function (err) {
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
+                    vm.getTimeout(host, port);
+                }
+                else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
+                    JobSchedulerService.pause(host, port, $scope.schedulerIds.selected).then(function (res) {
+                        success('paused', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
-            } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
-                JobSchedulerService.continue(host, port, $scope.schedulerIds.selected).then(function (res) {
-                    success('running', host, port);
-                }, function (err) {
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
+                    JobSchedulerService.continue(host, port, $scope.schedulerIds.selected).then(function (res) {
+                        success('running', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
-            } else if (objectType == 'cluster' && action == 'terminate') {
-                JobSchedulerService.terminateCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    clusterSuccess('stopped', host, port);
-                }, function (err) {
+                } else if (objectType == 'cluster' && action == 'terminate') {
+                    JobSchedulerService.terminateCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                        clusterSuccess('stopped', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
-            } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
-                JobSchedulerService.terminateFailsafeCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    clusterSuccess('stopped', host, port);
-                }, function (err) {
+                } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
+                    JobSchedulerService.terminateFailsafeCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                        clusterSuccess('stopped', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
-            } else if (objectType == 'cluster' && action == 'restart') {
-                JobSchedulerService.restartCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-                    clusterSuccess('running', host, port);
-                }, function (err) {
+                } else if (objectType == 'cluster' && action == 'restart') {
+                    JobSchedulerService.restartCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                        clusterSuccess('running', host, port);
+                    }, function (err) {
 
-                });
+                    });
 
-            }
+                }
+            
 
             function clusterSuccess(state) {
 

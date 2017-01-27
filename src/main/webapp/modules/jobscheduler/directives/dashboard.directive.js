@@ -218,7 +218,7 @@
                         if (master.state && span) {
 
                             var rect = document.getElementById(master.host+master.port);
-                            var popoverTemplate = 'Architecture01 : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                            var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Version : ' + master.version +
                                 '<br>Started at : <span>' +
                                 moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +
@@ -703,7 +703,7 @@
                                 if (!scope.permission.JobschedulerMaster.continue) {
                                     continueClass = 'hide';
                                 }
-                                var popoverTemplate = 'Architecture01 : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
+                                var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Version : ' + master.version +
                                 '<br>Started at : <span id="'+'popover0011'+'">' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
                                 var masterTemplate = '<div data-toggle="popover"   data-content=\''+popoverTemplate+'\'' +

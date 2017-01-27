@@ -122,12 +122,9 @@
         var vm = this;
 
         vm.zones = moment.tz.names();
-
         vm.perferences = {};
-
         vm.locales = $rootScope.locales;
         vm.perferences.locale = $rootScope.locale;
-
         vm.timezone = jstz().timezone_name;
         vm.perferences.zone = $window.localStorage.$SOS$ZONE;
         vm.perferences.dateFormat = $window.localStorage.$SOS$DATEFORMAT;
@@ -226,10 +223,7 @@
         $scope.negativeOrders = [
             {value: 'OrderSetback', label: "label.orderSetback"},
             {value: 'OrderSuspended', label: "label.orderSuspended"}
-
         ];
-
-
 
         $scope.eventFilter = JSON.parse($window.localStorage.$SOS$EVENTFILTER);
         $scope.tasks.count = $window.localStorage.$SOS$EVENTFILTERTASKCOUNT;
@@ -287,16 +281,12 @@
             else {
                 $scope.tasks.count--;
             }
-
             $scope.selectAllTaskModel = $scope.tasks.length == $scope.tasks.count;
-
         };
 
 
         vm.selectAllJobFunction = function (value) {
-
             if (value) {
-
                 angular.forEach($scope.jobs, function (value1) {
                     var flag = true;
                     angular.forEach($scope.eventFilter, function (value2) {
@@ -309,7 +299,6 @@
                         $scope.eventFilter.push(value1.value);
                     }
                 });
-
                 $scope.jobs.count = $scope.jobs.length;
             }
             else {
@@ -317,10 +306,7 @@
                     $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
                 });
                 $scope.jobs.count = 0;
-
             }
-
-
         };
 
         vm.selectJobFunction = function (checked) {
@@ -330,14 +316,11 @@
             else {
                 $scope.jobs.count--;
             }
-
             $scope.selectAllJobModel = $scope.jobs.length == $scope.jobs.count;
 
         };
 
-
         vm.selectAllJobChainFunction = function (value) {
-
             if (value) {
                 angular.forEach($scope.jobChains, function (value1) {
                     var flag = true;

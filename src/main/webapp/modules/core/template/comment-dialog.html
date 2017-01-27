@@ -19,11 +19,11 @@
                     <div>
                         <label class="md-check w">
                             <input type="radio" name="radio" ng-model="comments.radio" value="predefined">
-                            <i class="primary"></i> <span translate>label.selectPredefined</span>
+                            <i class="primary"></i> <span translate>label.predefined</span>
                         </label>
                         <label class="md-check  w">
                             <input type="radio" name="radio" ng-model="comments.radio" value="new">
-                            <i class="primary"></i> <span translate>label.enterNew</span>
+                            <i class="primary"></i> <span translate>label.individual</span>
                         </label>
                     </div>
                 </div>
@@ -32,8 +32,7 @@
            <label class="col-sm-12" translate>label.selectComment</label>
            <div class=" col-sm-12">
                <select class="form-control" ng-model="comments.comment">
-                    <option value="a">a</option>
-                    <option value="b">b</option>
+                    <option value="" disabled selected translate>label.selectPredefinedReason</option>
                </select>
            </div>
         </div>

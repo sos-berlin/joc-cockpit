@@ -6,11 +6,6 @@
     angular.module('app')
         .run(["$rootScope", "gettextCatalog", "$window", "$resource", function ($rootScope, gettextCatalog, $window, $resource) {
             $rootScope.locales = {
-                'de': {
-                    lang: 'de',
-                    country: 'DE',
-                    name: 'German'
-                },
                 'en': {
                     lang: 'en',
                     country: 'US',
@@ -20,6 +15,11 @@
                     lang: 'fr',
                     country: 'FR',
                     name: 'French'
+                },
+                'de': {
+                    lang: 'de',
+                    country: 'DE',
+                    name: 'German'
                 },
                 'ja': {
                     lang: 'ja',

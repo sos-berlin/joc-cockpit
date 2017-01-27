@@ -157,6 +157,7 @@
                                                     <i class="text fa fa-ellipsis-h"></i></a>
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
                                                    <a ng-click="viewFlowDiagram(jobChain)" ng-class="{'disable-link':(!jobChain.numOfNodes || jobChain.numOfNodes == 0)}" class="dropdown-item" translate>button.showDetailView</a>
+                                                   <a ng-click="viewOrders(jobChain)" ng-class="{'disable-link':(!jobChain.numOfOrders || jobChain.numOfOrders == 0)}" class="dropdown-item" translate>button.showOrders</a>
 
                                                     <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                                            class="hide dropdown-item"
@@ -372,6 +373,7 @@
                                             <i class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                             <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item" ng-class="{'disable-link':(!jobChain.numOfNodes || jobChain.numOfNodes == 0)}" translate>button.showDetailView</a>
+                                            <a ng-click="viewOrders(jobChain)" ng-class="{'disable-link':(!jobChain.numOfOrders || jobChain.numOfOrders == 0)}" class="dropdown-item" translate>button.showOrders</a>
                                             <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
                                                class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"

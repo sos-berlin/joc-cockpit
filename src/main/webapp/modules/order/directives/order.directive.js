@@ -184,18 +184,15 @@
             link: function (scope, element) {
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
-                    //arrangeItems();
-                    scope.jobChainData = angular.copy(scope.jobChain);
-                    checkForEndNodes(0);
+                    arrangeItems();
+                   //scope.jobChainData = angular.copy(scope.jobChain);
+                   // checkForEndNodes(0);
                 });
 
                 function arrangeItems() {
                     scope.jobChainData = angular.copy(scope.jobChain);
                     scope.jobChainData.nodes = [];
                     var jobChainData2 = angular.copy(scope.jobChain);
-                    var havingNext = false;
-                    var isNext = false;
-                    var lastIndex = 0;
                     var isFirstNode = false;
                     var firstIndex = -1;
 
@@ -220,7 +217,7 @@
                     }
 
                     scope.jobChainData.nodes[0] = angular.copy(scope.jobChain.nodes[firstIndex]);
-                    scope.jobChain.nodes.splice(firstIndex, 1);
+                   jobChainData2.nodes.splice(firstIndex, 1);
                     getNext(0);
 
 
@@ -231,62 +228,79 @@
                         if (!item) {
                             return;
                         }
-                        havingNext = false;
-                        isNext = false;
-                        console.log("For item " + item.name + " next " + item.nextNode);
 
-                        var position = 0;
-                        var removables = [];
-                        var foundSplitted = false;
+                        //console.log("For item " + item.name + " next " + item.nextNode);
+
                         angular.forEach(jobChainData2.nodes, function (item2, index2) {
-                            if (splitRegex.test(item2.name) && item.name == splitRegex.exec(item2.name)[1]) {
-                                console.log("Found splitted " + item2.name);
-                                removables.push();
-                                foundSplitted = true;
-                                scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(item2));
-                                position++;
-                                scope.jobChainData.nodes[index + 1].position = position;
-                                jobChainData2.nodes.splice(index2 + 1, 1);
+                            // console.log("Node "+item2.name);
+                            if (item.nextNode == item2.name) {
+                               // console.log("Found next " + item2.name);
+                                gotNext = true;
+                                var cursor = index;
+                                if (splitRegex.test(item.name)) {
+                                    cursor = cursor + item.position;
+                                    //console.log("Cursor " + cursor);
+                                } else {
+                                    cursor++;
+                                }
+                                scope.jobChainData.nodes.splice(cursor, 0, angular.copy(item2));
+                                jobChainData2.nodes.splice(index2, 1);
+
 
                             }
+
                         });
 
 
-                        if (!foundSplitted) {
-                            angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
-                                // console.log("Node "+item2.name);
-                                if (item.nextNode == item2.name) {
-                                    console.log("Found next " + item2.name);
-                                    gotNext = true;
-                                    var cursor = index;
-                                    if (splitRegex.test(item.name)) {
-                                        cursor = cursor + item.position;
-                                        console.log("Cursor " + cursor);
-                                    } else {
-                                        cursor++;
-                                    }
-                                    scope.jobChainData.nodes.splice(cursor, 0, angular.copy(item2));
-                                    if (index2 > index) {
-                                        scope.jobChainData.nodes.splice(index2 + 1, 1);
-                                    } else {
-                                        scope.jobChainData.nodes.splice(index2, 1);
-                                    }
-
-
-                                }
-
-                            });
-                        }
-
-
-                        if (index + 1 < scope.jobChainData.nodes.length) {
+                        if (index+1<scope.jobChainData.nodes.length) {
                             index++;
                             getNext(index);
                         } else {
-                            console.log("previous 00 " + JSON.stringify(scope.jobChainData));
-                            checkForEndNodes(0);
+                            //console.log("previous 00 " + JSON.stringify(scope.jobChainData));
+                            checkForSplittedNodes(0);
                         }
 
+
+                    }
+
+
+                    function checkForSplittedNodes() {
+                        var proceed = true;
+                        angular.forEach(scope.jobChainData.nodes, function (item, index) {
+                            var gotSplitted = false;
+                            var position = 0;
+                            var removables=[];
+                            angular.forEach(jobChainData2.nodes, function (item2, index2) {
+                                // console.log("Node "+item2.name);
+                                if (splitRegex.test(item2.name) && item.name == splitRegex.exec(item2.name)[1]) {
+                                   // console.log("Found Splitted " + item2.name);
+                                    gotSplitted = true;
+                                    proceed = false;
+                                    position++;
+                                    item2.position = position;
+                                    scope.jobChainData.nodes.splice(index+1, 0, angular.copy(item2));
+                                    removables.push(index2);
+
+                                }
+
+
+
+                            });
+                             for(var i=0;i<removables.length;i++){
+                                   jobChainData2.nodes.splice(removables[i]-i,1);
+                               }
+                             if (gotSplitted) {
+                                 //console.log("After splitted "+JSON.stringify(scope.jobChainData));
+                                    getNext(index + 1);
+                                }
+                        })
+
+                        if(proceed){
+                            if(jobChainData2.nodes && jobChainData2.nodes.length>0){
+                                scope.jobChainData.nodes = scope.jobChainData.nodes.concat(jobChainData2.nodes);
+                            }
+                            checkForEndNodes(0);
+                        }
 
                     }
 
@@ -337,7 +351,7 @@
                 }
 
                 function draw() {
-                    // console.log("JobChainData "+JSON.stringify(scope.jobChainData));
+                    //console.log("JobChainData "+JSON.stringify(scope.jobChainData));
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
@@ -460,12 +474,11 @@
 
                             var errorNodeCls = '';
                             if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
-                                scope.coords[index].top = scope.coords[index].top + rectH + splitMargin;
+
                                 scope.coords.map(function (obj) {
-                                    console.log("scope.coords left " + scope.coords[index].left + " obj left " + obj.left);
-                                    if (scope.coords[index].left < obj.left) {
-                                        console.log("Matched 0011");
-                                        scope.coords[index].left = obj.left;
+                                    if (scope.coords[index].name == obj.error) {
+                                        scope.coords[index].left = obj.left+rectW+margin;
+                                        scope.coords[index].top = obj.top + rectH + splitMargin;
                                     }
                                 })
                                 errorNodeCls = 'error-node';
@@ -521,7 +534,7 @@
 
                         rectangleTemplate = rectangleTemplate +
                         '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + scope.coords[index].left + 'px;top:' + scope.coords[index].top + 'px;"  class="rect ' + errorNodeCls + '" ' +
-                        'ng-class="{\'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\' ,\'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\',\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
+                        'ng-class="{\'border-crimson\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\', \'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\',\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
                         '<div class="block-ellipsis-job">' +
                         '<label class="md-check md-check1 pos-abt ' + permissionClass + '" ><input type="checkbox"  id="' + chkId + '"><i class="ch-purple"></i></label>' +
                         '<span class="_500 block-ellipsis ' + mL + '" title="' + item.name + '">' + nodeName + '</span>' +
@@ -541,7 +554,7 @@
                         '</div >' +
                         '<div class="box-footer b-t" style="position: absolute; bottom: 0; padding: 6px 10px; width: 100%; ">' +
                         '<a href ng-click="stopNode(\'' + index + '\')" ng-disabled="permission.JobChain.stopJobChainNode"' +
-                        'class="hide pull-left w-half " ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\'}">' +
+                        'class="hide pull-left w-half " ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!=\'STOPPED\'}">' +
                         '<i class="fa fa-stop" ></i> <span translate>button.stopNode</span></a>' +
                         '<a href ng-click="unstopNode(\'' + index + '\')" class="hide pull-left w-half" ng-disabled="permission.JobChain.processJobChainNode" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}">' +
                         '<i class="fa fa-play" ></i> <span translate>button.unstopNode</span></a>' +
@@ -923,10 +936,10 @@
                                 var width = 40;
                                 var top = div1.offsetTop - height;
                                 var left = div1.offsetLeft + div1.clientWidth / 2 + width / 2;
-                                createLine(top, left,2, height, index, item);
+                                createLine(top, left, 2, height, index, item);
                                 left = left - width;
-                                createLine(top, left,width, 2, index, item);
-                                createLine(top, left,2, height, index, item);
+                                createLine(top, left, width, 2, index, item);
+                                createLine(top, left, 2, height, index, item);
                                 node = document.createElement('i');
                                 node.setAttribute('id', 'chevron' + item.name);
                                 node.setAttribute('class', 'fa fa-chevron-down');
@@ -948,24 +961,24 @@
                                     var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                     var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                     width = vm.margin / 2;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                     top = div1.offsetTop + div1.clientHeight / 2;
                                     left = left + width;
                                     height = pDiv.offsetTop + pDiv.clientHeight / 2 - top;
-                                    createLine(top, left,2, height, index, item);
+                                    createLine(top, left, 2, height, index, item);
                                     width = left - pDiv.offsetLeft - pDiv.clientWidth;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                 } else if (pDiv && pDiv.offsetTop < div1.offsetTop) {
                                     var top = pDiv.offsetTop + pDiv.clientHeight / 2;
                                     var left = pDiv.offsetLeft + pDiv.clientWidth + vm.border;
                                     var width = vm.margin / 2;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                     left = left + vm.margin / 2;
                                     height = div1.offsetTop + div1.clientHeight / 2 - top;
-                                    createLine(top, left,2, height, index, item);
+                                    createLine(top, left, 2, height, index, item);
                                     top = top + height;
                                     width = left - div1.offsetLeft;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                 }
 
                                 if (div1.offsetTop > div2.offsetTop) {
@@ -976,13 +989,13 @@
                                     var width = vm.margin / 2;
                                     var height = 2;
 
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                     height = div1.offsetTop + div1.clientHeight / 2 - top + vm.border;
-                                    createLine(top, left,2, height, index, item);
+                                    createLine(top, left, 2, height, index, item);
                                     top = top + height;
                                     width = left - div1.offsetLeft - div1.clientWidth + vm.border;
                                     left = div1.offsetLeft + div1.clientWidth + vm.border;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
 
                                 } else if (div1.clientHeight == div2.clientHeight && div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
 
@@ -990,13 +1003,13 @@
                                     var left = div1.offsetLeft + div1.clientWidth;
                                     var width = div2.offsetLeft - left - vm.margin / 2;
                                     var height = 1;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                     left = left + width;
                                     height = div2.offsetTop + div2.clientHeight / 2 - top;
-                                    createLine(top, left,2, height, index, item);
+                                    createLine(top, left, 2, height, index, item);
                                     top = top + height;
                                     width = div1.offsetLeft - left;
-                                    createLine(top, left,width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
 
 
                                 } else {
@@ -1022,12 +1035,11 @@
                             if (errNode) {
                                 if (div1.offsetTop + div1.clientHeight < errNode.offsetTop + errNode.clientHeight &&
                                     div1.offsetTop > errNode.offsetTop) {
-                                    console.log(" error top is lesser " + item.name);
                                     var top = errNode.offsetTop + errNode.clientHeight / 2;
                                     var left = errNode.offsetLeft - vm.margin / 2;
                                     var width = vm.margin / 2;
                                     var height = 2;
-                                   createLine(top, left, width, 2, index, item);
+                                    createLine(top, left, width, 2, index, item);
                                     height = div1.offsetTop + div1.clientHeight / 2 - top;
                                     createLine(top, left, 2, height, index, item);
                                     top = top + height;
@@ -1040,16 +1052,16 @@
                                     var left = div1.offsetLeft + div1.clientWidth / 2;
                                     var width = errNode.offsetLeft - left - vm.margin / 2;
                                     var height = vm.vSpace;
-                                    createErrorLine(top,left,2,height);
+                                    createErrorLine(top, left, 2, height);
                                     top = top + height;
                                     width = div1.clientWidth / 2 + vm.hSpace;
-                                    createErrorLine(top,left,width,2);
+                                    createErrorLine(top, left, width, 2);
                                     left = left + width;
                                     height = errNode.offsetTop + errNode.clientHeight / 2 - top;
-                                    createErrorLine(top,left,2,height);
+                                    createErrorLine(top, left, 2, height);
                                     width = errNode.offsetLeft - left;
                                     top = top + height - 1;
-                                    createErrorLine(top,left,width,2);
+                                    createErrorLine(top, left, width, 2);
 
 
                                 } else {
@@ -1063,14 +1075,14 @@
                                     var left = node1.offsetLeft + node1.clientWidth / 2;
                                     var width = node2.offsetLeft - left - vm.margin / 2;
                                     var height = vm.vSpace + 10;
-                                    createErrorLine(top,left,2,height);
+                                    createErrorLine(top, left, 2, height);
                                     top = top + height;
                                     width = node2.offsetLeft + node2.clientWidth / 2 - left;
-                                    createErrorLine(top,left,width,2);
+                                    createErrorLine(top, left, width, 2);
                                     left = node2.offsetLeft + node2.clientWidth / 2;
                                     height = top - node2.offsetTop - errNode.clientHeight;
                                     top = node2.offsetTop + node2.clientHeight;
-                                    createErrorLine(top,left,2,height);
+                                    createErrorLine(top, left, 2, height);
                                 }
                             }
 
@@ -1133,19 +1145,19 @@
                         }
 
                         function createErrorLine(top, left, width, height) {
-                            var  node = document.createElement('div');
-                                    node.setAttribute('class', 'error-link');
-                            if(height>width){
+                            var node = document.createElement('div');
+                            node.setAttribute('class', 'error-link');
+                            if (height > width) {
                                 node.style['border-left'] = '2px dashed #f44455';
-                            }else{
+                            } else {
                                 node.style['border-top'] = '2px dashed #f44455';
                             }
 
-                                    node.style['top'] = top + 'px';
-                                    node.style['left'] = left + 'px';
-                                    node.style['width'] = width+'px';
-                                    node.style['height'] = height + 'px';
-                                    mainContainer.appendChild(node);
+                            node.style['top'] = top + 'px';
+                            node.style['left'] = left + 'px';
+                            node.style['width'] = width + 'px';
+                            node.style['height'] = height + 'px';
+                            mainContainer.appendChild(node);
                         }
 
 

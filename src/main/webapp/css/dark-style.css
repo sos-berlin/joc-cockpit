@@ -300,9 +300,10 @@ input[type=search]:focus {
 
 .table > tbody > tr {
     border-bottom: 2px solid #393937;
-   //background-color: #1d1d1c;
 }
-
+.table .table {
+   background-color: #1d1d1c;
+}
 .table-bordered > tbody > tr {
     border-bottom: 1px solid #393937;
     border-color: #393937;
@@ -584,4 +585,17 @@ hr {
 
 .b-l {
     border-left: 1px solid rgba(233, 244, 255, 0.13)
+}
+.gantt-task-info {
+    background: #1d1d1c;
+}
+.gantt-task-infoArrow:after, .gantt-task-infoArrowR:after {
+    border-top: 7px solid #1d1d1c;
+}
+.dropdown-ac1 a.first:first-child:before {
+    border-bottom: 9px solid #393937;
+}
+
+.dropdown-ac1 a.first:first-child:after {
+    border-bottom: 9px solid #393937;
 }

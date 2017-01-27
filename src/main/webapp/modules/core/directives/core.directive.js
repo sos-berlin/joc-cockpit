@@ -71,9 +71,6 @@
                         event.preventDefault();
                         return;
                     }
-                    if (!(toState.url == '/jobChain' || toState.url == '/orders')) {
-                        SOSAuth.jobChain = undefined;
-                    }
                     if ($rootScope.clientLogFilter.state) {
                         startTime = new Date();
                         var info = {

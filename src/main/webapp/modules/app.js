@@ -30,7 +30,7 @@
             'ngFileSaver'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
-            $rootScope.clientLogs=[];
+            $rootScope.clientLogs = [];
             $resource("version.json").get(function (data) {
                 $rootScope.versionData = data;
             });
@@ -57,7 +57,4 @@
                 };
             }]);
         }]);
-
-
-
 })();

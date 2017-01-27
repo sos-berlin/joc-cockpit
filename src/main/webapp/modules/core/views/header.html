@@ -4,8 +4,8 @@
         <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
-    <a class="navbar-brand white" style="">
-        <img class="cursor" ng-click="about()" src="images/jobscheduler-logo.png" alt=".">
+    <a class="navbar-brand white">
+        <img class="cursor" ng-click="about()" src="images/jobscheduler-logo.png" alt="JobScheduler">
     </a>
     <!-- / brand -->
 
@@ -13,39 +13,60 @@
     <ul class="nav navbar-nav pull-right ">
         <li class="nav-item dropdown">
             <a class="nav-link text-white" data-toggle="dropdown">
-             <span class="avatar w-32">
-                <letter-avatar shape="round" width="30" height="30" data="{{username}}"></letter-avatar>
-              </span>
               <span class="text-left p-l-xs">
-                    <span class="_500 text-md" ng-bind="username"></span>
-                    <i class="fa fa-caret-down p-l-xs"></i>
+                    <i class="fa fa-lg fa-question-circle-o" style="font-size: 20px"></i>
               </span>
             </a>
-            <div class="dropdown-menu pull-right dropdown-ac">
-                <a class="dropdown-item" ui-sref="app.profile">
-                    <s class="fa fa-user"></s>
-                    {{'button.profile' | translate}}
-                </a>
-                <a class="dropdown-item" ui-sref="app.setting">
-                    <i class="fa fa-cog"></i>
-                    {{'button.setting' | translate}}
-                </a>
-                <a class="dropdown-item" ng-click="logout();$event.stopPropagation()">
-                    <i class="fa fa-sign-out"></i>
-                    {{'button.logOut' | translate}}
-                </a>
-            </div>
+            <ul class="dropdown-menu pull-right dropdown-ac1">
+                <li><a class="dropdown-item first" ng-click="about()">{{'button.aboutJobScheduler' | translate}}</a></li>
+                <li class="dropdown-submenu">
+                    <a tabindex="-1" class="dropdown-item" href="">{{'button.featuresAndDownload' | translate}}</a>
+                    <div class="dropdown-menu dropdown-ac1">
+                        <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/jobscheduler" class="dropdown-item" >{{'button.jobSchedulerHome' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/jobscheduler-downloads" class="dropdown-item" >{{'button.jobSchedulerDownload' | translate}}</a>
+                    </div>
+                </li>
+                <li class="dropdown-submenu">
+                    <a tabindex="-1" class="dropdown-item" href="">{{'button.announcements' | translate}}</a>
+                    <div class="dropdown-menu dropdown-ac1">
+                        <a tabindex="-1" target="_blank" href="https://twitter.com/job_scheduler" class="dropdown-item" >{{'button.followOnTwitter' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/news" class="dropdown-item" >{{'button.jobSchedulerNews' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/s4BB" class="dropdown-item" >{{'button.jobSchedulerReleaseNotes' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://change.sos-berlin.com/" class="dropdown-item" >{{'button.changeManagementSystem' | translate}}</a>
+                    </div>
+                </li>
+                <li class="dropdown-submenu">
+                    <a tabindex="-1" class="dropdown-item" href="">{{'button.documentation' | translate}}</a>
+                    <div class="dropdown-menu dropdown-ac1">
+                        <a tabindex="-1" target="_blank" href="https://www.sos-berlin.com/doc/en/scheduler.doc/index.xml" class="dropdown-item" >{{'button.jobSchedulerReferenceDocumentation' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/fgKX" class="dropdown-item" >{{'button.jobSchedulerTutorials' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/lo74" class="dropdown-item" >{{'button.jocCockpitDocumentation' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://www.youtube.com/channel/UCBL98BrVLzJxk8t8TXRFjhA" class="dropdown-item" >{{'button.videosOnYouTube' | translate}}</a>
+                    </div>
+                </li>
+                <li class="dropdown-submenu">
+                    <a tabindex="-1" class="dropdown-item" href="">{{'button.discussion' | translate}}</a>
+                    <div class="dropdown-menu dropdown-ac1">
+                        <a tabindex="-1" target="_blank" href="https://kb.sos-berlin.com/x/LYBB" class="dropdown-item" >{{'button.jobSchedulerFAQ' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://sourceforge.net/p/jobscheduler/discussion/" class="dropdown-item" >{{'button.jobSchedulerForum' | translate}}</a>
+                    </div>
+                </li>
+                <li class="dropdown-submenu">
+                    <a tabindex="-1" class="dropdown-item" href="">{{'button.supportRequests' | translate}}</a>
+                    <div class="dropdown-menu dropdown-ac1">
+                        <a tabindex="-1" target="_blank" href="https://sourceforge.net/p/jobscheduler/_list/tickets" class="dropdown-item" >{{'button.openSourceUserTicketSystem' | translate}}</a>
+                        <a tabindex="-1" target="_blank" href="https://support.sos-berlin.com/otrs/customer.pl?Lang=en" class="dropdown-item" >{{'button.customerTicketSystem' | translate}}</a>
+                    </div>
+                </li>
+                <li><a class="dropdown-item" href="mailto:sales@sos-berlin.com" target="_top">{{'button.feedback' | translate}}</a></li>
+            </ul>
         </li>
-    </ul>
-    <!-- / navbar right -->
-
-    <ul class="nav navbar-nav pull-right p-r">
-        <li class="nav-item dropdown p-r-xs">
+        <li class="nav-item dropdown">
             <a class="nav-link text-white" data-toggle="dropdown" ng-click="updateAllEvent(allSessionEvent)">
                 <span class="text-left p-l-xs">
                    <span class="label label-sm up notification" ng-if="allSessionEvent.eventUnReadCount>0"
                          ng-bind="allSessionEvent.eventUnReadCount"></span>
-                    <i class="fa fa-lg fa-bell-o fa-grey"></i>
+                    <i class="fa fa-lg fa-bell-o"></i>
 
               </span>
             </a>
@@ -126,6 +147,31 @@
                 <div class="text-center text m-t m-b h6 text-uppercase" ng-if="!allSessionEvent.group || allSessionEvent.group.length==0" translate>
                     message.noNotificationFound
                 </div>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link text-white" data-toggle="dropdown">
+             <span class="avatar w-32">
+                <letter-avatar shape="round" width="30" height="30" data="{{username}}"></letter-avatar>
+              </span>
+              <span class="text-left p-l-xs">
+                    <span class="_500 text-md" ng-bind="username"></span>
+                    <i class="fa fa-caret-down p-l-xs"></i>
+              </span>
+            </a>
+            <div class="dropdown-menu pull-right dropdown-ac">
+                <a class="dropdown-item" ui-sref="app.profile">
+                    <s class="fa fa-user"></s>
+                    {{'button.profile' | translate}}
+                </a>
+                <a class="dropdown-item" ui-sref="app.setting">
+                    <i class="fa fa-cog"></i>
+                    {{'button.setting' | translate}}
+                </a>
+                <a class="dropdown-item" ng-click="logout();$event.stopPropagation()">
+                    <i class="fa fa-sign-out"></i>
+                    {{'button.logOut' | translate}}
+                </a>
             </div>
         </li>
     </ul>
