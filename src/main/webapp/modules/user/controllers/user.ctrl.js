@@ -59,6 +59,8 @@
                 } else {
                     $location.path('/');
                 }
+                 $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
+                $('#loginBtn').attr("disabled", false);
                 vm.user = {};
                 $rootScope.$broadcast('reloadUser');
 
@@ -103,8 +105,7 @@
                         } else {
                             vm.loginError = 'message.loginError';
                         }
-                        $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
-                        $('#loginBtn').attr("disabled", false);
+
 
                     }, function () {
                         vm.loginError = 'message.loginError';
@@ -133,6 +134,7 @@
         vm.perferences.maxHistoryPerTask = parseInt($window.localStorage.$SOS$MAXHISTORYPERTASK);
         vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
         vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
+        vm.perferences.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
         vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
         vm.perferences.showOrders = $window.localStorage.$SOS$SHOWORDERS === 'true';
@@ -168,6 +170,7 @@
             $window.localStorage.$SOS$SHOWTASKS = vm.perferences.showTasks;
             $window.localStorage.$SOS$SHOWORDERS = vm.perferences.showOrders;
             $window.localStorage.$SOS$AUDITLOG = vm.perferences.auditLog;
+            $window.localStorage.$SOS$MAXENTRYPERPAGE = vm.perferences.maxEntryPerPage;
 
             if (isNaN(parseInt(vm.perferences.maxRecords))) {
                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);

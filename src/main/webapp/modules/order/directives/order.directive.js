@@ -554,7 +554,7 @@
                         '</div >' +
                         '<div class="box-footer b-t" style="position: absolute; bottom: 0; padding: 6px 10px; width: 100%; ">' +
                         '<a href ng-click="stopNode(\'' + index + '\')" ng-disabled="permission.JobChain.stopJobChainNode"' +
-                        'class="hide pull-left w-half " ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!=\'STOPPED\'}">' +
+                        'class="hide pull-left w-half " ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}">' +
                         '<i class="fa fa-stop" ></i> <span translate>button.stopNode</span></a>' +
                         '<a href ng-click="unstopNode(\'' + index + '\')" class="hide pull-left w-half" ng-disabled="permission.JobChain.processJobChainNode" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}">' +
                         '<i class="fa fa-play" ></i> <span translate>button.unstopNode</span></a>' +

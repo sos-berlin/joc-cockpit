@@ -3195,6 +3195,8 @@ function volatileFolderDataL(data, obj) {
         };
 
 
+
+
         /**--------------- filter, sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
             vm.dailyPlanFilters.reverse = !vm.dailyPlanFilters.reverse;

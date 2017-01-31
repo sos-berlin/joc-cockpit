@@ -133,6 +133,7 @@
                                                 <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
                                                 <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                                 <a class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status" ng-click="viewCalendar(job)" translate>button.showCalendar</a>
+                                         <a class="dropdown-item" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
                                         </div>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-sm" >
@@ -338,6 +339,7 @@
                                                     <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                                     <a href class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(job)" translate>button.showCalendar</a>
+                                                    <!--<a class="dropdown-item" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>-->
                                                 </div>
                                             </div>
                                         </td>

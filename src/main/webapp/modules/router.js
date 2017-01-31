@@ -203,6 +203,12 @@
                     label: '{{ \'breadcrumb.jobs\' | translate}}'
                 }
             })
+             .state('app.job', {
+                url: '/job',
+                templateUrl: 'modules/job/views/job_info.html',
+                controller: 'JobInfoCtrl'
+
+            })
             .state('app.jobChain', {
                 url: '/jobChains',
                 templateUrl: 'modules/job/views/job-chain.html',

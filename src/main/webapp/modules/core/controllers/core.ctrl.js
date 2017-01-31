@@ -15,8 +15,8 @@
         .controller('CommonLogCtrl', CommonLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', '$stateParams'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, $stateParams) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -169,8 +169,11 @@
         }
 
         function setIds() {
+
             if (SOSAuth.scheduleIds) {
                 vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+            } else if ($location.search() && $location.search().scheduler_id) {
+                vm.schedulerIds = $location.search().scheduler_id;
             }
         }
 
@@ -346,6 +349,37 @@
 
             });
         };
+
+        vm.copyLinkToObject = function (objType, path) {
+            console.log("Obj type " + objType + " path " + path + " url " + $location.absUrl() + " url " + $location.url());
+            var link = '';
+            var regEx = /(.+)\/#!/;
+            if (!regEx.test($location.absUrl())) {
+                return;
+            }
+            var host = regEx.exec($location.absUrl())[1];
+            host = host + '/#!/';
+            console.log("Host " + host);
+            if (objType == 'jobChain' && path) {
+                link = host + 'job_chain?path=' + path;
+            }else if (objType == 'job' && path) {
+                link = host + 'job?path=' + path;
+            }else if (objType == 'order' && path) {
+                link = host + 'order?path=' + path;
+            }else if (objType == 'agentClusters' && path) {
+                link = host + 'agent-clusters?path=' + path;
+            }else if (objType == 'locks' && path) {
+                link = host + 'locks?path=' + path;
+            }else if (objType == 'process-classes' && path) {
+                link = host + 'processClasses?path=' + path;
+            }else if (objType == 'schedules' && path) {
+                link = host + 'schedules?path=' + path;
+            }
+            if(link!==''){
+                console.log("Link " + link);
+                clipboard.copyText(link);
+            }
+        }
 
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
@@ -528,6 +562,13 @@
                 });
             })
         };
+
+        vm.checkSchedulerId = function () {
+            if ($location.search() && $location.search().scheduler_id && vm.schedulerIds.selected !== $location.search().scheduler_id) {
+                vm.changeScheduler($location.search().scheduler_id);
+            }
+        }
+
 
         vm.navigateToResource = function () {
             vm.resourceFilters = CoreService.getResourceTab();

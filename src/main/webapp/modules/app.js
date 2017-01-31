@@ -27,6 +27,9 @@
             'gantt',
             'gantt.tooltips',
             'gantt.table',
+            'ngFileSaver',
+            'cfp.hotkeys',
+            'angular-clipboard',
             'ngFileSaver'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {

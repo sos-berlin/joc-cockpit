@@ -71,3 +71,7 @@
     border-top-color: transparent;
     border-bottom-color: transparent;
 }
+
+.text-center{
+    text-align: center;
+}

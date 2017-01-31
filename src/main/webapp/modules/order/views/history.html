@@ -418,7 +418,7 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                        <a class="dropdown-item" ng-click="addOrderToIgnoreList(history.orderId)" translate>button.addOrderToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addOrderToIgnoreList(history.orderId,history.jobChain)" translate>button.addOrderToIgnoreList</a>
                                         <a class="dropdown-item" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
                                     </div>
                                 </div>
@@ -478,8 +478,8 @@
                                 <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': order.pageSize=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="'1000'"
-                                        ng-class="{'primary': order.pageSize=='1000'}">1000
+                                <button class="btn btn-default white btn-sm" ng-model="order.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': order.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
                     </div>
@@ -582,8 +582,8 @@
                                 <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': task.pageSize=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="'1000'"
-                                        ng-class="{'primary': task.pageSize=='1000'}">1000
+                                <button class="btn btn-default white btn-sm" ng-model="task.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': task.pageSize==maxEntryPerPage}">maxEntryPerPage
                                 </button>
                             </div>
                     </div>

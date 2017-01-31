@@ -57,6 +57,9 @@
             if (!$window.localStorage.$SOS$MAXORDERPERJOBCHAIN) {
                 $window.localStorage.$SOS$MAXORDERPERJOBCHAIN = 5;
             }
+            if(!$window.localStorage.$SOS$MAXENTRYPERPAGE){
+                $window.localStorage.$SOS$MAXENTRYPERPAGE =1000;
+            }
             if (!$window.localStorage.$SOS$ISNEWWINDOW) {
                 $window.localStorage.$SOS$ISNEWWINDOW = 'newWindow';
             }

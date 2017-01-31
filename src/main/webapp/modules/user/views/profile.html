@@ -191,6 +191,23 @@
                        </div>
                    </div>
                     <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
+                       <div class="col-sm-6">
+                          <select class="form-control w-xl" ng-model="upc.perferences.maxEntryPerPage" ng-change="upc.changePerferences()">
+                              <option value="500">500</option>
+                              <option value="1000">1000</option>
+                              <option value="1500">1500</option>
+                              <option value="2000">2000</option>
+                              <option value="2500">2500</option>
+                              <option value="3000">3000</option>
+                              <option value="3500">3500</option>
+                              <option value="4000">4000</option>
+                              <option value="4500">4500</option>
+                              <option value="5000">5000</option>
+                          </select>
+                       </div>
+                   </div>
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.theme</div>
                        <div class="col-sm-6">
                            <select class="form-control w-xl" ng-model="upc.perferences.theme" ng-change="upc.changeTheme(upc.perferences.theme)">
@@ -231,7 +248,7 @@
                            </label>
                        </div>
                    </div>
-                    <!--<div class="row m-t">
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark" translate>label.enableCommentsForAuditLog</div>
                        <div class="col-sm-6">
                            <label class="md-check">
@@ -239,7 +256,7 @@
                                <i class="primary"></i>
                            </label>
                        </div>
-                   </div>-->
+                   </div>
                    <hr>
                    <h5 translate>label.eventFilter</h5>
                    <div class="row m-t">

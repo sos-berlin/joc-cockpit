@@ -851,6 +851,9 @@
   "button.videosOnYouTube": "Videos on YouTube",
   "button.jobSchedulerFAQ": "JobScheduler FAQ",
   "button.jobSchedulerForum": "JobScheduler Forum",
-  "button.openSourceUserTicketSystem": "Public User Ticket System",
+ "button.openSourceUserTicketSystem": "Public User Ticket System",
   "button.customerTicketSystem": "Customer Ticket System"
+  "label.maxEntryPerPage": "Max. Entry Per Page",
+  "button.showHistory": "Show History",
+  "label.maxAvailablePlanedDate": "Max. Available Planed Date"
 }

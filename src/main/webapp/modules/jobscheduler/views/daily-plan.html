@@ -284,7 +284,8 @@
                                 </td>
                                 <td><span class="text-hover-primary" ng-click="showOrderLink(plan.jobChain);$event.stopPropagation()" ng-bind="plan.orderId"></span></td>
                                 <td>
-                                    <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
+                                    <span class="label" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)"
+                                          ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>
                                 <td><span ng-if="plan.late==true" translate>label.late</span></td>
                                 <td>
@@ -330,6 +331,7 @@
                             </div>
                         </div>
                     </div>
+
             </div>
         </div>
         <div class=" text-center m-t text-uppercase "

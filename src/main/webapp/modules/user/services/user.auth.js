@@ -13,8 +13,8 @@
                     request: function (config) {
 
                         if (config.method == 'POST') {
+                           // config.url = 'http://192.168.11.103:4446/joc/api/' + config.url;
                             config.url = './api/' + config.url;
-
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,
