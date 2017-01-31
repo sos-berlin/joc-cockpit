@@ -851,7 +851,7 @@
   "button.jobSchedulerForum": "JobScheduler Forum",
   "button.openSourceUserTicketSystem": "Public Ticket System",
   "button.customerTicketSystem": "Customer Ticket System"
-  "label.maxEntryPerPage": "Max. Entry Per Page",
+  "label.maxEntryPerPage": "Max. number of entries per page",
   "button.showHistory": "Show History",
-  "label.maxAvailablePlanedDate": "Max. Available Planed Date"
+  "label.maxAvailablePlanedDate": "Max. Planed Date"
 }
