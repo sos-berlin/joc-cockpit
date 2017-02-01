@@ -850,7 +850,7 @@
   "button.jobSchedulerFAQ": "JobScheduler FAQ",
   "button.jobSchedulerForum": "JobScheduler Forum",
   "button.openSourceUserTicketSystem": "Public Ticket System",
-  "button.customerTicketSystem": "Customer Ticket System"
+  "button.customerTicketSystem": "Customer Ticket System",
   "label.maxEntryPerPage": "Max. number of entries per page",
   "button.showHistory": "Show History",
   "label.maxAvailablePlanedDate": "Max. Planed Date"
