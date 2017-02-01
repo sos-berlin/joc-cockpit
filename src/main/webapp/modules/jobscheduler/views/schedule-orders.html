@@ -325,6 +325,9 @@
                                 <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': orderFilters.pageSize=='100'}">100
                                 </button>
+                                <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': orderFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                                </button>
                             </div>
                         </div>
                 </div>

@@ -130,6 +130,9 @@
                         <button class="btn btn-default white btn-sm" ng-model="processFilters.pageSize" uib-btn-radio="'100'"
                                 ng-class="{'primary': processFilters.pageSize=='100'}">100
                         </button>
+                        <button class="btn btn-default white btn-sm" ng-model="processFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                ng-class="{'primary': processFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                        </button>
                     </div>
                 </div>
             </div>

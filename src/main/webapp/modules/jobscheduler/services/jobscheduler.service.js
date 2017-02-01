@@ -324,21 +324,21 @@
                 });
                 return deferred.promise;
             },
-            terminate: function (host,port,jobschedulerId) {
-                console.log("IN terminate "+host+" port "+port);
+            terminate: function (filter) {
+
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/terminate');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-             restart: function (host,port,jobschedulerId) {
+             restart: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/restart');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
@@ -356,80 +356,80 @@
                 });
                 return deferred.promise;
             },
-             restartWithin: function (host,port,jobschedulerId,timeout) {
+             restartWithin: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/restart');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-             abort: function (host,port,jobschedulerId) {
+             abort: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/abort');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-             abortAndRestart: function (host,port,jobschedulerId) {
+             abortAndRestart: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/abort_and_restart');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-            pause: function (host,port, jobschedulerId) {
+            pause: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/pause');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-            continue: function (host,port,jobschedulerId) {
+            continue: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/continue');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId},function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-            terminateCluster: function (jobschedulerId) {
+            terminateCluster: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/cluster/terminate');
-                JobScheduler.save(jobschedulerId,function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-            restartCluster: function (jobschedulerId) {
+            restartCluster: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/cluster/restart');
-                JobScheduler.save(jobschedulerId,function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
                 });
                 return deferred.promise;
             },
-            terminateFailsafeCluster: function (jobschedulerId) {
+            terminateFailsafeCluster: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/cluster/terminate_failsafe');
-                JobScheduler.save(jobschedulerId,function (res) {
+                JobScheduler.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

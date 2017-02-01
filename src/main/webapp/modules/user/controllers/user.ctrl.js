@@ -138,8 +138,14 @@
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
         vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
         vm.perferences.showOrders = $window.localStorage.$SOS$SHOWORDERS === 'true';
-        vm.perferences.auditLog = $window.localStorage.$SOS$AUDITLOG === 'true';
+
         vm.perferences.theme = $window.localStorage.$SOS$THEME;
+        vm.perferences.theme = $window.localStorage.$SOS$THEME;
+        vm.perferences.forceLoging = $window.localStorage.$SOS$FORCELOGING === 'true';
+        if(vm.perferences.forceLoging){
+            $window.localStorage.$SOS$AUDITLOG = true;
+        }
+        vm.perferences.auditLog = $window.localStorage.$SOS$AUDITLOG === 'true';
 
         vm.setLocale = function () {
             vm.locale = vm.perferences.locale;
@@ -171,6 +177,7 @@
             $window.localStorage.$SOS$SHOWORDERS = vm.perferences.showOrders;
             $window.localStorage.$SOS$AUDITLOG = vm.perferences.auditLog;
             $window.localStorage.$SOS$MAXENTRYPERPAGE = vm.perferences.maxEntryPerPage;
+            $window.localStorage.$SOS$FORCELOGING = vm.perferences.forceLoging;
 
             if (isNaN(parseInt(vm.perferences.maxRecords))) {
                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);

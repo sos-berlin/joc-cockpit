@@ -372,8 +372,8 @@
                                     <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'100'"
                                             ng-class="{'primary': jobFilters.pageSize=='100'}">100
                                     </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'1000'"
-                                            ng-class="{'primary': jobFilters.pageSize=='1000'}">1000
+                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                            ng-class="{'primary': jobFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
                                     </button>
                                 </div>
                             </div>

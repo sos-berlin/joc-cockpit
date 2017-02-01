@@ -206,6 +206,9 @@
                         <button class="btn btn-default white btn-sm" ng-model="schdeuleFilters.pageSize" uib-btn-radio="'100'"
                                 ng-class="{'primary': schdeuleFilters.pageSize=='100'}">100
                         </button>
+                        <button class="btn btn-default white btn-sm" ng-model="schdeuleFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                ng-class="{'primary': schdeuleFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                        </button>
                     </div>
                 </div>
 

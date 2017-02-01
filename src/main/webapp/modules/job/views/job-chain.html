@@ -181,7 +181,7 @@
                                                            ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                            ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
                                                 <!--<a class="dropdown-item" ng-click="copyLinkToObject(jobChain)" translate>button.copyLinkToObject</a>-->
-                                             <a class="dropdown-item" ng-click="showAuditLogs(jobChain)" translate>button.showAuditLog</a>
+                                             <!--<a class="dropdown-item" ng-click="showAuditLogs(jobChain)" translate>button.showAuditLog</a>-->
                                             </div>
                                         </div>
                                     </div>
@@ -601,8 +601,8 @@
                                 <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': jobChainFilters.pageSize=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'1000'"
-                                        ng-class="{'primary': jobChainFilters.pageSize=='1000'}">1000
+                                <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': jobChainFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
                         </div>

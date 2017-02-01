@@ -189,6 +189,9 @@
                             <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'100'"
                                     ng-class="{'primary': agentsFilters.pageSize=='100'}">100
                             </button>
+                            <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                    ng-class="{'primary': agentsFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                            </button>
                         </div>
                     </div>
                 </div>

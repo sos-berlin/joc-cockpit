@@ -69,8 +69,8 @@
             if(!$window.localStorage.$SOS$SHOWTASKS){
                 $window.localStorage.$SOS$SHOWTASKS = true;
             }
-            if(!$window.localStorage.$SOS$AUDITLOG){
-                $window.localStorage.$SOS$AUDITLOG = true;
+            if(!$window.localStorage.$SOS$FORCELOGING){
+                $window.localStorage.$SOS$FORCELOGING = true;
             }
 
             if (!$window.localStorage.$SOS$EVENTFILTER) {

@@ -30,10 +30,6 @@ pre {
     background-color: #337ab7 !important;
     color: #fff
 }
-.modal-header {
-    background: #337ab7;
-    color: rgba(255, 255, 255, .87)
-}
 
 .nav-active-border2 > li.dropdown-separator .separator {
     background-color: #f2f2f2;
@@ -109,22 +105,22 @@ pre {
     top: 0 !important;
     font-size: .85em !important
 }
-.dropdown-ac {
-    border: 1px solid #3f5669;
+.dropdown-ac,.dropdown-ac1 {
+    border: 1px solid #32465a;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)
 }
 
-.dropdown-ac a:first-child:before {
-    border-bottom: 9px solid #3f5669;
+.dropdown-ac a:first-child:before,.dropdown-ac1 a.first:first-child:before {
+    border-bottom: 9px solid #32465a;
 }
 
-.dropdown-ac a:first-child:after {
-    border-bottom: 9px solid #3f5669;
+.dropdown-ac a:first-child:after,.dropdown-ac1 a.first:first-child:after {
+    border-bottom: 9px solid #32465a;
 }
 
-.dropdown-ac a:hover {
+.dropdown-ac a:hover,.dropdown-ac1 a:hover {
     color: #fff;
     text-shadow: 0 -1px rgba(0, 0, 0, .3);
     background: #337ab7
@@ -200,7 +196,8 @@ input.input-time {
 }
 
 .left-sidebar-btn:hover, .sidebar-btn {
-    background: #32465a
+    background: #32465a;
+    color: #ffffff;
 }
 
 .disable-link {
@@ -599,4 +596,22 @@ hr {
 
 .dropdown-ac1 a.first:first-child:after {
     border-bottom: 9px solid #3f5669;
+}
+.dropdown-ac1 {
+    border-color: #3f5669;
+}
+span.attribute_name, span.bracket {
+    color: #fff
+}
+span.attribute_val {
+    color: #337ab7
+}
+span.namespace_name {
+    color: #fff
+}
+span.cdata {
+    color: #337ab7;
+}
+#cal-week-box {
+    background-color: #3f5669;
 }

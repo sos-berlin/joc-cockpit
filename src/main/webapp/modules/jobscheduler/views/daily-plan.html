@@ -325,8 +325,8 @@
                                 <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'100'"
                                         ng-class="{'primary': dailyPlanFilters.pageSize=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'1000'"
-                                        ng-class="{'primary': dailyPlanFilters.pageSize=='1000'}">1000
+                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': dailyPlanFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
                         </div>

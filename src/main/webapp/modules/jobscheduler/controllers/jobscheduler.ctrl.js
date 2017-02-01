@@ -10,9 +10,10 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout", "$window"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout, $window) {
         var vm = $scope;
+        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
         vm.resourceFilters = CoreService.getResourceTab();
         vm.agentsFilters = vm.resourceFilters.agents;
         vm.locksFilters = vm.resourceFilters.locks;
@@ -314,7 +315,7 @@
                 {folder: data.path, recursive: false}
             ];
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
-                 data.agentClusters = result.agentClusters;
+                data.agentClusters = result.agentClusters;
                 angular.forEach(data.agentClusters, function (value) {
                     value.path1 = data.path;
                     vm.allAgentClusters.push(value);
@@ -346,6 +347,7 @@
                     recursive(a);
                 });
             }
+
             recursive(data);
         }
 
@@ -480,6 +482,7 @@
                 vm.loading = false;
             });
         }
+
         function expandFolderDataL1(data) {
             vm.loading = true;
             var obj = {};
@@ -494,7 +497,7 @@
             });
         }
 
-function volatileFolderDataL(data, obj) {
+        function volatileFolderDataL(data, obj) {
             ResourceService.get(obj).then(function (res) {
 
                 if (data.locks && data.locks.length > 0) {
@@ -746,6 +749,7 @@ function volatileFolderDataL(data, obj) {
                 vm.loading = false;
             });
         }
+
         function expandFolderDataP1(data) {
             vm.loading = true;
             var obj = {};
@@ -761,7 +765,7 @@ function volatileFolderDataL(data, obj) {
             });
         }
 
-     function volatileFolderDataP(data, obj) {
+        function volatileFolderDataP(data, obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
 
                 if (data.processClasses.length > 0) {
@@ -845,13 +849,13 @@ function volatileFolderDataL(data, obj) {
                         temp.push(value);
                     });
                 }
-                 vm.allProcessClasses = temp;
+                vm.allProcessClasses = temp;
                 vm.folderPathP = data.name || '/';
 
                 vm.loading = false;
             }, function () {
 
-              var temp = [];
+                var temp = [];
                 if (data.processClasses.length > 0) {
                     for (var x = 0; x < vm.allProcessClasses.length; x++) {
                         if (vm.allProcessClasses[x].path1 != data.path) {
@@ -863,7 +867,7 @@ function volatileFolderDataL(data, obj) {
                         temp.push(value);
                     });
                 }
-                 vm.allProcessClasses = temp;
+                vm.allProcessClasses = temp;
                 vm.folderPathP = data.name || '/';
 
                 vm.loading = false;
@@ -971,7 +975,7 @@ function volatileFolderDataL(data, obj) {
                 size: 'lg'
             });
             modalInstance.result.then(function () {
-                  }, function () {
+            }, function () {
 
             });
         };
@@ -1085,7 +1089,8 @@ function volatileFolderDataL(data, obj) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
-            schedules.runTime = schedule.runTime;
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+
             ScheduleService.setRunTime(schedules).then(function (result) {
                 vm.schedules = result.schedules;
             }, function () {
@@ -1365,7 +1370,7 @@ function volatileFolderDataL(data, obj) {
 
                 vm.loading = false;
             }, function () {
-               var temp = [];
+                var temp = [];
                 if (data.schedules.length > 0) {
 
                     for (var x = 0; x < vm.allSchedules.length; x++) {
@@ -1483,7 +1488,7 @@ function volatileFolderDataL(data, obj) {
         var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
-                angular.forEach(vm.events[0].eventSnapshots, function(event) {
+                angular.forEach(vm.events[0].eventSnapshots, function (event) {
                     if (event.eventType.indexOf("FileBased") !== -1) {
                         if (t1) {
                             $timeout.cancel(t1);
@@ -1739,7 +1744,7 @@ function volatileFolderDataL(data, obj) {
             $interval.cancel(interval1);
             $interval.cancel(interval2);
             if (vm.resourceFilters.state == 'agent') {
-               //  poll1();
+                //  poll1();
             } else if (vm.resourceFilters.state == 'schedules') {
                 poll2();
             }
@@ -2034,8 +2039,8 @@ function volatileFolderDataL(data, obj) {
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService','$window'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService,$window) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', '$window'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, $window) {
         var vm = $scope;
         var bgColorArray = [];
 
@@ -2078,6 +2083,7 @@ function volatileFolderDataL(data, obj) {
             });
             return results;
         }
+
         vm.getAgentCluster = function () {
             JobSchedulerService.getAgentCluster({
                 jobschedulerId: $scope.schedulerIds.selected
@@ -2135,7 +2141,7 @@ function volatileFolderDataL(data, obj) {
                                     } else {
                                         key = 'unreachable';
                                     }
-                                        $state.go('app.resources.agentClusters', {type: key});
+                                    $state.go('app.resources.agentClusters', {type: key});
                                 }
                             });
                         }
@@ -2211,7 +2217,7 @@ function volatileFolderDataL(data, obj) {
                             "values": agentArray
                         }
                     ];
-                    if(vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length>10){
+                    if (vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length > 10) {
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
 
@@ -2243,16 +2249,19 @@ function volatileFolderDataL(data, obj) {
             });
             vm.agentClusterData = agentArray1;
         }
+
         function xFunction() {
             return function (d) {
                 return d.key;
             };
         }
+
         function yFunction() {
             return function (d) {
                 return d.y;
             };
         }
+
         function yAxisTickFormatFunction() {
             return function (d) {
                 if (d % 1 === 0) {
@@ -2262,6 +2271,7 @@ function volatileFolderDataL(data, obj) {
                 }
             };
         }
+
         vm.descriptionFunction = function () {
             return function (d) {
                 return d.key;
@@ -2273,6 +2283,7 @@ function volatileFolderDataL(data, obj) {
                     '<p>' + d3.format(',f')(x) + '</p>'
             }
         }
+
         var format = d3.format(',.0f');
         vm.valueFormatFunction = function () {
             return function (d) {
@@ -2374,74 +2385,84 @@ function volatileFolderDataL(data, obj) {
 
         var states = [];
         vm.clusterAction = function (objectType, action, host, port) {
+            function performAction() {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.host = host;
+                obj.port = port;
+                var obj1 = {};
+                obj1.jobschedulerId = vm.schedulerIds.selected;
 
-            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
-                JobSchedulerService.terminate(host, port, $scope.schedulerIds.selected).then(function (res) {
-                    success('stopped', host, port);
-                }, function (err) {
+                if (vm.comments.comment) {
+                    obj.comment = vm.comments.comment;
+                    obj1.comment = vm.comments.comment;
+                }
 
+                if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
+                    JobSchedulerService.terminate(host, port, $scope.schedulerIds.selected).then(function (res) {
+                        success('stopped', host, port);
                     });
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abort') {
-                    JobSchedulerService.abort(host, port, $scope.schedulerIds.selected).then(function (res) {
+                    JobSchedulerService.abort(obj).then(function (res) {
                         success('running', host, port);
-                    }, function (err) {
-
                     });
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abortAndRestart') {
-                    JobSchedulerService.abortAndRestart(host, port, $scope.schedulerIds.selected).then(function (res) {
+                    JobSchedulerService.abortAndRestart(obj).then(function (res) {
                         success('running', host, port);
-                    }, function (err) {
-
                     });
-
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestart') {
-                    JobSchedulerService.restart(host, port, $scope.schedulerIds.selected).then(function (res) {
+                    JobSchedulerService.restart(obj).then(function (res) {
                         success('running', host, port);
-                    }, function (err) {
-
                     });
-
-
-                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
-                    vm.getTimeout(host, port);
                 }
                 else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
-                    JobSchedulerService.pause(host, port, $scope.schedulerIds.selected).then(function (res) {
+                    JobSchedulerService.pause(obj).then(function (res) {
                         success('paused', host, port);
-                    }, function (err) {
-
                     });
-
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
-                    JobSchedulerService.continue(host, port, $scope.schedulerIds.selected).then(function (res) {
+                    JobSchedulerService.continue(obj).then(function (res) {
                         success('running', host, port);
-                    }, function (err) {
-
                     });
-
                 } else if (objectType == 'cluster' && action == 'terminate') {
-                    JobSchedulerService.terminateCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+
+                    JobSchedulerService.terminateCluster(obj1).then(function (res) {
                         clusterSuccess('stopped', host, port);
-                    }, function (err) {
-
                     });
-
                 } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
-                    JobSchedulerService.terminateFailsafeCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                    JobSchedulerService.terminateFailsafeCluster(obj1).then(function (res) {
                         clusterSuccess('stopped', host, port);
-                    }, function (err) {
-
                     });
-
                 } else if (objectType == 'cluster' && action == 'restart') {
-                    JobSchedulerService.restartCluster({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                    JobSchedulerService.restartCluster(obj1).then(function (res) {
                         clusterSuccess('running', host, port);
-                    }, function (err) {
+                    });
+                }
+            }
+
+            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
+                vm.getTimeout(host, port);
+            } else {
+                if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+                    vm.comments = {};
+                    vm.comments.radio = 'predefined';
+                    vm.comments.name = objectType;
+                    vm.comments.operation = action;
+                    vm.comments.type = 'JobScheduler';
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'modules/core/template/comment-dialog.html',
+                        controller: 'DialogCtrl',
+                        scope: vm,
+                        backdrop: 'static'
+                    });
+                    modalInstance.result.then(function () {
+                        performAction();
+                    }, function () {
 
                     });
-
+                } else {
+                    performAction();
                 }
-            
+            }
 
             function clusterSuccess(state) {
 
@@ -2497,6 +2518,8 @@ function volatileFolderDataL(data, obj) {
         vm.criterion = {};
         vm.criterion.timeout = 60;
         vm.getTimeout = function (host, port) {
+             vm.comments = {};
+            vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
                 controller: 'DialogCtrl',
@@ -2504,7 +2527,15 @@ function volatileFolderDataL(data, obj) {
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                JobSchedulerService.restartWithin(host, port, $scope.schedulerIds.selected, vm.criterion.timeout).then(function (res) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.host = host;
+                obj.port = port;
+                obj.timeout = vm.criterion.timeout;
+                if (vm.comments.comment) {
+                    obj.comment = vm.comments.comment;
+                }
+                JobSchedulerService.restartWithin(obj).then(function (res) {
                     success('running', host, port);
                 });
             }, function () {
@@ -2515,9 +2546,9 @@ function volatileFolderDataL(data, obj) {
         vm.loadOrderSnapshot = function () {
             OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.snapshot = res.orders;
-                isOrderOverviewLoaded =true;
-            },function(){
-                isOrderOverviewLoaded =true;
+                isOrderOverviewLoaded = true;
+            }, function () {
+                isOrderOverviewLoaded = true;
             });
         };
         vm.loadOrderSnapshot();
@@ -2539,9 +2570,9 @@ function volatileFolderDataL(data, obj) {
             }
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
-                isOrderSummaryLoaded =true;
+                isOrderSummaryLoaded = true;
             }, function (err) {
-                isOrderSummaryLoaded =true;
+                isOrderSummaryLoaded = true;
             })
         };
         vm.getOrderSummary();
@@ -2591,7 +2622,7 @@ function volatileFolderDataL(data, obj) {
                 filterData();
                 isDailyPlanLoad = true;
             }, function (err) {
-                 isDailyPlanLoad = true;
+                isDailyPlanLoad = true;
             })
         };
 
@@ -2749,12 +2780,12 @@ function volatileFolderDataL(data, obj) {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1) {
-                        if(isOrderOverviewLoaded) {
-                            isOrderOverviewLoaded =false;
+                        if (isOrderOverviewLoaded) {
+                            isOrderOverviewLoaded = false;
                             vm.loadOrderSnapshot();
                         }
-                        if(isOrderSummaryLoaded) {
-                            isOrderSummaryLoaded=false;
+                        if (isOrderSummaryLoaded) {
+                            isOrderSummaryLoaded = false;
                             vm.getOrderSummary();
                         }
                         if (vm.events[0].eventSnapshots[i].eventType == 'OrderStarted' || vm.events[0].eventSnapshots[i].eventType == 'OrderFinished')
@@ -2778,11 +2809,12 @@ function volatileFolderDataL(data, obj) {
         });
     }
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', '$stateParams', 'CoreService','$window'];
-    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, $stateParams, CoreService,$window) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', '$stateParams', 'CoreService', '$window'];
+    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, $stateParams, CoreService, $window) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
+        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
 
         var selectedFiltered;
         var promise1;
@@ -2876,7 +2908,7 @@ function volatileFolderDataL(data, obj) {
             $('#exportToExcelBtn').attr("disabled", false);
         };
 
-        vm.dataFormate =$window.localStorage.$SOS$DATEFORMAT;
+        vm.dataFormate = $window.localStorage.$SOS$DATEFORMAT;
         vm.options = {
             mode: 'custom',
             scale: 'hour',
@@ -2920,20 +2952,20 @@ function volatileFolderDataL(data, obj) {
             }
         };
 
-         $(window).resize(function () {
-             var ht= $('.app-header').height()
+        $(window).resize(function () {
+            var ht = $('.app-header').height()
                 + $('.app-footer').height()
-                +$('.top-header-bar').height()
-                +$('.sub-header').height()
-                +$('.sub-header-2').height()+82;
-             vm.options.maxHeight = window.innerHeight - ht;
-         });
+                + $('.top-header-bar').height()
+                + $('.sub-header').height()
+                + $('.sub-header-2').height() + 82;
+            vm.options.maxHeight = window.innerHeight - ht;
+        });
 
         vm.canAutoWidth = function (scale) {
             if (scale.match(/.*?hour.*?/) || scale.match(/.*?minute.*?/)) {
                 return false;
-            }else
-            return true;
+            } else
+                return true;
         };
 
         vm.getColumnWidth = function (widthEnabled, scale, zoom) {
@@ -3052,20 +3084,20 @@ function volatileFolderDataL(data, obj) {
             $scope.ordersNoDuplicate = [];
             data2 = orderBy(data2, 'plannedStartTime', false);
 
-            var groupJobChain =[];
-            for(var i=0;i<data2.length;i++) {
-                if (groupJobChain.length>0) {
+            var groupJobChain = [];
+            for (var i = 0; i < data2.length; i++) {
+                if (groupJobChain.length > 0) {
                     var flag = false;
                     for (var j = 0; j < groupJobChain.length; j++) {
-                        if(groupJobChain[j].jobChain == data2[i].jobChain && groupJobChain[j].orderId == data2[i].orderId){
-                            flag =true;
+                        if (groupJobChain[j].jobChain == data2[i].jobChain && groupJobChain[j].orderId == data2[i].orderId) {
+                            flag = true;
                         }
                     }
-                    if(!flag){
-                       groupJobChain.push({orderId:data2[i].orderId, jobChain:data2[i].jobChain});
+                    if (!flag) {
+                        groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
                     }
-                }else{
-                    groupJobChain.push({orderId:data2[i].orderId, jobChain:data2[i].jobChain});
+                } else {
+                    groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
                 }
             }
 
@@ -3111,7 +3143,7 @@ function volatileFolderDataL(data, obj) {
                         } else if (data2[index1].startMode == 1) {
                             orders[index].tasks[i].startMode = 'label.startStartRepeatMode';
                             orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">';
-                        } else if (data2[index1].startMode == 2){
+                        } else if (data2[index1].startMode == 2) {
                             orders[index].tasks[i].startMode = 'label.startEndRepeatMode';
                             orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
                         }
@@ -3155,7 +3187,7 @@ function volatileFolderDataL(data, obj) {
         }
 
         vm.load = function () {
-            isLoaded= false;
+            isLoaded = false;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
 
@@ -3185,16 +3217,14 @@ function volatileFolderDataL(data, obj) {
 
                 prepareGanttData(vm.plans, true);
                 vm.isLoading = true;
-                isLoaded= true;
+                isLoaded = true;
                 vm.showSpinner = false;
             }, function (err) {
                 vm.isLoading = true;
-                isLoaded= true;
+                isLoaded = true;
                 vm.showSpinner = false;
             })
         };
-
-
 
 
         /**--------------- filter, sorting and pagination -------------------*/
@@ -3252,7 +3282,7 @@ function volatileFolderDataL(data, obj) {
                 scope: vm
             });
             modalInstance.result.then(function () {
-                  }, function () {
+            }, function () {
 
             });
         };
@@ -3361,12 +3391,12 @@ function volatileFolderDataL(data, obj) {
         };
 
         var int = '';
-         var isLoaded= true;
+        var isLoaded = true;
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && isLoaded) {
-                         isLoaded= false;
+                        isLoaded = false;
                         if (int) {
                             $timeout.cancel(int);
                         }
@@ -3415,10 +3445,10 @@ function volatileFolderDataL(data, obj) {
 
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
-                isLoaded= true;
+                isLoaded = true;
                 prepareGanttData(vm.plans);
-            },function(){
-                isLoaded= true;
+            }, function () {
+                isLoaded = true;
             });
         };
 

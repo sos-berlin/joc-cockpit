@@ -851,7 +851,7 @@
   "button.videosOnYouTube": "Videos sur YouTube",
   "button.jobSchedulerFAQ": "JobScheduler FAQ",
   "button.jobSchedulerForum": "JobScheduler Forum",
- "button.openSourceUserTicketSystem": "Système de Ticket Public",
+  "button.openSourceUserTicketSystem": "Système de Ticket Public",
   "button.customerTicketSystem": "Système de Ticket Client",
   "label.maxEntryPerPage": "Nombre max. des entrées par page",
   "button.showHistory": "Visualiser l'Historique",

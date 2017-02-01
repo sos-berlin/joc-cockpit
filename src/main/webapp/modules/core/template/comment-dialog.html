@@ -3,19 +3,19 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate>label.writeComment</h4>
     </div>
-    <form name="form" ng-submit="ok()" novalidate>
-    <div class="modal-body p-a">
-        <div class="form-group row">
-            <label class="col-sm-4" translate>{{comments.type}}</label>
-            <label class="col-sm-6">{{comments.name}}</label>
-        </div>
-        <div class="form-group row b-b">
-            <label class="col-sm-4" translate>label.operation</label>
-            <label class="col-sm-6">{{comments.operation}}</label>
-        </div>
-        <div class="form-group row">
-            <label class="col-sm-4 " translate>label.selectComments</label>
-            <div class=" col-sm-8">
+    <form name="form" ng-submit="submit()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-4" translate>{{comments.type}}</label>
+                <label class="col-sm-6">{{comments.name}}</label>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.operation</label>
+                <label class="col-sm-6" translate>{{comments.operation}}</label>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 " translate>label.selectComments</label>
+                <div class=" col-sm-8">
                     <div>
                         <label class="md-check w">
                             <input type="radio" name="radio" ng-model="comments.radio" value="predefined">
@@ -27,32 +27,37 @@
                         </label>
                     </div>
                 </div>
-        </div>
-        <div class="form-group row" ng-if="comments.radio=='predefined'">
-           <label class="col-sm-12" translate>label.selectComment</label>
-           <div class=" col-sm-12">
-               <select class="form-control" ng-model="comments.comment">
-                    <option value="" disabled selected translate>label.selectPredefinedReason</option>
-               </select>
-           </div>
-        </div>
-        <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : form.comment.$invalid && form.comment.$dirty }">
-           <label class="col-sm-12" translate>label.comment</label>
-           <div class=" col-sm-12">
-                <textarea rows="5" class="form-control" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}"></textarea>
-               <div class="help-block text-danger" ng-if="form.comment.$dirty" ng-messages="form.comment.$error">
-                   <div ng-message="required" translate>message.requiredError</div>
+            </div>
+            <div class="form-group row" ng-if="comments.radio=='predefined'" ng-class="{'has-error' : error}">
+               <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+               <div class="col-sm-6">
+                   <select class="form-control" ng-model="comments.comment" ng-change="error = false">
+                        <option value="" selected translate>label.selectPredefinedReason</option>
+                        <option value="System Maintenance">System Maintenance</option>
+                        <option value="Repeat Execution">Repeat Execution</option>
+                        <option value="Business Requirement">Business Requirement</option>
+                   </select>
+                   <div class="help-block text-danger" ng-if="error">
+                       <div translate>message.requiredError</div>
+                   </div>
                </div>
-           </div>
+            </div>
+            <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : error}">
+               <label class="col-sm-4 " translate>label.comment</label>
+               <div class=" col-sm-8">
+                    <textarea rows="3" class="form-control" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
+                   <div class="help-block text-danger" ng-if="error">
+                       <div translate>message.requiredError</div>
+                   </div>
+               </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            </div>
         </div>
-
-        <div class="row m-t-md">
-            <div class="b-t"></div>
-        </div>
-        <div class="form-group m-t m-b-xs">
-            <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submit</button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
-        </div>
-    </div>
     </form>
 </div>

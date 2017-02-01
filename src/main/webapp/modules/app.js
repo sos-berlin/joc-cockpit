@@ -26,9 +26,7 @@
             'ncy-angular-breadcrumb',
             'gantt',
             'gantt.tooltips',
-            'gantt.table',
-            'ngFileSaver',
-            'cfp.hotkeys',
+            'gantt.table',      
             'angular-clipboard',
             'ngFileSaver'
         ])

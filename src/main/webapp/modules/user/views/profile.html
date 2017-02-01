@@ -252,7 +252,16 @@
                        <div class="col-sm-3 text-dark" translate>label.enableCommentsForAuditLog</div>
                        <div class="col-sm-6">
                            <label class="md-check">
-                               <input type="checkbox" ng-model="upc.perferences.auditLog" ng-change="upc.changePerferences()">
+                               <input type="checkbox" ng-disabled="upc.perferences.forceLoging" ng-model="upc.perferences.auditLog" ng-change="upc.changePerferences()">
+                               <i class="primary"></i>
+                           </label>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark">Force Enable (Simulation of server side setting for audit log)</div>
+                       <div class="col-sm-6">
+                           <label class="md-check">
+                               <input type="checkbox" ng-model="upc.perferences.forceLoging" ng-change="upc.changePerferences()">
                                <i class="primary"></i>
                            </label>
                        </div>

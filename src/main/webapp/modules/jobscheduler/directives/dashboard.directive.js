@@ -889,11 +889,9 @@
                     angular.forEach(anchors, function (anchor, index) {
                         anchor.addEventListener('click', function (e) {
 
-
                             if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
 
                                 var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
-
 
                                 vm.onOperation({
                                     item: results[1],
@@ -901,14 +899,11 @@
                                     host: results[3],
                                     port: results[4]
                                 });
-                                if (results[2] !== 'terminateAndRestartWithin') {
+/*                                if (results[2] !== 'terminateAndRestartWithin') {
                                     changeToWaiting(results[3], results[4]);
-                                }
-
+                                }*/
                                 //vm.getSupervisor(true);
-
                             }
-
 
                         })
                     });

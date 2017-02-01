@@ -14,7 +14,7 @@ pre {
 }
 
 .dropdown-menu {
-    color: rgba(0, 0, 0, .87);
+    color: rgba(255, 255, 255, 0.87);
    background-color: #1d1d1c
 }
 
@@ -29,10 +29,6 @@ pre {
 .dropdown-menu.datepicker .btn.btn-primary, .dropdown-menu.timepicker .btn.btn-primary {
     background-color: #1D577D !important;
     color: #fff
-}
-.modal-header {
-    background: #1D577D;
-    color: rgba(255, 255, 255, .87)
 }
 
 .nav-active-border2 > li.dropdown-separator .separator {
@@ -109,23 +105,23 @@ pre {
     top: 0 !important;
     font-size: .85em !important
 }
-.dropdown-ac {
+.dropdown-ac, .dropdown-ac1 {
     color: rgba(255, 255, 255, 0.91);
-    border: 1px solid #393937;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid #1d1d1c;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.95);
     -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 4px rgba(255, 255, 255, 0.3)
 }
 
-.dropdown-ac a:first-child:before {
-    border-bottom: 9px solid #393937;
+.dropdown-ac a:first-child:before,.dropdown-ac1 a.first:first-child:before {
+    border-bottom: 9px solid #1d1d1c;
 }
 
-.dropdown-ac a:first-child:after {
-    border-bottom: 9px solid #393937;
+.dropdown-ac a:first-child:after,.dropdown-ac1 a.first:first-child:after {
+    border-bottom: 9px solid #1d1d1c;
 }
 
-.dropdown-ac a:hover {
+.dropdown-ac a:hover,.dropdown-ac1 a:hover {
     color: #fff;
     text-shadow: 0 -1px rgba(0, 0, 0, .3);
     background: #1D577D
@@ -201,7 +197,8 @@ input.input-time {
 }
 
 .left-sidebar-btn:hover, .sidebar-btn {
-    background: #fff
+    background: #fff;
+     color: #3a3a3a;
 }
 
 .disable-link {
@@ -421,7 +418,7 @@ a.text-dark:hover {
     background: rgba(57, 57, 55, 0.87) !important
 }
 .modal-content, .modal-footer, .modal-header {
-    border-color: #2d3d4d
+    border-color:rgba(255, 255, 255, 0.2)
 }
 
 .modal-content {
@@ -519,8 +516,8 @@ div.order-panel div {
 }
 .pagination > .active > a, .pagination > .active > span {
     color: #fff !important;
-    background-color: #337ab7 !important;
-    border-color: #2e6da4
+    background-color: #1D577D !important;
+    border-color: #1D4E73
 }
 .box-shadow {
     -webkit-box-shadow: 0 1px 3px rgba(255, 255, 255, .12) !important;
@@ -540,8 +537,8 @@ div.order-panel div {
 }
 
 .box-shadow-z0 {
-    -webkit-box-shadow: 0 2px 4px rgba(255, 255, 255, .12);
-    box-shadow: 0 2px 4px rgba(255, 255, 255, .12)
+    -webkit-box-shadow: 0 1px 0px rgba(255, 255, 255, .12);
+    box-shadow: 0 1px 0px rgba(255, 255, 255, .12)
 }
 
 .box, .box-shadow-z1 {
@@ -592,10 +589,21 @@ hr {
 .gantt-task-infoArrow:after, .gantt-task-infoArrowR:after {
     border-top: 7px solid #1d1d1c;
 }
-.dropdown-ac1 a.first:first-child:before {
-    border-bottom: 9px solid #393937;
+
+
+span.attribute_name, span.bracket {
+    color: #fff
+}
+span.attribute_val {
+    color: #1D577D
+}
+span.namespace_name {
+    color: #fff
+}
+span.cdata {
+    color: #1D577D;
+}
+#cal-week-box {
+    background-color: #2b2b2b;
 }
 
-.dropdown-ac1 a.first:first-child:after {
-    border-bottom: 9px solid #393937;
-}

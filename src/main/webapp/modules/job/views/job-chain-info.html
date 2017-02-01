@@ -6,14 +6,8 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" >Job Chains</span>
                     </div>
-
-
-
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()">
-                            <img src="images/share.png" class="p-b-xs"></button>
-
-                    </div>
-                    <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
+                </div>
+                <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
                         <!--<button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><span translate>button.reset</span></button>-->
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped"
                                 ng-class="{'show-block':permission.JobChain.stop}" ng-click="stopAll()"><i
@@ -22,62 +16,33 @@
                                 ng-class="{'show-block':permission.JobChain.unstop}" ng-click="unstopAll()"><i
                                 class="fa fa-play"></i> <span translate>button.unstop</span></button>
                     </div>
-
-                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="scroll-y max-ht">
-    <div class="padding p-b-0">
 
-
-        <div>
-            <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
+<div class="padding p-b-0">
+    <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
 
                 <div class="hide box p-a" ng-class="{'show':allJobChains.length>0}">
                     <div class="table-responsive" >
                         <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
                             <thead>
                             <tr>
-
-                                <th ><span translate>label.jobChain</span>
-                                </th>
-                                <th><span translate>label.path</span>
-                                </th>
-                                <th ><span translate>label.state</span>
-                                </th>
-                                <th ><span translate>label.noOfJobs</span>
-                                </th>
-                                <th><span translate>label.agentCluster</span>
-
-                                </th>
-                                <th ><span
-                                        translate>label.orderPending</span>
-
-                                </th>
-                                <th ><span
-                                        translate>label.orderRunning</span>
-
-                                </th>
-                                <th ><span translate>label.orderSuspended</span>
-                                </th>
-                                <th ><span translate>label.orderQueued</span>
-
-                                </th>
-                                <th ><span
-                                        translate>label.orderSetbacks</span>
-
-                                </th>
-                                <th><span
-                                        translate>label.orderBlacklist</span>
-
-                                </th>
-
+                                <th><span translate>label.jobChain</span></th>
+                                <th><span translate>label.path</span></th>
+                                <th><span translate>label.state</span></th>
+                                <th><span translate>label.noOfJobs</span></th>
+                                <th><span translate>label.agentCluster</span></th>
+                                <th><span translate>label.orderPending</span></th>
+                                <th><span translate>label.orderRunning</span></th>
+                                <th><span translate>label.orderSuspended</span></th>
+                                <th><span translate>label.orderQueued</span></th>
+                                <th><span translate>label.orderSetbacks</span></th>
+                                <th><span translate>label.orderBlacklist</span></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in allJobChains"
-                                   ng-class="{'light-bg':jobChain.show}" >
+                            <tbody ng-repeat="jobChain in allJobChains">
                             <tr title="{{jobChain.configurationStatus._text | translate}}">
 
                                 <td class="nowrap">
@@ -322,25 +287,12 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div class="inline text-sm m-l-xs m-b-sm" ng-if="allJobChains.length >0"><span translate>label.total</span> {{allJobChains.length}}
-                            <span translate ng-if="allJobChains.length >1">label.jobChainsFound</span>
-                            <span translate ng-if="allJobChains.length ==1">label.jobChainFound</span>
-                        </div>
-
-
-                </div>
-                <div ng-if="isLoading && !loading && folderPath && allJobChains.length==0" class="text-center m-t m-b-lg h6">
-                    <span class="text-primary">"{{folderPath}}"</span>
-                    <span translate>message.emptyFolder</span>
                 </div>
             </div>
-            <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-            </div>
-            <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
-                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-            </div>
-            <div class="hide " ng-class="{'show': isLoading && permission.JobChain.view.history}">
+        <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
+        <div class="hide " ng-class="{'show': isLoading && permission.JobChain.view.history}">
                 <div class="row " ng-show="showHistoryPanel" >
                     <div class="col-md-12">
                         <div class="box white">
@@ -405,12 +357,8 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
-</div>
-
-
 
 <script>
 $('.table-responsive').on('shown.bs.dropdown', function (e) {
@@ -426,10 +374,4 @@ $('.table-responsive').on('shown.bs.dropdown', function (e) {
   $('.table-responsive').on('hide.bs.dropdown', function () {
     $(this).css("padding-bottom", 0);
   });
-  $(document).ready(function () {
-      $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 155
-        });
-  });
-
 </script>

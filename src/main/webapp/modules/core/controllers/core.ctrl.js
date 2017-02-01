@@ -1006,9 +1006,13 @@
         }
     }
 
-    DialogCtrl.$inject = ["$scope", "$uibModalInstance"];
-    function DialogCtrl($scope, $uibModalInstance) {
+    DialogCtrl.$inject = ["$scope", "$uibModalInstance","$window"];
+    function DialogCtrl($scope, $uibModalInstance,$window) {
         var vm = $scope;
+        vm.error=false;
+        if($window.localStorage.$SOS$FORCELOGING == 'true'){
+            vm.required =true;
+        }
 
         vm.calendarView = 'month';
         vm.viewDate = new Date();
@@ -1022,6 +1026,19 @@
                     }
                 });
             $uibModalInstance.close('ok');
+        };
+        vm.submit = function () {
+             vm.error=false;
+            if(vm.required){
+                if(vm.comments.comment) {
+                    $uibModalInstance.close('ok');
+                }else{
+                    vm.error=true;
+                }
+            }else{
+                $uibModalInstance.close('ok');
+            }
+
         };
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');

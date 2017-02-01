@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img
                 src="images/close-button.png"></span></button>
         <h4 class="modal-title">{{_jobChain.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedOrders</span>
-        <span ng-if="maxPlannedTime">{{label.maxAvailablePlanedDate |translate}} : </span><span class="text-muted text" >{{maxPlannedTime|stringToDate}}</span></h4>
+        <span ng-if="maxPlannedTime">{{'label.maxAvailablePlanedDate' |translate}} : </span><span class="text-muted text" >{{maxPlannedTime|stringToDate}}</span></h4>
     </div>
     <div class="modal-body">
         <div class="text-md text-center">
