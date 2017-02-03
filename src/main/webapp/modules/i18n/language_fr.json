@@ -854,14 +854,14 @@
   "label.maxEntryPerPage": "Nombre max. des entrées par page",
   "button.showHistory": "Visualiser l'Historique",
   "label.maxAvailablePlanedDate": "Date max. planifiée",
-  "label.created": "Created",
+  "label.created": "Creée",
   "label.request": "Request",
-  "label.parameters": "Parameters",
+  "label.parameters": "Paramètres",
   "label.auditLog": "Audit Log",
-  "label.auditLogsFound": "Log entries found",
-  "label.auditLogFound": "Log entry found",
-  "label.maxNumberOfAuditLogPerObject": "Max. number of Audit Log entries per object",
-  "button.showAuditLog": "Show Audit Log",
+  "label.auditLogsFound": "entrées dans l'Audit Log trouvée",
+  "label.auditLogFound": "entrée dans l'Audit Log trouvée",
+  "label.maxNumberOfAuditLogPerObject": "Nombre max. des entrées dans l'Audit Log par objet",
+  "button.showAuditLog": "Visualiser l'Audit Log",
   "breadcrumb.auditLog": "Audit Log",
-  "message.noAuditLogFound": "no Audit Log entries found"
+  "message.noAuditLogFound": "aucune entrée dans l'Audit Log trouvé"
 }
