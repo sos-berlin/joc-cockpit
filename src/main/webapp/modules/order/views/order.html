@@ -387,6 +387,7 @@
                                                            ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                         <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                            ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+                                                        <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -475,12 +476,15 @@
                                         <div class="b-b">
                                           <ul class="nav nav-tabs">
                                             <li class="nav-item">
-                                              <a class="nav-link active" href data-toggle="tab" data-target="#tab2" translate>label.orderHistory</a>
+                                              <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showLogFuc(showLogPanel)" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
                                             </li>
+                                              <li class="nav-item">
+                                                    <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
+                                                </li>
                                           </ul>
                                         </div>
                                          <div class="tab-content p-a">
-                                          <div class="tab-pane animated fadeIn active" id="tab2">
+                                              <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog}" id="tab1">
                                               <div class="row">
                                                   <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                       <table class="table table-hover table-bordered ">
@@ -513,6 +517,39 @@
                                                 </div>
                                               </div>
                                           </div>
+                                              <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}"  id="tab2">
+                                        <div class="row">
+                                            <div class="table-responsive" resizable r-directions="['bottom']"
+                                                 r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.created</th>
+                                                        <th translate>label.account</th>
+                                                        <th translate>label.request</th>
+                                                        <th translate>label.parameters</th>
+                                                        <th translate>label.order</th>
+                                                        <th translate>label.comment</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="auditLog in auditLogs">
+                                                        <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                                                        <td><span ng-bind="auditLog.account"></span></td>
+                                                        <td><span ng-bind="auditLog.request"></span></td>
+                                                        <td><span ng-bind="auditLog.parameters"></span></td>
+                                                        <td><span ng-bind="auditLog.orderId"></span></td>
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div ng-if="auditLogs.length==0"
+                                                     class="text-center m-t-md h6 text-uppercase" translate>
+                                                    message.noAuditLogFound
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                         </div>
                                     </div>
                                 </div>

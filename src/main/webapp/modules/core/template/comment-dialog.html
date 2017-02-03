@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate>label.writeComment</h4>
     </div>
-    <form name="form" ng-submit="submit()" novalidate>
+    <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row">
                 <label class="col-sm-4" translate>{{comments.type}}</label>
@@ -33,9 +33,7 @@
                <div class="col-sm-6">
                    <select class="form-control" ng-model="comments.comment" ng-change="error = false">
                         <option value="" selected translate>label.selectPredefinedReason</option>
-                        <option value="System Maintenance">System Maintenance</option>
-                        <option value="Repeat Execution">Repeat Execution</option>
-                        <option value="Business Requirement">Business Requirement</option>
+                        <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
                    </select>
                    <div class="help-block text-danger" ng-if="error">
                        <div translate>message.requiredError</div>
@@ -45,7 +43,7 @@
             <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : error}">
                <label class="col-sm-4 " translate>label.comment</label>
                <div class=" col-sm-8">
-                    <textarea rows="3" class="form-control" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
+                    <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
                    <div class="help-block text-danger" ng-if="error">
                        <div translate>message.requiredError</div>
                    </div>

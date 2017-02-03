@@ -24,7 +24,42 @@
            </div>
            <div class="col-sm-1 p-l-0 p-t-xs">sec</div>
         </div>
-
+        <div class="form-group row hide" ng-class="{'show': display}">
+            <label class="col-sm-4 " translate>label.selectComments</label>
+            <div class=" col-sm-8">
+                <div>
+                    <label class="md-check w">
+                        <input type="radio" name="radio" ng-model="comments.radio" value="predefined">
+                        <i class="primary"></i> <span translate>label.predefined</span>
+                    </label>
+                    <label class="md-check  w">
+                        <input type="radio" name="radio" ng-model="comments.radio" value="new">
+                        <i class="primary"></i> <span translate>label.individual</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row hide" ng-if="comments.radio=='predefined'" ng-class="{ 'has-error' : error,'show': display }">
+            <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+            <div class="col-sm-6">
+                <select class="form-control" ng-model="comments.comment" ng-change="error = false">
+                    <option value="" selected translate>label.selectPredefinedReason</option>
+                    <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                </select>
+                <div class="help-block text-danger" ng-if="error">
+                    <div translate>message.requiredError</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': display }">
+            <label class="col-sm-4 " translate>label.comment</label>
+            <div class=" col-sm-8">
+                <textarea rows="3" class="form-control" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
+                <div class="help-block text-danger" ng-if="error">
+                    <div translate>message.requiredError</div>
+                </div>
+            </div>
+        </div>
         <div class="row m-t-md">
             <div class="b-t"></div>
         </div>

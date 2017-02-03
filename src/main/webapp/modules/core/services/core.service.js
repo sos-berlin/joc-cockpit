@@ -95,6 +95,15 @@
         tabs._history.task.currentPage = '1';
         tabs._history.task.selectedView = true;
 
+        tabs._auditLog = {};
+        tabs._auditLog.filter = {};
+        tabs._auditLog.filter.historyStates = 'all';
+        tabs._auditLog.filter.date = 'today';
+        tabs._auditLog.filter.sortBy = 'created';
+        tabs._auditLog.sortReverse = true;
+        tabs._auditLog.pageSize = '25';
+        tabs._auditLog.currentPage = '1';
+
         tabs._resource = {};
         tabs._resource.agents = {};
         tabs._resource.agents.filter = {};
@@ -212,6 +221,14 @@
         tempTabs._history.task.currentPage = '1';
         tempTabs._history.task.selectedView = true;
 
+        tempTabs._auditLog = {};
+        tempTabs._auditLog.filter = {};
+        tempTabs._auditLog.filter.historyStates = 'all';
+        tempTabs._auditLog.filter.date = 'today';
+        tempTabs._auditLog.filter.sortBy = 'created';
+        tempTabs._auditLog.sortReverse = true;
+        tempTabs._auditLog.pageSize = '25';
+        tempTabs._auditLog.currentPage = '1';
 
         tempTabs._resource = {};
         tempTabs._resource.agents = {};
@@ -335,6 +352,9 @@
             getHistoryTab: function () {
                 return tabs._history;
             },
+            getAuditLogTab: function(){
+                return tabs._auditLog;
+            },
             getDashboardTab: function () {
                 return dashboard._dashboard;
             },
@@ -355,7 +375,6 @@
             }
         }
     }
-
 
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {

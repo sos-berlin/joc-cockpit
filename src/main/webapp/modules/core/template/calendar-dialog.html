@@ -6,6 +6,7 @@
         <span ng-if="maxPlannedTime">{{'label.maxAvailablePlanedDate' |translate}} : </span><span class="text-muted text" >{{maxPlannedTime|stringToDate}}</span></h4>
     </div>
     <div class="modal-body">
+
         <div class="text-md text-center">
             <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView">
                 <i class="fa fa-angle-left fa-lg"></i>
@@ -39,7 +40,9 @@
             </div>
         </div>
 
-        <div class="calendar-body">
+        <div class="text-center m-t-lg" ng-show="isCaledarLoading" style="height: 150px" > <div class="loading-img1 m-t-lg"></div></div>
+        <div class="calendar-body" ng-if="!isCaledarLoading && planItems.length>0">
+
             <mwl-calendar
                     events="events"
                     plan-items="planItems"
@@ -50,5 +53,8 @@
                     on-view-change-click="vm.viewChangeClicked(calendarNextView)">
             </mwl-calendar>
         </div>
+        <div ng-if="!isCaledarLoading && planItems.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                        message.noDataFound
+                                    </div>
     </div>
 </div>

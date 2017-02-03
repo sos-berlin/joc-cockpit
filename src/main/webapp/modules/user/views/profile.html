@@ -191,6 +191,12 @@
                        </div>
                    </div>
                     <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfAuditLogPerObject</div>
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxAuditLogPerObject" ng-blur="upc.changePerferences()">
+                       </div>
+                    </div>
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
                        <div class="col-sm-6">
                           <select class="form-control w-xl" ng-model="upc.perferences.maxEntryPerPage" ng-change="upc.changePerferences()">
@@ -253,15 +259,6 @@
                        <div class="col-sm-6">
                            <label class="md-check">
                                <input type="checkbox" ng-disabled="upc.perferences.forceLoging" ng-model="upc.perferences.auditLog" ng-change="upc.changePerferences()">
-                               <i class="primary"></i>
-                           </label>
-                       </div>
-                   </div>
-                    <div class="row m-t">
-                       <div class="col-sm-3 text-dark">Force Enable (Simulation of server side setting for audit log)</div>
-                       <div class="col-sm-6">
-                           <label class="md-check">
-                               <input type="checkbox" ng-model="upc.perferences.forceLoging" ng-change="upc.changePerferences()">
                                <i class="primary"></i>
                            </label>
                        </div>
@@ -467,10 +464,16 @@
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.addSubstitute}"></i> <span translate>label.addSubstitute</span></span>
                        </div>
                    </div>
-                    <div class="row m-t">
+                   <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.holidayCalendar</span></div>
                        <div class="row col-sm-9">
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.HolidayCalendar.view.status}"></i> <span translate>label.viewStatus</span></span>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.auditLog</span></div>
+                       <div class="row col-sm-9">
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.AuditLog.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                </div>

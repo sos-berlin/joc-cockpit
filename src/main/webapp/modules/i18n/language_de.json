@@ -824,8 +824,6 @@
   "label.writeComment": "Kommentar schreiben",
   "label.comment": "Kommentar",
   "label.selectComment": "Kommentar auswählen",
-  "label.selectPredefined": "Vorgegeben",
-  "label.enterNew": "Neuen Kommentar eingeben",
   "label.selectComments": "Option für Kommentar auswählen",
   "label.operation": "Operation",
   "label.selectPredefinedReason": "Vorgegebenen Grund auswählen",
@@ -855,5 +853,15 @@
   "button.customerTicketSystem": "Kunden Ticket System",
   "label.maxEntryPerPage": "Max. Anzahl Einträge pro Seite",
   "button.showHistory": "Historie anzeigen",
-  "label.maxAvailablePlanedDate": "Max. geplantes Datum"
+  "label.maxAvailablePlanedDate": "Max. geplantes Datum",
+  "label.created": "Created",
+  "label.request": "Request",
+  "label.parameters": "Parameters",
+  "label.auditLog": "Audit Log",
+  "label.auditLogsFound": "Log entries found",
+  "label.auditLogFound": "Log entry found",
+  "label.maxNumberOfAuditLogPerObject": "Max. number of Audit Log entries per object",
+  "button.showAuditLog": "Show Audit Log",
+  "breadcrumb.auditLog": "Audit Log",
+  "message.noAuditLogFound": "no Audit Log entries found"
 }

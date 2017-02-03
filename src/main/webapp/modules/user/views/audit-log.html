@@ -1,0 +1,295 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                    <div class="btn-group m-l-sm hidden-btn-group">
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
+                                    ng-class="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
+                            </button>
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'today'" ng-click="load()"
+                                    ng-class="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
+                            </button>
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
+                                    ng-class="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
+                            </button>
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
+                                    ng-class="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
+                            </button>
+                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1d'"
+                                    ng-class="{'btn-primary': adtLog.filter.date=='-1d'}" translate>button.last24
+                            </button>
+                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1w'"
+                                    ng-class="{'btn-primary': adtLog.filter.date=='-1w'}" translate>button.lastWeak
+                            </button>
+                        </div>
+                    <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
+                                        ng-class="{'btn-primary': adtLog.filter.date=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.all
+                                </a>
+                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'today'"
+                                        ng-class="{'btn-primary': adtLog.filter.date=='today', 'disable-link':savedHistoryFilter.selected}" translate>button.today
+                                </a>
+                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
+                                        ng-class="{'btn-primary': adtLog.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}" translate>button.last1
+                                </a>
+                                <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
+                                        ng-class="{'btn-primary': adtLog.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}" translate>button.last12
+                                </a>
+                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1d'"
+                                        ng-class="{'btn-primary': adtLog.filter.date=='-1d', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
+                                </a>
+                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1w'"
+                                        ng-class="{'btn-primary': adtLog.filter.date=='-1w', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
+                                </a>
+                            </div>
+                        </div>
+
+                    <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><i class="fa fa-share"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0" >
+        <div class="row m-b">
+            <div class="col-md-6 col-sm-4 m-t-xs">
+                <span class="text" ng-bind="'label.auditLog' | translate"></span>
+            </div>
+            <div class="col-md-6 col-sm-8">
+<!--                <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </div>
+                <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </div>-->
+                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+            </div>
+        </div>
+        <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
+
+            <div class="col-md-12">
+                <div class="box p-a m-b-xs">
+                    <form name="form" ng-submit="search()">
+                        <div class="form-group row m-t">
+                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="auditSearch.from"
+                                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
+                                       bs-datepicker type="text">
+                                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time m-l" ng-model="auditSearch.fromTime" data-time-format="HH:mm:ss"
+                                       data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                                       ng-model="auditSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{auditSearch.from}}" data-max-date="{{currentTime}}"
+                                       bs-datepicker type="text">
+                                <input class="form-control input-time m-l" ng-model="auditSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
+                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 " translate>label.status</label>
+                            <div class="col-sm-9">
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="auditSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <i class="primary"></i><span translate>label.incomplete</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="auditSearch.states" data-checklist-value="'SUCCESSFUL'">
+                                    <i class="primary"></i><span translate>label.successful</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="auditSearch.states" data-checklist-value="'FAILED'">
+                                    <i class="primary"></i><span translate>label.failed</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.jobChain</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="auditSearch.jobChain">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.orderIds</label>
+                            <div class="col-sm-6">
+                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}" ng-model="auditSearch.orderIds">
+                            </div>
+                        </div>
+                        <div class="form-group m-t m-b-xs">
+                            <button type="submit" class="btn btn-primary btn-sm" translate>button.search</button>
+                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="hide"  ng-class="{'show': isLoading}">
+            <div class="m-t-sm box p-a">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " id="auditLogTableId" >
+                        <thead>
+                            <tr>
+                                <th ng-click="sortBy('created')"><a><span translate>label.created</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'created' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'created' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('account')"><a><span translate>label.account</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'account' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'account' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('request')"><a><span translate>label.request</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'request' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'request' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('parameters')"><a><span translate>label.parameters</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'parameters' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'parameters' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'jobChain' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'jobChain' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('orderId')">
+                                    <a><span translate>label.orderId</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'orderId' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'orderId' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('job')"><a><span translate>label.job</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'job' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'job' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('comment')"><a><span translate>label.comment</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'comment' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'comment' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict) | startFrom:(adtLog.currentPage - 1) * adtLog.pageSize | limitTo: adtLog.pageSize | orderBy:adtLog.filter.sortBy:adtLog.sortReverse" >
+                            <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                            <td><span ng-bind="auditLog.account"></span></td>
+                            <td><span ng-bind="auditLog.request"></span></td>
+                            <td width="30%"><span ng-bind="auditLog.parameters"></span></td>
+                            <td><span ng-bind="auditLog.jobChain"></span></td>
+                            <td><span ng-bind="auditLog.orderId"></span></td>
+                            <td><span ng-bind="auditLog.job"></span></td>
+                            <td><span ng-bind="auditLog.comment"></span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                        <span translate ng-if="filtered.length >1">label.auditLogsFound</span>
+                        <span translate ng-if="filtered.length ==1">label.auditLogFound</span>
+                    </div>
+                    <ul ng-show="filtered.length > adtLog.pageSize" uib-pagination total-items="filtered.length" ng-model="adtLog.currentPage" items-per-page='adtLog.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-left" ng-show="filtered.length > 10">
+                            <div class="btn-group m-r-xxs">
+                                <button class="btn btn-default white btn-sm" ng-model="adtLog.pageSize" uib-btn-radio="'10'"
+                                        ng-class="{'primary': adtLog.pageSize=='10'}" >10
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="adtLog.pageSize" uib-btn-radio="'25'"
+                                        ng-class="{'primary': adtLog.pageSize=='25'}" >25
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="adtLog.pageSize" uib-btn-radio="'50'"
+                                        ng-class="{'primary': adtLog.pageSize=='50'}" >50
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="adtLog.pageSize" uib-btn-radio="'100'"
+                                        ng-class="{'primary': adtLog.pageSize=='100'}">100
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="adtLog.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': adtLog.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                                </button>
+                            </div>
+                    </div>
+                    <div ng-if="isLoading && auditLogs.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noAuditLogFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && auditLogs.length !==0)}" translate>message.noDataMatched</div>
+                </div>
+            </div>
+        </div>
+        <div  ng-if="!isLoading" class="text-center m-t-lg" >
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
+    </div>
+</div>
+<div ng-if="loading" class="loading-img1"></div>
+
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div class="b-b p-b-sm m-b-sm">
+                    <span ng-if="auditLogFilters.type == 'jobChain'" translate>message.selectFoldersOrJobChains/Orders</span>
+                    <span ng-if="auditLogFilters.type != 'jobChain'" translate>message.selectFoldersOrJobs</span>
+                </div>
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                       <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="tree"
+                            tree-control="filter_tree"
+                            object="object"
+                            icon-leaf     = "fa fa-folder"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeHandler1(branch)"
+                            on-click="treeHandler(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$('.table-responsive').on('shown.bs.dropdown', function (e) {
+    var $table = $(this),
+        $menu = $(e.target).find('.dropdown-menu'),
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
+  });
+
+  $('.table-responsive').on('hide.bs.dropdown', function () {
+    $(this).css("padding-bottom", 0);
+  });
+
+</script>

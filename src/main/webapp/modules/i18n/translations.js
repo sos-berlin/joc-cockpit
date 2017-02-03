@@ -57,6 +57,9 @@
             if (!$window.localStorage.$SOS$MAXORDERPERJOBCHAIN) {
                 $window.localStorage.$SOS$MAXORDERPERJOBCHAIN = 5;
             }
+            if (!$window.localStorage.$SOS$MAXAUDITLOGPEROBJECT) {
+                $window.localStorage.$SOS$MAXAUDITLOGPEROBJECT = 10;
+            }
             if(!$window.localStorage.$SOS$MAXENTRYPERPAGE){
                 $window.localStorage.$SOS$MAXENTRYPERPAGE =1000;
             }
@@ -68,9 +71,6 @@
             }
             if(!$window.localStorage.$SOS$SHOWTASKS){
                 $window.localStorage.$SOS$SHOWTASKS = true;
-            }
-            if(!$window.localStorage.$SOS$FORCELOGING){
-                $window.localStorage.$SOS$FORCELOGING = true;
             }
 
             if (!$window.localStorage.$SOS$EVENTFILTER) {

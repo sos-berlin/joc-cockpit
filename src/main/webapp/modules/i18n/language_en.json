@@ -853,5 +853,15 @@
   "button.customerTicketSystem": "Customer Ticket System",
   "label.maxEntryPerPage": "Max. number of entries per page",
   "button.showHistory": "Show History",
-  "label.maxAvailablePlanedDate": "Max. Planed Date"
+  "label.maxAvailablePlanedDate": "Max. Planed Date",
+  "label.created": "Created",
+  "label.request": "Request",
+  "label.parameters": "Parameters",
+  "label.auditLog": "Audit Log",
+  "label.auditLogsFound": "Log entries found",
+  "label.auditLogFound": "Log entry found",
+  "label.maxNumberOfAuditLogPerObject": "Max. number of Audit Log entries per object",
+  "button.showAuditLog": "Show Audit Log",
+  "breadcrumb.auditLog": "Audit Log",
+  "message.noAuditLogFound": "no Audit Log entries found"
 }

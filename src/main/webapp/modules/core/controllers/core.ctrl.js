@@ -1010,9 +1010,14 @@
     function DialogCtrl($scope, $uibModalInstance,$window) {
         var vm = $scope;
         vm.error=false;
-        if($window.localStorage.$SOS$FORCELOGING == 'true'){
+        if($window.localStorage.$SOS$AUDITLOG == 'true'){
+            vm.display =true;
+        }
+        if($window.sessionStorage.$SOS$FORCELOGING == 'true'){
             vm.required =true;
         }
+
+        vm.predefinedMessageList =  ["System Maintenance", "Repeat Execution", "Business Requirement", "Restart failed execution", "Re-instantiate stopped object", "Temporary stop",  "Rerun with parameter changes", "Change of external dependency", "Application deployment and upgrade"];
 
         vm.calendarView = 'month';
         vm.viewDate = new Date();
@@ -1025,10 +1030,7 @@
                         vm.paramObject.params.splice(index, 1);
                     }
                 });
-            $uibModalInstance.close('ok');
-        };
-        vm.submit = function () {
-             vm.error=false;
+            vm.error=false;
             if(vm.required){
                 if(vm.comments.comment) {
                     $uibModalInstance.close('ok');
@@ -1038,8 +1040,8 @@
             }else{
                 $uibModalInstance.close('ok');
             }
-
         };
+
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
@@ -1067,18 +1069,37 @@
 
     }
 
-    RuntimeEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", "toasty", "$timeout", 'gettextCatalog'];
-    function RuntimeEditorDialogCtrl($scope, $uibModalInstance, toasty, $timeout, gettextCatalog) {
+    RuntimeEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", "toasty", "$timeout", 'gettextCatalog','$window'];
+    function RuntimeEditorDialogCtrl($scope, $uibModalInstance, toasty, $timeout, gettextCatalog,$window) {
         var vm = $scope;
         var dom_parser = new DOMParser();
-        vm.ok = function () {
 
+        vm.logError=false;
+        if($window.localStorage.$SOS$AUDITLOG == 'true'){
+            vm.display =true;
+        }
+        if($window.sessionStorage.$SOS$FORCELOGING == 'true'){
+            vm.required =true;
+        }
+
+        vm.predefinedMessageList =  ["System Maintenance", "Repeat Execution", "Business Requirement", "Restart failed execution", "Re-instantiate stopped object", "Temporary stop",  "Rerun with parameter changes", "Change of external dependency", "Application deployment and upgrade"];
+
+        vm.ok = function () {
+            vm.logError=false;
             try {
                 var dom_document = dom_parser.parseFromString(vm.xml, "text/xml");
                 if (dom_document.documentElement.nodeName == "parsererror") {
                     throw new Error("Error at XML answer: " + dom_document.documentElement.firstChild.nodeValue);
                 } else {
+                    if(vm.required){
+                if(vm.comments.comment) {
                     $uibModalInstance.close('ok');
+                }else{
+                    vm.logError=true;
+                }
+            }else{
+                $uibModalInstance.close('ok');
+            }
                 }
             } catch (e) {
                 toasty.error({
@@ -1088,6 +1109,7 @@
                 });
             }
         };
+
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };

@@ -15,7 +15,7 @@
                </div>
            </div>
         </div>
-        <div class="form-group row hide" ng-class="{'show': required}">
+        <div class="form-group row hide" ng-class="{'show': display}">
             <label class="col-sm-4 " translate>label.selectComments</label>
             <div class=" col-sm-8">
                 <div>
@@ -30,29 +30,27 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row hide" ng-if="comments.radio=='predefined'" ng-class="{ 'has-error' : error,'show': required }">
-               <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
-               <div class="col-sm-6">
-                   <select class="form-control" ng-model="comments.comment" ng-change="error = false">
-                        <option value="" selected translate>label.selectPredefinedReason</option>
-                        <option value="System Maintenance">System Maintenance</option>
-                        <option value="Repeat Execution">Repeat Execution</option>
-                        <option value="Business Requirement">Business Requirement</option>
-                   </select>
-                   <div class="help-block text-danger" ng-if="error">
-                       <div translate>message.requiredError</div>
-                   </div>
-               </div>
+        <div class="form-group row hide" ng-if="comments.radio=='predefined'" ng-class="{ 'has-error' : error,'show': display }">
+            <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+            <div class="col-sm-6">
+                <select class="form-control" ng-model="comments.comment" ng-change="error = false">
+                    <option value="" selected translate>label.selectPredefinedReason</option>
+                    <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                </select>
+                <div class="help-block text-danger" ng-if="error">
+                    <div translate>message.requiredError</div>
+                </div>
             </div>
-        <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': required }">
-               <label class="col-sm-4 " translate>label.comment</label>
-               <div class=" col-sm-8">
-                    <textarea rows="3" class="form-control" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
-                   <div class="help-block text-danger" ng-if="error">
-                       <div translate>message.requiredError</div>
-                   </div>
-               </div>
+        </div>
+        <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': display }">
+            <label class="col-sm-4 " translate>label.comment</label>
+            <div class=" col-sm-8">
+                <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
+                <div class="help-block text-danger" ng-if="error">
+                    <div translate>message.requiredError</div>
+                </div>
             </div>
+        </div>
         <div class="row m-t-md">
             <div class="b-t"></div>
         </div>

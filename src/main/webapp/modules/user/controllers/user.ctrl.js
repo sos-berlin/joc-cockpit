@@ -7,11 +7,12 @@
 
     angular.module('app')
         .controller('LoginCtrl', LoginCtrl)
-        .controller('UserProfileCtrl', UserProfileCtrl);
+        .controller('UserProfileCtrl', UserProfileCtrl)
+        .controller('AuditLogCtrl', AuditLogCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog','AuditLogService'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog,AuditLogService) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
@@ -34,6 +35,13 @@
                     $rootScope.error = err.data.error.message;
 
                 $location.path('/error');
+            });
+
+        }
+        function getComments() {
+            AuditLogService.comments().then(function (result) {
+                $window.sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
+                console.log($window.sessionStorage.$SOS$FORCELOGING)
             });
         }
 
@@ -101,6 +109,7 @@
                             SOSAuth.setUser(response);
                             SOSAuth.save();
                             getSchedulerIds();
+                            getComments();
 
                         } else {
                             vm.loginError = 'message.loginError';
@@ -134,6 +143,7 @@
         vm.perferences.maxHistoryPerTask = parseInt($window.localStorage.$SOS$MAXHISTORYPERTASK);
         vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
         vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
+        vm.perferences.maxAuditLogPerObject = parseInt($window.localStorage.$SOS$MAXAUDITLOGPEROBJECT);
         vm.perferences.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
         vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
         vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
@@ -141,8 +151,8 @@
 
         vm.perferences.theme = $window.localStorage.$SOS$THEME;
         vm.perferences.theme = $window.localStorage.$SOS$THEME;
-        vm.perferences.forceLoging = $window.localStorage.$SOS$FORCELOGING === 'true';
-        if(vm.perferences.forceLoging){
+
+        if($window.sessionStorage.$SOS$FORCELOGING === 'true'){
             $window.localStorage.$SOS$AUDITLOG = true;
         }
         vm.perferences.auditLog = $window.localStorage.$SOS$AUDITLOG === 'true';
@@ -177,7 +187,6 @@
             $window.localStorage.$SOS$SHOWORDERS = vm.perferences.showOrders;
             $window.localStorage.$SOS$AUDITLOG = vm.perferences.auditLog;
             $window.localStorage.$SOS$MAXENTRYPERPAGE = vm.perferences.maxEntryPerPage;
-            $window.localStorage.$SOS$FORCELOGING = vm.perferences.forceLoging;
 
             if (isNaN(parseInt(vm.perferences.maxRecords))) {
                 vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
@@ -194,6 +203,12 @@
             } else {
                 $window.localStorage.$SOS$MAXHISTORYPERTASK = parseInt(vm.perferences.maxHistoryPerTask);
             }
+            if(isNaN(parseInt(vm.perferences.maxAuditLogPerObject))){
+                vm.perferences.maxAuditLogPerObject = parseInt($window.localStorage.$SOS$MAXAUDITLOGPEROBJECT);
+            }else{
+               $window.localStorage.$SOS$MAXAUDITLOGPEROBJECT  = parseInt(vm.perferences.maxAuditLogPerObject);
+            }
+
             if (isNaN(parseInt(vm.perferences.maxOrderPerJobchain))) {
                 vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
             } else {
@@ -448,5 +463,154 @@
         $scope.$on('$destroy', function () {
             watcher();
         });
+    }
+
+    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "$uibModal", "SavedFilter", "toasty", "$timeout", "gettextCatalog",
+        "orderByFilter", "CoreService", "$window"];
+    function AuditLogCtrl($scope, AuditLogService,  $uibModal, SavedFilter, toasty, $timeout, gettextCatalog,
+                         orderBy, CoreService, $window) {
+        var vm = $scope;
+        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
+        vm.adtLog = CoreService.getAuditLogTab();
+
+        vm.tree = {};
+        vm.expanding_property = {
+            field: "name"
+        };
+        vm.auditSearch = {};
+        var auditSearch = false;
+
+        vm.sortBy = function (propertyName) {
+            vm.adtLog.sortReverse = !vm.adtLog.sortReverse;
+            vm.adtLog.filter.sortBy = propertyName;
+        };
+
+        function setDateRange(filter) {
+
+            if (vm.adtLog.filter.date == 'all') {
+
+            } else if (vm.adtLog.filter.date == 'today') {
+                var from = new Date();
+                var to = new Date();
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setSeconds(0);
+                from.setMilliseconds(0);
+                to.setDate(to.getDate() + 1);
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setSeconds(0);
+                to.setMilliseconds(0);
+
+                filter.dateFrom = from;
+                filter.dateTo = to;
+            } else {
+                filter.dateFrom = vm.adtLog.filter.date;
+            }
+            return filter;
+        }
+
+
+        vm.filter_tree = {};
+        vm.load = function() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj = setDateRange(obj);
+            AuditLogService.getLogs(obj).then(function (result) {
+                vm.auditLogs = result.auditLog;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+        };
+        vm.load();
+
+        vm.search = function () {
+            var filter = {
+                jobschedulerId: $scope.schedulerIds.selected,
+                limit: parseInt($window.localStorage.$SOS$MAXRECORDS)
+            };
+
+            vm.order.filter.historyStates = '';
+            vm.order.filter.date = '';
+            if (vm.jobChainSearch.jobChain) {
+                filter.orders = [];
+                if (vm.jobChainSearch.orderIds) {
+                    var orderIds = vm.jobChainSearch.orderIds.split(',');
+                    angular.forEach(orderIds, function (value) {
+                        filter.orders.push({jobChain: vm.jobChainSearch.jobChain, orderId: value})
+                    });
+                } else {
+                    filter.orders.push({jobChain: vm.jobChainSearch.jobChain})
+                }
+            }
+            if (vm.jobChainSearch.states && vm.jobChainSearch.states.length > 0) {
+                filter.historyStates = vm.jobChainSearch.states;
+
+            }
+            if (vm.jobChainSearch.from) {
+                var fromDate = new Date(vm.jobChainSearch.from);
+                if (vm.jobChainSearch.fromTime) {
+
+                    fromDate.setHours(vm.jobChainSearch.fromTime.getHours());
+                    fromDate.setMinutes(vm.jobChainSearch.fromTime.getMinutes());
+                    fromDate.setSeconds(vm.jobChainSearch.fromTime.getSeconds());
+                    fromDate.setMilliseconds(0);
+                } else {
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    fromDate.setSeconds(0);
+                    fromDate.setMilliseconds(0);
+                }
+                filter.dateFrom = fromDate;
+            }
+            if (vm.jobChainSearch.to) {
+                var toDate = new Date(vm.jobChainSearch.to);
+                if (vm.jobChainSearch.toTime) {
+
+                    toDate.setHours(vm.jobChainSearch.toTime.getHours());
+                    toDate.setMinutes(vm.jobChainSearch.toTime.getMinutes());
+                    toDate.setSeconds(vm.jobChainSearch.toTime.getSeconds());
+                    toDate.setMilliseconds(0);
+                } else {
+                    toDate.setHours(0);
+                    toDate.setMinutes(0);
+                    toDate.setSeconds(0);
+                    toDate.setMilliseconds(0);
+                }
+                filter.dateTo = toDate;
+            }
+        AuditLogService.getLogs(obj).then(function (result) {
+            vm.auditLogs = result.auditLog;
+                vm.loading = false;
+            }, function () {
+                vm.loading = false;
+
+            });
+
+        };
+
+        vm.cancel = function () {
+            if (!vm.adtLog.filter.date) {
+                vm.adtLog.filter.date = 'today';
+            }
+            vm.showSearchPanel = false;
+            vm.auditSearch = {};
+            auditSearch = false;
+
+        };
+
+        vm.exportToExcel = function () {
+            $('#exportToExcelBtn').attr("disabled", true);
+            $('#auditLogTableId').table2excel({
+                exclude: ".noExl",
+                filename: "jobscheduler-audit-log",
+                fileext: ".xls",
+                exclude_img: false,
+                exclude_links: false,
+                exclude_inputs: false
+            });
+            $('#exportToExcelBtn').attr("disabled", false);
+        };
     }
 })();

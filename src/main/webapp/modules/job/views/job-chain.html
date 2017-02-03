@@ -89,7 +89,6 @@
                          <toggle-view></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
-                        <!--<button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><span translate>button.reset</span></button>-->
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped"
                                 ng-class="{'show-block':permission.JobChain.stop}" ng-click="stopAll()"><i
                                 class="fa fa-stop"></i> <span translate>button.stop</span></button>
@@ -181,7 +180,6 @@
                                                            ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                            ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
                                                 <!--<a class="dropdown-item" ng-click="copyLinkToObject(jobChain)" translate>button.copyLinkToObject</a>-->
-                                             <!--<a class="dropdown-item" ng-click="showAuditLogs(jobChain)" translate>button.showAuditLog</a>-->
                                             </div>
                                         </div>
                                     </div>
@@ -376,29 +374,25 @@
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                             <a ng-click="viewFlowDiagram(jobChain)" class="dropdown-item" ng-class="{'disable-link':(!jobChain.numOfNodes || jobChain.numOfNodes == 0)}" translate>button.showDetailView</a>
                                             <a ng-click="viewOrders(jobChain)" ng-class="{'disable-link':(!jobChain.numOfOrders || jobChain.numOfOrders == 0)}" class="dropdown-item" translate>button.showOrders</a>
-                                            <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)"
-                                               class="hide dropdown-item"
+                                            <a ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)" class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                translate>button.showConfiguration</a>
-                                            <a class="hide dropdown-item"
-                                               ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
+                                            <a class="hide dropdown-item" ng-class="{show:permission.JobChain.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                             <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="showCalendar(jobChain);" translate>button.showCalendar</a>
-                                            <a class="hide dropdown-item bg-hover-color"
-                                               ng-if="jobChain.state._text != 'STOPPED'"
+                                            <a class="hide dropdown-item bg-hover-color" ng-if="jobChain.state._text != 'STOPPED'"
                                                ng-class="{show:permission.JobChain.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="stopJobChain(jobChain)" translate>button.stopJobChain</a>
-                                            <a class="hide dropdown-item"
-                                               ng-if="jobChain.state._text == 'STOPPED'"
+                                            <a class="hide dropdown-item" ng-if="jobChain.state._text == 'STOPPED'"
                                                ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
                                             <a class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.view.history, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="showHistory(jobChain)" translate>button.showHistory</a>
                                             <!--<a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain.path)" translate>button.copyLinkToObject</a>-->
-                                            <!--<a class="dropdown-item" ng-click="showAuditLogs(jobChain)" translate>button.showAuditLog</a>-->
+                                            <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(jobChain)" translate>button.showAuditLog</a>
                                         </div>
                                     </div>
                                 </td>
@@ -417,7 +411,6 @@
                                                 <th translate>label.job</th>
                                                 <th translate>label.jobStatus</th>
                                                 <th translate>label.nodeStatus</th>
-
                                             </tr>
                                             </thead>
                                             <tbody >
@@ -638,12 +631,15 @@
                                 <div class="b-b">
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item">
-                                            <a class="nav-link active" href data-toggle="tab" data-target="#tab2" translate>label.history</a>
+                                            <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showHistory(showHistoryPanel)" href data-toggle="tab" data-target="#tab1" translate>label.history</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showHistoryPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="tab-content p-a">
-                                    <div class="tab-pane animated fadeIn active" id="tab2">
+                                    <div class="tab-pane animated fadeIn" ng-class="{active: !isAuditLog}" id="tab1">
                                         <div class="row">
                                             <div class="table-responsive" resizable r-directions="['bottom']"
                                                  r-height="250">
@@ -675,6 +671,41 @@
                                                 <div ng-if="historys.length==0"
                                                      class="text-center m-t-md h6 text-uppercase" translate>
                                                     message.noJobChainHistoryFound
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}"  id="tab2">
+                                        <div class="row">
+                                            <div class="table-responsive" resizable r-directions="['bottom']"
+                                                 r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.created</th>
+                                                        <th translate>label.account</th>
+                                                        <th translate>label.request</th>
+                                                        <th translate>label.parameters</th>
+                                                        <th translate>label.jobChain</th>
+                                                        <th translate>label.order</th>
+                                                        <th translate>label.comment</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="auditLog in auditLogs">
+                                                        <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                                                        <td><span ng-bind="auditLog.account"></span></td>
+                                                        <td><span ng-bind="auditLog.request"></span></td>
+                                                        <td><span ng-bind="auditLog.parameters"></span></td>
+                                                        <td><span ng-bind="auditLog.jobChain"></span></td>
+                                                        <td><span ng-bind="auditLog.orderId"></span></td>
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div ng-if="auditLogs.length==0"
+                                                     class="text-center m-t-md h6 text-uppercase" translate>
+                                                    message.noAuditLogFound
                                                 </div>
                                             </div>
                                         </div>

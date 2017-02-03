@@ -824,8 +824,6 @@
   "label.writeComment": "コメント書込み",
   "label.comment": "コメント",
   "label.selectComment": "コメント選択",
-  "label.selectPredefined": "事前登録選択",
-  "label.enterNew": "新規入力",
   "label.selectComments": "コメントオプション選択",
   "label.operation": "操作",
   "label.selectPredefinedReason": "理由を選択",
@@ -855,5 +853,15 @@
   "button.customerTicketSystem": "契約サポート",
   "label.maxEntryPerPage": "Max. Entry Per Page",
   "button.showHistory": "Show History",
-  "label.maxAvailablePlanedDate": "Max. Available Planed Date"  
+  "label.maxAvailablePlanedDate": "Max. Available Planed Date",
+  "label.created": "Created",
+  "label.request": "Request",
+  "label.parameters": "Parameters",
+  "label.auditLog": "Audit Log",
+  "label.auditLogsFound": "Log entries found",
+  "label.auditLogFound": "Log entry found",
+  "label.maxNumberOfAuditLogPerObject": "Max. number of Audit Log entries per object",
+  "button.showAuditLog": "Show Audit Log",
+  "breadcrumb.auditLog": "Audit Log",
+  "message.noAuditLogFound": "no Audit Log entries found"
 }

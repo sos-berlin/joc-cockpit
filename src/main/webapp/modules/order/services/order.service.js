@@ -68,17 +68,7 @@
 
                 return deferred.promise;
             },
-            getAuditLogs: function (filter) {
 
-                var deferred = $q.defer();
-                var Orders = $resource('audit_log');
-                Orders.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             getSnapshot: function (filter) {
                 var deferred = $q.defer();
 

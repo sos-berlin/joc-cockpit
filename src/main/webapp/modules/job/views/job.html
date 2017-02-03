@@ -124,16 +124,15 @@
                                             <i class="text fa fa-ellipsis-h"></i></a>
                                         <div class="dropdown-menu dropdown-ac dropdown-more" >
                                             <a ng-click="showConfiguration('job',job.path,job.name)" class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
-                                                <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTask</a>
-                                                <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTaskat</a>
-                                                <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}" ng-if="permission.Job.setRunTime" translate>button.setRunTime</a>
-                                                <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
-                                                <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                                <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
-                                                <a class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status" ng-click="viewCalendar(job)" translate>button.showCalendar</a>
-                                         <a class="dropdown-item" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
+                                            <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTask</a>
+                                            <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTaskat</a>
+                                            <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}" ng-if="permission.Job.setRunTime" translate>button.setRunTime</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
+                                            <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
+                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
+                                            <a class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status" ng-click="viewCalendar(job)" translate>button.showCalendar</a>
                                         </div>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-sm" >
@@ -328,7 +327,7 @@
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
                                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                                    <a ng-click="showConfiguration('job',job.path,job.name)"  class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
+                                                    <a class="hide dropdown-item"ng-click="showConfiguration('job',job.path,job.name)" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTask</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="job.isOrderJob!=true  && permission.Job.start" translate>button.startTaskat</a>
                                                     <a class="dropdown-item" ng-click="setRunTime(job)" ng-show="permission.Job.setRunTime" ng-class="{'disable-link':job.configurationStatus.severity==2}" translate>button.setRunTime</a>
@@ -337,9 +336,9 @@
                                                     <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
                                                     <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
                                                     <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
-                                                    <a href class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status"
+                                                    <a class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(job)" translate>button.showCalendar</a>
-                                                    <!--<a class="dropdown-item" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>-->
+                                                    <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -409,24 +408,27 @@
                              <div class="box-body p-t b-t" >
                                 <div class="b-b">
                                   <ul class="nav nav-tabs">
-                                    <li class="nav-item" >
-                                      <a class="nav-link" ng-class="{active: !isRunning}" href data-toggle="tab" data-target="#tab1" translate>label.taskHistory</a>
-                                    </li>
-                                    <li class="nav-item" >
-                                      <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>label.taskQueue</a>
-                                    </li>
-                                    <li class="nav-item" ng-if="showTaskPanel.isOrderJob==true">
-                                      <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>label.orderQueue</a>
-                                    </li>
-                                    <li class="nav-item" >
-                                      <a class="nav-link" ng-class="{active: isRunning}" href data-toggle="tab" data-target="#tab5" translate>label.runningTask</a>
-                                    </li>
+                                      <li class="nav-item" >
+                                          <a class="nav-link" ng-class="{active: !isRunning}" ng-click="loadHistory(showTaskPanel)" href data-toggle="tab" data-target="#tab1" translate>label.taskHistory</a>
+                                      </li>
+                                      <li class="nav-item" >
+                                          <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>label.taskQueue</a>
+                                      </li>
+                                      <li class="nav-item" ng-if="showTaskPanel.isOrderJob==true">
+                                          <a class="nav-link" href data-toggle="tab" data-target="#tab3" translate>label.orderQueue</a>
+                                      </li>
+                                      <li class="nav-item" >
+                                          <a class="nav-link" ng-class="{active: isRunning}" href data-toggle="tab" data-target="#tab5" translate>label.runningTask</a>
+                                      </li>
+                                      <li class="nav-item">
+                                          <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="loadAuditLogs(showTaskPanel)" href data-toggle="tab" data-target="#tab6" translate>label.auditLog</a>
+                                      </li>
                                   </ul>
                                 </div>
                                  <div class="tab-content p-a" >
                                      <div class="tab-pane animated fadeIn " ng-class="{active: !isRunning}" id="tab1" >
                                          <div class="row">
-                                             <div class="table-responsive">
+                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
@@ -462,7 +464,7 @@
                                      </div>
                                      <div class="tab-pane animated fadeIn " id="tab2">
                                          <div class="row">
-                                            <div class="table-responsive">
+                                            <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
@@ -487,7 +489,7 @@
                                      </div>
                                      <div class="tab-pane animated fadeIn " id="tab3">
                                          <div class="row">
-                                             <div class="table-responsive">
+                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
@@ -518,7 +520,7 @@
                                      </div>
                                      <div class="tab-pane animated fadeIn" id="tab5">
                                          <div class="row">
-                                             <div class="table-responsive">
+                                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
@@ -563,6 +565,38 @@
                                             </div>
                                          </div>
                                      </div>
+                                     <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}"  id="tab6">
+                                        <div class="row">
+                                            <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.created</th>
+                                                        <th translate>label.account</th>
+                                                        <th translate>label.request</th>
+                                                        <th translate>label.parameters</th>
+                                                        <th translate>label.job</th>
+                                                        <th translate>label.comment</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="auditLog in auditLogs">
+                                                        <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                                                        <td><span ng-bind="auditLog.account"></span></td>
+                                                        <td><span ng-bind="auditLog.request"></span></td>
+                                                        <td><span ng-bind="auditLog.parameters"></span></td>
+                                                        <td><span ng-bind="auditLog.job"></span></td>
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div ng-if="auditLogs.length==0"
+                                                     class="text-center m-t-md h6 text-uppercase" translate>
+                                                    message.noAuditLogFound
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

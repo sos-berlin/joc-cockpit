@@ -34,6 +34,7 @@
         vm.expanding_propertyA = {
             field: "name"
         };
+
         vm.expanding_property1 = {
             field: "name"
         };
@@ -1021,6 +1022,8 @@
         vm.substitute = function (schedule) {
             vm.sch = {};
             vm.sch.folder = '/';
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
 
             vm.sch._valid_from = moment().set({
                 hour: 0,
@@ -1090,7 +1093,9 @@
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
-
+            if (vm.comments.comment) {
+                schedules.comment = vm.comments.comment;
+            }
             ScheduleService.setRunTime(schedules).then(function (result) {
                 vm.schedules = result.schedules;
             }, function () {
@@ -1100,7 +1105,8 @@
         };
 
         vm.editSchedule = function (schedule) {
-
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             vm.sch = {};
             vm.schedule = schedule;
             vm.sch._title = schedule.title;
@@ -1870,7 +1876,8 @@
         });
 
         vm.editSchedule = function () {
-
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             vm.sch = {};
 
             vm.sch._title = vm.schedule.title;
@@ -1905,7 +1912,8 @@
         vm.substitute = function () {
             vm.sch = {};
             vm.sch.folder = '/';
-
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             vm.sch._valid_from = moment().set({
                 hour: 0,
                 minute: 0,

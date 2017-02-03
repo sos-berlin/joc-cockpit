@@ -335,7 +335,14 @@
                     label: '{{ \'breadcrumb.history\' | translate}}'
                 }
             })
-
+            .state('app.auditLog', {
+                url: '/auditLog',
+                templateUrl: 'modules/user/views/audit-log.html',
+                controller: 'AuditLogCtrl',
+                ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.auditLog\' | translate}}'
+                }
+            })
             .state('app.profile', {
                 url: '/user/profile',
                 templateUrl: 'modules/user/views/profile.html',

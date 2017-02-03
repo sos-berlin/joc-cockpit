@@ -8,7 +8,8 @@
     angular.module('app')
         .service('SOSAuth', SOSAuth)
         .service('Base64', Base64)
-        .service('UserService', UserService);
+        .service('UserService', UserService)
+        .service('AuditLogService', AuditLogService);
 
     SOSAuth.$inject = ['$window'];
     function SOSAuth($window) {
@@ -270,6 +271,39 @@
                     deferred.reject(error);
                 });
 
+                return deferred.promise;
+            }
+        }
+    }
+
+    AuditLogService.$inject = ["$resource", "$q"];
+    function AuditLogService($resource, $q) {
+
+        return {
+
+            /**
+             * audit log
+             */
+            getLogs: function (filter) {
+
+                var deferred = $q.defer();
+                var Logs = $resource('audit_log');
+                Logs.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            comments: function () {
+
+                var deferred = $q.defer();
+                var Logs = $resource('audit_log/comments');
+                Logs.save({}, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
                 return deferred.promise;
             }
         }

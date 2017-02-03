@@ -14,7 +14,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link text-white" data-toggle="dropdown">
               <span class="text-left p-l-xs">
-                    <i class="fa fa-lg fa-question-circle-o" style="font-size: 20px"></i>
+                    <i class="fa fa-lg fa-question-circle-o" style="font-size: 20px;padding-top: 22px"></i>
               </span>
             </a>
             <ul class="dropdown-menu pull-right dropdown-ac1">
@@ -63,7 +63,7 @@
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link text-white" data-toggle="dropdown" ng-click="updateAllEvent(allSessionEvent)">
-                <span class="text-left p-l-xs">
+                <span class="text-left p-l-xs p-r-xs">
                    <span class="label label-sm up notification" ng-if="allSessionEvent.eventUnReadCount>0"
                          ng-bind="allSessionEvent.eventUnReadCount"></span>
                     <i class="fa fa-lg fa-bell-o"></i>
@@ -178,13 +178,6 @@
 
     <!-- navbar collapse -->
     <div class="collapse navbar-toggleable-custom" id="navbar1">
-        <!-- search form -->
-<!--        <form class="navbar-form form-inline pull-right navbar-item m-r" role="search">
-            <div class="l-h">
-                <input type="search" ng-model-options="{ debounce: 100 }" ng-model="filterString" placeholder="{{'placeholder.search'| translate}}">
-            </div>
-        </form>-->
-        <!-- / search form -->
         <!-- link -->
         <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
             <li class="nav-item">
@@ -245,6 +238,14 @@
                     <span class="nav-text">
                         <i class="fa fa-history text-white history-icon"></i>
                         <span class="font11 text-white text-u-c _600" translate>label.history</span>
+                    </span>
+                </a>
+            </li>
+            <li class="nav-item" ng-if="permission.AuditLog.view.status">
+                <a class="nav-link" ui-sref="app.auditLog" ui-sref-active="active">
+                    <span class="nav-text">
+                        <i class="fa fa-file-text-o text-white history-icon"></i>
+                        <span class="font11 text-white text-u-c _600" translate>label.auditLog</span>
                     </span>
                 </a>
             </li>

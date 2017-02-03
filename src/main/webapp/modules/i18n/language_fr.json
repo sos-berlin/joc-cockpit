@@ -824,8 +824,6 @@
   "label.writeComment": "Ecrire un Commentaire",
   "label.comment": "Commentaire",
   "label.selectComment": "Sélectionner un Commentaire",
-  "label.selectPredefined": "Prédéfini",
-  "label.enterNew": "Entrer un nouveau Commentaire",
   "label.selectComments": "Sélectionner l'option pour les Commentaires",
   "label.operation": "Opération",
   "label.selectPredefinedReason": "Sélectionner une raison prédéfinie",
@@ -855,5 +853,15 @@
   "button.customerTicketSystem": "Système de Ticket Client",
   "label.maxEntryPerPage": "Nombre max. des entrées par page",
   "button.showHistory": "Visualiser l'Historique",
-  "label.maxAvailablePlanedDate": "Date max. planifiée"
+  "label.maxAvailablePlanedDate": "Date max. planifiée",
+  "label.created": "Created",
+  "label.request": "Request",
+  "label.parameters": "Parameters",
+  "label.auditLog": "Audit Log",
+  "label.auditLogsFound": "Log entries found",
+  "label.auditLogFound": "Log entry found",
+  "label.maxNumberOfAuditLogPerObject": "Max. number of Audit Log entries per object",
+  "button.showAuditLog": "Show Audit Log",
+  "breadcrumb.auditLog": "Audit Log",
+  "message.noAuditLogFound": "no Audit Log entries found"
 }

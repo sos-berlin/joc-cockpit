@@ -14,6 +14,44 @@
 
             <div ng-hide="editor.hidePervious || editor.nextPage">
                 <div class="row">
+                    <div class="col-md-12 hide" ng-class="{'show': display}">
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.selectComments</label>
+                            <div class=" col-sm-9">
+                                <div>
+                                    <label class="md-check w w-md">
+                                        <input type="radio" name="radio1" ng-model="comments.radio" value="predefined">
+                                        <i class="primary"></i> <span translate>label.predefined</span>
+                                    </label>
+                                    <label class="md-check  w">
+                                        <input type="radio" name="radio1" ng-model="comments.radio" value="new">
+                                        <i class="primary"></i> <span translate>label.individual</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-if="comments.radio=='predefined'" ng-class="{'has-error' : logError}">
+                           <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
+                           <div class="col-sm-9">
+                               <select class="form-control" ng-model="comments.comment" ng-change="logError = false">
+                                    <option value="" selected translate>label.selectPredefinedReason</option>
+                                    <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                               </select>
+                               <div class="help-block text-danger" ng-if="logError">
+                                   <div translate>message.requiredError</div>
+                               </div>
+                           </div>
+                        </div>
+                        <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
+                           <label class="col-sm-3 " translate>label.comment</label>
+                           <div class=" col-sm-9">
+                                <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="logError = false"></textarea>
+                               <div class="help-block text-danger" ng-if="logError">
+                                   <div translate>message.requiredError</div>
+                               </div>
+                           </div>
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <button type="button" class="btn btn-sm pull-right btn-grey m-b" ng-click="createNewRunTime();" translate>button.addNewRuntime
                         </button>

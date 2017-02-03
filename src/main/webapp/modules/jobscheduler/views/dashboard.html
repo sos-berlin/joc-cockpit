@@ -55,16 +55,12 @@
                                     </li>
                                 </ul>
                             </div>
-
-
-                                <div style="overflow: auto;width: 100%">
-
+                            <div style="overflow: auto;width: 100%">
                                 <nvd3 options="barOptions"
                                         data="agentStatusChart"
                                         on-ready="barChartReadyCallback">
-
                                 </nvd3>
-</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +72,7 @@
                             <div class="box-header b-b">
                                 <h3 translate>label.masterClusterStatus</h3>
                             </div>
-                            <div class="box-tool" ng-if="selectedJobScheduler.clusterType._type != 'STANDALONE'">
+                            <div class="box-tool hide" ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
                                 <div class="btn-group dropdown pull-right">
                                     <button class="btn btn-sm grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
@@ -90,12 +86,6 @@
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()" permission="permission"
                                                    on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
                             </div>
-                            <script>
-    $(document).ready(function(){
-    $('[data-toggle="popover"]').popover();
-});
-
-</script>
                         </div>
                     </div>
                 </div>
@@ -165,22 +155,16 @@
                 <div class="box">
                     <div class="box-header b-b">
                         <h3 class="m-t-xs" translate>label.ordersSummary</h3>
-
                     </div>
                     <div class="row m-b-sm box-tool ">
-
                         <div class="col-md-12 container-fluid">
-
                             <div class="pull-right">
                                 <div class="btn-group m-l-sm" style="padding-right:5px">
-
                                     <div class="btn-group dropdown ">
                                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
                                                 data-toggle="dropdown">
-
                                             <span>  {{dashboardFilters.filter.label | translate}}</span>
                                         </button>
-
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                              <a class="dropdown-item" ng-model="dashboardFilters.filter.orderRange"
                                                ng-click="getOrderSummary();dashboardFilters.filter.label='button.today'"
@@ -214,7 +198,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="box-body">
                         <table style="width: 100%">
                             <tr class="text-center">
@@ -270,8 +253,10 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
-
-
+<script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();
+    });
+</script>

@@ -20,7 +20,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="order in savedIgnoreList.orders" ng-if="historyFilters.type != 'job'">
-                                <td>{{order}}</td>
+                                <td>{{order.jobChain}}, {{order.orderId}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeOrderIgnoreList(order)" translate>button.remove</a>
                                 </td>
