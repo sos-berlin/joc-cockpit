@@ -8,14 +8,14 @@
         .controller('JobChainCtrl', JobChainCtrl)
         .controller('JobCtrl', JobCtrl);
 
-    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
-        "toasty", "gettextCatalog", "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window","AuditLogService"];
-    function JobChainCtrl($scope, JobChainService, OrderService, JobService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
-                          toasty, gettextCatalog, DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window,AuditLogService) {
+    JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
+        "toasty", "gettextCatalog", "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService"];
+    function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
+                          toasty, gettextCatalog, DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService) {
 
         var vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
-        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
+        vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
         vm.object = {};
 
@@ -254,7 +254,7 @@
                 }
             }
 
-            if ($window.localStorage.$SOS$SHOWORDERS == true || $window.localStorage.$SOS$SHOWORDERS == 'true') {
+            if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
 
@@ -263,7 +263,7 @@
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(data.jobChains, function (jobChains) {
-                        if ($window.localStorage.$SOS$SHOWORDERS == true || $window.localStorage.$SOS$SHOWORDERS == 'true')
+                        if (vm.userPreferences.showOrders)
                             jobChains.show = true;
 
                         for (var i = 0; i < res.jobChains.length; i++) {
@@ -284,7 +284,7 @@
 
                 } else {
                     angular.forEach(res.jobChains, function (jobChainData) {
-                        if ($window.localStorage.$SOS$SHOWORDERS == true || $window.localStorage.$SOS$SHOWORDERS == 'true')
+                        if (vm.userPreferences.showOrders)
                             jobChainData.show = true;
                         var flag1 = true;
                         if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
@@ -652,14 +652,14 @@
                     obj.states.push(vm.jobChainFilters.filter.state);
                 }
             }
-            if ($window.localStorage.$SOS$SHOWORDERS == true || $window.localStorage.$SOS$SHOWORDERS == 'true') {
+            if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
             JobChainService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.jobChains && vm.jobChains.length > 0) {
                     angular.forEach(vm.jobChains, function (jobChains) {
-                        if ($window.localStorage.$SOS$SHOWORDERS == true || $window.localStorage.$SOS$SHOWORDERS == 'true')
+                        if (vm.userPreferences.showOrders)
                             jobChains.show = true;
                         for (var i = 0; i < res.jobChains.length; i++) {
 
@@ -681,7 +681,7 @@
                     });
                 } else {
                     angular.forEach(res.jobChains, function (jobChainData) {
-                        if ($window.localStorage.$SOS$SHOWORDERS == true || $window.localStorage.$SOS$SHOWORDERS == 'true')
+                        if (vm.userPreferences.showOrders)
                             jobChainData.show = true;
                         var flag1 = true;
                         if (selectedFiltered && selectedFiltered.agentName && jobChains.processClass) {
@@ -770,7 +770,7 @@
             $location.path('/jobChainDetails/overview').search({path: jobChain.path});
         };
 
-
+        vm.maxPlannedTime;
         vm.showCalendar = function (jobChain) {
             vm.maxPlannedTime = undefined;
             vm._jobChain = jobChain;
@@ -786,10 +786,10 @@
                     var planData = {
                         plannedStartTime: data.plannedStartTime,
                         expectedEndTime: data.expectedEndTime,
-                        orderId:data.orderId
+                        orderId: data.orderId
                     };
                     vm.planItems.push(planData);
-                      if(!vm.maxPlannedTime || new Date(data.plannedStartTime)>vm.maxPlannedTime){
+                    if (!vm.maxPlannedTime || new Date(data.plannedStartTime) > vm.maxPlannedTime) {
                         vm.maxPlannedTime = new Date(data.plannedStartTime);
                     }
                 });
@@ -908,7 +908,7 @@
                 }).then(function (res) {
                     jobChain = angular.merge(jobChain, res.jobChain);
                     angular.forEach(jobChain.nodes, function (val, index) {
-                        if (val.job && val.job.state && val.job.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS === 'true') {
+                        if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
 
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
@@ -969,7 +969,8 @@
             jobChains.jobChains = [];
             jobChains.jobschedulerId = vm.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: jobChain.path});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
@@ -982,8 +983,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobChains.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobChains.comment = vm.comments.comment;
                     JobChainService.stop(jobChains);
                 }, function () {
 
@@ -999,7 +1000,7 @@
             jobChains.jobChains = [];
             jobChains.jobschedulerId = vm.schedulerIds.selected;
             jobChains.jobChains.push({jobChain: jobChain.path});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
@@ -1012,8 +1013,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobChains.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobChains.comment = vm.comments.comment;
                     JobChainService.unstop(jobChains);
                 }, function () {
 
@@ -1030,7 +1031,7 @@
             angular.forEach(vm.object.jobChains, function (value) {
                 jobChains.jobChains.push({jobChain: value.path});
             });
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
@@ -1040,7 +1041,7 @@
                     if (index == vm.object.jobChains.length - 1) {
                         vm.comments.name = vm.comments.name + ' ' + value.path;
                     } else {
-                        vm.comments.name =  value.path +', '+vm.comments.name;
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -1050,8 +1051,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobChains.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobChains.comment = vm.comments.comment;
                     JobChainService.stop(jobChains);
                 }, function () {
 
@@ -1070,7 +1071,7 @@
             angular.forEach(vm.object.jobChains, function (value) {
                 jobChains.jobChains.push({jobChain: value.path});
             });
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
@@ -1080,7 +1081,7 @@
                     if (index == vm.object.jobChains.length - 1) {
                         vm.comments.name = vm.comments.name + ' ' + value.path;
                     } else {
-                        vm.comments.name = value.path + ', '+ vm.comments.name ;
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -1090,8 +1091,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobChains.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobChains.comment = vm.comments.comment;
                     JobChainService.unstop(jobChains);
                 }, function () {
 
@@ -1107,7 +1108,7 @@
             nodes.nodes = [];
             nodes.jobschedulerId = $scope.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
@@ -1121,8 +1122,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    nodes.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        nodes.comment = vm.comments.comment;
                     JobService.stopNode(nodes);
                 }, function () {
                 });
@@ -1137,7 +1138,7 @@
             nodes.nodes = [];
             nodes.jobschedulerId = $scope.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
@@ -1151,8 +1152,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    nodes.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        nodes.comment = vm.comments.comment;
                     JobService.activateNode(nodes);
                 }, function () {
 
@@ -1168,7 +1169,7 @@
             nodes.nodes = [];
             nodes.jobschedulerId = $scope.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
@@ -1182,8 +1183,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    nodes.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        nodes.comment = vm.comments.comment;
                     JobService.skipNode(nodes);
                 }, function () {
 
@@ -1199,7 +1200,7 @@
             nodes.nodes = [];
             nodes.jobschedulerId = $scope.schedulerIds.selected;
             nodes.nodes.push({jobChain: jobChain.path, node: data.name});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
@@ -1213,8 +1214,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    nodes.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        nodes.comment = vm.comments.comment;
                     JobService.activateNode(nodes);
                 }, function () {
 
@@ -1230,7 +1231,7 @@
             jobs.jobs = [];
             jobs.jobschedulerId = $scope.schedulerIds.selected;
             jobs.jobs.push({job: data.job.path});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = data.job.path;
@@ -1244,8 +1245,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.stop(jobs);
                 }, function () {
 
@@ -1261,7 +1262,7 @@
             jobs.jobs = [];
             jobs.jobschedulerId = $scope.schedulerIds.selected;
             jobs.jobs.push({job: data.job.path});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = data.job.path;
@@ -1275,8 +1276,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.unstop(jobs);
                 }, function () {
 
@@ -1294,8 +1295,8 @@
             var taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path,taskIds:taskIds});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
@@ -1326,8 +1327,8 @@
             var taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path,taskIds:taskIds});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
@@ -1341,8 +1342,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.kill(jobs);
                 }, function () {
 
@@ -1359,8 +1360,8 @@
             var taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path,taskIds:taskIds});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
@@ -1374,8 +1375,8 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.terminate(jobs);
                 }, function () {
 
@@ -1401,9 +1402,9 @@
                 var taskIds = [];
 
                 taskIds.push({taskId: task.taskId});
-                jobs.jobs.push({job: path,taskIds:taskIds});
+                jobs.jobs.push({job: path, taskIds: taskIds});
             }
-             if (vm.comments.comment) {
+            if (vm.comments.comment) {
                 jobs.comment = vm.comments.comment;
             }
             jobs.timeout = vm.timeout;
@@ -1707,7 +1708,7 @@
             }).then(function (res) {
                 jobChain = angular.merge(jobChain, res.jobChain);
                 angular.forEach(jobChain.nodes, function (val, index) {
-                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS === 'true') {
+                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
 
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
@@ -1749,7 +1750,7 @@
         }
 
         function loadAuditLogs(obj) {
-            obj.limit = parseInt($window.localStorage.$SOS$MAXAUDITLOGPEROBJECT);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -1847,7 +1848,7 @@
                                                 res.jobChain.show = angular.copy(value2.show);
                                                 vm.allJobChains[index] = res.jobChain;
                                                 angular.forEach(res.jobChain.nodes, function (val, index) {
-                                                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS === 'true') {
+                                                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
 
                                                         JobService.get({
                                                             jobschedulerId: vm.schedulerIds.selected,
@@ -1986,15 +1987,15 @@
         });
     }
 
-    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
-        "gettextCatalog", "$state", "CoreService", "$timeout", "$window", "DailyPlanService","AuditLogService"];
-    function JobCtrl($scope, $rootScope, JobService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
-                     gettextCatalog, $state, CoreService, $timeout, $window, DailyPlanService,AuditLogService) {
+    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
+        "gettextCatalog", "$state", "CoreService", "$timeout", "$window", "DailyPlanService", "AuditLogService"];
+    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
+                     gettextCatalog, $state, CoreService, $timeout, $window, DailyPlanService, AuditLogService) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
-        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
+        vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
-        vm.showTask = $window.localStorage.$SOS$SHOWTASKS == 'true';
+        vm.showTask = vm.userPreferences.showTasks;
 
         $rootScope.$on('event-jobs', function (event, values) {
             $rootScope.job_expand_to = values;
@@ -2168,7 +2169,7 @@
                         value.path1 = data.path;
 
 
-                        if (value.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS === 'true') {
+                        if (value.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
 
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
@@ -2267,7 +2268,7 @@
                         if (value.path == value1.path) {
                             flag = false;
                         }
-                        if (flag && value1.state._text == 'RUNNING' && $window.localStorage.$SOS$SHOWTASKS === 'true') {
+                        if (flag && value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: value1.path}]
@@ -2971,7 +2972,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
-            obj.limit = parseInt($window.localStorage.$SOS$MAXAUDITLOGPEROBJECT);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
@@ -2985,7 +2986,7 @@
                     return;
                 }
             }
-            vm.isAuditLog =false;
+            vm.isAuditLog = false;
 
             vm.showTaskPanel = value;
 
@@ -3027,7 +3028,7 @@
         vm.showAuditLogs = function (value) {
 
             vm.showTaskPanel = value;
-            vm.isAuditLog =true;
+            vm.isAuditLog = true;
 
             vm.loadAuditLogs(value);
             if (value.numOfQueuedTasks > 0 || value.numOfRunningTasks > 0) {
@@ -3065,7 +3066,7 @@
         function getQueueOrders(value) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.job= value.path;
+            obj.job = value.path;
             JobService.getQueueOrders(obj).then(function (res) {
                 vm.queueOrders = res.job;
             }, function (err) {
@@ -3100,7 +3101,7 @@
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
@@ -3114,23 +3115,25 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.stop(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 JobService.stop(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.unstop = function (job) {
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
@@ -3144,23 +3147,25 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.unstop(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 JobService.unstop(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.start = function (job) {
             var jobs = {};
             jobs.jobs = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.jobs.push({job: job.path, at: 'now'});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
@@ -3174,16 +3179,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.start(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 JobService.start(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
 
@@ -3233,6 +3240,7 @@
             });
             modalInstance.result.then(function () {
                 startAt(vm.job, vm.paramObject);
+                vm.reset();
             }, function () {
                 vm.reset();
             });
@@ -3246,7 +3254,7 @@
             angular.forEach(vm.object.jobs, function (value) {
                 jobs.jobs.push({job: value.path});
             });
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
@@ -3256,7 +3264,7 @@
                     if (index == vm.object.jobs.length - 1) {
                         vm.comments.name = vm.comments.name + ' ' + value.path;
                     } else {
-                        vm.comments.name = value.path+ ', '+vm.comments.name ;
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -3266,16 +3274,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.stop(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 JobService.stop(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.unStopAll = function () {
             var jobs = {};
@@ -3284,7 +3294,7 @@
             angular.forEach(vm.object.jobs, function (value) {
                 jobs.jobs.push({job: value.path});
             });
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
@@ -3294,7 +3304,7 @@
                     if (index == vm.object.jobs.length - 1) {
                         vm.comments.name = vm.comments.name + ' ' + value.path;
                     } else {
-                        vm.comments.name =  value.path+ ', ' + vm.comments.name;
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -3304,16 +3314,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.unstop(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 JobService.unstop(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.startAll = function () {
             var jobs = {};
@@ -3322,7 +3334,7 @@
             angular.forEach(vm.object.jobs, function (value) {
                 jobs.jobs.push({job: value.path});
             });
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
@@ -3332,7 +3344,7 @@
                     if (index == vm.object.jobs.length - 1) {
                         vm.comments.name = vm.comments.name + ' ' + value.path;
                     } else {
-                        vm.comments.name = value.path+ ', ' +  vm.comments.name;
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -3342,16 +3354,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     JobService.start(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 JobService.start(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.reset = function () {
@@ -3366,8 +3380,8 @@
             var taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path,taskIds:taskIds});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
@@ -3381,16 +3395,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.end(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 TaskService.end(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.killTask = function (task, path) {
             var jobs = {};
@@ -3398,8 +3414,8 @@
             var taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path,taskIds:taskIds});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
@@ -3413,16 +3429,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.kill(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 TaskService.kill(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.terminateTask = function (task, path) {
             var jobs = {};
@@ -3430,8 +3448,8 @@
             var taskIds = [];
             jobs.jobschedulerId = vm.schedulerIds.selected;
             taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path,taskIds:taskIds});
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
@@ -3445,16 +3463,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.terminate(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 TaskService.terminate(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         function terminateTaskWithTimeout(job, task, path) {
 
@@ -3473,14 +3493,14 @@
             } else {
                 var taskIds = [];
                 taskIds.push({taskId: task.taskId});
-                jobs.jobs.push({job: path,taskIds:taskIds});
+                jobs.jobs.push({job: path, taskIds: taskIds});
             }
             if (vm.comments.comment) {
                 jobs.comment = vm.comments.comment;
             }
             jobs.timeout = vm.timeout;
             TaskService.terminateWith(jobs);
-            vm.reset();
+
         }
 
         vm.terminateTaskWithTimeout = function (job, task, path) {
@@ -3504,10 +3524,11 @@
             });
             modalInstance.result.then(function () {
                 terminateTaskWithTimeout(job, task, path);
+                vm.reset();
             }, function () {
-
+                vm.reset();
             });
-            vm.reset();
+
         };
 
         vm.killAllTask = function (job) {
@@ -3521,7 +3542,7 @@
             } else {
                 jobs.jobs.push({job: job.path});
             }
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
@@ -3532,7 +3553,7 @@
                         if (index == vm.object.jobs.length - 1) {
                             vm.comments.name = vm.comments.name + ' ' + value.path;
                         } else {
-                            vm.comments.name = value.path + ', ' +vm.comments.name ;
+                            vm.comments.name = value.path + ', ' + vm.comments.name;
                         }
                     });
                 }
@@ -3544,16 +3565,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.killAll(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 TaskService.killAll(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.terminateAllTask = function (job) {
             var jobs = {};
@@ -3566,7 +3589,7 @@
             } else {
                 jobs.jobs.push({job: job.path});
             }
-            if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+            if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
@@ -3577,7 +3600,7 @@
                         if (index == vm.object.jobs.length - 1) {
                             vm.comments.name = vm.comments.name + ' ' + value.path;
                         } else {
-                            vm.comments.name = value.path + ', ' +  vm.comments.name;
+                            vm.comments.name = value.path + ', ' + vm.comments.name;
                         }
                     });
                 }
@@ -3589,16 +3612,18 @@
                     backdrop: 'static'
                 });
                 modalInstance.result.then(function () {
-                    if(vm.comments.comment)
-                    jobs.comment = vm.comments.comment;
+                    if (vm.comments.comment)
+                        jobs.comment = vm.comments.comment;
                     TaskService.terminateAll(jobs);
+                    vm.reset();
                 }, function () {
-
+                    vm.reset();
                 });
             } else {
                 TaskService.terminateAll(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         function setRunTime(job) {
@@ -3610,7 +3635,6 @@
             }
             jobs.jobschedulerId = vm.schedulerIds.selected;
             JobService.setRunTime(jobs);
-            vm.reset();
         }
 
         vm.setRunTime = function (job) {
@@ -3638,6 +3662,7 @@
             });
             modalInstance.result.then(function () {
                 setRunTime(job);
+                vm.reset();
             }, function () {
                 vm.reset();
             });
@@ -3668,13 +3693,13 @@
                         expectedEndTime: data.expectedEndTime
                     };
                     vm.planItems.push(planData);
-                    if(!vm.maxPlannedTime || new Date(data.plannedStartTime)>vm.maxPlannedTime){
+                    if (!vm.maxPlannedTime || new Date(data.plannedStartTime) > vm.maxPlannedTime) {
                         vm.maxPlannedTime = new Date(data.plannedStartTime);
                     }
                 });
-                 vm.isCaledarLoading = false;
+                vm.isCaledarLoading = false;
             }, function (err) {
-                 vm.isCaledarLoading = false;
+                vm.isCaledarLoading = false;
             });
             openCalendar();
         };

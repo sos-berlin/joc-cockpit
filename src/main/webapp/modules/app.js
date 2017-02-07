@@ -26,9 +26,10 @@
             'ncy-angular-breadcrumb',
             'gantt',
             'gantt.tooltips',
-            'gantt.table',      
-            'angular-clipboard',
-            'ngFileSaver'
+            'gantt.table',
+            'ngFileSaver',
+      'angular-clipboard'
+            
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs = [];
@@ -50,6 +51,8 @@
         .config(['$qProvider', function ($qProvider) {
             $qProvider.errorOnUnhandledRejections(false);
         }])
+
+
         .config(['$provide', function ($provide) {
             $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
                 return function (exception, cause) {

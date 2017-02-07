@@ -63,12 +63,12 @@
                 <span class="text" ng-bind="'label.auditLog' | translate"></span>
             </div>
             <div class="col-md-6 col-sm-8">
-<!--                <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
+                <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </div>
                 <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
-                </div>-->
+                </div>
                 <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
             </div>
         </div>
@@ -98,23 +98,6 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 " translate>label.status</label>
-                            <div class="col-sm-9">
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="auditSearch.states" data-checklist-value="'INCOMPLETE'">
-                                    <i class="primary"></i><span translate>label.incomplete</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="auditSearch.states" data-checklist-value="'SUCCESSFUL'">
-                                    <i class="primary"></i><span translate>label.successful</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="auditSearch.states" data-checklist-value="'FAILED'">
-                                    <i class="primary"></i><span translate>label.failed</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group row">
                             <label class="col-sm-2 form-control-label" translate>label.jobChain</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="auditSearch.jobChain">
@@ -124,6 +107,12 @@
                             <label class="col-sm-2 form-control-label" translate>label.orderIds</label>
                             <div class="col-sm-6">
                                  <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderIds' | translate}}" ng-model="auditSearch.orderIds">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.job</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.enterJobs' | translate}}" ng-model="auditSearch.job">
                             </div>
                         </div>
                         <div class="form-group m-t m-b-xs">
@@ -158,12 +147,6 @@
                                     <i ng-show="adtLog.filter.sortBy == 'request' && adtLog.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('parameters')"><a><span translate>label.parameters</span>
-                                    <i ng-show="adtLog.filter.sortBy == 'parameters' && !adtLog.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="adtLog.filter.sortBy == 'parameters' && adtLog.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
                                 <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
                                     <i ng-show="adtLog.filter.sortBy == 'jobChain' && !adtLog.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -189,19 +172,52 @@
                                     <i ng-show="adtLog.filter.sortBy == 'comment' && adtLog.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy('timeSpent')"><a><span translate>label.timeSpend</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'timeSpent' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'timeSpent' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('ticketLink')"><a><span translate>label.ticketLink</span>
+                                    <i ng-show="adtLog.filter.sortBy == 'ticketLink' && !adtLog.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="adtLog.filter.sortBy == 'ticketLink' && adtLog.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                             </tr>
                         </thead>
-                        <tbody>
-                        <tr ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict) | startFrom:(adtLog.currentPage - 1) * adtLog.pageSize | limitTo: adtLog.pageSize | orderBy:adtLog.filter.sortBy:adtLog.sortReverse" >
-                            <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                        <tbody ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict) | startFrom:(adtLog.currentPage - 1) * adtLog.pageSize | limitTo: adtLog.pageSize | orderBy:adtLog.filter.sortBy:adtLog.sortReverse">
+                        <tr>
+                            <td nowrap>
+                                <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                <span ng-bind="auditLog.created | stringToDate"></span>
+                            </td>
                             <td><span ng-bind="auditLog.account"></span></td>
                             <td><span ng-bind="auditLog.request"></span></td>
-                            <td width="30%"><span ng-bind="auditLog.parameters"></span></td>
                             <td><span ng-bind="auditLog.jobChain"></span></td>
                             <td><span ng-bind="auditLog.orderId"></span></td>
                             <td><span ng-bind="auditLog.job"></span></td>
                             <td><span ng-bind="auditLog.comment"></span></td>
+                            <td><span ng-bind="auditLog.timeSpent"></span></td>
+                            <td><span ng-bind="auditLog.ticketLink"></span></td>
                         </tr>
+                        <tr class="noExl" ng-show="auditLog.show">
+                         <td colspan="7">
+                             <table class="table m-a-0">
+                                 <thead>
+                                 <tr>
+                                     <th translate>label.parameters</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr>
+                                     <td><span ng-bind="auditLog.parameters"></span></td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                         </td>
+                     </tr>
                         </tbody>
                     </table>
                     <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}

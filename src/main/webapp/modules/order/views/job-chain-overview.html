@@ -122,7 +122,6 @@
                                 <th translate>label.nodeStatus</th>
                                 <th translate>label.nextNode</th>
                                 <th translate>label.errorNode</th>
-
                             </tr>
                             </thead>
                             <tbody >
@@ -220,9 +219,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                       <i class="cursor text-xs"
-                                                       ng-if="node.orders && node.orders.length>limitNum"
-                                                       ng-click="showOrderPanelFuc(jobChain.path)" ><span translate>label.showMoreOrders</span><br></i>
+                                       <i class="cursor text-xs" ng-if="node.orders && node.orders.length>limitNum" ng-click="showOrderPanelFuc(jobChain.path)" ><span translate>label.showMoreOrders</span><br></i>
 
                                     </div>
                                     <table class="table table-hover table-bordered m-t-xs m-b-sm" ng-if="node.job.runningTasks">
@@ -280,8 +277,7 @@
                                     <span class="label" ng-if="node.job.state" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span>
                                     <span class="label" ng-if="node.job.configurationStatus" ng-class="colorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>
                                 </td>
-                                <td><span class="label" ng-class="bgColorFunction(node.state.severity)"
-                                          ng-bind="node.state._text | translate"></span></td>
+                                <td><span class="label" ng-class="bgColorFunction(node.state.severity)" ng-bind="node.state._text | translate"></span></td>
                                 <td ng-bind="node.nextNode"></td>
                                 <td ng-bind="node.errorNode"></td>
                                 <td width="40" ng-if="permission.Job.view.configuration || permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
@@ -330,84 +326,136 @@
 
                     </div>
 
-                <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t p-b-md h6 text-uppercase" translate>
+                    <div ng-if="isLoading && jobChain.nodes.length==0" class="text-center m-t p-b-md h6 text-uppercase" translate>
                         message.noNodesFound
                     </div>
                 </div>
-                <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
-                    <div class="cssload-loading">{{'Loading' | translate}}...</div>
-                </div>
+            <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+                <div class="cssload-loading">{{'Loading' | translate}}...</div>
             </div>
-            <div class="hide m-t-sm" ng-class="{'show': isLoading1 && permission.JobChain.view.history}">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="box white" id="scrollToTask">
-                            <div class="box-header">
+        </div>
+        <div class="hide m-t-sm" ng-class="{'show': isLoading1 && permission.JobChain.view.history}">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box white" id="scrollToTask">
+<!--                        <div class="box-header">
                                 <span class="text">{{'label.history' | translate}} </span>
                             </div>
-                            <div class="box-tool">
-                                <ul class="nav text-muted text-md">
-                                    <li class="nav-item inline m-l-sm">
-                                        <a class="text-primary " ng-click="viewAllHistories()" translate>button.viewAllHistories
-                                        </a>
-                                      <!--  <a href="" ng-click="hideTaskPanel()"><img src="images/remove.png"> </a>-->
+                        <div class="box-tool">
+                            <ul class="nav text-muted text-md">
+                                <li class="nav-item inline m-l-sm">
+                                    <a class="text-primary " ng-click="viewAllHistories()" translate>button.viewAllHistories
+                                    </a>
+                                    &lt;!&ndash;  <a href="" ng-click="hideTaskPanel()"><img src="images/remove.png"> </a>&ndash;&gt;
+                                </li>
+                            </ul>
+                        </div>-->
+                        <div class="box-body p-t b-t" >
+                            <div class="b-b">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
                                     </li>
                                 </ul>
                             </div>
-                            <div class="box-body p-t b-t">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered ">
-                                        <thead>
-                                        <tr>
-                                            <th translate>label.orderId</th>
-                                            <th translate>label.status</th>
-                                            <th translate>label.startTime</th>
-                                            <th translate>label.endTime</th>
-                                            <th translate>label.duration</th>
-                                            <th translate>label.node</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="history in orderHistory.history" ng-click="showLogWindow(history,null)" class="cursor">
-                                            <td ng-bind="history.orderId"></td>
-                                            <td><span class="label" ng-bind="history.state._text | translate"
-                                                      ng-class="bgColorFunction(history.state.severity)"></span>
-                                            </td>
-                                            <td ng-bind="history.startTime | stringToDate"></td>
-                                            <td ng-bind="history.endTime | stringToDate"></td>
-                                            <td ng-bind="history.startTime | duration:history.endTime"></td>
-                                            <td ng-bind="history.node"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <div ng-if="orderHistory.history.length==0" class="text-center m-t-md m-b h6 text-uppercase" translate>
-                                        message.noJobChainHistoryFound
+                            <div class="tab-content p-a">
+                                <div class="tab-pane animated fadeIn active" id="tab1">
+                                    <div class="row">
+                                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                            <table class="table table-hover table-bordered ">
+                                                <thead>
+                                                <tr>
+                                                    <th translate>label.orderId</th>
+                                                    <th translate>label.status</th>
+                                                    <th translate>label.startTime</th>
+                                                    <th translate>label.endTime</th>
+                                                    <th translate>label.duration</th>
+                                                    <th translate>label.node</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="history in orderHistory" ng-click="showLogWindow(history,null)" class="cursor">
+                                                    <td ng-bind="history.orderId"></td>
+                                                    <td><span class="label" ng-bind="history.state._text | translate"
+                                                              ng-class="bgColorFunction(history.state.severity)"></span>
+                                                    </td>
+                                                    <td ng-bind="history.startTime | stringToDate"></td>
+                                                    <td ng-bind="history.endTime | stringToDate"></td>
+                                                    <td ng-bind="history.startTime | duration:history.endTime"></td>
+                                                    <td ng-bind="history.node"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <div ng-if="historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>
+                                                message.noOrderHistoryFound
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane animated fadeIn" id="tab2">
+                                    <div class="row">
+                                        <div class="table-responsive" resizable r-directions="['bottom']"
+                                             r-height="250">
+                                            <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.created</th>
+                                                        <th translate>label.account</th>
+                                                        <th translate>label.request</th>
+                                                        <th translate>label.parameters</th>
+                                                        <!--<th translate>label.order</th>-->
+                                                        <th translate>label.comment</th>
+                                                        <th translate>label.timeSpend</th>
+                                                        <th translate>label.ticketLink</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                        <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                                                        <td><span ng-bind="auditLog.account"></span></td>
+                                                        <td><span ng-bind="auditLog.request"></span></td>
+                                                        <td width="30"><span ng-bind="auditLog.parameters"></span></td>
+                                                        <!--<td><span ng-bind="auditLog.orderId"></span></td>-->
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                        <td><span ng-bind="auditLog.timeSpent"></span></td>
+                                                        <td><span ng-bind="auditLog.ticketLink"></span></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            <div ng-if="auditLogs.length==0"
+                                                 class="text-center m-t-md h6 text-uppercase" translate>
+                                                message.noAuditLogFound
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
-                    <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-                </div>
+            </div>
+            <div class="hide text-center m-t-lg " ng-class="{'show': !isLoading1}">
+                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
         </div>
     </div>
+</div>
 
+<script>
+    $('.table-responsive').on('shown.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.dropdown-menu'),
+                tableOffsetHeight = $table.offset().top + $table.height(),
+                menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
 
-    <script>
-        $('.table-responsive').on('shown.bs.dropdown', function (e) {
-            var $table = $(this),
-                    $menu = $(e.target).find('.dropdown-menu'),
-                    tableOffsetHeight = $table.offset().top + $table.height(),
-                    menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+        if (menuOffsetHeight > tableOffsetHeight)
+            $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight + 20);
+    });
 
-            if (menuOffsetHeight > tableOffsetHeight)
-                $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight + 20);
-        });
-
-        $('.table-responsive').on('hide.bs.dropdown', function () {
-            $(this).css("padding-bottom", 0);
-        });
-    </script>
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $(this).css("padding-bottom", 0);
+    });
+</script>

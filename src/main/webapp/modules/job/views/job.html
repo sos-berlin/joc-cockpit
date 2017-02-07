@@ -575,18 +575,22 @@
                                                         <th translate>label.account</th>
                                                         <th translate>label.request</th>
                                                         <th translate>label.parameters</th>
-                                                        <th translate>label.job</th>
+                                                        <!--<th translate>label.job</th>-->
                                                         <th translate>label.comment</th>
+                                                        <th translate>label.timeSpend</th>
+                                                        <th translate>label.ticketLink</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr ng-repeat="auditLog in auditLogs">
+                                                    <tr ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                         <td><span ng-bind="auditLog.created | stringToDate"></span></td>
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td><span ng-bind="auditLog.parameters"></span></td>
-                                                        <td><span ng-bind="auditLog.job"></span></td>
+                                                        <td width="30"><span ng-bind="auditLog.parameters"></span></td>
+                                                        <!--<td><span ng-bind="auditLog.job"></span></td>-->
                                                         <td><span ng-bind="auditLog.comment"></span></td>
+                                                        <td><span ng-bind="auditLog.timeSpent"></span></td>
+                                                        <td><span ng-bind="auditLog.ticketLink"></span></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>

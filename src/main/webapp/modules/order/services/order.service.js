@@ -219,7 +219,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
-                filter.limit=$window.localStorage.$SOS$MAXHISTORYPERORDER;
+                filter.limit = JSON.parse($window.sessionStorage.preferences).maxHistoryPerOrder;
                 var History = $resource('order/history');
                 History.save(filter,function (res) {
                     deferred.resolve(res);
