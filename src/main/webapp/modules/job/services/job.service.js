@@ -88,7 +88,7 @@
              histories: function (filter) {
                 var deferred = $q.defer();
                 var JobChain = $resource('job_chain/history');
-                 filter.maxLastHistoryItems =$window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN;
+                 filter.maxLastHistoryItems =JSON.parse($window.sessionStorage.preferences).maxHistoryPerJobchain;
                 JobChain.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -294,7 +294,7 @@
             },
             history: function (filter) {
                 var deferred = $q.defer();
-                filter.maxLastHistoryItems=$window.localStorage.$SOS$MAXHISTORYPERTASK;
+                filter.maxLastHistoryItems=JSON.parse($window.sessionStorage.preferences).maxHistoryPerTask;
                 var Job = $resource('job/history');
                 Job.save(filter,function (res) {
                     deferred.resolve(res);

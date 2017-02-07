@@ -379,7 +379,7 @@
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
 
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters', 'ignoreList', 'dailyPlanFilters'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters', 'dailyPlanFilters'];
 
         var propsPrefix = '$SOS$';
 
@@ -416,10 +416,6 @@
         };
         SavedFilter.prototype.setDailyPlan = function (dailyPlan) {
             this.dailyPlanFilters = JSON.stringify(dailyPlan);
-        };
-
-        SavedFilter.prototype.setIgnoreList = function (list) {
-            this.ignoreList = JSON.stringify(list);
         };
 
         SavedFilter.prototype.clearStorage = function () {

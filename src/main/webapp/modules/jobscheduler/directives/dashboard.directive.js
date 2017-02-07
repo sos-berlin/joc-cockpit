@@ -221,8 +221,8 @@
                             var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Version : ' + master.version +
                                 '<br>Started at : <span>' +
-                                moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) +
-                                '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
+                                '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             rect.setAttribute('data-content',popoverTemplate);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
@@ -281,9 +281,9 @@
 
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
                                 '<br>Started at : <span>' +
-                                moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  +
+                                moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat)  +
                                 '</span><br> Survey Date: ' +
-                                moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             rect.setAttribute('data-content',popoverTemplate);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
@@ -372,7 +372,7 @@
                             var popoverTemplate= 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
 
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
-                                '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT)  + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat)  + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
 
                             var sClassRunning = 'text-success';
@@ -498,7 +498,7 @@
 
                                 var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                     '<br>Version : ' + master.version +
-                                    '<br>Started at :<span> ' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                    '<br>Started at :<span> ' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                                 var pauseClass = 'show';
                                 var continueClass = 'hide';
                                 if (master.state && master.state._text.toLowerCase() == 'paused') {
@@ -705,7 +705,7 @@
                                 }
                                 var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Version : ' + master.version +
-                                '<br>Started at : <span id="'+'popover0011'+'">' + moment(master.startedAt).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                                '<br>Started at : <span id="'+'popover0011'+'">' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                                 var masterTemplate = '<div data-toggle="popover"   data-content=\''+popoverTemplate+'\'' +
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                     '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
@@ -765,7 +765,7 @@
                         } else if (scope.clusterStatusData.database.database.state && scope.clusterStatusData.database.database.state._text.toLowerCase() == 'running') {
                             classRunning = 'text-black-lt';
                         }
-                        var popoverTemplate = ' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz($window.localStorage.$SOS$ZONE).format($window.localStorage.$SOS$DATEFORMAT);
+                        var popoverTemplate = ' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                         var masterTemplate = '<div data-toggle="popover"  data-placement="top" data-content="'+popoverTemplate+'" ' +
 

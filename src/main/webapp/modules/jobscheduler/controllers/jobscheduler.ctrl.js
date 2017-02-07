@@ -13,7 +13,7 @@
     ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout", "$window"];
     function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout, $window) {
         var vm = $scope;
-        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
+        vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
         vm.agentsFilters = vm.resourceFilters.agents;
         vm.locksFilters = vm.resourceFilters.locks;
@@ -2450,7 +2450,7 @@
             if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
                 vm.getTimeout(host, port);
             } else {
-                if ($window.localStorage.$SOS$AUDITLOG == 'true') {
+                if (vm.userPreferences.auditLog) {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
@@ -2822,7 +2822,7 @@
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
-        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
+        vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
         var selectedFiltered;
         var promise1;
@@ -2916,7 +2916,7 @@
             $('#exportToExcelBtn').attr("disabled", false);
         };
 
-        vm.dataFormate = $window.localStorage.$SOS$DATEFORMAT;
+        vm.dataFormate = vm.userPreferences.dateFormat;
         vm.options = {
             mode: 'custom',
             scale: 'hour',

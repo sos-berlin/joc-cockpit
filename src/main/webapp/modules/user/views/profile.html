@@ -28,13 +28,13 @@
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.language</div>
                        <div class="col-sm-9">
-                          <select class="form-control w-xl" ng-model="upc.perferences.locale" ng-change="upc.setLocale()"  ng-options="locale as locale.name for locale in upc.locales"></select>
+                          <select class="form-control w-xl" ng-model="upc.preferences.locale" ng-change="upc.setLocale()"  ng-options="locale as locale.name for locale in upc.locales"></select>
                        </div>
                    </div>
                    <div class="row m-t-sm">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.timeZone</div>
                        <div class="col-sm-9">
-                           <select class="form-control w-xl"  ng-model="upc.perferences.zone" ng-change="upc.setTimeZone()">
+                           <select class="form-control w-xl"  ng-model="upc.preferences.zone" ng-change="upc.changeConfiguration(true)">
                                 <option value="{{upc.timezone}}">local ({{upc.timezone}})</option>
                                 <option value="{{selectedJobScheduler.timeZone}}">JobScheduler ({{selectedJobScheduler.timeZone}})</option>
                                 <option>-----------------------------</option>
@@ -46,7 +46,7 @@
                        <div class="col-sm-3 text-dark form-control-label" translate>label.dateTimeFormat</div>
                        <div class="col-sm-9">
 
-                           <select class="form-control w-xl" ng-model="upc.perferences.dateFormat" ng-change="upc.setDateFormat()">
+                           <select class="form-control w-xl" ng-model="upc.preferences.dateFormat" ng-change="upc.changeConfiguration(true)">
                                <option value="DD.MM.YYYY HH:mm:ss">Default (DD.MM.YYYY HH:mm:ss)</option>
                                <option>---------------------------------------------------</option>
                                <option value="HH:mm | DD.MM.YYYY">HH:mm | DD.MM.YYYY</option>
@@ -163,43 +163,43 @@
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxRecords" ng-blur="upc.changePerferences()">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxRecords" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerOrder</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxHistoryPerOrder" ng-blur="upc.changePerferences()">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerOrder" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerTask</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxHistoryPerTask" ng-blur="upc.changePerferences()">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerTask" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerJobchain</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxHistoryPerJobchain" ng-blur="upc.changePerferences()">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerJobchain" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfOrdersPerJobChain</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxOrderPerJobchain" ng-blur="upc.changePerferences()">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxOrderPerJobchain" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfAuditLogPerObject</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.perferences.maxAuditLogPerObject" ng-blur="upc.changePerferences()">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxAuditLogPerObject" ng-blur="upc.changeConfiguration()">
                        </div>
                     </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxEntryPerPage</div>
                        <div class="col-sm-6">
-                          <select class="form-control w-xl" ng-model="upc.perferences.maxEntryPerPage" ng-change="upc.changePerferences()">
+                          <select class="form-control w-xl" ng-model="upc.preferences.maxEntryPerPage" ng-change="upc.changeConfiguration()">
                               <option value="500">500</option>
                               <option value="1000">1000</option>
                               <option value="1500">1500</option>
@@ -216,7 +216,7 @@
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.theme</div>
                        <div class="col-sm-6">
-                           <select class="form-control w-xl" ng-model="upc.perferences.theme" ng-change="upc.changeTheme(upc.perferences.theme)">
+                           <select class="form-control w-xl" ng-model="upc.preferences.theme" ng-change="upc.changeTheme(upc.preferences.theme)">
                                <option value="blue" translate>label.blue</option>
                                <option value="light" translate>label.light</option>
                                <option value="dark" translate>label.dark</option>
@@ -227,11 +227,11 @@
                        <div class="col-sm-3 text-dark" translate>label.showLogs</div>
                        <div class="col-sm-6">
                            <label class="md-check w">
-                               <input type="radio" name="radio" ng-model="upc.perferences.isNewWindow" value="newWindow" ng-change="upc.changePerferences()">
+                               <input type="radio" name="radio" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newWindow</span>
                            </label>
                            <label class="md-check w">
-                               <input type="radio" name="radio" ng-model="upc.perferences.isNewWindow" value="newTab" ng-change="upc.changePerferences()">
+                               <input type="radio" name="radio" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newTab</span>
                            </label>
                        </div>
@@ -240,7 +240,7 @@
                        <div class="col-sm-3 text-dark" translate>label.showTasks</div>
                        <div class="col-sm-6">
                            <label class="md-check">
-                               <input type="checkbox" ng-model="upc.perferences.showTasks" ng-change="upc.changePerferences()">
+                               <input type="checkbox" ng-model="upc.preferences.showTasks" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i>
                            </label>
                        </div>
@@ -249,7 +249,7 @@
                        <div class="col-sm-3 text-dark" translate>label.showOrders</div>
                        <div class="col-sm-6">
                            <label class="md-check">
-                               <input type="checkbox" ng-model="upc.perferences.showOrders" ng-change="upc.changePerferences()">
+                               <input type="checkbox" ng-model="upc.preferences.showOrders" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i>
                            </label>
                        </div>
@@ -258,11 +258,12 @@
                        <div class="col-sm-3 text-dark" translate>label.enableCommentsForAuditLog</div>
                        <div class="col-sm-6">
                            <label class="md-check">
-                               <input type="checkbox" ng-disabled="upc.perferences.forceLoging" ng-model="upc.perferences.auditLog" ng-change="upc.changePerferences()">
+                               <input type="checkbox" ng-disabled="upc.forceLoging" ng-model="upc.preferences.auditLog" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i>
                            </label>
                        </div>
                    </div>
+                   
                    <hr>
                    <h5 translate>label.eventFilter</h5>
                    <div class="row m-t">
@@ -384,20 +385,20 @@
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.history</span></div>
                        <div class="row col-sm-9">
-                            <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.History.view}"></i> <span translate>label.view</span></span>
+                            <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.History.view}"></i> <span translate>label.view</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.order</span></div>
                        <div class="row col-sm-9">
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}" ng-if="permission.Order.view.history ==true || permission.Order.view.history == false"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.history}"></i> <span translate>label.viewHistory</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}" ng-if="permission.Order.view.history ==true || permission.Order.view.history == false"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.history}"></i> <span translate>label.viewHistory</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.orderLog}"></i> <span translate>label.viewOrderLog</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.view.status}"></i> <span translate>label.viewStatus</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.startAndEndNode}"></i> <span translate>label.changeStartAndEndNode</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.timeForAdhocOrder}"></i> <span translate>label.changeTimeForAdhocOrder</span></span>
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.parameter}"></i> <span translate>label.changeParameters</span></span>
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.start}"></i> <span translate>label.start</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.change.parameter}"></i> <span translate>label.changeParameters</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.start}"></i> <span translate>label.start</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.update}"></i> <span translate>label.update</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.suspend}"></i> <span translate>label.suspend</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Order.resume}"></i> <span translate>label.resume</span></span>
@@ -412,8 +413,8 @@
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.jobChain</span></div>
                        <div class="row col-sm-9">
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.history}"></i> <span translate>label.viewHistory</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.history}"></i> <span translate>label.viewHistory</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.view.status}"></i> <span translate>label.viewStatus</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.stop}"></i> <span translate>label.stop</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JobChain.unstop}"></i> <span translate>label.unstop</span></span>
@@ -426,8 +427,8 @@
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.job</span></div>
                        <div class="row col-sm-9">
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
-                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.history}"></i> <span translate>label.viewHistory</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                          <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.history}"></i> <span translate>label.viewHistory</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.taskLog}"></i> <span translate>label.viewTaskLog</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.view.status}"></i> <span translate>label.viewStatus</span></span>
                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Job.start}"></i> <span translate>label.startTask</span></span>
@@ -444,21 +445,21 @@
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.processClass</span></div>
                        <div class="row col-sm-9">
-                           <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                           <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.ProcessClass.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.ProcessClass.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.lock</span></div>
                        <div class="row col-sm-9">
-                           <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                           <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Lock.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Lock.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.schedule</span></div>
                        <div class="row col-sm-9">
-                           <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.perferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
+                           <span class="col-sm-3 text-black-lt" ng-class="{'text-l-c' : upc.preferences.locale.lang=='en'}"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.view.configuration}"></i> <span translate>label.viewConfiguration</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.view.status}"></i> <span translate>label.viewStatus</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.edit}"></i> <span translate>label.edit</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Schedule.addSubstitute}"></i> <span translate>label.addSubstitute</span></span>
@@ -474,6 +475,27 @@
                        <div class="col-sm-3"><span class="text-dark" translate>label.auditLog</span></div>
                        <div class="row col-sm-9">
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.AuditLog.view.status}"></i> <span translate>label.viewStatus</span></span>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                        <div class="col-sm-12"><span class="text-dark" translate>JOC Configuration</span></div>
+                    </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.private</span></div>
+                       <div class="row col-sm-9">
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.view}"></i> <span translate>label.view</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.editContent}"></i> <span translate>label.edit</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.delete}"></i> <span translate>label.delete</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.makeShared}"></i> <span translate>label.makeShared</span></span>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.share</span></div>
+                       <div class="row col-sm-9">
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view}"></i> <span translate>label.view</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.editContent}"></i> <span translate>label.edit</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.delete}"></i> <span translate>label.delete</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.makePrivate}"></i> <span translate>label.makePrivate</span></span>
                        </div>
                    </div>
                </div>

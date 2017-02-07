@@ -18,12 +18,13 @@
         vm.rememberMe = false;
         $rootScope.error = '';
 
-        function getSchedulerIds(response) {
+        function getSchedulerIds(user) {
             JobSchedulerService.getSchedulerIds().then(function (res) {
                 if (res && !res.data) {
                     SOSAuth.setIds(res);
                     SOSAuth.save();
-                    getPermissions(response);
+                    getUserProfileConfiguration(res.selected,user);
+                    getPermissions();
                 } else {
                     $location.path('/error');
                 }
@@ -41,7 +42,53 @@
         function getComments() {
             AuditLogService.comments().then(function (result) {
                 $window.sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
-                console.log($window.sessionStorage.$SOS$FORCELOGING)
+                $window.sessionStorage.comments = JSON.stringify(result.comments);
+            });
+        }
+
+        function getUserProfileConfiguration(id,user) {
+            var configObj = {};
+            configObj.jobschedulerId = id;
+            configObj.account = user;
+            configObj.configurationType = "PROFILE";
+            UserService.configuration(configObj).then(function (res) {
+                if (res.configuration && res.configuration.account) {
+                    $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
+                    document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
+                    $window.localStorage.$SOS$THEME = JSON.parse($window.sessionStorage.preferences).theme;
+                } else {
+                    var preferences = {};
+                    preferences.zone = jstz().timezone_name;
+                    preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
+                    preferences.maxRecords = 10000;
+                    preferences.maxHistoryPerOrder = 30;
+                    preferences.maxHistoryPerTask = 10;
+                    preferences.maxHistoryPerJobchain = 30;
+                    preferences.maxOrderPerJobchain = 5;
+                    preferences.maxAuditLogPerObject = 10;
+                    preferences.maxEntryPerPage = 1000;
+                    preferences.isNewWindow = 'newWindow';
+                    preferences.theme = 'light';
+                    preferences.showTasks = true;
+                    preferences.showOrders = false;
+                    if($window.sessionStorage.$SOS$FORCELOGING === 'true')
+                    preferences.auditLog = true;
+                    preferences.events ={};
+
+                    preferences.events.filter = JSON.stringify([
+                        'JobChainStopped', 'OrderStarted', 'OrderSetback',
+                        'OrderSuspended'
+                    ]);
+                    preferences.events.taskCount = 0;
+                    preferences.events.jobCount = 0;
+                    preferences.events.jobChainCount = 1;
+                    preferences.events.positiveOrderCount = 1;
+                    preferences.events.negativeOrderCount = 2;
+                     $window.sessionStorage.preferences = JSON.stringify(preferences);
+
+                }
+
+                $rootScope.$broadcast('reloadPreferences');
             });
         }
 
@@ -54,9 +101,7 @@
         }
 
         function getPermissions() {
-
             vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
-
             UserService.getPermissions(vm.schedulerIds.selected).then(function (permission) {
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
@@ -72,9 +117,8 @@
                 vm.user = {};
                 $rootScope.$broadcast('reloadUser');
 
-            }, function (err) {
-
             });
+
         }
 
         vm.login = function () {
@@ -96,9 +140,7 @@
                                 var urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
                                 var pwd = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
                                 $window.localStorage.$SOS$FOO = urs;
-                                $window.localStorage.$SOS$USERNA = 'null';
                                 $window.localStorage.$SOS$BOO = pwd;
-                                $window.localStorage.$SOS$PASSWORD = 'null';
                                 $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                             } else {
                                 $window.localStorage.$SOS$FOO = null;
@@ -108,7 +150,7 @@
 
                             SOSAuth.setUser(response);
                             SOSAuth.save();
-                            getSchedulerIds();
+                            getSchedulerIds(response.user);
                             getComments();
 
                         } else {
@@ -127,98 +169,81 @@
 
     }
 
-    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope'];
-    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource, $scope) {
+    UserProfileCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope','UserService'];
+    function UserProfileCtrl($rootScope, $window, gettextCatalog, $resource, $scope,UserService) {
         var vm = this;
 
+        var configObj = {};
+        configObj.jobschedulerId =$scope.schedulerIds.selected;
+        configObj.account =$scope.permission.user;
+        configObj.configurationType ="PROFILE";
+
+        UserService.configuration(configObj).then(function (res) {
+            if (res.configuration && res.configuration.account) {
+                $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
+                vm.preferences = JSON.parse($window.sessionStorage.preferences);
+                vm.changeTheme(vm.preferences.theme);
+            }
+        });
+
         vm.zones = moment.tz.names();
-        vm.perferences = {};
         vm.locales = $rootScope.locales;
-        vm.perferences.locale = $rootScope.locale;
+        vm.preferences = JSON.parse($window.sessionStorage.preferences);
         vm.timezone = jstz().timezone_name;
-        vm.perferences.zone = $window.localStorage.$SOS$ZONE;
-        vm.perferences.dateFormat = $window.localStorage.$SOS$DATEFORMAT;
-        vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
-        vm.perferences.maxHistoryPerOrder = parseInt($window.localStorage.$SOS$MAXHISTORYPERORDER);
-        vm.perferences.maxHistoryPerTask = parseInt($window.localStorage.$SOS$MAXHISTORYPERTASK);
-        vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
-        vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
-        vm.perferences.maxAuditLogPerObject = parseInt($window.localStorage.$SOS$MAXAUDITLOGPEROBJECT);
-        vm.perferences.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
-        vm.perferences.isNewWindow = $window.localStorage.$SOS$ISNEWWINDOW;
-        vm.perferences.showTasks = $window.localStorage.$SOS$SHOWTASKS === 'true';
-        vm.perferences.showOrders = $window.localStorage.$SOS$SHOWORDERS === 'true';
-
-        vm.perferences.theme = $window.localStorage.$SOS$THEME;
-        vm.perferences.theme = $window.localStorage.$SOS$THEME;
-
-        if($window.sessionStorage.$SOS$FORCELOGING === 'true'){
-            $window.localStorage.$SOS$AUDITLOG = true;
-        }
-        vm.perferences.auditLog = $window.localStorage.$SOS$AUDITLOG === 'true';
+        vm.preferences.locale = $rootScope.locale;
 
         vm.setLocale = function () {
-            vm.locale = vm.perferences.locale;
+            vm.locale = vm.preferences.locale;
             $rootScope.locale = vm.locale;
             $window.localStorage.$SOS$LANG = vm.locale.lang;
             $resource("modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
                 gettextCatalog.setCurrentLanguage(vm.locale.lang);
                 gettextCatalog.setStrings(vm.locale.lang, data);
             });
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
         };
 
-        vm.setTimeZone = function () {
-            $window.localStorage.$SOS$ZONE = vm.perferences.zone;
-            $rootScope.$broadcast('reloadDate');
-        };
-
-        vm.setDateFormat = function () {
-            $window.localStorage.$SOS$DATEFORMAT = vm.perferences.dateFormat;
-            $rootScope.$broadcast('reloadDate');
-        };
+        if($window.sessionStorage.$SOS$FORCELOGING === 'true'){
+            vm.forceLoging = true;
+            vm.preferences.auditLog = true;
+        }
         vm.changeTheme = function (theme) {
             document.getElementById('style-color').href = 'css/' + theme + '-style.css';
             $window.localStorage.$SOS$THEME = theme;
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
         };
-
-        vm.changePerferences = function () {
-            $window.localStorage.$SOS$ISNEWWINDOW = vm.perferences.isNewWindow;
-            $window.localStorage.$SOS$SHOWTASKS = vm.perferences.showTasks;
-            $window.localStorage.$SOS$SHOWORDERS = vm.perferences.showOrders;
-            $window.localStorage.$SOS$AUDITLOG = vm.perferences.auditLog;
-            $window.localStorage.$SOS$MAXENTRYPERPAGE = vm.perferences.maxEntryPerPage;
-
-            if (isNaN(parseInt(vm.perferences.maxRecords))) {
-                vm.perferences.maxRecords = parseInt($window.localStorage.$SOS$MAXRECORDS);
-            } else {
-                $window.localStorage.$SOS$MAXRECORDS = parseInt(vm.perferences.maxRecords);
+        vm.changeConfiguration = function (reload) {
+           
+            if (isNaN(parseInt(vm.preferences.maxRecords))) {
+                vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
             }
-            if (isNaN(parseInt(vm.perferences.maxHistoryPerOrder))) {
-                vm.perferences.maxHistoryPerOrder = parseInt($window.localStorage.$SOS$MAXHISTORYPERORDER);
-            } else {
-                $window.localStorage.$SOS$MAXHISTORYPERORDER = parseInt(vm.perferences.maxHistoryPerOrder);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder))) {
+                vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder);
             }
-            if (isNaN(parseInt(vm.perferences.maxHistoryPerTask))) {
-                vm.perferences.maxHistoryPerTask = parseInt($window.localStorage.$SOS$MAXHISTORYPERTASK);
-            } else {
-                $window.localStorage.$SOS$MAXHISTORYPERTASK = parseInt(vm.perferences.maxHistoryPerTask);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerTask))) {
+                vm.preferences.maxHistoryPerTask = parseInt(angular.copy($scope.userPreferences).maxHistoryPerTask);
             }
-            if(isNaN(parseInt(vm.perferences.maxAuditLogPerObject))){
-                vm.perferences.maxAuditLogPerObject = parseInt($window.localStorage.$SOS$MAXAUDITLOGPEROBJECT);
-            }else{
-               $window.localStorage.$SOS$MAXAUDITLOGPEROBJECT  = parseInt(vm.perferences.maxAuditLogPerObject);
+            if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject))) {
+                vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject);
             }
 
-            if (isNaN(parseInt(vm.perferences.maxOrderPerJobchain))) {
-                vm.perferences.maxOrderPerJobchain = parseInt($window.localStorage.$SOS$MAXORDERPERJOBCHAIN);
-            } else {
-                $window.localStorage.$SOS$MAXORDERPERJOBCHAIN = parseInt(vm.perferences.maxOrderPerJobchain);
+            if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain))) {
+                vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain);
             }
-            if (isNaN(parseInt(vm.perferences.maxHistoryPerJobchain))) {
-                vm.perferences.maxHistoryPerJobchain = parseInt($window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN);
-            } else {
-                $window.localStorage.$SOS$MAXHISTORYPERJOBCHAIN = parseInt(vm.perferences.maxHistoryPerJobchain);
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
+                vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
+
+            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            $rootScope.$broadcast('reloadPreferences');
+
+            if (reload)
+                $rootScope.$broadcast('reloadDate');
+
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
         };
 
         $scope.tasks = [
@@ -250,12 +275,12 @@
             {value: 'OrderSuspended', label: "label.orderSuspended"}
         ];
 
-        $scope.eventFilter = JSON.parse($window.localStorage.$SOS$EVENTFILTER);
-        $scope.tasks.count = $window.localStorage.$SOS$EVENTFILTERTASKCOUNT;
-        $scope.jobs.count = $window.localStorage.$SOS$EVENTFILTERJOBCOUNT;
-        $scope.jobChains.count = $window.localStorage.$SOS$EVENTFILTERJOBCHAINCOUNT;
-        $scope.positiveOrders.count = $window.localStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT;
-        $scope.negativeOrders.count = $window.localStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT;
+        $scope.eventFilter = vm.preferences.events.filter;
+        $scope.tasks.count = vm.preferences.events.taskCount;
+        $scope.jobs.count = vm.preferences.events.jobCount;
+        $scope.jobChains.count = vm.preferences.events.jobChainCount;
+        $scope.positiveOrders.count = vm.preferences.events.positiveOrderCount;
+        $scope.negativeOrders.count =vm.preferences.events.negativeOrderCount;
 
         if ($scope.tasks.length == $scope.tasks.count) {
             $scope.selectAllTaskModel = true;
@@ -451,13 +476,17 @@
             $scope.selectAllNegativeOrderModel = $scope.negativeOrders.length == $scope.negativeOrders.count;
         };
 
-        var watcher = $scope.$watchCollection('eventFilter', function () {
-            $window.localStorage.$SOS$EVENTFILTERTASKCOUNT = $scope.tasks.count;
-            $window.localStorage.$SOS$EVENTFILTER = JSON.stringify($scope.eventFilter);
-            $window.localStorage.$SOS$EVENTFILTERJOBCOUNT = $scope.jobs.count;
-            $window.localStorage.$SOS$EVENTFILTERJOBCHAINCOUNT = $scope.jobChains.count;
-            $window.localStorage.$SOS$EVENTFILTERPOSITIVEORDERCOUNT = $scope.positiveOrders.count;
-            $window.localStorage.$SOS$EVENTFILTERNEGATIVEORDERCOUNT = $scope.negativeOrders.count;
+        var watcher = $scope.$watchCollection('eventFilter', function (value) {
+            if(value) {
+                vm.preferences.events.taskCount = $scope.tasks.count;
+                vm.preferences.events.filter = $scope.eventFilter;
+                vm.preferences.events.jobCount = $scope.jobs.count;
+                vm.preferences.events.jobChainCount = $scope.jobChains.count;
+                vm.preferences.events.positiveOrderCount = $scope.positiveOrders.count;
+                vm.preferences.events.negativeOrderCount = $scope.negativeOrders.count;
+                $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+                $rootScope.$broadcast('reloadPreferences');
+            }
         });
 
         $scope.$on('$destroy', function () {
@@ -465,12 +494,10 @@
         });
     }
 
-    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "$uibModal", "SavedFilter", "toasty", "$timeout", "gettextCatalog",
-        "orderByFilter", "CoreService", "$window"];
-    function AuditLogCtrl($scope, AuditLogService,  $uibModal, SavedFilter, toasty, $timeout, gettextCatalog,
-                         orderBy, CoreService, $window) {
+    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "CoreService", "$window"];
+    function AuditLogCtrl($scope, AuditLogService, CoreService, $window) {
         var vm = $scope;
-        vm.maxEntryPerPage = $window.localStorage.$SOS$MAXENTRYPERPAGE;
+        vm.maxEntryPerPage = $window.sessionStorage.preferences.maxEntryPerPage;
         vm.adtLog = CoreService.getAuditLogTab();
 
         vm.tree = {};
@@ -512,7 +539,7 @@
 
 
         vm.filter_tree = {};
-        vm.load = function() {
+        vm.load = function () {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj = setDateRange(obj);
@@ -528,33 +555,38 @@
         vm.search = function () {
             var filter = {
                 jobschedulerId: $scope.schedulerIds.selected,
-                limit: parseInt($window.localStorage.$SOS$MAXRECORDS)
+                limit: parseInt($window.sessionStorage.preferences.maxRecords)
             };
 
-            vm.order.filter.historyStates = '';
-            vm.order.filter.date = '';
-            if (vm.jobChainSearch.jobChain) {
+            vm.adtLog.filter.date = '';
+            if (vm.auditSearch.jobChain) {
                 filter.orders = [];
-                if (vm.jobChainSearch.orderIds) {
-                    var orderIds = vm.jobChainSearch.orderIds.split(',');
+                if (vm.auditSearch.orderIds) {
+                    var s = vm.auditSearch.orderIds.replace(/,\s+/g, ',');
+                    var orderIds = s.split(',');
                     angular.forEach(orderIds, function (value) {
-                        filter.orders.push({jobChain: vm.jobChainSearch.jobChain, orderId: value})
+                        filter.orders.push({jobChain: vm.auditSearch.jobChain, orderId: value})
                     });
                 } else {
-                    filter.orders.push({jobChain: vm.jobChainSearch.jobChain})
+                    filter.orders.push({jobChain: vm.auditSearch.jobChain})
                 }
             }
-            if (vm.jobChainSearch.states && vm.jobChainSearch.states.length > 0) {
-                filter.historyStates = vm.jobChainSearch.states;
-
+            if (vm.auditSearch.job) {
+                filter.jobs = [];
+                var s = vm.auditSearch.job.replace(/,\s+/g, ',');
+                var jobs = s.split(',');
+                angular.forEach(jobs, function (value) {
+                    filter.jobs.push({job: value})
+                });
             }
-            if (vm.jobChainSearch.from) {
-                var fromDate = new Date(vm.jobChainSearch.from);
-                if (vm.jobChainSearch.fromTime) {
 
-                    fromDate.setHours(vm.jobChainSearch.fromTime.getHours());
-                    fromDate.setMinutes(vm.jobChainSearch.fromTime.getMinutes());
-                    fromDate.setSeconds(vm.jobChainSearch.fromTime.getSeconds());
+            if (vm.auditSearch.from) {
+                var fromDate = new Date(vm.auditSearch.from);
+                if (vm.auditSearch.fromTime) {
+
+                    fromDate.setHours(vm.auditSearch.fromTime.getHours());
+                    fromDate.setMinutes(vm.auditSearch.fromTime.getMinutes());
+                    fromDate.setSeconds(vm.auditSearch.fromTime.getSeconds());
                     fromDate.setMilliseconds(0);
                 } else {
                     fromDate.setHours(0);
@@ -564,13 +596,13 @@
                 }
                 filter.dateFrom = fromDate;
             }
-            if (vm.jobChainSearch.to) {
-                var toDate = new Date(vm.jobChainSearch.to);
-                if (vm.jobChainSearch.toTime) {
+            if (vm.auditSearch.to) {
+                var toDate = new Date(vm.auditSearch.to);
+                if (vm.auditSearch.toTime) {
 
-                    toDate.setHours(vm.jobChainSearch.toTime.getHours());
-                    toDate.setMinutes(vm.jobChainSearch.toTime.getMinutes());
-                    toDate.setSeconds(vm.jobChainSearch.toTime.getSeconds());
+                    toDate.setHours(vm.auditSearch.toTime.getHours());
+                    toDate.setMinutes(vm.auditSearch.toTime.getMinutes());
+                    toDate.setSeconds(vm.auditSearch.toTime.getSeconds());
                     toDate.setMilliseconds(0);
                 } else {
                     toDate.setHours(0);
@@ -580,8 +612,8 @@
                 }
                 filter.dateTo = toDate;
             }
-        AuditLogService.getLogs(obj).then(function (result) {
-            vm.auditLogs = result.auditLog;
+            AuditLogService.getLogs(filter).then(function (result) {
+                vm.auditLogs = result.auditLog;
                 vm.loading = false;
             }, function () {
                 vm.loading = false;
