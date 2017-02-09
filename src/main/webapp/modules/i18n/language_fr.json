@@ -887,6 +887,6 @@
   "label.delete": "Supprimer",
   "label.timeSpend": "Temps passé",
   "label.ticketLink": "Lien Ticket",
-  "placeholder.timeSpend": "Time Spent in minutes",
-  "placeholder.ticketLink": "Enter ticket link"
+  "placeholder.timeSpend": "Temps passé par minutes",
+  "placeholder.ticketLink": "Entrer le Lien Ticket"
 }
