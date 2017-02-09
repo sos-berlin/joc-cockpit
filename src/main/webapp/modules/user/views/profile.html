@@ -471,31 +471,20 @@
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.HolidayCalendar.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
-                   <div class="row m-t">
+                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.auditLog</span></div>
                        <div class="row col-sm-9">
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.AuditLog.view.status}"></i> <span translate>label.viewStatus</span></span>
                        </div>
                    </div>
                     <div class="row m-t">
-                        <div class="col-sm-12"><span class="text-dark" translate>JOC Configuration</span></div>
-                    </div>
-                    <div class="row m-t">
-                       <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.private</span></div>
-                       <div class="row col-sm-9">
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.view}"></i> <span translate>label.view</span></span>
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.editContent}"></i> <span translate>label.edit</span></span>
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.delete}"></i> <span translate>label.delete</span></span>
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.private.makeShared}"></i> <span translate>label.makeShared</span></span>
-                       </div>
-                   </div>
-                    <div class="row m-t">
-                       <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.share</span></div>
+                       <div class="col-sm-3"><span class="text-dark" translate>JOC Configuration</span></div>
                        <div class="row col-sm-9">
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.view}"></i> <span translate>label.view</span></span>
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.editContent}"></i> <span translate>label.edit</span></span>
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.delete}"></i> <span translate>label.delete</span></span>
-                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.makePrivate}"></i> <span translate>label.makePrivate</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.editContent}"></i> <span translate>label.edit</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.delete}"></i> <span translate>label.delete</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makePrivate}"></i> <span translate>label.makePrivate</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.JOCConfigurations.share.change.sharedStatus.makeShared}"></i> <span translate>label.makeShared</span></span>
                        </div>
                    </div>
                </div>

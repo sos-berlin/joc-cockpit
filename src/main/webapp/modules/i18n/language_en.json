@@ -886,5 +886,7 @@
   "label.share": "Shared",
   "label.delete": "delete",
   "label.timeSpend": "Time Spent",
-  "label.ticketLink": "Ticket Link"
+  "label.ticketLink": "Ticket Link",
+  "placeholder.timeSpend": "Time Spent in minutes",
+  "placeholder.ticketLink": "Enter ticket link"
 }

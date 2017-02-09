@@ -25,6 +25,8 @@
             name: 'JOC Cockpit'
         };
 
+        vm.userPreferences ={};
+
         /**
          * Exception Logging Service, currently only used by the $exceptionHandler
          * it preserves the default behaviour ( logging to the console) but
@@ -235,6 +237,9 @@
         }
 
         vm.showLogWindow = function (order, task) {
+            if(!order && !task){
+                return;
+            }
             refreshParent();
             if ((task && !vm.permission.Job.view.taskLog) || (order && !vm.permission.Order.view.orderLog)) {
                 toasty.warning({

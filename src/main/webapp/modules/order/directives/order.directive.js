@@ -1311,7 +1311,7 @@
                         }
 
                         function addLabel(orders, name) {
-                            vm.limitNum = vm.userPreferences.maxOrderPerJobchain;
+                            vm.limitNum = JSON.parse($window.sessionStorage.preferences).maxOrderPerJobchain;
                             var blockEllipsisFlowOrder = 'block-ellipsis-flow-order';
                             if (orders.length > 3) {
                                 blockEllipsisFlowOrder = 'block-ellipsis-flow-order1';
@@ -1397,7 +1397,7 @@
                                     }
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
                                         '<span class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
-                                        + '<span id="date-' + order.orderId + '" class="show-block v-m text-success text-xs"> ' + moment(time).tz(vm.userPreferences.zone).format(vm.userPreferences.dateFormat) + ' (' + diff + ')</span>'
+                                        + '<span id="date-' + order.orderId + '" class="show-block v-m text-success text-xs"> ' + moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="hide btn-group dropdown" ng-class="{\'show-inline\':permission.Order.view.configuration || (permission.Order.view.orderLog && \'' + order.historyId + '\') || permission.Order.start || permission.Order.setState'
                                         + '|| permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume'

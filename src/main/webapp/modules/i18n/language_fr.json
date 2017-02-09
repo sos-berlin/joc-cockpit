@@ -886,5 +886,7 @@
   "label.share": "Partagé",
   "label.delete": "Supprimer",
   "label.timeSpend": "Temps passé",
-  "label.ticketLink": "Lien Ticket"
+  "label.ticketLink": "Lien Ticket",
+  "placeholder.timeSpend": "Time Spent in minutes",
+  "placeholder.ticketLink": "Enter ticket link"
 }

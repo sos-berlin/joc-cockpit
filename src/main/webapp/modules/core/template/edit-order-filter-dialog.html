@@ -8,14 +8,7 @@
         <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
            <label class="col-sm-4 form-control-label" translate>label.filterName</label>
            <div class=" col-sm-6">
-                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="orderFilter.name" ng-blur="checkFilterName()">
-               <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                   <div ng-message="required" translate>message.requiredError</div>
-                   <div ng-message="maxlength" translate>message.tooLongError</div>
-               </div>
-               <div class="help-block text-danger" ng-if="!isUnique">
-                   <div translate>message.uniqueError</div>
-               </div>
+               <input type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" disabled ng-model="orderFilter.name" >
            </div>
         </div>
         <div class="form-group row">
@@ -129,11 +122,11 @@
             </div>
         </div>
 
-   <div class="form-group row">
+   <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
             <label class="col-sm-4" translate>label.sharedFilter</label>
-             <div class="col-sm-9">
+             <div class="col-sm-8">
                  <label class="md-check">
-                      <input ng-disabled="true" type="checkbox" model="orderFilter.shared" >
+                      <input type="checkbox" ng-model="orderFilter.shared" >
                         <i class="primary"></i>
                  </label>
               </div>
@@ -142,7 +135,7 @@
             <div class="b-t"></div>
         </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || !isUnique"
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid"
                         translate>button.updateFilter
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>

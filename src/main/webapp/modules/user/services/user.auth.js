@@ -13,8 +13,8 @@
                     request: function (config) {
 
                         if (config.method == 'POST') {
-                            
                             config.url = './api/' + config.url;
+
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,

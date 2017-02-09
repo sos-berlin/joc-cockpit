@@ -7,49 +7,48 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
-                                    ng-class="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
-                            </button>
-                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'today'" ng-click="load()"
-                                    ng-class="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
-                            </button>
-                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
-                                    ng-class="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
-                            </button>
-                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
-                                    ng-class="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
-                            </button>
-                            <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1d'"
-                                    ng-class="{'btn-primary': adtLog.filter.date=='-1d'}" translate>button.last24
-                            </button>
-                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1w'"
-                                    ng-class="{'btn-primary': adtLog.filter.date=='-1w'}" translate>button.lastWeak
-                            </button>
-                        </div>
+                        <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
+                                ng-class="{'btn-primary': adtLog.filter.date=='all'}" translate>button.all
+                        </button>
+                        <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'today'" ng-click="load()"
+                                ng-class="{'btn-primary': adtLog.filter.date=='today'}" translate>button.today
+                        </button>
+                        <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
+                                ng-class="{'btn-primary': adtLog.filter.date=='-1h'}" translate>button.last1
+                        </button>
+                        <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
+                                ng-class="{'btn-primary': adtLog.filter.date=='-12h'}" translate>button.last12
+                        </button>
+                        <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1d'"
+                                ng-class="{'btn-primary': adtLog.filter.date=='-1d'}" translate>button.last24
+                        </button>
+                        <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1w'"
+                                ng-class="{'btn-primary': adtLog.filter.date=='-1w'}" translate>button.lastWeak
+                        </button>
+                    </div>
                     <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
-                                        ng-class="{'btn-primary': adtLog.filter.date=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.all
-                                </a>
-                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'today'"
-                                        ng-class="{'btn-primary': adtLog.filter.date=='today', 'disable-link':savedHistoryFilter.selected}" translate>button.today
-                                </a>
-                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
-                                        ng-class="{'btn-primary': adtLog.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}" translate>button.last1
-                                </a>
-                                <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
-                                        ng-class="{'btn-primary': adtLog.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}" translate>button.last12
-                                </a>
-                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1d'"
-                                        ng-class="{'btn-primary': adtLog.filter.date=='-1d', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
-                                </a>
-                                <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1w'"
-                                        ng-class="{'btn-primary': adtLog.filter.date=='-1w', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
-                                </a>
-                            </div>
+                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
+                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'all'" ng-click="load()"
+                               ng-class="{'btn-primary': adtLog.filter.date=='all', 'disable-link':savedHistoryFilter.selected}" translate>button.all
+                            </a>
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'today'"
+                               ng-class="{'btn-primary': adtLog.filter.date=='today', 'disable-link':savedHistoryFilter.selected}" translate>button.today
+                            </a>
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1h'"
+                               ng-class="{'btn-primary': adtLog.filter.date=='-1h', 'disable-link':savedHistoryFilter.selected}" translate>button.last1
+                            </a>
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" uib-btn-radio="'-12h'" ng-click="load()"
+                               ng-class="{'btn-primary': adtLog.filter.date=='-12h', 'disable-link':savedHistoryFilter.selected}" translate>button.last12
+                            </a>
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1d'"
+                               ng-class="{'btn-primary': adtLog.filter.date=='-1d', 'disable-link':savedHistoryFilter.selected}" translate>button.last24
+                            </a>
+                            <a class="dropdown-item" ng-model="adtLog.filter.date" ng-click="load()" uib-btn-radio="'-1w'"
+                               ng-class="{'btn-primary': adtLog.filter.date=='-1w', 'disable-link':savedHistoryFilter.selected}" translate>button.lastWeak
+                            </a>
                         </div>
-
+                    </div>
                     <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><i class="fa fa-share"></i></button>
                 </div>
             </div>
@@ -95,6 +94,12 @@
                                        bs-datepicker type="text">
                                 <input class="form-control input-time m-l" ng-model="auditSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
                                        data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.comment</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" placeholder="{{'placeholder.enterComment' | translate}}" ng-model="auditSearch.regex">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -199,7 +204,12 @@
                             <td><span ng-bind="auditLog.orderId"></span></td>
                             <td><span ng-bind="auditLog.job"></span></td>
                             <td><span ng-bind="auditLog.comment"></span></td>
-                            <td><span ng-bind="auditLog.timeSpent"></span></td>
+                            <td>
+                                <span ng-if="auditLog.timeSpent">
+                                    <span ng-bind="auditLog.timeSpent"></span>
+                                    <span>m</span>
+                                </span>
+                            </td>
                             <td><span ng-bind="auditLog.ticketLink"></span></td>
                         </tr>
                         <tr class="noExl" ng-show="auditLog.show">

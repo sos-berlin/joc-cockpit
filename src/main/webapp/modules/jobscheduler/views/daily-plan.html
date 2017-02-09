@@ -105,13 +105,13 @@
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" ng-click="editFilters()"
-                                   ng-if="savedDailyPlanFilter.list.length>0" translate>label.editExistingFilters</a>
+                                   ng-if="dailyPlanFilterList.length>0" translate>label.editExistingFilters</a>
 
-                                <div class="dropdown-divider" ng-if="savedDailyPlanFilter.length>0"></div>
+                                <div class="dropdown-divider" ng-if="dailyPlanFilterList.length>0"></div>
                                 <a class="dropdown-item"
                                    ng-class="{orange: savedDailyPlanFilter.selected == filter.name}"
                                    ng-click="changeFilter(filter)"
-                                   ng-repeat="filter in savedDailyPlanFilter.list track by $index">
+                                   ng-repeat="filter in dailyPlanFilterList track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
                                                        ng-if="savedDailyPlanFilter.selected == filter.name"
                                                        class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
@@ -277,15 +277,14 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan,null)" ng-class="{'cursor':plan.historyId && plan.orderId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
                                 <td>
                                     <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></span>
                                     <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></span>
                                 </td>
                                 <td><span class="text-hover-primary" ng-click="showOrderLink(plan.jobChain);$event.stopPropagation()" ng-bind="plan.orderId"></span></td>
                                 <td>
-                                    <span class="label" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)"
-                                          ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
+                                    <span class="label" ng-class="bgColorFunction(plan.state.severity)" ng-bind="plan.state._text | translate" uib-tooltip="{{plan.error.message}}"> </span>
                                 </td>
                                 <td><span ng-if="plan.late==true" translate>label.late</span></td>
                                 <td>

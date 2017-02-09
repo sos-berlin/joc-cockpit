@@ -85,9 +85,9 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedHistoryFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedHistoryFilter.list.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="savedHistoryFilter.list.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedHistoryFilter.list track by $index">
+                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="orderHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <div class="dropdown-divider" ng-if="orderHistoryFilterList.length>0"></div>
+                                <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in orderHistoryFilterList track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
@@ -172,9 +172,9 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedJobHistoryFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="savedJobHistoryFilter.list.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="savedJobHistoryFilter.list.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedJobHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in savedJobHistoryFilter.list track by $index">
+                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
+                                <div class="dropdown-divider" ng-if="jobHistoryFilterList.length>0"></div>
+                                <a class="dropdown-item" ng-class="{orange: savedJobHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in jobHistoryFilterList track by $index">
                                     {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>

@@ -71,16 +71,16 @@
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()"
-                                   ng-if="savedJobChainFilter.list.length>0" translate>label.editExistingFilters</a>
+                                   ng-if="jobChainFilterList.length>0" translate>label.editExistingFilters</a>
 
-                                <div class="dropdown-divider" ng-if="savedJobChainFilter.list.length>0"></div>
+                                <div class="dropdown-divider" ng-if="jobChainFilterList.length>0"></div>
                                 <a class="dropdown-item"
                                    ng-class="{orange: savedJobChainFilter.selected == filter.name}"
                                    ng-click="changeFilter(filter)"
-                                   ng-repeat="filter in savedJobChainFilter.list track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();"
-                                                       ng-if="savedJobChainFilter.selected == filter.name"
-                                                       class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                   ng-repeat="filter in jobChainFilterList track by $index">
+                                    {{filter.name}}
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobChainFilter.selected == filter.name"
+                                       class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -701,7 +701,12 @@
                                                         <td width="30"><span ng-bind="auditLog.parameters"></span></td>
                                                         <!--<td><span ng-bind="auditLog.jobChain"></span></td>-->
                                                         <td><span ng-bind="auditLog.orderId"></span></td>
-                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                        <td>
+                                                            <span ng-if="auditLog.timeSpent">
+                                                                <span ng-bind="auditLog.timeSpent"></span>
+                                                                <span>m</span>
+                                                            </span>
+                                                        </td>
                                                         <td><span ng-bind="auditLog.timeSpent"></span></td>
                                                         <td><span ng-bind="auditLog.ticketLink"></span></td>
                                                     </tr>

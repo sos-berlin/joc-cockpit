@@ -1064,11 +1064,16 @@
                 $rootScope.$broadcast('loadXml');
 
             });
+
+            ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+                    vm._schedules = result.schedules;
+            });
             vm.zones = moment.tz.names();
         };
 
         vm.substituteAll = function () {
-
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/substitute-all-dialog.html',
                 controller: 'DialogCtrl',
@@ -1079,8 +1084,12 @@
                 angular.forEach(vm.object.schedules, function (value) {
                     substitute(value);
                 });
+                vm.object.schedules = [];
             }, function () {
                 vm.object.schedules = [];
+            });
+            ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+                    vm._schedules = result.schedules;
             });
         };
 
@@ -1093,15 +1102,17 @@
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog={};
             if (vm.comments.comment) {
-                schedules.comment = vm.comments.comment;
-            }
-            ScheduleService.setRunTime(schedules).then(function (result) {
-                vm.schedules = result.schedules;
-            }, function () {
-                vm.isError = true;
-            });
+                schedules.auditLog.comment = vm.comments.comment;}
 
+            if (vm.comments.timeSpent){
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;}
+
+            if (vm.comments.ticketLink){
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;}
+
+            ScheduleService.setRunTime(schedules);
         };
 
         vm.editSchedule = function (schedule) {
@@ -1134,6 +1145,9 @@
                 }
                 $rootScope.$broadcast('loadXml');
 
+            });
+            ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+                    vm._schedules = result.schedules;
             });
             vm.zones = moment.tz.names();
         };
@@ -1906,6 +1920,9 @@
                 $rootScope.$broadcast('loadXml');
 
             });
+            ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+                    vm._schedules = result.schedules;
+            });
             vm.zones = moment.tz.names();
         };
 
@@ -1951,6 +1968,9 @@
                 }
                 $rootScope.$broadcast('loadXml');
 
+            });
+            ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+                    vm._schedules = result.schedules;
             });
             vm.zones = moment.tz.names();
         };
@@ -2400,10 +2420,20 @@
                 obj.port = port;
                 var obj1 = {};
                 obj1.jobschedulerId = vm.schedulerIds.selected;
+                obj.auditLog={};
+                obj1.auditLog={};
 
                 if (vm.comments.comment) {
-                    obj.comment = vm.comments.comment;
-                    obj1.comment = vm.comments.comment;
+                    obj.auditLog.comment = vm.comments.comment;
+                    obj1.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent){
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+                    obj1.auditLog.timeSpent = vm.comments.timeSpent;}
+
+                if (vm.comments.ticketLink){
+                obj.auditLog.ticketLink = vm.comments.ticketLink;
+                obj1.auditLog.ticketLink = vm.comments.ticketLink;
                 }
 
                 if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
@@ -2450,11 +2480,12 @@
             if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
                 vm.getTimeout(host, port);
             } else {
+
                 if (vm.userPreferences.auditLog) {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
-                    vm.comments.operation = action;
+                    vm.comments.operation =         action == "terminateFailsafe" ? "Terminate and fail-over": action == "terminateAndRestart"? "Terminate and Restart": action ==  "abortAndRestart"? "Abort and Restart":action ==  "terminate"? "Terminate":action ==  "pause"? "Pause" :action ==  "abort"? "Abort":  "Continue";
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
@@ -2540,9 +2571,17 @@
                 obj.host = host;
                 obj.port = port;
                 obj.timeout = vm.criterion.timeout;
+                obj.auditLog={};
                 if (vm.comments.comment) {
-                    obj.comment = vm.comments.comment;
+                    obj.auditLog.comment = vm.comments.comment;
                 }
+                if (vm.comments.timeSpent){
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;}
+
+                if (vm.comments.ticketLink){
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                }
+
                 JobSchedulerService.restartWithin(obj).then(function (res) {
                     success('running', host, port);
                 });
@@ -2817,8 +2856,8 @@
         });
     }
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', '$stateParams', 'CoreService', '$window'];
-    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, $stateParams, CoreService, $window) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService'];
+    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, $stateParams, CoreService, UserService) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
@@ -2828,20 +2867,52 @@
         var promise1;
 
         vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
-        vm.savedDailyPlanFilter.list = vm.savedDailyPlanFilter.list || [];
+        vm.dailyPlanFilterList = [];
 
         if (vm.dailyPlanFilters.selectedView)
             vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.selected || vm.savedDailyPlanFilter.favorite;
         else
             vm.savedDailyPlanFilter.selected = undefined;
 
-        if (vm.savedDailyPlanFilter.selected) {
-            angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
-                if (value.name == vm.savedDailyPlanFilter.selected) {
-                    selectedFiltered = value;
+
+
+        function getCustomizations() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.account = vm.permission.user;
+            obj.configurationType = "CUSTOMIZATION";
+            obj.objectType = "DAILYPLAN";
+            UserService.configurations(obj).then(function (res) {
+                if (res.configurations && res.configurations.length > 0) {
+                    vm.dailyPlanFilterList = res.configurations;
+                    if (vm.savedDailyPlanFilter.selected) {
+                        var flag = true;
+                        angular.forEach(vm.dailyPlanFilterList, function (value) {
+                            if (value.name == vm.savedDailyPlanFilter.selected) {
+                                flag = false;
+                                obj.name = value.name;
+                                UserService.configuration(obj).then(function (conf) {
+                                    selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                                    vm.load();
+                                });
+                            }
+                        });
+                        if (flag) {
+                            vm.load();
+                        }
+                    } else {
+                        vm.load();
+                    }
+                } else {
+                    vm.savedDailyPlanFilter.selected = undefined;
+                    vm.load();
                 }
-            });
+            }, function (err) {
+                vm.savedDailyPlanFilter.selected = undefined;
+                vm.load();
+            })
         }
+
 
         if ($stateParams.filter != null) {
             if ($stateParams.filter == 1) {
@@ -2955,7 +3026,7 @@
             targetDataAddRowIndex: undefined,
             api: function (api) {
                 api.core.on.ready(vm, function () {
-                    vm.load();
+                    getCustomizations();
                 });
             }
         };
@@ -3266,9 +3337,18 @@
                 } else if (vm.dailyPlanFilter.radio == 'planned') {
                     vm.dailyPlanFilter.state = undefined;
                 }
-                vm.savedDailyPlanFilter.list.push(vm.dailyPlanFilter);
 
-                if (vm.savedDailyPlanFilter.list.length == 1) {
+                var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.objectType = "DAILYPLAN";
+                configObj.name = vm.dailyPlanFilter.name;
+                configObj.shared = vm.dailyPlanFilter.shared;
+
+                vm.dailyPlanFilterList.push(configObj);
+
+                if (vm.dailyPlanFilterList.length == 1) {
                     vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
                     vm.dailyPlanFilters.selectedView = true;
                     selectedFiltered = vm.dailyPlanFilter;
@@ -3276,29 +3356,31 @@
                 }
                 SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
                 SavedFilter.save();
-
+                configObj.configurationItem = JSON.stringify(vm.dailyPlanFilter);
+                UserService.saveConfiguration(configObj);
             }, function () {
 
             });
         };
 
         vm.editFilters = function () {
-            vm.filters = vm.savedDailyPlanFilter;
+            vm.filters = {};
+            vm.filters.list = vm.dailyPlanFilterList;
+            vm.filters.favorite = vm.savedDailyPlanFilter.favorite;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm
             });
-            modalInstance.result.then(function () {
-            }, function () {
-
-            });
         };
 
         vm.editFilter = function (filter) {
             vm.filterName = filter.name;
-            vm.dailyPlanFilter = angular.copy(filter);
-            vm.isUnique = true;
+            UserService.configuration(filter).then(function (conf) {
+                vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.dailyPlanFilter.shared = filter.shared;
+            });
+
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -3306,9 +3388,9 @@
                 scope: vm
             });
             modalInstance.result.then(function () {
-                angular.forEach(vm.savedDailyPlanFilter.list, function (value, index) {
+                angular.forEach(vm.dailyPlanFilterList, function (value, index) {
                     if (value.name == filter.name) {
-                        vm.savedDailyPlanFilter.list[index] = vm.dailyPlanFilter;
+                        vm.dailyPlanFilterList[index] = vm.dailyPlanFilter;
                     }
                 });
                 if (vm.savedDailyPlanFilter.selected == vm.filterName) {
@@ -3329,33 +3411,44 @@
         };
 
         vm.deleteFilter = function (name) {
-            angular.forEach(vm.savedDailyPlanFilter.list, function (value, index) {
-                if (value.name == name) {
-                    toasty.success({
-                        title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
-                        msg: ''
-                    });
-                    vm.savedDailyPlanFilter.list.splice(index, 1);
+            var configObj = {};
+            configObj.jobschedulerId = vm.schedulerIds.selected;
+            configObj.account = vm.permission.user;
+            configObj.configurationType = "CUSTOMIZATION";
+            configObj.objectType = "DAILYPLAN";
+            configObj.name = name;
+            UserService.deleteConfiguration(configObj).then(function (res) {
+                angular.forEach(vm.dailyPlanFilterList, function (value, index) {
+                    if (value.name == name) {
+                        toasty.success({
+                            title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
+                            msg: ''
+                        });
+                        vm.dailyPlanFilterList.splice(index, 1);
+                    }
+                });
+
+                if (vm.savedDailyPlanFilter.selected == name) {
+                    vm.savedDailyPlanFilter.selected = undefined;
+                    vm.dailyPlanFilters.selectedView = false;
+                    selectedFiltered = undefined;
+                    vm.load();
+                }else {
+                    if (vm.dailyPlanFilterList.length == 0) {
+                        vm.savedDailyPlanFilter.selected = undefined;
+                        vm.dailyPlanFilters.selectedView = false;
+                        selectedFiltered = undefined;
+                    }
                 }
+                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
+                SavedFilter.save();
             });
-            if (vm.savedDailyPlanFilter.list.length == 0) {
-                vm.savedDailyPlanFilter.selected = undefined;
-                vm.dailyPlanFilters.selectedView = false;
-                selectedFiltered = undefined;
-            }
-            if (vm.savedDailyPlanFilter.selected == name) {
-                vm.savedDailyPlanFilter.selected = undefined;
-                vm.dailyPlanFilters.selectedView = false;
-                selectedFiltered = undefined;
-                vm.load();
-            }
-            SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-            SavedFilter.save();
         };
 
         vm.favorite = function (filter) {
             vm.savedDailyPlanFilter.favorite = filter.name;
             vm.dailyPlanFilters.selectedView = true;
+            vm.filters.favorite = filter.name;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
             vm.load();
@@ -3363,12 +3456,13 @@
 
         vm.removeFavorite = function () {
             vm.savedDailyPlanFilter.favorite = '';
+            vm.filters.favorite = '';
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
         };
         vm.checkFilterName = function () {
             vm.isUnique = true;
-            angular.forEach(vm.savedDailyPlanFilter.list, function (value) {
+            angular.forEach(vm.dailyPlanFilterList, function (value) {
                 if (!vm.filterName) {
                     if (vm.dailyPlanFilter.name == value.name) {
                         vm.isUnique = false;
@@ -3387,15 +3481,21 @@
             if (filter) {
                 vm.savedDailyPlanFilter.selected = filter.name;
                 vm.dailyPlanFilters.selectedView = true;
+                 UserService.configuration(filter).then(function (conf) {
+                    selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                    vm.load();
+                });
             }
             else {
                 vm.savedDailyPlanFilter.selected = filter;
                 vm.dailyPlanFilters.selectedView = false;
+                 selectedFiltered = filter;
+                vm.load();
             }
-            selectedFiltered = filter;
+
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
-            vm.load();
+
         };
 
         var int = '';

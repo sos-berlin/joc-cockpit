@@ -6,12 +6,10 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-
                     <div class="inline" ng-class="{'hide':object.orders.length>0}" ng-if="permission.Schedule.edit">
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="editSchedule(schedule)"><i class="fa fa-pencil"></i> <span class="hidden-sm-down" translate>button.editSchedule</span></button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="substitute(schedule)"><i class="fa fa-repeat"></i> <span class="hidden-sm-down" translate>button.substitute</span></button>
-                     </div>
-
+                    </div>
                     <div class="hide" ng-class="{'show-block':object.orders.length>0}">
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
                                  ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
@@ -419,7 +417,12 @@
                                                         <td width="30"><span ng-bind="auditLog.parameters"></span></td>
                                                         <!--<td><span ng-bind="auditLog.orderId"></span></td>-->
                                                         <td><span ng-bind="auditLog.comment"></span></td>
-                                                        <td><span ng-bind="auditLog.timeSpent"></span></td>
+                                                        <td>
+                                                            <span ng-if="auditLog.timeSpent">
+                                                                <span ng-bind="auditLog.timeSpent"></span>
+                                                                <span>m</span>
+                                                            </span>
+                                                        </td>
                                                         <td><span ng-bind="auditLog.ticketLink"></span></td>
                                                     </tr>
                                                     </tbody>

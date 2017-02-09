@@ -52,7 +52,7 @@
             configObj.account = user;
             configObj.configurationType = "PROFILE";
             UserService.configuration(configObj).then(function (res) {
-                if (res.configuration && res.configuration.account) {
+                if (res.configuration && res.configuration.configurationItem) {
                     $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                     document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
                     $window.localStorage.$SOS$THEME = JSON.parse($window.sessionStorage.preferences).theme;
@@ -87,6 +87,37 @@
                      $window.sessionStorage.preferences = JSON.stringify(preferences);
 
                 }
+
+                $rootScope.$broadcast('reloadPreferences');
+            },function(){
+                                    var preferences = {};
+                    preferences.zone = jstz().timezone_name;
+                    preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
+                    preferences.maxRecords = 10000;
+                    preferences.maxHistoryPerOrder = 30;
+                    preferences.maxHistoryPerTask = 10;
+                    preferences.maxHistoryPerJobchain = 30;
+                    preferences.maxOrderPerJobchain = 5;
+                    preferences.maxAuditLogPerObject = 10;
+                    preferences.maxEntryPerPage = 1000;
+                    preferences.isNewWindow = 'newWindow';
+                    preferences.theme = 'light';
+                    preferences.showTasks = true;
+                    preferences.showOrders = false;
+                    if($window.sessionStorage.$SOS$FORCELOGING === 'true')
+                    preferences.auditLog = true;
+                    preferences.events ={};
+
+                    preferences.events.filter = JSON.stringify([
+                        'JobChainStopped', 'OrderStarted', 'OrderSetback',
+                        'OrderSuspended'
+                    ]);
+                    preferences.events.taskCount = 0;
+                    preferences.events.jobCount = 0;
+                    preferences.events.jobChainCount = 1;
+                    preferences.events.positiveOrderCount = 1;
+                    preferences.events.negativeOrderCount = 2;
+                $window.sessionStorage.preferences = JSON.stringify(preferences);
 
                 $rootScope.$broadcast('reloadPreferences');
             });
@@ -497,7 +528,7 @@
     AuditLogCtrl.$inject = ["$scope", "AuditLogService", "CoreService", "$window"];
     function AuditLogCtrl($scope, AuditLogService, CoreService, $window) {
         var vm = $scope;
-        vm.maxEntryPerPage = $window.sessionStorage.preferences.maxEntryPerPage;
+        vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.adtLog = CoreService.getAuditLogTab();
 
         vm.tree = {};
@@ -556,7 +587,7 @@
             var filter = {
                 jobschedulerId: $scope.schedulerIds.selected,
                 limit: parseInt($window.sessionStorage.preferences.maxRecords)
-            };
+                };
 
             vm.adtLog.filter.date = '';
             if (vm.auditSearch.jobChain) {
@@ -578,6 +609,9 @@
                 angular.forEach(jobs, function (value) {
                     filter.jobs.push({job: value})
                 });
+            }
+            if (vm.auditSearch.regex) {
+                filter.regex =vm.auditSearch.regex;
             }
 
             if (vm.auditSearch.from) {

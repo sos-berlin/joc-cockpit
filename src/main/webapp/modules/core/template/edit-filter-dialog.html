@@ -26,8 +26,8 @@
                                         <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                 class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                            <a class="dropdown-item " ng-click="ok();editFilter(filter)" translate>button.edit</a>
-                                            <a class="dropdown-item bg-hover-color" ng-click="ok();deleteFilter(filter.name)" translate>button.delete</a>
+                                            <a class="dropdown-item " ng-if="permission.JOCConfigurations.share.change.editContent || filter.account==username" ng-click="ok();editFilter(filter)" translate>button.edit</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="permission.JOCConfigurations.share.change.delete || filter.account==username" ng-click="ok();deleteFilter(filter.name)" translate>button.delete</a>
                                         </div>
                                     </div>
                                 </td>
