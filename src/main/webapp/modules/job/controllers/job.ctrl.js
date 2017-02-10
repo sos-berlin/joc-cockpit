@@ -1730,6 +1730,14 @@
 
         };
 
+        vm.makePrivate = function (configObj) {
+             configObj.shared = false;
+            UserService.privateConfiguration(configObj);
+        };
+        vm.makeShare = function (configObj) {
+            configObj.shared = true;
+            UserService.shareConfiguration(configObj);
+        };
         vm.favorite = function (filter) {
             vm.savedJobChainFilter.favorite = filter.name;
             vm.filters.favorite = filter.name;
@@ -1930,6 +1938,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: jobChain.path});
+            if(vm.permission.AuditLog.view.status)
             loadAuditLogs(obj);
         };
 
@@ -3095,7 +3104,14 @@
             });
 
         };
-
+        vm.makePrivate = function (configObj) {
+            configObj.shared = false;
+            UserService.privateConfiguration(configObj);
+        };
+        vm.makeShare = function (configObj) {
+            configObj.shared = true;
+            UserService.shareConfiguration(configObj);
+        };
         vm.favorite = function (filter) {
             vm.savedJobFilter.favorite = filter.name;
             vm.jobFilters.selectedView = true;
@@ -3263,6 +3279,7 @@
             vm.showTaskPanel = value;
             vm.isAuditLog = true;
 
+            if(vm.permission.AuditLog.view.status)
             vm.loadAuditLogs(value);
             if (value.numOfQueuedTasks > 0 || value.numOfRunningTasks > 0) {
                 var obj = {};

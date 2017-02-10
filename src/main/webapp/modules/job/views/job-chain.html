@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()">
-                            <i class="fa fa-share"></i></button>
+                            <i>.</i></button>
                          <toggle-view></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
@@ -633,7 +633,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showHistory(showHistoryPanel)" href data-toggle="tab" data-target="#tab1" translate>label.history</a>
                                         </li>
-                                        <li class="nav-item">
+                                        <li class="nav-item" ng-if="permission.AuditLog.view.status">
                                             <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showHistoryPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
                                         </li>
                                     </ul>

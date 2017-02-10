@@ -28,7 +28,7 @@
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.language</div>
                        <div class="col-sm-9">
-                          <select class="form-control w-xl" ng-model="upc.preferences.locale" ng-change="upc.setLocale()"  ng-options="locale as locale.name for locale in upc.locales"></select>
+                          <select class="form-control w-xl" ng-model="upc.preferences.locale" ng-change="upc.setLocale()"  ng-options="locale.lang as locale.name for locale in upc.locales"></select>
                        </div>
                    </div>
                    <div class="row m-t-sm">

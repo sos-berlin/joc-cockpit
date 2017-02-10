@@ -58,3 +58,12 @@
     vertical-align: bottom;
     margin-left: 35px;
 }
+button#exportToExcelBtn {
+    background: #eee url("../images/export.png") no-repeat scroll center center;
+    background-size: 16px 14px;
+    padding-right: 16px;
+    padding-left: 16px;
+}
+button#exportToExcelBtn i{
+    visibility: hidden;
+}

@@ -196,7 +196,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" ng-if="permission.JobChain.view.status">
                 <a class="nav-link" ui-sref="app.jobChain" ui-sref-active-eq="active">
                     <span class="nav-text ">
                         <i class="fa fa-chain text-white jobchain-icon"></i>
@@ -204,7 +204,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" ng-if="permission.Order.view.status">
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
                     <span class="nav-text ">
                         <img src="images/order1.png" width="18" height="22" class="order-icon">
@@ -212,7 +212,7 @@
                     </span>
                 </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" ng-if="permission.Job.view.status">
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
                     <span class="nav-text ">
                         <img src="images/job1.png" width="22" height="21" class="job-icon">

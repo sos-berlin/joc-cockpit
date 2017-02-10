@@ -65,7 +65,7 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i class="fa fa-share"></i> </button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                         <toggle-view></toggle-view>
 
                     </div>
@@ -420,7 +420,7 @@
                                       <li class="nav-item" >
                                           <a class="nav-link" ng-class="{active: isRunning}" href data-toggle="tab" data-target="#tab5" translate>label.runningTask</a>
                                       </li>
-                                      <li class="nav-item">
+                                      <li class="nav-item" ng-if="permission.AuditLog.view.status">
                                           <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="loadAuditLogs(showTaskPanel)" href data-toggle="tab" data-target="#tab6" translate>label.auditLog</a>
                                       </li>
                                   </ul>

@@ -538,14 +538,15 @@
         var logout = false;
         vm.logout = function () {
             logout = true;
-            UserService.logout();
-            SOSAuth.clearUser();
-            SOSAuth.clearStorage();
-            CoreService.setDefaultTab();
-            $location.path('/login').search({});
-            $window.localStorage.clientLogs = {};
-            $window.sessionStorage.$SOS$JOBSCHEDULE = null;
-            $window.sessionStorage.$SOS$ALLEVENT = null;
+            UserService.logout().then(function () {
+                SOSAuth.clearUser();
+                SOSAuth.clearStorage();
+                CoreService.setDefaultTab();
+                $location.path('/login').search({});
+                $window.localStorage.clientLogs = {};
+                $window.sessionStorage.$SOS$JOBSCHEDULE = null;
+                $window.sessionStorage.$SOS$ALLEVENT = null;
+            });
         };
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE) {

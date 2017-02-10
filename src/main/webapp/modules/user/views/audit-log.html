@@ -49,7 +49,7 @@
                             </a>
                         </div>
                     </div>
-                    <button class="btn btn-grey btn-sm m-l-sm" id="exportToExcelBtn" ng-click="exportToExcel()"><i class="fa fa-share"></i></button>
+                    <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                 </div>
             </div>
         </div>
@@ -191,7 +191,7 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict) | startFrom:(adtLog.currentPage - 1) * adtLog.pageSize | limitTo: adtLog.pageSize | orderBy:adtLog.filter.sortBy:adtLog.sortReverse">
+                        <tbody ng-repeat="auditLog in filtered = (auditLogs | filter: filterString:strict)  | orderBy:adtLog.filter.sortBy:adtLog.sortReverse | startFrom:(adtLog.currentPage - 1) * adtLog.pageSize | limitTo: adtLog.pageSize">
                         <tr>
                             <td nowrap>
                                 <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>

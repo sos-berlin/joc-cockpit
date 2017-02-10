@@ -1,6 +1,7 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
-        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img
+                src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate>label.startJob</h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
@@ -11,6 +12,7 @@
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 " translate>label.startTime</label>
+
                 <div class=" col-md-8" ng-init="job.at = 'now'">
                     <label class="md-check ">
                         <input type="radio" name="radio" ng-model="job.at" value="now">
@@ -23,10 +25,12 @@
                 </div>
             </div>
             <div class="form-group row" ng-if="job.at == 'now'">
-                <label class="col-sm-4 form-control-label"  translate>label.enterStartTime</label>
+                <label class="col-sm-4 form-control-label" translate>label.enterStartTime</label>
 
                 <div class="col-sm-6" ng-class="{ 'has-error' : form.atTime.$invalid && form.atTime.$dirty }">
-                    <input valid-date-regex ng-required="job.at == 'now'" type="text" class="form-control"  name="atTime"  ng-model="job.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}">
+                    <input valid-date-regex ng-required="job.at == 'now'" type="text" class="form-control" name="atTime"
+                           ng-model="job.atTime" placeholder="{{'placeholder.enterStartTime' | translate}}">
+
                     <div class="help-block text-danger" ng-messages="form.atTime.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                         <div ng-message="required" translate>message.requiredError</div>
@@ -37,8 +41,10 @@
                 <label class="col-sm-4 form-control-label" translate>label.enterDateAndTime</label>
 
                 <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input class="form-control input-time" ng-model="fromTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                    <input class="form-control input-date" ng-model="fromDate" data-date-format="{{dataFormat}}"
+                           data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                    <input class="form-control input-time" ng-model="fromTime" data-time-format="HH:mm:ss"
+                           data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
                 </div>
             </div>
             <div class="form-group row hide" ng-class="{'show': display}">

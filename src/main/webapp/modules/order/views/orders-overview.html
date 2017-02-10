@@ -441,7 +441,7 @@
                                             <li class="nav-item">
                                               <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showLogFuc(showLogPanel)" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
                                             </li>
-                                              <li class="nav-item">
+                                              <li class="nav-item" ng-if="permission.AuditLog.view.status">
                                                     <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
                                                 </li>
                                           </ul>
@@ -504,13 +504,13 @@
                                                         <td><span ng-bind="auditLog.request"></span></td>
                                                         <td width="30"><span ng-bind="auditLog.parameters"></span></td>
                                                         <!--<td><span ng-bind="auditLog.orderId"></span></td>-->
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>
                                                             <span ng-if="auditLog.timeSpent">
                                                                 <span ng-bind="auditLog.timeSpent"></span>
                                                                 <span>m</span>
                                                             </span>
                                                         </td>
-                                                        <td><span ng-bind="auditLog.timeSpent"></span></td>
                                                         <td><span ng-bind="auditLog.ticketLink"></span></td>
                                                     </tr>
                                                     </tbody>

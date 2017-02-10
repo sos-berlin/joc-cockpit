@@ -1238,7 +1238,7 @@
                 if (vm.schedules.length > 0) {
                     angular.forEach(vm.schedules, function (schedule) {
                         for (var i = 0; i < res.schedules.length; i++) {
-                            if (schedule.name == res.schedules[i].name) {
+                            if (schedule.path == res.schedules[i].path) {
                                 schedule = angular.merge(schedule, res.schedules[i]);
                                 data.push(schedule);
                                 break;
@@ -1299,7 +1299,7 @@
                 if (data.schedules && data.schedules.length > 0) {
                     angular.forEach(data.schedules, function (schedule) {
                         for (var i = 0; i < res.schedules.length; i++) {
-                            if (schedule.name == res.schedules[i].name) {
+                            if (schedule.path == res.schedules[i].path) {
                                 schedule = angular.merge(schedule, res.schedules[i]);
                                 data1.push(schedule);
                                 break;
@@ -1359,7 +1359,7 @@
                 if (data.schedules.length > 0) {
                     angular.forEach(data.schedules, function (schedule) {
                         for (var i = 0; i < res.schedules.length; i++) {
-                            if (schedule.name == res.schedules[i].name) {
+                            if (schedule.path == res.schedules[i].path) {
                                 schedule = angular.merge(schedule, res.schedules[i]);
                                 data1.push(schedule);
                                 break;
@@ -1463,7 +1463,7 @@
                 data.folders = orderBy(data.folders, 'name');
                 data.schedules = [];
                 angular.forEach(vm.schedules, function (value) {
-                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/'))) {
+                    if (data.path == value.path.substring(0, value.path.lastIndexOf('/')) || data.path == value.path.substring(0, value.path.lastIndexOf('/')+1)) {
                         data.schedules.push(value);
                         value.path1 = data.path;
                         vm.allSchedules.push(value);
@@ -3445,6 +3445,14 @@
             });
         };
 
+        vm.makePrivate = function (configObj) {
+             configObj.shared = false;
+            UserService.privateConfiguration(configObj);
+        };
+        vm.makeShare = function (configObj) {
+            configObj.shared = true;
+            UserService.shareConfiguration(configObj);
+        };
         vm.favorite = function (filter) {
             vm.savedDailyPlanFilter.favorite = filter.name;
             vm.dailyPlanFilters.selectedView = true;

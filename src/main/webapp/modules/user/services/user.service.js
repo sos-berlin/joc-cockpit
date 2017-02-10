@@ -158,7 +158,7 @@
                 var deferred = $q.defer();
                 var Touch = $resource('touch');
 
-                Touch.save({}, function (res) {
+                Touch.save(function (res) {
                     deferred.resolve(res);
                 }, function (error) {
                     deferred.reject(error);

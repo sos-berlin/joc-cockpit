@@ -11,6 +11,7 @@
                         <tr>
                             <th translate>label.srNo</th>
                             <th translate>label.filterName</th>
+                            <th translate>label.account</th>
                             <th translate>label.action</th>
                         </tr>
                         </thead>
@@ -20,13 +21,17 @@
                                 <td>
                                     <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite == filter.name" href="" ng-click="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
                                     <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name" href="" ng-click="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
-                                    {{filter.name}}</td>
+                                    {{filter.name}} <label ng-if="filter.shared" class="label label-info" translate>label.share</label>
+                                </td>
+                                <td>{{filter.account}}</td>
                                 <td>
                                     <div class="btn-group dropdown">
                                         <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                 class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                            <a class="dropdown-item " ng-if="permission.JOCConfigurations.share.change.editContent || filter.account==username" ng-click="ok();editFilter(filter)" translate>button.edit</a>
+                                            <a class="dropdown-item" ng-if="permission.JOCConfigurations.share.change.editContent || filter.account==username" ng-click="ok();editFilter(filter)" translate>button.edit</a>
+                                            <a class="dropdown-item" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makePrivate && filter.shared" ng-click="makePrivate(filter)" translate>button.makePrivate</a>
+                                            <a class="dropdown-item" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared && filter.account==username && !filter.shared" ng-click="makeShare(filter)" translate>button.share</a>
                                             <a class="dropdown-item bg-hover-color" ng-if="permission.JOCConfigurations.share.change.delete || filter.account==username" ng-click="ok();deleteFilter(filter.name)" translate>button.delete</a>
                                         </div>
                                     </div>

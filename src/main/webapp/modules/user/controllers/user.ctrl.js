@@ -11,8 +11,8 @@
         .controller('AuditLogCtrl', AuditLogCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog','AuditLogService'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog,AuditLogService) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog','AuditLogService','$resource'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog,AuditLogService,$resource) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
@@ -52,13 +52,22 @@
             configObj.account = user;
             configObj.configurationType = "PROFILE";
             UserService.configuration(configObj).then(function (res) {
+                var preferences = {};
                 if (res.configuration && res.configuration.configurationItem) {
                     $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                     document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
-                    $window.localStorage.$SOS$THEME = JSON.parse($window.sessionStorage.preferences).theme;
+                    preferences = JSON.parse($window.sessionStorage.preferences);
+                    $window.localStorage.$SOS$THEME = preferences.theme;
+                    if(preferences.locale != $rootScope.locale.lang) {
+                        $window.localStorage.$SOS$LANG = preferences.locale;
+                        $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
+                            gettextCatalog.setCurrentLanguage(preferences.locale);
+                            gettextCatalog.setStrings(preferences.locale, data);
+                        });
+                    }
                 } else {
-                    var preferences = {};
                     preferences.zone = jstz().timezone_name;
+                    preferences.locale = $rootScope.locale.lang;
                     preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                     preferences.maxRecords = 10000;
                     preferences.maxHistoryPerOrder = 30;
@@ -71,9 +80,9 @@
                     preferences.theme = 'light';
                     preferences.showTasks = true;
                     preferences.showOrders = false;
-                    if($window.sessionStorage.$SOS$FORCELOGING === 'true')
-                    preferences.auditLog = true;
-                    preferences.events ={};
+                    if ($window.sessionStorage.$SOS$FORCELOGING === 'true')
+                        preferences.auditLog = true;
+                    preferences.events = {};
 
                     preferences.events.filter = JSON.stringify([
                         'JobChainStopped', 'OrderStarted', 'OrderSetback',
@@ -84,39 +93,40 @@
                     preferences.events.jobChainCount = 1;
                     preferences.events.positiveOrderCount = 1;
                     preferences.events.negativeOrderCount = 2;
-                     $window.sessionStorage.preferences = JSON.stringify(preferences);
+                    $window.sessionStorage.preferences = JSON.stringify(preferences);
 
                 }
 
                 $rootScope.$broadcast('reloadPreferences');
-            },function(){
-                                    var preferences = {};
-                    preferences.zone = jstz().timezone_name;
-                    preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
-                    preferences.maxRecords = 10000;
-                    preferences.maxHistoryPerOrder = 30;
-                    preferences.maxHistoryPerTask = 10;
-                    preferences.maxHistoryPerJobchain = 30;
-                    preferences.maxOrderPerJobchain = 5;
-                    preferences.maxAuditLogPerObject = 10;
-                    preferences.maxEntryPerPage = 1000;
-                    preferences.isNewWindow = 'newWindow';
-                    preferences.theme = 'light';
-                    preferences.showTasks = true;
-                    preferences.showOrders = false;
-                    if($window.sessionStorage.$SOS$FORCELOGING === 'true')
+            }, function () {
+                var preferences = {};
+                preferences.zone = jstz().timezone_name;
+                preferences.locale = $rootScope.locale.lang;
+                preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
+                preferences.maxRecords = 10000;
+                preferences.maxHistoryPerOrder = 30;
+                preferences.maxHistoryPerTask = 10;
+                preferences.maxHistoryPerJobchain = 30;
+                preferences.maxOrderPerJobchain = 5;
+                preferences.maxAuditLogPerObject = 10;
+                preferences.maxEntryPerPage = 1000;
+                preferences.isNewWindow = 'newWindow';
+                preferences.theme = 'light';
+                preferences.showTasks = true;
+                preferences.showOrders = false;
+                if ($window.sessionStorage.$SOS$FORCELOGING === 'true')
                     preferences.auditLog = true;
-                    preferences.events ={};
+                preferences.events = {};
 
-                    preferences.events.filter = JSON.stringify([
-                        'JobChainStopped', 'OrderStarted', 'OrderSetback',
-                        'OrderSuspended'
-                    ]);
-                    preferences.events.taskCount = 0;
-                    preferences.events.jobCount = 0;
-                    preferences.events.jobChainCount = 1;
-                    preferences.events.positiveOrderCount = 1;
-                    preferences.events.negativeOrderCount = 2;
+                preferences.events.filter = JSON.stringify([
+                    'JobChainStopped', 'OrderStarted', 'OrderSetback',
+                    'OrderSuspended'
+                ]);
+                preferences.events.taskCount = 0;
+                preferences.events.jobCount = 0;
+                preferences.events.jobChainCount = 1;
+                preferences.events.positiveOrderCount = 1;
+                preferences.events.negativeOrderCount = 2;
                 $window.sessionStorage.preferences = JSON.stringify(preferences);
 
                 $rootScope.$broadcast('reloadPreferences');
@@ -221,15 +231,13 @@
         vm.locales = $rootScope.locales;
         vm.preferences = JSON.parse($window.sessionStorage.preferences);
         vm.timezone = jstz().timezone_name;
-        vm.preferences.locale = $rootScope.locale;
+   
 
         vm.setLocale = function () {
-            vm.locale = vm.preferences.locale;
-            $rootScope.locale = vm.locale;
-            $window.localStorage.$SOS$LANG = vm.locale.lang;
-            $resource("modules/i18n/language_" + vm.locale.lang + ".json").get(function (data) {
-                gettextCatalog.setCurrentLanguage(vm.locale.lang);
-                gettextCatalog.setStrings(vm.locale.lang, data);
+            $window.localStorage.$SOS$LANG = vm.preferences.locale;
+            $resource("modules/i18n/language_" + vm.preferences.locale + ".json").get(function (data) {
+                gettextCatalog.setCurrentLanguage(vm.preferences.locale);
+                gettextCatalog.setStrings(vm.preferences.locale, data);
             });
             configObj.configurationItem = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
@@ -239,6 +247,7 @@
             vm.forceLoging = true;
             vm.preferences.auditLog = true;
         }
+
         vm.changeTheme = function (theme) {
             document.getElementById('style-color').href = 'css/' + theme + '-style.css';
             $window.localStorage.$SOS$THEME = theme;

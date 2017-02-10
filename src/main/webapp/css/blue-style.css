@@ -615,3 +615,6 @@ span.cdata {
 #cal-week-box {
     background-color: #3f5669;
 }
+button#exportToExcelBtn {
+    background: #3f5669 url("../images/export-lt.png") no-repeat scroll center center;
+}

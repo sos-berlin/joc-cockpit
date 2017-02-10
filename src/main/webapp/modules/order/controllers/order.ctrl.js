@@ -130,6 +130,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
+            if(vm.permission.AuditLog.view.status)
             loadAuditLogs(obj);
         };
 
@@ -209,9 +210,11 @@
         $scope.$on("reloadJobChain", function () {
             loadJobChain();
             loadHistory();
+            if(vm.permission.AuditLog.view.status)
             loadAuditLogs();
         });
         loadHistory();
+        if(vm.permission.AuditLog.view.status)
         loadAuditLogs();
 
         vm.getJobInfo = getJobInfo;
@@ -3027,6 +3030,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
+            if(vm.permission.AuditLog.view.status)
             loadAuditLogs(obj);
         };
 
@@ -3176,6 +3180,15 @@
                 SavedFilter.setOrder(vm.savedOrderFilter);
                 SavedFilter.save();
             });
+        };
+
+        vm.makePrivate = function (configObj) {
+             configObj.shared = false;
+            UserService.privateConfiguration(configObj);
+        };
+        vm.makeShare = function (configObj) {
+            configObj.shared = true;
+            UserService.shareConfiguration(configObj);
         };
 
         vm.favorite = function (filter) {
@@ -3751,6 +3764,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
             obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
+            if(vm.permission.AuditLog.view.status)
             loadAuditLogs(obj);
         };
         if (vm.orderFilters && vm.orderFilters.showLogPanel) {
@@ -5778,6 +5792,15 @@
                 SavedFilter.setHistory(vm.historyFilterObj);
                 SavedFilter.save();
             });
+        };
+
+        vm.makePrivate = function (configObj) {
+             configObj.shared = false;
+            UserService.privateConfiguration(configObj);
+        };
+        vm.makeShare = function (configObj) {
+            configObj.shared = true;
+            UserService.shareConfiguration(configObj);
         };
 
         vm.favorite = function (filter) {

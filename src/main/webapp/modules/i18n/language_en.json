@@ -888,5 +888,7 @@
   "label.timeSpend": "Time Spent",
   "label.ticketLink": "Ticket Link",
   "placeholder.timeSpend": "Time Spent in minutes",
-  "placeholder.ticketLink": "Enter ticket link"
+  "placeholder.ticketLink": "Enter ticket link",
+  "button.share": "Share",
+  "button.makePrivate": "Make Private"
 }

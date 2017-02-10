@@ -103,7 +103,7 @@
                                 </a>
                             </div>
                         </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || allOrders.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i class="fa fa-share"></i></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || allOrders.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                          <toggle-view></toggle-view>
                     </div>
 
@@ -478,9 +478,9 @@
                                             <li class="nav-item">
                                               <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showLogFuc(showLogPanel)" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
                                             </li>
-                                              <li class="nav-item">
-                                                    <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
-                                                </li>
+                                            <li class="nav-item" ng-if="permission.AuditLog.view.status">
+                                                <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
+                                            </li>
                                           </ul>
                                         </div>
                                          <div class="tab-content p-a">

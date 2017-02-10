@@ -888,5 +888,7 @@
   "label.timeSpend": "Zeitaufwand",
   "label.ticketLink": "Ticket Link",
   "placeholder.timeSpend": "Zeitaufwand in Minuten",
-  "placeholder.ticketLink": "Ticket Link eingeben"
+  "placeholder.ticketLink": "Ticket Link eingeben",
+  "button.share": "Share",
+  "button.makePrivate": "Make Private"
 }
