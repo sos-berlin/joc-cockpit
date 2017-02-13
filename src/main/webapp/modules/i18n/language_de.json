@@ -471,7 +471,6 @@
   "label.view": "Anzeigen",
   "label.viewConfiguration": "Konfiguration anzeigen",
   "label.viewHistory": "Historie anzeigen",
-  "label.viewOrderlog": "Auftragsprotokoll anzeigen",
   "label.changeStartAndEndNode": "Start- und Endknoten ändern",
   "label.changeTimeForAdhocOrder": "Startzeit für Ad Hoc Auftrag ändern",
   "label.changeParameters": "Parameter ändern",
