@@ -2315,8 +2315,8 @@
         });
     }
 
-    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog", "CoreService", "$timeout", "AuditLogService"];
-    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, toasty, gettextCatalog, CoreService, $timeout, AuditLogService) {
+    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog", "CoreService", "$timeout", "AuditLogService","$location"];
+    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, toasty, gettextCatalog, CoreService, $timeout, AuditLogService,$location) {
         var vm = $scope;
 
         vm.orderFilters = CoreService.getOrderTab();
@@ -2349,7 +2349,55 @@
             field: "name"
         };
 
-        getCustomizations();
+          if($location.search().scheduler_id && $location.search().path){
+            getOrderByPath($location.search().path);
+        }else {
+            checkSharedFilters();
+        }
+
+        function getOrderByPath(path){
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            obj.orders = [{order:path}];
+            OrderService.getOrdersP(obj).then(function (result) {
+                vm.orders = result.orders;
+                getOrderByPathV(obj);
+                 vm.isLoading = true;
+            }, function () {
+                getOrderByPathV(obj);
+                 vm.isLoading = true;
+            });
+        }
+
+        function getOrderByPathV(obj){
+            OrderService.get(obj).then(function (res) {
+                if(vm.orders){
+                    vm.orders = angular.merge(vm.orders,res.orders)
+                }else{
+                     vm.orders = res.orders;
+                }
+            });
+        }
+
+        function checkSharedFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "ORDER";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    if (res.configurations && res.configurations.length > 0)
+                        vm.orderFilterList = res.configurations;
+                    getCustomizations();
+                },function(){
+                    getCustomizations();
+                });
+            }else{
+                getCustomizations();
+            }
+        }
 
         function getCustomizations() {
             var obj = {};
@@ -2359,7 +2407,11 @@
             obj.objectType = "ORDER";
             UserService.configurations(obj).then(function (res) {
                 if (res.configurations && res.configurations.length > 0) {
-                    vm.orderFilterList = res.configurations;
+                    if(vm.orderFilterList && vm.orderFilterList.length>0){
+                        vm.orderFilterList = vm.orderFilterList.concat(res.configurations);
+                    }else {
+                        vm.orderFilterList = res.configurations;
+                    }
                     if (vm.savedOrderFilter.selected) {
                         var flag = true;
                         angular.forEach(vm.orderFilterList, function (value) {
@@ -2373,9 +2425,11 @@
                             }
                         });
                         if (flag) {
+                            vm.savedOrderFilter.selected = undefined;
                             initTree();
                         }
                     } else {
+                         vm.savedOrderFilter.selected = undefined;
                         initTree();
                     }
                 } else {
@@ -3183,7 +3237,7 @@
         };
 
         vm.makePrivate = function (configObj) {
-             configObj.shared = false;
+            delete configObj.shared;
             UserService.privateConfiguration(configObj);
         };
         vm.makeShare = function (configObj) {
@@ -4892,6 +4946,43 @@
         else
             vm.savedJobHistoryFilter.selected = undefined;
 
+        function checkSharedFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "ORDER_HISTORY";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    if (res.configurations && res.configurations.length > 0)
+                        vm.orderHistoryFilterList = res.configurations;
+                    getOrderCustomizations();
+                },function(){
+                    getOrderCustomizations();
+                });
+            }else{
+                getOrderCustomizations();
+            }
+        }
+
+        function checkSharedTaskFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "TASK_HISTORY";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    if (res.configurations && res.configurations.length > 0)
+                        vm.jobHistoryFilterList = res.configurations;
+                    getTaskCustomizations();
+                },function(){
+                    getTaskCustomizations();
+                });
+            }else{
+                getTaskCustomizations();
+            }
+        }
 
         var configObj = {};
         configObj.jobschedulerId = vm.schedulerIds.selected;
@@ -4904,9 +4995,12 @@
             obj.configurationType = "CUSTOMIZATION";
             obj.objectType = "ORDER_HISTORY";
             UserService.configurations(obj).then(function (res) {
-
                 if (res.configurations && res.configurations.length > 0) {
-                    vm.orderHistoryFilterList = res.configurations;
+                    if(vm.orderHistoryFilterList && vm.orderHistoryFilterList.length>0){
+                        vm.orderHistoryFilterList = vm.orderHistoryFilterList.concat(res.configurations);
+                    }else {
+                        vm.orderHistoryFilterList = res.configurations;
+                    }
 
                     if (vm.savedHistoryFilter.selected) {
                         var flag = true;
@@ -4952,7 +5046,11 @@
             UserService.configurations(obj).then(function (res) {
 
                 if (res.configurations && res.configurations.length > 0) {
-                    vm.jobHistoryFilterList = res.configurations;
+                     if(vm.jobHistoryFilterList && vm.jobHistoryFilterList.length>0){
+                        vm.jobHistoryFilterList = vm.jobHistoryFilterList.concat(res.configurations);
+                    }else {
+                         vm.jobHistoryFilterList = res.configurations;
+                     }
 
                     if (vm.savedJobHistoryFilter.selected) {
                         var flag = true;
@@ -4982,8 +5080,8 @@
             });
         }
 
-        getOrderCustomizations();
-        getTaskCustomizations();
+        checkSharedFilters();
+        checkSharedTaskFilters();
 
         function getIgnoreList() {
             var configObj = {};
@@ -5795,7 +5893,7 @@
         };
 
         vm.makePrivate = function (configObj) {
-             configObj.shared = false;
+            delete configObj.shared;
             UserService.privateConfiguration(configObj);
         };
         vm.makeShare = function (configObj) {

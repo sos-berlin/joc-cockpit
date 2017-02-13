@@ -2177,7 +2177,7 @@
                 },
                 duration: 500,
                 interactive: true,
-                noData: gettextCatalog.getString('message.noDataFound')
+                noData: gettextCatalog.getString('message.noDataAvailable')
 
             }
         };
@@ -2194,7 +2194,6 @@
                 showLabels: true,
                 labelType: 'percent',
                 showLegend: false,
-                noData: gettextCatalog.getString('message.noDataFound'),
                 color: function (d, i) {
                     return bgColorArray[i];
                 },
@@ -2222,10 +2221,7 @@
 
                     }
                 }
-
-
             }
-
         };
 
         vm.getAgentClusterRunningTask = function () {
@@ -2874,7 +2870,24 @@
         else
             vm.savedDailyPlanFilter.selected = undefined;
 
-
+        function checkSharedFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "DAILYPLAN";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    if (res.configurations && res.configurations.length > 0)
+                        vm.dailyPlanFilterList = res.configurations;
+                    getCustomizations();
+                }, function () {
+                    getCustomizations();
+                });
+            } else {
+                getCustomizations();
+            }
+        }
 
         function getCustomizations() {
             var obj = {};
@@ -2884,7 +2897,11 @@
             obj.objectType = "DAILYPLAN";
             UserService.configurations(obj).then(function (res) {
                 if (res.configurations && res.configurations.length > 0) {
-                    vm.dailyPlanFilterList = res.configurations;
+                    if (vm.dailyPlanFilterList && vm.dailyPlanFilterList.length > 0) {
+                        vm.dailyPlanFilterList = vm.dailyPlanFilterList.concat(res.configurations);
+                    } else {
+                        vm.dailyPlanFilterList = res.configurations;
+                    }
                     if (vm.savedDailyPlanFilter.selected) {
                         var flag = true;
                         angular.forEach(vm.dailyPlanFilterList, function (value) {
@@ -3026,7 +3043,7 @@
             targetDataAddRowIndex: undefined,
             api: function (api) {
                 api.core.on.ready(vm, function () {
-                    getCustomizations();
+                    checkSharedFilters();
                 });
             }
         };
@@ -3446,7 +3463,7 @@
         };
 
         vm.makePrivate = function (configObj) {
-             configObj.shared = false;
+             delete configObj.shared;
             UserService.privateConfiguration(configObj);
         };
         vm.makeShare = function (configObj) {

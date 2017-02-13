@@ -200,9 +200,9 @@
                             </td>
                             <td><span ng-bind="auditLog.account"></span></td>
                             <td><span ng-bind="auditLog.request"></span></td>
-                            <td><span ng-bind="auditLog.jobChain"></span></td>
-                            <td><span ng-bind="auditLog.orderId"></span></td>
-                            <td><span ng-bind="auditLog.job"></span></td>
+                            <td><span ng-click="showJobChain(auditLog.jobChain);" class="text-hover-primary" ng-bind="auditLog.jobChain"></span></td>
+                            <td><span ng-click="showOrderLink(auditLog.jobChain);" class="text-hover-primary" ng-bind="auditLog.orderId"></span></td>
+                            <td><span ng-click="showJob(auditLog.job);" class="text-hover-primary" ng-bind="auditLog.job"></span></td>
                             <td><span ng-bind="auditLog.comment"></span></td>
                             <td>
                                 <span ng-if="auditLog.timeSpent">

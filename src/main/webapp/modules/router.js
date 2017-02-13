@@ -205,11 +205,14 @@
             })
              .state('app.job', {
                 url: '/job',
-                templateUrl: 'modules/job/views/job_info.html',
-                controller: 'JobInfoCtrl'
+                templateUrl: 'modules/job/views/job-info.html',
+                controller: 'JobCtrl',
+                ncyBreadcrumb: {
+                    skip: true
+                }
 
             })
-            .state('app.jobChain', {
+            .state('app.jobChains', {
                 url: '/jobChains',
                 templateUrl: 'modules/job/views/job-chain.html',
                 controller: 'JobChainCtrl',
@@ -217,13 +220,22 @@
                     label: '{{ \'breadcrumb.jobChains\' | translate}}'
                 }
             })
+            .state('app.jobChain', {
+                url: '/job_chain',
+                templateUrl: 'modules/job/views/job-chain-info.html',
+                controller: 'JobChainCtrl',
+                ncyBreadcrumb: {
+                    skip: true
+                }
+
+            })
             .state('app.jobChainDetails', {
                 url: '/jobChainDetails',
                 templateUrl: 'modules/order/views/job-chain-details.html',
                 controller: 'JobChainDetailsCtrl',
                 ncyBreadcrumb: {
                     label: '{{jobChain.name}}',
-                    parent: 'app.jobChain'
+                    parent: 'app.jobChains'
                 }
             })
             .state('app.jobChainDetails.orders', {
@@ -251,7 +263,15 @@
                     label: '{{ \'breadcrumb.orders\' | translate}}'
                 }
             })
+            .state('app.order', {
+                url: '/order',
+                templateUrl: 'modules/job/views/order-info.html',
+                controller: 'JobChainCtrl',
+                ncyBreadcrumb: {
+                    skip: true
+                }
 
+            })
             .state('app.ordersOverview', {
                 url: '/orders/:name',
                 templateUrl: 'modules/order/views/orders-overview.html',

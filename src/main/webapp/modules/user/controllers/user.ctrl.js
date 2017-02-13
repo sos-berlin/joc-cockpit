@@ -57,6 +57,12 @@
                     $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                     document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
                     preferences = JSON.parse($window.sessionStorage.preferences);
+
+                    if(($window.sessionStorage.$SOS$FORCELOGING=== 'true' || $window.sessionStorage.$SOS$FORCELOGING==true) && !preferences.auditLog){
+                        preferences.auditLog =true;
+                        $window.sessionStorage.preferences = JSON.stringify(preferences);
+                    }
+
                     $window.localStorage.$SOS$THEME = preferences.theme;
                     if(preferences.locale != $rootScope.locale.lang) {
                         $window.localStorage.$SOS$LANG = preferences.locale;
@@ -75,26 +81,24 @@
                     preferences.maxHistoryPerJobchain = 30;
                     preferences.maxOrderPerJobchain = 5;
                     preferences.maxAuditLogPerObject = 10;
-                    preferences.maxEntryPerPage = 1000;
+                    preferences.maxEntryPerPage = '1000';
                     preferences.isNewWindow = 'newWindow';
                     preferences.theme = 'light';
                     preferences.showTasks = true;
                     preferences.showOrders = false;
-                    if ($window.sessionStorage.$SOS$FORCELOGING === 'true')
+                    if ($window.sessionStorage.$SOS$FORCELOGING === 'true'|| $window.sessionStorage.$SOS$FORCELOGING==true)
                         preferences.auditLog = true;
                     preferences.events = {};
 
-                    preferences.events.filter = JSON.stringify([
-                        'JobChainStopped', 'OrderStarted', 'OrderSetback',
-                        'OrderSuspended'
-                    ]);
+                    preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
                     preferences.events.taskCount = 0;
                     preferences.events.jobCount = 0;
                     preferences.events.jobChainCount = 1;
                     preferences.events.positiveOrderCount = 1;
                     preferences.events.negativeOrderCount = 2;
-                    $window.sessionStorage.preferences = JSON.stringify(preferences);
-
+                    configObj.configurationItem = JSON.stringify(preferences);
+                    $window.sessionStorage.preferences = configObj.configurationItem;
+                    UserService.saveConfiguration(configObj);
                 }
 
                 $rootScope.$broadcast('reloadPreferences');
@@ -109,19 +113,15 @@
                 preferences.maxHistoryPerJobchain = 30;
                 preferences.maxOrderPerJobchain = 5;
                 preferences.maxAuditLogPerObject = 10;
-                preferences.maxEntryPerPage = 1000;
+                preferences.maxEntryPerPage = '1000';
                 preferences.isNewWindow = 'newWindow';
                 preferences.theme = 'light';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
-                if ($window.sessionStorage.$SOS$FORCELOGING === 'true')
+                if ($window.sessionStorage.$SOS$FORCELOGING === 'true'|| $window.sessionStorage.$SOS$FORCELOGING==true)
                     preferences.auditLog = true;
                 preferences.events = {};
-
-                preferences.events.filter = JSON.stringify([
-                    'JobChainStopped', 'OrderStarted', 'OrderSetback',
-                    'OrderSuspended'
-                ]);
+                preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
                 preferences.events.taskCount = 0;
                 preferences.events.jobCount = 0;
                 preferences.events.jobChainCount = 1;
@@ -220,7 +220,7 @@
         configObj.configurationType ="PROFILE";
 
         UserService.configuration(configObj).then(function (res) {
-            if (res.configuration && res.configuration.account) {
+            if (res.configuration && res.configuration.configurationItem) {
                 $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                 vm.preferences = JSON.parse($window.sessionStorage.preferences);
                 vm.changeTheme(vm.preferences.theme);
@@ -229,9 +229,10 @@
 
         vm.zones = moment.tz.names();
         vm.locales = $rootScope.locales;
+
         vm.preferences = JSON.parse($window.sessionStorage.preferences);
+
         vm.timezone = jstz().timezone_name;
-   
 
         vm.setLocale = function () {
             $window.localStorage.$SOS$LANG = vm.preferences.locale;
@@ -254,6 +255,7 @@
             configObj.configurationItem = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
+
         vm.changeConfiguration = function (reload) {
            
             if (isNaN(parseInt(vm.preferences.maxRecords))) {

@@ -15,8 +15,8 @@
         .controller('CommonLogCtrl', CommonLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService','$state'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService,$state) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService','$state', 'UserService'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService,$state, UserService) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -46,14 +46,25 @@
                 console.log(e)
             }
         });
-        if ($window.sessionStorage.clientLogFilter) {
-            $rootScope.clientLogFilter = JSON.parse($window.sessionStorage.clientLogFilter);
-        } else {
-            $rootScope.clientLogFilter = {};
-            $rootScope.clientLogFilter.state = true;
-            $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
-            $window.sessionStorage.clientLogFilter = JSON.stringify(vm.clientLogFilter);
+
+        $rootScope.clientLogFilter = {};
+        $rootScope.clientLogFilter.state = true;
+        $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
+        function loadSettingConfiguration() {
+            var configObj = {};
+            configObj.jobschedulerId = $scope.schedulerIds.selected;
+            configObj.account = $scope.permission.user;
+            configObj.configurationType = "SETTING";
+
+            UserService.configuration(configObj).then(function (res) {
+                if (res.configuration && res.configuration.configurationItem) {
+                    $window.sessionStorage.clientLogFilter = JSON.parse(res.configuration.configurationItem);
+                } else {
+                    $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+                }
+            });
         }
+
 
         vm.logFilter = function (log) {
             return $rootScope.clientLogFilter.status.indexOf(log.level) !== -1;
@@ -63,8 +74,14 @@
         };
 
         var watcher = vm.$watchCollection('clientLogFilter', function (newNames, oldValues) {
-            if (newNames && oldValues) {
+            if (newNames && oldValues && vm.schedulerIds.selected && vm.permission.user) {
                 $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+                var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "SETTING";
+                configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
+                UserService.saveConfiguration(configObj);
             }
         });
 
@@ -167,6 +184,7 @@
             vm.username = SOSAuth.currentUserData;
             setPermission();
             setIds();
+            loadSettingConfiguration();
         });
 
         function setPermission() {
@@ -366,7 +384,6 @@
         };
 
         vm.copyLinkToObject = function (objType, path) {
-            console.log("Obj type " + objType + " path " + path + " url " + $location.absUrl() + " url " + $location.url());
             var link = '';
             var regEx = /(.+)\/#!/;
             if (!regEx.test($location.absUrl())) {
@@ -377,22 +394,22 @@
             console.log("Host " + host);
             if (objType == 'jobChain' && path) {
                 link = host + 'job_chain?path=' + path;
-            }else if (objType == 'job' && path) {
+            } else if (objType == 'job' && path) {
                 link = host + 'job?path=' + path;
-            }else if (objType == 'order' && path) {
+            } else if (objType == 'order' && path) {
                 link = host + 'order?path=' + path;
-            }else if (objType == 'agentClusters' && path) {
-                link = host + 'agent-clusters?path=' + path;
-            }else if (objType == 'locks' && path) {
-                link = host + 'locks?path=' + path;
-            }else if (objType == 'process-classes' && path) {
-                link = host + 'processClasses?path=' + path;
-            }else if (objType == 'schedules' && path) {
-                link = host + 'schedules?path=' + path;
+            } else if (objType == 'agentCluster' && path) {
+                link = host + 'agent_cluster?path=' + path;
+            } else if (objType == 'lock' && path) {
+                link = host + 'lock?path=' + path;
+            } else if (objType == 'processClass' && path) {
+                link = host + 'process_class?path=' + path;
+            } else if (objType == 'schedule' && path) {
+                link = host + 'schedule?path=' + path;
             }
-            if(link!==''){
-                console.log("Link " + link);
-                clipboard.copyText(link);
+            if (link !== '') {
+                console.log("Link " + link+'&scheduler_id='+ vm.schedulerIds.selected);
+                clipboard.copyText(link+'&scheduler_id='+ vm.schedulerIds.selected);
             }
         };
 
@@ -433,7 +450,7 @@
         var vm = $scope;
         toasty.clear();
 
-        function getDateFormate() {
+        function getDateFormat() {
             vm.dataFormat = vm.userPreferences.dateFormat;
             if (vm.dataFormat.match('HH:mm')) {
                 vm.dataFormat = vm.dataFormat.replace('HH:mm', '');
@@ -458,7 +475,8 @@
             vm.dataFormat = vm.dataFormat.trim();
         }
 
-        getDateFormate();
+        if (vm.userPreferences)
+            getDateFormat();
 
         vm.currentTime = moment();
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
@@ -532,7 +550,7 @@
             var date = new Date(vm.selectedJobScheduler.startedAt);
             date.setMilliseconds(date.getMilliseconds() + 1);
             vm.selectedJobScheduler.startedAt = date;
-            getDateFormate();
+            getDateFormat();
         });
 
         var logout = false;
@@ -957,7 +975,6 @@
                 showGroupEvent.readCount = 0;
             }
         };
-
 
 
         $scope.$on('$destroy', function () {

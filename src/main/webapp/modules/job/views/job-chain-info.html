@@ -4,30 +4,19 @@
             <div class="padding">
                 <div class="text-right ">
                     <div class="pull-left">
-                        <span class="text-md text-orange _600 p-t-xs" >Job Chains</span>
+                        <span class="text-md text-orange _600 p-t-xs" translate>label.jobChain</span>
                     </div>
                 </div>
-                <div class="hide" ng-class="{'show-block':object.jobChains.length>0}">
-                        <!--<button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-click="reset()"><span translate>button.reset</span></button>-->
-                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped"
-                                ng-class="{'show-block':permission.JobChain.stop}" ng-click="stopAll()"><i
-                                class="fa fa-stop"></i> <span translate>button.stop</span></button>
-                        <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isUnstopped"
-                                ng-class="{'show-block':permission.JobChain.unstop}" ng-click="unstopAll()"><i
-                                class="fa fa-play"></i> <span translate>button.unstop</span></button>
-                    </div>
             </div>
         </div>
     </div>
 </div>
-
-<div class="padding p-b-0">
-    <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
-
-                <div class="hide box p-a" ng-class="{'show':allJobChains.length>0}">
-                    <div class="table-responsive" >
-                        <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
-                            <thead>
+<div class="scroll-y max-ht">
+    <div class="hide m-t-sm" ng-class="{'show': isLoading}">
+        <div class="hide box p-a" ng-class="{'show':jobChains.length>0}">
+            <div class="table-responsive" >
+                <table class="table table-hover table-bordered " id="jobChainTableId" ng-controller="OrderFunctionCtrl">
+                    <thead>
                             <tr>
                                 <th><span translate>label.jobChain</span></th>
                                 <th><span translate>label.path</span></th>
@@ -42,7 +31,7 @@
                                 <th><span translate>label.orderBlacklist</span></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in allJobChains">
+                            <tbody ng-repeat="jobChain in jobChains">
                             <tr title="{{jobChain.configurationStatus._text | translate}}">
 
                                 <td class="nowrap">
@@ -361,7 +350,7 @@
 </div>
 
 <script>
-$('.table-responsive').on('shown.bs.dropdown', function (e) {
+   $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),
         $menu = $(e.target).find('.dropdown-menu'),
         tableOffsetHeight = $table.offset().top + $table.height(),
@@ -372,6 +361,7 @@ $('.table-responsive').on('shown.bs.dropdown', function (e) {
   });
 
   $('.table-responsive').on('hide.bs.dropdown', function () {
-    $(this).css("padding-bottom", 0);
+      $(this).css("padding-bottom", 0);
   });
+
 </script>
