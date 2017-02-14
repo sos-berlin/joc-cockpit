@@ -890,12 +890,12 @@
   "placeholder.ticketLink": "Ticket Link eingeben",
   "button.share": "Teilen",
   "button.makePrivate": "Als privat setzen",
-  "button.copyLinkToObject": "Copy link to object",
+  "button.copyLinkToObject": "Link zum Objekt kopieren",
   "breadcrumb.job": "Job",
-  "breadcrumb.order": "Order",
-  "breadcrumb.jobChain": "Job Chain",
-  "breadcrumb.schedule": "Schedule",
-  "breadcrumb.lock": "Lock",
+  "breadcrumb.order": "Auftrag",
+  "breadcrumb.jobChain": "Job-Kette",
+  "breadcrumb.schedule": "Zeitplan",
+  "breadcrumb.lock": "Sperre",
   "breadcrumb.agentCluster": "Agent Cluster",
-  "breadcrumb.processClass": "Process Class"
+  "breadcrumb.processClass": "Processklasse"
 }
