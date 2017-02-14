@@ -43,6 +43,13 @@
 
                                 </span>
                             </div>
+                            <div class="btn-group dropdown pull-right abt-dropdown">
+                                <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
+                                        class="text fa fa-ellipsis-h"></i></a>
+                                <div class="dropdown-menu dropdown-ac dropdown-more">
+                                    <a ng-click="copyLinkToObject('agentCluster',cluster.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
+                                </div>
+                            </div>
                             <div class="text-sm  text-left text-muted p-t-sm">
                                 <span class="text-black _600" ng-bind="cluster.numOfAgents.any"></span>
                                 {{'label.totalAgents' | translate}}
@@ -143,6 +150,17 @@
                                 <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
                                 <span ng-if="!cluster.numOfProcesses" ng-bind="cluster.numOfProcesses || 0"></span>
                             </td>
+                            <td>
+                                <div class="btn-group dropdown">
+                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                            <a ng-click="copyLinkToObject('agentCluster',cluster.path)"
+                                               class="dropdown-item"
+                                               translate>button.copyLinkToObject</a>
+                                        </div>
+                                </div>
+                            </td>
                         </tr>
                         <tr ng-if="cluster.show">
                             <td colspan="9" style="padding: 1px !important;">
@@ -208,7 +226,7 @@
         <div class="cssload-loading">{{'label.loading' | translate}}...</div>
     </div>
 </div>
-<div ng-if="isLoading && treeAgent.length==0" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
+<div ng-if="isLoading && treeAgent.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
 <script>
     $(document).ready(function () {
       $('#leftPanel').stickySidebar({

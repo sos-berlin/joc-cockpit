@@ -464,9 +464,7 @@
                                                         <tbody>
                                                         <tr ng-repeat="history in historys" ng-click="showLogWindow(history,null)" class="cursor">
                                                             <td ng-bind="history.orderId"></td>
-                                                            <td><span class="label" ng-bind="history.state._text | translate"
-                                                                      ng-class="bgColorFunction(history.state.severity)"></span>
-                                                            </td>
+                                                            <td><span class="label" ng-bind="history.state._text | translate" ng-class="bgColorFunction(history.state.severity)"></span></td>
                                                             <td ng-bind="history.startTime | stringToDate"></td>
                                                             <td ng-bind="history.endTime | stringToDate"></td>
                                                             <td ng-bind="history.startTime | duration:history.endTime"></td>
@@ -490,20 +488,22 @@
                                                         <th translate>label.created</th>
                                                         <th translate>label.account</th>
                                                         <th translate>label.request</th>
-                                                        <th translate>label.parameters</th>
-                                                        <!--<th translate>label.order</th>-->
+
                                                         <th translate>label.comment</th>
                                                         <th translate>label.timeSpend</th>
                                                         <th translate>label.ticketLink</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
-                                                    <tr ng-repeat="auditLog in auditLogs | orderBy:'created':true">
-                                                        <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                    <tr>
+                                                        <td nowrap>
+                                                        <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                        <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                        <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </td>
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td width="30"><span ng-bind="auditLog.parameters"></span></td>
-                                                        <!--<td><span ng-bind="auditLog.orderId"></span></td>-->
+
                                                         <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>
                                                             <span ng-if="auditLog.timeSpent">
@@ -511,8 +511,24 @@
                                                                 <span>m</span>
                                                             </span>
                                                         </td>
-                                                        <td><span ng-bind="auditLog.ticketLink"></span></td>
+                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
+                                                    <tr class="noExl" ng-show="auditLog.show">
+                                                        <td colspan="7">
+                                                            <table class="table m-a-0">
+                                                            <thead>
+                                                                 <tr>
+                                                                     <th translate>label.parameters</th>
+                                                                 </tr>
+                                                                 </thead>
+                                                                 <tbody>
+                                                                 <tr>
+                                                                     <td><span ng-bind="auditLog.parameters"></span></td>
+                                                                 </tr>
+                                                                 </tbody>
+                                                             </table>
+                                                         </td>
+                                                     </tr>
                                                     </tbody>
                                                 </table>
                                                 <div ng-if="auditLogs.length==0"

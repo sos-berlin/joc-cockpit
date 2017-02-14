@@ -179,7 +179,7 @@
                                                            ng-if="jobChain.state._text == 'STOPPED'"
                                                            ng-class="{show:permission.JobChain.unstop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                            ng-click="unstopJobChain(jobChain)" translate>button.unstopJobChain</a>
-                                                <!--<a class="dropdown-item" ng-click="copyLinkToObject(jobChain)" translate>button.copyLinkToObject</a>-->
+                                                    <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain.path)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                     </div>
@@ -208,13 +208,13 @@
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
-                                        <a class="text-hover-primary text-ellipsis1" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a>
-                                        <i ng-if="!jobChain.processClass">-</i>
-                                        <span class="m-l text-orange" ng-if="jobChain.distributed" translate>label.distributed</span>
-                                    </div>
-                                    <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.status </span>:
                                         <span uib-tooltip="{{jobChain.stateText}}" ng-class="colorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text | translate" ></span>
+                                    </div>
+                                    <div class="text-sm text-left text-muted p-t-xs">
+                                        <a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a>
+                                        <i ng-if="!jobChain.processClass">-</i>
+                                        <span class="m-l text-orange" ng-if="jobChain.distributed" translate>label.distributed</span>
                                     </div>
                                 </div>
                                 <div class="box-footer b-t">
@@ -391,7 +391,7 @@
                                             <a class="hide dropdown-item"
                                                ng-class="{show:permission.JobChain.view.history, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                                ng-click="showHistory(jobChain)" translate>button.showHistory</a>
-                                            <!--<a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain.path)" translate>button.copyLinkToObject</a>-->
+                                            <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain.path)" translate>button.copyLinkToObject</a>
                                             <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(jobChain)" translate>button.showAuditLog</a>
                                         </div>
                                     </div>
@@ -612,7 +612,7 @@
             <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
-            <div class="hide " ng-class="{'show': isLoading && permission.JobChain.view.history}">
+            <div class="hide " ng-class="{'show': isLoading}">
                 <div class="row hide" ng-show="showHistoryPanel" ng-class="{'show': pageView=='list'}">
                     <div class="col-md-12">
                         <div class="box white">
@@ -630,7 +630,7 @@
                             <div class="box-body p-t b-t">
                                 <div class="b-b">
                                     <ul class="nav nav-tabs">
-                                        <li class="nav-item">
+                                        <li class="nav-item" ng-if="permission.JobChain.view.history">
                                             <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showHistory(showHistoryPanel)" href data-toggle="tab" data-target="#tab1" translate>label.history</a>
                                         </li>
                                         <li class="nav-item" ng-if="permission.AuditLog.view.status">
@@ -685,19 +685,22 @@
                                                         <th translate>label.created</th>
                                                         <th translate>label.account</th>
                                                         <th translate>label.request</th>
-                                                        <th translate>label.parameters</th>
                                                         <th translate>label.order</th>
                                                         <th translate>label.comment</th>
                                                         <th translate>label.timeSpend</th>
                                                         <th translate>label.ticketLink</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody>
-                                                    <tr ng-repeat="auditLog in auditLogs | orderBy:'created':true">
-                                                        <td><span ng-bind="auditLog.created | stringToDate"></span></td>
+                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                    <tr >
+                                                        <td nowrap>
+                                                        <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                        <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                        <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </td>
+
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td width="30"><span ng-bind="auditLog.parameters"></span></td>
                                                         <td><span ng-bind="auditLog.orderId"></span></td>
                                                         <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>
@@ -706,8 +709,23 @@
                                                                 <span>m</span>
                                                             </span>
                                                         </td>
-                                                        <td><span ng-bind="auditLog.ticketLink"></span></td>
+                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
+                                                    <tr class="noExl" ng-show="auditLog.show">
+                                                         <td colspan="7">
+                                                             <table class="table m-a-0">
+                                                                 <thead>
+                                                                 <tr>
+                                                                     <th translate>label.parameters</th>
+                                                                 </tr>
+                                                                 </thead>
+                                                                 <tbody>
+                                                                 <tr> <td><span ng-bind="auditLog.parameters"></span></td>
+                                                                 </tr>
+                                                                 </tbody>
+                                                             </table>
+                                                         </td>
+                                                     </tr>
                                                     </tbody>
                                                 </table>
                                                 <div ng-if="auditLogs.length==0"

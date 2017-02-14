@@ -57,7 +57,7 @@
                 $rootScope.$on('$stateChangeStart', function (event, toState, toParam, fromState) {
                     element.removeClass('hide'); // show spinner bar
 
-                    if (toState.url === '/jobChainDetails') {
+                    if (toState.url === '/job_chain_detail') {
                         $state.go('app.jobChainDetails.orders');
                         event.preventDefault();
                         return;

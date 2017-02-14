@@ -17,18 +17,21 @@
                 width: '@',
                 height: '@'
             },
-            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', function (OrderService, $scope, CoreService, SOSAuth) {
+            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth','gettextCatalog', function (OrderService, $scope, CoreService, SOSAuth,gettextCatalog) {
                 var vm = $scope;
                 var ordersData = [];
 
                 function preparePieData(res) {
                     var ordersData = [];
+
                     var count = 0;
                     for (var prop in res) {
-                        var obj = {};
-                        obj.key = prop;
-                        obj.y = res[prop];
-                        ordersData.push(obj);
+                        if (res[prop] > 0) {
+                            var obj = {};
+                            obj.key = prop;
+                            obj.y = res[prop];
+                            ordersData.push(obj);
+                        }
                         count++;
                         if (count === Object.keys(res).length) {
                             vm.ordersData = ordersData;
@@ -39,9 +42,7 @@
                 function loadJobChain() {
                     if (SOSAuth.jobChain) {
                         vm.isLoading = false;
-
                         vm.jobChainData = JSON.parse(SOSAuth.jobChain);
-
                         vm.snapshot = vm.jobChainData.ordersSummary;
                         preparePieData(vm.snapshot);
                     }
@@ -66,7 +67,6 @@
                 }
 
                 function loadSnapshot() {
-
                     if (!SOSAuth.jobChain) {
                         getSnapshot();
                     }
@@ -135,7 +135,7 @@
                         groupSpacing: 0.5,
                         labelType: 'percent',
                         showLegend: false,
-                        noData: "No data found",
+                        noData: gettextCatalog.getString('message.noDataAvailable'),
                         color: function (d, i) {
 
                             if (d.key == 'running') {
@@ -532,7 +532,8 @@
                             msg = item.job.configurationStatus.message;
                         }
 
-                        rectangleTemplate = rectangleTemplate +
+
+                            rectangleTemplate = rectangleTemplate +
                         '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + scope.coords[index].left + 'px;top:' + scope.coords[index].top + 'px;"  class="rect ' + errorNodeCls + '" ' +
                         'ng-class="{\'border-crimson\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\', \'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\',\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
                         '<div class="block-ellipsis-job">' +
@@ -553,15 +554,17 @@
                         host +
                         '</div >' +
                         '<div class="box-footer b-t" style="position: absolute; bottom: 0; padding: 6px 10px; width: 100%; ">' +
-                        '<a href ng-click="stopNode(\'' + index + '\')" ng-if="permission.JobChain.stopJobChainNode"' +
+                        '<a title="{{\'button.stopNode\' | translate}}" href ng-click="stopNode(\'' + index + '\')" ng-if="permission.JobChain.stopJobChainNode"' +
                         'class="hide pull-left w-half " ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}">' +
                         '<i class="fa fa-stop" ></i> <span translate>button.stopNode</span></a>' +
-                        '<a href ng-click="unstopNode(\'' + index + '\')" class="hide pull-left w-half" ng-if="permission.JobChain.processJobChainNode" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}">' +
+                        '<a title="{{\'button.unstopNode\' | translate}}" href ng-click="unstopNode(\'' + index + '\')" class="hide pull-left w-half" ng-if="permission.JobChain.processJobChainNode" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}">' +
                         '<i class="fa fa-play" ></i> <span translate>button.unstopNode</span></a>' +
-                        '<a href class="hide pull-right text-right w-half" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.skipJobChainNode"><i class="fa fa-step-forward"></i>  <span translate>button.skipNode</span> </a>' +
-                        '<a href class="hide pull-right text-right w-half" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}"><i class="fa fa-play" ng-if="permission.JobChain.processJobChainNode"></i>  <span translate>button.unskipNode</span> </a>' +
+                        '<a title="{{\'button.skipNode\' | translate}}" href class="hide pull-right text-right w-half" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.skipJobChainNode"><i class="fa fa-step-forward"></i>  <span translate>button.skipNode</span> </a>' +
+                        '<a title="{{\'button.unskipNode\' | translate}}" href class="hide pull-right text-right w-half" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}"><i class="fa fa-play" ng-if="permission.JobChain.processJobChainNode"></i>  <span translate>button.unskipNode</span> </a>' +
                         '</div>' +
                         '</div>';
+
+
 
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
@@ -596,11 +599,9 @@
 
                             scope.endNodes.push(endNode.name);
                             var item = scope.jobChainData.endNodes[index];
-                            scope.coords[length].left = left + rectW + margin;
-                            if (index !== 0) {
-                                scope.coords[length + index] = {};
-                                scope.coords[length + index].left = left + rectW + margin;
-                            }
+                            scope.coords[length + index] = {};
+                            scope.coords[length+ index].left = left + rectW + margin;
+
 
 
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
@@ -608,15 +609,19 @@
                                 scope.coords[length].top = top + rectH + 50 + rectH / 2 - avatarW / 2;
                                 scope.coords.map(function (obj) {
                                     if (scope.coords[length].top < obj.top) {
-                                        scope.coords[length].top = obj.top + rectH + margin;
+                                        scope.coords[length].top = obj.top ;
                                     }
 
                                 });
+                                if(scope.coords[length + index].top==top + rectH + 50 + rectH / 2 - avatarW / 2 && endSuccessNodes>1){
+                                    scope.coords[length + index].top = scope.coords[length + index].top + rectH/2 + margin;
+                                }
                                 var labelTop = scope.coords[length].top - 25;
                                 var labelLeft = scope.coords[length].left + avatarW / 2 - endNode.name.length * 3;
 
-                                rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-danger error-node" ' +
+                                rectangleTemplate = rectangleTemplate + '<div id="lb' + item.name + '"><span   class="text-danger error-node" ' +
                                 'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
+                                '</div>' +
                                 '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
                                 'style="position: absolute;left: ' + scope.coords[length].left + 'px;top: ' + scope.coords[length].top + 'px' + '"> </span>';
 
@@ -625,19 +630,21 @@
                                 scope.coords[length + index].top = avatarTop;
                                 if (endSuccessNodes > 1) {
                                     scope.coords.map(function (obj) {
-                                        //console.log("Object top "+obj.top);
+                                        console.log("Object top "+obj.top+" for "+obj.name);
                                         if (scope.coords[length + index].top < obj.top) {
-                                            scope.coords[length + index].top = obj.top + rectH + margin;
+                                            scope.coords[length + index].top = obj.top;
                                         }
 
                                     });
                                 }
+
+                                if(scope.coords[length + index].top==avatarTop && endSuccessNodes>1){
+                                    scope.coords[length + index].top = scope.coords[length + index].top + rectH/2 + margin;
+                                }
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
-                                rectangleTemplate = rectangleTemplate + '<span id="lb' + item.name + '"  class="text-success" ' +
-                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
-                                '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
-                                'style="position: absolute;left: ' + scope.coords[length].left + 'px;top: ' + avatarTop + 'px' + '"> </span>';
+
+                                rectangleTemplate = rectangleTemplate + getCircularNode(item,labelLeft,labelTop,scope.coords[length].left,scope.coords[length + index].top);
                             }
 
                             if (index == scope.jobChainData.endNodes.length - 1) {
@@ -645,6 +652,20 @@
 
                             }
                         })
+                    }
+
+
+                    function getCircularNode(item,labelLeft,labelTop,left,top){
+                        var node = '<div id="lb' + item.name + '"  class="nowrap text-success" ' +
+                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </div>' +
+                                    '<div   class="hide nowrap text-success" ng-class="{show:\''+item.remove+'\'!==\'undefined\'}"' +
+                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop-15) + 'px' + '">Remove: ' + item.remove + ' </div>'+
+                                    '<div   class="hide nowrap text-success" ng-class="{show:\''+item.move+'\'!==\'undefined\'}"' +
+                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop-30) + 'px' + '">Move: ' + item.move + ' </div>'+
+                                '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
+                                'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>'
+
+                        return node;
                     }
 
                     function checkHeight() {
@@ -1540,7 +1561,7 @@
                     vm.showOrderPanelFun = showOrderPanelFun;
                     function showOrderPanelFun(path) {
 
-                        $location.path('/jobChainDetails/orders').search({path: path});
+                        $location.path('/job_chain_detail/orders').search({path: path});
                     }
 
                     vm.$on('bulkOperationCompleted', function (event, args) {

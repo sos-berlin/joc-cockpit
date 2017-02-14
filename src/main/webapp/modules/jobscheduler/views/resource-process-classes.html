@@ -43,6 +43,7 @@
                                         class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                     <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                     <a ng-click="copyLinkToObject('processClass',processClass.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="processClass.maxProcesses"></span> {{'label.maxProcesses' | translate}}</div>
@@ -105,6 +106,10 @@
                                      <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)"
                                         class="dropdown-item"
                                         translate>button.showConfiguration</a>
+                                     <a ng-click="copyLinkToObject('processClass',processClass.path)"
+                                        class="dropdown-item"
+                                        translate>button.copyLinkToObject</a>
+
                                  </div>
                              </div>
                          </td>
@@ -147,7 +152,7 @@
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
-<div ng-if="isLoading && treeProcess.length==0" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
+<div ng-if="isLoading && treeProcess.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
 <script>
        $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),

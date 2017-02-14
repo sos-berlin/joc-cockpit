@@ -210,10 +210,10 @@
                                     <span>m</span>
                                 </span>
                             </td>
-                            <td><span ng-bind="auditLog.ticketLink"></span></td>
+                            <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary" ng-bind="auditLog.ticketLink"></a></td>
                         </tr>
                         <tr class="noExl" ng-show="auditLog.show">
-                         <td colspan="7">
+                         <td colspan="9">
                              <table class="table m-a-0">
                                  <thead>
                                  <tr>

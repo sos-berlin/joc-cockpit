@@ -1,0 +1,115 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding p-l">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0 ">
+        <div class="hide m-t-sm" ng-class="{'show': isLoading}">
+            <div class="box p-a" ng-show="allSchedules.length>0">
+                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
+                    <table class="table table-hover table-bordered  ">
+                        <thead>
+                        <tr>
+                            <th><span translate>label.scheduleName</span>
+
+                            </th>
+                            <th><span translate>label.path</span>
+
+                            </th>
+                            <th><span translate>label.status</span>
+
+                            </th>
+                            <th><span translate>label.usedByOrders</span>
+                            </th>
+                            <th><span translate>label.usedByJobs</span>
+
+                            </th>
+                            <th><span translate>label.validityFrom</span>
+                            </th>
+                            <th><span translate>label.validityTo</span>
+                            </th>
+                            <th><span translate>label.substituteBy</span>
+                            </th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="schedule in allSchedules">
+                            <td>{{schedule.name}}
+                                <span ng-if="schedule.title">-</span>
+                                <i class="text-muted" ng-bind-html="schedule.title"></i>
+                            </td>
+                            <td ng-bind="schedule.path"></td>
+                            <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
+                                      ng-bind="schedule.state._text  | translate"></span></td>
+                            <td>
+                                <a ng-if="schedule.usedByOrders.length>0" class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length"></a>
+                                <span ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
+                            </td>
+                            <td>
+                                <!--<a ng-if="schedule.usedByJobs.length>0" class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a>-->
+                                <span ng-bind="schedule.usedByJobs.length || 0"></span>
+                            </td>
+                            <td ng-bind="schedule.validityFrom || 'never'"></td>
+                            <td ng-bind="schedule.validityTo || 'never'"></td>
+                            <td ng-bind="schedule.subsituteBy || 'never'"></td>
+                            <td ng-if="permission.Schedule.view.configuration || permission.Schedule.edit">
+                                <div class="btn-group dropdown">
+                                    <a class="more-option-h" href data-toggle="dropdown"><i
+                                            class="fa fa-ellipsis-h"></i></a>
+
+                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                        <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
+                                           class="hide dropdown-item"
+                                           ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
+                                           translate>button.substitute</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+                    <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+                <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+            </div>
+    </div>
+</div>
+
+
+
+<script>
+    $('.table-responsive').on('shown.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.dropdown-menu'),
+                tableOffsetHeight = $table.offset().top + $table.height(),
+                menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+
+        if (menuOffsetHeight > tableOffsetHeight)
+            $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight + 10);
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $(this).css("padding-bottom", 0);
+    });
+
+
+</script>

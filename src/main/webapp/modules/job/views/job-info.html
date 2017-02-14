@@ -6,78 +6,6 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <div class="inline" ng-class="{'hide':object.jobs.length>0}">
-                        <div class="btn-group hidden-btn-group">
-                            <button ng-disabled="savedJobFilter.selected" id="jobs" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': jobFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobs
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                     uib-btn-radio="'PENDING'" ng-class="{'btn-primary': jobFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'RUNNING'" ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'STOPPED'" ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
-                            </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
-                                    uib-btn-radio="'WAITINGFORRESOURCE'" ng-class="{'btn-primary': jobFilters.filter.state=='WAITINGFORRESOURCE'}" ng-click="changeStatus()" translate>button.waitingForResource
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'" ng-class="{'btn-primary': jobFilters.filter.state=='ALL', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.allJobs</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'PENDING'" ng-class="{'btn-primary': jobFilters.filter.state=='PENDING', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.pending</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'RUNNING'" ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.runnin</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'STOPPED'" ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.stopped</a>
-                                <a class="dropdown-item" ng-model="jobFilters.filter.state" uib-btn-radio="'WAITINGFORRESOURCE'" ng-class="{'btn-primary': jobFilters.filter.state=='WAITINGFORRESOURCE', 'disable-link':savedJobFilter.selected}" ng-click="changeStatus()" translate>button.waitingForResource</a>
-                            </div>
-                        </div>
-                        <div class="btn-group dropdown">
-                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">{{'label.sortBy' | translate}}
-                                <span class="text-primary">
-                                    <span ng-show="jobFilters.filter.sortBy =='name'">
-                                        {{'label.name' | translate}}
-                                         <i ng-show="!jobFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="jobFilters.reverse" class="fa fa-caret-down"></i>
-                                    </span>
-                                    <span ng-show="jobFilters.filter.sortBy =='state._text'">
-                                        {{'label.state' | translate}}
-                                          <i ng-show="!jobFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="jobFilters.reverse" class="fa fa-caret-down"></i>
-                                    </span>
-                                </span>
-                             </a>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="sortBy('name')" translate>label.name</a>
-                                <a class="dropdown-item" href ng-click="sortBy('state._text')" translate>label.state</a>
-                            </div>
-                        </div>
-                        <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedJobFilter.selected"></span></button>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobFilterList.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="jobFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedJobFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in jobFilterList track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}" ng-disabled="pageView=='grid' || filtered.length===0" id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
-                        <toggle-view></toggle-view>
-
-                    </div>
-                    <div class="hide" ng-class="{'show-block':object.jobs.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.start" translate>button.startTask</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.stop" ng-click="stopAll();" translate>button.stop</button>
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.unstop" ng-click="unStopAll()" translate>button.unstop</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="permission.Job.kill" ng-click="killAllTask()" translate>button.killAllTasksImmediately</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask()" translate>button.terminateAllTasks</button>
-                        <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout()" translate>button.terminateAllTasksWithTimeout</button>
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -85,186 +13,27 @@
 </div>
 <div class="scroll-y max-ht" >
     <div class="padding p-b-0">
-        <div class="hide-block sidebar-btn resize-cursor">
-            <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
-        </div>
-        <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
-            <div>
-                <a class="text" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
-                    <i class="fa fa-angle-double-down fa-lg"></i>
-                </a>
-                <a class="text m-l-xs" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-                    <i class="fa fa-angle-double-up fa-lg"></i>
-                </a>
-                <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
-                <tree tree-data="tree" tree-control="my_tree" expand-on="expanding_property" on-select="treeHandler1(branch)" on-click="treeHandler(branch)"
-                      expand-node="expandNode(branch)" collapse-node="collapseNode(branch)" template-url="modules/core/template/tree.html">
-                </tree>
-            </div>
-        </div>
-        <div id="rightPanel1">
-            <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
-                <div class="hide row" ng-class="{'show': pageView=='grid'}" >
-                    <div ng-repeat="(key, value) in allJobs  | groupBy: 'path1'">
-                        <div class="col-sm-12"  style="margin-bottom: 10px">
-                            <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
-                        </div>
-                        <div class="child col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                             ng-repeat="job in value | orderBy:jobFilters.filter.sortBy:jobFilters.reverse">
-                            <div class="box card" >
-                                <div class="box-body" title="{{job.configurationStatus._text | translate}}">
-                                    <label class="md-check pos-abt" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
-                                        <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
-                                    </label>
-                                    <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate}">
-                                        <span uib-tooltip="{{job.title}}" ng-class="{'text-u-l':job.isOrderJob!=true, 'crimson':job.configurationStatus.severity==2}"  ng-bind="job.name"></span>
-                                    </div>
-                                    <div class="btn-group dropdown pull-right abt-dropdown " ng-if="permission.Job.view.configuration || permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
-                                        <a href class=" more-option text-black-lt" data-toggle="dropdown">
-                                            <i class="text fa fa-ellipsis-h"></i></a>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more" >
-                                            <a ng-click="showConfiguration('job',job.path,job.name)" class="hide dropdown-item" ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
-                                            <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTask</a>
-                                            <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTaskat</a>
-                                            <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}" ng-if="permission.Job.setRunTime" translate>button.setRunTime</a>
-                                            <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
-                                            <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
-                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
-                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                            <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
-                                            <a class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status" ng-click="viewCalendar(job)" translate>button.showCalendar</a>
-                                            <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
-                                        </div>
-                                    </div>
-                                    <div class="text-sm text-left text-muted p-t-sm" >
-                                        <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
-                                        <i class="text-black">of</i>
-                                        <span class="text-black _600"  ng-bind="job.maxTasks || 1"></span>
-                                         {{'label.runningTask' | translate}}
-                                    </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs" ng-if="job.isOrderJob==true">
-                                        <span>
-                                            <span class="text-black _600" ng-bind="job.ordersSummary.pending +job.ordersSummary.running+job.ordersSummary.setback+job.ordersSummary.suspended+job.ordersSummary.waitingForResource"></span>
-                                            <span  ng-bind="'label.orders' | translate"></span>
-                                        </span>
-                                    </div>
-                                    <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="job.isOrderJob==true">
-                                        <span class="text-black _600" ng-bind="job.ordersSummary.pending || 0"></span>
-                                        <span ng-bind="'label.pending' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-bind="job.ordersSummary.running || 0"></span>
-                                        <span ng-bind="'label.running' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-bind="job.ordersSummary.suspended || 0"></span>
-                                        <span ng-bind="'label.suspended' | translate"></span>
-                                    </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs" ng-if="job.isOrderJob!=true">
-                                        <span>
-                                            <span  ng-bind="'label.nextStart' | translate"></span>
-                                        </span>
-                                    </div>
-                                    <div class="text-sm  text-left text-muted m-l p-t-xs" ng-if="job.isOrderJob!=true">
-                                        <span ng-if="job.nextStartTime">
-                                            {{job.nextStartTime | stringToDate}}
-                                            <span class="text-success" >(<span time="{{job.nextStartTime}}"></span>)</span>
-                                        </span>
-                                        <span ng-if="!job.nextStartTime">{{'label.never' | translate}}</span>
-                                    </div>
-                                    <div class="text-sm text-left text-muted p-t-xs">
-                                        <span translate>label.status </span>:
-                                        <span uib-tooltip="{{job.stateText}}" ng-class="colorFunction(job.state.severity)" ng-bind="job.state._text | translate" ></span>
-                                    </div>
-                                </div>
-                                <div class="box-footer b-t">
-                                    <div>
-                                        <a href class="text-left text-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)"><i class="fa fa-stop text-black-lt"></i> <span class="text-black-lt" translate>button.stop</span></a>
-                                        <a href class="text-left primary-text-hover-color" ng-if="job.state._text =='STOPPED'  && permission.Job.unstop" ng-click="unstop(job)"><i class="fa fa-play text-black-lt"></i> <span class="text-black-lt" translate>button.unstop</span></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="box p-a" ng-show="pageView=='list' && allJobs.length>0" >
-                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
-                        <table class="table table-hover table-bordered" id="jobTableId">
-                            <thead>
-                            <tr>
-                                <th class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
-                                    <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
-                                    </label>
-                                </th>
-                                <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'name' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'name' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('path')"><a><span translate>label.path</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'path' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'path' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('state._text')" ><a><span translate>label.status</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'state._text' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'state._text' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('usedInJobChains')"><a><span translate>label.jobChainsAssociated</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'usedInJobChains' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'usedInJobChains' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('numOfRunningTasks')"><a><span translate>label.taskRunning</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'numOfRunningTasks' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'numOfRunningTasks' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('nextStartTime')"><a><span translate>label.nextStartTime</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'nextStartTime' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'nextStartTime' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('ordersSummary.pending')"><a><span translate>label.orderPending</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.pending' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('ordersSummary.running')"><a><span translate>label.orderRunning</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.running' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('ordersSummary.suspended')"><a><span translate>label.orderSuspended</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.suspended' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('ordersSummary.waitingForResource')"><a><span translate>label.orderQueued</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.waitingForResource' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('ordersSummary.setback')"><a><span translate>label.orderSetbacks</span>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && !jobFilters.reverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="jobFilters.filter.sortBy == 'ordersSummary.setback' && jobFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-
-                            </tr>
-                            </thead>
-                            <tbody ng-repeat="job in allJobs | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize | orderBy:jobFilters.filter.sortBy:jobFilters.reverse"
-                                ng-class="{'light-bg':showTaskPanel == job}">
-                                <tr title="{{job.configurationStatus._text | translate}}">
+        <div class="hide m-t-sm" ng-class="{'show': isLoading}">
+            <div class="box p-a">
+                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
+                    <table class="table table-hover table-bordered" id="jobTableId">
+                        <thead>
+                        <tr>
+                            <th><span translate>label.jobName</span></th>
+                            <th><span translate>label.path</span></th>
+                            <th><span translate>label.status</span></th>
+                            <th><span translate>label.jobChainsAssociated</span></th>
+                            <th><span translate>label.taskRunning</span></th>
+                            <th><span translate>label.nextStartTime</span></th>
+                            <th><span translate>label.orderPending</span></th>
+                            <th><span translate>label.orderRunning</span></th>
+                            <th><span translate>label.orderSuspended</span></th>
+                            <th><span translate>label.orderQueued</span></th>
+                            <th><span translate>label.orderSetbacks</span></th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="job in jobs" ng-class="{'light-bg':showTaskPanel == job}">
+                        <tr title="{{job.configurationStatus._text | translate}}">
                                     <td class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
@@ -340,60 +109,27 @@
                                                     <a class="dropdown-item" ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status"
                                                            ng-click="viewCalendar(job)" translate>button.showCalendar</a>
                                                     <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
-                                                    <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
-                                <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
-                                    <td></td>
-                                    <td colspan="12">
-                                     {{job.configurationStatus._text | translate}} :<span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
-                                    </td>
-                                </tr>
-                            </tbody>
+                        <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
+                            <td></td>
+                            <td colspan="12">
+                                {{job.configurationStatus._text | translate}} :<span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
+                            </td>
+                        </tr>
+                        </tbody>
 
-                            </table>
-                         <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}" ng-if="allJobs.length >0"><span translate>label.total</span> {{allJobs.length}}
-                             <span translate  ng-if="allJobs.length >1">label.jobsFound</span>
-                             <span translate  ng-if="allJobs.length ==1">label.jobFound</span>
-                         </div>
-                        <ul ng-show="allJobs.length > jobFilters.pageSize" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-left" ng-show="allJobs.length > 10">
-                                <div class="btn-group  m-r-xxs">
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'10'"
-                                            ng-class="{'primary': jobFilters.pageSize=='10'}" >10
-                                    </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'25'"
-                                            ng-class="{'primary': jobFilters.pageSize=='25'}" >25
-                                    </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'50'"
-                                            ng-class="{'primary': jobFilters.pageSize=='50'}" >50
-                                    </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'100'"
-                                            ng-class="{'primary': jobFilters.pageSize=='100'}">100
-                                    </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
-                                            ng-class="{'primary': jobFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
-                                    </button>
-                                </div>
-                            </div>
-
-                    </div>
+                    </table>
                 </div>
             </div>
-            <div ng-if="isLoading && !loading && folderPath && allJobs.length==0" class="text-center m-t m-b-lg h6">
-                    <span class="text-primary">"{{folderPath}}"</span>
-                    <span translate>message.emptyFolder</span>
-            </div>
-            <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
-                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-            </div>
-            <div ng-if="!isLoading" class="text-center m-t-lg">
+        </div>
+        <div ng-if="!isLoading" class="text-center m-t-lg">
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
-            </div>
-            <div class="hide " ng-class="{'show': isLoading}" >
-                <div class="row hide" ng-show="showTaskPanel" ng-class="{'show': pageView=='list'}">
+        </div>
+        <div class="hide " ng-class="{'show': isLoading}" >
+                <div class="row" ng-show="showTaskPanel">
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
@@ -576,7 +312,6 @@
                                                         <th translate>label.created</th>
                                                         <th translate>label.account</th>
                                                         <th translate>label.request</th>
-
                                                         <th translate>label.comment</th>
                                                         <th translate>label.timeSpend</th>
                                                         <th translate>label.ticketLink</th>
@@ -584,6 +319,7 @@
                                                     </thead>
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
+
                                                         <td nowrap>
                                                         <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
                                                         <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
@@ -591,7 +327,6 @@
                                                         </td>
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-
                                                         <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>
                                                             <span ng-if="auditLog.timeSpent">
@@ -632,10 +367,8 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="jobChain" tabindex="-1" role="dialog" aria-labelledby="JobChain" >
     <div class="modal-dialog" role="document">
@@ -659,38 +392,8 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
-                <div>
-                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
-                        <i class="fa fa-angle-double-down fa-lg"></i>
-                    </a>
-                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-                        <i class="fa fa-angle-double-up fa-lg"></i>
-                    </a>
-                    <tree
-                            tree-data="filterTree1"
-                            tree-control="filter_tree"
-                            object="object"
-                            icon-leaf     = "fa fa-folder"
-                            icon-expand   = "fa fa-folder"
-                            icon-collapse = "fa fa-folder-open"
-                            expand-on="expanding_property"
-                            on-select="treeExpand(branch)"
-                            on-click="treeExpand(branch)"
-                            template-url="modules/core/template/tree-filter-structure.html">
-                    </tree>
-                </div>
-            </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addJobChainPaths()" data-dismiss="modal" translate>button.done</button>
-                <button type="button" class="btn btn-grey btn-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
+
+
 <script>
    $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),
@@ -706,9 +409,4 @@
       $(this).css("padding-bottom", 0);
   });
 
-  $(document).ready(function () {
-      $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 155
-        });
-  });
 </script>

@@ -35,11 +35,11 @@
                 $window.sessionStorage.setItem('$SOS$URL', null);
                 $window.sessionStorage.setItem('$SOS$URLPARAMS', {});
 
-                if($window.sessionStorage.$SOS$NAVIGATEOBJ && ($window.sessionStorage.$SOS$NAVIGATEOBJ != 'null' || $window.sessionStorage.$SOS$NAVIGATEOBJ != null)) {
-                    try{
+                if ($window.sessionStorage.$SOS$NAVIGATEOBJ && ($window.sessionStorage.$SOS$NAVIGATEOBJ != 'null' || $window.sessionStorage.$SOS$NAVIGATEOBJ != null)) {
+                    try {
                         var obj = JSON.parse($window.sessionStorage.$SOS$NAVIGATEOBJ);
 
-                        if(obj) {
+                        if (obj) {
                             if (obj.tab == 'JOB') {
                                 $rootScope.job_expand_to = {
                                     name: obj.name,
@@ -51,17 +51,17 @@
                                     name: obj.name,
                                     path: obj.path
                                 };
-                                $location.path('/allOrders');
+                                $location.path('/orders');
                             } else if (obj.tab == 'JOBCHAIN') {
                                 $rootScope.expand_to = {
                                     name: obj.name,
                                     path: obj.path
                                 };
-                                $location.path('/jobChains');
+                                $location.path('/job_chains');
                             }
                             $window.sessionStorage.$SOS$NAVIGATEOBJ = null;
                         }
-                    }catch(e){
+                    } catch (e) {
                         console.log(e)
                     }
                 }
@@ -75,7 +75,7 @@
             }
             return deferred.promise;
         };
-        checkLoggedin.$inject = ['$q', '$location', 'SOSAuth', '$window','$rootScope'];
+        checkLoggedin.$inject = ['$q', '$location', 'SOSAuth', '$window', '$rootScope'];
 
 
         /**
@@ -99,7 +99,6 @@
             return deferred.promise;
         };
         checkLogout.$inject = ['$q', 'SOSAuth'];
-
 
 
         $urlRouterProvider.otherwise(function ($injector, $location) {
@@ -138,7 +137,7 @@
             .state('error', {
                 url: '/error',
                 templateUrl: 'modules/core/views/error.html',
-                controller:'HeaderCtrl',
+                controller: 'HeaderCtrl',
                 title: 'Error',
                 ncyBreadcrumb: {
                     skip: true
@@ -147,7 +146,7 @@
             .state('client-logs', {
                 url: '/client-logs',
                 templateUrl: 'modules/core/views/client-logs.html',
-                controller:'ClientLogCtrl',
+                controller: 'ClientLogCtrl',
                 title: 'JobScheduler-Logging',
                 ncyBreadcrumb: {
                     skip: true
@@ -184,10 +183,10 @@
                 }
             })
             .state('app.dailyPlan', {
-                url: '/dailyPlan',
-                params:{
-                    filter:null,
-                    day:null
+                url: '/daily_plan',
+                params: {
+                    filter: null,
+                    day: null
                 },
                 templateUrl: 'modules/jobscheduler/views/daily-plan.html',
                 controller: 'DailyPlanCtrl',
@@ -203,17 +202,18 @@
                     label: '{{ \'breadcrumb.jobs\' | translate}}'
                 }
             })
-             .state('app.job', {
+            .state('app.job', {
                 url: '/job',
                 templateUrl: 'modules/job/views/job-info.html',
                 controller: 'JobCtrl',
                 ncyBreadcrumb: {
-                    skip: true
+                    label: '{{ \'breadcrumb.jobs\' | translate}}',
+                    parent: 'app.jobs'
                 }
 
             })
             .state('app.jobChains', {
-                url: '/jobChains',
+                url: '/job_chains',
                 templateUrl: 'modules/job/views/job-chain.html',
                 controller: 'JobChainCtrl',
                 ncyBreadcrumb: {
@@ -225,12 +225,13 @@
                 templateUrl: 'modules/job/views/job-chain-info.html',
                 controller: 'JobChainCtrl',
                 ncyBreadcrumb: {
-                    skip: true
+                    label: '{{ \'breadcrumb.jobChains\' | translate}}',
+                    parent: 'app.jobChains'
                 }
 
             })
             .state('app.jobChainDetails', {
-                url: '/jobChainDetails',
+                url: '/job_chain_detail',
                 templateUrl: 'modules/order/views/job-chain-details.html',
                 controller: 'JobChainDetailsCtrl',
                 ncyBreadcrumb: {
@@ -256,7 +257,7 @@
             })
 
             .state('app.orders', {
-                url: '/allOrders',
+                url: '/orders',
                 templateUrl: 'modules/order/views/order.html',
                 controller: 'OrderCtrl',
                 ncyBreadcrumb: {
@@ -265,15 +266,16 @@
             })
             .state('app.order', {
                 url: '/order',
-                templateUrl: 'modules/job/views/order-info.html',
-                controller: 'JobChainCtrl',
-                ncyBreadcrumb: {
-                    skip: true
+                templateUrl: 'modules/order/views/order-info.html',
+                controller: 'OrderCtrl',
+                 ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.order\' | translate}}',
+                    parent: 'app.orders'
                 }
 
             })
             .state('app.ordersOverview', {
-                url: '/orders/:name',
+                url: '/orders_overview/:name',
                 templateUrl: 'modules/order/views/orders-overview.html',
                 controller: 'OrderOverviewCtrl',
                 ncyBreadcrumb: {
@@ -307,7 +309,7 @@
                 }
             })
             .state('app.resources.agentClusters', {
-                url: '/agentClusters/:type',
+                url: '/agent_clusters/:type',
                 templateUrl: 'modules/jobscheduler/views/resource-agents.html',
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.agents\' | translate}}',
@@ -318,15 +320,15 @@
                 url: '/locks',
                 templateUrl: 'modules/jobscheduler/views/resource-locks.html',
                 ncyBreadcrumb: {
-                     label: '{{ \'breadcrumb.locks\' | translate}}',
+                    label: '{{ \'breadcrumb.locks\' | translate}}',
                     parent: 'app.resources'
                 }
             })
             .state('app.resources.processClasses', {
-                url: '/processClasses',
+                url: '/process_classes',
                 templateUrl: 'modules/jobscheduler/views/resource-process-classes.html',
                 ncyBreadcrumb: {
-                     label: '{{ \'breadcrumb.processClasses\' | translate}}',
+                    label: '{{ \'breadcrumb.processClasses\' | translate}}',
                     parent: 'app.resources'
                 }
             })
@@ -336,6 +338,43 @@
                 ncyBreadcrumb: {
                     label: '{{ \'breadcrumb.schedules\' | translate}}',
                     parent: 'app.resources'
+                }
+            })
+            .state('app.agentCluster', {
+
+                url: '/agent_cluster?path&scheduler_id',
+                templateUrl: 'modules/jobscheduler/views/agent-cluster.html',
+                controller: 'ResourceInfoCtrl',
+                ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.agentCluster\' | translate}}',
+                    parent: 'app.resources.agentClusters'
+                }
+            })
+             .state('app.lock', {
+                url: '/lock?path&scheduler_id',
+                templateUrl: 'modules/jobscheduler/views/lock.html',
+                controller: 'ResourceInfoCtrl',
+                ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.lock\' | translate}}',
+                    parent: 'app.resources.locks'
+                }
+            })
+            .state('app.processClass', {
+                url: '/process_class?path&scheduler_id',
+                templateUrl: 'modules/jobscheduler/views/process-class.html',
+                controller: 'ResourceInfoCtrl',
+                 ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.processClass\' | translate}}',
+                    parent: 'app.resources.processClasses'
+                }
+            })
+            .state('app.schedule', {
+                url: '/schedule?path&scheduler_id',
+                templateUrl: 'modules/jobscheduler/views/schedule.html',
+                controller: 'ResourceInfoCtrl',
+                 ncyBreadcrumb: {
+                    label: '{{ \'breadcrumb.schedule\' | translate}}',
+                    parent: 'app.resources.schedules'
                 }
             })
             .state('app.schedule-orders', {
@@ -356,7 +395,7 @@
                 }
             })
             .state('app.auditLog', {
-                url: '/auditLog',
+                url: '/audit_log',
                 templateUrl: 'modules/user/views/audit-log.html',
                 controller: 'AuditLogCtrl',
                 ncyBreadcrumb: {
@@ -368,7 +407,7 @@
                 templateUrl: 'modules/user/views/profile.html',
                 controller: 'UserProfileCtrl as upc',
                 ncyBreadcrumb: {
-                   label: '{{ \'breadcrumb.userProfile\' | translate}}'
+                    label: '{{ \'breadcrumb.userProfile\' | translate}}'
                 }
             });
     }

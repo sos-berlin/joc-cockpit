@@ -29,7 +29,7 @@
                                                 data="agentClusterData" config="{refreshDataOnly:true}">
                                         </nvd3>
                                         </div>
-                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 60px; color: #000 !important;text-align: center; font-size: 15px">
+                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px; color: #000 !important;text-align: center; font-size: 17px;margin-right: 15px">
                                             {{'message.noDataAvailable' | translate}}
                                         </div>
                                     </div>
@@ -122,27 +122,27 @@
                             </tr>
                             <tr class="text-center">
                                 <td width="16.6">
-                                    <a ng-if="snapshot.pending>0" href="#!/orders/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending"></a>
+                                    <a ng-if="snapshot.pending>0" href="#!/orders_overview/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending"></a>
                                     <span ng-if="!snapshot.pending || snapshot.pending.length==0" class="text-lg _600 text-black-lt">0</span>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.running>0" href="#!/orders/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
+                                    <a ng-if="snapshot.running>0" href="#!/orders_overview/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
                                     <span ng-if="!snapshot.running || snapshot.running==0" class="text-lg _600 text-black-lt">0</span>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.suspended>0" href="#!/orders/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended"></a>
+                                    <a ng-if="snapshot.suspended>0" href="#!/orders_overview/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended"></a>
                                     <span ng-if="!snapshot.suspended || snapshot.suspended==0" class="text-lg _600 text-black-lt">0</span>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.setback>0" href="#!/orders/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
+                                    <a ng-if="snapshot.setback>0" href="#!/orders_overview/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
                                     <span ng-if="!snapshot.setback || snapshot.setback==0" class="text-lg _600 text-black-lt">0</span>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.waitingForResource>0" href="#!/orders/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
+                                    <a ng-if="snapshot.waitingForResource>0" href="#!/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
                                     <span ng-if="!snapshot.waitingForResource || snapshot.waitingForResource==0" class="text-lg _600 text-black-lt">0</span>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.blacklist>0" href="#!/orders/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
+                                    <a ng-if="snapshot.blacklist>0" href="#!/orders_overview/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
                                     <span ng-if="!snapshot.blacklist || snapshot.blacklist==0" class="text-lg _600 text-black-lt">0</span>
                                 </td>
                             </tr>

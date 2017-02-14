@@ -166,7 +166,7 @@
                         <td ng-bind="schedule.validityFrom || 'never'"></td>
                         <td ng-bind="schedule.validityTo || 'never'"></td>
                         <td ng-bind="schedule.subsituteBy || 'never'"></td>
-                        <td ng-if="permission.Schedule.view.configuration || permission.Schedule.edit">
+                        <td>
                             <div class="btn-group dropdown">
                                 <a class="more-option-h" href data-toggle="dropdown"><i
                                         class="fa fa-ellipsis-h"></i></a>
@@ -178,6 +178,9 @@
                                     <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
                                        translate>button.substitute</a>
                                     <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+
+                                    <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
+
                                 </div>
                             </div>
                         </td>
@@ -227,7 +230,7 @@
     </div>
 </div>
 
-<div ng-if="isLoading && tree.length==0" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
+<div ng-if="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
 <script>
     $('.table-responsive').on('shown.bs.dropdown', function (e) {
         var $table = $(this),

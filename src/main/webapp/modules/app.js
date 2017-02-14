@@ -28,7 +28,8 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-      'angular-clipboard'
+        
+            'angular-clipboard'
             
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
@@ -60,5 +61,7 @@
                     $delegate(exception, cause);
                 };
             }]);
-        }]);
+        }])
+
+        ;
 })();

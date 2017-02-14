@@ -67,3 +67,7 @@ button#exportToExcelBtn {
 button#exportToExcelBtn i{
     visibility: hidden;
 }
+
+.nowrap{
+    white-space: nowrap;
+}

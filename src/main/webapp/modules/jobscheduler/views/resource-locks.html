@@ -43,6 +43,7 @@
                                         class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
                                     <a ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                    <a ng-click="copyLinkToObject('lock',lock.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
                             <div class="text-sm  text-left text-muted p-t-sm" ><span class="text-black _600" ng-bind="lock.maxNonExclusive || '0'"></span> {{'label.maxTask' | translate}}</div>
@@ -113,6 +114,9 @@
                                             <a ng-click="showConfiguration('lock',lock.path,lock.name)"
                                                class="dropdown-item"
                                                translate>button.showConfiguration</a>
+                                            <a ng-click="copyLinkToObject('lock',lock.path)"
+                                               class="dropdown-item"
+                                               translate>button.copyLinkToObject</a>
                                         </div>
                                 </div>
                             </td>
@@ -156,7 +160,7 @@
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
-<div ng-if="isLoading && treeLock.length==0" class="text-center m-t h6 text-uppercase" translate>message.noLocksFound</div>
+<div ng-if="isLoading && treeLock.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noLocksFound</div>
 <script>
    $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),

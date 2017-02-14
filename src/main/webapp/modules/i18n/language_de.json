@@ -889,5 +889,13 @@
   "placeholder.timeSpend": "Zeitaufwand in Minuten",
   "placeholder.ticketLink": "Ticket Link eingeben",
   "button.share": "Teilen",
-  "button.makePrivate": "Als privat setzen"
+  "button.makePrivate": "Als privat setzen",
+  "button.copyLinkToObject": "Copy link to object",
+  "breadcrumb.job": "Job",
+  "breadcrumb.order": "Order",
+  "breadcrumb.jobChain": "Job Chain",
+  "breadcrumb.schedule": "Schedule",
+  "breadcrumb.lock": "Lock",
+  "breadcrumb.agentCluster": "Agent Cluster",
+  "breadcrumb.processClass": "Process Class"
 }

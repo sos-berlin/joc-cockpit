@@ -223,6 +223,7 @@
             if (res.configuration && res.configuration.configurationItem) {
                 $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                 vm.preferences = JSON.parse($window.sessionStorage.preferences);
+                if(vm.preferences.theme != $window.localStorage.$SOS$THEME)
                 vm.changeTheme(vm.preferences.theme);
             }
         });
@@ -257,7 +258,8 @@
         };
 
         vm.changeConfiguration = function (reload) {
-           
+         
+
             if (isNaN(parseInt(vm.preferences.maxRecords))) {
                 vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
             }
@@ -283,7 +285,6 @@
 
             if (reload)
                 $rootScope.$broadcast('reloadDate');
-
             configObj.configurationItem = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
@@ -323,6 +324,7 @@
         $scope.jobChains.count = vm.preferences.events.jobChainCount;
         $scope.positiveOrders.count = vm.preferences.events.positiveOrderCount;
         $scope.negativeOrders.count =vm.preferences.events.negativeOrderCount;
+
 
         if ($scope.tasks.length == $scope.tasks.count) {
             $scope.selectAllTaskModel = true;
@@ -508,18 +510,15 @@
         vm.selectNegativeOrderFunction = function (checked) {
             if (checked) {
                 $scope.negativeOrders.count++;
-
             }
             else {
                 $scope.negativeOrders.count--;
-
             }
-
             $scope.selectAllNegativeOrderModel = $scope.negativeOrders.length == $scope.negativeOrders.count;
         };
 
-        var watcher = $scope.$watchCollection('eventFilter', function (value) {
-            if(value) {
+        var watcher = $scope.$watchCollection('eventFilter', function (newValue,oldValue) {
+            if(newValue != oldValue) {
                 vm.preferences.events.taskCount = $scope.tasks.count;
                 vm.preferences.events.filter = $scope.eventFilter;
                 vm.preferences.events.jobCount = $scope.jobs.count;
@@ -528,6 +527,8 @@
                 vm.preferences.events.negativeOrderCount = $scope.negativeOrders.count;
                 $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
                 $rootScope.$broadcast('reloadPreferences');
+                configObj.configurationItem = JSON.stringify(vm.preferences);
+                UserService.saveConfiguration(configObj);
             }
         });
 
