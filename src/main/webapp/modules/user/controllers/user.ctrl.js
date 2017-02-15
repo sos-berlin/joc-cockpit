@@ -76,6 +76,7 @@
                     preferences.locale = $rootScope.locale.lang;
                     preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                     preferences.maxRecords = 10000;
+                    preferences.maxAuditLogRecords = 10000;
                     preferences.maxHistoryPerOrder = 30;
                     preferences.maxHistoryPerTask = 10;
                     preferences.maxHistoryPerJobchain = 30;
@@ -108,6 +109,7 @@
                 preferences.locale = $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                 preferences.maxRecords = 10000;
+                preferences.maxAuditLogRecords = 10000;
                 preferences.maxHistoryPerOrder = 30;
                 preferences.maxHistoryPerTask = 10;
                 preferences.maxHistoryPerJobchain = 30;
@@ -262,6 +264,9 @@
 
             if (isNaN(parseInt(vm.preferences.maxRecords))) {
                 vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
+            }
+            if(isNaN(parseInt(vm.preferences.maxAuditLogRecords))){
+                 vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords);
             }
             if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder))) {
                 vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder);
@@ -585,6 +590,7 @@
         vm.load = function () {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords);
             obj = setDateRange(obj);
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
@@ -598,7 +604,7 @@
         vm.search = function () {
             var filter = {
                 jobschedulerId: $scope.schedulerIds.selected,
-                limit: parseInt($window.sessionStorage.preferences.maxRecords)
+                limit: parseInt(vm.userPreferences.maxAuditLogRecords)
                 };
 
             vm.adtLog.filter.date = '';

@@ -167,6 +167,12 @@
                        </div>
                    </div>
                     <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfAuditLogEntries</div>
+                       <div class="col-sm-6">
+                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxAuditLogRecords" ng-blur="upc.changeConfiguration()">
+                       </div>
+                   </div>
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerOrder</div>
                        <div class="col-sm-6">
                           <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerOrder" ng-blur="upc.changeConfiguration()">

@@ -12,13 +12,13 @@
                 return {
                     request: function (config) {
 
-                        if (config.method == 'POST') {
-                            config.url = './api/' + config.url;
 
+                        if (config.method == 'POST' || config.url=='jobscheduler/log') {
+                           config.url = './api/' + config.url;
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,
-                                    'Content-Type': 'application/json'
+                                    'Content-Type': config.url=='jobscheduler/log'?'text/html':'application/json'
                                 }
                             }
                             if($rootScope.clientLogFilter.state) {

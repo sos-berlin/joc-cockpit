@@ -897,5 +897,7 @@
   "breadcrumb.schedule": "Programmation",
   "breadcrumb.lock": "Verrou",
   "breadcrumb.agentCluster": "Cluster Agent",
-  "breadcrumb.processClass": "Classe de Processus"
+  "breadcrumb.processClass": "Classe de Processus",
+  "button.downloadLog":"Download Log",
+  "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries"
 }

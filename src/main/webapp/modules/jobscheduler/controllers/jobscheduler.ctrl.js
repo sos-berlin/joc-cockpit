@@ -2754,16 +2754,16 @@
                 obj.auditLog = {};
                 obj1.auditLog = {};
 
-                if (vm.comments.comment) {
+                if (vm.comments && vm.comments.comment) {
                     obj.auditLog.comment = vm.comments.comment;
                     obj1.auditLog.comment = vm.comments.comment;
                 }
-                if (vm.comments.timeSpent) {
+                if (vm.comments && vm.comments.timeSpent) {
                     obj.auditLog.timeSpent = vm.comments.timeSpent;
                     obj1.auditLog.timeSpent = vm.comments.timeSpent;
                 }
 
-                if (vm.comments.ticketLink) {
+                if (vm.comments && vm.comments.ticketLink) {
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                     obj1.auditLog.ticketLink = vm.comments.ticketLink;
                 }
@@ -2806,6 +2806,10 @@
                     JobSchedulerService.restartCluster(obj1).then(function (res) {
                         clusterSuccess('running', host, port);
                     });
+                }else if (action == 'download_log') {
+                    JobSchedulerService.downloadLog({jobschedulerId:$scope.schedulerIds.selected,host:host,port:port}).then(function (res) {
+
+                    });
                 }
             }
 
@@ -2813,7 +2817,7 @@
                 vm.getTimeout(host, port);
             } else {
 
-                if (vm.userPreferences.auditLog) {
+                if (vm.userPreferences.auditLog && action !=='download_log') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
@@ -3202,10 +3206,15 @@
         vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
         vm.dailyPlanFilterList = [];
 
-        if (vm.dailyPlanFilters.selectedView)
+
+        if (vm.dailyPlanFilters.selectedView) {
             vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.selected || vm.savedDailyPlanFilter.favorite;
-        else
+            vm.savedDailyPlanFilter.selectedAccount = vm.savedDailyPlanFilter.selectedAccount || vm.savedDailyPlanFilter.favoriteAccountFilter;
+        }
+        else {
             vm.savedDailyPlanFilter.selected = undefined;
+            vm.savedDailyPlanFilter.selectedAccount = undefined;
+        }
 
         function checkSharedFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
@@ -3236,20 +3245,20 @@
                 if (res.configurations && res.configurations.length > 0) {
                     if (vm.dailyPlanFilterList && vm.dailyPlanFilterList.length > 0) {
                         vm.dailyPlanFilterList = vm.dailyPlanFilterList.concat(res.configurations);
-                        var data =[];
-                        for(var i=0; i<vm.dailyPlanFilterList.length;i++){
-                            var flag= true;
-                            for(var j=0; j<data.length;j++) {
+                        var data = [];
+                        for (var i = 0; i < vm.dailyPlanFilterList.length; i++) {
+                            var flag = true;
+                            for (var j = 0; j < data.length; j++) {
                                 if (data[j].account == vm.dailyPlanFilterList[i].account && data[j].name == vm.dailyPlanFilterList[i].name) {
-                                    flag= false;
+                                    flag = false;
                                 }
 
                             }
-                            if(flag) {
+                            if (flag) {
                                 data.push(vm.dailyPlanFilterList[i]);
                             }
                         }
-                        vm.dailyPlanFilterList =data;
+                        vm.dailyPlanFilterList = data;
 
                     } else {
                         vm.dailyPlanFilterList = res.configurations;
@@ -3257,27 +3266,32 @@
                     if (vm.savedDailyPlanFilter.selected) {
                         var flag = true;
                         angular.forEach(vm.dailyPlanFilterList, function (value) {
-                            if (value.name == vm.savedDailyPlanFilter.selected) {
+                            if (value.name == vm.savedDailyPlanFilter.selected && value.account == vm.savedDailyPlanFilter.selectedAccount) {
                                 flag = false;
-                                obj.name = value.name;
-                                UserService.configuration(obj).then(function (conf) {
+                                UserService.configuration(value).then(function (conf) {
                                     selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                                     vm.load();
                                 });
                             }
                         });
                         if (flag) {
+                            vm.savedDailyPlanFilter.selected = undefined;
+                            vm.savedDailyPlanFilter.selectedAccount = undefined;
                             vm.load();
                         }
                     } else {
+                        vm.savedDailyPlanFilter.selected = undefined;
+                        vm.savedDailyPlanFilter.selectedAccount = undefined;
                         vm.load();
                     }
                 } else {
                     vm.savedDailyPlanFilter.selected = undefined;
+                    vm.savedDailyPlanFilter.selectedAccount = undefined;
                     vm.load();
                 }
             }, function (err) {
                 vm.savedDailyPlanFilter.selected = undefined;
+                vm.savedDailyPlanFilter.selectedAccount = undefined;
                 vm.load();
             })
         }
@@ -3719,6 +3733,7 @@
 
                 if (vm.dailyPlanFilterList.length == 1) {
                     vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+                    vm.savedDailyPlanFilter.selectedAccount = vm.permission.user;
                     vm.dailyPlanFilters.selectedView = true;
                     selectedFiltered = vm.dailyPlanFilter;
                     vm.load();
@@ -3736,6 +3751,7 @@
             vm.filters = {};
             vm.filters.list = vm.dailyPlanFilterList;
             vm.filters.favorite = vm.savedDailyPlanFilter.favorite;
+            vm.filters.favoriteAccount = vm.savedDailyPlanFilter.favoriteAccountFilter;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -3744,7 +3760,7 @@
         };
 
         vm.editFilter = function (filter) {
-            vm.filterName = filter.name;
+
             UserService.configuration(filter).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.dailyPlanFilter.shared = filter.shared;
@@ -3757,54 +3773,47 @@
                 scope: vm
             });
             modalInstance.result.then(function () {
-                angular.forEach(vm.dailyPlanFilterList, function (value, index) {
-                    if (value.name == filter.name) {
-                        vm.dailyPlanFilterList[index] = vm.dailyPlanFilter;
-                    }
-                });
-                if (vm.savedDailyPlanFilter.selected == vm.filterName) {
-                    vm.savedDailyPlanFilter.selected = vm.dailyPlanFilter.name;
+
+                if (vm.savedDailyPlanFilter.selected == filter.name && vm.savedDailyPlanFilter.selectedAccount == filter.account) {
                     selectedFiltered = vm.dailyPlanFilter;
                     vm.dailyPlanFilters.selectedView = true;
                     vm.load();
                 }
-                if (vm.savedDailyPlanFilter.favorite == vm.filterName) {
-                    vm.savedDailyPlanFilter.favorite = vm.dailyPlanFilter.name;
-                }
-                SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
-                SavedFilter.save();
-                vm.filterName = undefined;
+               var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = filter.account;
+                configObj.configurationType = filter.configurationType;
+                configObj.objectType = filter.objectType;
+                configObj.configurationItem = JSON.stringify(vm.dailyPlanFilter);
+                configObj.name = filter.name;
+                configObj.shared = vm.dailyPlanFilter.shared;
+                UserService.saveConfiguration(configObj);
+
             }, function () {
-                vm.filterName = undefined;
+
             });
         };
 
-        vm.deleteFilter = function (name) {
-            var configObj = {};
-            configObj.jobschedulerId = vm.schedulerIds.selected;
-            configObj.account = vm.permission.user;
-            configObj.configurationType = "CUSTOMIZATION";
-            configObj.objectType = "DAILYPLAN";
-            configObj.name = name;
-            UserService.deleteConfiguration(configObj).then(function (res) {
+        vm.deleteFilter = function (filter) {
+
+            UserService.deleteConfiguration(filter).then(function (res) {
                 angular.forEach(vm.dailyPlanFilterList, function (value, index) {
-                    if (value.name == name) {
-                        toasty.success({
-                            title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully'),
-                            msg: ''
-                        });
+                    if (value.name == name && value.account == filter.account) {
+
                         vm.dailyPlanFilterList.splice(index, 1);
                     }
                 });
 
-                if (vm.savedDailyPlanFilter.selected == name) {
+                if (vm.savedDailyPlanFilter.selected == name && vm.savedDailyPlanFilter.selectedAccount == filter.account) {
                     vm.savedDailyPlanFilter.selected = undefined;
+                    vm.savedDailyPlanFilter.selectedAccount = undefined;
                     vm.dailyPlanFilters.selectedView = false;
                     selectedFiltered = undefined;
                     vm.load();
                 } else {
                     if (vm.dailyPlanFilterList.length == 0) {
                         vm.savedDailyPlanFilter.selected = undefined;
+                        vm.savedDailyPlanFilter.selectedAccount = undefined;
                         vm.dailyPlanFilters.selectedView = false;
                         selectedFiltered = undefined;
                     }
@@ -3831,6 +3840,7 @@
         };
         vm.favorite = function (filter) {
             vm.savedDailyPlanFilter.favorite = filter.name;
+            vm.savedDailyPlanFilter.favoriteAccountFilter = filter.account;
             vm.dailyPlanFilters.selectedView = true;
             vm.filters.favorite = filter.name;
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
@@ -3840,6 +3850,7 @@
 
         vm.removeFavorite = function () {
             vm.savedDailyPlanFilter.favorite = '';
+            vm.savedDailyPlanFilter.favoriteAccountFilter = '';
             vm.filters.favorite = '';
             SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
             SavedFilter.save();
@@ -3847,23 +3858,18 @@
         vm.checkFilterName = function () {
             vm.isUnique = true;
             angular.forEach(vm.dailyPlanFilterList, function (value) {
-                if (!vm.filterName) {
-                    if (vm.dailyPlanFilter.name == value.name) {
+
+                    if (vm.dailyPlanFilter.name == value.name && vm.permission.user == value.account) {
                         vm.isUnique = false;
                     }
-                } else {
-                    if (value.name != vm.filterName) {
-                        if (vm.dailyPlanFilter.name == value.name) {
-                            vm.isUnique = false;
-                        }
-                    }
-                }
+
             });
         };
 
         vm.changeFilter = function (filter) {
             if (filter) {
                 vm.savedDailyPlanFilter.selected = filter.name;
+                vm.savedDailyPlanFilter.selectedAccount = filter.account;
                 vm.dailyPlanFilters.selectedView = true;
                 UserService.configuration(filter).then(function (conf) {
                     selectedFiltered = JSON.parse(conf.configuration.configurationItem);
@@ -3872,6 +3878,7 @@
             }
             else {
                 vm.savedDailyPlanFilter.selected = filter;
+                vm.savedDailyPlanFilter.selectedAccount = filter;
                 vm.dailyPlanFilters.selectedView = false;
                 selectedFiltered = filter;
                 vm.load();

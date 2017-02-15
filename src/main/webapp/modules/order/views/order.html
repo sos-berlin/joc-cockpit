@@ -93,13 +93,14 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedOrderFilter.selected"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{savedOrderFilter.selectedAccount}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedOrderFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" ng-click="editFilters()" ng-if="orderFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="orderFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in orderFilterList track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                <a class="dropdown-item" ng-class="{orange: (savedOrderFilter.selected == filter.name && savedOrderFilter.selectedAccount == filter.account)}" ng-click="changeFilter(filter)" ng-repeat="filter in orderFilterList track by $index">
+                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.name && savedOrderFilter.selectedAccount == filter.account" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -555,7 +556,7 @@
                                                         <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
                                                     <tr class="noExl" ng-show="auditLog.show">
-                                                        <td colspan="7">
+                                                        <td colspan="6">
                                                             <table class="table m-a-0">
                                                             <thead>
                                                                  <tr>

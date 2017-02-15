@@ -82,13 +82,14 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedHistoryFilter.selected"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{savedHistoryFilter.selectedAccount}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedHistoryFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="orderHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="orderHistoryFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in orderHistoryFilterList track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                <a class="dropdown-item" ng-class="{orange: (savedHistoryFilter.selected == filter.name && savedHistoryFilter.selectedAccount == filter.account)}" ng-click="changeFilter(filter)" ng-repeat="filter in orderHistoryFilterList track by $index">
+                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.name && savedHistoryFilter.selectedAccount == filter.account" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -169,13 +170,14 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedJobHistoryFilter.selected"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{savedJobHistoryFilter.selectedAccount}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="savedJobHistoryFilter.selected"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="jobHistoryFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedJobHistoryFilter.selected == filter.name}" ng-click="changeFilter(filter)" ng-repeat="filter in jobHistoryFilterList track by $index">
-                                    {{filter.name}} <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.name" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                <a class="dropdown-item" ng-class="{orange: (savedJobHistoryFilter.selected == filter.name && savedJobHistoryFilter.selectedAccount == filter.account)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobHistoryFilterList track by $index">
+                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.name && savedJobHistoryFilter.selectedAccount == filter.account" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -240,7 +242,7 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobChainSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time m-l" ng-model="jobChainSearch.fromTime" data-time-format="HH:mm:ss"
+                                <input ng-disabled="!jobChainSearch.from" class="form-control input-time m-l" ng-model="jobChainSearch.fromTime" data-time-format="HH:mm:ss"
                                        data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
@@ -250,7 +252,7 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input class="form-control input-time m-l" ng-model="jobChainSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
+                                <input ng-disabled="!jobChainSearch.to" class="form-control input-time m-l" ng-model="jobChainSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
                                        data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
@@ -299,7 +301,7 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time m-l" ng-model="jobSearch.fromTime" data-time-format="HH:mm:ss"
+                                <input ng-disabled="!jobSearch.from" class="form-control input-time m-l" ng-model="jobSearch.fromTime" data-time-format="HH:mm:ss"
                                        data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
@@ -309,7 +311,7 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="jobSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input class="form-control input-time m-l" ng-model="jobSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
+                                <input ng-disabled="!jobSearch.to" class="form-control input-time m-l" ng-model="jobSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
                                        data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>

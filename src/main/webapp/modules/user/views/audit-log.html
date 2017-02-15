@@ -82,7 +82,7 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="auditSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time m-l" ng-model="auditSearch.fromTime" data-time-format="HH:mm:ss"
+                                <input ng-disabled="!auditSearch.from" class="form-control input-time m-l" ng-model="auditSearch.fromTime" data-time-format="HH:mm:ss"
                                        data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
@@ -92,7 +92,7 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="auditSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{auditSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input class="form-control input-time m-l" ng-model="auditSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
+                                <input ng-disabled="!auditSearch.to" class="form-control input-time m-l" ng-model="auditSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
                                        data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>

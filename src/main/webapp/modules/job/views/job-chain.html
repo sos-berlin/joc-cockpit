@@ -64,9 +64,9 @@
                             </div>
                         </div>
                         <div class="btn-group dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">
-                                {{'label.filters' | translate}} <span class="text-primary"
-                                                                      ng-bind="savedJobChainFilter.selected"></span>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{savedJobChainFilter.selectedAccount}}" data-toggle="dropdown">
+                                {{'label.filters' | translate}}
+                                <span class="text-primary" ng-bind="savedJobChainFilter.selected"></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
@@ -75,11 +75,11 @@
 
                                 <div class="dropdown-divider" ng-if="jobChainFilterList.length>0"></div>
                                 <a class="dropdown-item"
-                                   ng-class="{orange: savedJobChainFilter.selected == filter.name}"
+                                   ng-class="{orange: (savedJobChainFilter.selected == filter.name && savedJobChainFilter.selectedAccount == filter.account)}"
                                    ng-click="changeFilter(filter)"
                                    ng-repeat="filter in jobChainFilterList track by $index">
-                                    {{filter.name}}
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobChainFilter.selected == filter.name"
+                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobChainFilter.selected == filter.name  && savedJobChainFilter.selectedAccount == filter.account"
                                        class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>

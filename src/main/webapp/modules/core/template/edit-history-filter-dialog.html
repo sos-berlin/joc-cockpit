@@ -1,7 +1,7 @@
 <div ng-click="refreshSession()">
     <div class="modal-header primary">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title"><span translate>label.updateFilter</span> : {{filterName}}</h4>
+        <h4 class="modal-title"><span translate>label.updateFilter</span> : {{historyFilter.name}}</h4>
     </div>
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>

@@ -897,5 +897,7 @@
   "breadcrumb.schedule": "Zeitplan",
   "breadcrumb.lock": "Sperre",
   "breadcrumb.agentCluster": "Agent Cluster",
-  "breadcrumb.processClass": "Processklasse"
+  "breadcrumb.processClass": "Processklasse",
+  "button.downloadLog":"Download Log",
+  "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries"
 }

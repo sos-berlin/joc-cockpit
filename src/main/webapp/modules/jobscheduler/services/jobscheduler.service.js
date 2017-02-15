@@ -435,6 +435,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            downloadLog: function (obj) {
+                var deferred = $q.defer();
+                var JobScheduler = $resource('jobscheduler/log');
+                JobScheduler.query(obj,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

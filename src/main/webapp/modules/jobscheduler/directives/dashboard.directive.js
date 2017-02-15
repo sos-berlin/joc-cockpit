@@ -217,13 +217,13 @@
                         }
                         if (master.state && span) {
 
-                            var rect = document.getElementById(master.host+master.port);
+                            var rect = document.getElementById(master.host + master.port);
                             var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                 '<br>Version : ' + master.version +
                                 '<br>Started at : <span>' +
                                 moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
                                 '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-                            rect.setAttribute('data-content',popoverTemplate);
+                            rect.setAttribute('data-content', popoverTemplate);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
@@ -276,15 +276,15 @@
                     function refreshSupervisorState(supervisor) {
                         if (supervisor.data.jobscheduler.state) {
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
-                             var rect = document.getElementById(supervisor.host+supervisor.port);
+                            var rect = document.getElementById(supervisor.host + supervisor.port);
                             var popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
 
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
                                 '<br>Started at : <span>' +
-                                moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat)  +
+                                moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
                                 '</span><br> Survey Date: ' +
                                 moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-                            rect.setAttribute('data-content',popoverTemplate);
+                            rect.setAttribute('data-content', popoverTemplate);
                             var anchors = document.querySelectorAll("a[id^='__']");
 
                             angular.forEach(anchors, function (anchor, index) {
@@ -369,10 +369,10 @@
                                 c = c + " yellow-border";
                             }
 
-                            var popoverTemplate= 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+                            var popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
 
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
-                                '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat)  + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
 
                             var sClassRunning = 'text-success';
@@ -402,11 +402,11 @@
                             var terminateClass1 = 'hide';
 
                             var downDownClass = 'hide';
-                                if(scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
-                                    scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
-                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue){
-                                    downDownClass = 'show';
-                                }
+                            if (scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
+                                scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
+                                scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue) {
+                                downDownClass = 'show';
+                            }
                             if (scope.permission.JobschedulerMaster.restart.terminate) {
                                 restartTerminatetClass1 = 'show';
                             }
@@ -429,30 +429,31 @@
                             lastId = supervisor.host + supervisor.port;
                             template = template +
 
-                                ' <div class="cluster-rect" data-toggle="popover"  trigger="hover" data-content="'+popoverTemplate+'"' +
-                                'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
-                                '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
-                                '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
-                                '</span> <div class="btn-group dropdown pull-right" >' +
-                                '<a href class=" more-option '+downDownClass+'" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
-                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + abortClass1 + ' '+ disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
-                                '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 +  '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass +' ' + restartTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + disableClass +' ' + restartTerminatetClass1 +  '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
-                                '</div>' +
-                                '</div></div>' +
+                            ' <div class="cluster-rect" data-toggle="popover"  trigger="hover" data-content="' + popoverTemplate + '"' +
+                            'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
+                            '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
+                            '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
+                            '</span> <div class="btn-group dropdown pull-right" >' +
+                            '<a href class=" more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                            '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                            '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                            '<a class="dropdown-item ' + abortClass1 + ' ' + disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
+                            '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 + '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                            '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                            '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                            '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
+                            '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
+                            '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadLog</a>' +
+                            '</div>' +
+                            '</div></div>' +
 
-                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
-                                '</span></div>' +
-                                '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
-                                '</span></div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '">' + supervisor.data.jobscheduler.state.
-                                    _text + '</span></div>' +
-                                '</div> ';
+                            '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
+                            '</span></div>' +
+                            '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
+                            '</span></div>' +
+                            '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '">' + supervisor.data.jobscheduler.state.
+                                _text + '</span></div>' +
+                            '</div> ';
 
                             var masterTemplate = '';
                             angular.forEach(supervisor.masters, function (master, index) {
@@ -529,9 +530,9 @@
                                 var terminateClass1 = 'hide';
 
                                 var downDownClass = 'hide';
-                                if(scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
+                                if (scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
                                     scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
-                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue){
+                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue) {
                                     downDownClass = 'show';
                                 }
 
@@ -554,30 +555,31 @@
                                     continueClass = 'hide';
                                 }
 
-                                lastId=master.host + master.port;
-                                masterTemplate = '<div  data-toggle="popover" trigger="hover" data-content="'+popoverTemplate+'" ' +
+                                lastId = master.host + master.port;
+                                masterTemplate = '<div  data-toggle="popover" trigger="hover" data-content="' + popoverTemplate + '" ' +
 
 
-                                    'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
-                                    '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '"></span>' +
-                                    '<div class="text-left  p-t-sm p-l-sm ">' +
-                                    '<span>' + name +
-                                    '</span>' + '<div class="btn-group dropdown pull-right" >' +
-                                    '<a href class=" more-option '+downDownClass+'" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
-                                    '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a class="dropdown-item bg-hover-color '+ terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                    '<a class="dropdown-item ' +  abortClass1 +' ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                    '<a class="dropdown-item ' +  restartAbortClass1 +' ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' +  restartTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' +  restartTerminatetClass1 +' ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                    '<a class="dropdown-item ' +  pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
-                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
-                                    '</div>' +
-                                    '</div> </div>' +
-                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
-                                    '</span></div><div class="text-sm text-left p-t-xs p-l-sm">' + master.host + ':' + master.port + '</div>' +
-                                    '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="' + classRunning + '">' + master.state._text + '</span></div>' +
-                                    '</div>';
+                                'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
+                                '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '"></span>' +
+                                '<div class="text-left  p-t-sm p-l-sm ">' +
+                                '<span>' + name +
+                                '</span>' + '<div class="btn-group dropdown pull-right" >' +
+                                '<a href class=" more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                                '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                '<a class="dropdown-item ' + abortClass1 + ' ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
+                                '<a class="dropdown-item ' + restartAbortClass1 + ' ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                '<a class="dropdown-item ' + restartTerminatetClass1 + ' ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                '<a class="dropdown-item ' + restartTerminatetClass1 + ' ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                '<a class="dropdown-item  ' + disableClass + '" id="' + '__master,download_log,' + master.host + ':' + master.port + '" translate>button.downloadLog</a>' +
+                                '</div>' +
+                                '</div> </div>' +
+                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
+                                '</span></div><div class="text-sm text-left p-t-xs p-l-sm">' + master.host + ':' + master.port + '</div>' +
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="' + classRunning + '">' + master.state._text + '</span></div>' +
+                                '</div>';
 
                                 if (index == 0) {
                                     template = template + '<div   id="masterContainer">' + masterTemplate;
@@ -679,9 +681,9 @@
                                 lastId = master.host + master.port;
 
                                 var downDownClass = 'hide';
-                                if(scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
+                                if (scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
                                     scope.permission.JobschedulerMaster.abort || scope.permission.JobschedulerMaster.terminate ||
-                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue){
+                                    scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue) {
                                     downDownClass = 'show';
                                 }
                                 if (scope.permission.JobschedulerMaster.restart.terminate) {
@@ -704,21 +706,22 @@
                                     continueClass = 'hide';
                                 }
                                 var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                '<br>Version : ' + master.version +
-                                '<br>Started at : <span id="'+'popover0011'+'">' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-                                var masterTemplate = '<div data-toggle="popover"   data-content=\''+popoverTemplate+'\'' +
+                                    '<br>Version : ' + master.version +
+                                    '<br>Started at : <span id="' + 'popover0011' + '">' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                var masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
                                     '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
                                     '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '<div class="btn-group dropdown pull-right" >' +
-                                    '<a href class="more-option '+downDownClass+'" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                    '<a href class="more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
                                     '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
                                     '<a class="dropdown-item ' + disableClass + ' ' + abortClass1 + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
                                     '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
                                     '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
                                     '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                    '<a class="dropdown-item ' + pauseClass + ' '  + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
                                     '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                    '<a class="dropdown-item  '  + disableClass + '" id="' + '__master,download_log,' + master.host + ':' + master.port + '" translate>button.downloadLog</a>' +
                                     '</div></div>' +
                                     '</span></div>' +
                                     '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
@@ -767,7 +770,7 @@
                         }
                         var popoverTemplate = ' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
-                        var masterTemplate = '<div data-toggle="popover"  data-placement="top" data-content="'+popoverTemplate+'" ' +
+                        var masterTemplate = '<div data-toggle="popover"  data-placement="top" data-content="' + popoverTemplate + '" ' +
 
                             'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
@@ -780,13 +783,13 @@
                             '</div>';
 
 
-                        template = template + '<div   id="masterContainer">' + masterTemplate + '</div></div>'+
-                         ' <script>'+
-   ' $(document).ready(function(){'+
-    '$(\'[data-toggle="popover"]\').popover({html:true,trigger:"hover"});'+
-'});'+
+                        template = template + '<div   id="masterContainer">' + masterTemplate + '</div></div>' +
+                        ' <script>' +
+                        ' $(document).ready(function(){' +
+                        '$(\'[data-toggle="popover"]\').popover({html:true,trigger:"hover"});' +
+                        '});' +
 
-'</script>';
+                        '</script>';
                         template = $compile(template)(scope);
                         elem.append(template);
                         alignToCenter();
@@ -899,9 +902,9 @@
                                     host: results[3],
                                     port: results[4]
                                 });
-/*                                if (results[2] !== 'terminateAndRestartWithin') {
-                                    changeToWaiting(results[3], results[4]);
-                                }*/
+                                /*                                if (results[2] !== 'terminateAndRestartWithin') {
+                                 changeToWaiting(results[3], results[4]);
+                                 }*/
                                 //vm.getSupervisor(true);
                             }
 
