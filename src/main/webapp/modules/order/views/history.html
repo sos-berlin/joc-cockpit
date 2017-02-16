@@ -349,7 +349,7 @@
             </div>
         </div>
         <div class="hide"  ng-class="{'show': isLoading}">
-            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'jobChain'" >
+            <div class="m-t-sm box p-a hide" ng-class="{'show':historyFilters.type == 'jobChain'}" >
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
@@ -489,7 +489,7 @@
                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && historys.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
-            <div class="m-t-sm box p-a" ng-if="historyFilters.type == 'job'">
+            <div class="m-t-sm box p-a hide" ng-class="{'show':historyFilters.type == 'job'}">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="job">
                         <thead>
@@ -639,18 +639,11 @@
 </div>
 
 <script>
-$('.table-responsive').on('shown.bs.dropdown', function (e) {
-    var $table = $(this),
-        $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+$('.table-responsive').on('show.bs.dropdown', function () {
+     $('.table-responsive').css( "overflow", "inherit" );
+});
 
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
-
-  $('.table-responsive').on('hide.bs.dropdown', function () {
-    $(this).css("padding-bottom", 0);
-  });
-
+$('.table-responsive').on('hide.bs.dropdown', function () {
+     $('.table-responsive').css( "overflow", "auto" );
+});
 </script>

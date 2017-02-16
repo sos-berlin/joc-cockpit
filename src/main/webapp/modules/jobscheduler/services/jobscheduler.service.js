@@ -439,7 +439,7 @@
             downloadLog: function (obj) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/log');
-                JobScheduler.query(obj,function (res) {
+                JobScheduler.save(obj,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

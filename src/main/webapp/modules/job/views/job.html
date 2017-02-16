@@ -325,9 +325,9 @@
 
                                         <td class="noExl" ng-if="permission.Job.view.configuration || permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
                                             <div class="btn-group dropdown">
-                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                <button type="button" class="btn-drop more-option-h menu-button"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 dropdown-adjustmenu" role="menu">
                                                     <a class="hide dropdown-item"ng-click="showConfiguration('job',job.path,job.name)" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTask</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="job.isOrderJob!=true  && permission.Job.start" translate>button.startTaskat</a>
@@ -547,9 +547,9 @@
                                                             <td ng-if="showTaskPanel.isOrderJob!=true">{{task.enqueued | stringToDate}} <span class="text-success">(<span time="{{task.enqueued}}"></span>)</span></td>
                                                             <td width="40" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
                                                                 <div class="btn-group dropdown">
-                                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                                    <button type="button" class="btn-drop more-option-h menu-button"  data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
-                                                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 dropdown-adjustmenu" role="menu">
                                                                         <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
                                                                         <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
@@ -694,16 +694,35 @@
    $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),
         $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+        $menubutton = $(e.target).find('.menu-button'),
+        menuleft = $menubutton.offset().left,
+        menutop = $menubutton.offset().top;
 
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
+
+        if(window.innerHeight<menutop+250){
+            $('.btn-group').addClass('dropup').removeClass('dropdown');
+            $('.dropdown-menu').addClass('pull-left').removeClass('dropdown-adjustmenu');
+            $('.dropdown-menu').addClass('dropdown-c').removeClass('dropdown-ac');
+        }
+        else {
+            $('.btn-group').addClass('dropdown').removeClass('dropup');
+            $('.dropdown-menu').addClass('dropdown-adjustmenu').removeClass('pull-left');
+            $('.dropdown-menu').addClass('dropdown-ac').removeClass('dropdown-c');
+
+            $('.dropdown-adjustmenu').css("top", menutop);
+            $('.dropdown-adjustmenu').css("left", menuleft);
+            $('.dropdown-adjustmenu').css("margin-left", -185);
+
+        }
+
+});
 
   $('.table-responsive').on('hide.bs.dropdown', function () {
-      $(this).css("padding-bottom", 0);
-  });
+
+              $('.dropdown-adjustmenu').css("top", "auto");
+                $('.dropdown-adjustmenu').css("left", "auto");
+                $('.dropdown-menu').removeClass('dropdown-adjustmenu');
+          });
 
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({

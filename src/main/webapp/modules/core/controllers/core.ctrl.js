@@ -1075,13 +1075,22 @@
         vm.events = [];
         vm.isCellOpen = true;
         vm.ok = function () {
-            if (vm.paramObject)
+
+            if (vm.paramObject) {
+                var indexArr =[];
                 angular.forEach(vm.paramObject.params, function (value, index) {
-                    if (!(value.name && value.value)) {
-                        vm.paramObject.params.splice(index, 1);
+                    if ((value.name =='' || value.name ==null || value.name ==undefined) && (value.value =='' || value.value ==null || value.value ==undefined)) {
+                        indexArr.push(index)
                     }
                 });
-            vm.error = false;
+                if(indexArr.length>0){
+                    angular.forEach(indexArr, function(value, index){
+                        vm.paramObject.params.splice(value - index, 1);
+                    })
+                }
+            }
+
+           vm.error = false;
             if (vm.required && vm.comments) {
                 if (vm.comments.comment) {
                     $uibModalInstance.close('ok');
@@ -1099,8 +1108,8 @@
 
         vm.addCriteria = function () {
             var param = {
-                name: null,
-                value: null
+                name: '',
+                value: ''
             };
             if (vm.paramObject && vm.paramObject.params)
                 vm.paramObject.params.push(param);
@@ -3641,13 +3650,11 @@
                             if (value._day && (angular.equals(value._day, period.specificWeekDay) && angular.equals(value._which, period.which))) {
                                 if (angular.isArray(value.period)) {
                                     angular.forEach(value.period, function (val, index) {
-
                                         if (angular.equals(val, period.period)) {
                                             value.period.splice(index, 1);
                                         }
                                     });
                                 } else {
-
                                     if (angular.equals(value.period, period.period)) {
                                         value.period = undefined;
                                         value._day = undefined;

@@ -42,13 +42,14 @@
                                     <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
-                                <div class="btn-group dropdown pull-right abt-dropdown " ng-if="permission.Schedule.view.configuration || permission.Schedule.edit">
+                                <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
                                            ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)" translate>button.substitute</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                        <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
                             </div>
@@ -178,9 +179,7 @@
                                     <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
                                        translate>button.substitute</a>
                                     <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
-
                                     <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
-
                                 </div>
                             </div>
                         </td>
@@ -232,23 +231,17 @@
 
 <div ng-if="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
 <script>
-    $('.table-responsive').on('shown.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.dropdown-menu'),
-                tableOffsetHeight = $table.offset().top + $table.height(),
-                menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
-
-        if (menuOffsetHeight > tableOffsetHeight)
-            $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight + 10);
+    $('.table-responsive').on('show.bs.dropdown', function () {
+        $('.table-responsive').css("overflow", "inherit");
     });
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
-        $(this).css("padding-bottom", 0);
+        $('.table-responsive').css("overflow", "auto");
     });
-
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190
         });
     });
 </script>
+

@@ -18,7 +18,7 @@
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
             <div class="box p-a" ng-show="allProcessClasses.length>0">
-                    <div class="table-responsive" >
+                    <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                         <table class="table table-hover table-bordered  ">
                             <thead>
                             <tr>
@@ -67,22 +67,3 @@
     </div>
 </div>
 
-
-
-
-<script>
-    $('.table-responsive').on('shown.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.dropdown-menu'),
-                tableOffsetHeight = $table.offset().top + $table.height(),
-                menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
-
-        if (menuOffsetHeight > tableOffsetHeight)
-            $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $(this).css("padding-bottom", 0);
-    });
-
-</script>

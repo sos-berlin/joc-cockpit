@@ -126,6 +126,7 @@
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody ng-repeat="cluster in allAgentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * agentsFilters.pageSize | limitTo: agentsFilters.pageSize" ng-class="{'light-bg':cluster.show}">
@@ -163,7 +164,7 @@
                             </td>
                         </tr>
                         <tr ng-if="cluster.show">
-                            <td colspan="9" style="padding: 1px !important;">
+                            <td colspan="10" style="padding: 1px !important;">
                                 <table class="table m-a-0">
                                     <thead>
                                     <tr>
@@ -228,9 +229,16 @@
 </div>
 <div ng-if="isLoading && treeAgent.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
 <script>
+    $('.table-responsive').on('show.bs.dropdown', function () {
+        $('.table-responsive').css("overflow", "inherit");
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.table-responsive').css("overflow", "auto");
+    });
     $(document).ready(function () {
-      $('#leftPanel').stickySidebar({
+        $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190
         });
-  });
+    });
 </script>

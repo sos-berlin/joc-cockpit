@@ -1884,45 +1884,33 @@
             }
         }
 
-        function volatileInformationA(obj) {
-            ResourceService.getAgentCluster(obj).then(function (res) {
-                if (vm.agentClusters.length > 0) {
-                     var agentCluster = angular.merge(vm.agentClusters[0], res.agentClusters[0]);
-                    vm.allAgentClusters.push(agentCluster);
-                } else {
-                    vm.allAgentClusters.push(res.agentClusters);
-                }
 
-               vm.isLoading = true;
+        function getAgentCluster () {
+            vm.agentClusters = [];
+
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.agentClusters = [{agentCluster:$stateParams.path}];
+            JobSchedulerService.getAgentCluster(obj).then(function (result) {
+                vm.agentClusters = result.agentClusters;
+                vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
             });
         }
-
-
-        function getAgentCluster () {
-            vm.allAgentClusters = [];
-
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.agentClusters = [{agentClusters:$stateParams.path}];
-            ResourceService.getAgentClusterP(obj).then(function (result) {
-                vm.agentClusters = result.agentClusters;
-                volatileInformationA(obj);
-                vm.isLoading = true;
-            }, function () {
-                volatileInformationA(obj);
-                vm.isLoading = true;
-            });
+        vm.showAgents = function (cluster) {
+            cluster.show = true;
+        };
+        vm.hideAgents = function (cluster) {
+            cluster.show = false;
         };
 
          function volatileInformationL(obj) {
             ResourceService.get(obj).then(function (res) {
                 if (vm.locks.length > 0) {
-                     var lock = angular.merge(vm.locks[0], res.locks[0]);
-                    vm.allLocks.push(lock);
+                     vm.lock = angular.merge(vm.locks, res.locks);
                 } else {
-                    vm.allLocks.push(res.locks);
+                    vm.locks =res.locks;
                 }
 
                 vm.isLoading = true;
@@ -1933,7 +1921,7 @@
 
 
         function getLock () {
-            vm.allLocks = [];
+            vm.locks = [];
 
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -1946,7 +1934,7 @@
                 volatileInformationL(obj);
 
             });
-        };
+        }
 
         function volatileInformationS() {
             ScheduleService.getSchedule($stateParams.path,vm.schedulerIds.selected).then(function (res) {
@@ -1973,7 +1961,7 @@
             }, function () {
                 volatileInformationS();
             });
-        };
+        }
 
 
         function volatileInformationP(obj) {
@@ -1984,7 +1972,6 @@
                 } else {
                     vm.allProcessClasses.push(res.processClasses);
                 }
-                console.log(vm.allProcessClasses)
 
                 vm.isLoading = true;
             }, function () {
@@ -2006,6 +1993,16 @@
                 vm.isLoading = true;
             }, function () {
                 volatileInformationP(obj);
+            });
+        }
+
+        vm.showProcesses = function (processClass) {
+            vm.processClass = processClass;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/process-list-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg'
             });
         };
 
@@ -2406,6 +2403,7 @@
             SOSAuth.setJobChain(undefined);
             SOSAuth.save();
         }
+
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 
@@ -3827,7 +3825,7 @@
             delete configObj.shared;
             if(vm.permission.user != configObj.account) {
                 angular.forEach(vm.dailyPlanFilterList, function (value, index) {
-                    if (value.name == configObj.name) {
+                    if (value.name == configObj.name && value.account == configObj.account) {
                         vm.dailyPlanFilterList.splice(index, 1);
                     }
                 });

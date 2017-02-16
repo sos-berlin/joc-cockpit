@@ -601,29 +601,29 @@
                             var item = scope.jobChainData.endNodes[index];
                             scope.coords[length + index] = {};
                             scope.coords[length+ index].left = left + rectW + margin;
-
+                            scope.coords[length+ index].name=endNode.name;
 
 
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
+                                console.log("Error node "+index);
                                 endErrorNodes++;
-                                scope.coords[length].top = top + rectH + 50 + rectH / 2 - avatarW / 2;
+                                scope.coords[length+index].top = top + rectH + 50 + rectH  - avatarW / 2;
                                 scope.coords.map(function (obj) {
-                                    if (scope.coords[length].top < obj.top) {
-                                        scope.coords[length].top = obj.top ;
+                                    if (scope.coords[length+index].top < obj.top+rectH && scope.coords[length+index].name !==obj.name ) {
+                                        console.log("Top is large "+obj.top);
+                                        scope.coords[length+index].top = obj.top+rectH ;
                                     }
 
                                 });
-                                if(scope.coords[length + index].top==top + rectH + 50 + rectH / 2 - avatarW / 2 && endSuccessNodes>1){
-                                    scope.coords[length + index].top = scope.coords[length + index].top + rectH/2 + margin;
-                                }
-                                var labelTop = scope.coords[length].top - 25;
-                                var labelLeft = scope.coords[length].left + avatarW / 2 - endNode.name.length * 3;
+
+                                var labelTop = scope.coords[length + index].top - 25;
+                                var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
 
                                 rectangleTemplate = rectangleTemplate + '<div id="lb' + item.name + '"><span   class="text-danger error-node" ' +
                                 'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
                                 '</div>' +
                                 '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
-                                'style="position: absolute;left: ' + scope.coords[length].left + 'px;top: ' + scope.coords[length].top + 'px' + '"> </span>';
+                                'style="position: absolute;left: ' + scope.coords[length + index].left + 'px;top: ' + scope.coords[length + index].top + 'px' + '"> </span>';
 
                             } else {
                                 endSuccessNodes++;
@@ -631,7 +631,7 @@
                                 if (endSuccessNodes > 1) {
                                     scope.coords.map(function (obj) {
                                         console.log("Object top "+obj.top+" for "+obj.name);
-                                        if (scope.coords[length + index].top < obj.top) {
+                                        if (scope.coords[length + index].top < obj.top && scope.coords[length+index].name !==obj.name) {
                                             scope.coords[length + index].top = obj.top;
                                         }
 
@@ -755,7 +755,6 @@
                 'onAction': '&',
                 'showConfiguration': '&',
                 'showJob': '&',
-                'orders': '=',
                 'getJobChain': '&',
                 'permission': '=',
                 'onOrderAction': '&',
@@ -1003,13 +1002,10 @@
                                 }
 
                                 if (div1.offsetTop > div2.offsetTop) {
-
-
                                     var top = div2.offsetTop + div2.clientHeight / 2;
                                     var left = div2.offsetLeft - vm.margin / 2;
                                     var width = vm.margin / 2;
                                     var height = 2;
-
                                     createLine(top, left, width, 2, index, item);
                                     height = div1.offsetTop + div1.clientHeight / 2 - top + vm.border;
                                     createLine(top, left, 2, height, index, item);
@@ -1017,9 +1013,7 @@
                                     width = left - div1.offsetLeft - div1.clientWidth + vm.border;
                                     left = div1.offsetLeft + div1.clientWidth + vm.border;
                                     createLine(top, left, width, 2, index, item);
-
-                                } else if (div1.clientHeight == div2.clientHeight && div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
-
+                                } else if (div2.offsetTop + div2.clientHeight > div1.offsetTop + div1.clientHeight) {
                                     var top = div1.offsetTop + div1.clientHeight / 2;
                                     var left = div1.offsetLeft + div1.clientWidth;
                                     var width = div2.offsetLeft - left - vm.margin / 2;
@@ -1299,6 +1293,7 @@
 
 
                             if (node.orders && node.orders.length > 0) {
+
                                 addLabel(node.orders, node.name);
                             }
                         });
@@ -1331,10 +1326,26 @@
                             }
                         }
 
+
+
+                         vm.calWidth=function(index,state){
+                                    var container = document.getElementById('lbl-order-' + state);
+                                     if(index!=-1 && container.clientHeight==container.scrollHeight){
+                                         return '49px';
+                                    }else if(index!=-1 && container.clientHeight!==container.scrollHeight){
+                                         return '44px';
+                                    }else if( container.clientHeight==container.scrollHeight){
+                                         return '25px';
+                                    }else if(container.clientHeight!==container.scrollHeight){
+                                         return '30px';
+                                    }
+                                }
+                        
                         function addLabel(orders, name) {
+
                             vm.limitNum = JSON.parse($window.sessionStorage.preferences).maxOrderPerJobchain;
                             var blockEllipsisFlowOrder = 'block-ellipsis-flow-order';
-                            if (orders.length > 3) {
+                            if (orders.length > 5) {
                                 blockEllipsisFlowOrder = 'block-ellipsis-flow-order1';
                             }
                             angular.forEach(orders, function (order, index) {
@@ -1366,9 +1377,8 @@
                                     var container = document.getElementById('lbl-order-' + order.state);
 
 
-                                    if (container && container.childNodes.length > 0) {
-                                        var label = document.createElement('div');
-                                        label.innerHTML = getOrderMenu(order);
+                                    if (container && container.childNodes.length > 0) { var label = document.createElement('div');
+                                        label.innerHTML = getOrderMenu(order,name);
                                         var top = container.offsetTop;
                                         container.appendChild(label);
                                         if (index <= 4) {
@@ -1388,7 +1398,8 @@
                                         label.style['margin-bottom'] = '5px';
                                         label.style['left'] = node.offsetLeft + 'px';
                                         label.style['white-space'] = 'nowrap';
-                                        label.innerHTML = '<div>' + getOrderMenu(order) + '</div>';
+                                        console.log("Getting order menu");
+                                        label.innerHTML = '<div id="orderBlock-'+name+'">' + getOrderMenu(order,name) + '</div>';
                                         mainContainer.appendChild(label);
                                         $compile(label)(vm);
                                         label.style['top'] = node.offsetTop - label.clientHeight - 5 + 'px';
@@ -1400,7 +1411,9 @@
 
                                 }
 
-                                function getOrderMenu(order) {
+
+
+                                function getOrderMenu(order,nodeName) {
                                     var diff = 0;
                                     var time = 0;
                                     if (order.startedAt) {
@@ -1416,15 +1429,16 @@
 
                                         time = order.nextStartTime;
                                     }
+
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
-                                        '<span class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
-                                        + '<span id="date-' + order.orderId + '" class="show-block v-m text-success text-xs"> ' + moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + ' (' + diff + ')</span>'
+                                        '<span    ng-style="{\'max-width\':calWidth(\''+diff.indexOf('never')+'\',\''+order.state+'\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
+                                        + '<span  class="show-block v-m text-success text-xs"> ' + moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + ' (' + diff + ')</span>'
                                         + '</span>'
-                                        + '<div class="hide btn-group dropdown" ng-class="{\'show-inline\':permission.Order.view.configuration || (permission.Order.view.orderLog && \'' + order.historyId + '\') || permission.Order.start || permission.Order.setState'
+                                        + '<div class="hide btn-group dropdown " ng-class="{\'show-inline\':permission.Order.view.configuration || (permission.Order.view.orderLog && \'' + order.historyId + '\') || permission.Order.start || permission.Order.setState'
                                         + '|| permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume'
-                                        + '|| permission.Order.reset || permission.Order.removeSetback || permission.Order.delete.permanent}"><button type="button"  class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
-                                        + '<div class="dropdown-menu dropdown-ac" role="menu" style="position: fixed;z-index: 9999;top: ' + node.offsetTop * 2 + 'px; left:' + node.offsetLeft * 1.2 + 'px !important">'
-                                        + '<a class="hide" id="log-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.orderLog && \'' + order.type + '\'!==\'AD_HOC\'}">' + gettextCatalog.getString("button.viewLog") + '</a>'
+                                        + '|| permission.Order.reset || permission.Order.removeSetback || permission.Order.delete.permanent}"><button type="button"  class="btn-drop more-option-h dropdown1" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
+                                        + '<div class="dropdown-menu dropdown-ac " role="menu" style="position: fixed;z-index: 9999;">'
+                                        + '<a class="hide" id="log-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.orderLog && \'' + order._type + '\'!==\'AD_HOC\'}">' + gettextCatalog.getString("button.viewLog") + '</a>'
                                         + '<a class="hide" id="configuration-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.configuration && \'' + order.historyId + '\'}">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
                                         + '<a class="hide" id="ordernow-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.start}">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
                                         + '<a class="hide" id="orderat-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.start}">' + gettextCatalog.getString("button.startOrderat") + '</a>'
@@ -1436,8 +1450,8 @@
                                         + '<a class="hide" id="resumeodrfrmstate-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\'))&& permission.Order.resume}">' + gettextCatalog.getString("button.resumeOrderFromState") + '</a>'
                                         + '<a class="hide" id="orderreset-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& permission.Order.reset}">' + gettextCatalog.getString("button.resetOrder") + '</a>'
                                         + '<a class="hide" id="orderremove-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.removeSetback}">' + gettextCatalog.getString("button.removeOrder") + '</a>'
-                                        + '<a class="hide" id="calendar-' + order.orderId + '" ng-class="{\'show dropdown-item \':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& ' + order.type + '!==\'AD_HOC\' && permission.DailyPlan.view.status}">' + gettextCatalog.getString("button.showCalendar") + '</a>'
-                                        + '<a class="hide"  id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \':' + order.type + '==\'AD_HOC\' && permission.Order.delete.permanent}">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
+                                        + '<a class="hide" id="calendar-' + order.orderId + '" ng-class="{\'show dropdown-item \':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& ' + order._type + '!==\'AD_HOC\' && permission.DailyPlan.view.status}">' + gettextCatalog.getString("button.showCalendar") + '</a>'
+                                        + '<a class="hide" id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \': permission.Order.delete.permanent && \'' + order._type + '\'==\'AD_HOC\'}">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
                                         + '</div></div>';
                                     return menu;
                                 }

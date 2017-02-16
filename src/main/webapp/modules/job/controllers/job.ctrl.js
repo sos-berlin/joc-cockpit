@@ -9,9 +9,9 @@
         .controller('JobCtrl', JobCtrl);
 
     JobChainCtrl.$inject = ["$scope", "JobChainService", "OrderService", "JobService", "UserService", "$location", "SOSAuth", "$uibModal", "orderByFilter", "ScheduleService", "SavedFilter",
-        "toasty", "gettextCatalog", "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService"];
+         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService"];
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
-                          toasty, gettextCatalog, DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService) {
+                          DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService) {
 
         var vm = $scope;
         vm.jobChainFilters = CoreService.getJobChainTab();
@@ -165,12 +165,9 @@
          * Function to initialized tree view
          */
         function initTree() {
-
             if (selectedFiltered && selectedFiltered.paths && selectedFiltered.paths.length > 0) {
                 var folders = [];
-
                 for (var i = 0; i < selectedFiltered.paths.length; i++) {
-
                     folders.push({folder: selectedFiltered.paths[i]});
                 }
             }
@@ -196,7 +193,6 @@
                         vm.changeStatus();
                     }
                 }
-
                 vm.jobChainFilters.expand_to = vm.tree;
                 vm.isLoading = true;
             }, function () {
@@ -204,12 +200,10 @@
             });
         }
 
-
         vm.$on('reloadObject', function () {
             navFullTree();
             filteredTreeData();
         });
-
 
         vm.treeHandler = function (data) {
             vm.reset();
@@ -1035,6 +1029,7 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     jobChain: jobChain.path
                 }).then(function (res) {
+                    jobChain.nodes =[];
                     jobChain = angular.merge(jobChain, res.jobChain);
                     angular.forEach(jobChain.nodes, function (val, index) {
                         if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
@@ -1966,6 +1961,7 @@
                 jobschedulerId: vm.schedulerIds.selected,
                 jobChain: jobChain.path
             }).then(function (res) {
+                jobChain.nodes =[];
                 jobChain = angular.merge(jobChain, res.jobChain);
                 angular.forEach(jobChain.nodes, function (val, index) {
                     if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
@@ -2140,7 +2136,6 @@
                                             if (res && res.orders) {
                                                 if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
                                                     angular.forEach(vm.orders, function (orders) {
-
                                                         for (var i = 0; i < res.orders.length; i++) {
                                                             if (orders.path == res.orders[i].path) {
                                                                 orders = angular.merge(orders, res.orders[i]);
@@ -2247,6 +2242,10 @@
                 }
         }
 
+        $scope.$on('refreshList', function (event, jobChain) {
+            showNodePanelFuc(jobChain);
+        });
+
         $scope.$on('$destroy', function () {
             watcher1();
             watcher3();
@@ -2257,10 +2256,10 @@
         });
     }
 
-    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "toasty", "ScheduleService",
-        "gettextCatalog", "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService","$location"];
-    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, toasty, ScheduleService,
-                     gettextCatalog, $state, CoreService, $timeout, DailyPlanService, AuditLogService,$location) {
+    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "ScheduleService",
+         "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService","$location"];
+    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, ScheduleService,
+                      $state, CoreService, $timeout, DailyPlanService, AuditLogService,$location) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -3261,7 +3260,6 @@
             UserService.deleteConfiguration(filter).then(function (res) {
                 angular.forEach(vm.jobFilterList, function (value, index) {
                     if (value.name == filter.name && value.account == filter.account) {
-
                         vm.jobFilterList.splice(index, 1);
                     }
                 });

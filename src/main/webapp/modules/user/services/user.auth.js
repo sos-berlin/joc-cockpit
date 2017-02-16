@@ -13,14 +13,16 @@
                     request: function (config) {
 
 
-                        if (config.method == 'POST' || config.url=='jobscheduler/log') {
-                           config.url = './api/' + config.url;
+                        if (config.method == 'POST' ) {
+
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,
-                                    'Content-Type': config.url=='jobscheduler/log'?'text/html':'application/json'
+                                    'Content-Type': 'application/json',
+                                    'Content-Disposition':config.url=='jobscheduler/log'?'application/octet-stream':undefined
                                 }
                             }
+                            config.url = './api/' + config.url;
                             if($rootScope.clientLogFilter.state) {
                                 var date = new Date();
                                 var info = {
