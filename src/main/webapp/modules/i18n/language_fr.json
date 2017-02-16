@@ -898,6 +898,6 @@
   "breadcrumb.lock": "Verrou",
   "breadcrumb.agentCluster": "Cluster Agent",
   "breadcrumb.processClass": "Classe de Processus",
-  "button.downloadLog":"Download Log",
-  "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries"
+  "button.downloadLog":"Télécharger le Main Log",
+  "label.maxNumberOfAuditLogEntries": "Nombre max. des entrées dans le Journal d'Audit"
 }

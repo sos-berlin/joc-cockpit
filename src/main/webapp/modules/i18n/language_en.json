@@ -898,6 +898,6 @@
   "breadcrumb.lock": "Lock",
   "breadcrumb.agentCluster": "Agent Cluster",
   "breadcrumb.processClass": "Process Class",
-  "button.downloadLog":"Download Log",
+  "button.downloadLog": "Download Main Log",
   "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries"
 }
