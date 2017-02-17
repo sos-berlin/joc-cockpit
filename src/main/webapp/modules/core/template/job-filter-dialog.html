@@ -106,7 +106,7 @@
                     <input class="form-control input-date" ng-model="jobFilter.fromDate" ng-disabled="jobFilter.planned"
                            data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker
                            type="text">
-                    <input class="form-control input-time" ng-model="jobFilter.fromTime" ng-disabled="jobFilter.planned"
+                    <input ng-disabled="!jobFilter.fromDate" class="form-control input-time" ng-model="jobFilter.fromTime" ng-disabled="jobFilter.planned"
                            data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker
                            type="text">
                 </div>
@@ -118,7 +118,7 @@
                     <input class="form-control input-date" ng-model="jobFilter.toDate" ng-disabled="jobFilter.planned"
                            data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{jobFilter.fromDate}}"
                            placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input class="form-control input-time" ng-model="jobFilter.toTime" ng-disabled="jobFilter.planned"
+                    <input ng-disabled="!jobFilter.toDate" class="form-control input-time" ng-model="jobFilter.toTime" ng-disabled="jobFilter.planned"
                            data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker
                            type="text">
                 </div>

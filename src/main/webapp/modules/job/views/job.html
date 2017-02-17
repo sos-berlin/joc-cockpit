@@ -60,8 +60,8 @@
                                 <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="jobFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{(orange: savedJobFilter.selected == filter.name && savedJobFilter.selectedAccount == filter.account)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobFilterList track by $index">
-                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name && && savedJobFilter.selectedAccount == filter.account" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                <a class="dropdown-item" ng-class="{orange: (savedJobFilter.selected == filter.name && savedJobFilter.selectedAccount == filter.account)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobFilterList track by $index">
+                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobFilter.selected == filter.name && savedJobFilter.selectedAccount == filter.account" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -325,9 +325,9 @@
 
                                         <td class="noExl" ng-if="permission.Job.view.configuration || permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
                                             <div class="btn-group dropdown">
-                                                <button type="button" class="btn-drop more-option-h menu-button"  data-toggle="dropdown" ><i
+                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 dropdown-adjustmenu" role="menu">
+                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
                                                     <a class="hide dropdown-item"ng-click="showConfiguration('job',job.path,job.name)" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="job.isOrderJob!=true && permission.Job.start" translate>button.startTask</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="job.isOrderJob!=true  && permission.Job.start" translate>button.startTaskat</a>
@@ -694,35 +694,16 @@
    $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),
         $menu = $(e.target).find('.dropdown-menu'),
-        $menubutton = $(e.target).find('.menu-button'),
-        menuleft = $menubutton.offset().left,
-        menutop = $menubutton.offset().top;
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
 
-
-        if(window.innerHeight<menutop+250){
-            $('.btn-group').addClass('dropup').removeClass('dropdown');
-            $('.dropdown-menu').addClass('pull-left').removeClass('dropdown-adjustmenu');
-            $('.dropdown-menu').addClass('dropdown-c').removeClass('dropdown-ac');
-        }
-        else {
-            $('.btn-group').addClass('dropdown').removeClass('dropup');
-            $('.dropdown-menu').addClass('dropdown-adjustmenu').removeClass('pull-left');
-            $('.dropdown-menu').addClass('dropdown-ac').removeClass('dropdown-c');
-
-            $('.dropdown-adjustmenu').css("top", menutop);
-            $('.dropdown-adjustmenu').css("left", menuleft);
-            $('.dropdown-adjustmenu').css("margin-left", -185);
-
-        }
-
-});
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
+  });
 
   $('.table-responsive').on('hide.bs.dropdown', function () {
-
-              $('.dropdown-adjustmenu').css("top", "auto");
-                $('.dropdown-adjustmenu').css("left", "auto");
-                $('.dropdown-menu').removeClass('dropdown-adjustmenu');
-          });
+      $(this).css("padding-bottom", 0);
+  });
 
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({

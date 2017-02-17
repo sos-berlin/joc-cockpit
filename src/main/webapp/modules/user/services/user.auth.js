@@ -7,23 +7,24 @@
     angular.module('app')
         .config(["$httpProvider", function ($httpProvider) {
 
-            $httpProvider.interceptors.push(["$q", "$location", "$rootScope", "SOSAuth", "toasty", function ($q, $location, $rootScope, SOSAuth, toasty) {
+            $httpProvider.interceptors.push(["$q", "$location", "$rootScope", "SOSAuth", "toasty", "$window", function ($q, $location, $rootScope, SOSAuth, toasty, $window) {
 
                 return {
                     request: function (config) {
 
 
-                        if (config.method == 'POST' ) {
+                        if (config.method == 'POST') {
 
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,
                                     'Content-Type': 'application/json',
-                                    'Content-Disposition':config.url=='jobscheduler/log'?'application/octet-stream':undefined
+                                    'Content-Disposition': config.url == 'jobscheduler/log' ? 'application/octet-stream' : undefined
                                 }
                             }
+                            //config.url = 'http://192.168.11.101:4446/joc/api/' + config.url;
                             config.url = './api/' + config.url;
-                            if($rootScope.clientLogFilter.state) {
+                            if ($rootScope.clientLogFilter.state) {
                                 var date = new Date();
                                 var info = {
                                     message: "START LOADING " + config.url,
@@ -43,6 +44,8 @@
                                 msg: 'Your session has expired and must log in again.',
                                 timeout: 10000
                             });
+                            $window.localStorage.$SOS$URL = $location.path();
+                            $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                             SOSAuth.clearUser();
                             SOSAuth.clearStorage();
                             $location.path('/login');
@@ -53,13 +56,13 @@
                                     msg: rejection.data.error.message || 'API expection',
                                     timeout: 10000
                                 });
-                            if (rejection.data && rejection.data.errors && rejection.data.errors.length>0 && rejection.status != 434)
+                            if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)
                                 toasty.error({
                                     msg: rejection.data.errors[0].message || 'API expection',
                                     timeout: 10000
                                 });
                         }
-                        if(rejection.status == 403) {
+                        if (rejection.status == 403) {
                             toasty.warning({
                                 title: 'Permission denied',
                                 timeout: 6000
@@ -79,16 +82,18 @@
                     response: function (response) {
 
                         var responseTimeStamp = new Date();
-                        if ($location.path()!='/login' && (response.status == 440 || response.status == 401)) {
+                        if ($location.path() != '/login' && (response.status == 440 || response.status == 401)) {
                             toasty.error({
                                 title: 'Session Timeout!',
                                 msg: "Your session has expired and must log in again.",
                                 timeout: 10000
                             });
+                            $window.localStorage.$SOS$URL = $location.path();
+                            $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                             SOSAuth.clearUser();
                             SOSAuth.clearStorage();
                             $location.path('/login');
-                            if($rootScope.clientLogFilter.state) {
+                            if ($rootScope.clientLogFilter.state) {
                                 var error = {
                                     message: response,
                                     logTime: responseTimeStamp,
@@ -96,17 +101,17 @@
                                 };
                                 $rootScope.clientLogs.push(error);
                             }
-                        }else{
-                            if(response.config.method=="POST" && response.config.requestTimeStamp) {
+                        } else {
+                            if (response.config.method == "POST" && response.config.requestTimeStamp) {
 
                                 var info = {
-                                    message: "ELAPSED TIME FOR " + response.config.url +" RESPONSE : "+((responseTimeStamp.getTime()-response.config.requestTimeStamp)/1000)+ "s",
+                                    message: "ELAPSED TIME FOR " + response.config.url + " RESPONSE : " + ((responseTimeStamp.getTime() - response.config.requestTimeStamp) / 1000) + "s",
                                     logTime: responseTimeStamp,
                                     level: 'debug'
                                 };
                                 $rootScope.clientLogs.push(info);
                                 info = {
-                                    message: 'HTTP REQUEST STATUS onComplete '+response.status,
+                                    message: 'HTTP REQUEST STATUS onComplete ' + response.status,
                                     logTime: new Date(),
                                     level: 'debug'
                                 };

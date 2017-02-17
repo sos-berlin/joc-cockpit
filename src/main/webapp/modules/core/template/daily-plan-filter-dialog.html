@@ -88,7 +88,7 @@
                            data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker
                            type="text">
 
-                    <input class="form-control input-time" ng-model="dailyPlanFilter.fromTime" ng-disabled="dailyPlanFilter.planned"
+                    <input ng-disabled="!dailyPlanFilter.fromDate" class="form-control input-time" ng-model="dailyPlanFilter.fromTime" ng-disabled="dailyPlanFilter.planned"
                            data-time-format="HH:mm:ss" data-autoclose="1" data-length="1" placeholder="HH:MM:SS" bs-timepicker
                            type="text"></div>
             </div>
@@ -99,7 +99,7 @@
                     <input class="form-control input-date" ng-model="dailyPlanFilter.toDate" ng-disabled="dailyPlanFilter.planned"
                            data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{dailyPlanFilter.fromDate}}"
                            placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input class="form-control input-time" ng-model="dailyPlanFilter.toTime" data-time-format="HH:mm:ss" ng-disabled="dailyPlanFilter.planned"
+                    <input ng-disabled="!dailyPlanFilter.toDate" class="form-control input-time" ng-model="dailyPlanFilter.toTime" data-time-format="HH:mm:ss" ng-disabled="dailyPlanFilter.planned"
                            data-autoclose="1" data-length="1" placeholder="HH:MM:SS" bs-timepicker type="text"></div>
 
             </div>

@@ -900,5 +900,6 @@
   "breadcrumb.agentCluster": "エージェントクラスタ",
   "breadcrumb.processClass": "プロセスクラス",
   "button.downloadLog":"Download Log",
-  "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries"
+  "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries",
+  "label.JOCConfiguration": "JOC Configuration"
 }

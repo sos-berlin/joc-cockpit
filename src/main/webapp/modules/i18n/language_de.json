@@ -899,5 +899,6 @@
   "breadcrumb.agentCluster": "Agent Cluster",
   "breadcrumb.processClass": "Processklasse",
   "button.downloadLog": "Download Main Log",
-  "label.maxNumberOfAuditLogEntries": "Max. Anzahl Einträge im Audit Log"
+  "label.maxNumberOfAuditLogEntries": "Max. Anzahl Einträge im Audit Log",
+  "label.JOCConfiguration": "JOC Configuration"
 }

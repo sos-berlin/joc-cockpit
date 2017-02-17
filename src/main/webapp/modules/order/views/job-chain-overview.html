@@ -98,12 +98,13 @@
                                   on-order-action = "onOrderAction(order, action)"
                                   coords="coords"
                             fit-into-screen="fitIntoScreen()"
-                            fit-to-screen="fitToScreen">
+                            fit-to-screen="fitToScreen",
+                            copy-link-to-object="copyLinkToObject(type,path)">
                     </flow-diagram>
                 </div>
             </div>
-            <div class="hide m-t" ng-class="{'show': orderFilters.pageView=='list'}">
-                <div class="table-responsive" ng-controller="OrderFunctionCtrl">
+            <div class="hide m-t" ng-class="{'show': orderFilters.pageView=='list'}" ng-controller="OrderFunctionCtrl">
+                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450" >
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
@@ -162,14 +163,11 @@
                                                 </span>
                                             </span>
 
-                                        <div class="btn-group dropdown " ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
-                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
-                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
-
-                                                <button type="button" class="btn-drop more-option-h menu-button"
+                                        <div class="btn-group dropdown ">
+                                                <button type="button" class="btn-drop more-option-h"
                                                         data-toggle="dropdown"><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 dropdown-adjustmenu"
+                                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28 "
                                                  role="menu">
                                                 <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                    ng-if="order.historyId"
@@ -215,6 +213,7 @@
                                                 <a href class="dropdown-item bg-hover-color"
                                                    ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                    ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+                                                    <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                     </div>
@@ -286,10 +285,10 @@
                                 <td width="40" ng-if="permission.Job.view.configuration || permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
                                     || permission.JobChain.processJobChainNode || permission.JobChain.skipJobChainNode || permission.JobChain.processJobChainNode">
                                     <div class="btn-group dropdown">
-                                        <button type="button" class="btn-drop more-option-h menu-button" data-toggle="dropdown">
+                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i>
                                         </button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 dropdown-adjustmenu"
+                                        <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left"
                                              role="menu">
                                             <a class="dropdown-item" ng-class="{'disable-link':node.job.configurationStatus.severity ==2}" ng-if="permission.Job.view.configuration" ng-click="showConfiguration('job',node.job.path,node.job.name)" translate>button.showConfiguration</a>
                                             <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':node.job.configurationStatus.severity ==2}"
@@ -472,45 +471,29 @@
     </div>
 </div>
 <script>
-    $('.table-responsive').on('shown.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.dropdown-menu'),
-                $menubutton = $(e.target).find('.menu-button'),
-                menuleft = $menubutton.offset().left,
-                menutop = $menubutton.offset().top;
+   $('.table-responsive').on('shown.bs.dropdown', function (e) {
+    var $table = $(this),
+        $menu = $(e.target).find('.dropdown-menu'),
+        tableOffsetHeight = $table.offset().top + $table.height(),
+        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
 
-        if (window.innerHeight < menutop + 250) {
-            $('.btn-group').addClass('dropup').removeClass('dropdown');
-            $('.dropdown-menu').addClass('pull-left').removeClass('dropdown-adjustmenu');
-            $('.dropdown-menu').addClass('dropdown-c').removeClass('dropdown-ac');
-        }
-        else {
-            $('.btn-group').addClass('dropdown').removeClass('dropup');
-            $('.dropdown-menu').addClass('dropdown-adjustmenu').removeClass('pull-left');
-            $('.dropdown-menu').addClass('dropdown-ac').removeClass('dropdown-c');
+    if (menuOffsetHeight > tableOffsetHeight)
+      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
+  });
 
-            $('.dropdown-adjustmenu').css("top", menutop);
-            $('.dropdown-adjustmenu').css("left", menuleft);
-        }
-
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-
-        $('.dropdown-adjustmenu').css("top", "auto");
-        $('.dropdown-adjustmenu').css("left", "auto");
-        $('.dropdown-menu').removeClass('dropdown-adjustmenu');
-    });
+  $('.table-responsive').on('hide.bs.dropdown', function () {
+      $(this).css("padding-bottom", 0);
+  });
     $('.flow-diagram').on('shown.bs.dropdown', function (e) {
         var $menu = $(e.target).find('.dropdown1');
-        $('.dropdown-menu').css("top", $menu.offset().top);
-        $('.dropdown-menu').css("left", $menu.offset().left);
-
+        if($menu && $menu.offset()) {
+            $(this).find('.dropdown-menu').css("top", $menu.offset().top);
+            $(this).find('.dropdown-menu').css("left", $menu.offset().left-120);
+        }
     });
 
-    $('.flow-diagram').on('hide.bs.dropdown', function (e) {
-        var $menu = $(e.target).find('.dropdown1');
-        $('.dropdown-menu').css("top", "auto");
-        $('.dropdown-menu').css("left", "auto");
+    $('.flow-diagram').on('hide.bs.dropdown', function () {
+        $(this).find('.dropdown-menu').css("top", "auto");
+        $(this).find('.dropdown-menu').css("left", "auto");
     });
 </script>

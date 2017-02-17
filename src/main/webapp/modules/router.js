@@ -69,8 +69,8 @@
             }
             // Not Authenticated
             else {
-                $window.sessionStorage.setItem('$SOS$URL', $location.path());
-                $window.sessionStorage.setItem('$SOS$URLPARAMS', JSON.stringify($location.search()));
+                $window.localStorage.$SOS$URL= $location.path();
+                $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                 deferred.reject('login');
             }
             return deferred.promise;

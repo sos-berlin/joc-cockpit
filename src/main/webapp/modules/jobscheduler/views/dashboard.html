@@ -83,7 +83,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="divClusterStatusWidget" class="box-body ">
+                            <div id="divClusterStatusWidget" class="box-body">
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()" permission="permission"
                                                    on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port)" ></cluster-status-view>
                             </div>
@@ -256,8 +256,10 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function(){
-        $('[data-toggle="popover"]').popover();
-    });
+    $('[data-toggle="popover"]').popover();
+});
+
 </script>

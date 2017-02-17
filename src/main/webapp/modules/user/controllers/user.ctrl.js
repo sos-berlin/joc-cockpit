@@ -61,6 +61,7 @@
                     if(($window.sessionStorage.$SOS$FORCELOGING=== 'true' || $window.sessionStorage.$SOS$FORCELOGING==true) && !preferences.auditLog){
                         preferences.auditLog =true;
                         $window.sessionStorage.preferences = JSON.stringify(preferences);
+
                     }
 
                     $window.localStorage.$SOS$THEME = preferences.theme;
@@ -149,9 +150,9 @@
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
 
-                if ($window.sessionStorage.getItem('$SOS$URL') && $window.sessionStorage.getItem('$SOS$URL') != 'null') {
+                if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
 
-                    $location.path($window.sessionStorage.getItem('$SOS$URL')).search(JSON.parse($window.sessionStorage.getItem('$SOS$URLPARAMS')));
+                    $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
                 } else {
                     $location.path('/');
                 }
@@ -225,8 +226,21 @@
             if (res.configuration && res.configuration.configurationItem) {
                 $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                 vm.preferences = JSON.parse($window.sessionStorage.preferences);
-                if(vm.preferences.theme != $window.localStorage.$SOS$THEME)
-                vm.changeTheme(vm.preferences.theme);
+                if (vm.preferences.theme != $window.localStorage.$SOS$THEME)
+                    vm.changeTheme(vm.preferences.theme);
+
+                if (vm.preferences.locale != $rootScope.locale.lang) {
+                    $window.localStorage.$SOS$LANG = vm.preferences.locale;
+                    $resource("modules/i18n/language_" + vm.preferences.locale + ".json").get(function (data) {
+                        gettextCatalog.setCurrentLanguage(vm.preferences.locale);
+                        gettextCatalog.setStrings(vm.preferences.locale, data);
+                    });
+                }
+                if(($window.sessionStorage.$SOS$FORCELOGING=== 'true' || $window.sessionStorage.$SOS$FORCELOGING==true) && !vm.preferences.auditLog) {
+                    vm.preferences.auditLog = true;
+                    $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+
+                }
             }
         });
 

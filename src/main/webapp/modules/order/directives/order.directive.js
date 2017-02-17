@@ -17,7 +17,7 @@
                 width: '@',
                 height: '@'
             },
-            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth','gettextCatalog', function (OrderService, $scope, CoreService, SOSAuth,gettextCatalog) {
+            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog', function (OrderService, $scope, CoreService, SOSAuth, gettextCatalog) {
                 var vm = $scope;
                 var ordersData = [];
 
@@ -185,8 +185,8 @@
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
                     arrangeItems();
-                   //scope.jobChainData = angular.copy(scope.jobChain);
-                   // checkForEndNodes(0);
+                    //scope.jobChainData = angular.copy(scope.jobChain);
+                    // checkForEndNodes(0);
                 });
 
                 function arrangeItems() {
@@ -217,7 +217,7 @@
                     }
 
                     scope.jobChainData.nodes[0] = angular.copy(scope.jobChain.nodes[firstIndex]);
-                   jobChainData2.nodes.splice(firstIndex, 1);
+                    jobChainData2.nodes.splice(firstIndex, 1);
                     getNext(0);
 
 
@@ -234,7 +234,7 @@
                         angular.forEach(jobChainData2.nodes, function (item2, index2) {
                             // console.log("Node "+item2.name);
                             if (item.nextNode == item2.name) {
-                               // console.log("Found next " + item2.name);
+                                // console.log("Found next " + item2.name);
                                 gotNext = true;
                                 var cursor = index;
                                 if (splitRegex.test(item.name)) {
@@ -252,7 +252,7 @@
                         });
 
 
-                        if (index+1<scope.jobChainData.nodes.length) {
+                        if (index + 1 < scope.jobChainData.nodes.length) {
                             index++;
                             getNext(index);
                         } else {
@@ -269,34 +269,33 @@
                         angular.forEach(scope.jobChainData.nodes, function (item, index) {
                             var gotSplitted = false;
                             var position = 0;
-                            var removables=[];
+                            var removables = [];
                             angular.forEach(jobChainData2.nodes, function (item2, index2) {
                                 // console.log("Node "+item2.name);
                                 if (splitRegex.test(item2.name) && item.name == splitRegex.exec(item2.name)[1]) {
-                                   // console.log("Found Splitted " + item2.name);
+                                    // console.log("Found Splitted " + item2.name);
                                     gotSplitted = true;
                                     proceed = false;
                                     position++;
                                     item2.position = position;
-                                    scope.jobChainData.nodes.splice(index+1, 0, angular.copy(item2));
+                                    scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(item2));
                                     removables.push(index2);
 
                                 }
 
 
-
                             });
-                             for(var i=0;i<removables.length;i++){
-                                   jobChainData2.nodes.splice(removables[i]-i,1);
-                               }
-                             if (gotSplitted) {
-                                 //console.log("After splitted "+JSON.stringify(scope.jobChainData));
-                                    getNext(index + 1);
-                                }
+                            for (var i = 0; i < removables.length; i++) {
+                                jobChainData2.nodes.splice(removables[i] - i, 1);
+                            }
+                            if (gotSplitted) {
+                                //console.log("After splitted "+JSON.stringify(scope.jobChainData));
+                                getNext(index + 1);
+                            }
                         })
 
-                        if(proceed){
-                            if(jobChainData2.nodes && jobChainData2.nodes.length>0){
+                        if (proceed) {
+                            if (jobChainData2.nodes && jobChainData2.nodes.length > 0) {
                                 scope.jobChainData.nodes = scope.jobChainData.nodes.concat(jobChainData2.nodes);
                             }
                             checkForEndNodes(0);
@@ -396,11 +395,12 @@
                     }
 
                     // console.log(scope.jobChainData)
+                    scope.startId = "start";
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
                         if (!item) {
                             return;
                         }
-                        scope.startId = "start";
+
                         if (item.name == 'start') {
                             scope.startId = "start" + index;
                         }
@@ -408,7 +408,7 @@
                             avatarTop = top + rectH / 2 + 5 - avatarW / 2;
                             var startTop = avatarTop - 25;
                             var startLeft = avatarW / 2 - "Start".length * 3;
-                            rectangleTemplate = rectangleTemplate + '<span id="lbStart" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
+                            rectangleTemplate = rectangleTemplate + '<span id="lb' + scope.startId + '" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
                             + '" translate>label.start</span>' +
                             '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
@@ -477,7 +477,7 @@
 
                                 scope.coords.map(function (obj) {
                                     if (scope.coords[index].name == obj.error) {
-                                        scope.coords[index].left = obj.left+rectW+margin;
+                                        scope.coords[index].left = obj.left + rectW + margin;
                                         scope.coords[index].top = obj.top + rectH + splitMargin;
                                     }
                                 })
@@ -533,7 +533,7 @@
                         }
 
 
-                            rectangleTemplate = rectangleTemplate +
+                        rectangleTemplate = rectangleTemplate +
                         '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + scope.coords[index].left + 'px;top:' + scope.coords[index].top + 'px;"  class="rect ' + errorNodeCls + '" ' +
                         'ng-class="{\'border-crimson\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\', \'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\',\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
                         '<div class="block-ellipsis-job">' +
@@ -541,13 +541,14 @@
                         '<span class="_500 block-ellipsis ' + mL + '" title="' + item.name + '">' + nodeName + '</span>' +
                         '<div class="btn-group dropdown pull-right abt-dropdown ' + permissionClassDropDown + '"><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                         '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                        '<a  class="dropdown-item" ng-click="showConfiguration({type: \'job\', path: \'' +item.job.path+ '\', name: \'' +item.name+ '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
+                        '<a  class="dropdown-item" ng-click="showConfiguration({type: \'job\', path: \'' + item.job.path + '\', name: \'' + item.name + '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color" ng-click="stopJob(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job.state._text!==\'STOPPED\'}" ng-if="permission.Job.stop" translate>button.stopJob</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="unstopJob(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\'}" ng-if="permission.Job.unstop" translate>button.unstopJob</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="stopNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}" ng-if="permission.JobChain.stopJobChainNode" translate>button.stopNode</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="unstopNode(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}" ng-if="permission.JobChain.processJobChainNode" translate>button.unstopNode</a>' +
                         '<a href=""  class="hide dropdown-item" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.skipJobChainNode"  translate>button.skipNode</a>' +
                         '<a href=""  class="hide dropdown-item" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}" ng-if="permission.JobChain.processJobChainNode"  translate>button.unskipNode</a>' +
+                        '<a href=""  class="dropdown-item" ng-click="copyLinkToObject({type:\'job\',path:\'' + item.job.path + '\'})"  translate>button.copyLinkToObject</a>' +
                         '</div></div></div>'
                         + '<div class="text-left text-muted p-t-sm block-ellipsis-job"><a class="text-hover-primary" title="' + item.job.path + '" id="navigateToJobBtn_' + item.name + '">' + jobName +
                         '</a><div class="text-sm crimson" translate>' + msg + '</div></div>' +
@@ -563,7 +564,6 @@
                         '<a title="{{\'button.unskipNode\' | translate}}" href class="hide pull-right text-right w-half" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}"><i class="fa fa-play" ng-if="permission.JobChain.processJobChainNode"></i>  <span translate>button.unskipNode</span> </a>' +
                         '</div>' +
                         '</div>';
-
 
 
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
@@ -600,18 +600,17 @@
                             scope.endNodes.push(endNode.name);
                             var item = scope.jobChainData.endNodes[index];
                             scope.coords[length + index] = {};
-                            scope.coords[length+ index].left = left + rectW + margin;
-                            scope.coords[length+ index].name=endNode.name;
+                            scope.coords[length + index].left = left + rectW + margin;
+                            scope.coords[length + index].name = endNode.name;
 
 
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
-                                console.log("Error node "+index);
                                 endErrorNodes++;
-                                scope.coords[length+index].top = top + rectH + 50 + rectH  - avatarW / 2;
+                                scope.coords[length + index].top = top + rectH + 50 + rectH - avatarW / 2;
                                 scope.coords.map(function (obj) {
-                                    if (scope.coords[length+index].top < obj.top+rectH && scope.coords[length+index].name !==obj.name ) {
-                                        console.log("Top is large "+obj.top);
-                                        scope.coords[length+index].top = obj.top+rectH ;
+                                    if (scope.coords[length + index].top < obj.top + rectH && scope.coords[length + index].name !== obj.name) {
+                                        scope.coords[length + index].top = obj.top + rectH;
+                                        labelTop = scope.coords[length + index].top - 25;
                                     }
 
                                 });
@@ -619,7 +618,7 @@
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
 
-                                rectangleTemplate = rectangleTemplate + '<div id="lb' + item.name + '"><span   class="text-danger error-node" ' +
+                                rectangleTemplate = rectangleTemplate + '<div ><span  id="lb' + item.name + '" class="text-danger error-node" ' +
                                 'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </span>' +
                                 '</div>' +
                                 '<span id="' + item.name + '" class="avatar w-32 danger text-white error-node" ' +
@@ -630,21 +629,21 @@
                                 scope.coords[length + index].top = avatarTop;
                                 if (endSuccessNodes > 1) {
                                     scope.coords.map(function (obj) {
-                                        console.log("Object top "+obj.top+" for "+obj.name);
-                                        if (scope.coords[length + index].top < obj.top && scope.coords[length+index].name !==obj.name) {
+                                        console.log("Object top " + obj.top + " for " + obj.name);
+                                        if (scope.coords[length + index].top < obj.top && scope.coords[length + index].name !== obj.name) {
                                             scope.coords[length + index].top = obj.top;
                                         }
 
                                     });
                                 }
 
-                                if(scope.coords[length + index].top==avatarTop && endSuccessNodes>1){
-                                    scope.coords[length + index].top = scope.coords[length + index].top + rectH/2 + margin;
+                                if (scope.coords[length + index].top == avatarTop && endSuccessNodes > 1) {
+                                    scope.coords[length + index].top = scope.coords[length + index].top + rectH / 2 + margin;
                                 }
                                 var labelTop = scope.coords[length + index].top - 25;
                                 var labelLeft = scope.coords[length + index].left + avatarW / 2 - endNode.name.length * 3;
 
-                                rectangleTemplate = rectangleTemplate + getCircularNode(item,labelLeft,labelTop,scope.coords[length].left,scope.coords[length + index].top);
+                                rectangleTemplate = rectangleTemplate + getCircularNode(item, labelLeft, labelTop, scope.coords[length].left, scope.coords[length + index].top);
                             }
 
                             if (index == scope.jobChainData.endNodes.length - 1) {
@@ -655,15 +654,15 @@
                     }
 
 
-                    function getCircularNode(item,labelLeft,labelTop,left,top){
+                    function getCircularNode(item, labelLeft, labelTop, left, top) {
                         var node = '<div id="lb' + item.name + '"  class="nowrap text-success" ' +
-                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </div>' +
-                                    '<div   class="hide nowrap text-success" ng-class="{show:\''+item.remove+'\'!==\'undefined\'}"' +
-                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop-15) + 'px' + '">Remove: ' + item.remove + ' </div>'+
-                                    '<div   class="hide nowrap text-success" ng-class="{show:\''+item.move+'\'!==\'undefined\'}"' +
-                                'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop-30) + 'px' + '">Move: ' + item.move + ' </div>'+
-                                '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
-                                'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>'
+                            'style="position: absolute;left: ' + labelLeft + 'px;top: ' + labelTop + 'px' + '">' + item.name + ' </div>' +
+                            '<div   class="hide nowrap text-success" ng-class="{show:\'' + item.remove + '\'!==\'undefined\'}"' +
+                            'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop - 15) + 'px' + '">Remove: ' + item.remove + ' </div>' +
+                            '<div   class="hide nowrap text-success" ng-class="{show:\'' + item.move + '\'!==\'undefined\'}"' +
+                            'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop - 30) + 'px' + '">Move: ' + item.move + ' </div>' +
+                            '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
+                            'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>'
 
                         return node;
                     }
@@ -688,10 +687,11 @@
                             var top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
                             rect.style['top'] = top - maxUTop + iTop + 'px';
-                            rect = document.getElementById('lbStart');
-                            top = rect.style.getPropertyValue('top');
+                            rect = document.getElementById('lb' + scope.startId);
+                            var top = rect.style.getPropertyValue('top');
                             top = parseInt(top.substring(0, top.length - 2));
                             rect.style['top'] = top - maxUTop + iTop + 'px';
+
                             angular.forEach(scope.jobChainData.nodes, function (item, index) {
                                 rect = document.getElementById(item.name);
                                 top = rect.style.getPropertyValue('top');
@@ -712,6 +712,7 @@
                                     rect.style['top'] = top - maxUTop + iTop + 'px';
                                 }
                                 rect = document.getElementById('lb' + endNode.name);
+                                console.log("rectId " + rect.style.getPropertyValue('top'));
                                 if (rect) {
                                     top = rect.style.getPropertyValue('top');
                                     top = parseInt(top.substring(0, top.length - 2));
@@ -760,7 +761,8 @@
                 'onOrderAction': '&',
                 'coords': '=',
                 'fitIntoScreen': '&',
-                'fitToScreen': '='
+                'fitToScreen': '=',
+                'copyLinkToObject': '&'
             },
             controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', '$compile', '$location',
                 function ($scope, $interval, gettextCatalog, $timeout, $filter, SOSAuth, $compile, $location) {
@@ -952,12 +954,21 @@
                             }
 
                             if (item.onError == "setback") {
-                                var height = 30;
+                                var height = 25;
                                 var width = 40;
                                 var top = div1.offsetTop - height;
                                 var left = div1.offsetLeft + div1.clientWidth / 2 + width / 2;
                                 createLine(top, left, 2, height, index, item);
                                 left = left - width;
+                                var node = document.createElement('div');
+                                node.innerHTML = '<span>setback</span>';
+                                node.style['position'] = 'absolute';
+                                node.style['top'] = (top - 15) + 'px';
+                                node.style['left'] = left + 'px';
+                                node.style['width'] = width + 'px';
+                                node.style['height'] = height + 'px';
+                                mainContainer.appendChild(node);
+                                $compile(node)(vm);
                                 createLine(top, left, width, 2, index, item);
                                 createLine(top, left, 2, height, index, item);
                                 node = document.createElement('i');
@@ -1207,7 +1218,7 @@
                                 var pSpan01 = document.getElementById('ppc' + node.name);
                                 if (res.job.processClass) {
                                     node.processClass = res.job.processClass;
-                                    pSpan01.className.replace("hide", "show-inline");
+                                    pSpan01.className = pSpan01.className.replace(/hide/g, "show-inline");
                                     if (node.processClass && node.processClass.indexOf('/') != -1) {
                                         span01.textContent = node.processClass.substring(node.processClass.lastIndexOf('/') + 1, node.processClass.length)
 
@@ -1327,20 +1338,43 @@
                         }
 
 
+                        vm.calWidth = function (diff, state) {
+                            var container = document.getElementById('lbl-order-' + state);
+                            if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
+                                return '150px';
+                            } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
+                                return '145px';
+                            }else if (/(^\d{1}days)/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '40px';
+                            } else if (/(^\d{1}days)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                return '32px';
+                            }else if (/(^\d{2}days)/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '38px';
+                            } else if (/(^\d{2}days)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                return '32px';
+                            //}else if (/(^\d{1}:\d{1}h)/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                            //    console.log("hour11 "+diff);
+                            //    return '52px';
+                            //} else if (/(^\d{1}:\d{1}h)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                            //    return '47px';
+                            //}else if (/(^\d{2}:\d{1}h)/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                            //    console.log("hour11 "+diff);
+                            //    return '49px';
+                            //} else if (/(^\d{2}:\d{1}h)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                            //    return '44px';
+                            //}else if (/(^\d{1}:\d{2}h)/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                            //    console.log("hour11 "+diff);
+                            //    return '49px';
+                            //} else if (/(^\d{1}:\d{2}h)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                            //    return '44px';
+                            }
+                            else if (container.clientHeight == container.scrollHeight) {
+                                return '25px';
+                            } else if (container.clientHeight !== container.scrollHeight) {
+                                return '30px';
+                            }
+                        }
 
-                         vm.calWidth=function(index,state){
-                                    var container = document.getElementById('lbl-order-' + state);
-                                     if(index!=-1 && container.clientHeight==container.scrollHeight){
-                                         return '49px';
-                                    }else if(index!=-1 && container.clientHeight!==container.scrollHeight){
-                                         return '44px';
-                                    }else if( container.clientHeight==container.scrollHeight){
-                                         return '25px';
-                                    }else if(container.clientHeight!==container.scrollHeight){
-                                         return '30px';
-                                    }
-                                }
-                        
                         function addLabel(orders, name) {
 
                             vm.limitNum = JSON.parse($window.sessionStorage.preferences).maxOrderPerJobchain;
@@ -1377,8 +1411,9 @@
                                     var container = document.getElementById('lbl-order-' + order.state);
 
 
-                                    if (container && container.childNodes.length > 0) { var label = document.createElement('div');
-                                        label.innerHTML = getOrderMenu(order,name);
+                                    if (container && container.childNodes.length > 0) {
+                                        var label = document.createElement('div');
+                                        label.innerHTML = getOrderMenu(order, name);
                                         var top = container.offsetTop;
                                         container.appendChild(label);
                                         if (index <= 4) {
@@ -1398,8 +1433,7 @@
                                         label.style['margin-bottom'] = '5px';
                                         label.style['left'] = node.offsetLeft + 'px';
                                         label.style['white-space'] = 'nowrap';
-                                        console.log("Getting order menu");
-                                        label.innerHTML = '<div id="orderBlock-'+name+'">' + getOrderMenu(order,name) + '</div>';
+                                        label.innerHTML = '<div id="orderBlock-' + name + '">' + getOrderMenu(order, name) + '</div>';
                                         mainContainer.appendChild(label);
                                         $compile(label)(vm);
                                         label.style['top'] = node.offsetTop - label.clientHeight - 5 + 'px';
@@ -1412,8 +1446,7 @@
                                 }
 
 
-
-                                function getOrderMenu(order,nodeName) {
+                                function getOrderMenu(order, nodeName) {
                                     var diff = 0;
                                     var time = 0;
                                     if (order.startedAt) {
@@ -1426,13 +1459,15 @@
                                         else
                                             diff = '-<span time="' + order.nextStartTime + '"></span>';
 
+                                        if (order.nextStartTime) {
+                                            time = order.nextStartTime;
+                                        }
 
-                                        time = order.nextStartTime;
                                     }
 
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
-                                        '<span    ng-style="{\'max-width\':calWidth(\''+diff.indexOf('never')+'\',\''+order.state+'\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
-                                        + '<span  class="show-block v-m text-success text-xs"> ' + moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + ' (' + diff + ')</span>'
+                                        '<span    ng-style="{\'max-width\':calWidth(\'' + $filter('durationFromCurrent')(undefined, order.nextStartTime) + '\',\'' + order.state + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
+                                        + '<span  class="show-block v-m text-success text-xs"> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="hide btn-group dropdown " ng-class="{\'show-inline\':permission.Order.view.configuration || (permission.Order.view.orderLog && \'' + order.historyId + '\') || permission.Order.start || permission.Order.setState'
                                         + '|| permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume'
@@ -1452,6 +1487,7 @@
                                         + '<a class="hide" id="orderremove-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.removeSetback}">' + gettextCatalog.getString("button.removeOrder") + '</a>'
                                         + '<a class="hide" id="calendar-' + order.orderId + '" ng-class="{\'show dropdown-item \':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& ' + order._type + '!==\'AD_HOC\' && permission.DailyPlan.view.status}">' + gettextCatalog.getString("button.showCalendar") + '</a>'
                                         + '<a class="hide" id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \': permission.Order.delete.permanent && \'' + order._type + '\'==\'AD_HOC\'}">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
+                                        + '<a class="dropdown-item" ng-click="copyLinkToObject({type:\'order\',path:\'' + order.path + '\'})" id="copyLinkToObject-' + order.orderId + '" >' + gettextCatalog.getString("button.copyLinkToObject") + '</a>'
                                         + '</div></div>';
                                     return menu;
                                 }

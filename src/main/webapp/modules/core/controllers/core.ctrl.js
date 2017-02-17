@@ -513,8 +513,8 @@
 
             if (count < 0) {
                 $interval.cancel(interval);
-                $window.sessionStorage.$SOS$URL = $location.path();
-                $window.sessionStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
+                $window.localStorage.$SOS$URL = $location.path();
+                $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                 vm.logout();
             }
             if ($rootScope.clientLogFilter.state) {

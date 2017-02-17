@@ -7,6 +7,12 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}">
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="copyLinkToObject('jobChain',jobChain.path)"><i class="fa fa-copy"></i>
+                            <span class="hidden-sm-down" translate>button.copyLinkToObject</span>
+                        </button>
+                        <button class="hide btn btn-grey btn-sm m-l-sm" ng-click="showConfiguration('jobChain',jobChain.path,jobChain.name)" ng-class="{'show-block':permission.JobChain.view.configuration , 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"><i class="fa fa-cog"></i>
+                            <span class="hidden-sm-down" translate>button.showConfiguration</span>
+                        </button>
                         <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-if="jobChain.state._text != 'STOPPED'" ng-class="{'show-block':permission.JobChain.stop}" ng-disabled="jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED'" ng-click="stopJob()"><i class="fa fa-stop"></i>
                             <span class="hidden-sm-down" translate>button.stopJobChain</span>
                         </button>

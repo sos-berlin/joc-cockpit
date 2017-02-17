@@ -99,7 +99,7 @@
             <div class="col-sm-8">
                 <input class="form-control input-date" ng-model="orderFilter.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1"
                        placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text" ng-disabled="orderFilter.planned">
-                <input  class="form-control input-time" ng-model="orderFilter.fromTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1"
+                <input ng-disabled="!orderFilter.fromDate" class="form-control input-time" ng-model="orderFilter.fromTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1"
                         placeholder="HH:MM:SS" bs-timepicker type="text" ng-disabled="orderFilter.planned">
             </div>
         </div>
@@ -108,7 +108,7 @@
             <div class="col-sm-8">
                 <input class="form-control input-date" ng-model="orderFilter.toDate" data-date-format="{{dataFormat}}" data-autoclose="1"
                        data-min-date="{{orderFilter.fromDate}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text" ng-disabled="orderFilter.planned">
-                <input class="form-control input-time" ng-model="orderFilter.toTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1"
+                <input ng-disabled="!orderFilter.toDate" class="form-control input-time" ng-model="orderFilter.toTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1"
                        placeholder="HH:MM:SS" bs-timepicker type="text" ng-disabled="orderFilter.planned">
             </div>
         </div>

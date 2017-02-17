@@ -1031,8 +1031,9 @@
                 }).then(function (res) {
                     jobChain.nodes =[];
                     jobChain = angular.merge(jobChain, res.jobChain);
+                    if(vm.userPreferences.showTasks)
                     angular.forEach(jobChain.nodes, function (val, index) {
-                        if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                        if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
 
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
@@ -1042,6 +1043,7 @@
                             });
                         }
                     });
+                    if(vm.showHistoryPanel)
                     showHistory(jobChain);
                 });
             });
@@ -1963,8 +1965,9 @@
             }).then(function (res) {
                 jobChain.nodes =[];
                 jobChain = angular.merge(jobChain, res.jobChain);
+                if(vm.userPreferences.showTasks)
                 angular.forEach(jobChain.nodes, function (val, index) {
-                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                    if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
 
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
@@ -2107,8 +2110,9 @@
                                                 res.jobChain.endNodes = angular.copy(value2.endNodes);
                                                 res.jobChain.show = angular.copy(value2.show);
                                                 vm.allJobChains[index] = res.jobChain;
+                                                if(vm.userPreferences.showTasks)
                                                 angular.forEach(res.jobChain.nodes, function (val, index) {
-                                                    if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                                                    if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
 
                                                         JobService.get({
                                                             jobschedulerId: vm.schedulerIds.selected,
@@ -2546,9 +2550,7 @@
                         data.jobs.push(value);
                         value.path1 = data.path;
 
-
                         if (value.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
-
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: value.path}]
