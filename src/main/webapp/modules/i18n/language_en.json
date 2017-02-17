@@ -473,7 +473,7 @@
   "label.viewHistory": "view History",
   "label.changeStartAndEndNode": "modify start and end Node",
   "label.changeTimeForAdhocOrder": "modify start time for ad hoc Order",
-  "label.changeParameters": "change parameters",
+  "label.changeParameters": "Modify Parameters",
   "label.start": "start",
   "label.update": "update",
   "label.suspend": "suspend",
