@@ -79,7 +79,7 @@
                                         <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart" ng-click="clusterAction('cluster','restart')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.restart</a>
                                         <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate" ng-click="clusterAction('cluster','terminate')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminate</a>
                                         <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminateFailSafe && selectedJobScheduler.clusterType._type.toLowerCase() == 'passive'" ng-click="clusterAction('cluster','terminateFailsafe')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminateFailsafe</a>
-                                        <a class="dropdown-item" ng-click="clusterAction('cluster','download_log')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.downloadLog</a>
+                                        <!--a class="dropdown-item" ng-click="clusterAction('cluster','download_log')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.downloadLog</a-->
                                     </div>
                                 </div>
                             </div>
