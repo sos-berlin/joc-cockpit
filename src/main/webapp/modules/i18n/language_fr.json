@@ -898,7 +898,7 @@
   "breadcrumb.lock": "Verrou",
   "breadcrumb.agentCluster": "Cluster Agent",
   "breadcrumb.processClass": "Classe de Processus",
-  "button.downloadLog":"Télécharger le Main Log",
+  "button.downloadLog": "Télécharger le Main Log",
   "label.maxNumberOfAuditLogEntries": "Nombre max. des entrées dans le Journal d'Audit",
-  "label.JOCConfiguration": "JOC Configuration"
+  "label.JOCConfiguration": "Shared Customization"
 }
