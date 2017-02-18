@@ -259,7 +259,32 @@
 
 <script>
     $(document).ready(function(){
-    $('[data-toggle="popover"]').popover();
-});
+        $('[data-toggle="popover"]').popover();
+    });
+        $('#divClusterStatusWidget').on('shown.bs.dropdown', function (e) {
+        var $menu = $(e.target).find('.more-option');
+
+        if($menu && $menu.offset()) {
+
+            $(this).find('.dropdown-menu').css("top", $menu.offset().top+27);
+             if(window.localStorage.$SOS$LANG=='fr') {
+                 $(this).find('.dropdown-menu').css("left", $menu.offset().left - 260);
+             }else if(window.localStorage.$SOS$LANG=='ja') {
+                 $(this).find('.dropdown-menu').css("left", $menu.offset().left - 125);
+             }else if(window.localStorage.$SOS$LANG=='de') {
+                 $(this).find('.dropdown-menu').css("left", $menu.offset().left - 230);
+             }else{
+                 $(this).find('.dropdown-menu').css("left", $menu.offset().left - 210);
+             }
+            $(this).find('.dropdown-menu').css("position", "fixed");
+            $(this).find('.dropdown-menu').css("z-index", "9999");
+        }
+    });
+
+
+    $('#divClusterStatusWidget').on('hide.bs.dropdown', function () {
+        $(this).find('.dropdown-menu').css("top", "auto");
+        $(this).find('.dropdown-menu').css("left", "auto");
+    });
 
 </script>

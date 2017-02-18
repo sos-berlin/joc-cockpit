@@ -2395,8 +2395,8 @@
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth','FileSaver'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth,FileSaver) {
         var vm = $scope;
         var bgColorArray = [];
         if(SOSAuth.jobChain){
@@ -2804,9 +2804,15 @@
                     JobSchedulerService.restartCluster(obj1).then(function (res) {
                         clusterSuccess('running', host, port);
                     });
-                }else if (action == 'download_log') {
-                    JobSchedulerService.downloadLog({jobschedulerId:$scope.schedulerIds.selected,host:host,port:port}).then(function (res) {
+                } else if (action == 'download_log') {
 
+                    JobSchedulerService.downloadLog({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        host: host,
+                        port: port
+                    }).then(function (res) {
+                        var data = new Blob([res], {type: 'text/plain;charset=utf-8'});
+                        FileSaver.saveAs(data, 'schedule.'+$scope.schedulerIds.selected+'.log');
                     });
                 }
             }

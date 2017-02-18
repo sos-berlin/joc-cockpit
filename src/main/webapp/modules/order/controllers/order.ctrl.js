@@ -24,7 +24,7 @@
         function loadJobOrderV(obj) {
             OrderService.get(obj).then(function (res) {
                 var data = [];
-                if (vm.orders && vm.orders.length > 0) {
+                if (vm.orders && vm.orders.length > 0 && vm.orders.length>=res.orders.length) {
                     angular.forEach(vm.orders, function (order) {
                         for (var i = 0; i < res.orders.length; i++) {
                             if (order.path == res.orders[i].path) {
@@ -63,6 +63,7 @@
         vm.orders = [];
 
         function loadJobChain() {
+
             if (SOSAuth.jobChain) {
                 vm.jobChain = JSON.parse(SOSAuth.jobChain);
                 var obj = {};

@@ -319,6 +319,13 @@
                             $window.localStorage.log_window_x = newWindow.screenX;
                             $window.localStorage.log_window_y = newWindow.screenY;
                         }
+                        newWindow.onresize = function () {
+                            console.log('resize');
+                            $window.localStorage.log_window_wt = newWindow.innerWidth;
+                            $window.localStorage.log_window_ht = newWindow.innerHeight;
+                            $window.localStorage.log_window_x = newWindow.screenX;
+                            $window.localStorage.log_window_y = newWindow.screenY;
+                        }
                     } catch (e) {
                         console.log(e);
                     }
@@ -391,7 +398,7 @@
             }
             var host = regEx.exec($location.absUrl())[1];
             host = host + '/#!/';
-            console.log("Host " + host);
+
             if (objType == 'jobChain' && path) {
                 link = host + 'job_chain?path=' + path;
             } else if (objType == 'job' && path) {
@@ -408,7 +415,7 @@
                 link = host + 'schedule?path=' + path;
             }
             if (link !== '') {
-                console.log("Link " + link+'&scheduler_id='+ vm.schedulerIds.selected);
+
                 clipboard.copyText(link+'&scheduler_id='+ vm.schedulerIds.selected);
             }
         };

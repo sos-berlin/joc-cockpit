@@ -13,17 +13,15 @@
                     request: function (config) {
 
 
-                        if (config.method == 'POST') {
+                        if (config.method == 'POST' || config.url.match('jobscheduler/log?')) {
 
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
                                     'access_token': SOSAuth.accessTokenId,
-                                    'Content-Type': 'application/json',
-                                    'Content-Disposition': config.url == 'jobscheduler/log' ? 'application/octet-stream' : undefined
+                                    'Content-Type': 'application/json'
                                 }
                             }
-                            //config.url = 'http://192.168.11.101:4446/joc/api/' + config.url;
-                            config.url = './api/' + config.url;
+                           config.url = './api/' + config.url;
                             if ($rootScope.clientLogFilter.state) {
                                 var date = new Date();
                                 var info = {

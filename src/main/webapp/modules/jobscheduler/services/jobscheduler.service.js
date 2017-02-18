@@ -176,8 +176,8 @@
         }
     }
 
-    JobSchedulerService.$inject=["$resource", "$q"];
-    function JobSchedulerService($resource,$q){
+    JobSchedulerService.$inject=["$resource", "$q","$http"];
+    function JobSchedulerService($resource,$q, $http){
         return{
             getSchedulerIds: function () {
                 var deferred = $q.defer();
@@ -346,7 +346,7 @@
                 return deferred.promise;
             },
             terminateWithin: function (host,port,jobschedulerId,timeout) {
-                console.log("IN terminate "+host+" port "+port);
+
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/terminate');
                 JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
@@ -438,9 +438,8 @@
             },
             downloadLog: function (obj) {
                 var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/log');
-                JobScheduler.save(obj,function (res) {
-                    deferred.resolve(res);
+                $http.get('jobscheduler/log?host='+obj.host+'&jobschedulerId='+obj.jobschedulerId+'&port='+obj.port).then(function(res){
+                    deferred.resolve(res.data);
                 }, function (err) {
                     deferred.reject(err);
                 });

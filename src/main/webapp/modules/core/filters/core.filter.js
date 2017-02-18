@@ -7,6 +7,7 @@
     angular.module('app')
         .filter('fromNow', fromNow)
         .filter('stringToDate', stringToDate)
+        .filter('stringToDateFormat', stringToDateFormat)
         .filter('duration', duration)
         .filter('convertTime', convertTime)
         .filter('durationFromCurrent', durationFromCurrent)
@@ -39,6 +40,17 @@
             if (!date) return '-';
             var preferences = JSON.parse($window.sessionStorage.preferences);
             return moment(date).tz(preferences.zone).format(preferences.dateFormat);
+        }
+    }
+    stringToDateFormat.$inject = ['$window'];
+    function stringToDateFormat($window) {
+        return function (date) {
+            if (!$window.sessionStorage.preferences) {
+                return;
+            }
+            if (!date) return '-';
+            var preferences = JSON.parse($window.sessionStorage.preferences);
+            return moment(date).tz(preferences.zone).format('YYYY-MM-DD HH:mm:ss,SSS');
         }
     }
 

@@ -3063,7 +3063,7 @@
                 }, function () {
                     angular.forEach(vm.tree, function (node, index) {
                         insertData(node, result.jobs);
-                    })
+                    });
                     vm.loading = false;
                 });
             }, function () {

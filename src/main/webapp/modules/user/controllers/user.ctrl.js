@@ -241,6 +241,7 @@
                     $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
 
                 }
+                $rootScope.$broadcast('reloadPreferences');
             }
         });
 

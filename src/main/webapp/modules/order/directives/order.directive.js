@@ -470,7 +470,7 @@
                                     matched = true;
 
                                 }
-                            })
+                            });
 
                             var errorNodeCls = '';
                             if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
@@ -541,14 +541,14 @@
                         '<span class="_500 block-ellipsis ' + mL + '" title="' + item.name + '">' + nodeName + '</span>' +
                         '<div class="btn-group dropdown pull-right abt-dropdown ' + permissionClassDropDown + '"><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                         '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                        '<a  class="dropdown-item" ng-click="showConfiguration({type: \'job\', path: \'' + item.job.path + '\', name: \'' + item.name + '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
+                        '<a  class="dropdown-item" ng-click="showConfiguration({type: \'job\', path: \'' +item.job.path+ '\', name: \'' +item.name+ '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color" ng-click="stopJob(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job.state._text!==\'STOPPED\'}" ng-if="permission.Job.stop" translate>button.stopJob</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="unstopJob(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\'}" ng-if="permission.Job.unstop" translate>button.unstopJob</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="stopNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}" ng-if="permission.JobChain.stopJobChainNode" translate>button.stopNode</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="unstopNode(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}" ng-if="permission.JobChain.processJobChainNode" translate>button.unstopNode</a>' +
                         '<a href=""  class="hide dropdown-item" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.skipJobChainNode"  translate>button.skipNode</a>' +
                         '<a href=""  class="hide dropdown-item" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}" ng-if="permission.JobChain.processJobChainNode"  translate>button.unskipNode</a>' +
-                        '<a href=""  class="dropdown-item" ng-click="copyLinkToObject({type:\'job\',path:\'' + item.job.path + '\'})"  translate>button.copyLinkToObject</a>' +
+                            '<a href=""  class="dropdown-item" ng-click="copyLinkToObject({type:\'job\',path:\''+item.job.path+'\'})"  translate>button.copyLinkToObject</a>' +
                         '</div></div></div>'
                         + '<div class="text-left text-muted p-t-sm block-ellipsis-job"><a class="text-hover-primary" title="' + item.job.path + '" id="navigateToJobBtn_' + item.name + '">' + jobName +
                         '</a><div class="text-sm crimson" translate>' + msg + '</div></div>' +
@@ -564,6 +564,7 @@
                         '<a title="{{\'button.unskipNode\' | translate}}" href class="hide pull-right text-right w-half" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}"><i class="fa fa-play" ng-if="permission.JobChain.processJobChainNode"></i>  <span translate>button.unskipNode</span> </a>' +
                         '</div>' +
                         '</div>';
+
 
 
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
@@ -600,13 +601,14 @@
                             scope.endNodes.push(endNode.name);
                             var item = scope.jobChainData.endNodes[index];
                             scope.coords[length + index] = {};
-                            scope.coords[length + index].left = left + rectW + margin;
-                            scope.coords[length + index].name = endNode.name;
+                            scope.coords[length+ index].left = left + rectW + margin;
+                            scope.coords[length+ index].name=endNode.name;
 
 
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
+
                                 endErrorNodes++;
-                                scope.coords[length + index].top = top + rectH + 50 + rectH - avatarW / 2;
+                                scope.coords[length+index].top = top + rectH + 50 + rectH  - avatarW / 2;
                                 scope.coords.map(function (obj) {
                                     if (scope.coords[length + index].top < obj.top + rectH && scope.coords[length + index].name !== obj.name) {
                                         scope.coords[length + index].top = obj.top + rectH;
@@ -629,8 +631,8 @@
                                 scope.coords[length + index].top = avatarTop;
                                 if (endSuccessNodes > 1) {
                                     scope.coords.map(function (obj) {
-                                        console.log("Object top " + obj.top + " for " + obj.name);
-                                        if (scope.coords[length + index].top < obj.top && scope.coords[length + index].name !== obj.name) {
+
+                                        if (scope.coords[length + index].top < obj.top && scope.coords[length+index].name !==obj.name) {
                                             scope.coords[length + index].top = obj.top;
                                         }
 
@@ -712,7 +714,6 @@
                                     rect.style['top'] = top - maxUTop + iTop + 'px';
                                 }
                                 rect = document.getElementById('lb' + endNode.name);
-                                console.log("rectId " + rect.style.getPropertyValue('top'));
                                 if (rect) {
                                     top = rect.style.getPropertyValue('top');
                                     top = parseInt(top.substring(0, top.length - 2));
@@ -762,7 +763,7 @@
                 'coords': '=',
                 'fitIntoScreen': '&',
                 'fitToScreen': '=',
-                'copyLinkToObject': '&'
+                'copyLinkToObject':'&'
             },
             controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', '$compile', '$location',
                 function ($scope, $interval, gettextCatalog, $timeout, $filter, SOSAuth, $compile, $location) {
@@ -910,13 +911,13 @@
 
                             var start = document.createElement('span');
                             start.setAttribute('class', 'text-primary text-c');
-                            start.setAttribute('id', 'lbStart');
-                            start.style['left'] = document.getElementById('lbStart').offsetLeft + 'px';
-                            start.style['top'] = document.getElementById('lbStart').offsetTop + 'px';
+                            start.setAttribute('id', 'lb'+vm.startId);
+                            start.style['left'] = document.getElementById('lb'+vm.startId).offsetLeft + 'px';
+                            start.style['top'] = document.getElementById('lb'+vm.startId).offsetTop + 'px';
                             start.style['position'] = 'absolute';
                             start.style['z-index'] = 1000;
                             start.innerHTML = gettextCatalog.getString('label.start');
-                            mainContainer.removeChild(document.getElementById('lbStart'));
+                            mainContainer.removeChild(document.getElementById('lb'+vm.startId));
                             mainContainer.appendChild(start);
                         }
 
@@ -961,7 +962,7 @@
                                 createLine(top, left, 2, height, index, item);
                                 left = left - width;
                                 var node = document.createElement('div');
-                                node.innerHTML = '<span>setback</span>';
+                                node.innerHTML = '<span class="text-sm" translate>label.setback</span>';
                                 node.style['position'] = 'absolute';
                                 node.style['top'] = (top - 15) + 'px';
                                 node.style['left'] = left + 'px';
@@ -973,15 +974,13 @@
                                 createLine(top, left, 2, height, index, item);
                                 node = document.createElement('i');
                                 node.setAttribute('id', 'chevron' + item.name);
-                                node.setAttribute('class', 'fa fa-chevron-down');
+                                node.setAttribute('class', 'fa fa-angle-down fa-lg text-muted');
                                 mainContainer.appendChild(node);
                                 $compile(node)(vm);
                                 var i = document.getElementById('chevron' + item.name);
                                 i.style['position'] = 'absolute';
                                 i.style['top'] = top + height - vm.borderTop - i.clientHeight / 2 + 'px';
                                 i.style['left'] = left - i.clientWidth / 2 + 'px';
-
-
                             }
 
 
@@ -1340,40 +1339,23 @@
 
                         vm.calWidth = function (diff, state) {
                             var container = document.getElementById('lbl-order-' + state);
-                            if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
-                                return '150px';
-                            } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
-                                return '145px';
-                            }else if (/(^\d{1}days)/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '40px';
-                            } else if (/(^\d{1}days)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                return '32px';
-                            }else if (/(^\d{2}days)/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '38px';
-                            } else if (/(^\d{2}days)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                return '32px';
-                            //}else if (/(^\d{1}:\d{1}h)/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                            //    console.log("hour11 "+diff);
-                            //    return '52px';
-                            //} else if (/(^\d{1}:\d{1}h)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                            //    return '47px';
-                            //}else if (/(^\d{2}:\d{1}h)/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                            //    console.log("hour11 "+diff);
-                            //    return '49px';
-                            //} else if (/(^\d{2}:\d{1}h)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                            //    return '44px';
-                            //}else if (/(^\d{1}:\d{2}h)/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                            //    console.log("hour11 "+diff);
-                            //    return '49px';
-                            //} else if (/(^\d{1}:\d{2}h)/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                            //    return '44px';
-                            }
-                            else if (container.clientHeight == container.scrollHeight) {
-                                return '25px';
-                            } else if (container.clientHeight !== container.scrollHeight) {
+
+                            if(container) {
+
+                                if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
+                                    return '150px';
+                                } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
+                                    return '145px';
+                                } else if (container.clientHeight == container.scrollHeight) {
+                                    return 214-(diff.length *5 +146) +'px';
+                                } else if (container.clientHeight !== container.scrollHeight) {
+
+                                    return 210-(diff.length *5 +146+8) +'px';
+                                }
+                            }else{
                                 return '30px';
                             }
-                        }
+                        };
 
                         function addLabel(orders, name) {
 
@@ -1466,7 +1448,7 @@
                                     }
 
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
-                                        '<span    ng-style="{\'max-width\':calWidth(\'' + $filter('durationFromCurrent')(undefined, order.nextStartTime) + '\',\'' + order.state + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
+                                        '<span class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" ng-style="{\'max-width\':calWidth(\'' + $filter('durationFromCurrent')(undefined, order.nextStartTime) + '\',\'' + order.state + '\')}" title="' + order.orderId + '">' + order.orderId + '</span>'
                                         + '<span  class="show-block v-m text-success text-xs"> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + ' (' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="hide btn-group dropdown " ng-class="{\'show-inline\':permission.Order.view.configuration || (permission.Order.view.orderLog && \'' + order.historyId + '\') || permission.Order.start || permission.Order.setState'

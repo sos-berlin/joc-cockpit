@@ -486,9 +486,15 @@
   });
     $('.flow-diagram').on('shown.bs.dropdown', function (e) {
         var $menu = $(e.target).find('.dropdown1');
+
         if($menu && $menu.offset()) {
-            $(this).find('.dropdown-menu').css("top", $menu.offset().top);
-            $(this).find('.dropdown-menu').css("left", $menu.offset().left-120);
+            if ($('#zoomCn').css('transform') == 'none') {
+                $(this).find('.dropdown-menu').css("top", $menu.offset().top);
+            } else {
+                $(this).find('.dropdown-menu').css("top", "auto");
+            }
+            $(this).find('.dropdown-menu').css("left", $menu.offset().left-140);
+            
         }
     });
 
