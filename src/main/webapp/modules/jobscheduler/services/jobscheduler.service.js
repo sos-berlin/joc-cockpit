@@ -176,8 +176,10 @@
         }
     }
 
+
     JobSchedulerService.$inject=["$resource", "$q","$http"];
     function JobSchedulerService($resource,$q, $http){
+
         return{
             getSchedulerIds: function () {
                 var deferred = $q.defer();
@@ -438,7 +440,9 @@
             },
             downloadLog: function (obj) {
                 var deferred = $q.defer();
-                $http.get('jobscheduler/log?host='+obj.host+'&jobschedulerId='+obj.jobschedulerId+'&port='+obj.port).then(function(res){
+
+                $http.get('jobscheduler/log?host='+obj.host+'&jobschedulerId='+obj.jobschedulerId+'&port='+obj.port).then(function(res,status,headers){
+                     console.log("Headers 01 "+JSON.stringify(headers));
                     deferred.resolve(res.data);
                 }, function (err) {
                     deferred.reject(err);

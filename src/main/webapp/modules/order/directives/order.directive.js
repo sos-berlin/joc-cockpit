@@ -186,7 +186,7 @@
                 scope.$on("drawJobChainFlowDiagram", function () {
                     arrangeItems();
                     //scope.jobChainData = angular.copy(scope.jobChain);
-                    // checkForEndNodes(0);
+                   //  checkForEndNodes(0);
                 });
 
                 function arrangeItems() {
@@ -229,15 +229,19 @@
                             return;
                         }
 
-                        //console.log("For item " + item.name + " next " + item.nextNode);
+                       // console.log("For item " + item.name + " next " + item.nextNode);
 
                         angular.forEach(jobChainData2.nodes, function (item2, index2) {
-                            // console.log("Node "+item2.name);
+
                             if (item.nextNode == item2.name) {
                                 // console.log("Found next " + item2.name);
                                 gotNext = true;
                                 var cursor = index;
                                 if (splitRegex.test(item.name)) {
+                                    if(!item.position){
+                                        item.position=1;
+                                    }
+
                                     cursor = cursor + item.position;
                                     //console.log("Cursor " + cursor);
                                 } else {
@@ -431,15 +435,17 @@
                         }
 
                         if (splitRegex.test(item.name)) {
+                            console.log("Splitted node "+item.name);
                             isSplitted = true;
                             scope.coords[index].name = splitRegex.exec(item.name)[2];
                             scope.coords[index].isParallel = true;
                             scope.coords.map(function (obj) {
 
-                                if (obj.name == splitRegex.exec(item.name)[1]) {
+                                if (obj.actual == splitRegex.exec(item.name)[1]) {
                                     obj.parallels = obj.parallels + 1;
                                     scope.coords[index].parent = obj.actual;
                                     scope.coords[index].left = obj.left + rectW + margin;
+                                    console.log('parent '+splitRegex.exec(item.name)[1]+' left '+scope.coords[index].left);
                                     if (obj.parallels == 1) {
                                         scope.coords[index].top = obj.top - rectH / 2 - splitMargin / 2;
 
@@ -457,6 +463,7 @@
                                 }
                             })
                         } else if (index > 0) {
+                            console.log("Non splitted node "+item.name);
                             var matched = false;
                             var mIndex = -1;
                             scope.coords.map(function (obj) {
@@ -1336,24 +1343,68 @@
                             }
                         }
 
-
-                        vm.calWidth = function (diff, state) {
+                        var diff;
+                        vm.calWidth = function (order, state) {
                             var container = document.getElementById('lbl-order-' + state);
+                            diff = document.getElementById('diff-' + order).innerHTML;
+                            if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
+                                return '150px';
+                            } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
+                                return '145px';
+                            }else if (/^\d{1}day$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '42px';
+                            } else if (/^\d{1}day$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                return '34px';
+                            }else if (/^\d{1}days$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '40px';
+                            } else if (/^\d{1}days$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                return '32px';
+                            }
+                            else if (/^\d{2}days$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '38px';
+                            } else if (/^\d{2}days$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                return '32px';
+                            }else if (/^\d{1}:\d{1}(h|min)$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                if(/^\d{1}:\d{1}(h|min)$/.exec(diff)[1]=='h')
+                                {return '52px';}
+                                else {return '48px';}
+                            } else if (/^\d{1}:\d{1}(h|min)$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                if(/^\d{1}:\d{1}(h|min)$/.exec(diff)[1]=='h')
+                                {return '47px';}
+                                else{ return '42px';}
 
-                            if(container) {
-
-                                if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
-                                    return '150px';
-                                } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
-                                    return '145px';
-                                } else if (container.clientHeight == container.scrollHeight) {
-                                    return 214-(diff.length *5 +146) +'px';
-                                } else if (container.clientHeight !== container.scrollHeight) {
-
-                                    return 210-(diff.length *5 +146+8) +'px';
-                                }
-                            }else{
+                            }else if (/^\d{1}:\d{2}(h|min)$/.test(diff) && container.clientHeight == container.scrollHeight) {
+                                if(/^\d{1}:\d{2}(h|min)$/.exec(diff)[1]=='h'){   return '45px';}
+                                else {  return '40px'};
+                            } else if (/^\d{2}:\d{1}(h|min)$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                if(/^\d{2}:\d{1}(h|min)$/.exec(diff)[1]=='h')
+                                {return '45px';}
+                                else {return '40px';}
+                            } else if ((/^\d{1}:\d{2}(h|min)$/.test(diff)||/(^\d{2}:\d{1}(h|min)$)/.test(diff) )  && container.clientHeight !== container.scrollHeight) {
                                 return '30px';
+                            }else if (/^\d{2}:\d{2}(h|min)$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                if(/^\d{2}:\d{2}(h|min)$/.exec(diff)[1]=='h')
+                                return '40px';
+                                else return '35px';
+                            } else if (/^\d{2}:\d{2}(h|min)$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
+                                if(/^\d{2}:\d{2}(h|min)$/.exec(diff)[1]=='h')
+                                return '27px';
+                                else return '22px';
+                            }else if (/^\d{1}sec$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '40px';
+                            }else if (/^\d{1}sec$/.test(diff)  && container.clientHeight != container.scrollHeight) {
+                                return '30px';
+                            } else if (/^\d{2}sec$/.test(diff)  && container.clientHeight == container.scrollHeight) {
+                                return '35px';
+                            }else if (/^\d{1}sec$/.test(diff)  && container.clientHeight != container.scrollHeight) {
+                                return '30px';
+                            }
+                            else if (container.clientHeight == container.scrollHeight) {
+                                return '25px';
+                            } else if (container.clientHeight !== container.scrollHeight) {
+                                return '30px';
+
+
                             }
                         };
 
@@ -1432,14 +1483,14 @@
                                     var diff = 0;
                                     var time = 0;
                                     if (order.startedAt) {
-                                        diff = '+<span time="' + order.startedAt + '"></span>';
+                                        diff = '+<span id="diff-'+order.orderId+'" time="' + order.startedAt + '"></span>';
                                         time = order.startedAt;
                                     } else {
 
                                         if ($filter('durationFromCurrent')(undefined, order.nextStartTime) == 'never')
                                             diff = 'never';
                                         else
-                                            diff = '-<span time="' + order.nextStartTime + '"></span>';
+                                            diff = '-<span id="diff-'+order.orderId+'" time="' + order.nextStartTime + '"></span>';
 
                                         if (order.nextStartTime) {
                                             time = order.nextStartTime;
@@ -1448,8 +1499,10 @@
                                     }
 
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
-                                        '<span class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" ng-style="{\'max-width\':calWidth(\'' + $filter('durationFromCurrent')(undefined, order.nextStartTime) + '\',\'' + order.state + '\')}" title="' + order.orderId + '">' + order.orderId + '</span>'
-                                        + '<span  class="show-block v-m text-success text-xs"> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + ' (' + diff + ')</span>'
+
+                                        '<span    ng-style="{\'max-width\':calWidth(\'' + order.orderId + '\',\'' + order.state + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
+                                        + '<span  class="show-block v-m text-success text-xs"> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + '(' + diff + ')</span>'
+
                                         + '</span>'
                                         + '<div class="hide btn-group dropdown " ng-class="{\'show-inline\':permission.Order.view.configuration || (permission.Order.view.orderLog && \'' + order.historyId + '\') || permission.Order.start || permission.Order.setState'
                                         + '|| permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume'
