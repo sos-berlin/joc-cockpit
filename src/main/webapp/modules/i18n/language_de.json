@@ -114,7 +114,7 @@
   "button.apply": "Anwenden",
   "button.profile": "Profil",
   "button.logOut": "Abmelden",
-  "button.setting": "Einstellungen",
+  "button.setting": "Protokollierung",
   "button.forgotPassword?": "Kennwort vergessen?",
   "button.logIn": "Anmelden",
   "button.end": "Beenden",
@@ -897,7 +897,7 @@
   "breadcrumb.schedule": "Zeitplan",
   "breadcrumb.lock": "Sperre",
   "breadcrumb.agentCluster": "Agent Cluster",
-  "breadcrumb.processClass": "Processklasse",
+  "breadcrumb.processClass": "Prozessklasse",
   "button.downloadLog": "Main Log herunterladen",
   "label.maxNumberOfAuditLogEntries": "Max. Anzahl Einträge im Audit Log",
   "label.JOCConfiguration": "Geteilte Personalisierung"

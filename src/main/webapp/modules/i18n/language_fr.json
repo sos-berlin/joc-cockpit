@@ -114,7 +114,7 @@
   "button.apply": "Appliquer",
   "button.profile": "Profil",
   "button.logOut": "Se déconnecter",
-  "button.setting": "Paramétrage",
+  "button.setting": "Enregistrement",
   "button.forgotPassword?": "Mot de passe oublié?",
   "button.logIn": "Se connecter",
   "button.end": "Arrêter",
@@ -900,5 +900,5 @@
   "breadcrumb.processClass": "Classe de Processus",
   "button.downloadLog": "Télécharger le Main Log",
   "label.maxNumberOfAuditLogEntries": "Nombre max. des entrées dans le Journal d'Audit",
-  "label.JOCConfiguration": "Shared Customization"
+  "label.JOCConfiguration": "Personnalisation Partagé"
 }
