@@ -11,6 +11,7 @@
         </div>
     </div>
 </div>
+
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row m-t-sm">
@@ -29,7 +30,7 @@
                                                 data="agentClusterData" config="{refreshDataOnly:true}">
                                         </nvd3>
                                         </div>
-                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px; color: #000 !important;text-align: center; font-size: 17px;margin-right: 15px">
+                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 15px">
                                             {{'message.noDataAvailable' | translate}}
                                         </div>
                                     </div>
@@ -74,7 +75,7 @@
                             </div>
                             <div class="box-tool hide" ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
                                 <div class="btn-group dropdown pull-right">
-                                    <button class="btn btn-sm grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
+                                    <button class="btn btn-sm btn-grey dropdown-toggle" data-toggle="dropdown" translate>label.menu</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more">
                                         <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.restart" ng-click="clusterAction('cluster','restart')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.restart</a>
                                         <a class="dropdown-item" ng-if="permission.JobschedulerMasterCluster.terminate" ng-click="clusterAction('cluster','terminate')" ng-class="{'disable-link':selectedJobScheduler.state._text.toLowerCase()=='stopped'}" translate>button.terminate</a>

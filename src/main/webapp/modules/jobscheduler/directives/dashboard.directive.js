@@ -21,6 +21,7 @@
                 var lastId;
 
                 function init() {
+                    //console.log("Init");
                     rWidth = 200;
                     rHeight = 130;
                     margin = 35;
@@ -74,10 +75,12 @@
                     angular.forEach(scope.clusterStatusData.members.masters, function (master, index) {
 
                         if (!master.supervisor && index == scope.clusterStatusData.members.masters.length - 1) {
+
                             removeSupervised();
                             return;
                         }
                         if (!master.supervisor) {
+
                             return;
                         }
 
@@ -103,6 +106,7 @@
 
 
                     function removeSupervised() {
+
                         if (scope.clusterStatusData.supervisors.length <= 0) {
                             getTemporaryData();
 
@@ -117,6 +121,7 @@
 
                     scope.getSupervisor = getSupervisor;
                     function getSupervisor(refresh) {
+
                         if (scope.clusterStatusData.supervisors.length <= 0) {
                             getTemporaryData(refresh);
                         }
@@ -142,6 +147,7 @@
                     }
 
                     function getTemporaryData(refresh) {
+
                         scope.onRefresh().then(function (res) {
                             if (scope.clusterStatusData.supervisors.length <= 0) {
                                 getTemporaryData2(res, refresh);
@@ -174,7 +180,6 @@
                     }
 
                     function getTemporaryData2(res, refresh) {
-
                         if ((scope.clusterStatusData.members.masters.length == 0 && !refresh) || !res) {
                             drawFlow();
                         }
@@ -347,7 +352,7 @@
 
 
                     function drawFlow() {
-
+ //console.log("Init 16 "+JSON.stringify(scope.clusterStatusData));
                         var sLeft = 0;
                         top = vMargin;
                         if (scope.clusterStatusData.supervisors.length == 0) {
@@ -377,10 +382,18 @@
 
                             var sClassRunning = 'text-success';
 
+
+
+
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
 
                                 sClassRunning = 'text-danger';
-                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
+                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
+
+                                sClassRunning = 'text-unreachable';
+
+                            }
+                            else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
 
                                 sClassRunning = 'text-black-lt';
 
@@ -457,6 +470,7 @@
 
                             var masterTemplate = '';
                             angular.forEach(supervisor.masters, function (master, index) {
+                                //console.log("Master "+master.port);
                                 mLeft = mLeft + margin;
                                 if (sIndex !== 0 || index > 0) {
                                     mLeft = mLeft + rWidth;
@@ -481,16 +495,20 @@
 
                                 if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     classRunning = 'text-danger';
-
-                                } else if (master.state && master.state._text.toLowerCase() != 'running') {
-                                    classRunning = 'text-black-lt';
-
-                                } else if (master.state && (master.state._text.toLowerCase() == ' '
+                                    disableClass = 'disable-link';
+                                }
+                                else if (master.state && (master.state._text == ' '
                                     || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'starting'
-                                    || master.state._text.toLowerCase() == 'terminating')) {
+                                    || master.state._text.toLowerCase() == 'terminating' ||master.state._text.toLowerCase() == 'unreachable')) {
                                     classRunning = 'text-warn';
+                                    disableClass = 'disable-link';
 
                                 }
+                                else if (master.state && master.state._text.toLowerCase() != 'running') {
+                                    classRunning = 'text-black-lt';
+                                }
+
+
 
                                 if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     disableClass = 'disable-link';
@@ -598,6 +616,7 @@
                                     } else if (scope.clusterStatusData.database) {
                                         drawFlowForDatabase();
                                     } else {
+                                        //console.log("Init 18");
                                         template = template + '</div>';
                                         template = $compile(template)(scope);
                                         elem.append(template);
@@ -661,9 +680,10 @@
                                 if (master.state && master.state._text.toLowerCase() == 'stopped') {
                                     classRunning = 'text-danger';
                                     disableClass = 'disable-link';
-                                } else if (master.state && (master.state._text == ' '
+                                }
+                                else if (master.state && (master.state._text == ' '
                                     || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'starting'
-                                    || master.state._text.toLowerCase() == 'terminating')) {
+                                    || master.state._text.toLowerCase() == 'terminating' ||master.state._text.toLowerCase() == 'unreachable')) {
                                     classRunning = 'text-warn';
                                     disableClass = 'disable-link';
 
@@ -1133,7 +1153,8 @@
                 vm.$on('event-started', function (event, args) {
                     if (args.events && args.events.length > 0) {
                         angular.forEach(args.events[0].eventSnapshots, function (value1) {
-                            if (value1.eventType.indexOf("SchedulerStateChanged") !== -1) {
+                            if (value1.eventType.indexOf("Scheduler") !== -1) {
+                                //console.log("Scheduler event "+JSON.stringify(value1));
                                 vm.getSupervisor(value1);
                             }
                         });

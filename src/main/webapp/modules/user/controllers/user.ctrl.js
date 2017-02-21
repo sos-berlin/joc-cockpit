@@ -338,7 +338,11 @@
             {value: 'OrderSuspended', label: "label.orderSuspended"}
         ];
 
-        $scope.eventFilter = vm.preferences.events.filter;
+        if(angular.isArray(vm.preferences.events.filter)){
+            $scope.eventFilter = vm.preferences.events.filter;
+        }else {
+            $scope.eventFilter = JSON.parse(vm.preferences.events.filter);
+        }
         $scope.tasks.count = vm.preferences.events.taskCount;
         $scope.jobs.count = vm.preferences.events.jobCount;
         $scope.jobChains.count = vm.preferences.events.jobChainCount;
@@ -359,6 +363,7 @@
             $scope.selectAllPositiveOrderModel = true;
         }
         if ($scope.negativeOrders.length == $scope.negativeOrders.count) {
+
             $scope.selectAllNegativeOrderModel = true;
         }
 

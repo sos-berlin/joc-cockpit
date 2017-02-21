@@ -136,10 +136,6 @@
         };
 
 
-        if (vm.orderFilters && vm.orderFilters.showLogPanel) {
-            vm.showLogFuc(vm.orderFilters.showLogPanel);
-        }
-
         vm.hideLogPanel = function () {
             vm.showLogPanel = undefined;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
@@ -5016,8 +5012,7 @@
                 obj.objectType = "ORDER_HISTORY";
                 obj.shared = true;
                 UserService.configurations(obj).then(function (res) {
-                    if (res.configurations && res.configurations.length > 0)
-                        vm.orderHistoryFilterList = res.configurations;
+                    vm.orderHistoryFilterList = res.configurations;
                     getOrderCustomizations();
                 }, function () {
                     getOrderCustomizations();
@@ -5035,8 +5030,7 @@
                 obj.objectType = "TASK_HISTORY";
                 obj.shared = true;
                 UserService.configurations(obj).then(function (res) {
-                    if (res.configurations && res.configurations.length > 0)
-                        vm.jobHistoryFilterList = res.configurations;
+                    vm.jobHistoryFilterList = res.configurations;
                     getTaskCustomizations();
                 }, function () {
                     getTaskCustomizations();

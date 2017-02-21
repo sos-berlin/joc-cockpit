@@ -47,9 +47,12 @@
             }
         });
 
-        $rootScope.clientLogFilter = {};
-        $rootScope.clientLogFilter.state = true;
-        $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
+        if($window.sessionStorage.clientLogFilter){
+            $rootScope.clientLogFilter = JSON.parse($window.sessionStorage.clientLogFilter);
+        }else {
+            $rootScope.clientLogFilter = {};
+            $rootScope.clientLogFilter.status = ['info', 'debug', 'error', 'warn', 'debug2', 'debug3'];
+        }
         function loadSettingConfiguration() {
             var configObj = {};
             configObj.jobschedulerId = $scope.schedulerIds.selected;
@@ -58,10 +61,15 @@
 
             UserService.configuration(configObj).then(function (res) {
                 if (res.configuration && res.configuration.configurationItem) {
-                    $window.sessionStorage.clientLogFilter = JSON.parse(res.configuration.configurationItem);
+                    $rootScope.clientLogFilter = JSON.parse(res.configuration.configurationItem);
                 } else {
-                    $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+                    $rootScope.clientLogFilter.isEnable = false;
                 }
+
+                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+            }, function () {
+                $rootScope.clientLogFilter.isEnable = false;
+                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
             });
         }
 
@@ -72,19 +80,9 @@
         vm.redirectToNewTab = function () {
             $window.open('#!/client-logs', '_blank');
         };
-
-        var watcher = vm.$watchCollection('clientLogFilter', function (newNames, oldValues) {
-            if (newNames && oldValues && vm.schedulerIds.selected && vm.permission.user) {
-                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
-                var configObj = {};
-                configObj.jobschedulerId = vm.schedulerIds.selected;
-                configObj.account = vm.permission.user;
-                configObj.configurationType = "SETTING";
-                configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
-                UserService.saveConfiguration(configObj);
-            }
-        });
-
+        vm.copyToClipboard = function(){
+            clipboard.copyText(JSON.stringify(vm.clientLogs));
+        };
 
         vm.selectedScheduler = {};
 
@@ -135,10 +133,10 @@
         vm.calculateHeight = function () {
             if (window.innerHeight > 450 && window.innerWidth > 740) {
                 var headerHt = $('.app-header').height() || 60;
-                var footerHt = $('.app-footer').height() || 30;
+                //var footerHt = $('.app-footer').height() || 30;
                 var topHeaderHt = $('.top-header-bar').height() || 16;
                 var subHeaderHt = 58;
-                var ht = (window.innerHeight - (headerHt + footerHt + topHeaderHt + subHeaderHt));
+                var ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
                 $('.max-ht2').css('height', ht - 50 + 'px');
                 $('.max-tree-ht').css('height', ht - 42 + 'px');
@@ -318,7 +316,7 @@
                             $window.localStorage.log_window_ht = newWindow.innerHeight;
                             $window.localStorage.log_window_x = newWindow.screenX;
                             $window.localStorage.log_window_y = newWindow.screenY;
-                        }
+                        };
                         newWindow.onresize = function () {
                             console.log('resize');
                             $window.localStorage.log_window_wt = newWindow.innerWidth;
@@ -443,7 +441,21 @@
         };
 
         
+ var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
+            if (newNames != oldValues && vm.schedulerIds.selected && vm.permission.user) {
+                vm.saveSettingConf();
+            }
+        });
 
+        vm.saveSettingConf= function(){
+            var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "SETTING";
+                configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
+                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+                UserService.saveConfiguration(configObj);
+        };
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
         });
@@ -524,7 +536,7 @@
                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
                 vm.logout();
             }
-            if ($rootScope.clientLogFilter.state) {
+            if ($rootScope.clientLogFilter.isEnable) {
                 try {
                     $window.localStorage.clientLogs = JSON.stringify($rootScope.clientLogs);
                     if ((1024 * 1024) - unescape(encodeURIComponent(JSON.stringify($window.localStorage.clientLogs))).length < 0) {

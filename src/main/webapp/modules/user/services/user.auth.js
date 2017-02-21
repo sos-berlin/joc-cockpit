@@ -12,10 +12,7 @@
                 return {
                     request: function (config) {
 
-
-
                         if (config.method == 'POST' || config.url.match('jobscheduler/log?')) {
-
 
                             if (SOSAuth.accessTokenId) {
                                 config.headers = {
@@ -23,10 +20,8 @@
                                     'Content-Type': 'application/json'
                                 }
                             }
-
-                           config.url = './api/' + config.url;
-
-                            if ($rootScope.clientLogFilter.state) {
+                            config.url = './api/' + config.url;
+                            if ($rootScope.clientLogFilter.isEnable && !config.url.match('touch')) {
                                 var date = new Date();
                                 var info = {
                                     message: "START LOADING " + config.url,
@@ -70,7 +65,7 @@
                                 timeout: 6000
                             });
                         }
-                        if ($rootScope.clientLogFilter.state) {
+                        if ($rootScope.clientLogFilter.isEnable) {
                             var error = {
                                 message: rejection,
                                 logTime: new Date(),
@@ -95,7 +90,7 @@
                             SOSAuth.clearUser();
                             SOSAuth.clearStorage();
                             $location.path('/login');
-                            if ($rootScope.clientLogFilter.state) {
+                            if ($rootScope.clientLogFilter.isEnable) {
                                 var error = {
                                     message: response,
                                     logTime: responseTimeStamp,

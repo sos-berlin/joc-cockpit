@@ -71,7 +71,7 @@
                         event.preventDefault();
                         return;
                     }
-                    if ($rootScope.clientLogFilter.state) {
+                    if ($rootScope.clientLogFilter.isEnable) {
                         startTime = new Date();
                         var info = {
                             message: 'START LOADING ' + toState.url,
@@ -90,7 +90,7 @@
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
-                    if ($rootScope.clientLogFilter.state) {
+                    if ($rootScope.clientLogFilter.isEnable) {
                         endTime = new Date();
                         var info = {
                             message: 'ELAPSED TIME FOR UPDATE ' + toState.url + ' ' + ((endTime.getTime() - startTime.getTime()) / 1000) + 's',
@@ -124,7 +124,7 @@
                     if (error === "login") {
                         $state.go("login");
                     } else {
-                        if ($rootScope.clientLogFilter.state) {
+                        if ($rootScope.clientLogFilter.isEnable) {
                             var error = {
                                 message: 'ERROR ON LOADING : ' + toState.url,
                                 logTime: new Date(),

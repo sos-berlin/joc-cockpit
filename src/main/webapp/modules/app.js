@@ -29,7 +29,8 @@
             'gantt.table',
             'ngFileSaver',
         
-            'angular-clipboard'
+            'angular-clipboard',
+          'ngclipboard'
             
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {

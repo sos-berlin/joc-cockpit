@@ -845,7 +845,7 @@
                             action: 'stop job'
                         })
 
-                    }
+                    };
 
                     vm.unstopJob = function (index) {
 
@@ -1154,11 +1154,8 @@
                                 $timeout(function () {
                                     vm.fitIntoScreen();
                                 }, 500)
-
                             }
-
-
-                        })
+                        });
 
                         function createLine(top, left, width, height, index, item) {
                             var node = document.createElement('div');
@@ -1347,63 +1344,20 @@
                         vm.calWidth = function (order, state) {
                             var container = document.getElementById('lbl-order-' + state);
                             diff = document.getElementById('diff-' + order).innerHTML;
-                            if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
-                                return '150px';
-                            } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
-                                return '145px';
-                            }else if (/^\d{1}day$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '42px';
-                            } else if (/^\d{1}day$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                return '34px';
-                            }else if (/^\d{1}days$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '40px';
-                            } else if (/^\d{1}days$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                return '32px';
-                            }
-                            else if (/^\d{2}days$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '38px';
-                            } else if (/^\d{2}days$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                return '32px';
-                            }else if (/^\d{1}:\d{1}(h|min)$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                if(/^\d{1}:\d{1}(h|min)$/.exec(diff)[1]=='h')
-                                {return '52px';}
-                                else {return '48px';}
-                            } else if (/^\d{1}:\d{1}(h|min)$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                if(/^\d{1}:\d{1}(h|min)$/.exec(diff)[1]=='h')
-                                {return '47px';}
-                                else{ return '42px';}
+                            if(container && diff && diff.innerHTML) {
+                                diff = diff.innerHTML;
+                                if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
+                                    return '150px';
+                                } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
+                                    return '145px';
+                                } else if (container.clientHeight == container.scrollHeight) {
+                                    return 214-(diff.length *5 +147) +'px';
+                                } else if (container.clientHeight !== container.scrollHeight) {
 
-                            }else if (/^\d{1}:\d{2}(h|min)$/.test(diff) && container.clientHeight == container.scrollHeight) {
-                                if(/^\d{1}:\d{2}(h|min)$/.exec(diff)[1]=='h'){   return '45px';}
-                                else {  return '40px'};
-                            } else if (/^\d{2}:\d{1}(h|min)$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                if(/^\d{2}:\d{1}(h|min)$/.exec(diff)[1]=='h')
-                                {return '45px';}
-                                else {return '40px';}
-                            } else if ((/^\d{1}:\d{2}(h|min)$/.test(diff)||/(^\d{2}:\d{1}(h|min)$)/.test(diff) )  && container.clientHeight !== container.scrollHeight) {
+                                    return 210-(diff.length *5 +146+9) +'px';
+                                }
+                            }else{
                                 return '30px';
-                            }else if (/^\d{2}:\d{2}(h|min)$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                if(/^\d{2}:\d{2}(h|min)$/.exec(diff)[1]=='h')
-                                return '40px';
-                                else return '35px';
-                            } else if (/^\d{2}:\d{2}(h|min)$/.test(diff)  && container.clientHeight !== container.scrollHeight) {
-                                if(/^\d{2}:\d{2}(h|min)$/.exec(diff)[1]=='h')
-                                return '27px';
-                                else return '22px';
-                            }else if (/^\d{1}sec$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '40px';
-                            }else if (/^\d{1}sec$/.test(diff)  && container.clientHeight != container.scrollHeight) {
-                                return '30px';
-                            } else if (/^\d{2}sec$/.test(diff)  && container.clientHeight == container.scrollHeight) {
-                                return '35px';
-                            }else if (/^\d{1}sec$/.test(diff)  && container.clientHeight != container.scrollHeight) {
-                                return '30px';
-                            }
-                            else if (container.clientHeight == container.scrollHeight) {
-                                return '25px';
-                            } else if (container.clientHeight !== container.scrollHeight) {
-                                return '30px';
-
 
                             }
                         };

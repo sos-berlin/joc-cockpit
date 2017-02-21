@@ -6,7 +6,8 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="redirectToNewTab()" ng-disabled="!clientLogFilter.state" translate>button.openInNewTab</button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ngclipboard data-clipboard-target="#log" ng-disabled="!clientLogFilter.isEnable" translate>button.copyToClipboard</button>
+                    <button class="btn btn-sm btn-grey m-l-sm" ng-click="redirectToNewTab()" ng-disabled="!clientLogFilter.isEnable" translate>button.openInNewTab</button>
                 </div>
             </div>
         </div>
@@ -62,7 +63,7 @@
                         <div class=" col-sm-9" >
                             <div>
                                 <label class="md-check w-sm">
-                                    <input type="checkbox" ng-model="clientLogFilter.state">
+                                    <input type="checkbox" ng-model="clientLogFilter.isEnable" ng-click="saveSettingConf()">
                                     <i class="primary"></i>
                                 </label>
                             </div>
@@ -80,8 +81,7 @@
                     <span ng-repeat="log in clientLogs | filter:logFilter track by $index" style="font-size: 12px">
                         <span style="color: #009933;white-space:nowrap;" ng-class="{'log_error':log.level=='error'}" >{{log.logTime | stringToDateFormat}} [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
                         <span style="margin-left: 5px">
-                            <pre ng-if="log.level=='error'" style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message | json}}</pre>
-                            <pre ng-if="log.level!='error'" style='display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</pre>
+                            <span style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
                         </span>
                         <br>
                     </span>
