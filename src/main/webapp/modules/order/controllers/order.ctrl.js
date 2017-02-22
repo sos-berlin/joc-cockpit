@@ -3173,11 +3173,10 @@
                     vm.savedOrderFilter.selectedAccount = vm.permission.user;
                     vm.orderFilters.selectedView = true;
                     selectedFiltered = vm.orderFilter;
+                    SavedFilter.setOrder(vm.savedOrderFilter);
+                    SavedFilter.save();
                     vm.load();
                 }
-
-                SavedFilter.setOrder(vm.savedOrderFilter);
-                SavedFilter.save();
                 configObj.configurationItem = JSON.stringify(vm.orderFilter);
                 UserService.saveConfiguration(configObj);
             }, function () {
@@ -3196,14 +3195,15 @@
                 scope: vm
             });
         };
-
         vm.editFilter = function (filter) {
-
+            vm.action = 'edit';
+            vm.isUnique = true;
             UserService.configuration(filter).then(function (conf) {
                 vm.orderFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.orderFilter.shared = filter.shared;
                 vm.paths = vm.orderFilter.paths;
                 vm.object.paths = vm.paths;
+
             });
 
             var modalInstance = $uibModal.open({
@@ -3228,6 +3228,55 @@
                 configObj.configurationItem = JSON.stringify(vm.orderFilter);
                 configObj.name = filter.name;
                 configObj.shared = vm.orderFilter.shared;
+                UserService.saveConfiguration(configObj);
+
+            }, function () {
+
+            });
+        };
+
+        vm.copyFilter = function (filter) {
+            vm.action = 'copy';
+            vm.isUnique = true;
+
+            UserService.configuration(filter).then(function (conf) {
+                vm.orderFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.orderFilter.shared = filter.shared;
+                vm.paths = vm.orderFilter.paths;
+                vm.object.paths = vm.paths;
+                vm.orderFilter.name = vm.checkCopyName(vm.orderFilterList, filter.name)
+
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-order-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+                if (vm.orderFilter.radio == 'current') {
+                    vm.orderFilter.fromDate = undefined;
+                    vm.orderFilter.fromTime = undefined;
+                    vm.orderFilter.toDate = undefined;
+                    vm.orderFilter.toTime = undefined;
+                    vm.orderFilter.planned = undefined;
+                } else if (vm.orderFilter.radio == 'planned') {
+                    vm.orderFilter.processingState = undefined;
+                }
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.objectType = "ORDER";
+                configObj.name = vm.orderFilter.name;
+                configObj.shared = vm.orderFilter.shared;
+                vm.orderFilterList.push(configObj);
+
+
+                configObj.configurationItem = JSON.stringify(vm.orderFilter);
                 UserService.saveConfiguration(configObj);
 
             }, function () {
@@ -5867,7 +5916,8 @@
         };
 
         vm.editFilter = function (filter) {
-
+            vm.action = 'edit';
+            vm.isUnique = true;
             UserService.configuration(filter).then(function (conf) {
                 vm.historyFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.historyFilter.shared = filter.shared;
@@ -5923,6 +5973,53 @@
             });
         };
 
+        vm.copyFilter = function (filter) {
+            vm.action = 'copy';
+            vm.isUnique = true;
+             UserService.configuration(filter).then(function (conf) {
+                vm.historyFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.historyFilter.shared = filter.shared;
+                vm.paths = vm.historyFilter.paths;
+                vm.orders = vm.historyFilter.orders;
+                vm.jobChains = vm.historyFilter.jobChains;
+                vm.jobs = vm.historyFilter.jobs;
+                vm.object.paths = vm.paths;
+                vm.object.orders = vm.orders;
+                vm.object.jobChains = vm.jobChains;
+                vm.object.jobs = vm.jobs;
+                  if (vm.historyFilters.type == 'jobChain') {
+                      vm.historyFilter.name = vm.checkCopyName(vm.orderHistoryFilterList, filter.name);
+                  }else{
+                      vm.historyFilter.name = vm.checkCopyName(vm.jobHistoryFilterList, filter.name);
+                  }
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-history-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.name = vm.historyFilter.name;
+                configObj.shared = vm.historyFilter.shared;
+                configObj.objectType = filter.objectType;
+                if (vm.historyFilters.type == 'jobChain') {
+                    vm.orderHistoryFilterList.push(configObj);
+                } else {
+                    vm.jobHistoryFilterList.push(configObj);
+                }
+                configObj.configurationItem = JSON.stringify(vm.historyFilter);
+                UserService.saveConfiguration(configObj);
+            }, function () {
+
+            });
+        };
         vm.deleteFilter = function (filter) {
 
             UserService.deleteConfiguration(filter).then(function (res) {

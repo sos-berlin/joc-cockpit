@@ -374,10 +374,19 @@
                                 c = c + " yellow-border";
                             }
 
-                            var popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+
+
+                            var popoverTemplate ='';
+                            if(supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os){
+                                  popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
 
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
                                 '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+
+                            }else{
+                                popoverTemplate = 'Architecture : - <br> Distribution : - <br>Version : - <br>Started at : - <span></span><br> Survey Date: - ' ;
+                            }
+
 
 
                             var sClassRunning = 'text-success';
@@ -390,10 +399,10 @@
                                 sClassRunning = 'text-danger';
                             } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
 
-                                sClassRunning = 'text-unreachable';
+                                sClassRunning = 'text-warn';
 
                             }
-                            else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
+                            else if (!supervisor.data.jobscheduler.state || supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
 
                                 sClassRunning = 'text-black-lt';
 
@@ -458,19 +467,28 @@
                             '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
                             '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadLog</a>' +
                             '</div>' +
-                            '</div></span></div>' +
+                            '</div></span></div>';
 
-                            '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
-                            '</span></div>' +
-                            '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
-                            '</span></div>' +
-                            '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '">' + supervisor.data.jobscheduler.state.
-                                _text + '</span></div>' +
-                            '</div> ';
-
+                            if (supervisor.data.jobscheduler.os) {
+                                template = template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' +  supervisor.data.jobscheduler.os.name.toLowerCase() + '">' + '</i><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
+                                '</span></div>';
+                            }else{
+                                template = template + '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><span class="p-l-sm text-sm" title="' + supervisor.jobschedulerId + '">' + supervisor.jobschedulerId +
+                                '</span></div>';
+                            }
+                            template = template + '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
+                            '</span></div>';
+                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
+                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '">' +  supervisor.data.jobscheduler.state.
+                                    _text + '</span></div>';
+                            }else{
+                                 template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '"></span></div>';
+                            }
+                            template = template+'</div>';
                             var masterTemplate = '';
+
                             angular.forEach(supervisor.masters, function (master, index) {
-                                //console.log("Master "+master.port);
+                                console.log("Master "+master.port);
                                 mLeft = mLeft + margin;
                                 if (sIndex !== 0 || index > 0) {
                                     mLeft = mLeft + rWidth;

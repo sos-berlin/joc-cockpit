@@ -320,7 +320,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in allJobChains | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse"
+                            <tbody ng-repeat="jobChain in allJobChains | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize"
                                    ng-class="{'light-bg':jobChain.show}" >
                             <tr title="{{jobChain.configurationStatus._text | translate}}">
                                 <td class="noExl" ng-if="permission.JobChain.stop || permission.JobChain.unstop">
@@ -503,7 +503,7 @@
                                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" >
                                                                         <i class="fa fa-ellipsis-h"></i></button>
                                                                     <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                                                        <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
+                                                                        <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,node.job.path)" translate>button.viewLog</a>
                                                                         <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,node.job.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,node.job.path)" translate>button.killImmediately</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,node.job.path)" translate>button.terminate</a>

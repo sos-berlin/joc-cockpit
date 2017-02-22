@@ -400,7 +400,7 @@
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize | orderBy:order.filter.sortBy:order.sortReverse" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
+                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
                         <tr  class="cursor">
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
@@ -541,7 +541,7 @@
                             </tr>
                         </thead>
                         <tbody >
-                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | startFrom:(task.currentPage - 1) * task.pageSize | limitTo: task.pageSize | orderBy:task.filter.sortBy:task.sortReverse" class="cursor">
+                        <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * task.pageSize | limitTo: task.pageSize" class="cursor">
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-bind="jobHistory.taskId"></span>
                             </td>

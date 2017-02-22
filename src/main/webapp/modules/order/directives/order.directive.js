@@ -185,8 +185,8 @@
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
                     arrangeItems();
-                    //scope.jobChainData = angular.copy(scope.jobChain);
-                   //  checkForEndNodes(0);
+                    
+                   
                 });
 
                 function arrangeItems() {
@@ -201,7 +201,7 @@
                         if (item.nextNode) {
                             isFirstNode = true;
                         }
-                        angular.forEach(scope.jobChain.nodes, function (item2, index2) {
+                        angular.forEach(scope.jobChain.nodes, function (item2) {
                             if (item2.nextNode == item.name || item2.errorNode == item.name) {
                                 isFirstNode = false;
                             }
@@ -229,28 +229,22 @@
                             return;
                         }
 
-                       // console.log("For item " + item.name + " next " + item.nextNode);
-
                         angular.forEach(jobChainData2.nodes, function (item2, index2) {
 
                             if (item.nextNode == item2.name) {
-                                // console.log("Found next " + item2.name);
                                 gotNext = true;
                                 var cursor = index;
                                 if (splitRegex.test(item.name)) {
-                                    if(!item.position){
+                                    if(!item.position || item.position==0){
+                                        console.log("Item.position found for "+item.name);
                                         item.position=1;
                                     }
-
                                     cursor = cursor + item.position;
-                                    //console.log("Cursor " + cursor);
                                 } else {
                                     cursor++;
                                 }
                                 scope.jobChainData.nodes.splice(cursor, 0, angular.copy(item2));
                                 jobChainData2.nodes.splice(index2, 1);
-
-
                             }
 
                         });
@@ -260,8 +254,7 @@
                             index++;
                             getNext(index);
                         } else {
-                            //console.log("previous 00 " + JSON.stringify(scope.jobChainData));
-                            checkForSplittedNodes(0);
+                            checkForSplittedNodes();
                         }
 
 
@@ -275,53 +268,40 @@
                             var position = 0;
                             var removables = [];
                             angular.forEach(jobChainData2.nodes, function (item2, index2) {
-                                // console.log("Node "+item2.name);
                                 if (splitRegex.test(item2.name) && item.name == splitRegex.exec(item2.name)[1]) {
-                                    // console.log("Found Splitted " + item2.name);
                                     gotSplitted = true;
                                     proceed = false;
                                     position++;
                                     item2.position = position;
                                     scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(item2));
                                     removables.push(index2);
-
                                 }
-
-
                             });
                             for (var i = 0; i < removables.length; i++) {
                                 jobChainData2.nodes.splice(removables[i] - i, 1);
                             }
                             if (gotSplitted) {
-                                //console.log("After splitted "+JSON.stringify(scope.jobChainData));
                                 getNext(index + 1);
                             }
-                        })
-
+                        });
                         if (proceed) {
                             if (jobChainData2.nodes && jobChainData2.nodes.length > 0) {
                                 scope.jobChainData.nodes = scope.jobChainData.nodes.concat(jobChainData2.nodes);
                             }
                             checkForEndNodes(0);
                         }
-
                     }
-
-
                 }
-
 
                 function checkForEndNodes(index) {
                     if (scope.jobChainData.endNodes) {
                         var endNode = scope.jobChainData.endNodes[index];
                         if (endNode) {
-                            angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
-                                var found = false;
+                            angular.forEach(scope.jobChainData.nodes, function (item2) {
                                 if (item2 && (item2.name == endNode.name)) {
                                     scope.jobChainData.endNodes.splice(index, 1);
                                     index--;
                                 }
-
                             });
                         }
                     }
@@ -330,20 +310,16 @@
                         checkForEndNodes(index)
                     } else {
                         findErrorNodes();
-
                     }
                 }
 
                 function findErrorNodes() {
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
-                        angular.forEach(scope.jobChainData.nodes, function (item2, index2) {
-
+                        angular.forEach(scope.jobChainData.nodes, function (item2) {
                             if (item2.errorNode == item.name) {
-                                // console.log("This is error node 02" + item.name);
                                 scope.jobChainData.nodes[index].isErrorNode = true;
                             }
                             if (item2.nextNode == item.name && item2.level <= item.level) {
-                                // console.log("This is error node 02" + item.name);
                                 scope.jobChainData.nodes[index].previous = item.name;
                             }
                         });
@@ -354,7 +330,6 @@
                 }
 
                 function draw() {
-                    //console.log("JobChainData "+JSON.stringify(scope.jobChainData));
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
@@ -417,8 +392,8 @@
                             '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
                         } else {
-                            var last = scope.coords.length - 1;
-                            //left = scope.coords[last].left + margin + rectW;
+
+                            
                         }
 
                         scope.coords[index] = {};
@@ -435,17 +410,17 @@
                         }
 
                         if (splitRegex.test(item.name)) {
-                            console.log("Splitted node "+item.name);
+                            
                             isSplitted = true;
                             scope.coords[index].name = splitRegex.exec(item.name)[2];
                             scope.coords[index].isParallel = true;
-                            scope.coords.map(function (obj) {
+                            angular.forEach(scope.coords,function (obj) {
 
                                 if (obj.actual == splitRegex.exec(item.name)[1]) {
                                     obj.parallels = obj.parallels + 1;
                                     scope.coords[index].parent = obj.actual;
                                     scope.coords[index].left = obj.left + rectW + margin;
-                                    console.log('parent '+splitRegex.exec(item.name)[1]+' left '+scope.coords[index].left);
+                                    //
                                     if (obj.parallels == 1) {
                                         scope.coords[index].top = obj.top - rectH / 2 - splitMargin / 2;
 
@@ -463,10 +438,9 @@
                                 }
                             })
                         } else if (index > 0) {
-                            console.log("Non splitted node "+item.name);
+                            
                             var matched = false;
-                            var mIndex = -1;
-                            scope.coords.map(function (obj) {
+                            angular.forEach(scope.coords,function (obj) {
 
                                 if (obj.next == item.name && scope.coords[index].left <= obj.left) {
                                     scope.coords[index].left = obj.left + margin + rectW;
@@ -482,7 +456,7 @@
                             var errorNodeCls = '';
                             if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
 
-                                scope.coords.map(function (obj) {
+                                angular.forEach(scope.coords,function (obj) {
                                     if (scope.coords[index].name == obj.error) {
                                         scope.coords[index].left = obj.left + rectW + margin;
                                         scope.coords[index].top = obj.top + rectH + splitMargin;
@@ -500,7 +474,7 @@
                         if (item.job) {
                             scope.jobPaths.push(item.job.path);
                             jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
-                            //jobName = jobName.length > 32 ? jobName.substring(0, 32) + '..' : jobName;
+                            
                             jobName = '<span>' + jobName + '</span>';
                             host = '<div class="text-left text-muted p-t-xs ">' +
                             '<span id="' + 'ppc' + item.name + '" class="hide"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
@@ -512,7 +486,7 @@
 
                         var nodeName = item.name;
 
-                        // nodeName = nodeName.length > 26 ? nodeName.substring(0, 26) + '..' : nodeName;
+                        
 
                         var chkId = 'chk' + item.name.replace(':', '__');
 
@@ -596,7 +570,7 @@
                         scope.coords[length].top = top + rectH + 50 + rectH / 2 - avatarW / 2;
 
 
-                        scope.coords.map(function (obj) {
+                        angular.forEach(scope.coords,function (obj) {
                             if (left < obj.left) {
                                 left = obj.left;
                             }
@@ -616,7 +590,7 @@
 
                                 endErrorNodes++;
                                 scope.coords[length+index].top = top + rectH + 50 + rectH  - avatarW / 2;
-                                scope.coords.map(function (obj) {
+                                angular.forEach(scope.coords,function (obj) {
                                     if (scope.coords[length + index].top < obj.top + rectH && scope.coords[length + index].name !== obj.name) {
                                         scope.coords[length + index].top = obj.top + rectH;
                                         labelTop = scope.coords[length + index].top - 25;
@@ -637,7 +611,7 @@
                                 endSuccessNodes++;
                                 scope.coords[length + index].top = avatarTop;
                                 if (endSuccessNodes > 1) {
-                                    scope.coords.map(function (obj) {
+                                    angular.forEach(scope.coords,function (obj) {
 
                                         if (scope.coords[length + index].top < obj.top && scope.coords[length+index].name !==obj.name) {
                                             scope.coords[length + index].top = obj.top;
@@ -679,7 +653,7 @@
                     function checkHeight() {
                         var mainContainer = document.getElementById("mainContainer");
                         var maxUTop = iTop;
-                        scope.coords.map(function (obj) {
+                        angular.forEach(scope.coords,function (obj) {
                             if (maxUTop > obj.top) {
                                 maxUTop = obj.top;
                             }
@@ -936,7 +910,7 @@
                             pDiv = undefined;
 
                             if (index > 0 && splitRegex.test(item.name)) {
-                                vm.coords.map(function (obj) {
+                                angular.forEach(vm.coords,function (obj) {
                                     if (obj.actual == item.name) {
                                         pDiv = document.getElementById(obj.parent);
                                     }
@@ -1046,7 +1020,7 @@
 
                                 } else {
                                     var parallels = 0;
-                                    vm.coords.map(function (obj) {
+                                    angular.forEach(vm.coords,function (obj) {
                                         if (obj.actual == item.name) {
                                             parallels = obj.parallels;
                                         }
@@ -1101,7 +1075,7 @@
                                     var node2 = errNode;
                                     if (div1.offsetLeft > errNode.offsetLeft) {
                                         node1 = errNode;
-                                        var node2 = div1;
+                                        node2 = div1;
                                     }
                                     var top = node1.offsetTop + node1.clientHeight + vm.border;
                                     var left = node1.offsetLeft + node1.clientWidth / 2;
@@ -1269,7 +1243,7 @@
                     }
 
 
-                    vm.$on('reloadJobChain', function (event, args) {
+                    vm.$on('reloadJobChain', function () {
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
                         if (vm.jobChainData)
                             var temp = vm.jobChainData.nodes;
@@ -1297,7 +1271,7 @@
                         if (!mainContainer) {
                             return;
                         }
-                        angular.forEach(vm.jobChainData.nodes, function (node, index) {
+                        angular.forEach(vm.jobChainData.nodes, function (node) {
                             nodeCount++;
                             var label = document.getElementById('lbl-order-' + node.name);
 
@@ -1343,7 +1317,7 @@
                         var diff;
                         vm.calWidth = function (order, state) {
                             var container = document.getElementById('lbl-order-' + state);
-                            diff = document.getElementById('diff-' + order).innerHTML;
+                            diff = document.getElementById('diff-' + order);
                             if(container && diff && diff.innerHTML) {
                                 diff = diff.innerHTML;
                                 if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {

@@ -138,9 +138,7 @@
                                         </label>
                                         <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start}">
                                             <span uib-tooltip="{{order.title}}" >{{order.orderId}}</span></div>
-                                        <div class="btn-group dropdown pull-right abt-dropdown " ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
-                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
-                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
+                                        <div class="btn-group dropdown pull-right abt-dropdown " >
                                             <a href class=" more-option text-black-lt" data-toggle="dropdown">
                                                 <i class="text fa fa-ellipsis-h"></i></a>
                                             <div class="dropdown-menu dropdown-ac dropdown-more">
@@ -176,6 +174,7 @@
                                                    ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                 <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                    ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+                                                <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                     </div>
@@ -283,7 +282,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="order in allOrders | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" ng-class="{'light-bg':showLogPanel == order}">
+                            <tbody ng-repeat="order in allOrders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize" ng-class="{'light-bg':showLogPanel == order}">
                                 <tr>
                                     <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                         <label class="md-check">
@@ -317,9 +316,7 @@
                                             <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                         <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                     </td>
-                                    <td class="noExl" ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
-                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
-                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
+                                    <td class="noExl" ng-if="permission.Order.view.configuration">
                                         <div class="btn-group dropdown ">
                                             <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                 class="fa fa-ellipsis-h"></i></button>
@@ -357,6 +354,7 @@
                                                 <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                    ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                 <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
+                                                <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                     </td>

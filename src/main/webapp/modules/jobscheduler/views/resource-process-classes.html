@@ -38,7 +38,7 @@
                                     <span class="text" ng-bind="processClass.name"></span>
                                 </span>
                             </div>
-                            <div class="btn-group dropdown pull-right abt-dropdown hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
+                            <div class="btn-group dropdown pull-right abt-dropdown">
                                 <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
                                         class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
@@ -98,7 +98,7 @@
                             <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
                             <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
                         </td>
-                        <td  class="hide"  ng-class="{show:permission.ProcessClass.view.configuration}">
+                        <td>
                              <div class="btn-group dropdown">
                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                      <i class="fa fa-ellipsis-h"></i></button>

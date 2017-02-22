@@ -1015,9 +1015,24 @@
         };
 
         function substitute(schedule) {
-            ScheduleService.substitute(schedule, $scope.schedulerIds.selected).then(function (res) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            schedules.schedule = schedule.path;
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog = {};
+            if (vm.comments.comment) {
+                schedules.auditLog.comment = vm.comments.comment;
+            }
 
-            });
+            if (vm.comments.timeSpent) {
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            ScheduleService.setRunTime(schedules);
         }
 
         vm.substitute = function (schedule) {
@@ -1865,7 +1880,7 @@
     }
 
 
-    ResourceInfoCtrl.$inject=['$scope','$rootScope','$stateParams','$state','ResourceService','ScheduleService','JobSchedulerService','$uibModal']
+    ResourceInfoCtrl.$inject=['$scope','$rootScope','$stateParams','$state','ResourceService','ScheduleService','JobSchedulerService','$uibModal'];
     function ResourceInfoCtrl($scope,$rootScope,$stateParams,$state,ResourceService,ScheduleService,JobSchedulerService,$uibModal){
         var vm = $scope;
         vm.checkSchedulerId();
@@ -2006,10 +2021,25 @@
             });
         };
 
-         function substitute(schedule) {
-            ScheduleService.substitute(schedule, $scope.schedulerIds.selected).then(function (res) {
+   function substitute(schedule) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            schedules.schedule = schedule.path;
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog = {};
+            if (vm.comments.comment) {
+                schedules.auditLog.comment = vm.comments.comment;
+            }
 
-            });
+            if (vm.comments.timeSpent) {
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            ScheduleService.setRunTime(schedules);
         }
 
         vm.substitute = function (schedule) {
@@ -3767,6 +3797,8 @@
         };
 
         vm.editFilter = function (filter) {
+vm.action = 'edit';
+                vm.isUnique = true;
 
             UserService.configuration(filter).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
@@ -3794,6 +3826,50 @@
                 configObj.configurationItem = JSON.stringify(vm.dailyPlanFilter);
                 configObj.name = filter.name;
                 configObj.shared = vm.dailyPlanFilter.shared;
+                UserService.saveConfiguration(configObj);
+
+            }, function () {
+
+            });
+        };
+
+        vm.copyFilter = function (filter) {
+                vm.action = 'copy';
+                vm.isUnique = true;
+            UserService.configuration(filter).then(function (conf) {
+                vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.dailyPlanFilter.shared = filter.shared;
+                vm.dailyPlanFilter.name = vm.checkCopyName(vm.dailyPlanFilterList, filter.name);
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
+                controller: 'DialogCtrl',
+                size: 'lg',
+                scope: vm
+            });
+            modalInstance.result.then(function () {
+
+                if (vm.dailyPlanFilter.radio == 'current') {
+                    vm.dailyPlanFilter.fromDate = undefined;
+                    vm.dailyPlanFilter.fromTime = undefined;
+                    vm.dailyPlanFilter.toDate = undefined;
+                    vm.dailyPlanFilter.toTime = undefined;
+                    vm.dailyPlanFilter.planned = undefined;
+                } else if (vm.dailyPlanFilter.radio == 'planned') {
+                    vm.dailyPlanFilter.state = undefined;
+                }
+
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.objectType = "DAILYPLAN";
+                configObj.name = vm.dailyPlanFilter.name;
+                configObj.shared = vm.dailyPlanFilter.shared;
+
+                vm.dailyPlanFilterList.push(configObj);
+                configObj.configurationItem = JSON.stringify(vm.dailyPlanFilter);
                 UserService.saveConfiguration(configObj);
 
             }, function () {

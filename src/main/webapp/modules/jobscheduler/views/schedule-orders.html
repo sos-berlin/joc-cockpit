@@ -8,7 +8,7 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.orders.length>0}" ng-if="permission.Schedule.edit">
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="editSchedule(schedule)"><i class="fa fa-pencil"></i> <span class="hidden-sm-down" translate>button.editSchedule</span></button>
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="substitute(schedule)"><i class="fa fa-repeat"></i> <span class="hidden-sm-down" translate>button.substitute</span></button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="substitute(schedule)"><i class="fa fa-repeat"></i> <span class="hidden-sm-down" translate>button.addSubstitute</span></button>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.orders.length>0}">
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
@@ -200,7 +200,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="order in orders | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" ng-class="{'light-bg':showLogPanel == order}">
+                            <tbody ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize" ng-class="{'light-bg':showLogPanel == order}">
                                 <tr>
                                     <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                         <label class="md-check">
@@ -217,7 +217,9 @@
                                         <i class="text-muted">{{:: order.title}}</i></span>
                                     </td>
                                     <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
-                                    <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                    <td>
+                                        <a class="label" ng-click="showLogWindow(order)"  ng-if="order.historyId && permission.Order.view.orderLog" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
+                                        <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
                                         <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
                                     </td>
                                     <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
@@ -232,9 +234,7 @@
                                             <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                         <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                     </td>
-                                    <td class="noExl" ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
-                                            || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
-                                            || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
+                                    <td class="noExl">
                                         <div class="btn-group dropdown ">
                                             <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                 class="fa fa-ellipsis-h"></i></button>
@@ -272,6 +272,7 @@
                                                 <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
                                                    ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                 <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
+                                                <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                     </td>

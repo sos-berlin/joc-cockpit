@@ -46,8 +46,8 @@
         };
     }
 
-    ngSpinnerBar.$inject = ["$rootScope", "$state", "SOSAuth"];
-    function ngSpinnerBar($rootScope, $state, SOSAuth) {
+    ngSpinnerBar.$inject = ["$rootScope", "$state"];
+    function ngSpinnerBar($rootScope, $state) {
         return {
             link: function (scope, element) {
                 // by default hide the spinner bar
@@ -56,7 +56,7 @@
                 // display the spinner bar whenever the route changes(the content part started loading)
                 $rootScope.$on('$stateChangeStart', function (event, toState, toParam, fromState) {
                     element.removeClass('hide'); // show spinner bar
-
+                     startTime = new Date();
                     if (toState.url === '/job_chain_detail') {
                         $state.go('app.jobChainDetails.orders');
                         event.preventDefault();
@@ -72,7 +72,6 @@
                         return;
                     }
                     if ($rootScope.clientLogFilter.isEnable) {
-                        startTime = new Date();
                         var info = {
                             message: 'START LOADING ' + toState.url,
                             logTime: startTime,
@@ -85,12 +84,11 @@
                 // hide the spinner bar on rounte change success(after the content loaded)
                 $rootScope.$on('$stateChangeSuccess', function (event, toState) {
                     element.addClass('hide'); // hide spinner bar
-
                     $('body, html').animate({
                         scrollTop: 0
                     }, 1000);
                     element.addClass('hide'); // hide spinner bar
-                    if ($rootScope.clientLogFilter.isEnable) {
+                    if ($rootScope.clientLogFilter.isEnable && startTime) {
                         endTime = new Date();
                         var info = {
                             message: 'ELAPSED TIME FOR UPDATE ' + toState.url + ' ' + ((endTime.getTime() - startTime.getTime()) / 1000) + 's',
@@ -343,10 +341,6 @@
                     shape: attrs.shape,
                     alphabetcolors: scope.alphabetcolors || defaultAvatarSettings.alphabetcolors
                 };
-
-                if (attrs.alphabetcolors) {
-                    console.log(params.alphabetcolors.length);
-                }
 
                 var c = params.data.substr(0, params.charCount).toUpperCase();
 

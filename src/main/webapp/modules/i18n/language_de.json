@@ -900,5 +900,9 @@
   "breadcrumb.processClass": "Prozessklasse",
   "button.downloadLog": "Main Log herunterladen",
   "label.maxNumberOfAuditLogEntries": "Max. Anzahl Einträge im Audit Log",
-  "label.JOCConfiguration": "Geteilte Personalisierung"
+  "label.JOCConfiguration": "Geteilte Personalisierung",
+  "label.copyFilter": "Copy Filter",
+  "button.copyFilter": "Copy Customization",
+  "button.copy": "Copy",
+  "button.addSubstitute": "Add Substitute"
 }

@@ -38,7 +38,7 @@
                                     <span ng-bind="lock.name"></span>
                                 </span>
                             </div>
-                            <div class="btn-group dropdown pull-right abt-dropdown hide"  ng-class="{show:permission.Lock.view.configuration}">
+                            <div class="btn-group dropdown pull-right abt-dropdown">
                                 <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
                                         class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
@@ -106,7 +106,7 @@
                             <td ng-bind="lock.maxNonExclusive || '0'"></td>
                             <td ng-bind="lock.holders.tasks.length || '0'"></td>
                             <td ng-bind="lock.queue.length || '0'"></td>
-                            <td class="hide"  ng-class="{show:permission.Lock.view.configuration}">
+                            <td>
                                 <div class="btn-group dropdown">
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i></button>

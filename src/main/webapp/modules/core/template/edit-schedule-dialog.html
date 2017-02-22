@@ -140,7 +140,7 @@
                                     <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                                     <div class="col-sm-6">
                                         <input class="form-control input-date" ng-focus="error.validFromRequired=false;error.validDate=false" name="date1" ng-model="from.date" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                                        <input  class="form-control input-time" ng-model="from.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                                        <input ng-disabled="!from.date" class="form-control input-time" ng-model="from.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
                                         <div class="help-block text-danger" ng-if="error.validFromRequired">
                                            <div translate>message.validFromError</div>
                                        </div>
@@ -150,7 +150,7 @@
                                     <label class="col-sm-3 form-control-label" translate>label.validTo</label>
                                     <div class="col-sm-6">
                                         <input class="form-control input-date" ng-focus="error.validToRequired=false;error.validDate=false" name="date2" ng-model="to.date" data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{from.date}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                                        <input class="form-control input-time" ng-model="to.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                                        <input ng-disabled="!to.date" class="form-control input-time" ng-model="to.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
                                         <div class="help-block text-danger" ng-if="error.validToRequired">
                                            <div translate>message.validToError</div>
                                        </div>

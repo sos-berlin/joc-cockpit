@@ -62,7 +62,7 @@
                             $window.sessionStorage.$SOS$NAVIGATEOBJ = null;
                         }
                     } catch (e) {
-                        console.log(e)
+                        console.log(e);
                     }
                 }
                 deferred.resolve();

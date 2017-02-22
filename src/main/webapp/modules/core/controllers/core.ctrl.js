@@ -15,8 +15,8 @@
         .controller('CommonLogCtrl', CommonLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService',  '$state', 'UserService'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService,  $state, UserService) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService','$timeout'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService,$timeout) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -79,9 +79,6 @@
         };
         vm.redirectToNewTab = function () {
             $window.open('#!/client-logs', '_blank');
-        };
-        vm.copyToClipboard = function(){
-            clipboard.copyText(JSON.stringify(vm.clientLogs));
         };
 
         vm.selectedScheduler = {};
@@ -169,6 +166,27 @@
             }
         });
 
+        vm.checkCopyName = function (list, name) {
+            var _temp = '';
+            if (/.+\((\d+)\)$/.test(name)) {
+                _temp = name;
+            } else {
+                _temp = name + '(1)';
+            }
+            function recursion() {
+                for (var j = 0; j < list.length; j++) {
+                    if (list[j].name == _temp) {
+                        _temp = _temp.replace(/\(\d+\)$/, '(' + (parseInt(/\((\d+)\)$/.exec(_temp)[1]) + 1) + ')');
+                        recursion();
+                    }
+                }
+            }
+
+            recursion();
+
+            return _temp;
+        };
+
         vm.username = SOSAuth.currentUserData;
         setPermission();
         setIds();
@@ -237,9 +255,7 @@
             $window.localStorage.log_window_y = 200;
         }
 
-        var newWindow = null, windowWidth = '1000', windowHeight = '200', windowTop = '200', windowLeft = '50',
-            windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no',
-            popUpBlocker = false;
+        var newWindow = null, windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
 
         $window.onunload = refreshParent;
         function refreshParent() {
@@ -252,7 +268,8 @@
             }
         }
 
-        vm.showLogWindow = function (order, task) {
+        var t1;
+        vm.showLogWindow = function (order, task, job) {
             if (!order && !task) {
                 return;
             }
@@ -269,26 +286,25 @@
 
                 var url = null;
                 try {
-                    if (!popUpBlocker && (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true)) {
+                    if (typeof newWindow == 'undefined' || newWindow == null || newWindow.closed == true) {
 
-                        if (order && order.historyId && order.orderId)
+                        if (order && order.historyId && order.orderId) {
                             url = '#!/show_log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
-                        else if (task && task.taskId)
-                            url = '#!/show_log?taskId=' + task.taskId + '&job=' + task.job;
-                        else {
+                        } else if (task && task.taskId) {
+                            if (task.job)
+                                url = '#!/show_log?taskId=' + task.taskId + '&job=' + task.job;
+                            else
+                                url = '#!/show_log?taskId=' + task.taskId + '&job=' + task.job;
+
+                        } else {
                             return;
                         }
-
-                        newWindow = window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
-                        calWindowSize();
+                        t1 = $timeout(function () {
+                            newWindow = window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
+                            calWindowSize();
+                        }, 0);
                     }
-                    if (typeof newWindow == 'undefined' || newWindow == null) {
-                        popUpBlocker = true;
-                        throw new Error('PopUp Blocker is active');
-                    }
-
                 } catch (e) {
-                    popUpBlocker = true;
                     throw new Error(e.message);
                 }
             } else {
@@ -296,9 +312,11 @@
                 if (order && order.historyId && order.orderId) {
                     url = '#!/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
                 } else if (task && task.taskId) {
-                    url = '#!/job/log/' + task.taskId + '?job=' + task.job;
+                    url = '#!/job/log/' + task.taskId + '?job=' + task.job ? task.job : job;
                 }
-                window.open(url, '_blank');
+                t1 = $timeout(function () {
+                    window.open(url, '_blank');
+                }, 0);
             }
         };
 
@@ -413,8 +431,7 @@
                 link = host + 'schedule?path=' + path;
             }
             if (link !== '') {
-
-                clipboard.copyText(link+'&scheduler_id='+ vm.schedulerIds.selected);
+                clipboard.copyText(link + '&scheduler_id=' + vm.schedulerIds.selected);
             }
         };
 
@@ -447,21 +464,23 @@
             }
         });
 
-        vm.saveSettingConf= function(){
+        vm.saveSettingConf = function () {
             var configObj = {};
-                configObj.jobschedulerId = vm.schedulerIds.selected;
-                configObj.account = vm.permission.user;
-                configObj.configurationType = "SETTING";
-                configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
-                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
-                UserService.saveConfiguration(configObj);
+            configObj.jobschedulerId = vm.schedulerIds.selected;
+            configObj.account = vm.permission.user;
+            configObj.configurationType = "SETTING";
+            configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
+            $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+            UserService.saveConfiguration(configObj);
         };
+
         $scope.$on('$viewContentLoaded', function () {
             vm.calculateHeight();
         });
-
         $scope.$on('$destroy', function () {
             watcher();
+            if (t1)
+                $timeout.cancel(t1);
         });
     }
 
@@ -652,9 +671,9 @@
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParam, fromState) {
 
-            if(toState.name != 'app.dashboard' && fromState.name=='login') {
-                JobSchedulerService.getClusterMembersP({jobschedulerId: $scope.schedulerIds.selected}).then(function(res){
-                     getScheduleDetail(res);
+            if (toState.name != 'app.dashboard' && fromState.name == 'login') {
+                JobSchedulerService.getClusterMembersP({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                    getScheduleDetail(res);
                 });
             }
             vm.checkNavHeader();
@@ -1096,20 +1115,20 @@
         vm.ok = function () {
 
             if (vm.paramObject) {
-                var indexArr =[];
+                var indexArr = [];
                 angular.forEach(vm.paramObject.params, function (value, index) {
-                    if ((value.name =='' || value.name ==null || value.name ==undefined) && (value.value =='' || value.value ==null || value.value ==undefined)) {
+                    if ((value.name == '' || value.name == null || value.name == undefined) && (value.value == '' || value.value == null || value.value == undefined)) {
                         indexArr.push(index)
                     }
                 });
-                if(indexArr.length>0){
-                    angular.forEach(indexArr, function(value, index){
+                if (indexArr.length > 0) {
+                    angular.forEach(indexArr, function (value, index) {
                         vm.paramObject.params.splice(value - index, 1);
                     })
                 }
             }
 
-           vm.error = false;
+            vm.error = false;
             if (vm.required && vm.comments) {
                 if (vm.comments.comment) {
                     $uibModalInstance.close('ok');
@@ -1164,19 +1183,31 @@
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
 
         vm.ok = function () {
+
             vm.logError = false;
             try {
+
                 var dom_document = dom_parser.parseFromString(vm.xml, "text/xml");
                 if (dom_document.documentElement.nodeName == "parsererror") {
                     throw new Error("Error at XML answer: " + dom_document.documentElement.firstChild.nodeValue);
                 } else {
                     if (vm.required) {
                         if (vm.comments.comment) {
+                            if (vm.sch.scheduleName) {
+                                var root = x2js.xml_str2json(vm.schedule.runTime);
+                                root.schedule._name = vm.sch.scheduleName;
+                                vm.schedule.runTime = x2js.json2xml_str(root);
+                            }
                             $uibModalInstance.close('ok');
                         } else {
                             vm.logError = true;
                         }
                     } else {
+                        if (vm.sch.scheduleName) {
+                            var root = x2js.xml_str2json(vm.schedule.runTime);
+                            root.schedule._name = vm.sch.scheduleName;
+                            vm.schedule.runTime = x2js.json2xml_str(root);
+                        }
                         $uibModalInstance.close('ok');
                     }
                 }

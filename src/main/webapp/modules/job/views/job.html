@@ -262,7 +262,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="job in allJobs | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize | orderBy:jobFilters.filter.sortBy:jobFilters.reverse"
+                            <tbody ng-repeat="job in allJobs | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize"
                                 ng-class="{'light-bg':showTaskPanel == job}">
                                 <tr title="{{job.configurationStatus._text | translate}}">
                                     <td class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
@@ -271,26 +271,26 @@
                                         </label>
                                     </td>
                                     <td>
-                                          <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name"></span>
-                                            <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
-                                            <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask" ng-repeat="task in job.runningTasks">
-                                                <span class="text-xs">
-                                                    <span translate>label.task</span>:
-                                                    <span class="text-primary">{{task.taskId}}</span> -
-                                                    <span class="text-primary" translate>label.since</span> <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span>
-                                                </span>
-                                                <div class="btn-group dropdown" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
-                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                                            class="fa fa-ellipsis-h"></i></button>
-                                                    <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
-                                                        <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
-                                                        <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,job.path)" translate>button.end</a>
-                                                        <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,job.path)" translate>button.killImmediately</a>
-                                                        <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,job.path)" translate>button.terminate</a>
-                                                        <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,job.path)" translate>button.terminateWithTimeout</a>
-                                                    </div>
+                                        <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name"></span>
+                                        <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
+                                        <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask" ng-repeat="task in job.runningTasks">
+                                            <span class="text-xs">
+                                                <span translate>label.task</span>:
+                                                <span class="text-primary">{{task.taskId}}</span> -
+                                                <span class="text-primary" translate>label.since</span> <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span>
+                                            </span>
+                                            <div class="btn-group dropdown" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
+                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                        class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
+                                                    <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,job.path)" translate>button.viewLog</a>
+                                                    <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,job.path)" translate>button.end</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,job.path)" translate>button.killImmediately</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,job.path)" translate>button.terminate</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(null,task,job.path)" translate>button.terminateWithTimeout</a>
                                                 </div>
                                             </div>
+                                        </div>
                                         </td>
                                         <td ng-bind="job.path"></td>
                                         <td>
@@ -506,7 +506,11 @@
                                                         <tr ng-repeat="order in queueOrders.orderQueue">
                                                             <td>{{order.orderId}}</td>
                                                             <td><a class="text-hover-primary" ng-click="showJonChain(order.jobChain)">{{order.jobChain}}</a></td>
-                                                            <td><span class="label" ng-class="bgColorFunction(order.processingState.severity)">{{order.processingState._text | translate}}</span></td>
+                                                            <td>
+                                                                <a class="label" ng-click="showLogWindow(order)"  ng-if="order.historyId && permission.Order.view.orderLog" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
+                                                                <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                                                <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
+                                                            </td>
                                                             <td> <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
                                                                 <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span></td>
@@ -533,24 +537,23 @@
                                                         <th translate>label.processSteps</th>
                                                         <th translate>label.runningSince</th>
                                                         <th ng-if="showTaskPanel.isOrderJob!=true" translate>label.enqueuedAt</th>
-
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="task in showTaskPanel.runningTasks">
-                                                            <td>{{task.pid}}</td>
-                                                            <td >{{task.taskId}}</td>
-                                                            <td >{{task._cause | translate}}</td>
-                                                            <td ng-if="showTaskPanel.isOrderJob==true">{{task.order.orderId}}</td>
-                                                            <td >{{task.steps}}</td>
-                                                            <td >{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
-                                                            <td ng-if="showTaskPanel.isOrderJob!=true">{{task.enqueued | stringToDate}} <span class="text-success">(<span time="{{task.enqueued}}"></span>)</span></td>
+                                                        <tr ng-repeat="task in showTaskPanel.runningTasks" class="cursor">
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.pid}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.taskId}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task._cause | translate}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)" ng-if="showTaskPanel.isOrderJob==true">{{task.order.orderId}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.steps}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)" ng-if="showTaskPanel.isOrderJob!=true">{{task.enqueued | stringToDate}} <span class="text-success">(<span time="{{task.enqueued}}"></span>)</span></td>
                                                             <td width="40" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
                                                                 <div class="btn-group dropdown">
                                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
                                                                     <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
-                                                                        <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
+                                                                        <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,showTaskPanel.path)" translate>button.viewLog</a>
                                                                         <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTask(task,showTaskPanel.path)" translate>button.terminate</a>

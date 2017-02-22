@@ -1,14 +1,23 @@
 <div ng-click="refreshSession()">
     <div class="modal-header primary">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
-        <h4 class="modal-title"><span translate>label.updateFilter</span> : {{historyFilter.name}}</h4>
+        <h4 class="modal-title">
+            <span ng-if="action == 'edit'" translate>label.updateFilter</span>
+            <span ng-if="action == 'copy'" translate>label.copyFilter</span> : {{historyFilter.name}}</h4>
     </div>
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                <label class="col-sm-4 form-control-label" translate>label.filterName</label>
                <div class=" col-sm-6">
-                   <input type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" disabled>
+                   <input ng-blur="checkFilterName()" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="historyFilter.name" ng-disabled="action == 'edit'">
+                   <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                        <div ng-message="required" translate>message.requiredError</div>
+                        <div ng-message="maxlength" translate>message.tooLongError</div>
+                   </div>
+                   <div class="help-block text-danger" ng-if="!isUnique">
+                       <div translate>message.uniqueError</div>
+                   </div>
                </div>
             </div>
 
@@ -102,8 +111,9 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid"
-                        translate>button.updateFilter
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid">
+                    <span ng-if="action == 'edit'" translate>button.updateFilter</span>
+                    <span ng-if="action == 'copy'" translate>button.copyFilter</span>
                 </button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>

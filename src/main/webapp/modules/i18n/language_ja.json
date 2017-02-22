@@ -361,7 +361,6 @@
   "label.jobSchedulerUniversalAgent": "JobSchedulerユニバーサルエージェント",
   "label.viewConfiguration": "ジョブ定義表示",
   "label.viewHistory": "履歴表示",
-  "label.viewOrderlog": "オーダーログ表示",
   "label.changeStartAndEndNode": "開始・終了ノードの編集",
   "label.changeTimeForAdhocOrder": "アドホックオーダーの時間編集",
   "label.changeParameters": "パラメータ編集",
@@ -899,7 +898,11 @@
   "breadcrumb.lock": "ロック",
   "breadcrumb.agentCluster": "エージェントクラスタ",
   "breadcrumb.processClass": "プロセスクラス",
-  "button.downloadLog":"Download Log",
+  "button.downloadLog": "Download Log",
   "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries",
-  "label.JOCConfiguration": "Shared Customization"
+  "label.JOCConfiguration": "Shared Customization",
+  "label.copyFilter": "Copy Filter",
+  "button.copyFilter": "Copy Customization",
+  "button.copy": "Copy",
+  "button.addSubstitute": "Add Substitute"
 }

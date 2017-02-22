@@ -131,16 +131,6 @@
                 });
                 return deferred.promise;
             },
-            substitute: function (substitute,jobschedulerId) {
-                var deferred = $q.defer();
-                var Schedule = $resource('schedules/substitute');
-                Schedule.save({jobschedulerId:jobschedulerId},function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             getConfiguration: function (path,jobschedulerId) {
                 var deferred = $q.defer();
                 var Schedule = $resource('schedule/configuration');
@@ -465,3 +455,4 @@
     }
 
 })();
+

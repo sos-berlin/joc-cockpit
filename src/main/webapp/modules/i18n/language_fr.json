@@ -900,5 +900,9 @@
   "breadcrumb.processClass": "Classe de Processus",
   "button.downloadLog": "Télécharger le Main Log",
   "label.maxNumberOfAuditLogEntries": "Nombre max. des entrées dans le Journal d'Audit",
-  "label.JOCConfiguration": "Personnalisation Partagé"
+  "label.JOCConfiguration": "Personnalisation Partagé",
+  "label.copyFilter": "Copy Filter",
+  "button.copyFilter": "Copy Customization",
+  "button.copy": "Copy",
+  "button.addSubstitute": "Add Substitute"
 }
