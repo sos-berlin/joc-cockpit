@@ -541,7 +541,7 @@
   "label.enterTimeout": "Entre l'expiration",
   "label.dailyPlanOverview": "Résumé du Plan Quotidien",
   "label.fitToScreen": "S'adapter à l'écran",
-  "label.addSubstituteFor": "Ajouter un substitut pour",
+  "label.addSubstituteFor": "Ajouter un Substitut pour",
   "label.enterFolder": "Dossier",
   "label.enterScheduleName": "Nom de la Programmation",
   "label.waitingOrders": "Ordres en attente",
@@ -901,8 +901,8 @@
   "button.downloadLog": "Télécharger le Main Log",
   "label.maxNumberOfAuditLogEntries": "Nombre max. des entrées dans le Journal d'Audit",
   "label.JOCConfiguration": "Personnalisation Partagé",
-  "label.copyFilter": "Copy Filter",
-  "button.copyFilter": "Copy Customization",
-  "button.copy": "Copy",
-  "button.addSubstitute": "Add Substitute"
+  "label.copyFilter": "Copier le filtre",
+  "button.copyFilter": "Copier la Personnalisation",
+  "button.copy": "Copier",
+  "button.addSubstitute": "Ajouter un Substitut"
 }

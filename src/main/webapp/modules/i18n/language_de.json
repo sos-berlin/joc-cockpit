@@ -901,8 +901,8 @@
   "button.downloadLog": "Main Log herunterladen",
   "label.maxNumberOfAuditLogEntries": "Max. Anzahl Einträge im Audit Log",
   "label.JOCConfiguration": "Geteilte Personalisierung",
-  "label.copyFilter": "Copy Filter",
-  "button.copyFilter": "Copy Customization",
-  "button.copy": "Copy",
-  "button.addSubstitute": "Add Substitute"
+  "label.copyFilter": "Filter kopieren",
+  "button.copyFilter": "Personalisierung kopieren",
+  "button.copy": "Kopieren",
+  "button.addSubstitute": "Ersetzung hinzufügen"
 }
