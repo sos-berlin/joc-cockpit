@@ -1764,13 +1764,11 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 if (vm.savedJobChainFilter.selected == filter.id) {
                     vm.selectedFiltered = vm.jobChainFilter;
                     vm.jobChainFilters.selectedView = true;
                     vm.load();
                 }
-
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
                 configObj.account = filter.account;
@@ -1782,7 +1780,7 @@
                 configObj.shared = vm.jobChainFilter.shared;
 
                 UserService.saveConfiguration(configObj);
-
+                 filter.name = vm.jobChainFilter.name;
             }, function () {
 
             });
@@ -3296,6 +3294,7 @@
                 configObj.name = vm.jobFilter.name;
                 configObj.shared = vm.jobFilter.shared;
                 UserService.saveConfiguration(configObj);
+                filter.name = vm.jobFilter.name;
 
             }, function () {
 

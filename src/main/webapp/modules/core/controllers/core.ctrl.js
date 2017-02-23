@@ -360,8 +360,13 @@
         $window.onunload = refreshParent;
         function refreshParent() {
             try {
-                if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false)
+                if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
+                    $window.localStorage.log_window_wt = newWindow.innerWidth;
+                    $window.localStorage.log_window_ht = newWindow.innerHeight;
+                    $window.localStorage.log_window_x = newWindow.screenX;
+                    $window.localStorage.log_window_y = newWindow.screenY;
                     newWindow.close();
+                }
             }
             catch (x) {
                 console.log(x)
@@ -414,37 +419,29 @@
                 } else if (task && task.taskId) {
                     url = '#!/job/log/' + task.taskId + '?job=' + task.job ? task.job : job;
                 }
-                t1 = $timeout(function () {
-                    window.open(url, '_blank');
-                }, 0);
+                $window.open(url, '_blank');
             }
         };
 
         function calWindowSize() {
-            if (typeof newWindow != 'undefined' && newWindow != null && newWindow.closed == false) {
-                $window.localStorage.log_window_wt = newWindow.innerWidth;
-                $window.localStorage.log_window_ht = newWindow.innerHeight;
-                $window.localStorage.log_window_x = newWindow.screenX;
-                $window.localStorage.log_window_y = newWindow.screenY;
-                if (newWindow) {
-                    try {
-                        newWindow.onbeforeunload = function () {
-                            console.log('close');
-                            $window.localStorage.log_window_wt = newWindow.innerWidth;
-                            $window.localStorage.log_window_ht = newWindow.innerHeight;
-                            $window.localStorage.log_window_x = newWindow.screenX;
-                            $window.localStorage.log_window_y = newWindow.screenY;
-                        };
-                        newWindow.onresize = function () {
-                            console.log('resize');
-                            $window.localStorage.log_window_wt = newWindow.innerWidth;
-                            $window.localStorage.log_window_ht = newWindow.innerHeight;
-                            $window.localStorage.log_window_x = newWindow.screenX;
-                            $window.localStorage.log_window_y = newWindow.screenY;
-                        }
-                    } catch (e) {
-                        console.log(e);
-                    }
+            if (newWindow) {
+                try {
+                    newWindow.onbeforeunload = function () {
+                        console.log('onbeforeunload');
+                        $window.localStorage.log_window_wt = newWindow.innerWidth;
+                        $window.localStorage.log_window_ht = newWindow.innerHeight;
+                        $window.localStorage.log_window_x = newWindow.screenX;
+                        $window.localStorage.log_window_y = newWindow.screenY;
+                        return null;
+                    };
+                    $(newWindow).resize(function () {
+                        $window.localStorage.log_window_wt = newWindow.innerWidth;
+                        $window.localStorage.log_window_ht = newWindow.innerHeight;
+                        $window.localStorage.log_window_x = newWindow.screenX;
+                        $window.localStorage.log_window_y = newWindow.screenY;
+                    });
+                } catch (e) {
+                    console.log(e);
                 }
             }
         }

@@ -401,7 +401,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = jobChain.path;
+                vm.comments.name = vm.jobChain.path;
                 vm.comments.operation = 'Stop Node';
                 vm.comments.type = 'Job Chain';
 
@@ -438,7 +438,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = jobChain.path;
+                vm.comments.name = vm.jobChain.path;
                 vm.comments.operation = 'Unstop Node';
                 vm.comments.type = 'Job Chain';
 
@@ -474,7 +474,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = jobChain.path;
+                vm.comments.name = vm.jobChain.path;
                 vm.comments.operation = 'Skip Node';
                 vm.comments.type = 'Job Chain';
 
@@ -512,7 +512,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = jobChain.path;
+                vm.comments.name = vm.jobChain.path;
                 vm.comments.operation = 'Unskip Node';
                 vm.comments.type = 'Job Chain';
 
@@ -2641,11 +2641,9 @@
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
             }
-
             OrderService.get(obj).then(function (res) {
-
                 var data1 = [];
-                if (data.orders && data.orders.length > 0) {
+                if (data.orders && data.orders.length > 0 && data.orders.length >= res.orders.length) {
                     angular.forEach(data.orders, function (orders) {
 
                         for (var i = 0; i < res.orders.length; i++) {
@@ -2974,7 +2972,7 @@
             OrderService.get(obj).then(function (res) {
 
                 var data = [];
-                if (vm.orders && vm.orders.length > 0) {
+                if (vm.orders && vm.orders.length > 0 && vm.orders.length >= res.orders.length) {
                     angular.forEach(vm.orders, function (order) {
 
                         for (var i = 0; i < res.orders.length; i++) {
@@ -3209,7 +3207,6 @@
                 vm.orderFilter.shared = filter.shared;
                 vm.paths = vm.orderFilter.paths;
                 vm.object.paths = vm.paths;
-
             });
 
             var modalInstance = $uibModal.open({
@@ -3220,7 +3217,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 if (vm.savedOrderFilter.selected == filter.id) {
                     vm.selectedFiltered = vm.orderFilter;
                     vm.orderFilters.selectedView = true;
@@ -3236,7 +3232,7 @@
                 configObj.id = filter.id;
                 configObj.shared = vm.orderFilter.shared;
                 UserService.saveConfiguration(configObj);
-
+                filter.name = vm.orderFilter.name;
             }, function () {
 
             });
@@ -5046,6 +5042,10 @@
         var loadConfig = false, loadIgnoreList = false;
 
         vm.savedIgnoreList = {};
+        vm.savedIgnoreList.jobChains = [];
+        vm.savedIgnoreList.jobs = [];
+        vm.savedIgnoreList.orders = [];
+
 
         vm.historyFilterObj = JSON.parse(SavedFilter.historyFilters) || {};
 
@@ -5076,9 +5076,11 @@
                     vm.orderHistoryFilterList = res.configurations;
                     getOrderCustomizations();
                 }, function () {
+                    vm.orderHistoryFilterList =[];
                     getOrderCustomizations();
                 });
             } else {
+                vm.orderHistoryFilterList =[];
                 getOrderCustomizations();
             }
         }
@@ -5094,9 +5096,11 @@
                     vm.jobHistoryFilterList = res.configurations;
                     getTaskCustomizations();
                 }, function () {
+                    vm.jobHistoryFilterList = [];
                     getTaskCustomizations();
                 });
             } else {
+                vm.jobHistoryFilterList = [];
                 getTaskCustomizations();
             }
         }
@@ -5983,7 +5987,7 @@
                 configObj.name = vm.historyFilter.name;
                 configObj.shared = vm.historyFilter.shared;
                 UserService.saveConfiguration(configObj);
-
+                filter.name = vm.historyFilter.name;
             }, function () {
 
             });
@@ -6045,7 +6049,7 @@
 
                 if (vm.historyFilters.type == 'jobChain') {
                     angular.forEach(vm.orderHistoryFilterList, function (value, index) {
-                        if (value.name == name && value.account == filter.account) {
+                        if (value.id == filter.id) {
                             vm.orderHistoryFilterList.splice(index, 1);
                         }
                     });
@@ -6065,15 +6069,12 @@
                     vm.historyFilterObj.order = vm.savedHistoryFilter;
                 } else {
                     angular.forEach(vm.jobHistoryFilterList, function (value, index) {
-                        if (value.name == name && value.account == filter.account) {
-                            toasty.success({
-                                title: value.name + ' ' + gettextCatalog.getString('message.filterDeleteSuccessfully')
-                            });
+                        if (value.id == filter.id) {
                             vm.jobHistoryFilterList.splice(index, 1);
                         }
                     });
 
-                    if (vm.savedJobHistoryFilter.selected == filter.idt) {
+                    if (vm.savedJobHistoryFilter.selected == filter.id) {
                         vm.savedJobHistoryFilter.selected = undefined;
                         vm.historyFilters.task.selectedView = false;
                         vm.selectedFiltered2 = undefined;
@@ -6328,6 +6329,7 @@
                 jobChain: jobChain,
                 orderId: orderId
             };
+
             if (vm.savedIgnoreList.orders.indexOf(obj) === -1) {
                 vm.savedIgnoreList.orders.push(obj);
                 if ((vm.savedIgnoreList.isEnable == 'true' || vm.savedIgnoreList.isEnable == true)) {

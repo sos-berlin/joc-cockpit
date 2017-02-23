@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title">
             <span ng-if="action == 'edit'" translate>label.updateFilter</span>
-            <span ng-if="action == 'copy'" translate>label.copyFilter</span> : {{historyFilter.name}}</h4>
+            <span ng-if="action == 'copy'" translate>label.copyFilter</span> : {{::historyFilter.name}}</h4>
     </div>
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>

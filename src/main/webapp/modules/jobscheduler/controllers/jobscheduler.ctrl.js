@@ -1203,7 +1203,7 @@
             if (data.selected1) {
                 var obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
-                vm.folderPathS= data.name || '/';
+                vm.folderPathS = data.name || '/';
                 obj.folders = [{folder: data.path, recursive: false}];
                 ScheduleService.getSchedulesP(obj).then(function (result) {
                     data.schedules = result.schedules;
@@ -1880,32 +1880,32 @@
     }
 
 
-    ResourceInfoCtrl.$inject=['$scope','$rootScope','$stateParams','$state','ResourceService','ScheduleService','JobSchedulerService','$uibModal'];
-    function ResourceInfoCtrl($scope,$rootScope,$stateParams,$state,ResourceService,ScheduleService,JobSchedulerService,$uibModal){
+    ResourceInfoCtrl.$inject = ['$scope', '$rootScope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal'];
+    function ResourceInfoCtrl($scope, $rootScope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal) {
         var vm = $scope;
         vm.checkSchedulerId();
-         load();
+        load();
 
-        function load(){
+        function load() {
 
-            if($state.current.name=='app.agentCluster'){
+            if ($state.current.name == 'app.agentCluster') {
                 getAgentCluster();
-            }else if($state.current.name=='app.lock'){
+            } else if ($state.current.name == 'app.lock') {
                 getLock();
-            }else if($state.current.name=='app.processClass'){
+            } else if ($state.current.name == 'app.processClass') {
                 getProcessClass();
-            }else if($state.current.name=='app.schedule'){
+            } else if ($state.current.name == 'app.schedule') {
                 getSchedule();
             }
         }
 
 
-        function getAgentCluster () {
+        function getAgentCluster() {
             vm.agentClusters = [];
 
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.agentClusters = [{agentCluster:$stateParams.path}];
+            obj.agentClusters = [{agentCluster: $stateParams.path}];
             JobSchedulerService.getAgentCluster(obj).then(function (result) {
                 vm.agentClusters = result.agentClusters;
                 vm.isLoading = true;
@@ -1913,6 +1913,7 @@
                 vm.isLoading = true;
             });
         }
+
         vm.showAgents = function (cluster) {
             cluster.show = true;
         };
@@ -1920,12 +1921,12 @@
             cluster.show = false;
         };
 
-         function volatileInformationL(obj) {
+        function volatileInformationL(obj) {
             ResourceService.get(obj).then(function (res) {
                 if (vm.locks.length > 0) {
-                     vm.lock = angular.merge(vm.locks, res.locks);
+                    vm.lock = angular.merge(vm.locks, res.locks);
                 } else {
-                    vm.locks =res.locks;
+                    vm.locks = res.locks;
                 }
 
                 vm.isLoading = true;
@@ -1935,12 +1936,12 @@
         }
 
 
-        function getLock () {
+        function getLock() {
             vm.locks = [];
 
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.locks = [{lock:$stateParams.path}];
+            obj.locks = [{lock: $stateParams.path}];
             ResourceService.getLocksP(obj).then(function (result) {
                 vm.locks = result.locks;
                 volatileInformationL(obj);
@@ -1952,9 +1953,9 @@
         }
 
         function volatileInformationS() {
-            ScheduleService.getSchedule($stateParams.path,vm.schedulerIds.selected).then(function (res) {
+            ScheduleService.getSchedule($stateParams.path, vm.schedulerIds.selected).then(function (res) {
                 if (vm.scheudule) {
-                     var schedule = angular.merge(vm.scheudule, res.scheudule);
+                    var schedule = angular.merge(vm.scheudule, res.scheudule);
                     vm.allSchedules.push(schedule);
                 } else {
                     vm.allSchedules.push(res.scheudule);
@@ -1967,12 +1968,12 @@
         }
 
 
-         function getSchedule () {
+        function getSchedule() {
             vm.allSchedules = [];
-            ScheduleService.getScheduleP($stateParams.path,vm.schedulerIds.selected).then(function (result) {
+            ScheduleService.getScheduleP($stateParams.path, vm.schedulerIds.selected).then(function (result) {
                 vm.scheudule = result.schedule;
                 volatileInformationS();
-                 vm.isLoading = true;
+                vm.isLoading = true;
             }, function () {
                 volatileInformationS();
             });
@@ -1982,7 +1983,7 @@
         function volatileInformationP(obj) {
             ResourceService.getProcessClass(obj).then(function (res) {
                 if (vm.processClasses.length > 0) {
-                     var processClass = angular.merge(vm.processClasses[0], res.processClasses[0]);
+                    var processClass = angular.merge(vm.processClasses[0], res.processClasses[0]);
                     vm.allProcessClasses.push(processClass);
                 } else {
                     vm.allProcessClasses.push(res.processClasses);
@@ -1990,18 +1991,18 @@
 
                 vm.isLoading = true;
             }, function () {
-                 vm.allProcessClasses.push(vm.processClasses[0]);
-               vm.isLoading = true;
+                vm.allProcessClasses.push(vm.processClasses[0]);
+                vm.isLoading = true;
             });
         }
 
 
-        function getProcessClass () {
+        function getProcessClass() {
             vm.allProcessClasses = [];
 
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.processClasses = [{processClass:$stateParams.path}];
+            obj.processClasses = [{processClass: $stateParams.path}];
             ResourceService.getProcessClassP(obj).then(function (result) {
                 vm.processClasses = result.processClasses;
                 volatileInformationP(obj);
@@ -2021,7 +2022,7 @@
             });
         };
 
-   function substitute(schedule) {
+        function substitute(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
@@ -2425,11 +2426,11 @@
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth','FileSaver'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth,FileSaver) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver) {
         var vm = $scope;
         var bgColorArray = [];
-        if(SOSAuth.jobChain){
+        if (SOSAuth.jobChain) {
             SOSAuth.setJobChain(undefined);
             SOSAuth.save();
         }
@@ -2840,8 +2841,8 @@
                         host: host,
                         port: port
                     }).then(function (res) {
-                        var name = 'schedule.'+$scope.schedulerIds.selected+'.log';
-                        if(res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))[1]) {
+                        var name = 'schedule.' + $scope.schedulerIds.selected + '.log';
+                        if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))[1]) {
                             name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
                         }
                         var data = new Blob([res.data], {type: 'text/plain;charset=utf-8'});
@@ -2854,7 +2855,7 @@
                 vm.getTimeout(host, port);
             } else {
 
-                if (vm.userPreferences.auditLog && action !=='download_log') {
+                if (vm.userPreferences.auditLog && action !== 'download_log') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
@@ -3800,7 +3801,7 @@
             vm.action = 'edit';
             vm.isUnique = true;
 
-            UserService.configuration(filter).then(function (conf) {
+            UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.dailyPlanFilter.shared = filter.shared;
             });
@@ -3828,7 +3829,7 @@
                 configObj.id = filter.id;
                 configObj.shared = vm.dailyPlanFilter.shared;
                 UserService.saveConfiguration(configObj);
-
+                filter.name = vm.dailyPlanFilter.name;
             }, function () {
 
             });
@@ -3837,7 +3838,7 @@
         vm.copyFilter = function (filter) {
             vm.action = 'copy';
             vm.isUnique = true;
-            UserService.configuration(filter).then(function (conf) {
+            UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.dailyPlanFilter.shared = filter.shared;
                 vm.dailyPlanFilter.name = vm.checkCopyName(vm.dailyPlanFilterList, filter.name);
