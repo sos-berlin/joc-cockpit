@@ -58,15 +58,24 @@
             configObj.jobschedulerId = $scope.schedulerIds.selected;
             configObj.account = $scope.permission.user;
             configObj.configurationType = "SETTING";
+            vm.settingId = 0;
+            UserService.configurations(configObj).then(function (res1) {
+                if (res1.configurations && res1.configurations.length > 0) {
+                    vm.settingId = res1.configurations[0].id;
+                    UserService.configuration({
+                        jobschedulerId: $scope.schedulerIds.selected,
+                        id: vm.settingId
+                    }).then(function (res) {
+                        if (res.configuration && res.configuration.configurationItem) {
+                            $rootScope.clientLogFilter = JSON.parse(res.configuration.configurationItem);
+                        } else {
+                            $rootScope.clientLogFilter.isEnable = false;
+                        }
 
-            UserService.configuration(configObj).then(function (res) {
-                if (res.configuration && res.configuration.configurationItem) {
-                    $rootScope.clientLogFilter = JSON.parse(res.configuration.configurationItem);
-                } else {
-                    $rootScope.clientLogFilter.isEnable = false;
+                        $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+
+                    });
                 }
-
-                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
             }, function () {
                 $rootScope.clientLogFilter.isEnable = false;
                 $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
@@ -187,10 +196,100 @@
             return _temp;
         };
 
+        function setUserPrefrences(preferences, configObj) {
+            preferences.zone = jstz().timezone_name;
+            preferences.locale = $rootScope.locale.lang;
+            preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
+            preferences.maxRecords = 10000;
+            preferences.maxAuditLogRecords = 10000;
+            preferences.maxHistoryPerOrder = 30;
+            preferences.maxHistoryPerTask = 10;
+            preferences.maxHistoryPerJobchain = 30;
+            preferences.maxOrderPerJobchain = 5;
+            preferences.maxAuditLogPerObject = 10;
+            preferences.maxEntryPerPage = '1000';
+            preferences.isNewWindow = 'newWindow';
+            preferences.theme = 'light';
+            preferences.showTasks = true;
+            preferences.showOrders = false;
+            if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
+                preferences.auditLog = true;
+            preferences.events = {};
+
+            preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
+            preferences.events.taskCount = 0;
+            preferences.events.jobCount = 0;
+            preferences.events.jobChainCount = 1;
+            preferences.events.positiveOrderCount = 1;
+            preferences.events.negativeOrderCount = 2;
+
+            configObj.configurationItem = JSON.stringify(preferences);
+            configObj.id = 0;
+            $window.sessionStorage.preferences = configObj.configurationItem;
+            UserService.saveConfiguration(configObj).then(function(res){
+                 $window.sessionStorage.preferenceId = res.id;
+            })
+        }
+
+         function getUserProfileConfiguration(id, user) {
+             var configObj = {};
+             configObj.jobschedulerId = id;
+             configObj.account = user;
+             configObj.configurationType = "PROFILE";
+              var preferences = {};
+             UserService.configurations(configObj).then(function (res1) {
+
+                 if (res1.configurations && res1.configurations.length > 0) {
+                     $window.sessionStorage.preferenceId = res1.configurations[0].id;
+                     UserService.configuration({
+                         jobschedulerId: id,
+                         id: res1.configurations[0].id
+                     }).then(function (res) {
+
+                         if (res.configuration && res.configuration.configurationItem) {
+                             $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
+                             document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
+                             preferences = JSON.parse($window.sessionStorage.preferences);
+
+                             if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true) && !preferences.auditLog) {
+                                 preferences.auditLog = true;
+                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
+                             }
+                             $window.localStorage.$SOS$THEME = preferences.theme;
+                             if (preferences.locale != $rootScope.locale.lang) {
+                                 $window.localStorage.$SOS$LANG = preferences.locale;
+                                 $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
+                                     gettextCatalog.setCurrentLanguage(preferences.locale);
+                                     gettextCatalog.setStrings(preferences.locale, data);
+                                 });
+                             }
+                         } else {
+                             setUserPrefrences(preferences,configObj);
+                         }
+
+                         $rootScope.$broadcast('reloadPreferences');
+                     }, function () {
+                         setUserPrefrences(preferences,configObj);
+                         $rootScope.$broadcast('reloadPreferences');
+                     });
+                 } else {
+                     $window.sessionStorage.preferenceId = 0;
+                     setUserPrefrences(preferences,configObj);
+                     $rootScope.$broadcast('reloadPreferences');
+                 }
+             }, function () {
+                 setUserPrefrences(preferences,configObj);
+                 $rootScope.$broadcast('reloadPreferences');
+             });
+         }
+
         vm.username = SOSAuth.currentUserData;
         setPermission();
         setIds();
         setPreferences();
+        if(vm.username && $scope.schedulerIds.selected){
+            getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
+        }
 
         $scope.$on('reloadPreferences', function () {
             setPreferences();
@@ -201,6 +300,7 @@
             setPermission();
             setIds();
             loadSettingConfiguration();
+            getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
         });
 
         function setPermission() {
@@ -469,9 +569,12 @@
             configObj.jobschedulerId = vm.schedulerIds.selected;
             configObj.account = vm.permission.user;
             configObj.configurationType = "SETTING";
+            configObj.id = vm.settingId;
             configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
             $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
-            UserService.saveConfiguration(configObj);
+            UserService.saveConfiguration(configObj).then(function(res){
+                vm.settingId= res.id;
+            })
         };
 
         $scope.$on('$viewContentLoaded', function () {

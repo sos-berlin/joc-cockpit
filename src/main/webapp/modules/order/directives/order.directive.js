@@ -185,16 +185,17 @@
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
                     arrangeItems();
-                    
-                   
                 });
 
+
                 function arrangeItems() {
+
                     scope.jobChainData = angular.copy(scope.jobChain);
                     scope.jobChainData.nodes = [];
                     var jobChainData2 = angular.copy(scope.jobChain);
                     var isFirstNode = false;
                     var firstIndex = -1;
+
 
                     angular.forEach(scope.jobChain.nodes, function (item, index) {
 
@@ -208,7 +209,7 @@
 
                         });
 
-                        if (isFirstNode && !(/(.+):(.+)/.test(item.name))) {
+                        if (isFirstNode && !(splitRegex.test(item.name))) {
                             firstIndex = index;
                         }
                     });
@@ -277,9 +278,12 @@
                                     removables.push(index2);
                                 }
                             });
-                            for (var i = 0; i < removables.length; i++) {
-                                jobChainData2.nodes.splice(removables[i] - i, 1);
-                            }
+
+                            angular.forEach(removables,function(rm){
+                                jobChainData2.nodes.splice(removables[rm] - rm, 1);
+                            })
+
+
                             if (gotSplitted) {
                                 getNext(index + 1);
                             }
@@ -391,9 +395,6 @@
                             + '" translate>label.start</span>' +
                             '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
                             left = margin + avatarW;
-                        } else {
-
-                            
                         }
 
                         scope.coords[index] = {};
@@ -1416,7 +1417,7 @@
                                     } else {
 
                                         if ($filter('durationFromCurrent')(undefined, order.nextStartTime) == 'never')
-                                            diff = 'never';
+                                            diff = '<span id="diff-'+order.orderId+'">never</span>';
                                         else
                                             diff = '-<span id="diff-'+order.orderId+'" time="' + order.nextStartTime + '"></span>';
 

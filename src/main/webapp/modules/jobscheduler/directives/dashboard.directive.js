@@ -21,7 +21,6 @@
                 var lastId;
 
                 function init() {
-                    //console.log("Init");
                     rWidth = 200;
                     rHeight = 130;
                     margin = 35;
@@ -352,7 +351,6 @@
 
 
                     function drawFlow() {
- //console.log("Init 16 "+JSON.stringify(scope.clusterStatusData));
                         var sLeft = 0;
                         top = vMargin;
                         if (scope.clusterStatusData.supervisors.length == 0) {
@@ -634,7 +632,6 @@
                                     } else if (scope.clusterStatusData.database) {
                                         drawFlowForDatabase();
                                     } else {
-                                        //console.log("Init 18");
                                         template = template + '</div>';
                                         template = $compile(template)(scope);
                                         elem.append(template);

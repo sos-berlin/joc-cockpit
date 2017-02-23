@@ -1,6 +1,6 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
-         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+         <button type="button" class="close" ng-click="cancel()" aria-label="Close" aria-hidden="true"><img src="images/close-button.png"></span></button>
         <h4 class="modal-title" translate>label.editFilters</h4>
     </div>
     <div class="modal-body" style="min-height: 400px">
@@ -16,11 +16,11 @@
                         </tr>
                         </thead>
                         <tbody >
-                            <tr class="start-on-hover" ng-repeat="filter in filters.list">
+                            <tr class="start-on-hover" ng-repeat="filter in filters.list | orderBy:'name'">
                                 <td>{{$index+1}}</td>
                                 <td>
-                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite == filter.name && filters.favoriteAccount == filter.account" href="" ng-click="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
-                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.name || filters.favoriteAccount != filter.account" href="" ng-click="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
+                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite == filter.id" href="" ng-click="removeFavorite()" class="fa fa-star text-primary fa-lg m-r-xs"></a>
+                                    <a uib-tooltip="{{'tooltip.useDefault' | translate}}" ng-if="filters.favorite !=filter.id" href="" ng-click="favorite(filter)" class="fa fa-star-o fa-lg m-r-xs"></a>
                                     {{filter.name}} <label ng-if="filter.shared" class="label label-info" translate>label.share</label>
                                 </td>
                                 <td>{{filter.account}}</td>

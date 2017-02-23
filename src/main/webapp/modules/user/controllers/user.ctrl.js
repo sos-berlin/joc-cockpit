@@ -23,7 +23,6 @@
                 if (res && !res.data) {
                     SOSAuth.setIds(res);
                     SOSAuth.save();
-                    getUserProfileConfiguration(res.selected,user);
                     getPermissions();
                 } else {
                     $location.path('/error');
@@ -39,100 +38,11 @@
             });
 
         }
+
         function getComments() {
             AuditLogService.comments().then(function (result) {
                 $window.sessionStorage.$SOS$FORCELOGING = result.forceCommentsForAuditLog;
                 $window.sessionStorage.comments = JSON.stringify(result.comments);
-            });
-        }
-
-        function getUserProfileConfiguration(id,user) {
-            var configObj = {};
-            configObj.jobschedulerId = id;
-            configObj.account = user;
-            configObj.configurationType = "PROFILE";
-            UserService.configuration(configObj).then(function (res) {
-                var preferences = {};
-                if (res.configuration && res.configuration.configurationItem) {
-                    $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
-                    document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
-                    preferences = JSON.parse($window.sessionStorage.preferences);
-
-                    if(($window.sessionStorage.$SOS$FORCELOGING=== 'true' || $window.sessionStorage.$SOS$FORCELOGING==true) && !preferences.auditLog){
-                        preferences.auditLog =true;
-                        $window.sessionStorage.preferences = JSON.stringify(preferences);
-
-                    }
-
-                    $window.localStorage.$SOS$THEME = preferences.theme;
-                    if(preferences.locale != $rootScope.locale.lang) {
-                        $window.localStorage.$SOS$LANG = preferences.locale;
-                        $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
-                            gettextCatalog.setCurrentLanguage(preferences.locale);
-                            gettextCatalog.setStrings(preferences.locale, data);
-                        });
-                    }
-                } else {
-                    preferences.zone = jstz().timezone_name;
-                    preferences.locale = $rootScope.locale.lang;
-                    preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
-                    preferences.maxRecords = 10000;
-                    preferences.maxAuditLogRecords = 10000;
-                    preferences.maxHistoryPerOrder = 30;
-                    preferences.maxHistoryPerTask = 10;
-                    preferences.maxHistoryPerJobchain = 30;
-                    preferences.maxOrderPerJobchain = 5;
-                    preferences.maxAuditLogPerObject = 10;
-                    preferences.maxEntryPerPage = '1000';
-                    preferences.isNewWindow = 'newWindow';
-                    preferences.theme = 'light';
-                    preferences.showTasks = true;
-                    preferences.showOrders = false;
-                    if ($window.sessionStorage.$SOS$FORCELOGING === 'true'|| $window.sessionStorage.$SOS$FORCELOGING==true)
-                        preferences.auditLog = true;
-                    preferences.events = {};
-
-                    preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
-                    preferences.events.taskCount = 0;
-                    preferences.events.jobCount = 0;
-                    preferences.events.jobChainCount = 1;
-                    preferences.events.positiveOrderCount = 1;
-                    preferences.events.negativeOrderCount = 2;
-                    configObj.configurationItem = JSON.stringify(preferences);
-                    $window.sessionStorage.preferences = configObj.configurationItem;
-                    UserService.saveConfiguration(configObj);
-                }
-
-                $rootScope.$broadcast('reloadPreferences');
-            }, function () {
-                var preferences = {};
-                preferences.zone = jstz().timezone_name;
-                preferences.locale = $rootScope.locale.lang;
-                preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
-                preferences.maxRecords = 10000;
-                preferences.maxAuditLogRecords = 10000;
-                preferences.maxHistoryPerOrder = 30;
-                preferences.maxHistoryPerTask = 10;
-                preferences.maxHistoryPerJobchain = 30;
-                preferences.maxOrderPerJobchain = 5;
-                preferences.maxAuditLogPerObject = 10;
-                preferences.maxEntryPerPage = '1000';
-                preferences.isNewWindow = 'newWindow';
-                preferences.theme = 'light';
-                preferences.showTasks = true;
-                preferences.showOrders = false;
-                if ($window.sessionStorage.$SOS$FORCELOGING === 'true'|| $window.sessionStorage.$SOS$FORCELOGING==true)
-                    preferences.auditLog = true;
-                preferences.events = {};
-                preferences.events.filter = ['JobChainStopped', 'OrderStarted', 'OrderSetback', 'OrderSuspended'];
-                preferences.events.taskCount = 0;
-                preferences.events.jobCount = 0;
-                preferences.events.jobChainCount = 1;
-                preferences.events.positiveOrderCount = 1;
-                preferences.events.negativeOrderCount = 2;
-                $window.sessionStorage.preferences = JSON.stringify(preferences);
-
-                $rootScope.$broadcast('reloadPreferences');
             });
         }
 
@@ -149,20 +59,17 @@
             UserService.getPermissions(vm.schedulerIds.selected).then(function (permission) {
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
-
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
 
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
                 } else {
                     $location.path('/');
                 }
-                 $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
+                $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
                 $('#loginBtn').attr("disabled", false);
                 vm.user = {};
                 $rootScope.$broadcast('reloadUser');
-
             });
-
         }
 
         vm.login = function () {
@@ -201,7 +108,6 @@
                             vm.loginError = 'message.loginError';
                         }
 
-
                     }, function () {
                         vm.loginError = 'message.loginError';
                         $('#loginBtn').text(gettextCatalog.getString("button.logIn"));
@@ -218,32 +124,10 @@
         var vm = this;
 
         var configObj = {};
-        configObj.jobschedulerId =$scope.schedulerIds.selected;
-        configObj.account =$scope.permission.user;
-        configObj.configurationType ="PROFILE";
-
-        UserService.configuration(configObj).then(function (res) {
-            if (res.configuration && res.configuration.configurationItem) {
-                $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
-                vm.preferences = JSON.parse($window.sessionStorage.preferences);
-                if (vm.preferences.theme != $window.localStorage.$SOS$THEME)
-                    vm.changeTheme(vm.preferences.theme);
-
-                if (vm.preferences.locale != $rootScope.locale.lang) {
-                    $window.localStorage.$SOS$LANG = vm.preferences.locale;
-                    $resource("modules/i18n/language_" + vm.preferences.locale + ".json").get(function (data) {
-                        gettextCatalog.setCurrentLanguage(vm.preferences.locale);
-                        gettextCatalog.setStrings(vm.preferences.locale, data);
-                    });
-                }
-                if(($window.sessionStorage.$SOS$FORCELOGING=== 'true' || $window.sessionStorage.$SOS$FORCELOGING==true) && !vm.preferences.auditLog) {
-                    vm.preferences.auditLog = true;
-                    $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
-
-                }
-                $rootScope.$broadcast('reloadPreferences');
-            }
-        });
+        configObj.jobschedulerId = $scope.schedulerIds.selected;
+        configObj.account = $scope.permission.user;
+        configObj.configurationType = "PROFILE";
+        configObj.id = parseInt($window.sessionStorage.preferenceId);
 
         vm.zones = moment.tz.names();
         vm.locales = $rootScope.locales;
@@ -262,7 +146,7 @@
             UserService.saveConfiguration(configObj);
         };
 
-        if($window.sessionStorage.$SOS$FORCELOGING === 'true'){
+        if ($window.sessionStorage.$SOS$FORCELOGING === 'true') {
             vm.forceLoging = true;
             vm.preferences.auditLog = true;
         }
