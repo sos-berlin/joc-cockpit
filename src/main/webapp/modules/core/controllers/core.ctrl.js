@@ -404,10 +404,10 @@
                         } else {
                             return;
                         }
+                        newWindow = window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
                         t1 = $timeout(function () {
-                            newWindow = window.open(url, "Order Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
                             calWindowSize();
-                        }, 0);
+                        }, 500);
                     }
                 } catch (e) {
                     throw new Error(e.message);
@@ -427,7 +427,7 @@
             if (newWindow) {
                 try {
                     newWindow.onbeforeunload = function () {
-                        console.log('onbeforeunload');
+                        console.log('before close');
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
@@ -435,6 +435,7 @@
                         return null;
                     };
                     $(newWindow).resize(function () {
+                        console.log('resize');
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
@@ -4075,11 +4076,9 @@
                         _xml.schedule._title = vm.sch._title;
                     }
                     if (vm.sch._name) {
-                        console.log('if....')
                         _xml.schedule._name = vm.sch._name;
                     }else {
                         if (vm.sch._substitute) {
-                            console.log('else....'+vm.sch._name)
                             _xml.schedule._substitute = vm.sch._substitute;
                         }
                     }
@@ -4099,7 +4098,6 @@
         }
 
         vm.saveScheduleDetail = function (param) {
-
             vm.sch._valid_from = undefined;
             if (vm.from.time && vm.from.date) {
                 var date = new Date(vm.from.date);
@@ -4107,7 +4105,6 @@
                 date.setHours(vm.from.time.getHours());
                 date.setMinutes(vm.from.time.getMinutes());
                 date.setSeconds(vm.from.time.getSeconds());
-
                 vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
             }
             vm.sch._valid_to = undefined;

@@ -24,7 +24,7 @@
         function loadJobOrderV(obj) {
             OrderService.get(obj).then(function (res) {
                 var data = [];
-                if (vm.orders && vm.orders.length > 0 && vm.orders.length>=res.orders.length) {
+                if (vm.orders && vm.orders.length > 0) {
                     angular.forEach(vm.orders, function (order) {
                         for (var i = 0; i < res.orders.length; i++) {
                             if (order.path == res.orders[i].path) {
@@ -32,10 +32,12 @@
                                 res.orders[i].params = angular.copy(order.params);
                                 order = res.orders[i];
                                 data.push(order);
+                                res.orders.splice(i,1);
                                 break;
                             }
                         }
                     });
+                    data = data.concat(res.orders);
                     vm.orders = data;
                 } else {
                     vm.orders = res.orders;
@@ -1122,7 +1124,6 @@
                     return;
                 }
                 var windowWidth = document.getElementById("mainContainer").clientWidth;
-                var windowHeight = window.innerHeight;
                 var maxLeft = 0;
                 var maxTop = 0;
 
@@ -2643,7 +2644,7 @@
             }
             OrderService.get(obj).then(function (res) {
                 var data1 = [];
-                if (data.orders && data.orders.length > 0 && data.orders.length >= res.orders.length) {
+                if (data.orders && data.orders.length > 0) {
                     angular.forEach(data.orders, function (orders) {
 
                         for (var i = 0; i < res.orders.length; i++) {
@@ -2652,10 +2653,12 @@
                                 res.orders[i].path1 = angular.copy(orders.path1);
                                 orders = res.orders[i];
                                 data1.push(orders);
+                                res.orders.splice(i,1);
                                 break;
                             }
                         }
                     });
+                    data1 = data1.concat(res.orders);
                     data.orders = data1;
                 } else {
                     data.orders = res.orders;
@@ -2713,7 +2716,7 @@
             OrderService.get(obj).then(function (res) {
 
                 var data1 = [];
-                if (data.orders.length > 0 && data.orders.length > res.orders.length) {
+                if (data.orders && data.orders.length > 0) {
                     angular.forEach(data.orders, function (orders) {
 
                         for (var i = 0; i < res.orders.length; i++) {
@@ -2722,10 +2725,12 @@
                                 res.orders[i].path1 = angular.copy(orders.path1);
                                 orders = res.orders[i];
                                 data1.push(orders);
+                                res.orders.splice(i,1);
                                 break;
                             }
                         }
                     });
+                    data1 = data1.concat(res.orders);
                     data.orders = data1;
                 } else {
                     data.orders = res.orders;
@@ -2972,7 +2977,7 @@
             OrderService.get(obj).then(function (res) {
 
                 var data = [];
-                if (vm.orders && vm.orders.length > 0 && vm.orders.length >= res.orders.length) {
+                if (vm.orders && vm.orders.length > 0) {
                     angular.forEach(vm.orders, function (order) {
 
                         for (var i = 0; i < res.orders.length; i++) {
@@ -2981,10 +2986,12 @@
                                 res.orders[i].path1 = angular.copy(order.path1);
                                 order = res.orders[i];
                                 data.push(order);
+                                res.orders.splice(i,1);
                                 break;
                             }
                         }
                     });
+                    data = data.concat(res.orders);
                     vm.orders = data;
                 } else {
                     vm.orders = res.orders;
@@ -3044,11 +3051,13 @@
                                     res.orders[i].title = angular.copy(orders.title);
                                     orders = res.orders[i];
                                     x.push(orders);
+                                    res.orders.splice(i,1);
                                     break;
                                 }
                             }
 
                         });
+                        x = x.concat(res.orders);
                         angular.forEach(vm.tree, function (node, index) {
                             insertData(node, x);
                         })
