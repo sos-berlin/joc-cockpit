@@ -1035,26 +1035,59 @@
             ScheduleService.setRunTime(schedules);
         }
 
+
+        function createSchedule(schedule) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            if (schedule.path1 == '/') {
+                schedules.schedule = schedule.path1 + vm.substituteObj.name;
+            } else {
+                schedules.schedule = schedule.path1 + '/' + vm.substituteObj.name;
+            }
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog = {};
+            if (vm.comments.comment) {
+                schedules.auditLog.comment = vm.comments.comment;
+            }
+
+            if (vm.comments.timeSpent) {
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            var x2js = new X2JS();
+            var _xml = x2js.xml_str2json(vm.tempXML);
+            _xml.schedule._substitute = vm.sch._substitute;
+            if (vm.sch._title)
+                _xml.schedule._title = vm.sch._title;
+            if (vm.sch._valid_from)
+                _xml.schedule._valid_from = vm.sch._valid_from;
+            if (vm.sch._valid_to)
+                _xml.schedule._valid_to = vm.sch._valid_to;
+            var xmlStr = x2js.json2xml_str(_xml);
+            xmlStr = xmlStr.replace(/,/g, ' ');
+
+            ScheduleService.setRunTime(schedules).then(function () {
+                var temp = angular.copy(schedule);
+                temp.runTime = xmlStr;
+                temp.path = schedules.schedule;
+                substitute(temp);
+            });
+        }
+
         vm.substitute = function (schedule) {
             vm.sch = {};
             vm.sch.folder = '/';
             vm.comments = {};
             vm.comments.radio = 'predefined';
 
-            vm.sch._valid_from = moment().set({
-                hour: 0,
-                minute: 0,
-                second: 0,
-                millisecond: 0
-            }).format('YYYY-MM-DD HH:mm:ss');
-            vm.sch._valid_to = moment().set({
-                hour: 23,
-                minute: 59,
-                second: 59,
-                millisecond: 0
-            }).format('YYYY-MM-DD HH:mm:ss');
             vm.sch._substitute = schedule.path;
             vm.schedule = schedule;
+            vm.substituteObj = {};
+            vm.substituteObj.showText = false;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -1064,7 +1097,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                substitute(schedule);
+                createSchedule(schedule);
             }, function () {
 
             });
@@ -1075,7 +1108,7 @@
                 if (res.configuration) {
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
+                    vm.tempXML = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
 
@@ -1132,7 +1165,7 @@
             }
 
             ScheduleService.setRunTime(schedules);
-        };
+        }
 
         vm.editSchedule = function (schedule) {
             vm.comments = {};
@@ -1140,6 +1173,7 @@
             vm.sch = {};
             vm.schedule = schedule;
             vm.sch._title = schedule.title;
+            vm.scheduleAction = 'edit';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -1148,7 +1182,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 setRunTime(schedule);
             }, function () {
                 vm.object.schedules = [];
@@ -2043,26 +2076,58 @@
             ScheduleService.setRunTime(schedules);
         }
 
+        function createSchedule(schedule) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            if (schedule.path1 == '/') {
+                schedules.schedule = schedule.path1 + vm.substituteObj.name;
+            } else {
+                schedules.schedule = schedule.path1 + '/' + vm.substituteObj.name;
+            }
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog = {};
+            if (vm.comments.comment) {
+                schedules.auditLog.comment = vm.comments.comment;
+            }
+
+            if (vm.comments.timeSpent) {
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            var x2js = new X2JS();
+            var _xml = x2js.xml_str2json(vm.tempXML);
+            _xml.schedule._substitute = vm.sch._substitute;
+            if (vm.sch._title)
+                _xml.schedule._title = vm.sch._title;
+            if (vm.sch._valid_from)
+                _xml.schedule._valid_from = vm.sch._valid_from;
+            if (vm.sch._valid_to)
+                _xml.schedule._valid_to = vm.sch._valid_to;
+            var xmlStr = x2js.json2xml_str(_xml);
+            xmlStr = xmlStr.replace(/,/g, ' ');
+
+            ScheduleService.setRunTime(schedules).then(function () {
+                var temp = angular.copy(schedule);
+                temp.runTime = xmlStr;
+                temp.path = schedules.schedule;
+                substitute(temp);
+            });
+        }
+
         vm.substitute = function (schedule) {
             vm.sch = {};
             vm.sch.folder = '/';
             vm.comments = {};
             vm.comments.radio = 'predefined';
 
-            vm.sch._valid_from = moment().set({
-                hour: 0,
-                minute: 0,
-                second: 0,
-                millisecond: 0
-            }).format('YYYY-MM-DD HH:mm:ss');
-            vm.sch._valid_to = moment().set({
-                hour: 23,
-                minute: 59,
-                second: 59,
-                millisecond: 0
-            }).format('YYYY-MM-DD HH:mm:ss');
             vm.sch._substitute = schedule.path;
             vm.schedule = schedule;
+            vm.substituteObj = {};
+            vm.substituteObj.showText = false;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -2072,7 +2137,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                substitute(schedule);
+                createSchedule(schedule);
             }, function () {
 
             });
@@ -2083,7 +2148,7 @@
                 if (res.configuration) {
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
+                    vm.tempXML = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
 
@@ -2123,6 +2188,7 @@
             vm.sch = {};
             vm.schedule = schedule;
             vm.sch._title = schedule.title;
+            vm.scheduleAction = 'edit';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -2248,12 +2314,13 @@
             loadScheduleV();
         });
 
-        vm.editSchedule = function () {
+        vm.editSchedule = function (schedule) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.sch = {};
-
-            vm.sch._title = vm.schedule.title;
+            vm.schedule = schedule;
+            vm.sch._title = schedule.title;
+            vm.scheduleAction = 'edit';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -2284,25 +2351,77 @@
             });
             vm.zones = moment.tz.names();
         };
+        function substitute(schedule) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            schedules.schedule = schedule.path;
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog = {};
+            if (vm.comments.comment) {
+                schedules.auditLog.comment = vm.comments.comment;
+            }
+
+            if (vm.comments.timeSpent) {
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            ScheduleService.setRunTime(schedules);
+        }
+
+        function createSchedule(schedule) {
+            var schedules = {};
+            schedules.jobschedulerId = $scope.schedulerIds.selected;
+            if (schedule.path1 == '/') {
+                schedules.schedule = schedule.path1 + vm.substituteObj.name;
+            } else {
+                schedules.schedule = schedule.path1 + '/' + vm.substituteObj.name;
+            }
+            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.auditLog = {};
+            if (vm.comments.comment) {
+                schedules.auditLog.comment = vm.comments.comment;
+            }
+
+            if (vm.comments.timeSpent) {
+                schedules.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                schedules.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            var x2js = new X2JS();
+            var _xml = x2js.xml_str2json(vm.tempXML);
+            _xml.schedule._substitute = vm.sch._substitute;
+            if (vm.sch._title)
+                _xml.schedule._title = vm.sch._title;
+            if (vm.sch._valid_from)
+                _xml.schedule._valid_from = vm.sch._valid_from;
+            if (vm.sch._valid_to)
+                _xml.schedule._valid_to = vm.sch._valid_to;
+            var xmlStr = x2js.json2xml_str(_xml);
+            xmlStr = xmlStr.replace(/,/g, ' ');
+
+            ScheduleService.setRunTime(schedules).then(function () {
+                var temp = angular.copy(schedule);
+                temp.runTime = xmlStr;
+                temp.path = schedules.schedule;
+                substitute(temp);
+            });
+        }
 
         vm.substitute = function () {
             vm.sch = {};
             vm.sch.folder = '/';
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            vm.sch._valid_from = moment().set({
-                hour: 0,
-                minute: 0,
-                second: 0,
-                millisecond: 0
-            }).format('YYYY-MM-DD HH:mm:ss');
-            vm.sch._valid_to = moment().set({
-                hour: 23,
-                minute: 59,
-                second: 59,
-                millisecond: 0
-            }).format('YYYY-MM-DD HH:mm:ss');
             vm.sch._substitute = vm.schedule.path;
+            vm.substituteObj = {};
+            vm.substituteObj.showText = false;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -2312,7 +2431,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
+                createSchedule(vm.schedule);
             }, function () {
 
             });
@@ -2323,7 +2442,7 @@
                 if (res.configuration) {
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
+                    vm.tempXML = vm.runTimes.content;
                 }
                 $rootScope.$broadcast('loadXml');
 
@@ -2772,10 +2891,11 @@
         };
 
         var states = [];
-        vm.clusterAction = function (objectType, action, host, port) {
+        vm.clusterAction = function (objectType, action, host, port,id) {
+            console.log("objectType "+objectType+" action "+action+" host "+host+" port "+port+" id "+id);
             function performAction() {
                 var obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.jobschedulerId = id;
                 obj.host = host;
                 obj.port = port;
                 var obj1 = {};
@@ -2798,7 +2918,7 @@
                 }
 
                 if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
-                    JobSchedulerService.terminate(host, port, $scope.schedulerIds.selected).then(function (res) {
+                    JobSchedulerService.terminate(obj).then(function (res) {
                         success('stopped', host, port);
                     });
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abort') {
@@ -2841,8 +2961,8 @@
                         host: host,
                         port: port
                     }).then(function (res) {
-                        var name = 'schedule.' + $scope.schedulerIds.selected + '.log';
-                        if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))[1]) {
+                        var name = 'schedule.'+$scope.schedulerIds.selected+'.log';
+                        if(res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
                             name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
                         }
                         var data = new Blob([res.data], {type: 'text/plain;charset=utf-8'});
@@ -2855,7 +2975,7 @@
                 vm.getTimeout(host, port);
             } else {
 
-                if (vm.userPreferences.auditLog && action !== 'download_log') {
+                if (vm.userPreferences.auditLog && action !=='download_log') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
@@ -3919,7 +4039,7 @@
                 jobschedulerId: configObj.jobschedulerId,
                 id: configObj.id
             }).then(function (conf) {
-                 configObj.shared = false;
+                configObj.shared = false;
                 if (vm.permission.user != configObj.account) {
                     angular.forEach(vm.dailyPlanFilterList, function (value, index) {
                         if (value.id == configObj.id) {

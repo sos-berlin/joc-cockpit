@@ -484,6 +484,7 @@
   "DISABLED": "無効化",
   "UNDER_CONSTRUCTION": "作成中",
   "ACTIVE": "アクティブ",
+  "INACTIVE": "休止",
   "SKIPPED": "スキップされました",
   "label.account": "アカウント",
   "message.noJobChainHistoryFound": "ジョブチェーン履歴はありません",

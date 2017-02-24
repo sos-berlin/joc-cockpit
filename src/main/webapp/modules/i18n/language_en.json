@@ -674,6 +674,7 @@
   "REMOVED": "removed",
   "DISABLED": "disabled",
   "ACTIVE": "active",
+  "INACTIVE": "inactive",
   "SKIPPED": "skipped",
   "SUCCESSFUL": "successful",
   "FAILED": "failed",

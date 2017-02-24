@@ -156,7 +156,7 @@
                                 angular.forEach(supervisor.masters, function (master, index) {
                                     angular.forEach(res.masters, function (nMaster, rIndex) {
                                         if (nMaster.host == master.host && nMaster.port == master.port) {
-                                            var span = document.getElementById('sp' + master.host + master.port);
+
                                             supervisor.masters[index].state = nMaster.state;
                                             supervisor.masters[index].startedAt = nMaster.startedAt;
                                             if (master.state && refresh) {
@@ -228,51 +228,7 @@
                                 moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
                                 '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             rect.setAttribute('data-content', popoverTemplate);
-                            var anchors = document.querySelectorAll("a[id^='__']");
 
-                            angular.forEach(anchors, function (anchor, index) {
-
-                                if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
-                                    var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
-
-                                    if (results[1] == 'master' && results[3] == master.host && results[4] == master.port) {
-                                        if (master.state._text.toLowerCase() == 'stopped' || master.state._text.toLowerCase() == 'waiting_for_response'
-                                            || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'terminating' ||
-                                            master.state._text.toLowerCase() == 'starting' || master.state._text.toLowerCase() == ' ' || master.state._text.toLowerCase() == 'unreachable') {
-                                            var cls = master.state._text.toLowerCase() == 'stopped' ? " text-danger" : " text-warn";
-                                            span.className = span.className.replace(/text-.+/, cls);
-                                            dState.className = dState.className.replace(/text-.+/, cls);
-                                            anchor.className = anchor.className.replace('hide', 'show') + " disable-link";
-                                            connectLink(master.host, master.port);
-                                        } else if (master.state._text.toLowerCase() == 'waiting_for_activation') {
-                                            span.className = span.className.replace(/text-.+/, " text-black-lt");
-                                            dState.className = dState.className.replace(/text-.+/, " text-black-lt");
-                                            anchor.className = anchor.className + ' disable-link';
-                                            connectLink(master.host, master.port);
-                                        }
-                                        else if (master.state._text.toLowerCase() == 'running') {
-                                            span.className = span.className.replace(/text-.+/, "text-success");
-                                            dState.className = dState.className.replace(/text-.+/, " text-success");
-                                            anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
-                                            if (results[2] == 'continue') {
-                                                anchor.className = anchor.className.replace('show', 'hide');
-                                            }
-                                            connectLink(master.host, master.port);
-                                        } else if (master.state._text.toLowerCase() == 'paused') {
-                                            span.className = span.className.replace(/text-.+/, " text-black-lt");
-                                            dState.className = dState.className.replace(/text-.+/, " text-black-lt");
-                                            anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
-                                            if (results[2] == 'pause') {
-                                                anchor.className = anchor.className.replace('show', 'hide');
-                                            } else if (results[2] == 'continue') {
-                                                anchor.className = anchor.className.replace('hide', 'show');
-                                            }
-                                            connectLink(master.host, master.port);
-
-                                        }
-                                    }
-                                }
-                            })
                         }
                     }
 
@@ -289,65 +245,10 @@
                                 '</span><br> Survey Date: ' +
                                 moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                             rect.setAttribute('data-content', popoverTemplate);
-                            var anchors = document.querySelectorAll("a[id^='__']");
 
-                            angular.forEach(anchors, function (anchor, index) {
-                                if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
-                                    var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
-                                    if (results[1] == 'supervisor' && results[3] == supervisor.host && results[4] == supervisor.port) {
-                                        if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
-                                            span.className = span.className.replace(/text-.+/, " text-danger");
-                                            anchor.className = anchor.className.replace('hide', 'show') + " disable-link";
-                                            connectLink(host, port);
-                                        } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'waiting_for_activation') {
-                                            span.className = span.className.replace(/text-.+/, " text-black-lt");
-                                            anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
-                                            connectLink(supervisor.host, supervisor.port);
-                                        }
-                                        else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'running') {
-                                            span.className = span.className.replace(/text-.+/, " text-success");
-                                            anchor.className = anchor.className.replace('hide', 'show').replace('disable-link', '');
-                                            connectLink(supervisor.host, supervisor.port);
-                                        } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'paused') {
-                                            span.className = span.className.replace(/text-.+/, " text-black-lt");
-                                            if (results[2] == 'pause') {
-                                                anchor.className = anchor.className.replace('show', 'hide');
-                                            } else if (results[2] == 'continue') {
-                                                anchor.className = anchor.className.replace('hide', 'show');
-                                            }
-                                            connectLink(supervisor.host, supervisor.port);
-
-                                        } else if (supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
-
-                                            //disconnectLink(supervisor.host, supervisor.port);
-                                        }
-
-
-                                    }
-                                }
-                            })
                         }
                     }
 
-                    function disconnectLink(host, port) {
-
-                        var links = document.querySelectorAll("div[id*='&&" + host + port + "']");
-
-                        angular.forEach(links, function (link, index) {
-
-                            link.style.setProperty('border', '1px solid #eb8814');
-                        })
-                    }
-
-                    function connectLink(host, port) {
-
-                        var links = document.querySelectorAll("div[id*='&&" + host + port + "']");
-
-                        angular.forEach(links, function (link, index) {
-
-                            link.style.setProperty('border', '1px solid #D9D9D9');
-                        })
-                    }
 
 
                     function drawFlow() {
@@ -358,9 +259,7 @@
 
                         }
                         angular.forEach(scope.clusterStatusData.supervisors, function (supervisor, sIndex) {
-
                             tWidth = rWidth * supervisor.masters.length + margin * (supervisor.masters.length - 1);
-
                             sLeft = tWidth / 2 - rWidth / 2 + margin;
                             if (sIndex !== 0) {
                                 sLeft = sLeft + tWidth + margin;
@@ -368,16 +267,12 @@
 
                             var c = "cluster-rect";
                             if (new Date().getTime() - new Date(supervisor.data.jobscheduler.surveyDate).getTime() < 2000) {
-
                                 c = c + " yellow-border";
                             }
-
-
 
                             var popoverTemplate ='';
                             if(supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os){
                                   popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
-
                                 '<br>Version : ' + supervisor.data.jobscheduler.version +
                                 '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
@@ -385,41 +280,17 @@
                                 popoverTemplate = 'Architecture : - <br> Distribution : - <br>Version : - <br>Started at : - <span></span><br> Survey Date: - ' ;
                             }
 
-
-
                             var sClassRunning = 'text-success';
 
-
-
-
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
-
                                 sClassRunning = 'text-danger';
                             } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'unreachable') {
-
                                 sClassRunning = 'text-warn';
-
                             }
                             else if (!supervisor.data.jobscheduler.state || supervisor.data.jobscheduler.state._text.toLowerCase() != 'running') {
-
                                 sClassRunning = 'text-black-lt';
-
                             }
 
-                            var pauseClass = 'show';
-                            var continueClass = 'hide';
-                            var disableClass = '';
-                            if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'paused') {
-                                pauseClass = 'hide';
-                                continueClass = 'show';
-                            } else if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text.toLowerCase() == 'stopped') {
-                                disableClass = 'disable-link';
-                            }
-
-                            var restartTerminatetClass1 = 'hide';
-                            var restartAbortClass1 = 'hide';
-                            var abortClass1 = 'hide';
-                            var terminateClass1 = 'hide';
 
                             var downDownClass = 'hide';
                             if (scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
@@ -427,43 +298,25 @@
                                 scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue) {
                                 downDownClass = 'show';
                             }
-                            if (scope.permission.JobschedulerMaster.restart.terminate) {
-                                restartTerminatetClass1 = 'show';
-                            }
-                            if (scope.permission.JobschedulerMaster.restart.abort) {
-                                restartAbortClass1 = 'show';
-                            }
-                            if (scope.permission.JobschedulerMaster.abort) {
-                                abortClass1 = 'show';
-                            }
-                            if (scope.permission.JobschedulerMaster.terminate) {
-                                terminateClass1 = 'show';
-                            }
-                            if (!scope.permission.JobschedulerMaster.pause) {
-                                pauseClass = 'hide';
-                            }
-                            if (!scope.permission.JobschedulerMaster.continue) {
-                                continueClass = 'hide';
-                            }
 
                             lastId = supervisor.host + supervisor.port;
                             template = template +
 
                             ' <div class="cluster-rect" data-toggle="popover"  trigger="hover" data-content="' + popoverTemplate + '"' +
                             'style="left:' + sLeft + 'px;top:' + 10 + 'px" id="' + supervisor.host + supervisor.port + '">' +
-                            '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node ' + sClassRunning + '" ></span>' +
+                            '<span id="' + 'sp' + supervisor.host + supervisor.port + '"  class="m-t-n-xxs fa fa-stop success-node" ng-class="{\'text-warn\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'UNREACHABLE\',\'text-success\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\' \'}" ></span>' +
                             '<div class="text-left  p-t-sm p-l-sm "><span>' + 'SUPERVISOR' +
                             '</span> <span class="pull-right"><div class="btn-group dropdown" >' +
                             '<a href class=" more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                             '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                            '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
-                            '<a class="dropdown-item ' + abortClass1 + ' ' + disableClass + '" id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
-                            '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 + '" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
-                            '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
-                            '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
-                            '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
-                            '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
-                            '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadLog</a>' +
+                            '<a class="dropdown-item bg-hover-color" ng-click="action1('+sIndex+',\'undefined\',\'terminate\')" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,terminate,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminate</a>' +
+                            '<a class="dropdown-item" ng-click="action1('+sIndex+',\'undefined\',\'abort\')" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'"  id="' + '__supervisor,abort,' + supervisor.host + ':' + supervisor.port + '" translate>button.abort</a>' +
+                            '<a class="dropdown-item" ng-click="action1('+sIndex+',\'undefined\',\'abortAndRestart\')" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,abortAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.abortAndRestart</a>' +
+                            '<a class="dropdown-item" ng-click="action1('+sIndex+',\'undefined\',\'terminateAndRestart\')" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,terminateAndRestart,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestart</a>' +
+                            '<a class="dropdown-item" ng-click="action1('+sIndex+',\'undefined\',\'terminateAndRestartwithTimeout\')" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,terminateAndRestartWithin,' + supervisor.host + ':' + supervisor.port + '" translate>button.terminateAndRestartWithin</a>' +
+                            '<a class="hide dropdown-item"  ng-click="action1(\''+sIndex+'\',\'undefined\',\'pause\')" ng-class="{show:clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'PAUSED\'}" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,pause,' + supervisor.host + ':' + supervisor.port + '" translate>button.pause</a>' +
+                            '<a class="hide dropdown-item" ng-click="action1(\''+sIndex+'\',\'undefined\',\'continue\')" ng-class="{show:clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'PAUSED\'}" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,continue,' + supervisor.host + ':' + supervisor.port + '" translate>button.continue</a>' +
+                            '<a class="dropdown-item" ng-click="action1('+sIndex+',\'undefined\',\'downloadLog\')" ng-disabled="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text!=\'RUNNING\'" id="' + '__supervisor,download_log,' + supervisor.host + ':' + supervisor.port + '" translate>button.downloadLog</a>' +
                             '</div>' +
                             '</div></span></div>';
 
@@ -477,8 +330,7 @@
                             template = template + '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                             '</span></div>';
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
-                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '">' +  supervisor.data.jobscheduler.state.
-                                    _text + '</span></div>';
+                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" ng-class="{\'text-warn\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'UNREACHABLE\',\'text-success\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\''+sIndex+'\'].data.jobscheduler.state._text"></span></div>';
                             }else{
                                  template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '"></span></div>';
                             }
@@ -504,44 +356,13 @@
 
                                     c = c + " yellow-border";
                                 }
-                                var classRunning = 'text-success';
-                                // var classRunning = 'text-black-lt';
-                                var disableClass = '';
-
-
-                                if (master.state && master.state._text.toLowerCase() == 'stopped') {
-                                    classRunning = 'text-danger';
-                                    disableClass = 'disable-link';
-                                }
-                                else if (master.state && (master.state._text == ' '
-                                    || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'starting'
-                                    || master.state._text.toLowerCase() == 'terminating' ||master.state._text.toLowerCase() == 'unreachable')) {
-                                    classRunning = 'text-warn';
-                                    disableClass = 'disable-link';
-
-                                }
-                                else if (master.state && master.state._text.toLowerCase() != 'running') {
-                                    classRunning = 'text-black-lt';
-                                }
-
-
-
-                                if (master.state && master.state._text.toLowerCase() == 'stopped') {
-                                    disableClass = 'disable-link';
-                                }
 
 
                                 var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                     '<br>Version : ' + master.version +
                                     '<br>Started at :<span> ' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-                                var pauseClass = 'show';
-                                var continueClass = 'hide';
-                                if (master.state && master.state._text.toLowerCase() == 'paused') {
-                                    pauseClass = 'hide';
-                                    continueClass = 'show';
-                                }
 
-                                var precedence = '';
+
                                 if (master.clusterType && master.clusterType._type == 'PASSIVE') {
                                     if (master.clusterType.precedence == 0) {
                                         name = 'PRIMARY';
@@ -558,10 +379,6 @@
                                     master.state._text = ' ';
                                 }
 
-                                var restartTerminatetClass1 = 'hide';
-                                var restartAbortClass1 = 'hide';
-                                var abortClass1 = 'hide';
-                                var terminateClass1 = 'hide';
 
                                 var downDownClass = 'hide';
                                 if (scope.permission.JobschedulerMaster.restart.terminate || scope.permission.JobschedulerMaster.restart.abort ||
@@ -570,50 +387,30 @@
                                     downDownClass = 'show';
                                 }
 
-                                if (scope.permission.JobschedulerMaster.restart.terminate) {
-                                    restartTerminatetClass1 = 'show';
-                                }
-                                if (scope.permission.JobschedulerMaster.restart.abort) {
-                                    restartAbortClass1 = 'show';
-                                }
-                                if (scope.permission.JobschedulerMaster.abort) {
-                                    abortClass1 = 'show';
-                                }
-                                if (scope.permission.JobschedulerMaster.terminate) {
-                                    terminateClass1 = 'show';
-                                }
-                                if (!scope.permission.JobschedulerMaster.pause) {
-                                    pauseClass = 'hide';
-                                }
-                                if (!scope.permission.JobschedulerMaster.continue) {
-                                    continueClass = 'hide';
-                                }
+
 
                                 lastId = master.host + master.port;
-                                masterTemplate = '<div  data-toggle="popover" trigger="hover" data-content="' + popoverTemplate + '" ' +
+                                masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
+                                    'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
+                                    '<span class="m-t-n-xxs fa fa-stop success-node" ng-class="{\'text-warn\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\',\'text-success\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'STOPPING\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'STARTING\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'TERMINATING\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\' \'}" id="' + 'sp' + master.host + master.port + '"  ></span>' +
+                                    '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
+                                    '<a href class="more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
+                                    '<div class="dropdown-menu dropdown-ac dropdown-more">' +
+                                    '<a class="dropdown-item ng-click="action1('+sIndex+',\''+index+'\',\'terminate\')" bg-hover-color" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'abort\')" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
+                                    '<a class="dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'abortAndRestart\')" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'terminateAndRestart\')" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'terminateAndRestartWithTimeout\')" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="hide dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'pause\')" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\',show:clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" ng-disabled="clusterStatusData.masters[\''+index+'\'].state._text!=\'RUNNING\'" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="hide dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'continue\')" ng-class="{show:clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'PAUSED\'}" ng-disabled="clusterStatusData.masters[\''+index+'\'].state._text!=\'RUNNING\'" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                    '<a class="dropdown-item" ng-click="action1('+sIndex+',\''+index+'\',\'downloadLog\')" ng-class="{\'disable-link\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,download_log,' + master.host + ':' + master.port + '" translate>button.downloadLog</a>' +
+                                    '</div></div>' +
+                                    '</span></div>' +
+                                    '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
+                                    '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
+                                    '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" ng-class="{\'text-warn\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\',\'text-success\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'STOPPING\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'STARTING\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'TERMINATING\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\''+sIndex+'\'].masters[\''+index+'\'].state._text" >' + master.state._text + '</span></div>' +
 
-
-                                'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
-                                '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '"></span>' +
-                                '<div class="text-left  p-t-sm p-l-sm ">' +
-                                '<span>' + name +
-                                '</span>' + '<span class="pull-right"><div class="btn-group dropdown" >' +
-                                '<a href class=" more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
-                                '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                '<a class="dropdown-item ' + abortClass1 + ' ' + disableClass + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                '<a class="dropdown-item ' + restartAbortClass1 + ' ' + disableClass + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                '<a class="dropdown-item ' + restartTerminatetClass1 + ' ' + disableClass + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                '<a class="dropdown-item ' + restartTerminatetClass1 + ' ' + disableClass + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
-                                '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
-                                '<a class="dropdown-item  ' + disableClass + '" id="' + '__master,download_log,' + master.host + ':' + master.port + '" translate>button.downloadLog</a>' +
-                                '</div>' +
-                                '</div></span> </div>' +
-                                '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
-                                '</span></div><div class="text-sm text-left p-t-xs p-l-sm">' + master.host + ':' + master.port + '</div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="' + classRunning + '">' + master.state._text + '</span></div>' +
-                                '</div>';
+                                    '</div>';
 
                                 if (index == 0) {
                                     template = template + '<div   id="masterContainer">' + masterTemplate;
@@ -682,36 +479,8 @@
                                     master.state = {};
                                     master.state._text = ' ';
                                 }
-                                var pauseClass = 'show';
-                                var restartTerminatetClass1 = 'hide';
-                                var restartAbortClass1 = 'hide';
-                                var abortClass1 = 'hide';
-                                var terminateClass1 = 'hide';
 
-
-                                var continueClass = 'hide';
-                                var disableClass = '';
                                 var classRunning = 'text-success';
-                                if (master.state && master.state._text.toLowerCase() == 'stopped') {
-                                    classRunning = 'text-danger';
-                                    disableClass = 'disable-link';
-                                }
-                                else if (master.state && (master.state._text == ' '
-                                    || master.state._text.toLowerCase() == 'stopping' || master.state._text.toLowerCase() == 'starting'
-                                    || master.state._text.toLowerCase() == 'terminating' ||master.state._text.toLowerCase() == 'unreachable')) {
-                                    classRunning = 'text-warn';
-                                    disableClass = 'disable-link';
-
-                                }
-                                else if (master.state && master.state._text.toLowerCase() != 'running') {
-                                    classRunning = 'text-black-lt';
-                                }
-
-
-                                if (master.state && master.state._text.toLowerCase() == 'paused') {
-                                    pauseClass = 'hide';
-                                    continueClass = 'show';
-                                }
 
                                 lastId = master.host + master.port;
 
@@ -721,47 +490,29 @@
                                     scope.permission.JobschedulerMaster.pause || scope.permission.JobschedulerMaster.continue) {
                                     downDownClass = 'show';
                                 }
-                                if (scope.permission.JobschedulerMaster.restart.terminate) {
-                                    restartTerminatetClass1 = 'show';
 
-                                }
-                                if (scope.permission.JobschedulerMaster.restart.abort) {
-                                    restartAbortClass1 = 'show';
-                                }
-                                if (scope.permission.JobschedulerMaster.abort) {
-                                    abortClass1 = 'show';
-                                }
-                                if (scope.permission.JobschedulerMaster.terminate) {
-                                    terminateClass1 = 'show';
-                                }
-                                if (!scope.permission.JobschedulerMaster.pause) {
-                                    pauseClass = 'hide';
-                                }
-                                if (!scope.permission.JobschedulerMaster.continue) {
-                                    continueClass = 'hide';
-                                }
                                 var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
                                     '<br>Version : ' + master.version +
                                     '<br>Started at : <span id="' + 'popover0011' + '">' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
                                 var masterTemplate = '<div data-toggle="popover"   data-content=\'' + popoverTemplate + '\'' +
                                     'style="left:' + mLeft + 'px;top:' + top + 'px" id="' + master.host + master.port + '" class="' + c + '"   >' +
-                                    '<span id="' + 'sp' + master.host + master.port + '" class="m-t-n-xxs fa fa-stop success-node ' + classRunning + '" ></span>' +
+                                    '<span class="m-t-n-xxs fa fa-stop success-node" ng-class="{\'text-success\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'STOPPING\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\'STARTING\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\'TERMINATING\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\' \'}" id="' + 'sp' + master.host + master.port + '"  ></span>' +
                                     '<div class="text-left  p-t-sm p-l-sm "><span>' + name + '</span><span class="pull-right"><div class="btn-group dropdown " >' +
                                     '<a href class="more-option ' + downDownClass + '" data-toggle="dropdown" ><i class="text fa fa-ellipsis-h"></i></a>' +
                                     '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                                    '<a class="dropdown-item bg-hover-color ' + terminateClass1 + ' ' + disableClass + '" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + abortClass1 + '" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + restartAbortClass1 + '" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
-                                    '<a class="dropdown-item ' + disableClass + ' ' + restartTerminatetClass1 + '" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
-                                    '<a class="dropdown-item ' + pauseClass + ' ' + disableClass + '" id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
-                                    '<a class="dropdown-item ' + continueClass + ' ' + disableClass + '" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
-                                    '<a class="dropdown-item  '  + disableClass + '" id="' + '__master,download_log,' + master.host + ':' + master.port + '" translate>button.downloadLog</a>' +
+                                    '<a class="dropdown-item bg-hover-color" ng-click="action1(\'undefined\',\''+index+'\',\'terminate\')"  ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,terminate,' + master.host + ':' + master.port + '" translate>button.terminate</a>' +
+                                    '<a class="dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'abort\')" ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,abort,' + master.host + ':' + master.port + '" translate>button.abort</a>' +
+                                    '<a class="dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'abortAndRestart\')" ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,abortAndRestart,' + master.host + ':' + master.port + '" translate>button.abortAndRestart</a>' +
+                                    '<a class="dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'terminateAndRestart\')" ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,terminateAndRestart,' + master.host + ':' + master.port + '" translate>button.terminateAndRestart</a>' +
+                                    '<a class="dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'terminateAndRestartWithTimeout\')" ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,terminateAndRestartWithin,' + master.host + ':' + master.port + '" translate>button.terminateAndRestartWithin</a>' +
+                                    '<a class="hide dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'pause\')" ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\',show:clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}"  id="' + '__master,pause,' + master.host + ':' + master.port + '" translate>button.pause</a>' +
+                                    '<a class="hide dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'continue\')" ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\',show:clusterStatusData.members.masters[\''+index+'\'].state._text==\'PAUSED\'}" ng-disabled="clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\'" id="' + '__master,continue,' + master.host + ':' + master.port + '" translate>button.continue</a>' +
+                                    '<a class="dropdown-item" ng-click="action1(\'undefined\',\''+index+'\',\'downloadLog\')"  ng-class="{\'disable-link\':clusterStatusData.members.masters[\''+index+'\'].state._text!=\'RUNNING\' && clusterStatusData.members.masters[\''+index+'\'].state._text!=\'PAUSED\'}" id="' + '__master,download_log,' + master.host + ':' + master.port + '" translate>button.downloadLog</a>' +
                                     '</div></div>' +
                                     '</span></div>' +
                                     '<div class="text-left p-t-xs p-l-sm block-ellipsis-cluster"><i class="fa fa-' + master.os.name.toLowerCase() + '"></i><span class="p-l-sm text-sm" title="' + master.jobschedulerId + '">' + master.jobschedulerId +
                                     '</span></div><div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
-                                    '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" class="' + classRunning + '">' + master.state._text + '</span></div>' +
+                                    '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" ng-class="{\'text-warn\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\',\'text-success\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.members.masters[\''+index+'\'].state._text==\'STOPPING\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\'STARTING\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\'TERMINATING\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\'||clusterStatusData.members.masters[\''+index+'\'].state._text==\' \'}" ng-bind="clusterStatusData.members.masters[\''+index+'\'].state._text">' + master.state._text + '</span></div>' +
 
                                     '</div>';
 
@@ -910,6 +661,39 @@
                     }, 200);
                 }
 
+                vm.action1=function(supervisor,master,action){
+                    console.log("Action "+action);
+                    var item ='';
+                    var host='';
+                    var port='';
+                    var id='';
+                    if(master=='undefined'&&supervisor!='undefined'){
+                        item ='supervisor';
+                        host=vm.clusterStatusData.supervisors[supervisor].host;
+                        port=vm.clusterStatusData.supervisors[supervisor].port;
+                        id=vm.clusterStatusData.supervisors[supervisor].jobschedulerId;
+                        console.log("Id "+id);
+                    }else if(master!='undefined'&&supervisor!='undefined'){
+                        item ='master';
+                        host=vm.clusterStatusData.supervisors[supervisor].masters[master].host;
+                        port=vm.clusterStatusData.supervisors[supervisor].masters[master].host;
+                        id=vm.clusterStatusData.supervisors[supervisor].masters[master].jobschedulerId;
+                    }else if(master!='undefined'&&supervisor=='undefined'){
+                        item ='master';
+                        host=vm.clusterStatusData.members.masters[master].host;
+                        port=vm.clusterStatusData.members.masters[master].port;
+                         id=vm.clusterStatusData.members.masters[master].jobschedulerId;
+                    }
+
+                     vm.onOperation({
+                                    item: item,
+                                    action: action,
+                                    host: host,
+                                    port: port,
+                                    id:id
+                                });
+                }
+
                 vm.drawConnections = drawConnections;
                 function drawConnections() {
                     var dLLeft = 0;
@@ -923,53 +707,8 @@
                     }
 
 
-                    var anchors = document.querySelectorAll("a[id^='__']");
-                    angular.forEach(anchors, function (anchor, index) {
-                        anchor.addEventListener('click', function (e) {
 
-                            if (/__(.+),(.+),(.+):(\d+)/.test(anchor.id)) {
 
-                                var results = /__(.+),(.+),(.+):(\d+)/.exec(anchor.id);
-
-                                vm.onOperation({
-                                    item: results[1],
-                                    action: results[2],
-                                    host: results[3],
-                                    port: results[4]
-                                });
-                                /*                                if (results[2] !== 'terminateAndRestartWithin') {
-                                 changeToWaiting(results[3], results[4]);
-                                 }*/
-                                //vm.getSupervisor(true);
-                            }
-
-                        })
-                    });
-
-                    function changeToWaiting(host, port) {
-                        angular.forEach(vm.clusterStatusData.supervisors, function (supervisor, sIndex) {
-                            if (supervisor.host == host && supervisor.port == port) {
-                                supervisor.data.jobscheduler.state._text = 'waiting_for_response';
-                                vm.refreshSupervisorState(supervisor);
-                            }
-                            angular.forEach(supervisor.masters, function (master, index) {
-                                if (master.host == host && master.port == port) {
-                                    master.state._text = 'waiting_for_response';
-                                    vm.refreshMasterState(master);
-                                }
-                            })
-                        });
-
-                        angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
-                            if (master.host == host && master.port == port) {
-                                if (!master.state) {
-                                    master.state = {};
-                                }
-                                master.state._text = 'waiting_for_response';
-                                vm.refreshMasterState(master);
-                            }
-                        })
-                    }
 
                     angular.forEach(vm.clusterStatusData.supervisors, function (supervisor, sIndex) {
                         var clusterStatusContainer = document.getElementById('clusterStatusContainer');
@@ -1035,8 +774,9 @@
                             node.style.setProperty('top', dLTop + 'px');
                             node.style.setProperty('left', dLLeft + 'px');
                             node.style.setProperty('width', dLeft - mLeft - sWidth / 2 + 'px');
-                            node.style.setProperty('border', '1px dashed #D9D9D9');
+                            node.setAttribute('ng-style', '{"border":(clusterStatusData.supervisor[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'UNREACHABLE\'?\'1px dashed #efb700\':\'1px dashed #D9D9D9\')}');
                             clusterStatusContainer.appendChild(node);
+                            $compile(node)(vm);
 
                             var node = document.createElement('div');
                             node.setAttribute('id', '&&' + master.host + master.port + '&&database02');
@@ -1045,8 +785,9 @@
                             node.style.setProperty('left', dLLeft + 'px');
                             node.style.setProperty('width', '1px');
                             node.style.setProperty('height', mTop - dLTop + 'px');
-                            node.style.setProperty('border', '1px dashed #D9D9D9');
+                            node.setAttribute('ng-style', '{"border":(clusterStatusData.supervisor[\''+sIndex+'\'].masters[\''+index+'\'].state._text==\'UNREACHABLE\'?\'1px dashed #efb700\':\'1px dashed #D9D9D9\')}');
                             clusterStatusContainer.appendChild(node);
+                            $compile(node)(vm);
 
                             var lNoConnection = '#D9D9D9';
 
@@ -1140,8 +881,9 @@
                             node.style.setProperty('left', dLLeft + 'px');
                             node.style.setProperty('height', '1px');
                             node.style.setProperty('width', dLeft - mLeft - sWidth / 2 + 'px');
-                            node.style.setProperty('border', '1px dashed #D9D9D9');
+                            node.setAttribute('ng-style', '{"border":(clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\'?\'1px dashed #efb700\':\'1px dashed #D9D9D9\')}');
                             clusterStatusContainer.appendChild(node);
+                            $compile(node)(vm);
 
                             var node = document.createElement('div');
                             node.setAttribute('id', '&&' + master.host + master.port + '&&database02');
@@ -1150,8 +892,9 @@
                             node.style.setProperty('left', dLLeft + 'px');
                             node.style.setProperty('width', '1px');
                             node.style.setProperty('height', mTop - dLTop + 'px');
-                            node.style.setProperty('border', '1px dashed #D9D9D9');
+                            node.setAttribute('ng-style', '{"border":(clusterStatusData.members.masters[\''+index+'\'].state._text==\'UNREACHABLE\'?\'1px dashed #efb700\':\'1px dashed #D9D9D9\')}');
                             clusterStatusContainer.appendChild(node);
+                            $compile(node)(vm);
 
                         })
                     }
@@ -1167,12 +910,14 @@
 
                 vm.$on('event-started', function (event, args) {
                     if (args.events && args.events.length > 0) {
-                        angular.forEach(args.events[0].eventSnapshots, function (value1) {
+                        angular.forEach(args.otherEvents, function (event) {
+                         angular.forEach(event.eventSnapshots, function (value1) {
                             if (value1.eventType.indexOf("Scheduler") !== -1) {
-                                //console.log("Scheduler event "+JSON.stringify(value1));
                                 vm.getSupervisor(value1);
                             }
                         });
+                        });
+
                     }
                 });
             }]

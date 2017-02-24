@@ -58,13 +58,14 @@
             configObj.jobschedulerId = $scope.schedulerIds.selected;
             configObj.account = $scope.permission.user;
             configObj.configurationType = "SETTING";
-            vm.settingId = 0;
+            if(!$window.sessionStorage.settingId)
+            $window.sessionStorage.settingId = 0;
             UserService.configurations(configObj).then(function (res1) {
                 if (res1.configurations && res1.configurations.length > 0) {
-                    vm.settingId = res1.configurations[0].id;
+                    $window.sessionStorage.settingId = res1.configurations[0].id;
                     UserService.configuration({
                         jobschedulerId: $scope.schedulerIds.selected,
-                        id: vm.settingId
+                        id: $window.sessionStorage.settingId
                     }).then(function (res) {
                         if (res.configuration && res.configuration.configurationItem) {
                             $rootScope.clientLogFilter = JSON.parse(res.configuration.configurationItem);
@@ -144,7 +145,7 @@
                 var subHeaderHt = 58;
                 var ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
-                $('.max-ht2').css('height', ht - 50 + 'px');
+                $('.max-ht2').css('height', ht - 54 + 'px');
                 $('.max-tree-ht').css('height', ht - 42 + 'px');
             } else {
                 $('.max-ht').css('height', 'auto');
@@ -222,74 +223,73 @@
             preferences.events.jobChainCount = 1;
             preferences.events.positiveOrderCount = 1;
             preferences.events.negativeOrderCount = 2;
-
             configObj.configurationItem = JSON.stringify(preferences);
             configObj.id = 0;
             $window.sessionStorage.preferences = configObj.configurationItem;
-            UserService.saveConfiguration(configObj).then(function(res){
-                 $window.sessionStorage.preferenceId = res.id;
+            UserService.saveConfiguration(configObj).then(function (res) {
+                $window.sessionStorage.preferenceId = res.id;
             })
         }
 
-         function getUserProfileConfiguration(id, user) {
-             var configObj = {};
-             configObj.jobschedulerId = id;
-             configObj.account = user;
-             configObj.configurationType = "PROFILE";
-              var preferences = {};
-             UserService.configurations(configObj).then(function (res1) {
+        function getUserProfileConfiguration(id, user) {
+            var configObj = {};
+            configObj.jobschedulerId = id;
+            configObj.account = user;
+            configObj.configurationType = "PROFILE";
+            var preferences = {};
+            UserService.configurations(configObj).then(function (res1) {
 
-                 if (res1.configurations && res1.configurations.length > 0) {
-                     $window.sessionStorage.preferenceId = res1.configurations[0].id;
-                     UserService.configuration({
-                         jobschedulerId: id,
-                         id: res1.configurations[0].id
-                     }).then(function (res) {
+                if (res1.configurations && res1.configurations.length > 0) {
+                    $window.sessionStorage.preferenceId = res1.configurations[0].id;
+                    UserService.configuration({
+                        jobschedulerId: id,
+                        id: res1.configurations[0].id
+                    }).then(function (res) {
 
-                         if (res.configuration && res.configuration.configurationItem) {
-                             $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
-                             document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
-                             preferences = JSON.parse($window.sessionStorage.preferences);
+                        if (res.configuration && res.configuration.configurationItem) {
+                            $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
+                            document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
+                            preferences = JSON.parse($window.sessionStorage.preferences);
 
-                             if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true) && !preferences.auditLog) {
-                                 preferences.auditLog = true;
-                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
-                             }
-                             $window.localStorage.$SOS$THEME = preferences.theme;
-                             if (preferences.locale != $rootScope.locale.lang) {
-                                 $window.localStorage.$SOS$LANG = preferences.locale;
-                                 $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
-                                     gettextCatalog.setCurrentLanguage(preferences.locale);
-                                     gettextCatalog.setStrings(preferences.locale, data);
-                                 });
-                             }
-                         } else {
-                             setUserPrefrences(preferences,configObj);
-                         }
+                            if (($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true) && !preferences.auditLog) {
+                                preferences.auditLog = true;
+                                $window.sessionStorage.preferences = JSON.stringify(preferences);
+                            }
+                            $window.localStorage.$SOS$THEME = preferences.theme;
+                            if (preferences.locale != $rootScope.locale.lang) {
+                                $window.localStorage.$SOS$LANG = preferences.locale;
+                                $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
+                                    gettextCatalog.setCurrentLanguage(preferences.locale);
+                                    gettextCatalog.setStrings(preferences.locale, data);
+                                });
+                            }
+                        } else {
+                            setUserPrefrences(preferences, configObj);
+                        }
 
-                         $rootScope.$broadcast('reloadPreferences');
-                     }, function () {
-                         setUserPrefrences(preferences,configObj);
-                         $rootScope.$broadcast('reloadPreferences');
-                     });
-                 } else {
-                     $window.sessionStorage.preferenceId = 0;
-                     setUserPrefrences(preferences,configObj);
-                     $rootScope.$broadcast('reloadPreferences');
-                 }
-             }, function () {
-                 setUserPrefrences(preferences,configObj);
-                 $rootScope.$broadcast('reloadPreferences');
-             });
-         }
+                        $rootScope.$broadcast('reloadPreferences');
+                    }, function () {
+                        setUserPrefrences(preferences, configObj);
+                        $rootScope.$broadcast('reloadPreferences');
+                    });
+                } else {
+                    $window.sessionStorage.preferenceId = 0;
+                    setUserPrefrences(preferences, configObj);
+                    $rootScope.$broadcast('reloadPreferences');
+                }
+            }, function () {
+                setUserPrefrences(preferences, configObj);
+                $rootScope.$broadcast('reloadPreferences');
+            });
+        }
 
         vm.username = SOSAuth.currentUserData;
         setPermission();
         setIds();
-        setPreferences();
-        if(vm.username && $scope.schedulerIds.selected){
+        if (vm.username && $scope.schedulerIds.selected) {
             getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
         }
+        setPreferences();
 
         $scope.$on('reloadPreferences', function () {
             setPreferences();
@@ -562,16 +562,18 @@
         });
 
         vm.saveSettingConf = function () {
-            var configObj = {};
-            configObj.jobschedulerId = vm.schedulerIds.selected;
-            configObj.account = vm.permission.user;
-            configObj.configurationType = "SETTING";
-            configObj.id = vm.settingId;
-            configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
-            $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
-            UserService.saveConfiguration(configObj).then(function(res){
-                vm.settingId= res.id;
-            })
+            if($window.sessionStorage.settingId) {
+                var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "SETTING";
+                configObj.id = $window.sessionStorage.settingId;
+                configObj.configurationItem = JSON.stringify($rootScope.clientLogFilter);
+                $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    $window.sessionStorage.settingId = res.id;
+                });
+            }
         };
 
         $scope.$on('$viewContentLoaded', function () {
@@ -590,7 +592,7 @@
         toasty.clear();
 
         function getDateFormat() {
-            vm.dataFormat = vm.userPreferences.dateFormat;
+            vm.dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
             if (vm.dataFormat.match('HH:mm')) {
                 vm.dataFormat = vm.dataFormat.replace('HH:mm', '');
             }
@@ -690,6 +692,7 @@
             var date = new Date(vm.selectedJobScheduler.startedAt);
             date.setMilliseconds(date.getMilliseconds() + 1);
             vm.selectedJobScheduler.startedAt = date;
+            if (vm.userPreferences)
             getDateFormat();
         });
 
@@ -812,7 +815,12 @@
                     if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
                         vm.events = [];
                         vm.events.push(res.events[i]);
-                        $rootScope.$broadcast('event-started', {events: vm.events});
+                        if(vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE'){
+                            $rootScope.$broadcast('event-started', {events: vm.events,otherEvents:res.events});
+                        }else{
+                            $rootScope.$broadcast('event-started', {events: vm.events,otherEvents:vm.events});
+                        }
+
                     }
                     vm.eventsRequest.push({
                         jobschedulerId: res.events[i].jobschedulerId,
@@ -1286,28 +1294,17 @@
 
             vm.logError = false;
             try {
-
                 var dom_document = dom_parser.parseFromString(vm.xml, "text/xml");
                 if (dom_document.documentElement.nodeName == "parsererror") {
                     throw new Error("Error at XML answer: " + dom_document.documentElement.firstChild.nodeValue);
                 } else {
                     if (vm.required) {
                         if (vm.comments.comment) {
-                            if (vm.sch.scheduleName) {
-                                var root = x2js.xml_str2json(vm.schedule.runTime);
-                                root.schedule._name = vm.sch.scheduleName;
-                                vm.schedule.runTime = x2js.json2xml_str(root);
-                            }
                             $uibModalInstance.close('ok');
                         } else {
                             vm.logError = true;
                         }
                     } else {
-                        if (vm.sch.scheduleName) {
-                            var root = x2js.xml_str2json(vm.schedule.runTime);
-                            root.schedule._name = vm.sch.scheduleName;
-                            vm.schedule.runTime = x2js.json2xml_str(root);
-                        }
                         $uibModalInstance.close('ok');
                     }
                 }
@@ -1764,20 +1761,27 @@
             run_time = _xml.run_time || _xml.schedule || {};
             vm.runTime1.timeZone = run_time._time_zone;
 
-            if (run_time._substitute) {
-                vm.sch._substitute = run_time._substitute;
-            }
-            if (run_time._valid_from) {
 
-                vm.from.date = run_time._valid_from;
-                vm.from.time = run_time._valid_from;
-            }
-            if (run_time._valid_to) {
 
-                vm.to.date = run_time._valid_to;
-                vm.to.time = run_time._valid_to;
-            }
+                if (run_time._valid_from) {
+                    vm.from.date = run_time._valid_from;
+                    vm.from.time = run_time._valid_from;
+                }
+                if (run_time._valid_to) {
 
+                    vm.to.date = run_time._valid_to;
+                    vm.to.time = run_time._valid_to;
+                }
+                if (run_time._title) {
+                    vm.sch._title = run_time._title;
+                }
+                if (run_time._name) {
+                    vm.sch._name = run_time._name;
+                }else {
+                    if (run_time._substitute) {
+                        vm.sch._substitute = run_time._substitute;
+                    }
+                }
             if (isEmpty(vm.runTime1.holidays) && run_time.holidays) {
                 vm.runTime1.holidays = {};
 
@@ -4049,24 +4053,10 @@
             vm.editor.nextPage = false
         };
 
-        function setDefaultFromTime() {
-            var date = moment();
-            date.set({hour: 0, minute: 0, second: 0, millisecond: 0});
-            return date;
-        }
-
-        function setDefaultToTime() {
-            var date = moment();
-            date.set({hour: 23, minute: 59, second: 59, millisecond: 0});
-
-            return date;
-        }
-
+   
         vm.from = {};
         vm.to = {};
         vm.error = {};
-        vm.from.time = setDefaultFromTime();
-        vm.to.time = setDefaultToTime();
 
         function saveSch(param) {
             if (param == 'done') {
@@ -4074,9 +4064,7 @@
 
                     var _xml = x2js.xml_str2json(vm.xml);
                     if (typeof _xml.schedule !== 'object') _xml.schedule = {};
-                    if (vm.sch._substitute) {
-                        _xml.schedule._substitute = vm.sch._substitute;
-                    }
+
                     if (vm.sch._valid_from) {
                         _xml.schedule._valid_from = vm.sch._valid_from;
                     }
@@ -4086,6 +4074,16 @@
                     if (vm.sch._title) {
                         _xml.schedule._title = vm.sch._title;
                     }
+                    if (vm.sch._name) {
+                        console.log('if....')
+                        _xml.schedule._name = vm.sch._name;
+                    }else {
+                        if (vm.sch._substitute) {
+                            console.log('else....'+vm.sch._name)
+                            _xml.schedule._substitute = vm.sch._substitute;
+                        }
+                    }
+
                     var xmlStr = x2js.json2xml_str(_xml);
                     xmlStr = xmlStr.replace(/,/g, ' ');
 
@@ -4125,11 +4123,9 @@
             if (vm.sch._valid_from || vm.sch._valid_to || vm.sch._substitute) {
 
                 vm.error.scheduleRequired = !vm.sch._substitute;
-                vm.error.validFromRequired = !vm.sch._valid_from;
-                vm.error.validToRequired = !vm.sch._valid_to;
                 vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
 
-                if (vm.sch._valid_from && vm.sch._valid_to && vm.sch._substitute && !vm.error.validDate) {
+                if (vm.sch._substitute && !vm.error.validDate) {
                     saveSch(param);
                 }
             } else {
@@ -4137,6 +4133,43 @@
             }
 
         };
+        vm.saveScheduleDetail1 = function () {
+            vm.sch._valid_from = undefined;
+            vm.sch._name = vm.substituteObj.name;
+
+            vm.sch._title = vm.substituteObj.title;
+            if (vm.substituteObj.fromTime && vm.substituteObj.fromDate) {
+                var date = new Date(vm.substituteObj.fromDate);
+                vm.substituteObj.fromTime = new Date(vm.substituteObj.fromTime);
+                date.setHours(vm.substituteObj.fromTime.getHours());
+                date.setMinutes(vm.substituteObj.fromTime.getMinutes());
+                date.setSeconds(vm.substituteObj.fromTime.getSeconds());
+                vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
+            }
+            vm.sch._valid_to = undefined;
+            if (vm.substituteObj.toTime && vm.substituteObj.toDate) {
+                var date = new Date(vm.substituteObj.toDate);
+                vm.substituteObj.toTime = new Date(vm.substituteObj.toTime);
+                date.setHours(vm.substituteObj.toTime.getHours());
+                date.setMinutes(vm.substituteObj.toTime.getMinutes());
+                date.setSeconds(vm.substituteObj.toTime.getSeconds());
+                vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
+            }
+
+            if (vm.sch._valid_from || vm.sch._valid_to || vm.sch._name) {
+
+                vm.error.scheduleRequired = !vm.sch._name;
+                vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
+
+                if (vm.sch._name && !vm.error.validDate) {
+                    saveSch();
+                }
+            } else {
+                saveSch();
+            }
+
+        };
+
 
         vm.holidayDates = [];
         vm.calendarFiles = [];
@@ -4386,8 +4419,12 @@
                 vm.run_time._time_zone = vm.runTime1.timeZone;
             }
             if (vm.sch) {
-                if (vm.sch._substitute) {
-                    vm.run_time._substitute = vm.sch._substitute;
+                if (vm.sch._name) {
+                    vm.run_time._name = vm.sch._name;
+                }else {
+                    if (vm.sch._substitute) {
+                        vm.run_time._substitute = vm.sch._substitute;
+                    }
                 }
                 if (vm.sch._valid_from) {
                     vm.run_time._valid_from = vm.sch._valid_from;
@@ -4437,7 +4474,8 @@
                 if (!isEmpty(vm.order)) {
                     vm.xml = '<run_time></run_time>';
                 }
-                else {
+                else if(vm.scheduleAction) {
+
                     var str = '<schedule';
                     if (vm.sch._substitute) {
                         str += ' substitute="' + vm.sch._substitute + '"';
@@ -4454,10 +4492,16 @@
 
                     vm.xml = str + '></schedule>';
 
+                }else{
+                    vm.xml = '<schedule></schedule>';
                 }
             }
+
             getXml2Json(vm.xml);
         });
+        if(vm.scheduleAction){
+            vm.createNewRunTime();
+        }
 
         $scope.$on('$destroy', function () {
             watcher1();

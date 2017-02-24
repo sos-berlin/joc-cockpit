@@ -674,6 +674,7 @@
   "REMOVED": "entfernt",
   "DISABLED": "inaktiv",
   "ACTIVE": "aktiv",
+  "INACTIVE": "inaktiv",
   "SKIPPED": "übersprungen",
   "SUCCESSFUL": "erfolgreich",
   "FAILED": "fehlgeschlagen",

@@ -62,6 +62,8 @@
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
 
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
+                    $window.localStorage.$SOS$URL= '';
+                    $window.localStorage.$SOS$URLPARAMS = {};
                 } else {
                     $location.path('/');
                 }

@@ -3742,29 +3742,33 @@
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (value1) {
                     if (value1.path != undefined && value1.eventType.indexOf("Order") !== -1) {
+                        if($location.search().path){
+                            if (value1.path == $location.search().path)
+                            getOrderByPath($location.search().path);
+                        }else {
+                            if (vm.orderFilters.filter.state == 'ALL') {
+                                angular.forEach(vm.allOrders, function (value2, index) {
 
-                        if (vm.orderFilters.filter.state == 'ALL') {
-                            angular.forEach(vm.allOrders, function (value2, index) {
+                                    if (value2.path == value1.path) {
 
-                                if (value2.path == value1.path) {
-
-                                    var obj = {};
-                                    obj.jobschedulerId = $scope.schedulerIds.selected;
-                                    obj.orderId = value2.orderId;
-                                    obj.jobChain = value2.jobChain;
-                                    obj.compact = true;
-                                    OrderService.getOrder(obj).then(function (res) {
-                                        if (res.order) {
-                                            res.order.title = angular.copy(vm.allOrders[index].title);
-                                            res.order.path1 = angular.copy(vm.allOrders[index].path1);
-                                            res.order.params = angular.copy(vm.allOrders[index].params);
-                                            vm.allOrders[index] = res.order;
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            navFullTreeForUpdateOrder(value1.path.substring(0, value1.path.lastIndexOf('/')));
+                                        var obj = {};
+                                        obj.jobschedulerId = $scope.schedulerIds.selected;
+                                        obj.orderId = value2.orderId;
+                                        obj.jobChain = value2.jobChain;
+                                        obj.compact = true;
+                                        OrderService.getOrder(obj).then(function (res) {
+                                            if (res.order) {
+                                                res.order.title = angular.copy(vm.allOrders[index].title);
+                                                res.order.path1 = angular.copy(vm.allOrders[index].path1);
+                                                res.order.params = angular.copy(vm.allOrders[index].params);
+                                                vm.allOrders[index] = res.order;
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                navFullTreeForUpdateOrder(value1.path.substring(0, value1.path.lastIndexOf('/')));
+                            }
                         }
                     }
                     if (value1.eventType.indexOf("FileBased") !== -1 && value1.objectType == "ORDER") {

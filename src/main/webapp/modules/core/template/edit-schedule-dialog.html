@@ -104,8 +104,8 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="editor.hidePervious && !editor.nextPage">
-                <div ng-hide="editor.hideEvery">
+            <div ng-if="editor.hidePervious && !editor.nextPage">
+                <div ng-if="!editor.hideEvery">
                        <div class="b-b">
                             <ul class="nav nav-tabs">
                                 <li class="nav-item">
@@ -136,24 +136,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group row" ng-class="{'has-error': (error.validFromRequired)}">
+                                <div class="form-group row">
                                     <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-focus="error.validFromRequired=false;error.validDate=false" name="date1" ng-model="from.date" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                                        <input class="form-control input-date" ng-focus="error.validDate=false" name="date1" ng-model="from.date" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                                         <input ng-disabled="!from.date" class="form-control input-time" ng-model="from.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
-                                        <div class="help-block text-danger" ng-if="error.validFromRequired">
-                                           <div translate>message.validFromError</div>
-                                       </div>
                                     </div>
                                 </div>
-                                <div class="form-group row"  ng-class="{'has-error': (error.validDate || error.validToRequired)}">
+                                <div class="form-group row"  ng-class="{'has-error': (error.validDate)}">
                                     <label class="col-sm-3 form-control-label" translate>label.validTo</label>
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-focus="error.validToRequired=false;error.validDate=false" name="date2" ng-model="to.date" data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{from.date}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                                        <input class="form-control input-date" ng-focus="error.validDate=false" name="date2" ng-model="to.date" data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{from.date}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                                         <input ng-disabled="!to.date" class="form-control input-time" ng-model="to.time" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
-                                        <div class="help-block text-danger" ng-if="error.validToRequired">
-                                           <div translate>message.validToError</div>
-                                       </div>
                                         <div class="help-block text-danger" ng-if="error.validDate">
                                            <div translate>message.validDate</div>
                                        </div>
@@ -161,7 +155,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-3">
-                                        <button type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || error.scheduleRequired || error.validFromRequired || error.validDate || error.validToRequired"
+                                        <button type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || error.scheduleRequired || error.validDate"
                                                 ng-click="saveScheduleDetail('done')" translate>button.done
                                         </button>
                                     </div>
@@ -184,7 +178,7 @@
                             </div>
                         </div>
                 </div>
-                <div ng-show="editor.hideEvery">
+                <div ng-if="editor.hideEvery">
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
                             <span class="text-primary text-u-l" translate>label.create</span>
@@ -374,96 +368,6 @@
                                         <td colspan="3" ng-class="{'primary': getSelectedMonthDays('0')}"
                                             ng-if="runTime.isUltimos"><a ng-click="selectMonthDays('0')">Last Day</a>
                                         </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div ng-show="runTime.every == 'yearDays'">
-                        <div class="form-group row">
-                            <label class="col-sm-3 form-control-label" translate>label.month</label>
-
-                            <div class="col-sm-2">
-                                <input class="form-control" placeholder="YYYY" ng-model="runTime.yeardays.month"
-                                       type="text">
-                            </div>
-                            <div class="col-sm-2">
-                                <input class="form-control" placeholder="MM" ng-model="runTime.yeardays.year"
-                                       type="text">
-                            </div>
-                            <div class="col-sm-6 m-t">
-                                <table class="table table-bordered table-striped text-center m-b-xs w">
-                                    <tr>
-                                        <td ng-class="{'primary': getSelectedMonthDays('1')}"><a
-                                                ng-click="selectMonthDays('1')">1</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('2')}"><a
-                                                ng-click="selectMonthDays('2')">2</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('3')}"><a
-                                                ng-click="selectMonthDays('3')">3</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('4')}"><a
-                                                ng-click="selectMonthDays('4')">4</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('5')}"><a
-                                                ng-click="selectMonthDays('5')">5</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('6')}"><a
-                                                ng-click="selectMonthDays('6')">6</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('7')}"><a
-                                                ng-click="selectMonthDays('7')">7</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td ng-class="{'primary': getSelectedMonthDays('8')}"><a
-                                                ng-click="selectMonthDays('8')">8</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('9')}"><a
-                                                ng-click="selectMonthDays('9')">9</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('10')}"><a
-                                                ng-click="selectMonthDays('10')">10</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('11')}"><a
-                                                ng-click="selectMonthDays('11')">11</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('12')}"><a
-                                                ng-click="selectMonthDays('12')">12</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('13')}"><a
-                                                ng-click="selectMonthDays('13')">13</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('14')}"><a
-                                                ng-click="selectMonthDays('14')">14</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td ng-class="{'primary': getSelectedMonthDays('15')}"><a
-                                                ng-click="selectMonthDays('15')">15</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('16')}"><a
-                                                ng-click="selectMonthDays('16')">16</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('17')}"><a
-                                                ng-click="selectMonthDays('17')">17</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('18')}"><a
-                                                ng-click="selectMonthDays('18')">18</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('19')}"><a
-                                                ng-click="selectMonthDays('19')">19</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('20')}"><a
-                                                ng-click="selectMonthDays('20')">20</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('21')}"><a
-                                                ng-click="selectMonthDays('21')">21</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td ng-class="{'primary': getSelectedMonthDays('22')}"><a
-                                                ng-click="selectMonthDays('22')">22</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('23')}"><a
-                                                ng-click="selectMonthDays('23')">23</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('24')}"><a
-                                                ng-click="selectMonthDays('24')">24</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('25')}"><a
-                                                ng-click="selectMonthDays('25')">25</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('26')}"><a
-                                                ng-click="selectMonthDays('26')">26</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('27')}"><a
-                                                ng-click="selectMonthDays('27')">27</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('28')}"><a
-                                                ng-click="selectMonthDays('28')">28</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td ng-class="{'primary': getSelectedMonthDays('29')}"><a
-                                                ng-click="selectMonthDays('29')">29</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('30')}"><a
-                                                ng-click="selectMonthDays('30')">30</a></td>
-                                        <td ng-class="{'primary': getSelectedMonthDays('31')}"><a
-                                                ng-click="selectMonthDays('31')">31</a></td>
                                     </tr>
                                 </table>
                             </div>
@@ -687,7 +591,7 @@
 
                 </div>
             </div>
-            <div ng-show="editor.nextPage">
+            <div ng-if="editor.nextPage">
                 <div class="form-group row">
                     <div class="col-sm-3 form-control-label" translate>label.timeZone</div>
                     <div class="col-sm-6">
@@ -704,8 +608,7 @@
                     <label class="col-sm-3" translate>label.date</label>
                         <div class="col-sm-6">
                             <input class="form-control input-date" ng-model="holidayDate"
-                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text"
-                                   >
+                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
                             <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm" ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
                         </div>
                 </div>
@@ -795,7 +698,7 @@
                 translate>button.cancel
         </button>
         <button ng-if="editor.hidePervious && selectedTab !='runtime'" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
-                ng-disabled="form.$invalid || error.scheduleRequired || error.validFromRequired || error.validDate || error.validToRequired"
+                ng-disabled="form.$invalid || error.scheduleRequired || error.validDate"
                 ng-click="saveScheduleDetail()" translate>button.next
         </button>
         <button ng-if="editor.hidePervious && selectedTab =='runtime'" ng-hide="editor.hideEvery" type="button" class="btn btn-primary btn-sm"
