@@ -364,12 +364,11 @@
                                                     <tr >
                                                         <td>
                                                             <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                        <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                            <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                             <span ng-bind="auditLog.created | stringToDate"></span>
                                                         </td>
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td width="30"><span ng-bind="auditLog.parameters"></span></td>
                                                         <td><span ng-bind="auditLog.orderId"></span></td>
                                                         <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>

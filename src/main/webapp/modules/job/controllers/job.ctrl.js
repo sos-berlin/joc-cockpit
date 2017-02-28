@@ -3614,13 +3614,13 @@
 
         vm.showJobChains = function (job) {
             if (job.usedInJobChains > 0) {
-                $('#jobChain').modal('show');
+                job.showJobChains = true
                 var jobs = {};
                 jobs.jobs = [];
                 jobs.jobschedulerId = vm.schedulerIds.selected;
                 jobs.jobs.push({job: job.path});
                 JobService.getJobsP(jobs).then(function (res) {
-                    vm.job = res.jobs[0];
+                    job.jobChains = res.jobs[0].jobChains;
                 }, function (err) {
 
                 });

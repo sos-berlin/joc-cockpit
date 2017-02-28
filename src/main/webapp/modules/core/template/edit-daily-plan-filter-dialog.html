@@ -2,31 +2,40 @@
     <div class="modal-header primary">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img
                 src="images/close-button.png"></span></button>
-        <h4 class="modal-title"><span ng-if="action == 'edit'" translate>label.updateFilter</span>
+        <h4 class="modal-title">
+            <span ng-if="action == 'edit'" translate>label.updateFilter</span>
             <span ng-if="action == 'copy'" translate>label.copyFilter</span> : {{::dailyPlanFilter.name}}</h4>
     </div>
-    <form name="form" role="form" ng-submit="ok()" novalidate>
-        <div class="modal-body p-a">
+
+    <div class="modal-body p-a">
+        <form name="form" role="form" ng-submit="ok()" novalidate>
             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.filterName</label>
 
                 <div class=" col-sm-6">
-                    <input ng-blur="checkFilterName()" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="dailyPlanFilter.name">
-                    <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                    <input ng-blur="checkFilterName()" type="text" required class="form-control"
+                           placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"
+                           ng-model="dailyPlanFilter.name">
+
+                    <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                         ng-messages="form.filterName.$error">
                         <div ng-message="required" translate>message.requiredError</div>
                         <div ng-message="maxlength" translate>message.tooLongError</div>
-                   </div>
-                   <div class="help-block text-danger" ng-if="!isUnique">
-                       <div translate>message.uniqueError</div>
-                   </div>
+                    </div>
+                    <div class="help-block text-danger" ng-if="!isUnique">
+                        <div translate>message.uniqueError</div>
+                    </div>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.regularExpression</label>
+
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
-                    <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regularExpression' | translate}}"
+                    <input valid-regex type="text" class="form-control" name="regex"
+                           placeholder="{{'placeholder.regularExpression' | translate}}"
                            ng-model="dailyPlanFilter.regex">
+
                     <div class="help-block text-danger" ng-messages="form.regex.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
@@ -73,7 +82,8 @@
                     <input valid-filter-regex type="text" name="planned" class="form-control"
                            placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="dailyPlanFilter.planned"
                            ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime"
-                           >
+                            >
+
                     <div class="help-block text-danger" ng-messages="form.planned.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
@@ -86,12 +96,15 @@
                 <div class="col-sm-8">
                     <input class="form-control input-date" ng-model="dailyPlanFilter.fromDate"
                            ng-disabled="dailyPlanFilter.planned"
-                           data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker
+                           data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
+                           bs-datepicker
                            type="text">
 
-                    <input ng-disabled="!dailyPlanFilter.fromDate" class="form-control input-time" ng-model="dailyPlanFilter.fromTime"
+                    <input ng-disabled="!dailyPlanFilter.fromDate" class="form-control input-time"
+                           ng-model="dailyPlanFilter.fromTime"
                            ng-disabled="dailyPlanFilter.planned"
-                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker
+                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS"
+                           bs-timepicker
                            type="text"></div>
             </div>
             <div class="form-group row" ng-show="dailyPlanFilter.radio == 'planned'">
@@ -100,9 +113,11 @@
                 <div class="col-sm-8">
                     <input class="form-control input-date" ng-model="dailyPlanFilter.toDate"
                            ng-disabled="dailyPlanFilter.planned"
-                           data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{dailyPlanFilter.fromDate}}"
+                           data-date-format="{{dataFormat}}" data-autoclose="1"
+                           data-min-date="{{dailyPlanFilter.fromDate}}"
                            placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input ng-disabled="!dailyPlanFilter.toDate" class="form-control input-time" ng-model="dailyPlanFilter.toTime" data-time-format="HH:mm:ss"
+                    <input ng-disabled="!dailyPlanFilter.toDate" class="form-control input-time"
+                           ng-model="dailyPlanFilter.toTime" data-time-format="HH:mm:ss"
                            data-length="1" ng-disabled="dailyPlanFilter.planned"
                            data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text"></div>
 
@@ -127,8 +142,9 @@
                     <span ng-if="action == 'edit'" translate>button.updateFilter</span>
                     <span ng-if="action == 'copy'" translate>button.copyFilter</span>
                 </button>
-                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+                </button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>

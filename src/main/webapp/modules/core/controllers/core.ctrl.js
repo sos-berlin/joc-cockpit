@@ -256,13 +256,14 @@
                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
                             }
                             $window.localStorage.$SOS$THEME = preferences.theme;
-                            if (preferences.locale != $rootScope.locale.lang) {
-                                $window.localStorage.$SOS$LANG = preferences.locale;
-                                $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
-                                    gettextCatalog.setCurrentLanguage(preferences.locale);
-                                    gettextCatalog.setStrings(preferences.locale, data);
-                                });
-                            }
+
+                            $window.localStorage.$SOS$LANG = preferences.locale;
+
+                            $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
+                                gettextCatalog.setCurrentLanguage(preferences.locale);
+                                gettextCatalog.setStrings(preferences.locale, data);
+                            });
+
                         } else {
                             setUserPrefrences(preferences, configObj);
                         }
@@ -292,6 +293,7 @@
         setPreferences();
 
         $scope.$on('reloadPreferences', function () {
+
             setPreferences();
         });
 
@@ -752,7 +754,7 @@
                         } else {
                             $timeout(function () {
                                 $window.location.reload();
-                            }, 5);
+                            }, 10);
                         }
 
                     } else {
@@ -4054,7 +4056,7 @@
             vm.editor.nextPage = false
         };
 
-   
+
         vm.from = {};
         vm.to = {};
         vm.error = {};

@@ -662,7 +662,7 @@
                 }
 
                 vm.action1=function(supervisor,master,action){
-                    console.log("Action "+action);
+                   // console.log("Action "+action);
                     var item ='';
                     var host='';
                     var port='';
@@ -676,7 +676,7 @@
                     }else if(master!='undefined'&&supervisor!='undefined'){
                         item ='master';
                         host=vm.clusterStatusData.supervisors[supervisor].masters[master].host;
-                        port=vm.clusterStatusData.supervisors[supervisor].masters[master].host;
+                        port=vm.clusterStatusData.supervisors[supervisor].masters[master].port;
                         id=vm.clusterStatusData.supervisors[supervisor].masters[master].jobschedulerId;
                     }else if(master!='undefined'&&supervisor=='undefined'){
                         item ='master';

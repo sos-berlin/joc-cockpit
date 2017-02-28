@@ -270,7 +270,9 @@
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                         </label>
                                     </td>
-                                    <td>
+                                    <td class="nowrap">
+                                        <i class="cursor fa fa-caret-down noExl fa-lg" ng-class="{'disable-link': !job.usedInJobChains}" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
+                                        <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains" ng-click="job.showJobChains = false"></i>
                                         <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name"></span>
                                         <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
                                         <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask" ng-repeat="task in job.runningTasks">
@@ -323,7 +325,7 @@
                                         <td ng-bind="job.ordersSummary.waitingForResource"></td>
                                         <td ng-bind="job.ordersSummary.setback"></td>
 
-                                        <td class="noExl" ng-if="permission.Job.view.configuration || permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
+                                        <td class="noExl">
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
@@ -349,6 +351,19 @@
                                     <td></td>
                                     <td colspan="12">
                                      {{job.configurationStatus._text | translate}} :<span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
+                                    </td>
+                                </tr>
+                                <tr ng-if="job.showJobChains" style="background: transparent !important;" ng-repeat="jobChain in job.jobChains">
+                                    <td></td>
+                                    <td colspan="12">
+                                     <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
+                                        <div class="btn-group dropdown">
+                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                        class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
+                                                    <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
+                                                </div>
+                                            </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -639,28 +654,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="jobChain" tabindex="-1" role="dialog" aria-labelledby="JobChain" >
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><span>{{'label.associatedJobChainswith' | translate}} <b>{{job.name}}</b></span></h4>
-            </div>
-            <div class="modal-body padding" style="max-height: 650px; overflow: auto">
-                <div class="row" ng-repeat="jobchain in job.jobChains">
-                    <div class="col-xs-2">
-                        <label>{{$index+1}}</label>
-                    </div>
-                    <div class="col-xs-10">
-                        {{jobchain}}
-                    </div>
-                </div>
-                <div class="form-group m-t-md m-b-sm">
-                    <button type="button" class="btn btn-grey btn-sm" data-dismiss="modal" translate>button.close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

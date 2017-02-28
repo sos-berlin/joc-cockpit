@@ -317,7 +317,6 @@
                                     <i ng-show="jobChainFilters.filter.sortBy == 'jobChain.ordersSummary.blacklist' && jobChainFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-
                             </tr>
                             </thead>
                             <tbody ng-repeat="jobChain in allJobChains | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize"
@@ -432,9 +431,7 @@
                                                                 <span class="hide text-success text-xs" ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span time="{{order.startedAt}}"></span>)</span>
                                                             </span>
                                                         </span>
-                                                        <div class="btn-group dropdown " ng-if="permission.Order.view.configuration || (permission.Order.view.orderLog && order.historyId) || permission.Order.start || permission.Order.setState
-                                                        || permission.Order.setRunTime || permission.Order.suspend || permission.Order.resume
-                                                        || permission.Order.reset || permission.Order.removeSetback || permission.DailyPlan.view.status || permission.Order.delete.permanent">
+                                                        <div class="btn-group dropdown ">
                                                             <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
                                                                     class="fa fa-ellipsis-h"></i></button>
                                                             <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
@@ -521,8 +518,7 @@
                                                 </td>
                                                 <td><span class="label" ng-class="bgColorFunction(node.state.severity)"
                                                           ng-bind="node.state._text | translate"></span></td>
-                                                <td width="30" ng-if="permission.Job.view.configuration || permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
-                                                    || permission.JobChain.processJobChainNode || permission.JobChain.skipJobChainNode || permission.JobChain.processJobChainNode">
+                                                <td width="30">
                                                     <div class="btn-group dropdown">
                                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                                             <i class="fa fa-ellipsis-h"></i>
