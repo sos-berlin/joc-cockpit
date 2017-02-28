@@ -2718,21 +2718,23 @@
                     angular.forEach(vm.processClasses, function (value) {
                         agentArray.push({label: value.path, value: value.numOfProcesses});
                     });
-                    vm.agentStatusChart = [
-                        {
+                    vm.agentStatusChart = [{
                             "key": "Agents",
                             "values": agentArray
-                        }
-                    ];
+                        }];
                     if (vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length > 10) {
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
-
-
                 }
+            },function(){
+                vm.processClasses = [];
+                 vm.agentStatusChart = [{
+                            "key": "Agents",
+                            "values": agentArray
+                        }];
             });
-
         };
+
         if (vm.permission && vm.permission.ProcessClass.view.status)
             vm.getAgentClusterRunningTask();
 
@@ -2892,7 +2894,7 @@
 
         var states = [];
         vm.clusterAction = function (objectType, action, host, port,id) {
-            console.log("objectType "+objectType+" action "+action+" host "+host+" port "+port+" id "+id);
+           // console.log("objectType "+objectType+" action "+action+" host "+host+" port "+port+" id "+id);
             function performAction() {
                 var obj = {};
                 obj.jobschedulerId = id;
@@ -2955,18 +2957,23 @@
                     JobSchedulerService.restartCluster(obj1).then(function (res) {
                         clusterSuccess('running', host, port);
                     });
-                } else if (action == 'download_log') {
+                } else if (action == 'downloadLog') {
+                    vm.loading =true;
                     JobSchedulerService.downloadLog({
-                        jobschedulerId: $scope.schedulerIds.selected,
+                        jobschedulerId: id,
                         host: host,
                         port: port
                     }).then(function (res) {
-                        var name = 'schedule.'+$scope.schedulerIds.selected+'.log';
+                        vm.loading =false;
+                        var name = 'schedule.'+id+'.log';
+                     
                         if(res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
                             name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
                         }
                         var data = new Blob([res.data], {type: 'text/plain;charset=utf-8'});
                         FileSaver.saveAs(data, name);
+                    },function(){
+                        vm.loading =false;
                     });
                 }
             }
@@ -2975,7 +2982,7 @@
                 vm.getTimeout(host, port);
             } else {
 
-                if (vm.userPreferences.auditLog && action !=='download_log') {
+                if (vm.userPreferences.auditLog && action !=='downloadLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
@@ -3688,6 +3695,8 @@
             if (fromDate && toDate) {
                 obj.dateFrom = fromDate;
                 obj.dateTo = toDate;
+                vm.dailyPlanFilters.filter.from = fromDate;
+                vm.dailyPlanFilters.filter.to = toDate;
             }
 
             return obj;
@@ -3920,6 +3929,7 @@
         vm.editFilter = function (filter) {
             vm.action = 'edit';
             vm.isUnique = true;
+             vm.dailyPlanFilter={};
 
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
@@ -3929,8 +3939,9 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
                 controller: 'DialogCtrl',
+                scope: vm,
                 size: 'lg',
-                scope: vm
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
 
@@ -3958,6 +3969,7 @@
         vm.copyFilter = function (filter) {
             vm.action = 'copy';
             vm.isUnique = true;
+            vm.dailyPlanFilter={};
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.dailyPlanFilter.shared = filter.shared;
@@ -3967,8 +3979,9 @@
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-daily-plan-filter-dialog.html',
                 controller: 'DialogCtrl',
+                scope: vm,
                 size: 'lg',
-                scope: vm
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
 

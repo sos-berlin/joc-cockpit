@@ -562,7 +562,7 @@
                 </div>
 
                 <div class="row m-b-sm">
-                    <label class="col-sm-12">{{'label.nonWorkingDays' | translate}}</label>
+                    <label class="col-sm-12 _600">{{'label.nonWorkingDays' | translate}}</label>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-3" translate>label.date</label>
@@ -630,8 +630,8 @@
                     <div class="col-sm-6">
                         <input type="text" class="form-control" ng-model="liveFile">
                     </div>
-                    <div class="col-sm-1" ng-disabled="!liveFile">
-                        <button type="button"  class="btn btn-xs" style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i class="fa fa-plus"></i></button>
+                    <div class="col-sm-1" >
+                        <button ng-disabled="!liveFile" type="button"  class="btn btn-xs" style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
                 <div class="row">

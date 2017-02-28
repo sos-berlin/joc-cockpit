@@ -107,6 +107,7 @@
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
@@ -2873,8 +2874,17 @@
 
         function insertData(node, x) {
             node.orders = [];
+
             for (var i = 0; i < x.length; i++) {
-                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/'))) {
+
+                var p =[];
+                if (x[i].path.indexOf(",") > -1) {
+                    p = x[i].path.split(",");
+                } else {
+                    p[0] = x[i].path;
+                }
+
+                if (node.path == p[0].substring(0, p[0].lastIndexOf('/'))) {
                     x[i].path1 = node.path;
                     node.orders.push(x[i]);
                     vm.allOrders.push(x[i]);
@@ -3057,7 +3067,9 @@
                             }
 
                         });
+
                         x = x.concat(res.orders);
+
                         angular.forEach(vm.tree, function (node, index) {
                             insertData(node, x);
                         })
@@ -3097,6 +3109,7 @@
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             orders.jobschedulerId = $scope.schedulerIds.selected;
+         orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
@@ -3766,11 +3779,13 @@
                                         obj.jobChain = value2.jobChain;
                                         obj.compact = true;
                                         OrderService.getOrder(obj).then(function (res) {
-                                            if (res.order) {
+                                            if (res.order && res.order.path) {
                                                 res.order.title = angular.copy(vm.allOrders[index].title);
                                                 res.order.path1 = angular.copy(vm.allOrders[index].path1);
                                                 res.order.params = angular.copy(vm.allOrders[index].params);
                                                 vm.allOrders[index] = res.order;
+                                            }else{
+                                                vm.allOrders.splice(index,1);
                                             }
                                         });
                                     }
@@ -3903,6 +3918,7 @@
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
             orders.jobschedulerId = $scope.schedulerIds.selected;
+  orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
@@ -4996,7 +5012,9 @@
                             orders.orders = [];
                             orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
                             orders.jobschedulerId = $scope.schedulerIds.selected;
-                            OrderService.histories(orders).then(function (res) {
+                              orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+
+            OrderService.histories(orders).then(function (res) {
                                 vm.historys = res.history;
                             });
                         }

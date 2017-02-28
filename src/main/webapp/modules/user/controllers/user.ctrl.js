@@ -137,6 +137,14 @@
         vm.preferences = JSON.parse($window.sessionStorage.preferences);
 
         vm.timezone = jstz().timezone_name;
+        function setPreferences() {
+            if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {
+                vm.preferences = JSON.parse($window.sessionStorage.preferences);
+            }
+        }
+        $scope.$on('reloadPreferences', function () {
+            setPreferences();
+        });
 
         vm.setLocale = function () {
             $window.localStorage.$SOS$LANG = vm.preferences.locale;

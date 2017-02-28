@@ -37,8 +37,8 @@
                     responseError: function (rejection) {
                         if ($location.path() != '/login' && (rejection.status == 440 || rejection.status == 401)) {
                             toasty.error({
-                                title: 'Session Timeout!',
-                                msg: 'Your session has expired and must log in again.',
+                                title: 'message.sessionTimeout',
+                                msg: 'message.sessionExpired',
                                 timeout: 10000
                             });
                             $window.localStorage.$SOS$URL = $location.path();
@@ -77,12 +77,11 @@
                         return $q.reject(rejection);
                     },
                     response: function (response) {
-
                         var responseTimeStamp = new Date();
                         if ($location.path() != '/login' && (response.status == 440 || response.status == 401)) {
                             toasty.error({
-                                title: 'Session Timeout!',
-                                msg: "Your session has expired and must log in again.",
+                                title: 'message.sessionTimeout',
+                                msg: 'message.sessionExpired',
                                 timeout: 10000
                             });
                             $window.localStorage.$SOS$URL = $location.path();

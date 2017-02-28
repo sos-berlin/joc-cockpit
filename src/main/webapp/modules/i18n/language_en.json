@@ -1,3 +1,4 @@
+
 {
   "button.viewAllAgentsDetails": "View all Agents details",
   "button.terminate": "Terminate",
@@ -902,8 +903,10 @@
   "button.downloadLog": "Download Main Log",
   "label.maxNumberOfAuditLogEntries": "Max. number of Audit Log entries",
   "label.JOCConfiguration": "Shared Customization",
-  "label.copyFilter":"Copy Filter",
-  "button.copyFilter":"Copy Customization",
-  "button.copy":"Copy",
-  "button.addSubstitute":"Add Substitute"
+  "label.copyFilter": "Copy Filter",
+  "button.copyFilter": "Copy Customization",
+  "button.copy": "Copy",
+  "button.addSubstitute": "Add Substitute",
+  "message.sessionTimeout": "Session Timeout!",
+  "message.sessionExpired": "Your session has expired and must log in again."
 }
