@@ -908,5 +908,5 @@
   "button.copy": "Copy",
   "button.addSubstitute": "Add Substitute",
   "message.sessionTimeout": "Session Timeout!",
-  "message.sessionExpired": "Your session has expired and must log in again."
+  "message.sessionExpired": "Your session has expired and a login is required"
 }

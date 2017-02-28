@@ -906,6 +906,6 @@
   "button.copyFilter": "Personalisierung kopieren",
   "button.copy": "Kopieren",
   "button.addSubstitute": "Ersetzung hinzufügen",
-  "message.sessionTimeout": "Session Timeout!",
-  "message.sessionExpired": "Your session has expired and must log in again."
+  "message.sessionTimeout": "Sitzung abgelaufen!",
+  "message.sessionExpired": "Die Sitzung ist abgelaufen und Ihre Anmeldung ist erforderlich"
 }
