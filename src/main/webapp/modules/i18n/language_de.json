@@ -907,5 +907,6 @@
   "button.copy": "Kopieren",
   "button.addSubstitute": "Ersetzung hinzufügen",
   "message.sessionTimeout": "Sitzung abgelaufen!",
-  "message.sessionExpired": "Die Sitzung ist abgelaufen und Ihre Anmeldung ist erforderlich"
+  "message.sessionExpired": "Die Sitzung ist abgelaufen und Ihre Anmeldung ist erforderlich",
+  "message.theScheduleAttributAndOtherRuntimes": "The schedule attribute and the other run times are mutually exclusive."
 }

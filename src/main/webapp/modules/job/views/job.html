@@ -533,7 +533,7 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                                 <div ng-if="queueOrders.orderQueue.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
+                                                 <div ng-if="!queueOrders.orderQueue || queueOrders.orderQueue.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
                                                     message.noQueueOrdersFound
                                                 </div>
                                              </div>

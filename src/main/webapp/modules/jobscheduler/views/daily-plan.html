@@ -111,7 +111,7 @@
                                 <a class="dropdown-item"
                                    ng-class="{orange: (savedDailyPlanFilter.selected == filter.id)}"
                                    ng-click="changeFilter(filter)"
-                                   ng-repeat="filter in dailyPlanFilterList track by $index">
+                                   ng-repeat="filter in dailyPlanFilterList | orderBy: 'name'">
                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
                                     <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedDailyPlanFilter.selected == filter.id"
                                        class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>

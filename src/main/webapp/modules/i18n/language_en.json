@@ -908,5 +908,6 @@
   "button.copy": "Copy",
   "button.addSubstitute": "Add Substitute",
   "message.sessionTimeout": "Session Timeout!",
-  "message.sessionExpired": "Your session has expired and a login is required"
+  "message.sessionExpired": "Your session has expired and a login is required",
+  "message.theScheduleAttributAndOtherRuntimes": "The schedule attribute and the other run times are mutually exclusive."
 }

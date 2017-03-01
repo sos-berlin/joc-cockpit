@@ -2897,11 +2897,11 @@
            // console.log("objectType "+objectType+" action "+action+" host "+host+" port "+port+" id "+id);
             function performAction() {
                 var obj = {};
-                obj.jobschedulerId = id;
+                obj.jobschedulerId = id || vm.schedulerIds.selected;
                 obj.host = host;
                 obj.port = port;
                 var obj1 = {};
-                obj1.jobschedulerId = vm.schedulerIds.selected;
+                obj1.jobschedulerId = id || vm.schedulerIds.selected;
                 obj.auditLog = {};
                 obj1.auditLog = {};
 
@@ -2959,6 +2959,9 @@
                     });
                 } else if (action == 'downloadLog') {
                     vm.loading =true;
+                    if(!id){
+                        id = vm.schedulerIds.selected;
+                    }
                     JobSchedulerService.downloadLog({
                         jobschedulerId: id,
                         host: host,
@@ -4033,6 +4036,7 @@
 
                     vm.dailyPlanFilters.selectedView = false;
                     vm.selectedFiltered = undefined;
+                     setDateRange();
                     vm.load();
                 } else {
                     if (vm.dailyPlanFilterList.length == 0) {
@@ -4108,6 +4112,7 @@
                 vm.savedDailyPlanFilter.selected = filter;
                 vm.dailyPlanFilters.selectedView = false;
                 vm.selectedFiltered = filter;
+                 setDateRange();
                 vm.load();
             }
 

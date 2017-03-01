@@ -2699,6 +2699,7 @@
                             vm.allOrders.push(value);
                     });
                 }
+                vm.loading = false;
                 vm.folderPath = data.name || '/';
             });
         }

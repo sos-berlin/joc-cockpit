@@ -11,8 +11,8 @@
         .controller('AuditLogCtrl', AuditLogCtrl);
 
 
-    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog','AuditLogService','$resource'];
-    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog,AuditLogService,$resource) {
+    LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog', 'AuditLogService'];
+    function LoginCtrl(SOSAuth, $location, $rootScope, UserService, $window, JobSchedulerService, gettextCatalog, AuditLogService) {
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;

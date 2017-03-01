@@ -3614,7 +3614,7 @@
 
         vm.showJobChains = function (job) {
             if (job.usedInJobChains > 0) {
-                job.showJobChains = true
+                job.showJobChains = true;
                 var jobs = {};
                 jobs.jobs = [];
                 jobs.jobschedulerId = vm.schedulerIds.selected;

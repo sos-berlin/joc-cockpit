@@ -103,13 +103,18 @@
                                         <tr>
                                             <th translate>label.srNo</th>
                                             <th translate>label.runTime</th>
+                                            <th translate>label.action</th>
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList">
                                         <tr>
                                             <td width="15%">{{$index +1}}</td>
-                                            <td ng-click="editRunTime(data)">
-                                                <a href="">{{data.runTime}}</a>
+                                            <td>
+                                                {{data.runTime}}
+                                            </td>
+                                            <td>
+                                                <a class="text-hover-primary" ng-click="editRunTime(data);" ><i class="fa fa-pencil m-r-sm"></i></a>
+                                                <a class="text-hover-primary" ng-click="deleteRunTime(data)" ><i class="fa fa-times"></i></a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -157,11 +162,11 @@
                 <div ng-show="editor.hideEvery">
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
-                            <span class="text-primary text-u-l" translate>label.create</span>
+                            <span class="text-primary text-u-l text-capitalize" translate>label.create</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                         <label class="col-sm-12" ng-show="editor.update">
-                            <span class="text-primary text-u-l" translate>label.edit</span>
+                            <span class="text-primary text-u-l text-capitalize" translate>label.edit</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                     </div>
@@ -539,7 +544,7 @@
                                             <span ng-if="period.period._single_start" translate>label.singleStart</span>
                                             <span ng-if="period.period._repeat" translate>label.repeatStartEnd</span>
                                             <span ng-if="period.period._absolute_repeat" translate>label.absoluteRepeatEndEnd</span>
-                                                <i class="text-muted">at</i>
+                                                <i ng-if="period.period._single_start || period.period._repeat || period.period._absolute_repeat" class="text-muted">at</i>
                                             <span ng-if="period.period._single_start">{{period.period._single_start}}</span>
                                             <span ng-if="period.period._repeat">{{period.period._repeat || '-'}}</span>
                                             <span ng-if="period.period._absolute_repeat">{{period.period._absolute_repeat || '-'}}</span>

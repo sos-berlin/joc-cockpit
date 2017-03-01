@@ -87,7 +87,7 @@
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="orderHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="orderHistoryFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: (savedHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in orderHistoryFilterList track by $index">
+                                <a class="dropdown-item" ng-class="{orange: (savedHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in orderHistoryFilterList | orderBy: 'name'">
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
                                     <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
@@ -175,7 +175,7 @@
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="jobHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="jobHistoryFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: (savedJobHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobHistoryFilterList track by $index">
+                                <a class="dropdown-item" ng-class="{orange: (savedJobHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in jobHistoryFilterList | orderBy: 'name'">
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
                                     <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedJobHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>

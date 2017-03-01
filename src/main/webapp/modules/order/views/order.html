@@ -99,7 +99,7 @@
                                 <a class="dropdown-item" ng-click="applyFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" ng-click="editFilters()" ng-if="orderFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="orderFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.id}" ng-click="changeFilter(filter)" ng-repeat="filter in orderFilterList track by $index">
+                                <a class="dropdown-item" ng-class="{orange: savedOrderFilter.selected == filter.id}" ng-click="changeFilter(filter)" ng-repeat="filter in orderFilterList | orderBy: 'name'">
                                      <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
                                     <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedOrderFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
