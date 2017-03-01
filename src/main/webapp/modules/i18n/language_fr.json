@@ -907,6 +907,6 @@
   "button.copy": "Copier",
   "button.addSubstitute": "Ajouter un Substitut",
   "message.sessionTimeout": "La séance est expiré!",
-  "message.sessionExpired": "La séance est expiré, il faut se reconnecter.",
-  "message.theScheduleAttributAndOtherRuntimes": "The schedule attribute and the other run times are mutually exclusive."
+  "message.sessionExpired": "La séance est expiré, il faut se reconnecter",
+  "message.theScheduleAttributAndOtherRuntimes": "La référence à une Programmation et une date de démarrage s'excluent mutuellement"
 }

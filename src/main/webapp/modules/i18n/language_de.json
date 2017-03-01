@@ -908,5 +908,5 @@
   "button.addSubstitute": "Ersetzung hinzufügen",
   "message.sessionTimeout": "Sitzung abgelaufen!",
   "message.sessionExpired": "Die Sitzung ist abgelaufen und Ihre Anmeldung ist erforderlich",
-  "message.theScheduleAttributAndOtherRuntimes": "The schedule attribute and the other run times are mutually exclusive."
+  "message.theScheduleAttributAndOtherRuntimes": "Der Verweis auf einen Zeitplan und Einstellungen für die Startzeit schließend sich aus"
 }
