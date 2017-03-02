@@ -235,6 +235,18 @@
                 hideLimitLabels: true
             }
         };
+        vm.showTask = function(task,node){
+            if(!task.order){
+                return false;
+            }
+            var show = false;
+            angular.forEach(node.orders,function(order){
+                if(order.orderId==task.order.orderId){
+                    show=true;
+                }
+            })
+            return show;
+        }
 
         vm.onAction = onAction;
 
@@ -3023,6 +3035,7 @@
         var obj = {};
         var obj1 = {};
         vm.changeStatus = function () {
+            vm.hideLogPanel();
             vm.allOrders = [];
             vm.loading = true;
             obj = {folders: []};
@@ -3960,6 +3973,8 @@
 
 
         vm.changeStatus = function () {
+
+            vm.hideLogPanel();
             vm.init();
         };
         $scope.$on("orderState", function (evt, state) {
@@ -4571,6 +4586,7 @@
         vm.setRunTime = function (order) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
+            vm.scheduleAction = undefined;
             OrderService.getRunTime({
                 jobschedulerId: $scope.schedulerIds.selected,
                 jobChain: order.jobChain,
@@ -5013,9 +5029,9 @@
                             orders.orders = [];
                             orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
                             orders.jobschedulerId = $scope.schedulerIds.selected;
-                              orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+                            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
-            OrderService.histories(orders).then(function (res) {
+                            OrderService.histories(orders).then(function (res) {
                                 vm.historys = res.history;
                             });
                         }

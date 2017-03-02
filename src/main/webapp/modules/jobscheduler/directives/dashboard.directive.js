@@ -5,8 +5,8 @@
         .directive('dailyPlanOverview', dailyPlanOverview);
 
 
-    clusterStatusView.$inject = ["$compile", "$sce", "$window", "$rootScope"];
-    function clusterStatusView($compile, $sce, $window, $rootScope) {
+    clusterStatusView.$inject = ["$compile", "$sce", "$window", "$rootScope","gettextCatalog"];
+    function clusterStatusView($compile, $sce, $window, $rootScope,gettextCatalog) {
 
         return {
             restrict: 'E',
@@ -222,12 +222,18 @@
                         if (master.state && span) {
 
                             var rect = document.getElementById(master.host + master.port);
-                            var popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                '<br>Version : ' + master.version +
-                                '<br>Started at : <span>' +
-                                moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
-                                '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-                            rect.setAttribute('data-content', popoverTemplate);
+                           var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
+
+
+                                if (master.os && master.startedAt) {
+                                      popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+
+                                }
+                             rect.setAttribute('data-content', popoverTemplate);
 
                         }
                     }
@@ -237,14 +243,21 @@
                         if (supervisor.data.jobscheduler.state) {
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
                             var rect = document.getElementById(supervisor.host + supervisor.port);
-                            var popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
+                            var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
 
-                                '<br>Version : ' + supervisor.data.jobscheduler.version +
-                                '<br>Started at : <span>' +
+                            if(supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os){
+                                popoverTemplate = gettextCatalog.getString('label.architecture')+' : ' + supervisor.data.jobscheduler.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + supervisor.data.jobscheduler.os.distribution +
+
+                                '<br>'+gettextCatalog.getString('label.version')+' : ' + supervisor.data.jobscheduler.version +
+                                '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' +
                                 moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
-                                '</span><br> Survey Date: ' +
+                                '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' +
                                 moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
-                            rect.setAttribute('data-content', popoverTemplate);
+
+                            }
+                                                      rect.setAttribute('data-content', popoverTemplate);
 
                         }
                     }
@@ -271,12 +284,12 @@
 
                             var popoverTemplate = '';
                             if (supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os) {
-                                popoverTemplate = 'Architecture : ' + supervisor.data.jobscheduler.os.architecture + '<br> Distribution : ' + supervisor.data.jobscheduler.os.distribution +
-                                '<br>Version : ' + supervisor.data.jobscheduler.version +
-                                '<br>Started at : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + supervisor.data.jobscheduler.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + supervisor.data.jobscheduler.os.distribution +
+                                '<br>'+gettextCatalog.getString('label.version')+' : ' + supervisor.data.jobscheduler.version +
+                                '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                             } else {
-                                popoverTemplate = 'Architecture : - <br> Distribution : - <br>Version : - <br>Started at : - <span></span><br> Survey Date: - ';
+                                popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br> '+gettextCatalog.getString('label.distribution')+' : - <br>'+gettextCatalog.getString('label.version')+' : - <br>'+gettextCatalog.getString('label.startedAt')+' : - <span></span><br>'+gettextCatalog.getString('label.surveyDate')+': - ';
                             }
 
                             var sClassRunning = 'text-success';
@@ -356,15 +369,17 @@
                                 }
 
 
-                                var popoverTemplate = 'Architecture : - <br> Distribution : - ' +
-                                    '<br>Version : ' + master.version +
-                                    '<br>Started at : <span > </span><br> Survey Date: - ';
+                                var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
 
 
                                 if (master.os && master.startedAt) {
-                                      popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                    '<br>Version : ' + master.version +
-                                    '<br>Started at :<span> ' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+
+                                    console.log("Master os exists");
+                                      popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                                 }
 
@@ -495,15 +510,16 @@
                                     downDownClass = 'show';
                                 }
 
-                                var popoverTemplate = 'Architecture : - <br> Distribution : - ' +
-                                    '<br>Version : ' + master.version +
-                                    '<br>Started at : <span > </span><br> Survey Date: - ';
+                                 var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
+
 
 
                                 if (master.os && master.startedAt) {
-                                    popoverTemplate = 'Architecture : ' + master.os.architecture + '<br> Distribution : ' + master.os.distribution +
-                                    '<br>Version : ' + master.version +
-                                    '<br>Started at : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> Survey Date: ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                    popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                                 }
 
@@ -573,7 +589,7 @@
 
                             'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
-                            '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm">Database ' + scope.clusterStatusData.database.database.dbms +
+                            '<div class="text-left p-t-sm p-l-sm "><i class="fa fa-database"></i><span class="p-l-sm"><span translate>label.database</span> ' + scope.clusterStatusData.database.database.dbms +
                             '</span></div>' +
                             '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' +
                             '<span ng-bind="clusterStatusData.database.database.version"></span></div>' +

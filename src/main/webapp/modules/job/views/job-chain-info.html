@@ -182,7 +182,7 @@
                                                            ng-click="showOrderPanelFuc(jobChain.path)" ><span translate>label.showMoreOrders</span><br></i>
 
                                                         </div>
-                                                        <table class="table table-hover table-bordered m-t-xs m-b-sm" ng-if="node.job.runningTasks">
+                                                        <table class="table table-hover table-bordered m-t-xs m-b-sm" ng-if="node.job.runningTasks && node.orders && node.orders.length>0">
                                                         <thead>
                                                         <tr>
                                                             <th class="text-xs" translate>label.pid</th>
@@ -194,7 +194,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr ng-repeat="task in node.job.runningTasks">
+                                                            <tr ng-repeat="task in node.job.runningTasks" ng-if="showTask(task,node)">
                                                                 <td class="text-xs">{{task.pid}}</td>
                                                                 <td class="text-xs">{{task.taskId}}</td>
                                                                 <td class="text-xs">{{task._cause | translate}}</td>

@@ -740,6 +740,7 @@
         var obj = {};
         var obj1 = {};
         vm.changeStatus = function () {
+            vm.showHistoryPanel = '';
             vm.allJobChains = [];
             vm.loading = true;
             obj = {};
@@ -2017,6 +2018,7 @@
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: val.job.path}]
                             }).then(function (res1) {
+                                if(jobChain.nodes[index].job.path == res1.jobs[0].path)
                                 jobChain.nodes[index].job = angular.merge(jobChain.nodes[index].job, res1.jobs[0]);
                             });
                         }
@@ -2111,6 +2113,18 @@
             return scrTree;
         };
 
+        vm.showTask = function(task,node){
+            if(!task.order){
+                return false;
+            }
+            var show = false;
+            angular.forEach(node.orders,function(order){
+                if(order.orderId==task.order.orderId){
+                    show=true;
+                }
+            })
+            return show;
+        }
         var loadOrderObj = true;
         var loadFileBasedObj = true;
 
@@ -3053,6 +3067,7 @@
         var obj = {};
         var obj1 = {};
         vm.changeStatus = function () {
+            vm.hideTaskPanel();
             vm.allJobs = [];
             vm.loading = true;
             obj = {};
@@ -4277,6 +4292,7 @@
             vm.order = job;
             vm.comments = {};
             vm.comments.radio = 'predefined';
+            vm.scheduleAction = undefined;
             JobService.getRunTime({
                 jobschedulerId: vm.schedulerIds.selected,
                 job: job.path
@@ -4426,6 +4442,9 @@
                                                     res.jobs[0].hasDescription = vm.allJobs[index].hasDescription;
                                                     res.jobs[0].estimatedDuration = vm.allJobs[index].estimatedDuration;
                                                     res.jobs[0].maxTasks = vm.allJobs[index].maxTasks;
+                                                    res.jobs[0].usedInJobChains = vm.allJobs[index].usedInJobChains;
+                                                    res.jobs[0].jobChains = vm.allJobs[index].jobChains;
+                                                    res.jobs[0].showJobChains = vm.allJobs[index].showJobChains;
                                                     vm.allJobs[index] = res.jobs[0];
                                                     if (vm.showTaskPanel && (vm.showTaskPanel.path == value2.path)) {
                                                         vm.showTaskPanel = vm.allJobs[index];

@@ -1088,6 +1088,7 @@
             vm.schedule = schedule;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
+            vm.scheduleAction = undefined;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -2128,6 +2129,7 @@
             vm.schedule = schedule;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
+            vm.scheduleAction = undefined;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -2422,6 +2424,7 @@
             vm.sch._substitute = vm.schedule.path;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
+            vm.scheduleAction = undefined;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -2968,12 +2971,16 @@
                         port: port
                     }).then(function (res) {
                         vm.loading =false;
-                        var name = 'schedule.'+id+'.log';
+                        var name = 'jobscheduler.'+id+'.main.log';
+                        var fileType = 'application/octet-stream';
                      
                         if(res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
                             name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
                         }
-                        var data = new Blob([res.data], {type: 'text/plain;charset=utf-8'});
+                         if(res.headers('Content-Type')) {
+                             fileType = res.headers('Content-Type');
+                         }
+                        var data = new Blob([res.data], {type: fileType});
                         FileSaver.saveAs(data, name);
                     },function(){
                         vm.loading =false;

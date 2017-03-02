@@ -153,6 +153,7 @@
                 gettextCatalog.setStrings(vm.preferences.locale, data);
             });
             configObj.configurationItem = JSON.stringify(vm.preferences);
+             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
 
@@ -165,6 +166,7 @@
             document.getElementById('style-color').href = 'css/' + theme + '-style.css';
             $window.localStorage.$SOS$THEME = theme;
             configObj.configurationItem = JSON.stringify(vm.preferences);
+             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
 
@@ -174,8 +176,8 @@
             if (isNaN(parseInt(vm.preferences.maxRecords))) {
                 vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
             }
-            if(isNaN(parseInt(vm.preferences.maxAuditLogRecords))){
-                 vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords);
+            if (isNaN(parseInt(vm.preferences.maxAuditLogRecords))) {
+                vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords);
             }
             if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder))) {
                 vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder);
@@ -194,12 +196,13 @@
                 vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
 
-            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+
             $rootScope.$broadcast('reloadPreferences');
 
             if (reload)
                 $rootScope.$broadcast('reloadDate');
             configObj.configurationItem = JSON.stringify(vm.preferences);
+             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
 
@@ -232,16 +235,16 @@
             {value: 'OrderSuspended', label: "label.orderSuspended"}
         ];
 
-        if(angular.isArray(vm.preferences.events.filter)){
+        if (angular.isArray(vm.preferences.events.filter)) {
             $scope.eventFilter = vm.preferences.events.filter;
-        }else {
+        } else {
             $scope.eventFilter = JSON.parse(vm.preferences.events.filter);
         }
         $scope.tasks.count = vm.preferences.events.taskCount;
         $scope.jobs.count = vm.preferences.events.jobCount;
         $scope.jobChains.count = vm.preferences.events.jobChainCount;
         $scope.positiveOrders.count = vm.preferences.events.positiveOrderCount;
-        $scope.negativeOrders.count =vm.preferences.events.negativeOrderCount;
+        $scope.negativeOrders.count = vm.preferences.events.negativeOrderCount;
 
 
         if ($scope.tasks.length == $scope.tasks.count) {
@@ -436,8 +439,8 @@
             $scope.selectAllNegativeOrderModel = $scope.negativeOrders.length == $scope.negativeOrders.count;
         };
 
-        var watcher = $scope.$watchCollection('eventFilter', function (newValue,oldValue) {
-            if(newValue != oldValue) {
+        var watcher = $scope.$watchCollection('eventFilter', function (newValue, oldValue) {
+            if (newValue != oldValue) {
                 vm.preferences.events.taskCount = $scope.tasks.count;
                 vm.preferences.events.filter = $scope.eventFilter;
                 vm.preferences.events.jobCount = $scope.jobs.count;
@@ -519,7 +522,7 @@
             var filter = {
                 jobschedulerId: $scope.schedulerIds.selected,
                 limit: parseInt(vm.userPreferences.maxAuditLogRecords)
-                };
+            };
 
             vm.adtLog.filter.date = '';
             if (vm.auditSearch.jobChain) {
@@ -543,7 +546,7 @@
                 });
             }
             if (vm.auditSearch.regex) {
-                filter.regex =vm.auditSearch.regex;
+                filter.regex = vm.auditSearch.regex;
             }
 
             if (vm.auditSearch.from) {
