@@ -23,12 +23,11 @@
             props.forEach(function (name) {
                 self[name] = load(name);
             });
-            this.rememberMe = undefined;
         }
 
         SOSAuth.prototype.save = function () {
             var self = this;
-            var storage = this.rememberMe ? $window.localStorage : $window.sessionStorage;
+            var storage = $window.sessionStorage;
             props.forEach(function (name) {
                 save(storage, name, self[name]);
             });
@@ -56,8 +55,8 @@
             this.sessionTimeout = null;
             this.permission = null;
             this.scheduleIds = null;
-            $window.sessionStorage.setItem('$SOS$URL', null);
-            $window.sessionStorage.setItem('$SOS$URLPARAMS', {});
+            $window.sessionStorage.$SOS$URL= null;
+            $window.sessionStorage.$SOS$URLPARAMS={};
         };
 
         SOSAuth.prototype.setJobChain = function (jobChain) {

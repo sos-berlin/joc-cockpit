@@ -58,7 +58,7 @@
         .config(['$provide', function ($provide) {
             $provide.decorator("$exceptionHandler", ['$delegate', function ($delegate) {
                 return function (exception, cause) {
-                    TraceKit.report(exception);
+                    //TraceKit.report(exception);
                     $delegate(exception, cause);
                 };
             }]);

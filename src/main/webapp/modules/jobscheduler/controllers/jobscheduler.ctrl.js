@@ -3682,22 +3682,32 @@
             }
 
             if (vm.selectedFiltered.fromDate) {
+                fromDate = new Date(vm.selectedFiltered.fromDate);
                 if (vm.selectedFiltered.fromTime) {
-                    fromDate = new Date(vm.selectedFiltered.fromDate);
                     vm.selectedFiltered.fromTime = new Date(vm.selectedFiltered.fromTime);
                     fromDate.setHours(vm.selectedFiltered.fromTime.getHours());
                     fromDate.setMinutes(vm.selectedFiltered.fromTime.getMinutes());
                     fromDate.setSeconds(vm.selectedFiltered.fromTime.getSeconds());
+                }else{
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    fromDate.setSeconds(0);
+                    fromDate.setMilliseconds(0);
                 }
             }
 
             if (vm.selectedFiltered.toDate) {
+                toDate = new Date(vm.selectedFiltered.toDate);
                 if (vm.selectedFiltered.toTime) {
-                    toDate = new Date(vm.selectedFiltered.toDate);
                     vm.selectedFiltered.toTime = new Date(vm.selectedFiltered.toTime);
                     toDate.setHours(vm.selectedFiltered.toTime.getHours());
                     toDate.setMinutes(vm.selectedFiltered.toTime.getMinutes());
                     toDate.setSeconds(vm.selectedFiltered.toTime.getSeconds());
+                }else{
+                    toDate.setHours(0);
+                    toDate.setMinutes(0);
+                    toDate.setSeconds(0);
+                    toDate.setMilliseconds(0);
                 }
             }
 

@@ -196,13 +196,12 @@
                 vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
 
-
+            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             $rootScope.$broadcast('reloadPreferences');
 
             if (reload)
                 $rootScope.$broadcast('reloadDate');
             configObj.configurationItem = JSON.stringify(vm.preferences);
-             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
 

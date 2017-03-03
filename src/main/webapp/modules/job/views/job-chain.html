@@ -188,24 +188,28 @@
                                         <span  ng-if="jobChain.numOfNodes>1" ng-bind="'label.jobs' | translate"></span>
                                         <span  ng-if="jobChain.numOfNodes<=1 || !jobChain.numOfNodes" ng-bind="'label.job' | translate"></span>
                                     </div>
-                                    <div class="text-sm  text-left text-muted p-t-xs">
-                                        <a ng-if="jobChain.numOfOrders>0" class="text-hover-primary" ng-click="viewOrders(jobChain)">
-                                            <span class="text-black _600" ng-bind="jobChain.numOfOrders"></span>
+                                    <div class="text-sm text-left text-muted p-t-xs">
+                                        <span>
+                                            <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0"></span>
                                             <span ng-if="jobChain.numOfOrders>1" ng-bind="'label.orders' | translate"></span>
-                                            <span ng-if="jobChain.numOfOrders==1" ng-bind="'label.order' | translate"></span>
-                                        </a>
-                                        <span ng-if="jobChain.numOfOrders<1 || !jobChain.numOfOrders">
-                                            <span class="text-black _600" ng-bind="jobChain.numOfOrders || 0">0</span>
-                                            <span ng-bind="'label.order' | translate"></span>
+                                            <span ng-if="jobChain.numOfOrders<2" ng-bind="'label.order' | translate"></span>
                                         </span>
                                     </div>
                                     <div class="text-sm  text-left text-muted m-l p-t-xs">
-                                        <span class="text-black _600" ng-bind="jobChain.ordersSummary.pending || 0"></span>
+                                        <span class="text-black _600" ng-click="viewOrders(jobChain,'pending')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.pending >0}" ng-bind="jobChain.ordersSummary.pending || 0"></span>
                                         <span ng-bind="'label.pending' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.running || 0"></span>
+                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'running')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.running >0}" ng-bind="jobChain.ordersSummary.running || 0"></span>
                                         <span ng-bind="'label.running' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-bind="jobChain.ordersSummary.suspended || 0"></span>
+                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'suspended')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.suspended >0}" ng-bind="jobChain.ordersSummary.suspended || 0"></span>
                                         <span ng-bind="'label.suspended' | translate"></span>
+                                    </div>
+                                    <div class="text-sm  text-left text-muted m-l p-t-xs">
+                                        <span class="text-black _600 " ng-click="viewOrders(jobChain,'setback')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.setback >0}" ng-bind="jobChain.ordersSummary.setback || 0"></span>
+                                        <span ng-bind="'label.setback' | translate"></span>
+                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'blacklist')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.blacklist >0}" ng-bind="jobChain.ordersSummary.blacklist || 0"></span>
+                                        <span ng-bind="'label.blacklist' | translate"></span>
+                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'waitingForResource')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.waitingForResource >0}" ng-bind="jobChain.ordersSummary.waitingForResource || 0"></span>
+                                        <span ng-bind="'label.waitingForResource' | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
                                         <span translate>label.status </span>:
@@ -343,27 +347,27 @@
                                 <td ng-bind="jobChain.numOfNodes || 0"></td>
                                 <td ><a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.pending > 0" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.pending"></span>
+                                    <span ng-if="jobChain.ordersSummary.pending > 0" class="text-hover-primary" ng-click="viewOrders(jobChain,'pending')" ng-bind="jobChain.ordersSummary.pending"></span>
                                     <span ng-if="jobChain.ordersSummary.pending == 0" ng-bind="jobChain.ordersSummary.pending"></span>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.running >0" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.running"></span>
+                                    <span ng-if="jobChain.ordersSummary.running >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'running')" ng-bind="jobChain.ordersSummary.running"></span>
                                     <span ng-if="jobChain.ordersSummary.running == 0" ng-bind="jobChain.ordersSummary.running"></span>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.suspended >0" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.suspended"></span>
+                                    <span ng-if="jobChain.ordersSummary.suspended >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'suspended')" ng-bind="jobChain.ordersSummary.suspended"></span>
                                     <span ng-if="jobChain.ordersSummary.suspended == 0" ng-bind="jobChain.ordersSummary.suspended"></span>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.waitingForResource >0" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.waitingForResource"></span>
+                                    <span ng-if="jobChain.ordersSummary.waitingForResource >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'waitingForResource')" ng-bind="jobChain.ordersSummary.waitingForResource"></span>
                                     <span ng-if="jobChain.ordersSummary.waitingForResource == 0" ng-bind="jobChain.ordersSummary.waitingForResource"></span>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.setback >0" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.setback"></span>
+                                    <span ng-if="jobChain.ordersSummary.setback >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'setback')" ng-bind="jobChain.ordersSummary.setback"></span>
                                     <span ng-if="jobChain.ordersSummary.setback == 0" ng-bind="jobChain.ordersSummary.setback"></span>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.blacklist >0" class="text-hover-primary" ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.blacklist"></span>
+                                    <span ng-if="jobChain.ordersSummary.blacklist >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'blacklist')" ng-bind="jobChain.ordersSummary.blacklist"></span>
                                     <span ng-if="jobChain.ordersSummary.blacklist == 0" ng-bind="jobChain.ordersSummary.blacklist"></span>
                                 </td>
                                 <td class="noExl">
@@ -408,6 +412,7 @@
                                             <tr>
                                                 <th translate>label.state</th>
                                                 <th translate>label.job</th>
+                                                <th translate>label.noOfOrders</th>
                                                 <th translate>label.jobStatus</th>
                                                 <th translate>label.nodeStatus</th>
                                             </tr>
@@ -488,7 +493,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="task in node.job.runningTasks" ng-if="showTask(task,node)">
+                                                        <tr ng-repeat="task in node.job.runningTasks">
                                                             <td class="text-xs">{{task.pid}}</td>
                                                             <td class="text-xs">{{task.taskId}}</td>
                                                             <td class="text-xs">{{task._cause | translate}}</td>
@@ -512,6 +517,7 @@
                                                     </tbody>
                                                 </table>
                                                 </td>
+                                                <td>{{node.numOfOrders}}</td>
                                                 <td>
                                                     <span class="label" ng-if="node.job.state" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span>
                                                     <span class="label" ng-if="node.job.configurationStatus" ng-class="colorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>

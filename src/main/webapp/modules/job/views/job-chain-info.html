@@ -113,6 +113,7 @@
                                                 <tr>
                                                     <th translate>label.state</th>
                                                     <th translate>label.job</th>
+                                                     <th translate>label.noOfOrders</th>
                                                     <th translate>label.jobStatus</th>
                                                     <th translate>label.nodeStatus</th>
                                                 </tr>
@@ -194,7 +195,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr ng-repeat="task in node.job.runningTasks" ng-if="showTask(task,node)">
+                                                            <tr ng-repeat="task in node.job.runningTasks">
                                                                 <td class="text-xs">{{task.pid}}</td>
                                                                 <td class="text-xs">{{task.taskId}}</td>
                                                                 <td class="text-xs">{{task._cause | translate}}</td>
@@ -218,6 +219,7 @@
                                                         </tbody>
                                                     </table>
                                                     </td>
+                                                    <td>{{node.numOfOrders}}</td>
                                                     <td>
                                                         <span class="label" ng-if="node.job.state" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span>
                                                         <span class="label" ng-if="node.job.configurationStatus" ng-class="colorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>
@@ -276,7 +278,7 @@
                                 </tr>
                                 </tbody>
                             </table>
-                    </div>
+                </div>
             </div>
             <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>

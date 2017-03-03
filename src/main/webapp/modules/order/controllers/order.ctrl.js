@@ -73,6 +73,10 @@
                 obj.compact = true;
                 obj.orders = [];
                 obj.orders.push({jobChain: vm.jobChain.path});
+                if (vm.orderFilters.filter.state != 'ALL') {
+                    obj.processingStates = [];
+                    obj.processingStates.push(vm.orderFilters.filter.state);
+                }
                 if (loadFinished)
                     loadOrders(obj);
             }
@@ -84,19 +88,19 @@
         });
 
         $scope.$on("orderState", function (evt, state) {
+            vm.orderFilters.filter.state = state;
             if (state) {
                 var obj = {};
                 obj.jobschedulerId = $scope.schedulerIds.selected;
                 obj.compact = true;
                 obj.orders = [];
                 obj.orders.push({jobChain: vm.jobChain.path});
-                if (state != 'ALL') {
+                if (vm.orderFilters.filter.state != 'ALL') {
                     obj.processingStates = [];
-                    obj.processingStates.push(state);
-                    loadOrders(obj);
-                } else {
-                    loadOrders(obj);
+                    obj.processingStates.push(vm.orderFilters.filter.state);
                 }
+                loadOrders(obj);
+
             }
         });
 
@@ -235,7 +239,7 @@
                 hideLimitLabels: true
             }
         };
-        vm.showTask = function(task,node){
+/*        vm.showTask = function(task,node){
             if(!task.order){
                 return false;
             }
@@ -246,7 +250,7 @@
                 }
             })
             return show;
-        }
+        }*/
 
         vm.onAction = onAction;
 

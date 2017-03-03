@@ -191,6 +191,7 @@
         tempTabs._orderDetail = {};
         tempTabs._orderDetail.overview = true;
         tempTabs._orderDetail.filter = {};
+        tempTabs._orderDetail.filter.state = 'ALL';
         tempTabs._orderDetail.filter.sortBy = 'orderId';
         tempTabs._orderDetail.reverse = false;
         tempTabs._orderDetail.pageSize = '10';

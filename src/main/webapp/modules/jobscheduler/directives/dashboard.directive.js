@@ -257,8 +257,7 @@
                                 moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                             }
-                                                      rect.setAttribute('data-content', popoverTemplate);
-
+                            rect.setAttribute('data-content', popoverTemplate);
                         }
                     }
 
@@ -375,14 +374,11 @@
 
 
                                 if (master.os && master.startedAt) {
-
-                                    console.log("Master os exists");
                                       popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
                                     '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
                                     '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                                 }
-
 
                                 if (master.clusterType && master.clusterType._type == 'PASSIVE') {
                                     if (master.clusterType.precedence == 0) {

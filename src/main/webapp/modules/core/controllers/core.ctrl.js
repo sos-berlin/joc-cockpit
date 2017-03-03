@@ -198,7 +198,7 @@
         };
 
         function setUserPrefrences(preferences, configObj) {
-            if(!$window.sessionStorage.preferenceId) {
+            if($window.sessionStorage.preferenceId == 0) {
                 preferences.zone = jstz().timezone_name;
                 preferences.locale = $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
@@ -242,7 +242,7 @@
             configObj.configurationType = "PROFILE";
             var preferences = {};
             UserService.configurations(configObj).then(function (res1) {
-
+                $window.sessionStorage.preferenceId = 0;
                 if (res1.configurations && res1.configurations.length > 0) {
                     $window.sessionStorage.preferenceId = res1.configurations[0].id;
                     UserService.configuration({
