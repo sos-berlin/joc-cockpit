@@ -591,7 +591,7 @@
   "label.maxNumberOfHistoryEntriesPerTask": "Nombre maximum d'entrées dans l'Historique par Tâche",
   "label.maxNumberOfHistoryEntriesPerOrder": "Nombre maximum d'entrées dans l'Historique par Ordre",
   "label.maxNumberOfHistoryEntriesPerJobchain": "Nombre maximum d'entrées dans l'Historique par Chaîne des Tâches",
-  "label.maxNumberOfOrdersPerJobChain": "Nombre maximum d'Ordres par Chaîne des Tâches",
+  "label.maxNumberOfOrdersPerJobChain": "Nombre maximum d'Ordres par Noeud des Chaînes des Tâches",
   "label.terminateTask": "Terminer le processus",
   "label.withTimeout": "Avec un délai d'attente",
   "message.oops": "OOPS",

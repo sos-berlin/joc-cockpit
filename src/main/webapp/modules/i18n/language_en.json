@@ -591,7 +591,7 @@
   "label.maxNumberOfHistoryEntriesPerTask": "Max. number of History entries per Task",
   "label.maxNumberOfHistoryEntriesPerOrder": "Max. number of History entries per Order",
   "label.maxNumberOfHistoryEntriesPerJobchain": "Max. number of History entries per Job Chain",
-  "label.maxNumberOfOrdersPerJobChain": "Max. number of Orders per Job Chain",
+  "label.maxNumberOfOrdersPerJobChain": "Max. number of Orders per Job Chain Node",
   "label.terminateTask": "Terminate Task",
   "label.withTimeout": "With Timeout",
   "message.oops": "Oops",
