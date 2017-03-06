@@ -11,8 +11,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout", "$window"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout, $window) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -286,12 +286,18 @@
 
         function checkExpandTreeForUpdatesA(data) {
             if (data.selected1) {
-                obj.folders.push({folder: data.path, recursive: false});
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                vm.folderPathS = data.name || '/';
+                obj.folders = [{folder: data.path, recursive: false}];
+                JobSchedulerService.getAgentCluster(obj).then(function (result) {
+                    data.agentClusters = result.agentClusters;
+                });
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded || value.selected1)
-                    checkExpandTreeForUpdates(value);
+                    checkExpandTreeForUpdatesA(value);
             });
         }
 
@@ -1621,114 +1627,105 @@
         }
 
 
-        var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
-                    if (event.eventType.indexOf("FileBased") !== -1) {
-                        if (t1) {
-                            $timeout.cancel(t1);
-                        }
-                        t1 = $timeout(function () {
-                            if (vm.resourceFilters.state == 'lock' && event.objectType == 'LOCK') {
-                                ResourceService.tree({
-                                    jobschedulerId: vm.schedulerIds.selected,
-                                    compact: true,
-                                    types: ['LOCK']
-                                }).then(function (res) {
+                    if (event.eventType == "FileBasedActivated") {
 
-                                    vm.locksFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.locksFilters.expand_to, 'lock');
-                                    vm.treeLock = vm.locksFilters.expand_to;
+                        if (vm.resourceFilters.state == 'lock' && event.objectType == 'LOCK') {
+                            ResourceService.tree({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                compact: true,
+                                types: ['LOCK']
+                            }).then(function (res) {
+                                vm.locksFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.locksFilters.expand_to, 'lock');
+                                vm.treeLock = vm.locksFilters.expand_to;
+                            });
 
-                                });
-
-                                var path = [];
-                                if (event.path.indexOf(",") > -1) {
-                                    path = event.path.split(",");
-                                } else {
-                                    path[0] = event.path;
-                                }
-                                if (vm.allLocks.length > 0) {
-                                    for (var j = 0; j < vm.allLocks.length; j++) {
-                                        if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allLocks[j].path.substring(0, vm.allLocks[j].path.lastIndexOf('/'))) {
-                                            navFullTreeForUpdateLock(path[0].substring(0, path[0].lastIndexOf('/')));
-                                            break;
-                                        }
+                            var path = [];
+                            if (event.path.indexOf(",") > -1) {
+                                path = event.path.split(",");
+                            } else {
+                                path[0] = event.path;
+                            }
+                            if (vm.allLocks.length > 0) {
+                                for (var j = 0; j < vm.allLocks.length; j++) {
+                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allLocks[j].path.substring(0, vm.allLocks[j].path.lastIndexOf('/'))) {
+                                        navFullTreeForUpdateLock(path[0].substring(0, path[0].lastIndexOf('/')));
+                                        break;
                                     }
-                                } else {
-                                    navFullTreeForUpdateLock(path[0].substring(0, path[0].lastIndexOf('/')));
                                 }
-
-                            } else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
-                                ResourceService.tree({
-                                    jobschedulerId: vm.schedulerIds.selected,
-                                    compact: true,
-                                    types: ['PROCESSCLASS']
-                                }).then(function (res) {
-
-                                    vm.processFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.processFilters.expand_to, 'processClass');
-                                    vm.treeProcess = vm.processFilters.expand_to;
-
-                                });
-
-                                var path = [];
-                                if (event.path.indexOf(",") > -1) {
-                                    path = event.path.split(",");
-                                } else {
-                                    path[0] = event.path;
-                                }
-                                if (vm.allProcessClasses.length > 0) {
-                                    for (var j = 0; j < vm.allProcessClasses.length; j++) {
-                                        if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allProcessClasses[j].path.substring(0, vm.allProcessClasses[j].path.lastIndexOf('/'))) {
-                                            navFullTreeForUpdateProcess(path[0].substring(0, path[0].lastIndexOf('/')));
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    navFullTreeForUpdateProcess(path[0].substring(0, path[0].lastIndexOf('/')));
-                                }
-                            } else if (vm.resourceFilters.state == 'schedules' && event.objectType == 'SCHEDULE') {
-                                ResourceService.tree({
-                                    jobschedulerId: vm.schedulerIds.selected,
-                                    compact: true,
-                                    types: ['SCHEDULE']
-                                }).then(function (res) {
-                                    vm.schdeuleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.schdeuleFilters.expand_to, 'schedule');
-                                    vm.tree = vm.schdeuleFilters.expand_to;
-                                });
-
-                                var path = [];
-                                if (event.path.indexOf(",") > -1) {
-                                    path = event.path.split(",");
-                                } else {
-                                    path[0] = event.path;
-                                }
-                                if (vm.allSchedules.length > 0) {
-                                    for (var j = 0; j < vm.allSchedules.length; j++) {
-                                        if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allSchedules[j].path.substring(0, vm.allSchedules[j].path.lastIndexOf('/'))) {
-                                            navFullTreeForUpdateSchedule(path[0].substring(0, path[0].lastIndexOf('/')));
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    navFullTreeForUpdateSchedule(path[0].substring(0, path[0].lastIndexOf('/')));
-                                }
-
-                            } else if (vm.resourceFilters.state == 'agent') {
-                                ResourceService.tree({
-                                    jobschedulerId: vm.schedulerIds.selected,
-                                    compact: true,
-                                    types: ['AGENTCLUSTER']
-                                }).then(function (res) {
-                                    vm.agentsFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.agentsFilters.expand_to, 'agent');
-                                    vm.treeAgent = vm.agentsFilters.expand_to;
-                                });
+                            } else {
+                                navFullTreeForUpdateLock(path[0].substring(0, path[0].lastIndexOf('/')));
                             }
 
-                            $timeout.cancel(t1);
-                        }, 5000);
+                        } else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
+                            ResourceService.tree({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                compact: true,
+                                types: ['PROCESSCLASS']
+                            }).then(function (res) {
+
+                                vm.processFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.processFilters.expand_to, 'processClass');
+                                vm.treeProcess = vm.processFilters.expand_to;
+
+                            });
+
+                            var path = [];
+                            if (event.path.indexOf(",") > -1) {
+                                path = event.path.split(",");
+                            } else {
+                                path[0] = event.path;
+                            }
+                            if (vm.allProcessClasses.length > 0) {
+                                for (var j = 0; j < vm.allProcessClasses.length; j++) {
+                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allProcessClasses[j].path.substring(0, vm.allProcessClasses[j].path.lastIndexOf('/'))) {
+                                        navFullTreeForUpdateProcess(path[0].substring(0, path[0].lastIndexOf('/')));
+                                        break;
+                                    }
+                                }
+                            } else {
+                                navFullTreeForUpdateProcess(path[0].substring(0, path[0].lastIndexOf('/')));
+                            }
+                        } else if (vm.resourceFilters.state == 'schedules' && event.objectType == 'SCHEDULE') {
+                            ResourceService.tree({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                compact: true,
+                                types: ['SCHEDULE']
+                            }).then(function (res) {
+                                vm.schdeuleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.schdeuleFilters.expand_to, 'schedule');
+                                vm.tree = vm.schdeuleFilters.expand_to;
+                            });
+
+                            var path = [];
+                            if (event.path.indexOf(",") > -1) {
+                                path = event.path.split(",");
+                            } else {
+                                path[0] = event.path;
+                            }
+                            if (vm.allSchedules.length > 0) {
+                                for (var j = 0; j < vm.allSchedules.length; j++) {
+                                    if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allSchedules[j].path.substring(0, vm.allSchedules[j].path.lastIndexOf('/'))) {
+                                        navFullTreeForUpdateSchedule(path[0].substring(0, path[0].lastIndexOf('/')));
+                                        break;
+                                    }
+                                }
+                            } else {
+                                navFullTreeForUpdateSchedule(path[0].substring(0, path[0].lastIndexOf('/')));
+                            }
+
+                        } else if (vm.resourceFilters.state == 'agent' && event.objectType == 'PROCESSCLASS') {
+                            ResourceService.tree({
+                                jobschedulerId: vm.schedulerIds.selected,
+                                compact: true,
+                                types: ['AGENTCLUSTER']
+                            }).then(function (res) {
+                                vm.agentsFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.agentsFilters.expand_to, 'agent');
+                                vm.treeAgent = vm.agentsFilters.expand_to;
+                            });
+                        }
                     }
-                    if (event.eventType.indexOf("Task") !== -1 && vm.resourceFilters.state == 'processClass') {
+                    if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'processClass') {
                         angular.forEach(vm.allProcessClasses, function (value2, index) {
                             if (event.path != undefined) {
                                 if (value2.path == event.path) {
@@ -1738,6 +1735,21 @@
                                     ResourceService.getProcessClass(obj).then(function (res) {
                                         if (res.processClasses) {
                                             vm.allProcessClasses[index] = angular.merge(vm.allProcessClasses[index], res.processClasses[0]);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }else if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'lock') {
+                        angular.forEach(vm.allLocks, function (value2, index) {
+                            if (event.path != undefined) {
+                                if (value2.path == event.path) {
+                                    var obj = {};
+                                    obj.jobschedulerId = $scope.schedulerIds.selected;
+                                    obj.folders = [{folder: value2.path, recursive: false}];
+                                    ResourceService.get(obj).then(function (res) {
+                                        if (res.locks) {
+                                            vm.allLocks[index] = angular.merge(vm.allLocks[index], res.locks[0]);
                                         }
                                     });
                                 }
@@ -1856,7 +1868,6 @@
                 initTree();
             }
             startPolling();
-
         });
 
         var interval1, interval2;
@@ -1864,23 +1875,24 @@
         function poll1() {
             interval1 = $interval(function () {
                 for (var i = 0; i < vm.treeAgent.length; i++) {
-                    if (vm.treeAgent[i].expanded || vm.treeAgent[i].selected1)
-                        checkExpandTreeForUpdatesA(vm.treeAgent[i]);
+                    checkExpandTreeForUpdatesA(vm.treeAgent[i]);
                 }
-            }, 60 * 1000)
+            }, 30 * 1000)
         }
 
         function poll2() {
             interval2 = $interval(function () {
-                filteredVolatileTreeData();
-            }, 60 * 1000)
+                for (var i = 0; i < vm.tree.length; i++) {
+                    checkExpandTreeForUpdates(vm.tree[i]);
+                }
+            }, 30 * 1000)
         }
 
         function startPolling() {
             $interval.cancel(interval1);
             $interval.cancel(interval2);
             if (vm.resourceFilters.state == 'agent') {
-                //  poll1();
+                  poll1();
             } else if (vm.resourceFilters.state == 'schedules') {
                 poll2();
             }
@@ -1907,9 +1919,7 @@
             watcher3();
             $interval.cancel(interval1);
             $interval.cancel(interval2);
-            if (t1) {
-                $timeout.cancel(t1);
-            }
+
         });
     }
 
@@ -2526,7 +2536,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1) {
+                    if (vm.events[0].eventSnapshots[i].path && vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged") {
                         angular.forEach(vm.orders, function (value2, index) {
                             var path = vm.events[0].eventSnapshots[i].path;
                             if (value2.path == path) {
@@ -2548,8 +2558,8 @@
         });
     }
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver',"$interval"];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver,$interval) {
         var vm = $scope;
         var bgColorArray = [];
         if (SOSAuth.jobChain) {
@@ -2557,14 +2567,7 @@
             SOSAuth.save();
         }
 
-
         vm.dashboardFilters = CoreService.getDashboardTab();
-
-        vm.clusterStatusPollingInterval = 2 * 60 * 1000;
-
-        var isOrderOverviewLoaded = false;
-        var isOrderSummaryLoaded = false;
-        var isDailyPlanLoad = false;
 
         function groupBy(data) {
             var results = [];
@@ -2897,7 +2900,6 @@
 
         var states = [];
         vm.clusterAction = function (objectType, action, host, port,id) {
-           // console.log("objectType "+objectType+" action "+action+" host "+host+" port "+port+" id "+id);
             function performAction() {
                 var obj = {};
                 obj.jobschedulerId = id || vm.schedulerIds.selected;
@@ -2988,8 +2990,8 @@
                 }
             }
 
-            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithin') {
-                vm.getTimeout(host, port);
+            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithTimeout') {
+                vm.getTimeout(host, port,id);
             } else {
 
                 if (vm.userPreferences.auditLog && action !=='downloadLog') {
@@ -3067,7 +3069,7 @@
 
         vm.criterion = {};
         vm.criterion.timeout = 60;
-        vm.getTimeout = function (host, port) {
+        vm.getTimeout = function (host, port,id) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
             var modalInstance = $uibModal.open({
@@ -3078,7 +3080,7 @@
             });
             modalInstance.result.then(function () {
                 var obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.jobschedulerId = id;
                 obj.host = host;
                 obj.port = port;
                 obj.timeout = vm.criterion.timeout;
@@ -3105,9 +3107,6 @@
         vm.loadOrderSnapshot = function () {
             OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.snapshot = res.orders;
-                isOrderOverviewLoaded = true;
-            }, function () {
-                isOrderOverviewLoaded = true;
             });
         };
         vm.loadOrderSnapshot();
@@ -3129,9 +3128,6 @@
             }
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
-                isOrderSummaryLoaded = true;
-            }, function (err) {
-                isOrderSummaryLoaded = true;
             })
         };
         vm.getOrderSummary();
@@ -3179,9 +3175,6 @@
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.planItemData = res.planItems;
                 filterData();
-                isDailyPlanLoad = true;
-            }, function (err) {
-                isDailyPlanLoad = true;
             })
         };
 
@@ -3334,42 +3327,43 @@
             $state.go('app.history');
         };
 
-        var int = '';
+
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1) {
-                        if (isOrderOverviewLoaded) {
-                            isOrderOverviewLoaded = false;
-                            vm.loadOrderSnapshot();
-                        }
-                        if (isOrderSummaryLoaded) {
-                            isOrderSummaryLoaded = false;
-                            vm.getOrderSummary();
-                        }
-                        if (vm.events[0].eventSnapshots[i].eventType == 'OrderStarted' || vm.events[0].eventSnapshots[i].eventType == 'OrderFinished')
-                            vm.getAgentClusterRunningTask();
-                        if (int)
-                            $timeout.cancel(int);
-                        if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && isDailyPlanLoad)
-                            int = $timeout(function () {
-                                isDailyPlanLoad = false;
-                                vm.getDailyPlans();
-                                $timeout.cancel(int);
-                            }, 5000);
-                        break;
+                    if (vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged") {
+
+                        vm.loadOrderSnapshot();
+                    }
+                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged") {
+                        vm.getOrderSummary();
+                         vm.getDailyPlans();
+                    }
+                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" || (vm.events[0].eventSnapshots[i].objectType=="PROCESSCLASS") || vm.events[0].eventSnapshots[i].eventType== "FileBasedActivated") {
+                         vm.getAgentClusterRunningTask();
                     }
                 }
         });
 
+        var interval1;
+
+        function poll() {
+            interval1 = $interval(function () {
+                vm.getAgentCluster();
+            }, 60 * 1000)
+        }
+        poll();
+
+
         $scope.$on('$destroy', function () {
             $timeout.cancel(interval);
-            $timeout.cancel(int);
+            $interval.cancel(interval1);
+
         });
     }
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'toasty', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService'];
-    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, toasty, DailyPlanService, $stateParams, CoreService, UserService) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService'];
+    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, DailyPlanService, $stateParams, CoreService, UserService) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
@@ -3622,7 +3616,6 @@
         };
 
         function applySavedFilter(obj) {
-
             if (vm.selectedFiltered.regex)
                 obj.regex = vm.selectedFiltered.regex;
 
@@ -4143,7 +4136,7 @@
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && isLoaded) {
+                    if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && isLoaded) {
                         isLoaded = false;
                         if (int) {
                             $timeout.cancel(int);
@@ -4151,7 +4144,7 @@
                         int = $timeout(function () {
                             vm.getPlansByEvents();
                             $timeout.cancel(int);
-                        }, 5000);
+                        }, 1000);
                         break;
                     }
                 }

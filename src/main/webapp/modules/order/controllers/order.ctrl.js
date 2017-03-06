@@ -1929,9 +1929,7 @@
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
             orders.orders.push(obj);
-            OrderService.addOrder(orders).then(function (res) {
-                volatileInfo();
-            });
+            OrderService.addOrder(orders);
             vm.object.orders = [];
 
         }
@@ -2313,7 +2311,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1 || vm.events[0].eventSnapshots[i].eventType.indexOf("JobChain") !== -1 || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged')) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged') {
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
                             path = vm.events[0].eventSnapshots[i].path.split(",");
@@ -2322,7 +2320,7 @@
                         }
 
                         var flag = false;
-                        if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
+                        if (vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
                             for (var m = 0; m < vm.jobChain.nodes.length; m++) {
                                 if (path[0] == vm.jobChain.nodes[m].job.path) {
                                     flag = true;
@@ -3781,7 +3779,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (value1) {
-                    if (value1.path != undefined && value1.eventType.indexOf("Order") !== -1) {
+                    if (value1.path && value1.eventType === "OrderStateChanged") {
                         if($location.search().path){
                             if (value1.path == $location.search().path)
                             getOrderByPath($location.search().path);
@@ -3813,12 +3811,7 @@
                             }
                         }
                     }
-                    if (value1.eventType.indexOf("FileBased") !== -1 && value1.objectType == "ORDER") {
-                        if (t1) {
-                            $timeout.cancel(t1);
-                        }
-                        t1 = $timeout(function () {
-
+                    if (value1.eventType === "FileBasedActivated" && value1.objectType == "ORDER") {
                             OrderService.tree({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 compact: true,
@@ -3846,10 +3839,6 @@
                             } else {
                                 navFullTreeForUpdateOrder(path[0].substring(0, path[0].lastIndexOf('/')));
                             }
-
-                            $timeout.cancel(t1);
-                        }, 5000);
-
                     }
                 });
         });
@@ -4272,7 +4261,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1 && waitForResponse) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType !== "OrderStateChanged" && waitForResponse) {
                         waitForResponse = false;
                         var obj = {};
                         obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -5025,7 +5014,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.showLogPanel)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType.indexOf("Order") !== -1) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged") {
                         var path = vm.events[0].eventSnapshots[i].path;
                         if (vm.showLogPanel.path == path) {
                             var orders = {};
@@ -6533,75 +6522,61 @@
             } else
                 vm.init({jobschedulerId: $scope.schedulerIds.selected});
         };
-        var int = '';
-        var int1 = '';
+
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'OrderFinished' && vm.historyFilters.type == 'jobChain' && isLoaded) {
+                    if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && isLoaded) {
                         isLoaded = false;
-                        if (int) {
-                            $timeout.cancel(int);
+                        var filter = {};
+                        filter.jobschedulerId = $scope.schedulerIds.selected;
+
+                        if (vm.selectedFiltered1) {
+                            filter = orderParseDate(filter);
+                        } else {
+                            filter = setOrderDateRange(filter);
+                            if (vm.order.filter.historyStates != 'all') {
+                                filter.historyStates = [];
+                                filter.historyStates.push(vm.order.filter.historyStates);
+                            }
                         }
-                        int = $timeout(function () {
-                            var filter = {};
-                            filter.jobschedulerId = $scope.schedulerIds.selected;
+                        filter.limit = parseInt(vm.userPreferences.maxRecords);
+                        if (jobChainSearch) {
+                            vm.search(true);
+                        } else {
+                            OrderService.histories(filter).then(function (res) {
+                                vm.historys = res.history;
+                                isLoaded = true;
+                            }, function () {
+                                isLoaded = true;
+                            });
+                        }
 
-                            if (vm.selectedFiltered1) {
-                                filter = orderParseDate(filter);
-                            } else {
-                                filter = setOrderDateRange(filter);
-                                if (vm.order.filter.historyStates != 'all') {
-                                    filter.historyStates = [];
-                                    filter.historyStates.push(vm.order.filter.historyStates);
-                                }
-                            }
-                            filter.limit = parseInt(vm.userPreferences.maxRecords);
-                            if (jobChainSearch) {
-                                vm.search(true);
-                            } else {
-                                OrderService.histories(filter).then(function (res) {
-                                    vm.historys = res.history;
-                                    isLoaded = true;
-                                }, function () {
-                                    isLoaded = true;
-                                });
-                            }
-
-                            $timeout.cancel(int);
-                        }, 5000);
                         break;
-                    } else if (vm.events[0].eventSnapshots[i].eventType == 'TaskClosed' && vm.historyFilters.type == 'job' && isLoaded) {
+                    } else if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && isLoaded) {
                         isLoaded = false;
-                        if (int1) {
-                            $timeout.cancel(int1);
+                        var filter = {};
+                        filter.jobschedulerId = $scope.schedulerIds.selected;
+                        if (vm.selectedFiltered2) {
+                            filter = jobParseDate(filter);
+                        } else {
+                            filter = setTaskDateRange(filter);
+                            if (vm.task.filter.historyStates != 'all') {
+                                filter.historyStates = [];
+                                filter.historyStates.push(vm.task.filter.historyStates);
+                            }
                         }
-                        int1 = $timeout(function () {
-                            var filter = {};
-                            filter.jobschedulerId = $scope.schedulerIds.selected;
-                            if (vm.selectedFiltered2) {
-                                filter = jobParseDate(filter);
-                            } else {
-                                filter = setTaskDateRange(filter);
-                                if (vm.task.filter.historyStates != 'all') {
-                                    filter.historyStates = [];
-                                    filter.historyStates.push(vm.task.filter.historyStates);
-                                }
-                            }
-                            filter.limit = parseInt(vm.userPreferences.maxRecords);
-                            if (jobSearch) {
-                                vm.search(true);
-                            } else {
-                                TaskService.histories(filter).then(function (res) {
-                                    vm.jobHistorys = res.history;
-                                    isLoaded = true;
-                                }, function () {
-                                    isLoaded = true;
-                                });
-                            }
-
-                            $timeout.cancel(int1);
-                        }, 5000);
+                        filter.limit = parseInt(vm.userPreferences.maxRecords);
+                        if (jobSearch) {
+                            vm.search(true);
+                        } else {
+                            TaskService.histories(filter).then(function (res) {
+                                vm.jobHistorys = res.history;
+                                isLoaded = true;
+                            }, function () {
+                                isLoaded = true;
+                            });
+                        }
                         break;
                     }
                 }
@@ -6616,10 +6591,6 @@
             if (promise1) {
                 $timeout.cancel(promise1);
             }
-            if (int)
-                $timeout.cancel(int);
-            if (int1)
-                $timeout.cancel(int1);
         });
     }
 

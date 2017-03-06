@@ -705,10 +705,12 @@
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
                 CoreService.setDefaultTab();
-                $location.path('/login').search({});
-                $window.localStorage.clientLogs = {};
-                $window.sessionStorage.$SOS$JOBSCHEDULE = null;
-                $window.sessionStorage.$SOS$ALLEVENT = null;
+
+                $window.localStorage.setItem('clientLogs', {});
+                $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
+                $window.sessionStorage.setItem('$SOS$ALLEVENT' , null);
+                
+                 $location.path('/login').search({});
             });
         };
 
@@ -862,7 +864,8 @@
             var eventFilter = vm.userPreferences.events.filter;
             if (eventFilter && angular.isArray(eventFilter) && eventFilter.length > 0) {
                 for (var i = 0; i < vm.allEvents.length; i++) {
-                    if (vm.allEvents[i] && vm.allEvents[i].eventSnapshots != undefined) {
+
+                    if (vm.allEvents[i] && vm.allEvents[i].eventSnapshots && vm.allEvents[i].jobschedulerId != vm.schedulerIds.selected) {
                         for (var j = 0; j < vm.allEvents[i].eventSnapshots.length; j++) {
                             var evnType = vm.allEvents[i].eventSnapshots[j].eventType;
                             if (evnType != 'JobStateChanged' && evnType != 'JobChainStateChanged') {
