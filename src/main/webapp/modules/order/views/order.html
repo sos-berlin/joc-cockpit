@@ -130,8 +130,7 @@
 </div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
-        <div class="m-t-sm">
-           <div>
+        <div>
                 <div class="hide-block sidebar-btn resize-cursor">
                     <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
                 </div>
@@ -157,9 +156,14 @@
                     </div>
                 </div>
                 <div id="rightPanel1" ng-controller="OrderFunctionCtrl">
-                    <div class="hide " ng-class="{'show': isLoading}" ng-hide="loading">
+                    <div class="row m-b">
+                        <div class="col-md-12">
+                            <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+                        </div>
+                    </div>
+                    <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                         <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
-                            <div ng-repeat="(key, value) in allOrders  | groupBy: 'path1'">
+                            <div ng-repeat="(key, value) in filtered = (allOrders | filter: filterString:strict) | groupBy: 'path1'">
                                 <div class="col-sm-12"  style="margin-bottom: 10px">
                                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                                 </div>
@@ -252,6 +256,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}" translate>message.noDataMatched</div>
                         </div>
 
                     <div class="hide box p-a " ng-class="{'show': pageView=='list' && allOrders.length >0}">
@@ -317,7 +322,7 @@
 
                                     </tr>
                                     </thead>
-                                    <tbody ng-repeat="order in allOrders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize" ng-class="{'light-bg':showLogPanel == order}">
+                                    <tbody ng-repeat="order in filtered = (allOrders | filter: filterString:strict) | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize" ng-class="{'light-bg':showLogPanel == order}">
                                         <tr>
                                             <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                                 <label class="md-check">
@@ -422,12 +427,12 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allOrders.length > 10}" ng-if="allOrders.length >0"><span translate>label.total</span> {{allOrders.length}}
-                                <span translate ng-if="allOrders.length >1">label.ordersFound</span>
-                                <span translate ng-if="allOrders.length ==1">label.orderFound</span>
+                            <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                                <span translate ng-if="filtered.length >1">label.ordersFound</span>
+                                <span translate ng-if="filtered.length ==1">label.orderFound</span>
                             </div>
-                            <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                            <div class="pull-left" ng-show="allOrders.length > 10">
+                            <ul ng-show="filtered.length > orderFilters.pageSize" uib-pagination total-items="filtered.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                            <div class="pull-left" ng-show="filtered.length > 10">
                                     <div class="btn-group m-r-xxs">
                                         <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'10'"
                                                 ng-class="{'primary': orderFilters.pageSize=='10'}" >10
@@ -446,6 +451,7 @@
                                         </button>
                                     </div>
                                 </div>
+                            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}" translate>message.noDataMatched</div>
                         </div>
                     </div>
 
@@ -586,8 +592,6 @@
                     </div>
                 </div>
             </div>
-
-        </div>
     </div>
 </div>
 

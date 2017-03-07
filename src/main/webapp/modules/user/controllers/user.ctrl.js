@@ -62,8 +62,8 @@
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
 
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
-                    $window.localStorage.$SOS$URL= '';
-                    $window.localStorage.$SOS$URLPARAMS = {};
+                    $window.localStorage.setItem('$SOS$URL', '');
+                    $window.localStorage.setItem('$SOS$URLPARAMS', {});
                 } else {
                     $location.path('/');
                 }
@@ -96,9 +96,9 @@
                                 $window.localStorage.$SOS$BOO = pwd;
                                 $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
                             } else {
-                                $window.localStorage.$SOS$FOO = null;
-                                $window.localStorage.$SOS$BOO = null;
-                                $window.localStorage.$SOS$REMEMBER = null;
+                                $window.localStorage.setItem('$SOS$FOO', null);
+                                $window.localStorage.setItem('$SOS$BOO', null);
+                                $window.localStorage.setItem('$SOS$REMEMBER', null);
                             }
 
                             SOSAuth.setUser(response);

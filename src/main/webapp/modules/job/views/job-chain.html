@@ -104,34 +104,42 @@
 </div>
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
+
         <div class="hide-block sidebar-btn resize-cursor">
             <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
         </div>
         <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270">
-                    <div>
-                        <a class="text m-r-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
-                            <i class="fa fa-angle-double-down fa-lg"></i>
-                        </a>
-                        <a class="text" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-                           <i class="fa fa-angle-double-up fa-lg"></i>
-                        </a>
-                       <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
-                        <tree tree-data="tree"
-                                tree-control="my_tree"
-                                view-orders="viewOrders(jobChain)"
-                                expand-on="expanding_property"
-                                on-click="treeHandler(branch)"
-                                on-select="treeHandler1(branch)"
-                                expand-node="expandNode(branch)"
-                                collapse-node="collapseNode(branch)"
-                                template-url="modules/core/template/tree.html">
-                        </tree>
-                    </div>
-                </div>
+            <div>
+                <a class="text m-r-sm" ng-click="my_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                    <i class="fa fa-angle-double-down fa-lg"></i>
+                </a>
+                <a class="text" ng-click="my_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                    <i class="fa fa-angle-double-up fa-lg"></i>
+                </a>
+                <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+                <tree tree-data="tree"
+                      tree-control="my_tree"
+                      expand-on="expanding_property"
+                      on-click="treeHandler(branch)"
+                      on-select="treeHandler1(branch)"
+                      expand-node="expandNode(branch)"
+                      collapse-node="collapseNode(branch)"
+                      template-url="modules/core/template/tree.html">
+                </tree>
+            </div>
+        </div>
         <div id="rightPanel1">
+            <div class="row m-b">
+                <div class="col-md-12">
+<!--                    <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
+                        <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                    </button>-->
+                    <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+                </div>
+            </div>
             <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="row hide" ng-class="{'show': pageView=='grid'}">
-                    <div ng-repeat="(key, value) in allJobChains  | groupBy: 'path1'">
+                    <div ng-repeat="(key, value) in filtered = (allJobChains | filter: filterString:strict) | groupBy: 'path1'">
                         <div class="col-sm-12" style="margin-bottom: 10px">
                             <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                         </div>
@@ -196,19 +204,19 @@
                                         </span>
                                     </div>
                                     <div class="text-sm  text-left text-muted m-l p-t-xs">
-                                        <span class="text-black _600" ng-click="viewOrders(jobChain,'pending')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.pending >0}" ng-bind="jobChain.ordersSummary.pending || 0"></span>
+                                        <a class="text-black _600 text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending || 0"></a>
                                         <span ng-bind="'label.pending' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'running')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.running >0}" ng-bind="jobChain.ordersSummary.running || 0"></span>
+                                        <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')" ng-bind="jobChain.ordersSummary.running || 0"></a>
                                         <span ng-bind="'label.running' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'suspended')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.suspended >0}" ng-bind="jobChain.ordersSummary.suspended || 0"></span>
+                                        <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'SUSPENDED')" ng-bind="jobChain.ordersSummary.suspended || 0"></a>
                                         <span ng-bind="'label.suspended' | translate"></span>
                                     </div>
                                     <div class="text-sm  text-left text-muted m-l p-t-xs">
-                                        <span class="text-black _600 " ng-click="viewOrders(jobChain,'setback')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.setback >0}" ng-bind="jobChain.ordersSummary.setback || 0"></span>
+                                        <a class="text-black _600 text-hover-primary" ng-click="viewOrders(jobChain,'SETBACK')" ng-bind="jobChain.ordersSummary.setback || 0"></a>
                                         <span ng-bind="'label.setback' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'blacklist')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.blacklist >0}" ng-bind="jobChain.ordersSummary.blacklist || 0"></span>
+                                        <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')" ng-bind="jobChain.ordersSummary.blacklist || 0"></a>
                                         <span ng-bind="'label.blacklist' | translate"></span>
-                                        <span class="text-black _600 m-l" ng-click="viewOrders(jobChain,'waitingForResource')" ng-class="{'text-hover-primary' : jobChain.ordersSummary.waitingForResource >0}" ng-bind="jobChain.ordersSummary.waitingForResource || 0"></span>
+                                        <a class="text-black _600 m-l text-hover-primary" ng-click="viewOrders(jobChain,'WAITINGFORRESOURCE')" ng-bind="jobChain.ordersSummary.waitingForResource || 0"></a>
                                         <span ng-bind="'label.waitingForResource' | translate"></span>
                                     </div>
                                     <div class="text-sm text-left text-muted p-t-xs">
@@ -239,6 +247,7 @@
                             </div>
                         </div>
                     </div>
+                     <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobChains.length !==0)}" translate>message.noDataMatched</div>
                 </div>
                 <div class="hide box p-a" ng-class="{'show': pageView=='list' && allJobChains.length>0}">
                     <div class="table-responsive" resizable r-directions="['bottom']" r-height="resizerHeight" >
@@ -323,7 +332,7 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in allJobChains | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize"
+                            <tbody ng-repeat="jobChain in filtered = (allJobChains | filter: filterString:strict) | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize"
                                    ng-class="{'light-bg':jobChain.show}" >
                             <tr title="{{jobChain.configurationStatus._text | translate}}">
                                 <td class="noExl" ng-if="permission.JobChain.stop || permission.JobChain.unstop">
@@ -347,28 +356,22 @@
                                 <td ng-bind="jobChain.numOfNodes || 0"></td>
                                 <td ><a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.pending > 0" class="text-hover-primary" ng-click="viewOrders(jobChain,'pending')" ng-bind="jobChain.ordersSummary.pending"></span>
-                                    <span ng-if="jobChain.ordersSummary.pending == 0" ng-bind="jobChain.ordersSummary.pending"></span>
+                                    <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending || 0"></a>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.running >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'running')" ng-bind="jobChain.ordersSummary.running"></span>
-                                    <span ng-if="jobChain.ordersSummary.running == 0" ng-bind="jobChain.ordersSummary.running"></span>
+                                    <a class="text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')" ng-bind="jobChain.ordersSummary.running"></a>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.suspended >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'suspended')" ng-bind="jobChain.ordersSummary.suspended"></span>
-                                    <span ng-if="jobChain.ordersSummary.suspended == 0" ng-bind="jobChain.ordersSummary.suspended"></span>
+                                    <a lass="text-hover-primary" ng-click="viewOrders(jobChain,'SUSPENDED')" ng-bind="jobChain.ordersSummary.suspended"></a>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.waitingForResource >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'waitingForResource')" ng-bind="jobChain.ordersSummary.waitingForResource"></span>
-                                    <span ng-if="jobChain.ordersSummary.waitingForResource == 0" ng-bind="jobChain.ordersSummary.waitingForResource"></span>
+                                    <a class="text-hover-primary" ng-click="viewOrders(jobChain,'WAITINGFORRESOURCE')" ng-bind="jobChain.ordersSummary.waitingForResource"></a>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.setback >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'setback')" ng-bind="jobChain.ordersSummary.setback"></span>
-                                    <span ng-if="jobChain.ordersSummary.setback == 0" ng-bind="jobChain.ordersSummary.setback"></span>
+                                    <a class="text-hover-primary" ng-click="viewOrders(jobChain,'SETBACK')" ng-bind="jobChain.ordersSummary.setback"></a>
                                 </td>
                                 <td>
-                                    <span ng-if="jobChain.ordersSummary.blacklist >0" class="text-hover-primary" ng-click="viewOrders(jobChain,'blacklist')" ng-bind="jobChain.ordersSummary.blacklist"></span>
-                                    <span ng-if="jobChain.ordersSummary.blacklist == 0" ng-bind="jobChain.ordersSummary.blacklist"></span>
+                                    <a class="text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')" ng-bind="jobChain.ordersSummary.blacklist"></a>
                                 </td>
                                 <td class="noExl">
                                     <div class="btn-group dropdown">
@@ -576,15 +579,15 @@
                             </tr>
                             </tbody>
                         </table>
-                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allJobChains.length > 10}" ng-if="allJobChains.length >0"><span translate>label.total</span> {{allJobChains.length}}
-                            <span translate ng-if="allJobChains.length >1">label.jobChainsFound</span>
-                            <span translate ng-if="allJobChains.length ==1">label.jobChainFound</span>
+                        <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                            <span translate ng-if="filtered.length >1">label.jobChainsFound</span>
+                            <span translate ng-if="filtered.length ==1">label.jobChainFound</span>
                         </div>
-                        <ul ng-show="allJobChains.length > jobChainFilters.pageSize" uib-pagination total-items="allJobChains.length"
+                        <ul ng-show="filtered.length > jobChainFilters.pageSize" uib-pagination total-items="filtered.length"
                             ng-model="jobChainFilters.currentPage" items-per-page='jobChainFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5"
                             ng-change="pageChange()" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-left" ng-show="allJobChains.length > 10">
+                        <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="jobChainFilters.pageSize" uib-btn-radio="'10'"
                                         ng-class="{'primary': jobChainFilters.pageSize=='10'}">10
@@ -603,6 +606,7 @@
                                 </button>
                             </div>
                         </div>
+                        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobChains.length !==0)}" translate>message.noDataMatched</div>
                     </div>
                 </div>
                 <div ng-if="isLoading && !loading && folderPath && allJobChains.length==0" class="text-center m-t m-b-lg h6">

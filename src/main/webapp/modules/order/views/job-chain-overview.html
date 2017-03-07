@@ -24,7 +24,6 @@
                     </thead>
                     <tbody>
                     <tr title="{{jobChain.configurationStatus._text | translate}}">
-
                         <td class="nowrap">
                             <span ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}"
                                   ng-bind="jobChain.name"></span>
@@ -37,37 +36,22 @@
                         <td><a class="text-hover-primary" ui-sref="app.resources.agentClusters"
                                ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
                         <td>
-                            <span ng-if="jobChain.ordersSummary.pending > 0" class="text-hover-primary"
-                                  ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.pending"></span>
-                            <span ng-if="jobChain.ordersSummary.pending == 0" ng-bind="jobChain.ordersSummary.pending"></span>
+                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending || 0"></a>
                         </td>
                         <td>
-                            <span ng-if="jobChain.ordersSummary.running >0" class="text-hover-primary"
-                                  ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.running"></span>
-                            <span ng-if="jobChain.ordersSummary.running == 0" ng-bind="jobChain.ordersSummary.running"></span>
+                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')" ng-bind="jobChain.ordersSummary.running"></a>
                         </td>
                         <td>
-                            <span ng-if="jobChain.ordersSummary.suspended >0" class="text-hover-primary"
-                                  ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.suspended"></span>
-                            <span ng-if="jobChain.ordersSummary.suspended == 0"
-                                  ng-bind="jobChain.ordersSummary.suspended"></span>
+                            <a lass="text-hover-primary" ng-click="viewOrders(jobChain,'SUSPENDED')" ng-bind="jobChain.ordersSummary.suspended"></a>
                         </td>
                         <td>
-                            <span ng-if="jobChain.ordersSummary.waitingForResource >0" class="text-hover-primary"
-                                  ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.waitingForResource"></span>
-                            <span ng-if="jobChain.ordersSummary.waitingForResource == 0"
-                                  ng-bind="jobChain.ordersSummary.waitingForResource"></span>
+                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'WAITINGFORRESOURCE')" ng-bind="jobChain.ordersSummary.waitingForResource"></a>
                         </td>
                         <td>
-                            <span ng-if="jobChain.ordersSummary.setback >0" class="text-hover-primary"
-                                  ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.setback"></span>
-                            <span ng-if="jobChain.ordersSummary.setback == 0" ng-bind="jobChain.ordersSummary.setback"></span>
+                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'SETBACK')" ng-bind="jobChain.ordersSummary.setback"></a>
                         </td>
                         <td>
-                            <span ng-if="jobChain.ordersSummary.blacklist >0" class="text-hover-primary"
-                                  ng-click="viewOrders(jobChain)" ng-bind="jobChain.ordersSummary.blacklist"></span>
-                            <span ng-if="jobChain.ordersSummary.blacklist == 0"
-                                  ng-bind="jobChain.ordersSummary.blacklist"></span>
+                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'BLACKLIST')" ng-bind="jobChain.ordersSummary.blacklist"></a>
                         </td>
                     </tr>
                     </tbody>
@@ -169,7 +153,7 @@
                                   on-order-action = "onOrderAction(order, action)"
                                   coords="coords"
                             fit-into-screen="fitIntoScreen()"
-                            fit-to-screen="fitToScreen",
+                            fit-to-screen="fitToScreen"
                             copy-link-to-object="copyLinkToObject(type,path)">
                     </flow-diagram>
                 </div>

@@ -755,6 +755,8 @@
                         } else {
                             $state.reload(vm.currentState);
                         }
+                        vm.eventsRequest = [];
+                        vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                     } else {
                         toasty.error({
                             title: gettextCatalog.getString('message.oops'),
@@ -791,7 +793,6 @@
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
-
             var obj = {};
             obj.jobscheduler = [];
             if (!vm.eventsRequest || vm.eventsRequest.length == 0) {
@@ -800,7 +801,11 @@
                         obj.jobscheduler.push(
                             {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
                         );
-                    } else {
+                        break;
+                    }
+                }
+                for (var i = 0; i < jobScheduler.length; i++) {
+                    if (vm.schedulerIds.selected != jobScheduler[i]) {
                         obj.jobscheduler.push(
                             {"jobschedulerId": jobScheduler[i]}
                         );
@@ -821,12 +826,20 @@
                         } else {
                             $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: vm.events});
                         }
-
+                        vm.eventsRequest.push({
+                            jobschedulerId: res.events[i].jobschedulerId,
+                            eventId: res.events[i].eventId
+                        });
+                        break;
                     }
-                    vm.eventsRequest.push({
-                        jobschedulerId: res.events[i].jobschedulerId,
-                        eventId: res.events[i].eventId
-                    });
+                }
+                for (var i = 0; i < res.events.length; i++) {
+                    if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
+                        vm.eventsRequest.push({
+                            jobschedulerId: res.events[i].jobschedulerId,
+                            eventId: res.events[i].eventId
+                        });
+                    }
                 }
 
                 vm.allEvents = res.events;

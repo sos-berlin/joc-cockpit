@@ -26,13 +26,11 @@
                                 <div class="col-xs-offset-1 col-xs-4"
                                      ng-class="{'col-xs-11': agentClusterData.length==0}">
                                     <div ng-class="{'hide': agentClusterData.length==0}">
-                                        <nvd3 options="pieOptions"
-                                                data="agentClusterData" config="{refreshDataOnly:true}">
-                                        </nvd3>
-                                        </div>
-                                        <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 15px">
-                                            {{'message.noDataAvailable' | translate}}
-                                        </div>
+                                        <nvd3 options="pieOptions" data="agentClusterData"></nvd3>
+                                    </div>
+                                    <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 15px">
+                                        {{'message.noDataAvailable' | translate}}
+                                    </div>
                                     </div>
                                     <div class="col-xs-7" ng-if="agentClusterData.length>0">
                                         <ul class="status-list p-l" ng-class="{'m-top-132': agentClusterData.length==1, 'm-top-122': agentClusterData.length==2 }">
@@ -124,28 +122,22 @@
                             </tr>
                             <tr class="text-center">
                                 <td width="16.6">
-                                    <a ng-if="snapshot.pending>0" href="#!/orders_overview/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending"></a>
-                                    <span ng-if="!snapshot.pending || snapshot.pending.length==0" class="text-lg _600 text-black-lt">0</span>
+                                    <a href="#!/orders_overview/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.running>0" href="#!/orders_overview/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running"></a>
-                                    <span ng-if="!snapshot.running || snapshot.running==0" class="text-lg _600 text-black-lt">0</span>
+                                    <a href="#!/orders_overview/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.suspended>0" href="#!/orders_overview/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended"></a>
-                                    <span ng-if="!snapshot.suspended || snapshot.suspended==0" class="text-lg _600 text-black-lt">0</span>
+                                    <a href="#!/orders_overview/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.setback>0" href="#!/orders_overview/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
-                                    <span ng-if="!snapshot.setback || snapshot.setback==0" class="text-lg _600 text-black-lt">0</span>
+                                    <a href="#!/orders_overview/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.waitingForResource>0" href="#!/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource"></a>
-                                    <span ng-if="!snapshot.waitingForResource || snapshot.waitingForResource==0" class="text-lg _600 text-black-lt">0</span>
+                                    <a href="#!/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a ng-if="snapshot.blacklist>0" href="#!/orders_overview/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist"></a>
-                                    <span ng-if="!snapshot.blacklist || snapshot.blacklist==0" class="text-lg _600 text-black-lt">0</span>
+                                    <a href="#!/orders_overview/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
                                 </td>
                             </tr>
                             </table>
@@ -212,12 +204,10 @@
                             </tr>
                             <tr class="text-center">
                                 <td width="50">
-                                    <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 text-success" ng-if="orderSummary.successful>0" ng-bind="orderSummary.successful || 0"></a>
-                                    <span class="text-lg _600 text-black-lt"  ng-if="!orderSummary.successful || orderSummary.successful==0">0</span>
+                                    <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 text-success" ng-bind="orderSummary.successful || 0"></a>
                                 </td>
                                 <td width="50">
-                                    <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 crimson"  ng-if="orderSummary.failed>0" ng-bind="orderSummary.failed || 0"></a>
-                                    <span class="text-lg _600 text-black-lt"  ng-if="!orderSummary.failed || orderSummary.failed==0">0</span>
+                                    <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 crimson" ng-bind="orderSummary.failed || 0"></a>
                                 </td>
                             </tr>
                         </table>

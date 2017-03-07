@@ -890,47 +890,10 @@
         /**--------------- Actions -----------------------------*/
         vm.viewOrders = function (jobChain, state) {
             vm.orderFilters = CoreService.getOrderDetailTab();
-            if(state =='pending'){
-                if(!jobChain.ordersSummary.pending){
-                    return;
-                }else{
-                    vm.orderFilters.filter.state = state;
-                }
-            }else if(state =='running'){
-                if(!jobChain.ordersSummary.running){
-                    return;
-                }else{
-                    vm.orderFilters.filter.state = state;
-                }
-            }
-            else if(state =='suspended'){
-                if(!jobChain.ordersSummary.suspended){
-                    return;
-                }else{
-                    vm.orderFilters.filter.state = state;
-                }
-            }
-            else if(state =='waitingForResource'){
-                if(!jobChain.ordersSummary.waitingForResource){
-                    return;
-                }else{
-                    vm.orderFilters.filter.state = state;
-                }
-            }
-            else if(state =='setback'){
-                if(!jobChain.ordersSummary.setback){
-                    return;
-                }else{
-                    vm.orderFilters.filter.state = state;
-                }
-            }
-            else if(state =='blacklist'){
-                if(!jobChain.ordersSummary.blacklist){
-                    return;
-                }else{
-                    vm.orderFilters.filter.state = state;
-                }
-            }
+            if(state)
+                vm.orderFilters.filter.state = state;
+            else
+                 vm.orderFilters.filter.state = 'ALL';
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/job_chain_detail/orders').search({path: jobChain.path});
@@ -2343,9 +2306,15 @@
         $scope.$on('refreshList', function (event, jobChain) {
             showNodePanelFuc(jobChain);
         });
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
+
 
         $scope.$on('$destroy', function () {
             watcher1();
+            watcher2();
             watcher3();
             watcher4();
             if (t1) {
@@ -4575,9 +4544,13 @@
                     }
                 }
         }
-
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
         $scope.$on('$destroy', function () {
             watcher1();
+            watcher2();
             watcher3();
             watcher4();
             if (t1) {

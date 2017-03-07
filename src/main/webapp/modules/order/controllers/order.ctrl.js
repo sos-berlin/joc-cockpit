@@ -19,6 +19,8 @@
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.overview = false;
+        vm.status = vm.orderFilters.filter.state;
+
         var loadFinished = true;
 
         function loadJobOrderV(obj) {
@@ -89,6 +91,7 @@
 
         $scope.$on("orderState", function (evt, state) {
             vm.orderFilters.filter.state = state;
+            vm.status = state;
             if (state) {
                 var obj = {};
                 obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -164,6 +167,7 @@
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
         vm.orderFilters.pageView = 'grid';
+        vm.status = vm.orderFilters.filter.state;
 
         vm.orderFilters.overview = true;
 
@@ -999,7 +1003,11 @@
             vm.reset();
         };
 
-        vm.viewOrders = function (jobChain) {
+        vm.viewOrders = function (jobChain,state) {
+            if(state)
+                vm.orderFilters.filter.state = state;
+            else
+                 vm.orderFilters.filter.state = 'ALL';
             $location.path('/job_chain_detail/orders').search(object);
         };
 
@@ -3867,9 +3875,13 @@
                     }
                 }
         }
-
+        var watcher2 = $scope.$watchCollection('filtered', function (newNames) {
+            if (newNames)
+                vm.object = {};
+        });
         $scope.$on('$destroy', function () {
             watcher1();
+            watcher2();
             if (t1) {
                 $timeout.cancel(t1);
             }
@@ -5636,6 +5648,7 @@
                 vm.jobChainSearch = {};
                 jobChainSearch = false;
             }
+            vm.init();
         };
 
 

@@ -335,17 +335,7 @@
                 });
                 return deferred.promise;
             },
-            terminateWithin: function (host,port,jobschedulerId,timeout) {
 
-                var deferred = $q.defer();
-                var JobScheduler = $resource('jobscheduler/terminate');
-                JobScheduler.save({host:host,port:port,jobschedulerId:jobschedulerId,timeout:timeout},function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
              restartWithin: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/restart');

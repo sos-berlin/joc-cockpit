@@ -14,8 +14,7 @@
             restrict: 'E',
             templateUrl: 'modules/order/views/pie-chart.html',
             scope: {
-                width: '@',
-                height: '@'
+                status: '='
             },
             controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog', function (OrderService, $scope, CoreService, SOSAuth, gettextCatalog) {
                 var vm = $scope;
@@ -98,16 +97,12 @@
                     }
                 };
 
-
                 vm.$on('reloadSnapshot', function () {
                     loadSnapshot();
                 });
 
-                vm.$on('elementClick.directive', function (angularEvent, event) {
-                    $rootScope.$broadcast('orderState', event.label);
-                });
-
                 vm.setFilter = function (label) {
+                    vm.status = label;
                     $rootScope.$broadcast('orderState', label);
                 };
 
@@ -137,7 +132,6 @@
                         showLegend: false,
                         noData: gettextCatalog.getString('message.noDataAvailable'),
                         color: function (d, i) {
-
                             if (d.key == 'running') {
                                 return '#7ab97a';
                             } else if (d.key == 'suspended') {
@@ -152,10 +146,7 @@
                             else if (d.key == 'pending') {
                                 return 'rgba(255, 195, 0, 0.9)';
                             }
-
                         },
-
-
                         tooltip: {
                             enabled: true,
                             contentGenerator: vm.toolTipContentFunction()
@@ -163,12 +154,12 @@
                         pie: {
                             dispatch: {
                                 elementClick: function (e) {
+                                    var res = e.data.key.toUpperCase()
+                                    vm.status = res;
+                                    $rootScope.$broadcast('orderState', res);
                                 }
-
                             }
                         }
-
-
                     }
 
                 }

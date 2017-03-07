@@ -2561,7 +2561,6 @@
     DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver',"$interval"];
     function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver,$interval) {
         var vm = $scope;
-        var bgColorArray = [];
         if (SOSAuth.jobChain) {
             SOSAuth.setJobChain(undefined);
             SOSAuth.save();
@@ -2684,7 +2683,13 @@
                 labelType: 'percent',
                 showLegend: false,
                 color: function (d, i) {
-                    return bgColorArray[i];
+                    if (d.key == "label.healthyAgentCluster") {
+                      return' #7ab97a';
+                    } else if (d.key == "label.unreachableAgentCluster") {
+                       return '#e86680';
+                    } else {
+                       return 'rgba(255, 195, 0, 0.9)';
+                    }
                 },
                 tooltip: {
                     enabled: true,
@@ -2749,14 +2754,6 @@
             vm.YAxisDomain = [0, 3];
 
             angular.forEach(groupBy(result), function (value) {
-
-                if (value._text == "label.healthyAgentCluster") {
-                    bgColorArray.push('#7ab97a');
-                } else if (value._text == "label.unreachableAgentCluster") {
-                    bgColorArray.push('#e86680');
-                } else {
-                    bgColorArray.push('rgba(255, 195, 0, 0.9)');
-                }
                 agentArray1.push({
                     key: value._text,
                     y: value.count

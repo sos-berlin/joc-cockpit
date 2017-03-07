@@ -103,9 +103,14 @@
             </div>
         </div>
         <div id="rightPanel1">
+            <div class="row m-b">
+                <div class="col-md-12">
+                    <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}" ng-model="filterString" style="width: 180px">
+                </div>
+            </div>
             <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="hide row" ng-class="{'show': pageView=='grid'}" >
-                    <div ng-repeat="(key, value) in allJobs  | groupBy: 'path1'">
+                    <div ng-repeat="(key, value) in filtered = (allJobs | filter: filterString:strict)  | groupBy: 'path1'">
                         <div class="col-sm-12"  style="margin-bottom: 10px">
                             <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                         </div>
@@ -139,7 +144,7 @@
                                     <div class="text-sm text-left text-muted p-t-sm" >
                                         <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
                                         <i class="text-black">of</i>
-                                        <span class="text-black _600"  ng-bind="job.maxTasks || 1"></span>
+                                        <span class="text-black _600"  ng-bind="job.maxTasks"></span>
                                          {{'label.runningTask' | translate}}
                                     </div>
                                     <div class="text-sm  text-left text-muted p-t-xs" ng-if="job.isOrderJob==true">
@@ -182,6 +187,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobs.length !==0)}" translate>message.noDataMatched</div>
                 </div>
                 <div class="box p-a" ng-show="pageView=='list' && allJobs.length>0" >
                     <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
@@ -262,7 +268,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="job in allJobs | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize"
+                            <tbody ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize"
                                 ng-class="{'light-bg':showTaskPanel == job}">
                                 <tr title="{{job.configurationStatus._text | translate}}">
                                     <td class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
@@ -306,12 +312,12 @@
                                             <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
                                                 <span class="text-black _600"  ng-bind="job.numOfRunningTasks || 0"></span>
                                                 <i class="text-black ">of</i>
-                                                <span class="text-black _600"  ng-bind="job.maxTasks || 1"></span>
+                                                <span class="text-black _600"  ng-bind="job.maxTasks"></span>
                                             </span>
                                             <span ng-if="!job.numOfRunningTasks">
                                                 <span ng-bind="job.numOfRunningTasks || 0"></span>
                                                 <i class="text-black" translate>of</i>
-                                                <span ng-bind="job.maxTasks || 1"></span>
+                                                <span ng-bind="job.maxTasks"></span>
                                             </span>
                                         </td>
                                         <td>
@@ -369,12 +375,12 @@
                             </tbody>
 
                             </table>
-                         <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': allJobs.length > 10}" ng-if="allJobs.length >0"><span translate>label.total</span> {{allJobs.length}}
-                             <span translate  ng-if="allJobs.length >1">label.jobsFound</span>
-                             <span translate  ng-if="allJobs.length ==1">label.jobFound</span>
+                         <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
+                             <span translate  ng-if="filtered.length >1">label.jobsFound</span>
+                             <span translate  ng-if="filtered.length ==1">label.jobFound</span>
                          </div>
-                        <ul ng-show="allJobs.length > jobFilters.pageSize" uib-pagination total-items="allJobs.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                        <div class="pull-left" ng-show="allJobs.length > 10">
+                        <ul ng-show="filtered.length > jobFilters.pageSize" uib-pagination total-items="filtered.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                        <div class="pull-left" ng-show="filtered.length > 10">
                                 <div class="btn-group  m-r-xxs">
                                     <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'10'"
                                             ng-class="{'primary': jobFilters.pageSize=='10'}" >10
@@ -393,7 +399,7 @@
                                     </button>
                                 </div>
                             </div>
-
+                        <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && allJobs.length !==0)}" translate>message.noDataMatched</div>
                     </div>
                 </div>
             </div>
