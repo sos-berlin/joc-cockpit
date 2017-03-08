@@ -128,7 +128,7 @@
                                     <a href="#!/orders_overview/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/SUSPENDED" class="text-lg _600 dark-orange"  ng-bind="snapshot.suspended || 0"></a>
+                                    <a href="#!/orders_overview/SUSPENDED" class="text-lg _600 text-black-lt" ng-class="{'dark-orange':snapshot.suspended >0}"  ng-bind="snapshot.suspended || 0"></a>
                                 </td>
                                 <td width="16.6">
                                     <a href="#!/orders_overview/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>

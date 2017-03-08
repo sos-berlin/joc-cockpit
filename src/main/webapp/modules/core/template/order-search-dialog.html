@@ -1,0 +1,155 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true"><img src="images/close-button.png"></span></button>
+        <h4 class="modal-title" translate>label.advanceSearch</h4>
+    </div>
+    <form name="form" role="form" ng-submit="ok()" novalidate>
+    <div class="modal-body p-a">
+        <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+           <label class="col-sm-4 form-control-label" translate>label.filterName</label>
+           <div class=" col-sm-6">
+                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="orderFilter.name" ng-blur="checkFilterName()">
+               <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                   <div ng-message="required" translate>message.requiredError</div>
+                        <div ng-message="maxlength" translate>message.tooLongError</div>
+               </div>
+               <div class="help-block text-danger" ng-if="!isUnique">
+                  <div translate>message.uniqueError</div>
+               </div>
+           </div>
+        </div>
+
+        <div class="form-group row">
+           <label class="col-sm-4 form-control-label" translate>label.regex</label>
+           <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+               <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="orderFilter.regex">
+               <div class="help-block text-danger" ng-messages="form.regex.$error">
+                   <div ng-message="invalid" translate>message.invalid</div>
+               </div>
+           </div>
+            <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+        </div>
+        <div class="form-group row" ng-if="orderFilter.paths.length>0">
+            <label class="col-sm-4" translate>label.folders</label>
+            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                <div ng-repeat="path in orderFilter.paths track by $index" >
+                    <span class="">{{path}}</span><i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row " ng-class="{'m-b-sm': orderFilter.radio == 'planned' }">
+            <label class="col-sm-4 " translate>label.orderState</label>
+            <div class=" col-sm-8" ng-init="orderFilter.radio = 'current'">
+                <div>
+                    <label class="md-check w">
+                        <input type="radio" name="radio" ng-model="orderFilter.radio" value="current">
+                        <i class="primary"></i> <span translate>label.current</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="radio" name="radio" ng-model="orderFilter.radio" value="planned">
+                        <i class="primary"></i> <span translate>label.planned</span>
+                    </label>
+                </div>
+                <div ng-show="orderFilter.radio == 'current'">
+                    <label class="md-check m-t w">
+                        <input type="checkbox" data-checklist-model="orderFilter.processingState" data-checklist-value="'PENDING'">
+                        <i class="primary"></i>
+                        <span translate>label.pending</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="orderFilter.processingState" data-checklist-value="'RUNNING'">
+                        <i class="primary"></i>
+                        <span translate>label.running</span>
+                    </label>
+                    <label class="md-check w ">
+                        <input type="checkbox" data-checklist-model="orderFilter.processingState" data-checklist-value="'SUSPENDED'">
+                        <i class="primary"></i>
+                        <span translate>label.suspended</span>
+                    </label>
+                    <label class="md-check m-t w">
+                        <input type="checkbox" data-checklist-model="orderFilter.processingState" data-checklist-value="'SETBACK'">
+                        <i class="primary"></i>
+                        <span translate>label.setback</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="orderFilter.processingState" data-checklist-value="'WAITINGFORRESOURCE'" >
+                        <i class="primary"></i>
+                        <span translate>label.waitingForResource</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="orderFilter.processingState" data-checklist-value="'BLACKLIST'" >
+                        <i class="primary"></i>
+                        <span translate>label.blacklist</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row m-t-sm" ng-show="orderFilter.radio == 'planned'">
+           <label class="col-sm-4 form-control-label" translate>label.orderPlanned</label>
+           <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+               <input valid-filter-regex type="text" name="planned" class="form-control" placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="orderFilter.planned"
+                   ng-disabled="orderFilter.fromDate ||orderFilter.fromTime || orderFilter.toDate ||orderFilter.toTime" ng-blur="checkPlanned()">
+               <div class="help-block text-danger" ng-messages="form.planned.$error">
+                   <div ng-message="invalid" translate>message.invalid</div>
+               </div>
+           </div>
+        </div>
+        <div class="form-group row" ng-show="orderFilter.radio == 'planned'">
+            <label class="col-sm-4 form-control-label" translate>label.from</label>
+            <div class="col-sm-8">
+                <input class="form-control input-date" ng-model="orderFilter.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1"
+                       placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text" ng-disabled="orderFilter.planned">
+                <input ng-disabled="!orderFilter.fromDate" class="form-control input-time" ng-model="orderFilter.fromTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1"
+                        placeholder="HH:MM:SS" bs-timepicker type="text" ng-disabled="orderFilter.planned">
+            </div>
+        </div>
+        <div class="form-group row" ng-show="orderFilter.radio == 'planned'">
+            <label class="col-sm-4 form-control-label" translate>label.to</label>
+            <div class="col-sm-8">
+                <input class="form-control input-date" ng-model="orderFilter.toDate" data-date-format="{{dataFormat}}" data-autoclose="1"
+                       data-min-date="{{orderFilter.fromDate}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text" ng-disabled="orderFilter.planned">
+                <input ng-disabled="!orderFilter.toDate" class="form-control input-time" ng-model="orderFilter.toTime" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1"
+                       placeholder="HH:MM:SS" bs-timepicker type="text" ng-disabled="orderFilter.planned">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4" translate>label.type</label>
+            <div class=" col-sm-8">
+                <label class="md-check w">
+                    <input type="checkbox" data-checklist-model="orderFilter.type" data-checklist-value="'PERMANENT'" >
+                    <i class="primary"></i>
+                    <span translate>label.permanent</span>
+                </label>
+                <label class="md-check w">
+                    <input type="checkbox" data-checklist-model="orderFilter.type" data-checklist-value="'AD_HOC'" >
+                    <i class="primary"></i>
+                    <span translate>label.adHoc</span>
+                </label>
+                <label class="md-check w">
+                    <input type="checkbox" data-checklist-model="orderFilter.type" data-checklist-value="'FILE_ORDER'">
+                    <i class="primary"></i>
+                    <span translate>label.fileOrder</span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+            <label class="col-sm-4" translate>label.sharedFilter</label>
+
+                <div class="col-sm-8">
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="orderFilter.shared" >
+                        <i class="primary"></i>
+                    </label>
+                </div>
+        </div>
+        <div class="row m-t-md">
+            <div class="b-t"></div>
+        </div>
+        <div class="form-group m-t m-b-xs">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="search();cancel();" translate>button.search</button>
+            <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+        </div>
+    </div>
+    </form>
+</div>

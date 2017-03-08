@@ -934,5 +934,16 @@
   "label.distribution": "Distribution",
   "label.version": "Version",
   "label.surveyDate": "Survey Date",
-  "label.database": "Database"
+  "label.database": "Database",
+  "label.jobTypes": "Job Types",
+  "label.allJobTypes": "All Job Types",
+  "label.orderJobs": "OrderJobs",
+  "label.standaloneJobs": "Standalone Jobs",
+  "label.advanceSearch": "Advanced Search Options",
+  "button.allJobTypes": "All Job Types",
+  "button.orderJobs": "OrderJobs",
+  "button.standaloneJobs": "Standalone Jobs",
+  "button.saveAsFilter": "Save As Customization",
+  "button.nonWorkingDays": "Non-working days",
+  "button.editPeriod": "Edit Period"
 }

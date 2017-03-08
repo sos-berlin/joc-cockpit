@@ -4834,6 +4834,22 @@
             }
 
             if (!isEmpty(vm.run_time.monthdays)) {
+                if (!(vm.run_time.monthdays.weekday && vm.run_time.monthdays.weekday.length > 0)) {
+                    delete vm.run_time.monthdays['weekday'];
+                }else {
+                    angular.forEach(vm.run_time.monthdays.weekday, function (value, index1) {
+
+                        if (!angular.isArray(value.period)) {
+                            if(value.period._when_holiday == 'suppress')
+                            delete vm.run_time.monthdays.weekday[index1].period['_when_holiday'];
+                        } else {
+                            angular.forEach(value.period, function (val, index2) {
+                                if(val._when_holiday == 'suppress')
+                                delete vm.run_time.monthdays.weekday[index1].period[index2]['_when_holiday'];
+                            });
+                        }
+                    });
+                }
                 if (!(vm.run_time.monthdays.day && (vm.run_time.monthdays.day.length > 0 || vm.run_time.monthdays.day._day))) {
                     if (!vm.run_time.monthdays.weekday) {
                         delete vm.run_time['monthdays'];
@@ -4854,22 +4870,6 @@
                                 });
                             }
                         });
-                }
-                if (!(vm.run_time.monthdays.weekday && vm.run_time.monthdays.weekday.length > 0)) {
-                    delete vm.run_time.monthdays['weekday'];
-                }else {
-                    angular.forEach(vm.run_time.monthdays.weekday, function (value, index1) {
-
-                        if (!angular.isArray(value.period)) {
-                            if(value.period._when_holiday == 'suppress')
-                            delete vm.run_time.monthdays.weekday[index1].period['_when_holiday'];
-                        } else {
-                            angular.forEach(value.period, function (val, index2) {
-                                if(val._when_holiday == 'suppress')
-                                delete vm.run_time.monthdays.weekday[index1].period[index2]['_when_holiday'];
-                            });
-                        }
-                    });
                 }
             } else {
                 delete vm.run_time['monthdays'];
@@ -5004,9 +5004,6 @@
 
             getXml2Json(vm.xml);
         });
-        if (vm.scheduleAction) {
-            vm.createNewRunTime();
-        }
 
         $scope.$on('$destroy', function () {
             watcher1();

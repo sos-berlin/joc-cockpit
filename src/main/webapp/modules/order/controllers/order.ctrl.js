@@ -2966,27 +2966,35 @@
                     toDate.setMinutes(parseInt(time[5]));
                 }
             }
-
-            if (vm.selectedFiltered.fromDate) {
+           if (vm.selectedFiltered.fromDate) {
+                 fromDate = new Date(vm.selectedFiltered.fromDate);
                 if (vm.selectedFiltered.fromTime) {
-                    fromDate = new Date(vm.selectedFiltered.fromDate);
                     vm.selectedFiltered.fromTime = new Date(vm.selectedFiltered.fromTime);
                     fromDate.setHours(vm.selectedFiltered.fromTime.getHours());
                     fromDate.setMinutes(vm.selectedFiltered.fromTime.getMinutes());
                     fromDate.setSeconds(vm.selectedFiltered.fromTime.getSeconds());
+                }else{
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    fromDate.setSeconds(0);
+                    fromDate.setMilliseconds(0);
                 }
 
             }
             if (vm.selectedFiltered.toDate) {
+                toDate = new Date(vm.selectedFiltered.toDate);
                 if (vm.selectedFiltered.toTime) {
-                    toDate = new Date(vm.selectedFiltered.toDate);
+
                     vm.selectedFiltered.toTime = new Date(vm.selectedFiltered.toTime);
                     toDate.setHours(vm.selectedFiltered.toTime.getHours());
                     toDate.setMinutes(vm.selectedFiltered.toTime.getMinutes());
                     toDate.setSeconds(vm.selectedFiltered.toTime.getSeconds());
+                }else{
+                    toDate.setHours(0);
+                    toDate.setMinutes(0);
+                    toDate.setSeconds(0);
+                    toDate.setMilliseconds(0);
                 }
-
-
             }
 
             if (fromDate && toDate) {
@@ -3182,7 +3190,233 @@
             vm.orderFilters.reverse = !vm.orderFilters.reverse;
             vm.orderFilters.filter.sortBy = propertyName;
         };
+        function parseDateForSearch(obj) {
+            var fromDate;
+            var toDate;
+            if (vm.orderFilter.type) {
+                obj.types = vm.orderFilter.type;
+            }
+            if (vm.orderFilter.planned) {
+                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.orderFilter.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.orderFilter.planned)[2]);
+                    toDate.setSeconds(toDate.getSeconds() + seconds);
+                } else if (/^\s*\d+[d,h]\s*$/i.test(vm.orderFilter.planned)) {
+                    obj.dateFrom = vm.orderFilter.planned;
+                } else if (/^\s*(Today)\s*$/i.test(vm.orderFilter.planned)) {
+                    fromDate = new Date();
 
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    toDate = new Date();
+                    toDate.setHours(23);
+                    toDate.setMinutes(59);
+                } else if (/^\s*(now)\s*$/i.test(vm.orderFilter.planned)) {
+                    fromDate = new Date();
+                    toDate = new Date();
+                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.orderFilter.planned)) {
+                    var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.orderFilter.planned);
+                    fromDate = new Date();
+                    if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                        fromDate.setHours(parseInt(time[1]) + 12);
+                    } else {
+                        fromDate.setHours(parseInt(time[1]));
+                    }
+
+                    fromDate.setMinutes(parseInt(time[2]));
+                    toDate = new Date();
+                    if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                        toDate.setHours(parseInt(time[4]) + 12);
+                    } else {
+                        toDate.setHours(parseInt(time[4]));
+                    }
+                    toDate.setMinutes(parseInt(time[5]));
+                }
+            }
+
+            if (vm.orderFilter.fromDate) {
+                 fromDate = new Date(vm.orderFilter.fromDate);
+                if (vm.orderFilter.fromTime) {
+                    vm.orderFilter.fromTime = new Date(vm.orderFilter.fromTime);
+                    fromDate.setHours(vm.orderFilter.fromTime.getHours());
+                    fromDate.setMinutes(vm.orderFilter.fromTime.getMinutes());
+                    fromDate.setSeconds(vm.orderFilter.fromTime.getSeconds());
+                }else{
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    fromDate.setSeconds(0);
+                    fromDate.setMilliseconds(0);
+                }
+
+            }
+            if (vm.orderFilter.toDate) {
+                 toDate = new Date(vm.orderFilter.toDate);
+                if (vm.orderFilter.toTime) {
+                    vm.orderFilter.toTime = new Date(vm.orderFilter.toTime);
+                    toDate.setHours(vm.orderFilter.toTime.getHours());
+                    toDate.setMinutes(vm.orderFilter.toTime.getMinutes());
+                    toDate.setSeconds(vm.orderFilter.toTime.getSeconds());
+                }else{
+                    toDate.setHours(0);
+                    toDate.setMinutes(0);
+                    toDate.setSeconds(0);
+                    toDate.setMilliseconds(0);
+                }
+            }
+
+            if (fromDate && toDate) {
+                obj.dateFrom = fromDate;
+                obj.dateTo = toDate;
+            }
+
+            return obj;
+        }
+
+
+        vm.advancedSearch = function () {
+                 vm.orderFilter = {};
+            vm.isUnique = true;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/order-search-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+                if (vm.orderFilter.radio == 'current') {
+                    vm.orderFilter.fromDate = undefined;
+                    vm.orderFilter.fromTime = undefined;
+                    vm.orderFilter.toDate = undefined;
+                    vm.orderFilter.toTime = undefined;
+                    vm.orderFilter.planned = undefined;
+                } else if (vm.orderFilter.radio == 'planned') {
+                    vm.orderFilter.processingState = undefined;
+                }
+                var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.objectType = "ORDER";
+                configObj.id = 0;
+                configObj.name = vm.orderFilter.name;
+                configObj.shared = vm.orderFilter.shared;
+
+                configObj.configurationItem = JSON.stringify(vm.orderFilter);
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    configObj.id = res.id;
+                     vm.orderFilterList.push(configObj);
+
+                if (vm.orderFilterList.length == 1) {
+                    vm.savedOrderFilter.selected = res.id;
+                    vm.orderFilters.selectedView = true;
+                    vm.selectedFiltered = vm.orderFilter;
+                    vm.selectedFiltered.account = vm.permission.user;
+                    SavedFilter.setOrder(vm.savedOrderFilter);
+                    SavedFilter.save();
+                    vm.load();
+                }
+                });
+            }, function () {
+
+            });
+        };
+
+        function searchV(obj) {
+            if (vm.orderFilter.processingState) {
+                obj.processingStates = vm.orderFilter.processingState;
+            }
+             obj = parseDateForSearch(obj);
+            OrderService.get(obj).then(function (res) {
+                var data = [];
+                if (vm.orders && vm.orders.length > 0) {
+                    angular.forEach(vm.orders, function (orders) {
+                        for (var i = 0; i < res.orders.length; i++) {
+                            if (orders.path == res.orders[i].path) {
+                                orders = angular.merge(orders, res.orders[i]);
+                                orders.path1 = orders.path.substring(0, orders.path.lastIndexOf('/'));
+                                data.push(orders);
+                                break;
+                            }
+                        }
+                    });
+
+                } else {
+                    for (var i = 0; i < res.orders.length; i++) {
+                        res.orders.path1 = res.orders.path.substring(0, res.orders.path.lastIndexOf('/'));
+                        data.push(res.orders);
+                    }
+                }
+                vm.orders = data;
+                vm.allOrders = vm.orders;
+                traverseTreeForSearchData();
+            }, function () {
+                angular.forEach(vm.orders, function (job) {
+                    job.path1 = jobChainData.path.substring(0, job.path.lastIndexOf('/'));
+                });
+                vm.allOrders = vm.orders;
+                traverseTreeForSearchData();
+            });
+        }
+        vm.search = function () {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            if (vm.orderFilter && vm.orderFilter.regex) {
+                obj.regex = vm.orderFilter.regex;
+            }
+            if (vm.orderFilter && vm.orderFilter.paths && vm.orderFilter.paths.length > 0) {
+                obj.folders =[];
+                for (var i = 0; i < vm.orderFilter.paths.length; i++) {
+                    obj.folders.push({folder:vm.orderFilter.paths[i],recursive: false});
+                }
+            }
+
+            OrderService.getOrdersP(obj).then(function (result) {
+                vm.orders = result.orders;
+               searchV(obj);
+            },function(){
+                searchV(obj);
+            });
+        };
+
+
+        function traverseTreeForSearchData() {
+
+            function traverseTree1(data) {
+                for (var i = 0; i < data.folders.length; i++) {
+                    data.folders[i].selected1 = false;
+                    data.folders[i].expanded = true;
+                    data.folders[i].orders = [];
+                    pushJobChain(data.folders[i]);
+                    traverseTree1(data.folders[i]);
+                }
+            }
+
+            function navFullTree() {
+                for (var i = 0; i < vm.tree.length; i++) {
+                    vm.tree[i].selected1 = true;
+                    vm.tree[i].expanded = true;
+                    vm.tree[i].orders = [];
+                    pushJobChain(vm.tree[i]);
+                    traverseTree1(vm.tree[i]);
+                }
+            }
+
+            function pushJobChain(data) {
+                angular.forEach(vm.orders, function (jobChain) {
+                    if(data.path == jobChain.path1){
+                        data.selected1 = true;
+                        data.orders.push(jobChain);
+                    }
+                });
+            }
+
+            navFullTree();
+        }
         vm.applyFilter = function () {
             vm.orderFilter = {};
             vm.isUnique = true;

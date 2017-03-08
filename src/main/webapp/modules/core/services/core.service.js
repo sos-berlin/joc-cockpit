@@ -26,6 +26,7 @@
         tabs._job = {};
         tabs._job.filter = {};
         tabs._job.filter.state = 'ALL';
+        tabs._job.filter.type = 'ALL';
         tabs._job.filter.sortBy = 'name';
         tabs._job.reverse = false;
         tabs._job.pageSize = '10';
@@ -152,6 +153,7 @@
         tempTabs._job = {};
         tempTabs._job.filter = {};
         tempTabs._job.filter.state = 'ALL';
+        tempTabs._job.filter.type = 'ALL';
         tempTabs._job.filter.sortBy = 'name';
         tempTabs._job.reverse = false;
         tempTabs._job.pageSize = '10';

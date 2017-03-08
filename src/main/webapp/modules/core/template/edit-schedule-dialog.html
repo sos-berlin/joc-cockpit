@@ -4,7 +4,7 @@
             <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true">
                 <img src="images/close-button.png"></span></button>
             <h4 class="modal-title">
-                <span class="text-c" translate>label.update</span> :
+                <span class="text-capitalize" translate>label.update</span> :
                 <span>{{schedule.name}}</span>
                 <span ng-if="schedule.title">-</span>
                 <span class="text text-muted">{{schedule.title}}</span>
@@ -718,13 +718,15 @@
         </button>
         <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
                 class="btn btn-primary btn-sm"
-                ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();" translate>button.addPeriod
+                ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();" >
+            <span ng-if="!editor.update" translate>button.addPeriod</span>
+            <span ng-if="editor.update" translate>button.editPeriod</span>
         </button>
-        <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+        <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery || editor.update" type="button"
                 class="btn orange btn-sm"
-                ng-click="next()" translate>button.next
+                ng-click="next()" translate>button.nonWorkingDays
         </button>
-        <button ng-if="editor.hidePervious && editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+        <button ng-if="editor.hidePervious" ng-hide="!editor.hideEvery" type="button"
                 class="btn btn-primary btn-sm" ng-click="createRunTime();">
             <span ng-if="editor.update" translate>button.updateRuntime</span>
             <span ng-if="editor.create" translate>button.createRuntime</span>

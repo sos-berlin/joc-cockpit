@@ -69,6 +69,12 @@
                                 <input class="form-control" ng-model="substituteObj.title">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.folder</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" ng-model="substituteObj.folder">
+                            </div>
+                        </div>
                         <div class="form-group row" ng-class="{ 'has-error' : form.scheduleName.$invalid && form.scheduleName.$dirty }">
                             <label class="col-sm-3 form-control-label" translate>label.enterScheduleName</label>
                             <div class="col-sm-9">
@@ -689,13 +695,15 @@
         </button>
         <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
                 class="btn btn-primary btn-sm"
-                ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();substituteObj.showText=true;" translate>button.addPeriod
+                ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();substituteObj.showText=true;">
+             <span ng-if="!editor.update" translate>button.addPeriod</span>
+            <span ng-if="editor.update" translate>button.editPeriod</span>
         </button>
         <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
                 class="btn orange btn-sm"
-                ng-click="next()" translate>button.next
+                ng-click="next()" translate>button.nonWorkingDays
         </button>
-        <button ng-if="editor.hidePervious && editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+        <button ng-if="editor.hidePervious" ng-hide="!editor.hideEvery" type="button"
                 class="btn btn-primary btn-sm" ng-click="createRunTime();substituteObj.showText=true;">
             <span ng-if="editor.update" translate>button.updateRuntime</span>
             <span ng-if="editor.create" translate>button.createRuntime</span>

@@ -1045,11 +1045,9 @@
         function createSchedule(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
-            if (schedule.path1 == '/') {
-                schedules.schedule = schedule.path1 + vm.substituteObj.name;
-            } else {
-                schedules.schedule = schedule.path1 + '/' + vm.substituteObj.name;
-            }
+
+            schedules.schedule = vm.substituteObj.folder;
+
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -1079,7 +1077,6 @@
             ScheduleService.setRunTime(schedules).then(function () {
                 var temp = angular.copy(schedule);
                 temp.runTime = xmlStr;
-                temp.path = schedules.schedule;
                 substitute(temp);
             });
         }
@@ -1094,6 +1091,7 @@
             vm.schedule = schedule;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
+            vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
 
             var modalInstance = $uibModal.open({
@@ -2090,11 +2088,8 @@
         function createSchedule(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
-            if (schedule.path1 == '/') {
-                schedules.schedule = schedule.path1 + vm.substituteObj.name;
-            } else {
-                schedules.schedule = schedule.path1 + '/' + vm.substituteObj.name;
-            }
+            schedules.schedule = vm.substituteObj.folder;
+
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -2124,7 +2119,6 @@
             ScheduleService.setRunTime(schedules).then(function () {
                 var temp = angular.copy(schedule);
                 temp.runTime = xmlStr;
-                temp.path = schedules.schedule;
                 substitute(temp);
             });
         }
@@ -2139,6 +2133,7 @@
             vm.schedule = schedule;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
+            vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
 
             var modalInstance = $uibModal.open({
@@ -2387,11 +2382,9 @@
         function createSchedule(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
-            if (schedule.path1 == '/') {
-                schedules.schedule = schedule.path1 + vm.substituteObj.name;
-            } else {
-                schedules.schedule = schedule.path1 + '/' + vm.substituteObj.name;
-            }
+
+                schedules.schedule =  vm.substituteObj.folder;
+
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -2421,7 +2414,6 @@
             ScheduleService.setRunTime(schedules).then(function () {
                 var temp = angular.copy(schedule);
                 temp.runTime = xmlStr;
-                temp.path = schedules.schedule;
                 substitute(temp);
             });
         }
@@ -2434,6 +2426,7 @@
             vm.sch._substitute = vm.schedule.path;
             vm.substituteObj = {};
             vm.substituteObj.showText = false;
+            vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
 
             var modalInstance = $uibModal.open({
@@ -3722,18 +3715,29 @@
 
             var groupJobChain = [];
             for (var i = 0; i < data2.length; i++) {
+
                 if (groupJobChain.length > 0) {
                     var flag = false;
                     for (var j = 0; j < groupJobChain.length; j++) {
-                        if (groupJobChain[j].jobChain == data2[i].jobChain && groupJobChain[j].orderId == data2[i].orderId) {
+                        if (data2[i].jobChain && (groupJobChain[j].jobChain == data2[i].jobChain && groupJobChain[j].orderId == data2[i].orderId)) {
+                            flag = true;
+                        } else if (data2[i].job && (groupJobChain[j].job == data2[i].job)) {
                             flag = true;
                         }
                     }
                     if (!flag) {
-                        groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
+                        if(data2[i].orderId) {
+                            groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
+                        } else if(data2[i].job) {
+                            groupJobChain.push({job: data2[i].job});
+                        }
                     }
                 } else {
-                    groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
+
+                    if(data2[i].orderId)
+                        groupJobChain.push({orderId: data2[i].orderId, jobChain: data2[i].jobChain});
+                    else if(data2[i].job)
+                        groupJobChain.push({job: data2[i].job});
                 }
             }
 
@@ -3742,15 +3746,58 @@
                 orders[index] = {};
                 orders[index].tasks = [];
                 for (var index1 = 0; index1 < data2.length; index1++) {
-                    if (groupJobChain[index].jobChain == data2[index1].jobChain && groupJobChain[index].orderId == data2[index1].orderId) {
+                    if (data2[index1].orderId && (groupJobChain[index].jobChain == data2[index1].jobChain && groupJobChain[index].orderId == data2[index1].orderId)) {
                         orders[index].tasks[i] = {};
-                        if (data2[index1].job != undefined) {
-                            orders[index].name = data2[index1].job;
-                            orders[index].orderId = '-';
-                        } else {
-                            orders[index].name = data2[index1].jobChain.substring(data2[index1].jobChain);
-                            orders[index].orderId = data2[index1].orderId;
+                        orders[index].name = data2[index1].jobChain.substring(data2[index1].jobChain);
+                        orders[index].orderId = data2[index1].orderId;
+
+                        vm.plans[index].processedPlanned = orders[index].name;
+                        orders[index].tasks[i].name = orders[index].name;
+
+                        vm.plans[index].status = data2[index1].state._text;
+                        if (data2[index1].state._text == 'SUCCESSFUL') {
+                            orders[index].tasks[i].color = "#7ab97a";
+                        } else if (data2[index1].state._text == 'FAILED') {
+                            orders[index].tasks[i].color = "#e86680";
                         }
+                        else if (data2[index1].late) {
+                            orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
+                        }
+                        orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
+
+                        if (!minNextStartTime || minNextStartTime > new Date(data2[index1].plannedStartTime)) {
+                            minNextStartTime = new Date(data2[index1].plannedStartTime);
+                        }
+                        if (!maxEndTime || maxEndTime < new Date(data2[index1].expectedEndTime)) {
+                            maxEndTime = new Date(data2[index1].expectedEndTime);
+                        }
+                        orders[index].tasks[i].to = new Date(data2[index1].expectedEndTime);
+
+                        if (data2[index1].startMode == 0) {
+                            orders[index].tasks[i].startMode = 'label.singleStartMode';
+                            orders[index].tasks[i].content = '<i class="fa fa-repeat1">';
+                        } else if (data2[index1].startMode == 1) {
+                            orders[index].tasks[i].startMode = 'label.startStartRepeatMode';
+                            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/start-start.png">';
+                        } else if (data2[index1].startMode == 2) {
+                            orders[index].tasks[i].startMode = 'label.startEndRepeatMode';
+                            orders[index].tasks[i].content = '<img style="margin-left: -10px" src="images/end-start.png">';
+                        }
+
+                        if (data2[index1].period.repeat) {
+                            var s = parseInt((data2[index1].period.repeat) % 60),
+                                m = parseInt((data2[index1].period.repeat / 60) % 60),
+                                h = parseInt((data2[index1].period.repeat / (60 * 60)) % 24);
+                            h = h > 9 ? h : '0' + h;
+                            m = m > 9 ? m : '0' + m;
+                            s = s > 9 ? s : '0' + s;
+                            orders[index].tasks[i].repeat = h + ':' + m + ':' + s;
+                        }
+                        i++;
+                    }else if(data2[index1].job && (groupJobChain[index].job == data2[index1].job)) {
+                        orders[index].tasks[i] = {};
+                        orders[index].name = data2[index1].job;
+
                         vm.plans[index].processedPlanned = orders[index].name;
                         orders[index].tasks[i].name = orders[index].name;
 
