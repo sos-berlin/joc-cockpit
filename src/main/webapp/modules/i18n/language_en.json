@@ -945,5 +945,6 @@
   "button.standaloneJobs": "Standalone Jobs",
   "button.saveAsFilter": "Save As Customization",
   "button.nonWorkingDays": "Non-working days",
-  "button.editPeriod": "Edit Period"
+  "button.editPeriod": "Edit Period",
+  "label.folder": "Folder"
 }

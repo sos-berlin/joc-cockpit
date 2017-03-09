@@ -377,15 +377,6 @@
                     parent: 'app.resources.schedules'
                 }
             })
-            .state('app.schedule-orders', {
-                url: '/schedule/:name',
-                templateUrl: 'modules/jobscheduler/views/schedule-orders.html',
-                controller: 'ScheduleOrderCtrl',
-                ncyBreadcrumb: {
-                    label: '{{name}}',
-                    parent: 'app.resources.schedules'
-                }
-            })
             .state('app.history', {
                 url: '/history',
                 templateUrl: 'modules/order/views/history.html',

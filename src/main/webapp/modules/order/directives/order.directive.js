@@ -1034,7 +1034,7 @@
                                     var top = div1.offsetTop + div1.clientHeight + vm.border;
                                     var left = div1.offsetLeft + div1.clientWidth / 2;
                                     var width = errNode.offsetLeft - left - vm.margin / 2;
-                                    var height = vm.vSpace;
+                                    var height = errNode.offsetTop+errNode.clientHeight/2 >top+vm.vSpace ?vm.vSpace:vm.vSpace-(top+vm.vSpace-errNode.offsetTop-errNode.clientHeight/2);
                                     createErrorLine(top, left, 2, height);
                                     top = top + height;
                                     width = div1.clientWidth / 2 + vm.hSpace;
@@ -1043,7 +1043,7 @@
                                     height = errNode.offsetTop + errNode.clientHeight / 2 - top;
                                     createErrorLine(top, left, 2, height);
                                     width = errNode.offsetLeft - left;
-                                    top = top + height - 1;
+                                    top = top + (height>0?height:0);
                                     createErrorLine(top, left, width, 2);
 
 
@@ -1259,7 +1259,7 @@
 
                             if (node.orders && node.orders.length > 0) {
 
-                                addLabel(node.orders, node.name);
+                                addLabel(node.orders, node.name,node.numOfOrders);
                             }
                         });
 
@@ -1313,7 +1313,7 @@
                             }
                         };
 
-                        function addLabel(orders, name) {
+                        function addLabel(orders, name,numOfOrders) {
 
                             vm.limitNum = JSON.parse($window.sessionStorage.preferences).maxOrderPerJobchain;
                             var blockEllipsisFlowOrder = 'block-ellipsis-flow-order';
@@ -1327,7 +1327,7 @@
                                     if (index > vm.limitNum) {
                                         return;
                                     }
-                                    if (index == vm.limitNum) {
+                                    if (index == vm.limitNum && numOfOrders > orders.length) {
 
                                         var container = document.getElementById('lbl-order-' + order.state);
                                         var label = document.createElement('div');

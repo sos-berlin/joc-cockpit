@@ -1,5 +1,5 @@
 <div ng-click="refreshSession()">
-<form name="form" ng-submit="ok()" novalidate>
+    <form name="form" ng-submit="ok()" novalidate>
     <div class="modal-header">
             <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true">
                 <img src="images/close-button.png"></span></button>
@@ -113,10 +113,10 @@
                 <div ng-if="!editor.hideEvery">
                        <div class="b-b">
                             <ul class="nav nav-tabs">
-                                <li class="nav-item">
+                                <li class="nav-item" >
                                     <a class="nav-link active" href data-toggle="tab" data-target="#schTab1" ng-click="selectedTab ='schedule'" translate>tab.schedule</a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" >
                                     <a class="nav-link" href data-toggle="tab" data-target="#schTab2" ng-click="selectedTab ='runtime';error = {}" translate>tab.runtime</a>
                                 </li>
                             </ul>
@@ -175,7 +175,6 @@
                                             <select class="form-control" ng-model="runTime.every">
                                                 <option value="weekDays" translate>label.weekDays</option>
                                                 <option value="monthDays" translate>label.monthDays</option>
-                                              <!--  <option value="yearDays" translate>label.yearDays</option>-->
                                             </select>
                                         </div>
                                     </div>
@@ -197,11 +196,11 @@
                     <div ng-show="runTime.every == 'weekDays'">
                         <div class="b-b">
                             <ul class="nav nav-tabs">
-                                <li class="nav-item">
+                                <li class="nav-item" ng-hide="weekdays">
                                     <a class="nav-link" href data-toggle="tab" data-target="#tab1" ng-class="{'active':runTime.tab == 'weekDays'}"
                                        ng-click="runTime.tab = 'weekDays'" translate>tab.weekDays</a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" ng-hide="specificWeekDays">
                                     <a class="nav-link" href data-toggle="tab" data-target="#tab2" ng-class="{'active':runTime.tab == 'specificWeekDays'}"
                                        ng-click="runTime.tab = 'specificWeekDays'" translate>label.specificWeekDays</a>
                                 </li>
@@ -734,8 +733,11 @@
         <button ng-if="editor.nextPage" type="button"
                 class="btn btn-grey btn-sm m-l-sm" ng-click="prev()" translate>button.back
         </button>
-        <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+        <button ng-if="editor.hidePervious && !editor.nextPage && !editor.update" ng-hide="!editor.hideEvery" type="button"
                 class="btn btn-grey btn-sm m-l-sm" ng-click="editor.hideEvery = false;" translate>button.back
+        </button>
+        <button ng-if="editor.hidePervious && !editor.nextPage && editor.update" ng-hide="!editor.hideEvery" type="button"
+                class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.back
         </button>
     </div>
 </form>

@@ -1393,14 +1393,16 @@
 
                 });
             } else {
-                var flag = arr.period._single_start == vm.updateTime.obj._period._single_start || arr.period._absolute_repeat == vm.updateTime.obj._period._absolute_repeat ||
-                    arr.period._repeat == vm.updateTime.obj._period._repeat || arr.period._begin == vm.updateTime.obj._period._begin || arr.period._end == vm.updateTime.obj._period._end
-                    || arr.period._when_holiday == vm.updateTime.obj._period._when_holiday;
-                if (flag) {
-                    arr.period = undefined;
-                    arr._day = undefined;
-                    if (arr._which)
-                        arr._which = undefined;
+                if(arr.period) {
+                    var flag = arr.period._single_start == vm.updateTime.obj._period._single_start || arr.period._absolute_repeat == vm.updateTime.obj._period._absolute_repeat ||
+                        arr.period._repeat == vm.updateTime.obj._period._repeat || arr.period._begin == vm.updateTime.obj._period._begin || arr.period._end == vm.updateTime.obj._period._end
+                        || arr.period._when_holiday == vm.updateTime.obj._period._when_holiday;
+                    if (flag) {
+                        arr.period = undefined;
+                        arr._day = undefined;
+                        if (arr._which)
+                            arr._which = undefined;
+                    }
                 }
 
             }
@@ -1912,7 +1914,6 @@
                                             }
                                             if (val._day) {
                                                 str = str + ' days at ' + getMonthDays(val._day) + ' - ';
-
                                                 if (angular.isArray(val.period)) {
                                                     angular.forEach(val.period, function (res1) {
                                                         var periodStr = '';
@@ -1944,20 +1945,22 @@
                                                         });
                                                     });
                                                 } else {
-                                                    if (val.period._single_start) {
-                                                        str = str + ' single start at ' + val.period._single_start;
-                                                    }
-                                                    else if (val.period._absolute_repeat) {
-                                                        str = str + ' absolute repeat ' + val.period._absolute_repeat;
-                                                    }
-                                                    else if (val.period._repeat) {
-                                                        str = str + ' repeat at ' + val.period._repeat;
-                                                    }
-                                                    if (val.period._begin) {
-                                                        str = str + ', begin at ' + val.period._begin;
-                                                    }
-                                                    if (val.period._end) {
-                                                        str = str + 'and end at ' + val.period._end;
+                                                    if(val.period) {
+                                                        if (val.period._single_start) {
+                                                            str = str + ' single start at ' + val.period._single_start;
+                                                        }
+                                                        else if (val.period._absolute_repeat) {
+                                                            str = str + ' absolute repeat ' + val.period._absolute_repeat;
+                                                        }
+                                                        else if (val.period._repeat) {
+                                                            str = str + ' repeat at ' + val.period._repeat;
+                                                        }
+                                                        if (val.period._begin) {
+                                                            str = str + ', begin at ' + val.period._begin;
+                                                        }
+                                                        if (val.period._end) {
+                                                            str = str + 'and end at ' + val.period._end;
+                                                        }
                                                     }
 
                                                     vm.runtimeList.push(
@@ -2015,20 +2018,22 @@
                                                         });
                                                 });
                                             } else {
-                                                if (value1.period._single_start) {
-                                                    str = str + ' single start at ' + value1.period._single_start;
-                                                }
-                                                else if (value1.period._absolute_repeat) {
-                                                    str = str + ' absolute repeat ' + value1.period._absolute_repeat;
-                                                }
-                                                else if (value1.period._repeat) {
-                                                    str = str + ' repeat at ' + value1.period._repeat;
-                                                }
-                                                if (value1.period._begin) {
-                                                    str = str + ', begin at ' + value1.period._begin;
-                                                }
-                                                if (value1.period._end) {
-                                                    str = str + ' and end at ' + value1.period._end;
+                                                if(value1.period) {
+                                                    if (value1.period._single_start) {
+                                                        str = str + ' single start at ' + value1.period._single_start;
+                                                    }
+                                                    else if (value1.period._absolute_repeat) {
+                                                        str = str + ' absolute repeat ' + value1.period._absolute_repeat;
+                                                    }
+                                                    else if (value1.period._repeat) {
+                                                        str = str + ' repeat at ' + value1.period._repeat;
+                                                    }
+                                                    if (value1.period._begin) {
+                                                        str = str + ', begin at ' + value1.period._begin;
+                                                    }
+                                                    if (value1.period._end) {
+                                                        str = str + ' and end at ' + value1.period._end;
+                                                    }
                                                 }
 
                                                 vm.runtimeList.push(
@@ -2091,20 +2096,22 @@
                                                         });
                                                 });
                                             } else {
-                                                if (val.period._single_start) {
-                                                    str = str + ' single start at ' + val.period._single_start;
-                                                }
-                                                else if (val.period._absolute_repeat) {
-                                                    str = str + ' absolute repeat ' + val.period._absolute_repeat;
-                                                }
-                                                else if (val.period._repeat) {
-                                                    str = str + ' repeat at ' + val.period._repeat;
-                                                }
-                                                if (val.period._begin) {
-                                                    str = str + ', begin at ' + val.period._begin;
-                                                }
-                                                if (val.period._end) {
-                                                    str = str + ' and end at ' + val.period._end;
+                                                if(val.period) {
+                                                    if (val.period._single_start) {
+                                                        str = str + ' single start at ' + val.period._single_start;
+                                                    }
+                                                    else if (val.period._absolute_repeat) {
+                                                        str = str + ' absolute repeat ' + val.period._absolute_repeat;
+                                                    }
+                                                    else if (val.period._repeat) {
+                                                        str = str + ' repeat at ' + val.period._repeat;
+                                                    }
+                                                    if (val.period._begin) {
+                                                        str = str + ', begin at ' + val.period._begin;
+                                                    }
+                                                    if (val.period._end) {
+                                                        str = str + ' and end at ' + val.period._end;
+                                                    }
                                                 }
 
                                                 vm.runtimeList.push({
@@ -2155,20 +2162,22 @@
                                                 });
                                             });
                                         } else {
-                                            if (res.weekdays.day.period._single_start) {
-                                                str = str + ' single start at ' + res.weekdays.day.period._single_start;
-                                            }
-                                            else if (res.weekdays.day.period._absolute_repeat) {
-                                                str = str + ' absolute repeat ' + res.weekdays.day.period._absolute_repeat;
-                                            }
-                                            else if (res.weekdays.day.period._repeat) {
-                                                str = str + ' repeat at ' + res.weekdays.day.period._repeat;
-                                            }
-                                            if (res.weekdays.day.period._begin) {
-                                                str = str + ', begin at ' + res.weekdays.day.period._begin;
-                                            }
-                                            if (res.weekdays.day.period._end) {
-                                                str = str + ' and end at ' + res.weekdays.day.period._end;
+                                            if(res.weekdays.day.period) {
+                                                if (res.weekdays.day.period._single_start) {
+                                                    str = str + ' single start at ' + res.weekdays.day.period._single_start;
+                                                }
+                                                else if (res.weekdays.day.period._absolute_repeat) {
+                                                    str = str + ' absolute repeat ' + res.weekdays.day.period._absolute_repeat;
+                                                }
+                                                else if (res.weekdays.day.period._repeat) {
+                                                    str = str + ' repeat at ' + res.weekdays.day.period._repeat;
+                                                }
+                                                if (res.weekdays.day.period._begin) {
+                                                    str = str + ', begin at ' + res.weekdays.day.period._begin;
+                                                }
+                                                if (res.weekdays.day.period._end) {
+                                                    str = str + ' and end at ' + res.weekdays.day.period._end;
+                                                }
                                             }
 
                                             vm.runtimeList.push({
@@ -2232,20 +2241,22 @@
                                                         });
                                                     });
                                                 } else {
-                                                    if (val.period._single_start) {
-                                                        str = str + ' single start at ' + val.period._single_start;
-                                                    }
-                                                    else if (val.period._absolute_repeat) {
-                                                        str = str + ' absolute repeat ' + val.period._absolute_repeat;
-                                                    }
-                                                    else if (val.period._repeat) {
-                                                        str = str + ' repeat at ' + val.period._repeat;
-                                                    }
-                                                    if (val.period._begin) {
-                                                        str = str + ', begin at ' + val.period._begin;
-                                                    }
-                                                    if (val.period._end) {
-                                                        str = str + 'and end at ' + val.period._end;
+                                                    if(val.period) {
+                                                        if (val.period._single_start) {
+                                                            str = str + ' single start at ' + val.period._single_start;
+                                                        }
+                                                        else if (val.period._absolute_repeat) {
+                                                            str = str + ' absolute repeat ' + val.period._absolute_repeat;
+                                                        }
+                                                        else if (val.period._repeat) {
+                                                            str = str + ' repeat at ' + val.period._repeat;
+                                                        }
+                                                        if (val.period._begin) {
+                                                            str = str + ', begin at ' + val.period._begin;
+                                                        }
+                                                        if (val.period._end) {
+                                                            str = str + 'and end at ' + val.period._end;
+                                                        }
                                                     }
 
                                                     vm.runtimeList.push(
@@ -2302,20 +2313,22 @@
                                                     });
                                                 });
                                             } else {
-                                                if (value1.period._single_start) {
-                                                    str = str + ' single start at ' + value1.period._single_start;
-                                                }
-                                                else if (value1.period._absolute_repeat) {
-                                                    str = str + ' absolute repeat ' + value1.period._absolute_repeat;
-                                                }
-                                                else if (value1.period._repeat) {
-                                                    str = str + ' repeat at ' + value1.period._repeat;
-                                                }
-                                                if (value1.period._begin) {
-                                                    str = str + ', begin at ' + value1.period._begin;
-                                                }
-                                                if (value1.period._end) {
-                                                    str = str + ' and end at ' + value1.period._end;
+                                                if(value1.period) {
+                                                    if (value1.period._single_start) {
+                                                        str = str + ' single start at ' + value1.period._single_start;
+                                                    }
+                                                    else if (value1.period._absolute_repeat) {
+                                                        str = str + ' absolute repeat ' + value1.period._absolute_repeat;
+                                                    }
+                                                    else if (value1.period._repeat) {
+                                                        str = str + ' repeat at ' + value1.period._repeat;
+                                                    }
+                                                    if (value1.period._begin) {
+                                                        str = str + ', begin at ' + value1.period._begin;
+                                                    }
+                                                    if (value1.period._end) {
+                                                        str = str + ' and end at ' + value1.period._end;
+                                                    }
                                                 }
 
                                                 vm.runtimeList.push({
@@ -2373,20 +2386,22 @@
                                                     });
                                                 });
                                             } else {
-                                                if (val.period._single_start) {
-                                                    str = str + ' single start at ' + val.period._single_start;
-                                                }
-                                                else if (val.period._absolute_repeat) {
-                                                    str = str + ' absolute repeat ' + val.period._absolute_repeat;
-                                                }
-                                                else if (val.period._repeat) {
-                                                    str = str + ' repeat at ' + val.period._repeat;
-                                                }
-                                                if (val.period._begin) {
-                                                    str = str + ', begin at ' + val.period._begin;
-                                                }
-                                                if (val.period._end) {
-                                                    str = str + ' and end at ' + val.period._end;
+                                                if(val.period) {
+                                                    if (val.period._single_start) {
+                                                        str = str + ' single start at ' + val.period._single_start;
+                                                    }
+                                                    else if (val.period._absolute_repeat) {
+                                                        str = str + ' absolute repeat ' + val.period._absolute_repeat;
+                                                    }
+                                                    else if (val.period._repeat) {
+                                                        str = str + ' repeat at ' + val.period._repeat;
+                                                    }
+                                                    if (val.period._begin) {
+                                                        str = str + ', begin at ' + val.period._begin;
+                                                    }
+                                                    if (val.period._end) {
+                                                        str = str + ' and end at ' + val.period._end;
+                                                    }
                                                 }
 
                                                 vm.runtimeList.push({
@@ -2440,20 +2455,22 @@
                                                 });
                                             });
                                         } else {
-                                            if (res.ultimos.day.period._single_start) {
-                                                str = str + ' single start at ' + res.ultimos.day.period._single_start;
-                                            }
-                                            else if (res.ultimos.day.period._absolute_repeat) {
-                                                str = str + ' absolute repeat ' + res.ultimos.day.period._absolute_repeat;
-                                            }
-                                            else if (res.ultimos.day.period._repeat) {
-                                                str = str + ' repeat at ' + res.ultimos.day.period._repeat;
-                                            }
-                                            if (res.ultimos.day.period._begin) {
-                                                str = str + ', begin at ' + res.ultimos.day.period._begin;
-                                            }
-                                            if (res.ultimos.day.period._end) {
-                                                str = str + ' and end at ' + res.ultimos.day.period._end;
+                                            if(res.ultimos.day.period) {
+                                                if (res.ultimos.day.period._single_start) {
+                                                    str = str + ' single start at ' + res.ultimos.day.period._single_start;
+                                                }
+                                                else if (res.ultimos.day.period._absolute_repeat) {
+                                                    str = str + ' absolute repeat ' + res.ultimos.day.period._absolute_repeat;
+                                                }
+                                                else if (res.ultimos.day.period._repeat) {
+                                                    str = str + ' repeat at ' + res.ultimos.day.period._repeat;
+                                                }
+                                                if (res.ultimos.day.period._begin) {
+                                                    str = str + ', begin at ' + res.ultimos.day.period._begin;
+                                                }
+                                                if (res.ultimos.day.period._end) {
+                                                    str = str + ' and end at ' + res.ultimos.day.period._end;
+                                                }
                                             }
 
                                             vm.runtimeList.push(
@@ -2515,20 +2532,22 @@
                                                         });
                                                     });
                                                 } else {
-                                                    if (val.period._single_start) {
-                                                        str = str + ' single start at ' + val.period._single_start;
-                                                    }
-                                                    else if (val.period._absolute_repeat) {
-                                                        str = str + ' absolute repeat ' + val.period._absolute_repeat;
-                                                    }
-                                                    else if (val.period._repeat) {
-                                                        str = str + ' repeat at ' + val.period._repeat;
-                                                    }
-                                                    if (val.period._begin) {
-                                                        str = str + ', begin at ' + val.period._begin;
-                                                    }
-                                                    if (val.period._end) {
-                                                        str = str + 'and end at ' + val.period._end;
+                                                    if(val.period) {
+                                                        if (val.period._single_start) {
+                                                            str = str + ' single start at ' + val.period._single_start;
+                                                        }
+                                                        else if (val.period._absolute_repeat) {
+                                                            str = str + ' absolute repeat ' + val.period._absolute_repeat;
+                                                        }
+                                                        else if (val.period._repeat) {
+                                                            str = str + ' repeat at ' + val.period._repeat;
+                                                        }
+                                                        if (val.period._begin) {
+                                                            str = str + ', begin at ' + val.period._begin;
+                                                        }
+                                                        if (val.period._end) {
+                                                            str = str + 'and end at ' + val.period._end;
+                                                        }
                                                     }
                                                     vm.runtimeList.push({
                                                         runTime: str, obj: {
@@ -2579,20 +2598,22 @@
                                                     });
                                                 });
                                             } else {
-                                                if (value1.period._single_start) {
-                                                    str = str + ' single start at ' + value1.period._single_start;
-                                                }
-                                                else if (value1.period._absolute_repeat) {
-                                                    str = str + ' absolute repeat ' + value1.period._absolute_repeat;
-                                                }
-                                                else if (value1.period._repeat) {
-                                                    str = str + ' repeat at ' + value1.period._repeat;
-                                                }
-                                                if (value1.period._begin) {
-                                                    str = str + ', begin at ' + value1.period._begin;
-                                                }
-                                                if (value1.period._end) {
-                                                    str = str + ' and end at ' + value1.period._end;
+                                                if(value1.period) {
+                                                    if (value1.period._single_start) {
+                                                        str = str + ' single start at ' + value1.period._single_start;
+                                                    }
+                                                    else if (value1.period._absolute_repeat) {
+                                                        str = str + ' absolute repeat ' + value1.period._absolute_repeat;
+                                                    }
+                                                    else if (value1.period._repeat) {
+                                                        str = str + ' repeat at ' + value1.period._repeat;
+                                                    }
+                                                    if (value1.period._begin) {
+                                                        str = str + ', begin at ' + value1.period._begin;
+                                                    }
+                                                    if (value1.period._end) {
+                                                        str = str + ' and end at ' + value1.period._end;
+                                                    }
                                                 }
                                                 vm.runtimeList.push(
                                                     {
@@ -2650,20 +2671,22 @@
                                                     });
                                                 });
                                             } else {
-                                                if (val.period._single_start) {
-                                                    str = str + ' single start at ' + val.period._single_start;
-                                                }
-                                                else if (val.period._absolute_repeat) {
-                                                    str = str + ' absolute repeat ' + val.period._absolute_repeat;
-                                                }
-                                                else if (val.period._repeat) {
-                                                    str = str + ' repeat at ' + val.period._repeat;
-                                                }
-                                                if (val.period._begin) {
-                                                    str = str + ', begin at ' + val.period._begin;
-                                                }
-                                                if (val.period._end) {
-                                                    str = str + ' and end at ' + val.period._end;
+                                                if(val.period) {
+                                                    if (val.period._single_start) {
+                                                        str = str + ' single start at ' + val.period._single_start;
+                                                    }
+                                                    else if (val.period._absolute_repeat) {
+                                                        str = str + ' absolute repeat ' + val.period._absolute_repeat;
+                                                    }
+                                                    else if (val.period._repeat) {
+                                                        str = str + ' repeat at ' + val.period._repeat;
+                                                    }
+                                                    if (val.period._begin) {
+                                                        str = str + ', begin at ' + val.period._begin;
+                                                    }
+                                                    if (val.period._end) {
+                                                        str = str + ' and end at ' + val.period._end;
+                                                    }
                                                 }
 
                                                 vm.runtimeList.push({
@@ -2716,20 +2739,22 @@
                                                 });
                                             });
                                         } else {
-                                            if (res.monthdays.day.period._single_start) {
-                                                str = str + ' single start at ' + res.monthdays.day.period._single_start;
-                                            }
-                                            else if (res.monthdays.day.period._absolute_repeat) {
-                                                str = str + ' absolute repeat ' + res.monthdays.day.period._absolute_repeat;
-                                            }
-                                            else if (res.monthdays.day.period._repeat) {
-                                                str = str + ' repeat at ' + res.monthdays.day.period._repeat;
-                                            }
-                                            if (res.monthdays.day.period._begin) {
-                                                str = str + ', begin at ' + res.monthdays.day.period._begin;
-                                            }
-                                            if (res.monthdays.day.period._end) {
-                                                str = str + ' and end at ' + res.monthdays.day.period._end;
+                                            if(res.monthdays.day.period) {
+                                                if (res.monthdays.day.period._single_start) {
+                                                    str = str + ' single start at ' + res.monthdays.day.period._single_start;
+                                                }
+                                                else if (res.monthdays.day.period._absolute_repeat) {
+                                                    str = str + ' absolute repeat ' + res.monthdays.day.period._absolute_repeat;
+                                                }
+                                                else if (res.monthdays.day.period._repeat) {
+                                                    str = str + ' repeat at ' + res.monthdays.day.period._repeat;
+                                                }
+                                                if (res.monthdays.day.period._begin) {
+                                                    str = str + ', begin at ' + res.monthdays.day.period._begin;
+                                                }
+                                                if (res.monthdays.day.period._end) {
+                                                    str = str + ' and end at ' + res.monthdays.day.period._end;
+                                                }
                                             }
 
                                             vm.runtimeList.push({
@@ -2800,13 +2825,15 @@
                                 if (res.period._end) {
                                     str = str + ' and end at ' + res.period._end;
                                 }
+
+                            }
                                 vm.runtimeList.push({
                                     runTime: str, obj: {
                                         _day: res._day,
                                         _period: res.period
                                     }, type: 'weekdays'
                                 });
-                            }
+
                         }
                     }
                 });
@@ -2863,13 +2890,14 @@
                                         str = str + ' and end at ' + res.period._end;
                                     }
 
-                                    vm.runtimeList.push({
+
+                                }
+                                  vm.runtimeList.push({
                                         runTime: str, obj: {
                                             _day: res._day,
                                             _period: res.period
                                         }, type: 'monthdays'
                                     });
-                                }
                             }
 
 
@@ -2935,6 +2963,8 @@
                                             str = str + ' and end at ' + value.period._end;
                                         }
 
+
+                                    }
                                         vm.runtimeList.push({
                                             runTime: str, obj: {
                                                 _day: value._day,
@@ -2942,8 +2972,6 @@
                                                 _which: value._which
                                             }, type: 'weekday'
                                         });
-                                    }
-
                                 }
                             }
                         }
@@ -3004,7 +3032,8 @@
                                     if (res.period._end) {
                                         str = str + ' and end at ' + res.period._end;
                                     }
-                                    vm.runtimeList.push(
+                                }
+                                                                    vm.runtimeList.push(
                                         {
                                             runTime: str,
                                             obj: {
@@ -3013,7 +3042,6 @@
                                             },
                                             type: 'ultimos'
                                         });
-                                }
                             }
 
 
@@ -4239,7 +4267,8 @@
         vm.removeCalendarFile = function (index) {
             vm.calendarFiles.splice(index, 1);
         };
-
+             vm.specificWeekDays= false;
+             vm.weekdays= false;
         vm.editRunTime = function (data) {
 
             vm.updateTime = angular.copy(data);
@@ -4253,6 +4282,14 @@
             vm.runTime = {};
             var runTime = {};
             selectedMonths = [];
+             vm.specificWeekDays= false;
+             vm.weekdays= false;
+            if(vm.updateTime.type == 'weekdays'){
+                vm.specificWeekDays= true;
+            }else{
+                vm.weekdays= true;
+            }
+            console.log(JSON.stringify(vm.updateTime))
 
             if (!isEmpty(vm.updateTime.obj) && !angular.isArray(vm.updateTime.obj)) {
                 if (vm.updateTime.type == 'month') {
@@ -4348,7 +4385,7 @@
 
         };
         vm.deleteRunTime = function (data) {
-            
+
             var xml = x2js.xml_str2json(vm.xml);
             var _xml = xml.run_time || xml.schedule;
             if(!xml){
@@ -4750,6 +4787,7 @@
         vm.createNewRunTime = function () {
             vm.editor.hidePervious = true;
             vm.editor.create = true;
+            vm.editor.hideEvery = false;
             vm.editor.update = false;
             vm.periodList = [];
             selectedMonths = [];
@@ -4767,6 +4805,8 @@
             vm.editor.nextPage = false;
             vm.editor.create = false;
             vm.editor.update = false;
+            vm.specificWeekDays= false;
+            vm.weekdays= false;
 
 
             if (isEmpty(vm.tempRunTime)) {
@@ -4817,7 +4857,7 @@
 
                     angular.forEach(vm.run_time.weekdays.day, function (value, index1) {
                         if (!angular.isArray(value.period)) {
-                             if(value.period._when_holiday == 'suppress')
+                             if(value.period && value.period._when_holiday == 'suppress')
                             delete vm.run_time.weekdays.day[index1].period['_when_holiday'];
                         } else {
                             angular.forEach(value.period, function (val,index2) {
@@ -4840,7 +4880,7 @@
                     angular.forEach(vm.run_time.monthdays.weekday, function (value, index1) {
 
                         if (!angular.isArray(value.period)) {
-                            if(value.period._when_holiday == 'suppress')
+                            if(value.period && value.period._when_holiday == 'suppress')
                             delete vm.run_time.monthdays.weekday[index1].period['_when_holiday'];
                         } else {
                             angular.forEach(value.period, function (val, index2) {
@@ -4861,7 +4901,7 @@
                 }else{
                      angular.forEach(vm.run_time.monthdays.day, function (value, index1) {
                             if (!angular.isArray(value.period)) {
-                                if(value.period._when_holiday == 'suppress')
+                                if(value.period && value.period._when_holiday == 'suppress')
                                 delete vm.run_time.monthdays.day[index1].period['_when_holiday'];
                             } else {
                                 angular.forEach(value.period, function (val,index2) {

@@ -155,11 +155,11 @@
                     <div ng-show="runTime.every == 'weekDays'">
                         <div class="b-b">
                             <ul class="nav nav-tabs">
-                                <li class="nav-item">
+                                <li class="nav-item" ng-hide="weekdays">
                                     <a class="nav-link" href data-toggle="tab" data-target="#tab1" ng-class="{'active':runTime.tab == 'weekDays'}"
                                        ng-click="runTime.tab = 'weekDays'" translate>tab.weekDays</a>
                                 </li>
-                                <li class="nav-item">
+                                <li class="nav-item" ng-hide="specificWeekDays">
                                     <a class="nav-link" href data-toggle="tab" data-target="#tab2" ng-class="{'active':runTime.tab == 'specificWeekDays'}"
                                        ng-click="runTime.tab = 'specificWeekDays'" translate>label.specificWeekDays</a>
                                 </li>
@@ -682,8 +682,11 @@
             <button ng-if="editor.nextPage" type="button"
                     class="btn btn-grey btn-sm m-l-sm" ng-click="prev()" translate>button.back
             </button>
-            <button ng-if="editor.hidePervious && !editor.nextPage" ng-hide="!editor.hideEvery" type="button"
+             <button ng-if="editor.hidePervious && !editor.nextPage && !editor.update" ng-hide="!editor.hideEvery" type="button"
                     class="btn btn-grey btn-sm m-l-sm" ng-click="editor.hideEvery = false;" translate>button.back
+            </button>
+            <button ng-if="editor.hidePervious && !editor.nextPage && editor.update" ng-hide="!editor.hideEvery" type="button"
+                    class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.back
             </button>
         </div>
     </form>

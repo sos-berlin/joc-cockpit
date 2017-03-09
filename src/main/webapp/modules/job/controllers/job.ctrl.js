@@ -70,6 +70,7 @@
         }
 
         function getJobChainByPathV(obj) {
+            obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
             JobChainService.get(obj).then(function (res) {
                 if (vm.jobChains) {
                     vm.jobChains = angular.merge(vm.jobChains, res.jobChains)
@@ -353,7 +354,7 @@
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
-
+             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
             JobChainService.get(obj).then(function (res) {
 
                 var data1 = [];
@@ -452,7 +453,7 @@
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
-
+             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
             JobChainService.get(obj).then(function (res) {
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
@@ -680,6 +681,7 @@
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
+             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
             JobChainService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.jobChains && vm.jobChains.length > 0) {
@@ -770,6 +772,7 @@
                 if (vm.tree[i].expanded || vm.tree[i].selected1)
                     checkExpandTreeForUpdates(vm.tree[i]);
             }
+             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
 
 
             JobChainService.getJobChainsP(obj1).then(function (result) {
@@ -1746,6 +1749,7 @@
             if (vm.userPreferences.showOrders) {
                 obj.compact = false;
             }
+             obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
             JobChainService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.jobChains && vm.jobChains.length > 0) {
@@ -2176,9 +2180,11 @@
         vm.showNodePanelFuc = showNodePanelFuc;
         function showNodePanelFuc(jobChain) {
             jobChain.show = true;
+
             JobChainService.getJobChain({
                 jobschedulerId: vm.schedulerIds.selected,
-                jobChain: jobChain.path
+                jobChain: jobChain.path,
+                maxOrders : vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
                 jobChain.nodes = [];
                 jobChain = angular.merge(jobChain, res.jobChain);
@@ -4097,8 +4103,6 @@
                 jobs.jobs.push({job: job.path});
                 JobService.getJobsP(jobs).then(function (res) {
                     job.jobChains = res.jobs[0].jobChains;
-                }, function (err) {
-
                 });
             }
         };

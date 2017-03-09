@@ -273,7 +273,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <i class="cursor text-xs" ng-if="node.orders && node.orders.length>limitNum"
+                                    <i class="cursor text-xs" ng-if="node.numOfOrders>limitNum"
                                        ng-click="showOrderPanelFuc(jobChain.path)"><span
                                             translate>label.showMoreOrders</span><br></i>
 
@@ -331,7 +331,7 @@
                                         </tbody>
                                     </table>
                                 </td>
-                                <td>{{node.numOfOrders}}</td>
+                                <td>{{node.numOfOrders || 0}}</td>
                                 <td>
                                     <span class="label" ng-if="node.job.state" ng-class="bgColorFunction(node.job.state.severity)" ng-bind="node.job.state._text | translate"></span>
                                     <span class="label" ng-if="node.job.configurationStatus" ng-class="colorFunction(node.job.configurationStatus.severity)" ng-bind="node.job.configurationStatus.message | translate"></span>

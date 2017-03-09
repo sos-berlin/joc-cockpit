@@ -1746,7 +1746,8 @@
         function volatileInfo(draw) {
             JobChainService.getJobChain({
                 jobschedulerId: $scope.schedulerIds.selected,
-                jobChain: vm.path
+                jobChain: vm.path,
+                maxOrders : vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
                 var temp=[];
                 temp=angular.merge({},vm.jobChain, res.jobChain);

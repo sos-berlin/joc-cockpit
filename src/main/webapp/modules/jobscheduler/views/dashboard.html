@@ -122,22 +122,22 @@
                             </tr>
                             <tr class="text-center">
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/PENDING" class="text-lg _600 text-black-lt" ng-bind="snapshot.pending || 0"></a>
+                                    <a href="#!/orders_overview/PENDING" class="text-lg _600 " ng-bind="snapshot.pending || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/RUNNING" class="text-lg _600 text-black-lt" ng-bind="snapshot.running || 0"></a>
+                                    <a href="#!/orders_overview/RUNNING" class="text-lg _600 " ng-bind="snapshot.running || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/SUSPENDED" class="text-lg _600 text-black-lt" ng-class="{'dark-orange':snapshot.suspended >0}"  ng-bind="snapshot.suspended || 0"></a>
+                                    <a href="#!/orders_overview/SUSPENDED" class="text-lg _600 " ng-class="{'dark-orange':snapshot.suspended >0}"  ng-bind="snapshot.suspended || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/SETBACK" class="text-lg _600 text-black-lt" ng-bind="snapshot.setback || 0"></a>
+                                    <a href="#!/orders_overview/SETBACK" class="text-lg _600 " ng-bind="snapshot.setback || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 text-black-lt" ng-bind="snapshot.waitingForResource || 0"></a>
+                                    <a href="#!/orders_overview/WAITINGFORRESOURCE" class="text-lg _600 " ng-bind="snapshot.waitingForResource || 0"></a>
                                 </td>
                                 <td width="16.6">
-                                    <a href="#!/orders_overview/BLACKLIST" class="text-lg _600 text-black-lt" ng-bind="snapshot.blacklist || 0"></a>
+                                    <a href="#!/orders_overview/BLACKLIST" class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
                                 </td>
                             </tr>
                             </table>
@@ -204,10 +204,10 @@
                             </tr>
                             <tr class="text-center">
                                 <td width="50">
-                                    <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 text-success" ng-bind="orderSummary.successful || 0"></a>
+                                    <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 " ng-class="{'text-success':orderSummary.successful >0}" ng-bind="orderSummary.successful || 0"></a>
                                 </td>
                                 <td width="50">
-                                    <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 crimson" ng-bind="orderSummary.failed || 0"></a>
+                                    <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 " ng-class="{'crimson':orderSummary.failed  >0}" ng-bind="orderSummary.failed || 0"></a>
                                 </td>
                             </tr>
                         </table>

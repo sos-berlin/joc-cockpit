@@ -945,5 +945,6 @@
   "button.standaloneJobs": "Tâches autonomes",
   "button.saveAsFilter": "Enregistrer sous Personnalisation",
   "button.nonWorkingDays": "Jours fériés",
-  "button.editPeriod": "Editer la Période"
+  "button.editPeriod": "Editer la Période",
+  "label.folder": "Folder"
 }

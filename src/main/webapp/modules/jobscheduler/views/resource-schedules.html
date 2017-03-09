@@ -39,7 +39,7 @@
                                 </label>
 
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Schedule.edit}">
-                                    <span uib-tooltip="{{schedule.title}}" ng-bind="schedule.name"></span>
+                                    <span uib-tooltip="{{schedule.title}}" ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind="schedule.name"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -54,20 +54,25 @@
                                 </div>
                             </div>
                             <div class="text-sm text-left text-muted p-t-sm">
+                                <span translate>label.usedByOrders </span>:
+                                <span ng-bind="schedule.usedByOrders.length || 0"></span>
+                                <!--<a href="#!/schedule/{{schedule.name}}?path={{schedule.path}}&type=order" class="text-dark text-hover-primary" ng-bind="schedule.usedByOrders.length || 0"></a>-->
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-xs">
+                                <span translate>label.usedByJobs </span>:
+                                <span ng-bind="schedule.usedByJobs.length || 0"></span>
+                                <!--<a href="#!/schedule/{{schedule.name}}?path={{schedule.path}}&type=job" class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length || 0"></a>-->
+
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-xs">
+                                <span translate>label.substituteBy </span>:
+                                <span ng-bind="schedule.substitute.path || '-'"></span>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.validity </span>:
-                                <span ng-bind="schedule.validityFrom || 'never'"></span>
-                                <span ng-if="schedule.validityFrom && schedule.validityTo"> - </span>
-                                <span ng-bind="schedule.validityTo"></span>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-sm">
-                                <span translate>label.noOfOrders </span>:
-                                <a ng-if="schedule.usedByOrders.length>0" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}" class="text-dark text-hover-primary" ng-bind="schedule.usedByOrders.length"></a>
-                                <span class="text-dark" ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-sm">
-                                <span translate>label.noOfJobs </span>:
-                                <!--<a href="#!/schedule/{{schedule.name}}?path={{schedule.path}}" ng-if="schedule.usedByJobs.length>0" class="text-dark text-hover-primary" ng-bind="schedule.usedByJobs.length">--></a>
-                                <span class="text-dark" ng-bind="schedule.usedByJobs.length || 0"></span>
+                                <span ng-if="schedule.substitute.validFrom" ng-bind="schedule.substitute.validFrom | stringToDate"></span>
+                                <span ng-if="schedule.substitute.validFrom && schedule.substitute.validTo"> to </span>
+                                <span ng-bind="schedule.substitute.validTo | stringToDate"></span>
                             </div>
                         </div>
                         <div class="box-footer b-t" >
@@ -141,15 +146,18 @@
 
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr ng-repeat="schedule in allSchedules | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse | startFrom:(schdeuleFilters.currentPage - 1) * schdeuleFilters.pageSize|limitTo: schdeuleFilters.pageSize">
+                    <tbody  ng-repeat="schedule in allSchedules | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse | startFrom:(schdeuleFilters.currentPage - 1) * schdeuleFilters.pageSize|limitTo: schdeuleFilters.pageSize">
+                    <tr>
                         <td ng-if="permission.Schedule.edit">
                             <label class="md-check">
                                 <input type="checkbox" data-checklist-model="object.schedules"
                                        data-checklist-value="schedule"><i class="primary"></i>
                             </label>
                         </td>
-                        <td>{{schedule.name}}
+                        <td>
+                           <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!schedule.show" ng-click="schedule.show = true"></i>
+                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="schedule.show" ng-click="schedule.show = false"></i>
+                            <span ng-class="{'crimson':schedule.configurationStatus.severity==2}">{{schedule.name}}</span>
                             <span ng-if="schedule.title">-</span>
                             <i class="text-muted" ng-bind-html="schedule.title"></i>
                         </td>
@@ -157,16 +165,16 @@
                         <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
                                   ng-bind="schedule.state._text  | translate"></span></td>
                         <td>
-                            <a ng-if="schedule.usedByOrders.length>0" class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByOrders.length"></a>
-                            <span ng-if="!schedule.usedByOrders.length || schedule.usedByOrders.length==0">0</span>
+                            <!--<a class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}&type=order" ng-bind="schedule.usedByOrders.length || 0"></a>-->
+                            <span ng-bind="schedule.usedByOrders.length || 0"></span>
                         </td>
                         <td>
-                            <!--<a ng-if="schedule.usedByJobs.length>0" class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}" ng-bind="schedule.usedByJobs.length"></a>-->
+                            <!--<a class="text-hover-primary" href="#!/schedule/{{schedule.name}}?path={{schedule.path}}&type=job" ng-bind="schedule.usedByJobs.length || 0"></a>-->
                             <span ng-bind="schedule.usedByJobs.length || 0"></span>
                         </td>
-                        <td ng-bind="schedule.validityFrom || 'never'"></td>
-                        <td ng-bind="schedule.validityTo || 'never'"></td>
-                        <td ng-bind="schedule.subsituteBy || 'never'"></td>
+                        <td ng-bind="schedule.substitute.validFrom | stringToDate"></td>
+                        <td ng-bind="schedule.substitute.validTo | stringToDate"></td>
+                        <td ng-bind="schedule.substitute.path"></td>
                         <td>
                             <div class="btn-group dropdown">
                                 <a class="more-option-h" href data-toggle="dropdown"><i
@@ -182,6 +190,26 @@
                                     <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="schedule.configurationStatus._text" style="background: transparent !important;">
+                        <td></td>
+                        <td colspan="9">
+                            {{schedule.configurationStatus._text | translate}} :<span ng-class="colorFunction(schedule.configurationStatus.severity)">{{schedule.configurationStatus.message}}</span>
+                        </td>
+                    </tr>
+                    <tr ng-if="schedule.show" style="background: transparent !important;" >
+                        <td></td>
+                        <td colspan="9">
+                            <span ng-if="schedule.usedByOrders">{{'label.usedByOrders' |translate}}: </span>
+                            <div class="p-l">
+                                <div ng-repeat="order in schedule.usedByOrders"> {{order}}</div>
+                            </div>
+                            <span ng-if="schedule.usedByJobs">{{'label.usedByJobs' |translate}}:</span>
+                            <div class="p-l">
+                                <div ng-repeat="job in schedule.usedByJobs"> {{job}}</div>
+                            </div>
+                            <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs" translate>message.noDataFound</div>
                         </td>
                     </tr>
                     </tbody>
