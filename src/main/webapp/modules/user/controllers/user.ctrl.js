@@ -579,6 +579,11 @@
                     toDate.setMilliseconds(0);
                 }
                 filter.dateTo = toDate;
+
+
+            }
+            if (vm.auditSearch.account) {
+                filter.account = vm.auditSearch.account;
             }
             AuditLogService.getLogs(filter).then(function (result) {
                 vm.auditLogs = result.auditLog;

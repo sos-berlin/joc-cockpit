@@ -265,9 +265,16 @@
             nodes.nodes.push({jobChain: path, node: node});
 
             var jobs = {};
-            jobs.jobs = [];
+            if(action=='stop jobChain' || action=='unstop jobChain'){
+                jobs.jobChains = [];
+                jobs.jobChains.push({jobChain: path});
+            }else{
+               jobs.jobs = [];
+                  jobs.jobs.push({job: path});
+            }
+
             jobs.jobschedulerId = $scope.schedulerIds.selected;
-            jobs.jobs.push({job: path});
+
             var modalInstance = '';
             vm.comments = {};
             vm.comments.radio = 'predefined';
@@ -411,6 +418,62 @@
                     });
                 } else {
                     return JobService.unstop(jobs);
+                }
+            }else if (action == 'stop jobChain') {
+                if (vm.userPreferences.auditLog) {
+
+                    vm.comments.name = path;
+                    vm.comments.operation = 'Stop';
+                    vm.comments.type = 'Job Chain';
+
+                    modalInstance = $uibModal.open({
+                        templateUrl: 'modules/core/template/comment-dialog.html',
+                        controller: 'DialogCtrl',
+                        scope: vm,
+                        backdrop: 'static'
+                    });
+                    modalInstance.result.then(function () {
+                        jobs.auditLog = {};
+                        if (vm.comments.comment)
+                            jobs.auditLog.comment = vm.comments.comment;
+                        if (vm.comments.timeSpent)
+                            jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                        if (vm.comments.ticketLink)
+                            jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                        return JobChainService.stop(jobs);
+                    }, function () {
+                    });
+                } else {
+                    return JobChainService.stop(jobs);
+                }
+            } else if (action == 'unstop jobChain') {
+                if (vm.userPreferences.auditLog) {
+
+                    vm.comments.name = path;
+                    vm.comments.operation = 'Unstop';
+                    vm.comments.type = 'Job Chain';
+
+                    modalInstance = $uibModal.open({
+                        templateUrl: 'modules/core/template/comment-dialog.html',
+                        controller: 'DialogCtrl',
+                        scope: vm,
+                        backdrop: 'static'
+                    });
+                    modalInstance.result.then(function () {
+                        jobs.auditLog = {};
+                        if (vm.comments.comment)
+                            jobs.auditLog.comment = vm.comments.comment;
+                        if (vm.comments.timeSpent)
+                            jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                        if (vm.comments.ticketLink)
+                            jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                        return JobChainService.unstop(jobs);
+                    }, function () {
+                    });
+                } else {
+                    return JobChainService.unstop(jobs);
                 }
             }
         }
@@ -1037,6 +1100,7 @@
                 vm.allCheck1.checkbox = newNames.length == vm.jobChain.nodes.length;
 
                 vm.isStoppedJob = false;
+                vm.isStoppedJobChain = false;
                 vm.isStoppedNode = false;
                 vm.isSkippedNode = false;
                 vm.isActiveNode = false;
@@ -1052,11 +1116,17 @@
                     if (value.state && value.state._text == 'ACTIVE') {
                         vm.isActiveNode = true;
                     }
-                    if (value.job.state && value.job.state._text == 'STOPPED') {
-                        vm.isStoppedJob = true;
-                    }
-                    if (value.job.state && value.job.state._text == 'PENDING') {
-                        vm.isPendingJob = true;
+                    if(value.job) {
+                        if (value.job.state && value.job.state._text == 'STOPPED') {
+                            vm.isStoppedJob = true;
+                        }
+                        if (value.job.state && value.job.state._text == 'PENDING') {
+                            vm.isPendingJob = true;
+                        }
+                    }else if(value.jobChain){
+                        if (value.jobChain.state && value.jobChain.state._text == 'STOPPED') {
+                            vm.isStoppedJobChain = true;
+                        }
                     }
                 });
 
@@ -1096,6 +1166,12 @@
         function getJobChain(filter) {
             filter.jobschedulerId = vm.schedulerIds.selected;
             return JobChainService.getJobChain(filter);
+        }
+
+        vm.getJobChainInfo = getJobChainInfo;
+        function getJobChainInfo(filter) {
+            filter.jobschedulerId = vm.schedulerIds.selected;
+            return JobChainService.getJobChainP(filter);
         }
 
         vm.isLoading1 = false;
@@ -1757,12 +1833,28 @@
                         node1.orders = [];
                     }
                     angular.forEach(res.jobChain.nodes, function (node2) {
-                    if (node1.name==node2.name) {
-                        temp.nodes.push(angular.merge(node1, node2));
-                    }
+                        if (node1.name==node2.name) {
+                            temp.nodes.push(angular.merge(node1, node2));
+                        }
+                    });
                 });
+
+                var temp2=[];
+                angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
+                    angular.forEach(res.nestedJobChains, function (chain2) {
+                        if(chain1.path == chain2.path)
+                        temp2.push(angular.merge(chain1, chain2));
+                     });
                 });
                 vm.jobChain = temp;
+                vm.jobChain.nestedJobChains=temp2;
+                angular.forEach(vm.jobChain.nodes, function (node1,index) {
+                    angular.forEach(vm.jobChain.nestedJobChains, function (chain1) {
+                        if(node1.jobChain.path==chain1.path){
+                            vm.jobChain.nodes[index].jobChain=chain1;
+                        }
+                     });
+                });
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
                 if (draw) {
@@ -1798,6 +1890,7 @@
                 jobChain: vm.path
             }).then(function (result) {
                 vm.jobChain = result.jobChain;
+                vm.jobChain.nestedJobChains = result.nestedJobChains;
                 volatileInfo('draw');
             });
 
@@ -2331,7 +2424,7 @@
                         var flag = false;
                         if (vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
                             for (var m = 0; m < vm.jobChain.nodes.length; m++) {
-                                if (path[0] == vm.jobChain.nodes[m].job.path) {
+                                if (vm.jobChain.nodes[m].job && path[0] == vm.jobChain.nodes[m].job.path) {
                                     flag = true;
                                     break;
                                 }
@@ -4126,6 +4219,7 @@
 
     OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService"];
     function OrderOverviewCtrl($scope, $rootScope, OrderService, $stateParams, CoreService, $uibModal, AuditLogService) {
+
         var vm = $scope;
 
         vm.orderFilters = CoreService.getOrderTab1();
@@ -4519,6 +4613,7 @@
                             angular.forEach(res.orders, function (value) {
                                 value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
                             });
+                            vm.reset();
                             vm.allOrders = res.orders;
                             waitForResponse = true;
 
@@ -6774,7 +6869,7 @@
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && isLoaded) {
+                    if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedOrder' && isLoaded) {
                         isLoaded = false;
                         var filter = {};
                         filter.jobschedulerId = $scope.schedulerIds.selected;
@@ -6801,7 +6896,7 @@
                         }
 
                         break;
-                    } else if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && isLoaded) {
+                    } else if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedJob' && isLoaded) {
                         isLoaded = false;
                         var filter = {};
                         filter.jobschedulerId = $scope.schedulerIds.selected;

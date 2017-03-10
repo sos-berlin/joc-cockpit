@@ -790,76 +790,82 @@
 
         vm.eventId = '';
         var eventTimeOut = '';
+        var eventLoading = false;
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
-            var obj = {};
-            obj.jobscheduler = [];
-            if (!vm.eventsRequest || vm.eventsRequest.length == 0) {
-                for (var i = 0; i < jobScheduler.length; i++) {
-                    if (vm.schedulerIds.selected == jobScheduler[i]) {
-                        obj.jobscheduler.push(
-                            {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
-                        );
-                        break;
-                    }
-                }
-                for (var i = 0; i < jobScheduler.length; i++) {
-                    if (vm.schedulerIds.selected != jobScheduler[i]) {
-                        obj.jobscheduler.push(
-                            {"jobschedulerId": jobScheduler[i]}
-                        );
-                    }
-                }
-            } else {
-                obj.jobscheduler = vm.eventsRequest;
-            }
-
-            CoreService.getEvents(obj).then(function (res) {
-                vm.eventsRequest = [];
-                for (var i = 0; i < res.events.length; i++) {
-                    if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
-                        vm.events = [];
-                        vm.events.push(res.events[i]);
-                        if (vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
-                            $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: res.events});
-                        } else {
-                            $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: vm.events});
+            if(!eventLoading) {
+                eventLoading = true;
+                var obj = {};
+                obj.jobscheduler = [];
+                if (!vm.eventsRequest || vm.eventsRequest.length == 0) {
+                    for (var i = 0; i < jobScheduler.length; i++) {
+                        if (vm.schedulerIds.selected == jobScheduler[i]) {
+                            obj.jobscheduler.push(
+                                {"jobschedulerId": jobScheduler[i], "eventId": vm.eventId}
+                            );
+                            break;
                         }
-                        vm.eventsRequest.push({
-                            jobschedulerId: res.events[i].jobschedulerId,
-                            eventId: res.events[i].eventId
-                        });
-                        break;
                     }
-                }
-                for (var i = 0; i < res.events.length; i++) {
-                    if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
-                        vm.eventsRequest.push({
-                            jobschedulerId: res.events[i].jobschedulerId,
-                            eventId: res.events[i].eventId
-                        });
+                    for (var i = 0; i < jobScheduler.length; i++) {
+                        if (vm.schedulerIds.selected != jobScheduler[i]) {
+                            obj.jobscheduler.push(
+                                {"jobschedulerId": jobScheduler[i]}
+                            );
+                        }
                     }
+                } else {
+                    obj.jobscheduler = vm.eventsRequest;
                 }
 
-                vm.allEvents = res.events;
-                filterdEvents();
-
-                if (logout == false) {
-                    vm.changeEvent(vm.schedulerIds.jobschedulerIds);
-                }
-
-            }, function (err) {
-                if (logout == false && (err.status == 420 || err.status == 434)) {
-                    if (eventTimeOut) {
-                        $timeout.cancel(eventTimeOut);
+                CoreService.getEvents(obj).then(function (res) {
+                    vm.eventsRequest = [];
+                    for (var i = 0; i < res.events.length; i++) {
+                        if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
+                            vm.events = [];
+                            vm.events.push(res.events[i]);
+                            if (vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
+                                $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: res.events});
+                            } else {
+                                $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: vm.events});
+                            }
+                            vm.eventsRequest.push({
+                                jobschedulerId: res.events[i].jobschedulerId,
+                                eventId: res.events[i].eventId
+                            });
+                            break;
+                        }
                     }
-                    eventTimeOut = $timeout(function () {
+                    for (var i = 0; i < res.events.length; i++) {
+                        if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
+                            vm.eventsRequest.push({
+                                jobschedulerId: res.events[i].jobschedulerId,
+                                eventId: res.events[i].eventId
+                            });
+                        }
+                    }
+
+                    vm.allEvents = res.events;
+                    filterdEvents();
+
+                    if (logout == false) {
+                        eventLoading = false;
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
-                        $timeout.cancel(eventTimeOut);
-                    }, 2000);
-                }
-            })
+                    }
+
+                }, function (err) {
+                    if (logout == false && (err.status == 420 || err.status == 434)) {
+                        if (eventTimeOut) {
+                            $timeout.cancel(eventTimeOut);
+                        }
+                        eventTimeOut = $timeout(function () {
+                            eventLoading = false;
+                            vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+                            $timeout.cancel(eventTimeOut);
+                        }, 1000);
+                    }
+                })
+            }
         };
         $scope.allSessionEvent = {group: [], eventUnReadCount: 0};
 

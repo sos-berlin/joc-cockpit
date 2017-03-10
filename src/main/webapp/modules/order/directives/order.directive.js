@@ -167,33 +167,38 @@
         };
     }
 
-    flowDiagram.$inject = ["$compile", "$window", "gettextCatalog", "$timeout"];
-    function flowDiagram($compile, $window, gettextCatalog, $timeout) {
+    flowDiagram.$inject = ["$compile", "$window", "gettextCatalog", "$timeout","$animate"];
+    function flowDiagram($compile, $window, gettextCatalog, $timeout,$animate) {
         return {
             restrict: 'E',
             transclude: true,
-            link: function (scope, element) {
+
+            link: function (scope, element,attributes,_, transclude) {
+                var cloneElement;
+                    var cloneScope;
+                var compiledHtml;
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
+                     console.log("draw 01");
                     arrangeItems();
                 });
-
+              scope.arrangeItems = arrangeItems;
 
                 function arrangeItems() {
-
-                    scope.jobChainData = angular.copy(scope.jobChain);
+                      console.log("draw 02");
+                    scope.jobChainData = angular.copy(scope.nestedChain || scope.jobChain);
                     scope.jobChainData.nodes = [];
-                    var jobChainData2 = angular.copy(scope.jobChain);
+                    var jobChainData2 = angular.copy(scope.nestedChain || scope.jobChain);
                     var isFirstNode = false;
                     var firstIndex = -1;
 
 
-                    angular.forEach(scope.jobChain.nodes, function (item, index) {
+                    angular.forEach(scope.nestedChain || scope.jobChain.nodes, function (item, index) {
 
                         if (item.nextNode) {
                             isFirstNode = true;
                         }
-                        angular.forEach(scope.jobChain.nodes, function (item2) {
+                        angular.forEach(scope.nestedChain || scope.jobChain.nodes, function (item2) {
                             if (item2.nextNode == item.name || item2.errorNode == item.name) {
                                 isFirstNode = false;
                             }
@@ -325,12 +330,13 @@
                 }
 
                 function draw() {
+                    console.log("Job chain "+JSON.stringify(scope.jobChainData));
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
                     scope.jobPaths = [];
                     var rectW = 230;
-                    var rectH = 115;
+                    var rectH = 121;
                     var avatarW = 32;
                     var margin = 50;
                     scope.coords = [];
@@ -461,19 +467,20 @@
 
                         var jobName;
 
-                        var host;
+                        var  host = '<div class="text-left text-xs p-t-xs ">' +
+                            '<span  ng-if="jobChainData.nodes[\''+index+'\'].processClass || jobChainData.nodes[\''+index+'\'].jobChain.processClass"><i class="fa fa-server "></i><span  class="p-l-sm" ng-bind="jobChainData.nodes[\''+index+'\'].processClass || jobChainData.nodes[\''+index+'\'].jobChain.processClass"></span></span>' +
+                            '<span class="pull-right hide" ng-class="{show:jobChainData.nodes[\''+index+'\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-xs" ng-bind-html="formatLock(\''+index+'\')"></span></span>' +
+                            '</div>';
 
                         if (item.job) {
                             scope.jobPaths.push(item.job.path);
                             jobName = item.job.path.substring(item.job.path.lastIndexOf('/') + 1, item.job.path.length);
                             
                             jobName = '<span>' + jobName + '</span>';
-                            host = '<div class="text-left text-muted p-t-xs ">' +
-                            '<span id="' + 'ppc' + item.name + '" class="hide"><i class="fa fa-server "></i><span id="' + 'pc' + item.name + '" class="p-l-sm">' + '--' + '</span></span>' +
-                            '<span id="' + 'plk' + item.name + '" class="pull-right hide"><i class="fa fa-lock"></i><span id="' + 'lk' + item.name + '" class="p-l-sm text-xs">' + '--' + '</span></span>' +
-                            '</div>';
+
                         } else if (item.jobChain) {
-                            jobName = '<span><i class="fa fa-list"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
+
+                            jobName = '<span><i class="fa fa-chain"></i><span class="p-l-sm">' + item.jobChain.path.substring(item.jobChain.path.lastIndexOf('/') + 1, item.jobChain.path.length) + '</span></span>';
                         }
 
                         var nodeName = item.name;
@@ -482,10 +489,7 @@
 
                         var chkId = 'chk' + item.name.replace(':', '__');
 
-                        item.state = item.state || {};
-                        item.job.state = item.job.state || {};
-                        item.state._text = item.state._text || "ACTIVE";
-                        item.job.state._text = item.job.state._text || "ACTIVE";
+
                         var permissionClass = 'hide';
                         var mL;
                         if (scope.permission.Job.stop || scope.permission.Job.unstop || scope.permission.JobChain.stopJobChainNode
@@ -495,29 +499,33 @@
                         }
 
                         var msg = '';
-                        if (item.job.configurationStatus && item.job.configurationStatus.message) {
+                        if (item.job && item.job.configurationStatus && item.job.configurationStatus.message) {
                             msg = item.job.configurationStatus.message;
                         }
 
+                        var itemType = item.job?'job':'jobChain';
+                        var itemPath = item.job?item.job.path:item.jobChain.path;
                         rectangleTemplate = rectangleTemplate +
                         '<div id="' + item.name + '" style=" padding: 0px;position:absolute;left:' + scope.coords[index].left + 'px;top:' + scope.coords[index].top + 'px;"  class="rect ' + errorNodeCls + '" ' +
-                        'ng-class="{\'border-crimson\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\', \'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\',\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
+                        'ng-class="{\'border-crimson\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\', \'border-red\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\',\'border-dark-orange\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && (jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\'||jobChainData.nodes[\'' + index + '\'].jobChain.state._text==\'STOPPED\'),\'border-grey\':jobChainData.nodes[\'' + index + '\'].state._text==\'ACTIVE\' && jobChainData.nodes[\'' + index + '\'].job.state._text==\'PENDING\' && !isOrderRunning(\'' + index + '\'),\'border-green\': isOrderRunning(\'' + index + '\')}"> <div style="padding: 10px;padding-bottom: 5px">' +
                         '<div class="block-ellipsis-job">' +
                         '<label class="md-check md-check1 pos-abt ' + permissionClass + '" ><input type="checkbox"  id="' + chkId + '"><i class="ch-purple"></i></label>' +
-                        '<span class="_500 block-ellipsis ' + mL + '" title="' + item.name + '">' + nodeName + '</span>' +
+                        '<span  class="_500 block-ellipsis ' + mL + '" title="' + item.name + '">' + nodeName + '</span>' +
                         '<div class="btn-group dropdown pull-right abt-dropdown"><a href class=" more-option text-muted" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>' +
                         '<div class="dropdown-menu dropdown-ac dropdown-more">' +
-                        '<a  class="dropdown-item" ng-click="showConfiguration({type: \'job\', path: \'' +item.job.path+ '\', name: \'' +item.name+ '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
-                        '<a href="" class="hide dropdown-item bg-hover-color" ng-click="stopJob(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job.state._text!==\'STOPPED\'}" ng-if="permission.Job.stop" translate>button.stopJob</a>' +
-                        '<a href="" class="hide dropdown-item " ng-click="unstopJob(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\'}" ng-if="permission.Job.unstop" translate>button.unstopJob</a>' +
+                        '<a  class="dropdown-item" ng-click="showConfiguration({type: \''+itemType+'\', path: \'' +itemPath+ '\', name: \'' +item.name+ '\'})" ng-if="permission.Job.view.configuration" translate>button.showConfiguration</a>' +
+                        '<a href="" class="hide dropdown-item bg-hover-color" ng-click="stopJob(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].job.state._text!==\'STOPPED\'}" ng-if="permission.Job.stop" translate>button.stopJob</a>' +
+                        '<a href="" class="hide dropdown-item " ng-click="unstopJob(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].job.state._text==\'STOPPED\'}" ng-if="permission.Job.unstop" translate>button.unstopJob</a>' +
+                       '<a href="" class="hide dropdown-item bg-hover-color" ng-click="stopJobChain(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].jobChain && jobChainData.nodes[\'' + index + '\'].jobChain.state._text!==\'STOPPED\'}" ng-if="permission.JobChain.stop" translate>button.stopJobChain</a>' +
+                        '<a href="" class="hide dropdown-item " ng-click="unstopJobChain(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].jobChain && jobChainData.nodes[\'' + index + '\'].jobChain.state._text==\'STOPPED\'}" ng-if="permission.JobChain.unstop" translate>button.unstopJobChain</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color " ng-click="stopNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}" ng-if="permission.JobChain.stopJobChainNode" translate>button.stopNode</a>' +
                         '<a href="" class="hide dropdown-item " ng-click="unstopNode(\'' + index + '\')"  ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text==\'STOPPED\'}" ng-if="permission.JobChain.processJobChainNode" translate>button.unstopNode</a>' +
                         '<a href="" class="hide dropdown-item bg-hover-color" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.skipJobChainNode"  translate>button.skipNode</a>' +
                         '<a href="" class="hide dropdown-item" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show\':jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}" ng-if="permission.JobChain.processJobChainNode"  translate>button.unskipNode</a>' +
-                        '<a href="" class="dropdown-item" ng-click="copyLinkToObject({type:\'job\',path:\''+item.job.path+'\'})"  translate>button.copyLinkToObject</a>' +
-                        '</div></div></div><div class="text-left text-muted p-t-xs block-ellipsis-job"><a class="text-hover-primary" title="' + item.job.path + '" id="navigateToJobBtn_' + item.name + '">' + jobName +
+                        '<a href="" class="dropdown-item" ng-click="copyLinkToObject({type:\''+itemType+'\',path:\''+itemPath+'\'})"  translate>button.copyLinkToObject</a>' +
+                        '</div></div></div><div class="text-left text-muted p-t-xs block-ellipsis-job"><a class="text-hover-primary" title="' + itemPath + '" ng-click="navigateToItem(\''+index+'\')">' + jobName +
                         '</a>' +
-                            '<div class="text-sm p-t-xs" ng-if="'+item.numOfOrders+' || '+item.numOfOrders+ '==0"><span translate>label.orders</span>: <span class="text-black-dk">'+item.numOfOrders+'</span></div><div class="text-sm crimson" translate>' + msg + '</div></div>' + host + '</div >' +
+                            '<div class="hide text-xs p-t-xs" ng-class="{\'show\':jobChainData.nodes[\''+index+'\'].jobChain.numOfOrders>=0 || jobChainData.nodes[\''+index+'\'].numOfOrders }"><span translate>label.orders</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\''+index+'\'].numOfOrders ||jobChainData.nodes[\''+index+'\'].jobChain.numOfOrders"></span></div><div class="text-sm crimson" translate>' + msg + '</div></div>' + host + '</div >' +
                         '<div class="box-footer b-t" style="position: absolute; bottom: 0; padding: 6px 10px; width: 100%; ">' +
                         '<a title="{{\'button.stopNode\' | translate}}" href ng-click="stopNode(\'' + index + '\')" ng-if="permission.JobChain.stopJobChainNode"' +
                         'class="hide pull-left w-half text-hover-color" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}">' +
@@ -638,10 +646,14 @@
                         });
                         height = window.innerHeight - 300;
 
-                        rectangleTemplate = '<div id="mainContainer"  class="p-a"  style="position: relative;width: 100%;" ><div id="zoomCn">' + rectangleTemplate + '</div>' +
+                        rectangleTemplate = '<div id="mainContainer" class="p-a"  style="position: relative;width: 100%;" ><div id="zoomCn">' + rectangleTemplate + '</div>' +
                         '</div>';
-                        var compiledHtml = $compile(rectangleTemplate)(scope);
-                        element.append(compiledHtml);
+
+
+                           compiledHtml = $compile(rectangleTemplate)(scope);
+                         element.append(compiledHtml);
+
+
                         if (maxUTop < iTop) {
                             var rect = document.getElementById(scope.startId);
                             var top = rect.style.getPropertyValue('top');
@@ -705,6 +717,25 @@
                     }
 
                 }
+var newScope;
+ scope.showNestedChain=function(){
+                           console.log("Clicked0011 "+scope.vSpace);
+     newScope = scope.$new();
+      console.log("Clicked0012 "+newScope.vSpace);
+                        $("#mainContainer").remove();
+                      scope.$destroy();
+
+
+
+
+                        scope.nestedChain ={"configurationDate":"2015-07-13T09:59:24Z","distributed":false,"endNodes":[{"name":"Success"},{"name":"Error"}],"name":"Chain0","nodes":[{"errorNode":"Error","job":{"path":"/SOSExample/Job1","state":{"_text":"PENDING","severity":1}},"level":0,"name":"1","nextNode":"2","$$hashKey":"object:1027","orders":[],"state":{"_text":"ACTIVE","severity":4}},{"errorNode":"Error","job":{"path":"/SOSExample/Job2","state":{"_text":"PENDING","severity":1}},"level":0,"name":"2","nextNode":"3","$$hashKey":"object:1028","orders":[],"state":{"_text":"ACTIVE","severity":4}},{"errorNode":"Error","job":{"path":"/SOSExample/Job3","state":{"_text":"PENDING","severity":1}},"level":0,"name":"3","nextNode":"4","$$hashKey":"object:1029","orders":[],"state":{"_text":"ACTIVE","severity":4}},{"errorNode":"Error","job":{"path":"/SOSExample/Job4","state":{"_text":"PENDING","severity":1}},"level":0,"name":"4","nextNode":"5","$$hashKey":"object:1030","orders":[],"state":{"_text":"ACTIVE","severity":4}},{"errorNode":"Error","job":{"path":"/SOSExample/Job5","state":{"_text":"PENDING","severity":1}},"level":0,"name":"5","nextNode":"6","$$hashKey":"object:1031","orders":[],"state":{"_text":"ACTIVE","severity":4}},{"errorNode":"Error","job":{"path":"/SOSExample/Job6","state":{"_text":"PENDING","severity":1}},"level":0,"name":"6","nextNode":"Success","$$hashKey":"object:1032","orders":[],"state":{"_text":"ACTIVE","severity":4}}],"numOfNodes":6,"path":"/SOSExample/Chain0","surveyDate":"2017-03-08T01:56:17Z","title":"JobChain0"};
+
+                        arrangeItems();
+
+                    }
+
+
+
             },
             scope: {
                 'jobChain': '=',
@@ -712,6 +743,7 @@
                 'onRemove': '&',
                 'showErrorNodes': '=',
                 'getJobInfo': '&',
+                'getJobChainInfo': '&',
                 'onAction': '&',
                 'showConfiguration': '&',
                 'showJob': '&',
@@ -723,8 +755,9 @@
                 'fitToScreen': '=',
                 'copyLinkToObject':'&'
             },
-            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', '$compile', '$location',
+            controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', '$compile', '$location','$sce',
                 function ($scope, $interval, gettextCatalog, $timeout, $filter, SOSAuth, $compile, $location) {
+                    console.log("Controller loading");
                     var vm = $scope;
                     vm.left = 0;
                     vm.object = {};
@@ -734,6 +767,17 @@
                     vm.hSpace = 20;
                     vm.border = 1;
                     var chkId;
+                    vm.show=true;
+
+                    vm.navigateToItem=function navigateToItem(index){
+                        var node = vm.jobChainData.nodes[index];
+                        if(node.job && node.job.path){
+                            vm.showJob({job: node.job.path});
+                        }else if(node.jobChain && node.jobChain.path){
+                           // vm.showJob({job: node.job.path});
+                        }
+
+                    }
 
                     vm.stopNode = function (index) {
 
@@ -809,12 +853,36 @@
                         })
 
                     };
+
+
+                    vm.stopJobChain = function (index) {
+
+                        var item = vm.jobChainData.nodes[index];
+
+                        vm.onAction({
+                            path: item.jobChain.path,
+                            action: 'stop jobChain'
+                        })
+
+                    };
+
+                    vm.unstopJobChain = function (index) {
+
+                        var item = vm.jobChainData.nodes[index];
+
+                        vm.onAction({
+                            path: item.jobChain.path,
+                            action: 'unstop jobChain'
+                        })
+
+                    };
                     var jobChainPath;
                     var mainContainer;
                     vm.selectedNodes = [];
 
                     vm.isOrderRunning = function (index) {
                         var running = false;
+                        //console.log("Data "+vm.jobChainData.nodes.length+" index "+index);
                         var item = vm.jobChainData.nodes[index];
                         if (!item.orders || item.orders.length == 0) {
                             running = false;
@@ -1031,10 +1099,11 @@
                                     createLine(top, left, width, 2, index, item);
 
                                 } else if (errNode.offsetTop + errNode.clientHeight > div1.offsetTop + div1.clientHeight) {
+
                                     var top = div1.offsetTop + div1.clientHeight + vm.border;
                                     var left = div1.offsetLeft + div1.clientWidth / 2;
                                     var width = errNode.offsetLeft - left - vm.margin / 2;
-                                    var height = errNode.offsetTop+errNode.clientHeight/2 >top+vm.vSpace ?vm.vSpace:vm.vSpace-(top+vm.vSpace-errNode.offsetTop-errNode.clientHeight/2);
+                                    var height = errNode.offsetTop+errNode.clientHeight/2 >top+vm.vSpace ?vm.vSpace:errNode.clientHeight/2-2;
                                     createErrorLine(top, left, 2, height);
                                     top = top + height;
                                     width = div1.clientWidth / 2 + vm.hSpace;
@@ -1043,7 +1112,8 @@
                                     height = errNode.offsetTop + errNode.clientHeight / 2 - top;
                                     createErrorLine(top, left, 2, height);
                                     width = errNode.offsetLeft - left;
-                                    top = top + (height>0?height:0);
+
+                                    top = top + (height>0?height:0 );
                                     createErrorLine(top, left, width, 2);
 
 
@@ -1090,17 +1160,12 @@
                                 });
 
 
-                            var navigateToJobBtnId = 'navigateToJobBtn_' + item.name;
-                            var navigateToJobBtn = document.getElementById(navigateToJobBtnId);
-                            if (navigateToJobBtn)
-                                navigateToJobBtn.addEventListener('click', function (e) {
-                                    vm.showJob({job: item.job.path});
-                                });
+
 
                             if (vm.jobChainData.nodes.length - 1 == index) {
                                 vm.limitNum = 5;
                                 vm.showOrderPanel = '';
-                                getInfo(0);
+                               getInfo(0);
                                 updateJobChain();
                                 $timeout(function () {
                                     vm.fitIntoScreen();
@@ -1146,44 +1211,26 @@
 
                     function getInfo(index) {
                         var node = vm.jobChainData.nodes[index];
+                        var nIndex = index;
+
                         if (node.job && node.job.path && (!node.job.configurationStatus || node.job.configurationStatus.severity != 2)) {
                             vm.getJobInfo({filter: {compact: true, job: node.job.path}}).then(function (res) {
-
-                                var span = document.getElementById('lk' + node.name);
-                                var pSpan = document.getElementById('plk' + node.name);
                                 if (res.job.locks && res.job.locks.length > 0) {
-
-                                    node.locks = res.job.locks;
-                                    pSpan.className = pSpan.className.replace("hide", "show-inline");
-                                    if (node.locks[0] && node.locks[0].path && node.locks[0].path.indexOf('/') != -1) {
-                                        var extra = node.locks.length - 1 > 0 ? ' + ' + node.locks.length + ' more' : '';
-                                        span.textContent = node.locks[0].path.substring(node.locks[0].path.lastIndexOf('/') + 1, node.locks[0].path.length)
-                                        + extra;
-                                    } else if (node.locks[0] && node.locks[0].path) {
-                                        var extra = node.locks.length - 1 > 0 ? ' and ' + node.locks.length + ' more' : '';
-                                        span.textContent = node.locks[0].path + extra;
-                                    }
-
-                                } else {
-                                    pSpan.className = pSpan.className.replace("show-inline", "hide");
-
+                                    vm.jobChainData.nodes[nIndex].locks = res.job.locks;
                                 }
-                                var span01 = document.getElementById('pc' + node.name);
-                                var pSpan01 = document.getElementById('ppc' + node.name);
                                 if (res.job.processClass) {
-                                    node.processClass = res.job.processClass;
-                                    pSpan01.className = pSpan01.className.replace(/hide/g, "show-inline");
-                                    if (node.processClass && node.processClass.indexOf('/') != -1) {
-                                        span01.textContent = node.processClass.substring(node.processClass.lastIndexOf('/') + 1, node.processClass.length)
-
-                                    } else if (node.processClass) {
-                                        span01.textContent = node.processClass;
-                                    }
-                                } else {
-                                    pSpan01.className = pSpan01.className.replace("show-inline", "hide");
-                                    span01.textContent = '--';
+                                    vm.jobChainData.nodes[nIndex].processClass = res.job.processClass;
                                 }
 
+                            }, function (err) {
+
+                            })
+                        }else if (node.jobChain && node.jobChain.path ) {
+                            vm.getJobChainInfo({filter: {compact: false, jobChain: node.jobChain.path}}).then(function (res) {
+
+                                if (res.jobChain.processClass) {
+                                    vm.jobChainData.nodes[nIndex].processClass = res.jobChain.processClass;
+                                }
 
                             }, function (err) {
 
@@ -1197,7 +1244,22 @@
 
                     }
 
-                    vm.$watch("showErrorNodes", toggleErrorNodes);
+                    vm.formatLock=function formatLock(index){
+                         var node = vm.jobChainData.nodes[index];
+                        if (node.locks && node.locks[0] && node.locks[0].path && node.locks[0].path.indexOf('/') != -1) {
+                                        var extra = node.locks.length  > 1 ? ' + ' + (node.locks.length-1) + ' <a href="#!/resources/locks">more</a>' : '';
+                                        return node.locks[0].path.substring(node.locks[0].path.lastIndexOf('/') + 1, node.locks[0].path.length)
+                                        + extra;
+                                    } else if (node.locks && node.locks[0] && node.locks[0].path) {
+                                        var extra = node.locks.length  > 1 ? ' + ' + (node.locks.length-1) + ' <a href="#!/resources/locks">more</a>' : '';
+                                        return node.locks[0].path + extra;
+                                    }
+
+                    }
+
+
+
+                    //vm.$watch("showErrorNodes", toggleErrorNodes);
 
                     function toggleErrorNodes() {
                         var errorElms = document.getElementsByClassName("error-link");

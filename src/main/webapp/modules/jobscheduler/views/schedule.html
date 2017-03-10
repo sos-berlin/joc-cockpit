@@ -74,11 +74,11 @@
                             <td colspan="8">
                                 <span ng-if="schedule.usedByOrders">{{'label.usedByOrders' |translate}}: </span>
                                 <div class="p-l">
-                                    <div ng-repeat="order in schedule.usedByOrders"> {{order}}</div>
+                                    <div ng-repeat="order in schedule.usedByOrders"> <a class="text-hover-primary" ng-click="showOrderLink(order.jobChain);">{{order.jobChain}}</a></div>
                                 </div>
                                 <span ng-if="schedule.usedByJobs">{{'label.usedByJobs' |translate}}:</span>
                                 <div class="p-l">
-                                    <div ng-repeat="job in schedule.usedByJobs"> {{job}}</div>
+                                    <div ng-repeat="job in schedule.usedByJobs"> <a class="text-hover-primary" ng-click="showJob(job.job);">{{job.job}}</a></div>
                                 </div>
                                 <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs" translate>message.noDataFound</div>
                             </td>

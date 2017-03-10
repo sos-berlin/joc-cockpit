@@ -936,7 +936,7 @@
   "label.surveyDate": "Date de l'enquête",
   "label.database": "Base des données",
   "label.jobTypes": "Types des Tâches",
-  "label.allJobTypes": Tous les types des Tâches",
+  "label.allJobTypes": "Tous les types des Tâches",
   "label.orderJobs": "Tâches d'Ordre",
   "label.standaloneJobs": "Tâches Standalone",
   "label.advanceSearch": "Recherche Avancée",
@@ -946,5 +946,7 @@
   "button.saveAsFilter": "Enregistrer sous Personnalisation",
   "button.nonWorkingDays": "Jours fériés",
   "button.editPeriod": "Editer la Période",
-  "label.folder": "Dossier"
+  "label.folder": "Dossier",
+  "label.account":"Account",
+  "placeholder.enterAccount":"Enter an account"
 }

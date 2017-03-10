@@ -362,6 +362,7 @@
                     angular.forEach(data.jobChains, function (jobChains) {
                         if (vm.userPreferences.showOrders)
                             jobChains.show = true;
+                            jobChains.nestedJobChains = res.nestedJobChains;
 
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
@@ -383,6 +384,7 @@
                     angular.forEach(res.jobChains, function (jobChainData) {
                         if (vm.userPreferences.showOrders)
                             jobChainData.show = true;
+                        jobChainData.nestedJobChains = res.nestedJobChains;
                         var flag1 = true;
                         if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChains.processClass) {
                             if (!jobChains.processClass.match(vm.selectedFiltered.agentName)) {
@@ -412,6 +414,7 @@
                             vm.allJobChains.push(value);
                     });
                 }
+
                 vm.folderPath = data.name || '/';
 
 
@@ -460,6 +463,7 @@
                     angular.forEach(data.jobChains, function (jobChains) {
                             if (vm.userPreferences.showOrders)
                             jobChains.show = true;
+                          jobChain.nestedJobChains = res.nestedJobChains;
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
                             if (jobChains.path == res.jobChains[i].path) {
@@ -478,6 +482,9 @@
                 } else {
                     angular.forEach(res.jobChains, function (jobChainData) {
                         var flag1 = true;
+                         if (vm.userPreferences.showOrders)
+                            jobChainData.show = true;
+                          jobChainData.nestedJobChains = res.nestedJobChains;
                         if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChains.processClass) {
                             if (!jobChains.processClass.match(vm.selectedFiltered.agentName)) {
                                 flag1 = false;
@@ -2188,6 +2195,7 @@
             }).then(function (res) {
                 jobChain.nodes = [];
                 jobChain = angular.merge(jobChain, res.jobChain);
+                jobChain.nestedJobChains = res.nestedJobChains;
                 if (vm.userPreferences.showTasks)
                     angular.forEach(jobChain.nodes, function (val, index) {
                         if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
@@ -2350,6 +2358,7 @@
                                                     res.jobChain.endNodes = angular.copy(value2.endNodes);
                                                     res.jobChain.show = angular.copy(value2.show);
                                                     vm.allJobChains[index] = res.jobChain;
+                                                    vm.allJobChains[index].nestedJobChains = res.nestedJobChains;
                                                     if (vm.userPreferences.showTasks)
                                                         angular.forEach(res.jobChain.nodes, function (val, index) {
                                                             if (val.job && val.job.state && val.job.state._text == 'RUNNING') {

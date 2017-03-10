@@ -946,5 +946,7 @@
   "button.saveAsFilter": "Save As Customization",
   "button.nonWorkingDays": "Non-working days",
   "button.editPeriod": "Edit Period",
-  "label.folder": "Folder"
+  "label.folder": "Folder",
+  "label.account":"Account",
+  "placeholder.enterAccount":"Enter an account"
 }

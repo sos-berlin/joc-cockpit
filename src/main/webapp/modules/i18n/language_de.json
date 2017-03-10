@@ -946,5 +946,7 @@
   "button.saveAsFilter": "Speichern als Personalisierung",
   "button.nonWorkingDays": "Ferientage",
   "button.editPeriod": "Periode editieren",
-  "label.folder": "Ordner"
+  "label.folder": "Ordner",
+  "label.account":"Account",
+  "placeholder.enterAccount":"Enter an account"
 }

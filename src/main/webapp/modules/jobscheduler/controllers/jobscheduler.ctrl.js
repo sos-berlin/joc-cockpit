@@ -3005,14 +3005,15 @@
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged") {
-
                         vm.loadOrderSnapshot();
-                    }
-                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged") {
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder") {
                         vm.getOrderSummary();
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged") {
                         vm.getDailyPlans();
-                    }
-                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" || (vm.events[0].eventSnapshots[i].objectType == "PROCESSCLASS") || vm.events[0].eventSnapshots[i].eventType == "FileBasedActivated") {
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS") {
+                         vm.getAgentCluster();
+                         vm.getAgentClusterRunningTask();
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged") {
                         vm.getAgentClusterRunningTask();
                     }
                 }
@@ -3864,7 +3865,7 @@
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' && isLoaded) {
+                    if (vm.events[0].eventSnapshots[i].eventType == 'DailyPlanChanged' && isLoaded) {
                         isLoaded = false;
                         if (int) {
                             $timeout.cancel(int);
