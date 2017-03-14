@@ -947,6 +947,6 @@
   "button.nonWorkingDays": "Non-working days",
   "button.editPeriod": "Edit Period",
   "label.folder": "Folder",
-  "label.account":"Account",
-  "placeholder.enterAccount":"Enter an account"
+  "label.account": "Account",
+  "placeholder.enterAccount": "Enter an account"
 }
