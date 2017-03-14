@@ -8,10 +8,11 @@
         <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
            <label class="col-sm-4 form-control-label" translate>label.enterTimeout</label>
            <div class=" col-sm-6">
-                <input type="number" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" >
+
+                <input type="text" ng-pattern="/^(\d)+$/" required class="form-control" placeholder="60" name="filterName"  ng-model="criterion.timeout" >
                <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
                    <div ng-message="required" translate>message.requiredError</div>
-                    <div ng-message="number" translate>message.nonNumericValue</div>
+                    <div ng-message="pattern" translate>message.invalid</div>
                </div>
            </div>
         </div>
@@ -55,7 +56,7 @@
         <div class="form-group row hide" ng-class="{ 'has-error' : error,'show': display }">
             <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
             <div class="col-sm-6">
-                <input type="number" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
             </div>
         </div>
 

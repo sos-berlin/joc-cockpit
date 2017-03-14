@@ -186,6 +186,9 @@
         vm.uniqueNode = 0;
         vm.totalSubNodes = 0;
 
+
+
+
         function loadJobChain() {
 
             if (SOSAuth.jobChain) {
@@ -710,23 +713,38 @@
                 vm.isSkippedNode = false;
                 vm.isActiveNode = false;
                 vm.isPendingJob = false;
+                vm.isStoppedJobChain = false;
+                vm.isJob =false;
+                vm.isJobChain =false;
+
                 angular.forEach(vm.selectedNodes, function (value) {
 
-                    if (value.state && value.state._text == 'STOPPED') {
+                    if(value.job){
+                        vm.isJob =true;
+                    }
+                     if(value.jobChain){
+                        vm.isJobChain =true;
+                    }
+
+                    if (value.job && value.state && value.state._text == 'STOPPED') {
                         vm.isStoppedNode = true;
                     }
-                    if (value.state && value.state._text == 'SKIPPED') {
+                    if (value.job && value.state && value.state._text == 'SKIPPED') {
                         vm.isSkippedNode = true;
                     }
-                    if (value.state && value.state._text == 'ACTIVE') {
+                    if (value.job && value.state && value.state._text == 'ACTIVE') {
                         vm.isActiveNode = true;
                     }
-                    if (value.job.state && value.job.state._text == 'STOPPED') {
+                    if (value.job && value.job.state && value.job.state._text == 'STOPPED') {
                         vm.isStoppedJob = true;
                     }
-                    if (value.job.state && value.job.state._text == 'PENDING') {
+                    if(value.jobChain && value.jobChain.state && value.jobChain.state._text == 'STOPPED'){
+                        vm.isStoppedJobChain = true;
+                    }
+                    if (value.job && value.job.state && value.job.state._text == 'PENDING') {
                         vm.isPendingJob = true;
                     }
+
                 });
 
 
@@ -1066,6 +1084,115 @@
             vm.reset();
         };
 
+        vm.stopJobChains = function () {
+            var jobChains = {};
+            jobChains.jobChains = [];
+            jobChains.jobschedulerId = $scope.schedulerIds.selected;
+
+            angular.forEach(vm.selectedNodes, function (value) {
+                jobChains.jobChains.push({jobChain: value.jobChain.path});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Stop';
+                vm.comments.type = 'Job Chain';
+                angular.forEach(vm.selectedNodes, function (value, index) {
+                    if (index == vm.selectedNodes.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.jobChain.path;
+                    } else {
+                        vm.comments.name = value.jobChain.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobChains.auditLog = {};
+                    if (vm.comments.comment)
+                        jobChains.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobChains.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobChains.auditLog.ticketLink = vm.comments.ticketLink;
+                    JobChainService.stop(jobChains).then(function (res) {
+                        $rootScope.$broadcast('bulkOperationCompleted', {
+                            operation: 'stopJobChains',
+                            status: 'success'
+                        });
+                    });
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                JobChainService.stop(jobChains).then(function (res) {
+                    $rootScope.$broadcast('bulkOperationCompleted', {
+                        operation: 'stopJobChains',
+                        status: 'success'
+                    });
+                });
+                vm.reset();
+            }
+        };
+
+        vm.unstopJobChains = function () {
+            var jobChains = {};
+            jobChains.jobChains = [];
+            jobChains.jobschedulerId = $scope.schedulerIds.selected;
+
+            angular.forEach(vm.selectedNodes, function (value) {
+                jobChains.jobChains.push({jobChain: value.jobChain.path});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Unstop';
+                vm.comments.type = 'Job Chain';
+                angular.forEach(vm.selectedNodes, function (value, index) {
+                    if (index == vm.selectedNodes.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.jobChain.path;
+                    } else {
+                        vm.comments.name = value.jobChain.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobChains.auditLog = {};
+                    if (vm.comments.comment)
+                        jobChains.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobChains.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobChains.auditLog.ticketLink = vm.comments.ticketLink;
+                    JobChainService.unstop(jobChains).then(function (res) {
+                        $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopJobChains', status: 'success'});
+                    });
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                JobChainService.unstop(jobChains).then(function (res) {
+                    $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopJobChains', status: 'success'});
+                });
+                vm.reset();
+            }
+
+        };
+
         vm.viewOrders = function (jobChain,state) {
             if(state)
                 vm.orderFilters.filter.state = state;
@@ -1176,31 +1303,44 @@
 
         vm.isLoading1 = false;
 
-        function loadHistory() {
+vm.loadHistory=loadHistory;
+        function loadHistory(nestedJobChain) {
             if (vm.jobChain) {
                 var filter = {};
-                filter.jobChain = vm.jobChain.path;
+                filter.jobChain = nestedJobChain?nestedJobChain.path:vm.jobChain.path;
                 filter.jobschedulerId = $scope.schedulerIds.selected;
 
                 JobChainService.histories(filter).then(function (res) {
                     vm.orderHistory = res.history;
                     vm.isLoading1 = true;
+                     vm.showHistoryPanel={name:vm.jobChain.path,title:vm.jobChain.title}
+                    if(nestedJobChain){
+                        vm.isAuditLog = false;
+                         vm.showHistoryPanel={name:nestedJobChain.path,title:nestedJobChain.title}
+                    }
                 }, function () {
                     vm.isLoading1 = true;
                 });
             }
         }
 
-        function loadAuditLogs() {
+       vm.loadAuditLogs = loadAuditLogs;
+        function loadAuditLogs(nestedJobChain) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.orders = [];
-            obj.orders.push({jobChain: vm.jobChain.path});
+            obj.orders.push({jobChain: nestedJobChain?nestedJobChain.path:vm.jobChain.path});
             obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
                     vm.auditLogs = result.auditLog;
+
                 }
+                  vm.showHistoryPanel={name:vm.jobChain.path,title:vm.jobChain.title}
+                    if(nestedJobChain){
+                        vm.isAuditLog = true;
+                         vm.showHistoryPanel={name:nestedJobChain.path,title:nestedJobChain.title}
+                    }
             });
         }
 
@@ -1751,7 +1891,7 @@
                     vm.planItemData = res.planItems;
                     vm.planItemData.forEach(function (data) {
                         var planData = {
-                            plannedStartTime: data.plannedStartTime,
+                            planneloadHistorydStartTime: data.plannedStartTime,
                             expectedEndTime: data.expectedEndTime
                         };
                         vm.planItems.push(planData);
@@ -1864,9 +2004,11 @@
             }, function () {
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
+
                 if (draw) {
                     $rootScope.$broadcast('drawJobChainFlowDiagram');
                 }
+
                 $rootScope.$broadcast('reloadJobChain');
             });
         }
@@ -1875,7 +2017,16 @@
             volatileInfo();
         });
 
-        if (object.path) {
+         $scope.$on('showNested', function (event) {
+             object = $location.search();
+            getPermanent();
+        });
+
+         getPermanent();
+
+        function getPermanent(){
+
+             if (object.path) {
             vm.path = object.path;
             if (vm.path.substring(0, 1) == '/')
                 vm.paths = vm.path.substring(1, vm.path.length).split('/');
@@ -1902,6 +2053,8 @@
             });
             window.history.back();
         }
+        }
+
 
         $rootScope.expand_to = '';
         vm.setPath = function (path) {
@@ -1947,10 +2100,10 @@
         };
 
 
-        vm.viewCalendar = function () {
+        vm.viewCalendar = function (nestedJobChain) {
             vm.maxPlannedTime = undefined;
             vm.isCaledarLoading = true;
-            vm._jobChain = vm.jobChain;
+            vm._jobChain = nestedJobChain?nestedJobChain:vm.jobChain;
             vm.planItems = [];
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -1977,8 +2130,12 @@
             vm.object.jobChains = [];
         };
 
+
+
+        vm.showCalendar=vm.viewCalendar;
+
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+        var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -2036,7 +2193,7 @@
 
         }
 
-        vm.addOrder = function () {
+        vm.addOrder = function (path) {
             ScheduleService.getSchedulesP({
                 jobschedulerId: $scope.schedulerIds.selected,
                 compact: true
@@ -2048,7 +2205,7 @@
 
             JobChainService.getJobChainP({
                 jobschedulerId: vm.schedulerIds.selected,
-                jobChain: vm.jobChain.path
+                jobChain: path?path:vm.jobChain.path
             }).then(function (res) {
                 vm._jobChain = res.jobChain;
             });
@@ -2072,15 +2229,15 @@
             });
         };
 
-        vm.stopJob = function () {
+        vm.stopJob = function (path) {
             var jobChains = {};
             jobChains.jobChains = [];
             jobChains.jobschedulerId = $scope.schedulerIds.selected;
-            jobChains.jobChains.push({jobChain: vm.jobChain.path});
+            jobChains.jobChains.push({jobChain: path?path:vm.jobChain.path});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = vm.jobChain.path;
+                vm.comments.name = path?path:vm.jobChain.path;
                 vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job Chain';
 
@@ -2115,15 +2272,30 @@
             }
 
         };
-        vm.unstopJob = function () {
+
+        vm.viewFlowDiagram = function (jobChain) {
+            console.log("View flow diagram");
+            SOSAuth.setJobChain(JSON.stringify(jobChain));
+            SOSAuth.save();
+            $location.path('/job_chain_detail/overview').search({path: jobChain.path});
+            if( $('#mainContainer')){
+                 $('#mainContainer').remove();
+            }
+
+             $scope.$broadcast('showNested');
+            vm.orderFilters.pageView='grid';
+        };
+
+        vm.stopJobChain = vm.stopJob;
+        vm.unstopJob = function (path) {
             var jobChains = {};
             jobChains.jobChains = [];
             jobChains.jobschedulerId = $scope.schedulerIds.selected;
-            jobChains.jobChains.push({jobChain: vm.jobChain.path});
+            jobChains.jobChains.push({jobChain: path?path:vm.jobChain.path});
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = vm.jobChain.path;
+                vm.comments.name = path?path:vm.jobChain.path;
                 vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job Chain';
 
@@ -2153,6 +2325,8 @@
             }
 
         };
+
+         vm.unstopJobChain = vm.unstopJob;
 
         /** --------action ------------ **/
 
@@ -2413,7 +2587,8 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged') {
+                    console.log("Event type 01 "+vm.events[0].eventSnapshots[i].eventType);
+                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged')) {
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
                             path = vm.events[0].eventSnapshots[i].path.split(",");
@@ -2425,6 +2600,10 @@
                         if (vm.jobChain.nodes && vm.jobChain.nodes.length > 0) {
                             for (var m = 0; m < vm.jobChain.nodes.length; m++) {
                                 if (vm.jobChain.nodes[m].job && path[0] == vm.jobChain.nodes[m].job.path) {
+                                    flag = true;
+                                    break;
+                                }
+                                if (vm.jobChain.nodes[m].jobChain && path[0] == vm.jobChain.nodes[m].jobChain.path) {
                                     flag = true;
                                     break;
                                 }
@@ -5284,6 +5463,8 @@
                 });
             }
         };
+
+
 
         vm.viewCalendar = function (order) {
             vm.maxPlannedTime = undefined;

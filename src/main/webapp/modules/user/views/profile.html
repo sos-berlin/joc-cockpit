@@ -163,43 +163,43 @@
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntries</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxRecords" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/" class="form-control w-xl" ng-model="upc.preferences.maxRecords" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfAuditLogEntries</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxAuditLogRecords" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/"  class="form-control w-xl" ng-model="upc.preferences.maxAuditLogRecords" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerOrder</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerOrder" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/"  class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerOrder" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerTask</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerTask" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/"   class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerTask" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfHistoryEntriesPerJobchain</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerJobchain" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/" class="form-control w-xl" ng-model="upc.preferences.maxHistoryPerJobchain" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfOrdersPerJobChain</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxOrderPerJobchain" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/" class="form-control w-xl" ng-model="upc.preferences.maxOrderPerJobchain" ng-blur="upc.changeConfiguration()">
                        </div>
                    </div>
                     <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.maxNumberOfAuditLogPerObject</div>
                        <div class="col-sm-6">
-                          <input type="number" min="1" class="form-control w-xl" ng-model="upc.preferences.maxAuditLogPerObject" ng-change="upc.changeConfiguration()">
+                          <input type="text" ng-pattern="/^[1-9][0-9]*$/"  class="form-control w-xl" ng-model="upc.preferences.maxAuditLogPerObject" ng-blur="upc.changeConfiguration()">
                        </div>
                     </div>
                     <div class="row m-t">

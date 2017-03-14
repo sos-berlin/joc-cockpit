@@ -910,6 +910,7 @@
         };
 
         vm.viewFlowDiagram = function (jobChain) {
+            console.log("View flow diagram");
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/job_chain_detail/overview').search({path: jobChain.path});

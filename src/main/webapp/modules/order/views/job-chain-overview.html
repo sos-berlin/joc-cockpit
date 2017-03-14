@@ -74,28 +74,28 @@
                             </div>
 
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJobChain && permission.JobChain.stop}" ng-click="stopJobChain()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJobChain && !isStoppedJobChain && permission.JobChain.stop}" ng-click="stopJobChains()" translate>
                                     button.stopJobChain
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedJobChain && permission.JobChain.unstop}" ng-click="unstopJobChain()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJobChain && isStoppedJobChain && permission.JobChain.unstop}" ng-click="unstopJobChains()" translate>
                                     button.unstopJobChain
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedJob && isPendingJob && permission.Job.stop}" ng-click="stopJobs()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJob && !isStoppedJob && isPendingJob && permission.Job.stop}" ng-click="stopJobs()" translate>
                                     button.stopJob
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedJob && !isPendingJob && permission.Job.unstop}" ng-click="unstopJobs()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJob && isStoppedJob && !isPendingJob && permission.Job.unstop}" ng-click="unstopJobs()" translate>
                                     button.unstopJob
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isStoppedNode && (isActiveNode || isSkippedNode)&& permission.JobChain.stopJobChainNode}" ng-click="stopNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJob && !isStoppedNode && (isActiveNode || isSkippedNode)&& permission.JobChain.stopJobChainNode}" ng-click="stopNodes()" translate>
                                     button.stopNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isStoppedNode && !isActiveNode && !isSkippedNode && permission.JobChain.processJobChainNode}" ng-click="unstopNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJob && isStoppedNode && !isActiveNode && !isSkippedNode && permission.JobChain.processJobChainNode}" ng-click="unstopNodes()" translate>
                                     button.unstopNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':!isSkippedNode && (isActiveNode || isStoppedNode) && permission.JobChain.skipJobChainNode}" ng-click="skipNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJob && !isSkippedNode && (isActiveNode || isStoppedNode) && permission.JobChain.skipJobChainNode}" ng-click="skipNodes()" translate>
                                     button.skipNode
                                 </button>
-                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isSkippedNode && !isActiveNode && !isStoppedNode && permission.JobChain.processJobChainNode}" ng-click="unskipNodes()" translate>
+                                <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJob && isSkippedNode && !isActiveNode && !isStoppedNode && permission.JobChain.processJobChainNode}" ng-click="unskipNodes()" translate>
                                     button.unskipNode
                                 </button>
                             </div>
@@ -145,7 +145,7 @@
                 </div>
             </div>
             <div class="hide" ng-class={show:orderFilters.pageView=='grid'} resizable r-directions="['bottom']" r-height="500" style="overflow: auto;width: 100%">
-                <div class="flow-diagram">
+                <div class="flow-diagram" id="flowDiagramContainer" >
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
                                   on-remove="onRemove($item)"
@@ -167,7 +167,8 @@
             </div>
             <div class="hide m-t" ng-class="{'show': orderFilters.pageView=='list'}" ng-controller="OrderFunctionCtrl">
                 <div class="table-responsive" resizable r-directions="['bottom']" r-height="450" >
-                    <table class="table table-hover table-bordered  " ng-if="!jobChain.nestedJobChains">
+
+                    <table class="table table-hover table-bordered  " ng-if="!jobChain.nestedJobChains || jobChain.nestedJobChains.length==0">
                         <thead>
                         <tr>
                             <th ng-if="permission.Job.stop || permission.Job.unstop || permission.JobChain.stopJobChainNode
@@ -389,7 +390,7 @@
                                     </tr>
                             </tbody>
                     </table>
-                    <table class="table table-hover table-bordered" ng-if="jobChain.nestedJobChains">
+                    <table class="table table-hover table-bordered" ng-if="jobChain.nestedJobChains && jobChain.nestedJobChains.length>0">
                         <thead>
                         <tr>
                             <th ng-if="permission.JobChain.stop || permission.JobChain.unstop || permission.JobChain.stopJobChainNode
@@ -483,13 +484,13 @@
                                                        ng-class="{'disable-link':(!nestedJobChain.numOfOrders || nestedJobChain.numOfOrders == 0)}"
                                                        class="dropdown-item"
                                                        translate>button.showOrders</a>
-                                                    <a ng-click="showConfiguration('nestedJobChain',nestedJobChain.path,nestedJobChain.name)"
+                                                    <a ng-click="showConfiguration('jobChain',nestedJobChain.path,nestedJobChain.name)"
                                                        class="hide dropdown-item"
                                                        ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                        translate>button.showConfiguration</a>
                                                     <a class="hide dropdown-item"
                                                        ng-class="{show:permission.JobChain.addOrder, 'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
-                                                       ng-click="addOrder(nestedJobChain);" translate>button.addOrder</a>
+                                                       ng-click="addOrder(nestedJobChain.path);" translate>button.addOrder</a>
                                                     <a class="dropdown-item"
                                                        ng-if="permission.DailyPlan.view.status"
                                                        ng-class="{'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
@@ -498,22 +499,22 @@
                                                     <a class="hide dropdown-item bg-hover-color"
                                                        ng-if="nestedJobChain.state._text != 'STOPPED'"
                                                        ng-class="{show:permission.JobChain.stop, 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
-                                                       ng-click="stopJobChain(nestedJobChain)"
+                                                       ng-click="stopJobChain(nestedJobChain.path)"
                                                        translate>button.stopJobChain</a>
                                                     <a class="hide dropdown-item"
                                                        ng-if="nestedJobChain.state._text == 'STOPPED'"
                                                        ng-class="{show:permission.JobChain.unstop, 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
-                                                       ng-click="unstopJobChain(nestedJobChain)"
+                                                       ng-click="unstopJobChain(nestedJobChain.path)"
                                                        translate>button.unstopJobChain</a>
                                                     <a class="hide dropdown-item"
                                                        ng-class="{show:permission.JobChain.view.history, 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
-                                                       ng-click="showHistory(nestedJobChain)" translate>button.showHistory</a>
+                                                       ng-click="loadHistory(nestedJobChain)" translate>button.showHistory</a>
                                                     <a class="dropdown-item"
                                                        ng-if="permission.AuditLog.view.status"
-                                                       ng-click="showAuditLogs(nestedJobChain)"
+                                                       ng-click="loadAuditLogs(nestedJobChain)"
                                                        translate>button.showAuditLog</a>
                                                     <a class="dropdown-item"
-                                                       ng-click="copyLinkToObject('nestedJobChain',nestedJobChain.path)"
+                                                       ng-click="copyLinkToObject('jobChain',nestedJobChain.path)"
                                                        translate>button.copyLinkToObject</a>
                                                 </div>
                                             </div>
@@ -826,7 +827,7 @@
                 <div class="col-md-12">
                     <div class="box white" id="scrollToTask">
                         <div class="box-header">
-                            <span class="text">{{jobChain.name}} <i ng-if="jobChain.title">-</i> <i class="text-sm text-muted">{{jobChain.title}}</i> </span>
+                            <span class="text">{{showHistoryPanel.name}} <i ng-if="showHistoryPanel.title">-</i> <i class="text-sm text-muted">{{jobChain.title}}</i> </span>
                         </div>
                         <div class="box-tool">
                             <ul class="nav text-muted text-md">
@@ -837,17 +838,18 @@
                         </div>
                         <div class="box-body p-t b-t" >
                             <div class="b-b">
+
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
+                                        <a class="nav-link" ng-class="{active: !isAuditLog}" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
                                     </li>
-                                    <li class="nav-item" ng-if="permission.AuditLog.view.status">
+                                    <li class="nav-item" ng-class="{active: isAuditLog}" ng-if="permission.AuditLog.view.status">
                                         <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="tab-content p-a">
-                                <div class="tab-pane animated fadeIn active" id="tab1">
+                                <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog}" id="tab1">
                                     <div class="row">
                                         <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                             <table class="table table-hover table-bordered ">
@@ -880,7 +882,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" id="tab2">
+                                <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}" id="tab2">
                                     <div class="row">
                                         <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                             <table class="table table-hover table-bordered ">
@@ -897,6 +899,7 @@
                                                         <th translate>label.ticketLink</th>
                                                     </tr>
                                                     </thead>
+
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
                                                         <td nowrap>

@@ -181,7 +181,7 @@
                                                                        ng-class="{'disable-link':(!nestedJobChain.numOfOrders || nestedJobChain.numOfOrders == 0)}"
                                                                        class="dropdown-item"
                                                                        translate>button.showOrders</a>
-                                                                    <a ng-click="showConfiguration('nestedJobChain',nestedJobChain.path,nestedJobChain.name)"
+                                                                    <a ng-click="showConfiguration('jobChain',nestedJobChain.path,nestedJobChain.name)"
                                                                        class="hide dropdown-item"
                                                                        ng-class="{show:permission.JobChain.view.configuration , 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                                        translate>button.showConfiguration</a>
@@ -211,7 +211,7 @@
                                                                        ng-click="showAuditLogs(nestedJobChain)"
                                                                        translate>button.showAuditLog</a>
                                                                     <a class="dropdown-item"
-                                                                       ng-click="copyLinkToObject('nestedJobChain',nestedJobChain.path)"
+                                                                       ng-click="copyLinkToObject('jobChain',nestedJobChain.path)"
                                                                        translate>button.copyLinkToObject</a>
                                                                 </div>
                                                             </div>
