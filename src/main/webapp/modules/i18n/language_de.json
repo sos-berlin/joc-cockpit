@@ -947,6 +947,7 @@
   "button.nonWorkingDays": "Ferientage",
   "button.editPeriod": "Periode aktualisieren",
   "label.folder": "Ordner",
-  "label.account": "Konto",
-  "placeholder.enterAccount": "Konto eingeben"
+  "placeholder.enterAccount": "Konto eingeben",
+  "button.expandDetails": "Expand Details",
+  "button.collapseDetails": "Collapse Details"
 }

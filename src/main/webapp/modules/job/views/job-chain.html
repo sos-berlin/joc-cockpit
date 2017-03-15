@@ -147,14 +147,99 @@
             </div>
         </div>
         <div id="rightPanel1">
-            <div class="row m-b">
+            <div class="row m-b m-t-sm">
                 <div class="col-md-12">
-                    <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()">
+                    <button class="hide btn btn-sm btn-grey" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="expandDetails()" >
+                        <i class="fa fa fa-caret-down"></i>
+                        <span translate>button.expandDetails</span>
+                    </button>
+                    <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allJobChains.length>0 && pageView!='grid'}" ng-click="collapseDetails()">
+                        <i class="fa fa fa-caret-up"></i>
+                        <span translate>button.collapseDetails</span>
+                    </button>
+                    <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+                        <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                    </button>
+                    <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                         <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                     </button>
                     <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
                            ng-model="filterString" style="width: 180px">
                 </div>
+            </div>
+            <div class="row hide" ng-class="{'show':showSearchPanel}">
+                <div class="col-md-12">
+                <div class="box p-a m-b-xs">
+                       <form name="form" role="form" ng-submit="saveAsFilter()" novalidate>
+                            <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                                <label class="col-sm-2 form-control-label" translate>label.filterName</label>
+                               <div class=" col-sm-6">
+                                   <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" ng-model="jobChainFilter.name" name="filterName" ng-maxlength="25" ng-blur="checkFilterName()" required>
+                                    <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
+                                       <div ng-message="required" translate>message.requiredError</div>
+                                            <div ng-message="maxlength" translate>message.tooLongError</div>
+                                   </div>
+                                   <div class="help-block text-danger" ng-if="!isUnique">
+                                      <div translate>message.uniqueError</div>
+                                   </div>
+                               </div>
+                            </div>
+                            <div class="form-group row">
+                               <label class="col-sm-2 form-control-label" translate>label.regex</label>
+                               <div class="col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                                   <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobChainFilter.regex">
+                                   <div class="help-block text-danger" ng-messages="form.regex.$error">
+                                       <div ng-message="invalid" translate>message.invalid</div>
+                                   </div>
+                               </div>
+                               <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                            </div>
+                            <div class="form-group row" ng-if="jobChainFilter.paths.length>0">
+                                <label class="col-sm-2" translate>label.folders</label>
+                                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                                    <div ng-repeat="path in jobChainFilter.paths track by $index">
+                                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                               <label class="col-sm-2 form-control-label" translate>label.runningOn</label>
+                               <div class=" col-sm-6">
+                                   <input type="text" class="form-control" placeholder="{{'placeholder.agentName' | translate}}" ng-model="jobChainFilter.agentName">
+                               </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 " translate>label.jobChainState</label>
+                                <div class=" col-sm-8">
+                                    <label class="md-check w">
+                                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'ACTIVE'">
+                                        <i class="primary"></i>
+                                        <span translate>label.active</span>
+                                    </label>
+                                    <label class="md-check w">
+                                        <input type="checkbox" data-checklist-model="jobChainFilter.state" data-checklist-value="'STOPPED'">
+                                        <i class="primary"></i>
+                                        <span translate>label.stopped</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+                                <label class="col-sm-2" translate>label.sharedFilter</label>
+                                <div class="col-sm-6">
+                                    <label class="md-check">
+                                        <input type="checkbox" ng-model="jobChainFilter.shared" >
+                                        <i class="primary"></i>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group m-t m-b-xs">
+                                <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>button.search</button>
+                                <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter</button>
+                                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
             </div>
             <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="row hide" ng-class="{'show': pageView=='grid'}">

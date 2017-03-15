@@ -33,9 +33,9 @@
                     <tbody ng-repeat="order in orders" ng-class="{'light-bg':showLogPanel == order}">
                     <tr>
                         <td class="nowrap">
-                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="showPanel != order.path"
+                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
                                ng-click="showPanelFuc(order)"></i>
-                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
+                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
 
                             <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                 <i class="text-muted">{{order.title}}</i></span>
@@ -100,7 +100,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr ng-show="showPanel == order.path" class="noExl">
+                    <tr ng-show="order.show" class="noExl">
 
                         <td colspan="9" style="padding: 1px !important;">
                             <table class="table m-a-0">

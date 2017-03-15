@@ -482,11 +482,17 @@
 
         return function (scope, element, attrs) {
             var time = attrs.time1;
+
             var timeoutId = '';
-            var intervalLength = 1000 * 30; // 30 seconds
+            var intervalLength = 1000 * 5; // 30 seconds
             var filter = $filter('timeDifferenceFilter');
 
+             attrs.$observe('time1', function (data) {
+                   updateTime();
+                }, true);
+
             function updateTime() {
+                time = attrs.time1;
                 element.text(filter(time));
             }
 

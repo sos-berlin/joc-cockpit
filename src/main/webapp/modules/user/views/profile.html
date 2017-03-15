@@ -311,8 +311,10 @@
                         <div class="col-sm-3"><span class="text-dark p-l-md" translate>label.onProcessing </span></div>
                         <div class="col-sm-9">
                             <span class="md-check w-md">
-                                <input type="checkbox" ng-model="selectAllPositiveOrderModel" ng-change="upc.selectAllPositiveOrderFunction(selectAllPositiveOrderModel)"/> <i class="primary"></i> <span translate>label.selectAll</span></span>
-                            <span class="md-check w-md" ng-repeat="positiveOrder in positiveOrders" ng-class="{'m-l-xs m-t-sm' : $index == positiveOrders.length-2,'m-t-sm' : $index == positiveOrders.length-1}">
+                                <input type="checkbox" ng-model="selectAllPositiveOrderModel" ng-change="upc.selectAllPositiveOrderFunction(selectAllPositiveOrderModel)"/> <i class="primary"></i>
+                                <span translate>label.selectAll</span>
+                            </span>
+                            <span class="md-check w-md" ng-repeat="positiveOrder in positiveOrders" >
                                 <input type="checkbox" checklist-model="eventFilter" checklist-value="positiveOrder.value" ng-change="upc.selectPositiveOrderFunction(checked)"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
                             </span>
                         </div>

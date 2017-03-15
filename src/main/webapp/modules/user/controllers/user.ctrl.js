@@ -16,24 +16,25 @@
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
-        $rootScope.error = '';
+        if(!$window.sessionStorage.errorMsg)
+            $rootScope.error = '';
+        else
+            $rootScope.error = $window.sessionStorage.errorMsg;
 
-        function getSchedulerIds(user) {
+        function getSchedulerIds() {
+            $window.sessionStorage.errorMsg = '';
             JobSchedulerService.getSchedulerIds().then(function (res) {
-                if (res && !res.data) {
-                    SOSAuth.setIds(res);
-                    SOSAuth.save();
-                    getPermissions();
-                } else {
-                    $location.path('/error');
-                }
+                SOSAuth.setIds(res);
+                SOSAuth.save();
+                getComments();
+                getPermissions();
             }, function (err) {
                 $rootScope.$broadcast('reloadUser');
                 if (err.data && err.data.message)
-                    $rootScope.error = err.data.message;
+                    $window.sessionStorage.errorMsg = err.data.message;
                 else
-                    $rootScope.error = err.data.error.message;
-
+                    $window.sessionStorage.errorMsg = err.data.error.message;
+                $rootScope.error = $window.sessionStorage.errorMsg;
                 $location.path('/error');
             });
 
@@ -75,7 +76,7 @@
         }
 
         vm.login = function () {
-
+            $window.sessionStorage.errorMsg ='';
             if (vm.user.username && vm.user.password) {
                 $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...');
                 $('#loginBtn').attr("disabled", true);
@@ -104,7 +105,6 @@
                             SOSAuth.setUser(response);
                             SOSAuth.save();
                             getSchedulerIds(response.user);
-                            getComments();
 
                         } else {
                             vm.loginError = 'message.loginError';

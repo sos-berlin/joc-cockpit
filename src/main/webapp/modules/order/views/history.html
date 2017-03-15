@@ -400,11 +400,11 @@
                                 <th class="noExl"></th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize" ng-class="{'light-bg':showPanel.historyId == history.historyId}">
+                        <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * order.pageSize | limitTo: order.pageSize" ng-class="{'light-bg':history.show}">
                         <tr  class="cursor">
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="showPanel.historyId != history.historyId" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="hidePanel && showPanel.historyId == history.historyId" ng-click="hidePanelFuc();$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
                                 <span ng-bind="history.orderId"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null)">
@@ -426,7 +426,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr class="noExl" ng-show="showPanel.historyId == history.historyId">
+                        <tr class="noExl" ng-show="history.show">
                          <td colspan="8">
                              <table class="table m-a-0">
                                  <thead>
@@ -443,7 +443,7 @@
                                  </tr>
                                  </thead>
                                  <tbody>
-                                 <tr ng-repeat="order in steps">
+                                 <tr ng-repeat="order in history.steps">
                                      <td>{{order.step}}</td>
                                      <td>{{order.node}}</td>
                                      <td>{{order.job}}</td>

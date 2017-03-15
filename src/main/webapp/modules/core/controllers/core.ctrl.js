@@ -304,7 +304,9 @@
             vm.username = SOSAuth.currentUserData;
             setPermission();
             setIds();
+            if($scope.schedulerIds.selected)
             loadSettingConfiguration();
+            if($scope.schedulerIds.selected)
             getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
         });
 
@@ -709,7 +711,7 @@
                 $window.localStorage.setItem('clientLogs', {});
                 $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
                 $window.sessionStorage.setItem('$SOS$ALLEVENT' , null);
-                
+
                  $location.path('/login').search({});
             });
         };
@@ -756,6 +758,7 @@
                             $state.reload(vm.currentState);
                         }
                         vm.eventsRequest = [];
+                        eventLoading = false;
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                     } else {
                         toasty.error({
@@ -870,7 +873,7 @@
         $scope.allSessionEvent = {group: [], eventUnReadCount: 0};
 
 
-        if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds)
+        if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length>0)
             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
 
         if ($window.sessionStorage.$SOS$ALLEVENT != "null" && $window.sessionStorage.$SOS$ALLEVENT != null) {

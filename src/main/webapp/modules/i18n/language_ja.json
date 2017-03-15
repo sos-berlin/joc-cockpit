@@ -947,6 +947,7 @@
   "button.nonWorkingDays": "休業日",
   "button.editPeriod": "ピリオド変更",
   "label.folder": "フォルダ",
-  "label.account":"アカウント",
-  "placeholder.enterAccount":"アカウント入力"
+  "placeholder.enterAccount": "アカウント入力",
+  "button.expandDetails": "Expand Details",
+  "button.collapseDetails": "Collapse Details"
 }

@@ -947,6 +947,7 @@
   "button.nonWorkingDays": "Jours fériés",
   "button.editPeriod": "Mettre à jour la Période",
   "label.folder": "Dossier",
-  "label.account": "Compte",
-  "placeholder.enterAccount": "Entrer un compte"
+  "placeholder.enterAccount": "Entrer un compte",
+  "button.expandDetails": "Expand Details",
+  "button.collapseDetails": "Collapse Details"
 }

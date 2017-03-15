@@ -75,7 +75,7 @@
                 obj.compact = true;
                 obj.orders = [];
                 obj.orders.push({jobChain: vm.jobChain.path});
-                if (vm.orderFilters.filter.state != 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state != 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
@@ -98,7 +98,7 @@
                 obj.compact = true;
                 obj.orders = [];
                 obj.orders.push({jobChain: vm.jobChain.path});
-                if (vm.orderFilters.filter.state != 'ALL') {
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state != 'ALL') {
                     obj.processingStates = [];
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
@@ -112,7 +112,7 @@
             vm.isAuditLog = false;
             orders = {};
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
@@ -1303,7 +1303,7 @@
 
         vm.isLoading1 = false;
 
-vm.loadHistory=loadHistory;
+        vm.loadHistory=loadHistory;
         function loadHistory(nestedJobChain) {
             if (vm.jobChain) {
                 var filter = {};
@@ -1503,7 +1503,15 @@ vm.loadHistory=loadHistory;
                 jobChain: order.jobChain,
                 runTime: vkbeautify.xmlmin(order.runTime)
             });
-            OrderService.setRunTime(orders);
+            OrderService.setRunTime(orders).then(function () {
+                var orders = {};
+                orders.orders = [];
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
+            });
         }
 
         function resumeOrderWithParam(order, paramObject) {
@@ -1613,7 +1621,7 @@ vm.loadHistory=loadHistory;
                 orders.orders = [];
 
                 orders.jobschedulerId = $scope.schedulerIds.selected;
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
                 OrderService.get(orders).then(function (res) {
                     order = angular.merge(order, res.orders[0]);
                 });
@@ -3412,7 +3420,7 @@ vm.loadHistory=loadHistory;
             vm.isAuditLog = false;
 
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = $scope.schedulerIds.selected;
          orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
@@ -4290,6 +4298,33 @@ vm.loadHistory=loadHistory;
             return scrTree;
         };
 
+        vm.expandDetails = function() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.orders = [];
+            angular.forEach(vm.allOrders, function (value, index) {
+                obj.orders.push({jobChain: value.jobChain,orderId: value.orderId});
+            });
+            OrderService.get(obj).then(function (res) {
+                angular.forEach(res.orders, function (value) {
+                    for(var i =0;i<vm.allOrders.length;i++) {
+                        if(value.path == vm.allOrders[i].path) {
+                            vm.allOrders[i] = angular.merge(vm.allOrders[i],value);
+                            vm.allOrders[i].show = true;
+                            break;
+                        }
+                    }
+                });
+            });
+            console.log(JSON.stringify(obj));
+        };
+
+        vm.collapseDetails = function(){
+             angular.forEach(vm.allOrders, function (value, index) {
+                 value.show =false;
+             });
+        };
+
         var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
@@ -4307,7 +4342,7 @@ vm.loadHistory=loadHistory;
                                         var obj = {};
                                         obj.jobschedulerId = $scope.schedulerIds.selected;
                                         obj.orderId = value2.orderId;
-                                        obj.jobChain = value2.jobChain;
+                                        obj.jobChain = value2.path.split(',')[0];
                                         obj.compact = true;
                                         OrderService.getOrder(obj).then(function (res) {
                                             if (res.order && res.order.path) {
@@ -4443,7 +4478,7 @@ vm.loadHistory=loadHistory;
             var orders = {};
             vm.isAuditLog = false;
             orders.orders = [];
-            orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = $scope.schedulerIds.selected;
   orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
@@ -4934,7 +4969,7 @@ vm.loadHistory=loadHistory;
                 obj.orders = [];
 
                 obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                obj.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
                 OrderService.get(obj).then(function (res) {
                     order = angular.merge(order, res.orders[0]);
                 });
@@ -4947,7 +4982,7 @@ vm.loadHistory=loadHistory;
             orders.orders = [];
 
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
                 order = angular.merge(order, res.orders[0]);
             });
@@ -5093,7 +5128,15 @@ vm.loadHistory=loadHistory;
             });
 
 
-            OrderService.setRunTime(orders);
+            OrderService.setRunTime(orders).then(function () {
+                var orders = {};
+                orders.orders = [];
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
+            });
             vm.reset();
         }
 
@@ -5508,25 +5551,17 @@ vm.loadHistory=loadHistory;
         }
 
 
-        vm.showPanel = '';
+
         vm.showPanelFuc = function (order) {
-            vm.showPanel = order.path;
+            order.show =true;
             var orders = {};
             orders.orders = [];
-
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
             OrderService.get(orders).then(function (res) {
                 order = angular.merge(order, res.orders[0]);
             });
-            vm.hidePanel = true;
         };
-
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
-
 
         vm.limitNum = vm.userPreferences.maxOrderPerJobchain;
         vm.showOrderPanel = '';
@@ -5543,7 +5578,7 @@ vm.loadHistory=loadHistory;
                             var orders = {};
                             orders = {};
                             orders.orders = [];
-                            orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.jobChain});
+                            orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.path.split(',')[0]});
                             orders.jobschedulerId = $scope.schedulerIds.selected;
                             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
 
@@ -6379,24 +6414,18 @@ vm.loadHistory=loadHistory;
         };
 
 
-        vm.showPanel = '';
         vm.showPanelFuc = function (value) {
-            vm.showPanel = value;
+            value.show = true;
             var orders = {};
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.jobChain = value.jobChain;
             orders.orderId = value.orderId;
             orders.historyId = value.historyId;
             OrderService.history(orders).then(function (res) {
-                vm.steps = res.history.steps;
+                value.steps = res.history.steps;
             });
-            vm.hidePanel = true;
-        };
-        vm.hidePanelFuc = function () {
-            vm.showPanel = '';
-            vm.hidePanel = !vm.hidePanel;
-        };
 
+        };
 
         vm.exportToExcel = function () {
             isLoaded = false;

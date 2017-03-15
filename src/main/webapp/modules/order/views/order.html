@@ -156,8 +156,16 @@
                     </div>
                 </div>
                 <div id="rightPanel1" ng-controller="OrderFunctionCtrl">
-                    <div class="row m-b">
+                    <div class="row m-b m-t-sm">
                         <div class="col-md-12">
+                            <button class="hide btn btn-sm btn-grey" ng-class="{'show-block':allOrders.length>0 && pageView!='grid'}" ng-click="expandDetails()" >
+                                <i class="fa fa fa-caret-down"></i>
+                                <span translate>button.expandDetails</span>
+                            </button>
+                            <button class="hide btn btn-sm btn-grey m-l-sm" ng-class="{'show-block':allOrders.length>0 && pageView!='grid'}" ng-click="collapseDetails()">
+                                <i class="fa fa fa-caret-up"></i>
+                                <span translate>button.collapseDetails</span>
+                            </button>
                             <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()">
                                 <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                             </button>
@@ -334,9 +342,9 @@
                                                 </label>
                                             </td>
                                             <td class="nowrap">
-                                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="showPanel != order.path"
+                                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
                                                    ng-click="showPanelFuc(order)"></i>
-                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="hidePanel && showPanel == order.path" ng-click="hidePanelFuc()"></i>
+                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show=false"></i>
 
                                                 <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
                                                 <i class="text-muted">{{order.title}}</i></span>
@@ -402,7 +410,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr ng-show="showPanel == order.path" class="noExl">
+                                        <tr ng-show="order.show" class="noExl">
 
                                             <td></td>
                                             <td colspan="9" style="padding: 1px !important;">

@@ -266,6 +266,7 @@
             recursive(data);
         };
 
+
         function startTraverseNode(data) {
             vm.allJobChains = [];
             function recursive(data) {
@@ -830,7 +831,6 @@
                         })
 
                     }
-                    //update list view
 
                     vm.loading = false;
                 }, function () {
@@ -910,7 +910,6 @@
         };
 
         vm.viewFlowDiagram = function (jobChain) {
-            console.log("View flow diagram");
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/job_chain_detail/overview').search({path: jobChain.path});
@@ -1707,49 +1706,41 @@
             vm.jobChainFilters.filter.sortBy = propertyName;
         };
 
+        vm.saveAsFilter = function() {
+            var configObj = {};
+            configObj.jobschedulerId = vm.schedulerIds.selected;
+            configObj.account = vm.permission.user;
+            configObj.configurationType = "CUSTOMIZATION";
+            configObj.objectType = "JOBCHAIN";
+            configObj.name = vm.jobChainFilter.name;
+            configObj.id = 0;
+            configObj.shared = vm.jobChainFilter.shared;
+
+            configObj.configurationItem = JSON.stringify(vm.jobChainFilter);
+            UserService.saveConfiguration(configObj).then(function (res) {
+                configObj.id = res.id;
+                vm.jobChainFilter.name ='';
+                vm.jobChainFilterList.push(configObj);
+
+                if (vm.jobChainFilterList.length == 1) {
+                    vm.savedJobChainFilter.selected = res.id;
+                    vm.jobChainFilters.selectedView = true;
+                    vm.selectedFiltered = vm.jobChainFilter;
+                    vm.selectedFiltered.account = vm.permission.user;
+                    SavedFilter.setJobChain(vm.savedJobChainFilter);
+                    SavedFilter.save();
+                }
+            })
+        };
         vm.advancedSearch = function () {
             vm.jobChainFilter = {};
             vm.isUnique = true;
-            modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/jobchain-search-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                if(vm.jobChainFilter.name) {
-                    var configObj = {};
-                    configObj.jobschedulerId = vm.schedulerIds.selected;
-                    configObj.account = vm.permission.user;
-                    configObj.configurationType = "CUSTOMIZATION";
-                    configObj.objectType = "JOBCHAIN";
-                    configObj.name = vm.jobChainFilter.name;
-                    configObj.id = 0;
-                    configObj.shared = vm.jobChainFilter.shared;
-
-                    configObj.configurationItem = JSON.stringify(vm.jobChainFilter);
-                    UserService.saveConfiguration(configObj).then(function (res) {
-                        configObj.id = res.id;
-                        vm.jobChainFilterList.push(configObj);
-
-                        if (vm.jobChainFilterList.length == 1) {
-                            vm.savedJobChainFilter.selected = res.id;
-                            vm.jobChainFilters.selectedView = true;
-                            vm.selectedFiltered = vm.jobChainFilter;
-                            vm.selectedFiltered.account = vm.permission.user;
-
-                            SavedFilter.setJobChain(vm.savedJobChainFilter);
-                            SavedFilter.save();
-                            vm.load();
-                        }
-                    });
-                }
-            }, function () {
-
-            });
+            vm.showSearchPanel = true;
         };
-
+        vm.cancel = function () {
+            vm.showSearchPanel = false;
+            vm.jobChainFilter = {};
+        };
         function searchV(obj) {
             if (vm.jobChainFilter && vm.jobChainFilter.state) {
                 obj.states = vm.jobChainFilter.state;
@@ -2225,6 +2216,47 @@
                     traverseToSelectedJobChain(vm.tree[i], jobChain);
                 }
             }
+        };
+
+        vm.expandDetails = function() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobChains = [];
+            angular.forEach(vm.allJobChains, function (value, index) {
+                obj.jobChains.push({jobChain: value.path});
+            });
+            JobChainService.get(obj).then(function (res) {
+                angular.forEach(res.jobChains, function (value) {
+                    for (var i = 0; i < vm.allJobChains.length; i++) {
+                        if (value.path == vm.allJobChains[i].path) {
+                            vm.allJobChains[i].nodes = [];
+                            vm.allJobChains[i] = angular.merge(vm.allJobChains[i], value);
+                            vm.allJobChains[i].nestedJobChains = res.nestedJobChains;
+                            vm.allJobChains[i].show = true;
+                            if (vm.userPreferences.showTasks)
+                                angular.forEach(vm.allJobChains[i].nodes, function (val, index) {
+                                    if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
+
+                                        JobService.get({
+                                            jobschedulerId: vm.schedulerIds.selected,
+                                            jobs: [{job: val.job.path}]
+                                        }).then(function (res1) {
+                                            vm.allJobChains[i].nodes[index].job = angular.merge(vm.allJobChains[i].nodes[index].job, res1.jobs[0]);
+                                        });
+                                    }
+                                });
+                            break;
+                        }
+                    }
+                });
+            });
+        };
+
+
+        vm.collapseDetails = function(){
+             angular.forEach(vm.allJobChains, function (value, index) {
+                 value.show =false;
+             });
         };
 
         vm.showHistory = showHistory;
@@ -4121,7 +4153,33 @@
             vm.showTaskPanel = undefined;
             vm.jobFilters.showTaskPanel = undefined;
         };
+        vm.expandDetails = function() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobs = [];
+            angular.forEach(vm.allJobs, function (value, index) {
+                 if (value.usedInJobChains > 0)
+                obj.jobs.push({job: value.path});
+            });
+            JobService.getJobsP(obj).then(function (res) {
+                angular.forEach(res.jobs, function (value) {
+                    for(var i =0;i<vm.allJobs.length;i++) {
+                        if(value.path == vm.allJobs[i].path) {
+                            vm.allJobs[i].jobChains = value.jobChains;
+                            vm.allJobs[i].showJobChains = true;
+                            break;
+                        }
+                    }
+                });
+            });
+            console.log(JSON.stringify(obj));
+        };
 
+        vm.collapseDetails = function(){
+             angular.forEach(vm.allJobs, function (value, index) {
+                 value.showJobChains =false;
+             });
+        };
 
         /**--------------- Actions -----------------------------*/
         vm.stop = function (job) {
@@ -4284,6 +4342,9 @@
 
         vm.startAt = function (job) {
             vm.job = job;
+            JobService.getJob({jobschedulerId:vm.schedulerIds.selected,compact:false,job:vm.job.path}).then(function(res){
+                vm.job = angular.merge(vm.job,res.job);
+            })
             vm.paramObject = {};
             vm.paramObject.params = [];
             vm.job.atTime = 'now';
@@ -4760,7 +4821,14 @@
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
             jobs.jobschedulerId = vm.schedulerIds.selected;
-            JobService.setRunTime(jobs);
+            JobService.setRunTime(jobs).then(function (res) {
+                JobService.get({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    jobs: [{job: job.path}]
+                }).then(function (res1) {
+                    job = angular.merge(job, res1.jobs[0]);
+                });
+            });
         }
 
         vm.setRunTime = function (job) {
