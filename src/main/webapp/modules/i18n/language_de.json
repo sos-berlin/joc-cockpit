@@ -945,7 +945,7 @@
   "button.standaloneJobs": "Standalone Jobs",
   "button.saveAsFilter": "Speichern als Personalisierung",
   "button.nonWorkingDays": "Ferientage",
-  "button.editPeriod": "Periode editieren",
+  "button.editPeriod": "Periode aktualisieren",
   "label.folder": "Ordner",
   "label.account": "Konto",
   "placeholder.enterAccount": "Konto eingeben"

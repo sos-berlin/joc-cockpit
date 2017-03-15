@@ -34,7 +34,7 @@
   "button.stopJob": "Désactiver la Tâche",
   "button.addOrder": "Ajouter Ordre",
   "button.addAnOrder": "Ajouter un Ordre",
-  "button.addNewRuntime": "Ajouter nouvelle date de démarrage",
+  "button.addNewRuntime": "Ajouter une nouvelle date de démarrage",
   "button.unstopJobChain": "Activer la Chaîne des Tâches",
   "button.unstopJob": "Activer la Tâche",
   "button.proceedNode": "Procéder le Noeud",
@@ -945,7 +945,7 @@
   "button.standaloneJobs": "Tâches autonomes",
   "button.saveAsFilter": "Enregistrer sous Personnalisation",
   "button.nonWorkingDays": "Jours fériés",
-  "button.editPeriod": "Editer la Période",
+  "button.editPeriod": "Mettre à jour la Période",
   "label.folder": "Dossier",
   "label.account": "Compte",
   "placeholder.enterAccount": "Entrer un compte"

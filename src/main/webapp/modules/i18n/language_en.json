@@ -945,8 +945,8 @@
   "button.standaloneJobs": "Standalone Jobs",
   "button.saveAsFilter": "Save As Customization",
   "button.nonWorkingDays": "Non-working days",
-  "button.editPeriod": "Edit Period",
+  "button.editPeriod": "Update Period",
   "label.folder": "Folder",
   "label.account": "Account",
-  "placeholder.enterAccount": "Enter an account"
+  "placeholder.enterAccount": "Enter account"
 }
