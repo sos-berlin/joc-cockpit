@@ -948,6 +948,6 @@
   "button.editPeriod": "Periode aktualisieren",
   "label.folder": "Ordner",
   "placeholder.enterAccount": "Konto eingeben",
-  "button.expandDetails": "Expand Details",
-  "button.collapseDetails": "Collapse Details"
+  "button.expandDetails": "Details ausklappen",
+  "button.collapseDetails": "Details einklappen"
 }
