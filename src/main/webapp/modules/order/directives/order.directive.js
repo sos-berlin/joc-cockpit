@@ -358,20 +358,19 @@
                     scope.borderTop = 1;
                     var orderLeft = left;
 
-                    angular.forEach(scope.jobChainData.fileOrderSources, function (orderSource, index) {
-                        if (index == 0) {
+
+                        if (scope.jobChainData.fileOrderSources && scope.jobChainData.fileOrderSources.length > 0) {
                             orderLeft = margin + avatarW;
                             rectangleTemplate = rectangleTemplate +
                             '<div id="tbOrderSource" class="table-responsive order-source-table" style="position:absolute;left:' + orderLeft + 'px;top:' + top + 'px;">' +
                             '<table class="table table-hover table-bordered" ><thead > <tr>' +
                             '<th> <span translate>label.sr </span> </th><th> <span translate>label.directory </span> </th>' +
-                            '<th> <span translate>label.regularExpression</span> </th></tr></thead>'
-                        }
-                        rectangleTemplate = rectangleTemplate + '<tbody> <tr> <td>' + parseInt(index + 1) + ' </td><td>' + orderSource.directory + ' </td><td>' + orderSource.regex + ' </td></tr>';
-                        if (index == scope.jobChainData.fileOrderSources.length - 1) {
+                            '<th> <span translate>label.regularExpression</span> </th></tr></thead>';
+                            rectangleTemplate = rectangleTemplate + '<tbody> <tr ng-repeat="source in jobChainData.fileOrderSources"> <td ng-bind="$index+1"></td><td ng-bind="source.directory"> </td><td ng-bind="source.regex"></td></tr>';
                             rectangleTemplate = rectangleTemplate + '</tbody></table></div>';
                         }
-                    });
+
+
 
                     if (scope.jobChainData.fileOrderSources && scope.jobChainData.fileOrderSources.length > 0) {
                         top = top + rectH + 50;
@@ -452,6 +451,9 @@
                                     matched = true;
 
                                 }
+                                if(!matched){
+                                    scope.coords[index].left = scope.coords[index-1].left + margin + rectW;
+                                }
                             });
 
                             var errorNodeCls = '';
@@ -528,7 +530,7 @@
                         '<a href="" class="dropdown-item" ng-click="copyLinkToObject({type:\''+itemType+'\',path:\''+itemPath+'\'})"  translate>button.copyLinkToObject</a>' +
                         '</div></div></div><div class="text-left text-muted p-t-xs block-ellipsis-job"><a class="text-hover-primary" title="' + itemPath + '" ng-click="navigateToItem(\''+index+'\')">' + jobName +
                         '</a>' +
-                            '<div class="text-xs p-t-xs" ><span translate>label.orders</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\''+index+'\'].numOfOrders ||jobChainData.nodes[\''+index+'\'].jobChain.numOfOrders"></span></div><div class="text-sm crimson" translate>' + msg + '</div></div>' + host + '</div >' +
+                            '<div class="text-xs p-t-xs" ><span translate>label.orders</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\''+index+'\'].numOfOrders ||jobChainData.nodes[\''+index+'\'].jobChain.numOfOrders || 0"></span></div><div class="text-sm crimson" translate>' + msg + '</div></div>' + host + '</div >' +
                         '<div class="box-footer b-t" style="position: absolute; bottom: 0; padding: 6px 10px; width: 100%; ">' +
                         '<a title="{{\'button.stopNode\' | translate}}" href ng-click="stopNode(\'' + index + '\')" ng-if="permission.JobChain.stopJobChainNode"' +
                         'class="hide pull-left w-half text-hover-color" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}">' +

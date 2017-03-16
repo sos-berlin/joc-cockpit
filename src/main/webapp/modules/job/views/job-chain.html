@@ -170,7 +170,7 @@
             <div class="row hide" ng-class="{'show':showSearchPanel}">
                 <div class="col-md-12">
                 <div class="box p-a m-b-xs">
-                       <form name="form" role="form" ng-submit="saveAsFilter()" novalidate>
+                       <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                             <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                                 <label class="col-sm-2 form-control-label" translate>label.filterName</label>
                                <div class=" col-sm-6">
@@ -235,7 +235,7 @@
                             <div class="form-group m-t m-b-xs">
                                 <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>button.search</button>
                                 <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter</button>
-                                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+                                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
                             </div>
                     </form>
                 </div>
@@ -925,19 +925,19 @@
                                                                                    translate>button.unstopJob</a>
                                                                                 <a class="dropdown-item bg-hover-color"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() != 'stopped' && permission.JobChain.stopJobChainNode"
-                                                                                   ng-click="stopNode(nestedNode,jobChain)"
+                                                                                   ng-click="stopNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.stopNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() == 'stopped' && permission.JobChain.processJobChainNode"
-                                                                                   ng-click="unStopNode(nestedNode,jobChain)"
+                                                                                   ng-click="unStopNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.unstopNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() != 'skipped' && permission.JobChain.skipJobChainNode"
-                                                                                   ng-click="skipNode(nestedNode,jobChain)"
+                                                                                   ng-click="skipNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.skipNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() == 'skipped' && permission.JobChain.processJobChainNode"
-                                                                                   ng-click="unskipNode(nestedNode,jobChain)"
+                                                                                   ng-click="unskipNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.unskipNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-click="copyLinkToObject('job',nestedNode.job.path)"

@@ -71,7 +71,7 @@
         <div class="col-sm-12">
             <h5 class="pos-abt _300 p-t-xs">
                 <ol class="breadcrumb">
-                    <li ng-repeat="path in paths">
+                    <li ng-repeat="path in paths track by $index">
                         <a class="text-hover-primary" ng-if="$index != paths.length-1" ng-click="setPath(path)">{{path}}</a><span class="text-muted" ng-if="$index == paths.length-1">{{path}}</span>
                     </li>
                 </ol>

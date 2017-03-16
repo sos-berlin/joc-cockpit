@@ -949,5 +949,6 @@
   "label.folder": "フォルダ",
   "placeholder.enterAccount": "アカウント入力",
   "button.expandDetails": "Expand Details",
-  "button.collapseDetails": "Collapse Details"
+  "button.collapseDetails": "Collapse Details",
+  "label.ofJobChain": "of job chain"
 }

@@ -743,7 +743,10 @@
         });
 
         vm.changeScheduler = function (jobScheduler) {
+            vm.switchScheduler = true;
+            vm.schedulerIds.selected = jobScheduler;
             JobSchedulerService.switchSchedulerId(jobScheduler).then(function (permission) {
+
                 JobSchedulerService.getSchedulerIds().then(function (res) {
                     if (res) {
                         CoreService.setDefaultTab();
@@ -757,9 +760,6 @@
                         } else {
                             $state.reload(vm.currentState);
                         }
-                        vm.eventsRequest = [];
-                        eventLoading = false;
-                        vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                     } else {
                         toasty.error({
                             title: gettextCatalog.getString('message.oops'),
@@ -810,10 +810,10 @@
                             break;
                         }
                     }
-                    for (var i = 0; i < jobScheduler.length; i++) {
-                        if (vm.schedulerIds.selected != jobScheduler[i]) {
+                    for (var j = 0; j < jobScheduler.length; j++) {
+                        if (vm.schedulerIds.selected != jobScheduler[j]) {
                             obj.jobscheduler.push(
-                                {"jobschedulerId": jobScheduler[i]}
+                                {"jobschedulerId": jobScheduler[j]}
                             );
                         }
                     }
@@ -822,39 +822,45 @@
                 }
 
                 CoreService.getEvents(obj).then(function (res) {
-                    vm.eventsRequest = [];
-                    for (var i = 0; i < res.events.length; i++) {
-                        if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
-                            vm.events = [];
-                            vm.events.push(res.events[i]);
-                            if (vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
-                                $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: res.events});
-                            } else {
-                                $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: vm.events});
+                    if(!vm.switchScheduler) {
+                        vm.eventsRequest = [];
+                        for (var i = 0; i < res.events.length; i++) {
+                            if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
+                                vm.events = [];
+                                vm.events.push(res.events[i]);
+                                if (vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
+                                    $rootScope.$broadcast('event-started', {
+                                        events: vm.events,
+                                        otherEvents: res.events
+                                    });
+                                } else {
+                                    $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: vm.events});
+                                }
+                                vm.eventsRequest.push({
+                                    jobschedulerId: res.events[i].jobschedulerId,
+                                    eventId: res.events[i].eventId
+                                });
+                                break;
                             }
-                            vm.eventsRequest.push({
-                                jobschedulerId: res.events[i].jobschedulerId,
-                                eventId: res.events[i].eventId
-                            });
-                            break;
                         }
-                    }
-                    for (var i = 0; i < res.events.length; i++) {
-                        if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
-                            vm.eventsRequest.push({
-                                jobschedulerId: res.events[i].jobschedulerId,
-                                eventId: res.events[i].eventId
-                            });
+                        for (var i = 0; i < res.events.length; i++) {
+                            if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
+                                vm.eventsRequest.push({
+                                    jobschedulerId: res.events[i].jobschedulerId,
+                                    eventId: res.events[i].eventId
+                                });
+                            }
                         }
-                    }
 
-                    vm.allEvents = res.events;
-                    filterdEvents();
+                        vm.allEvents = res.events;
+                        filterdEvents();
+                    }
 
                     if (logout == false) {
                         eventLoading = false;
                         vm.changeEvent(vm.schedulerIds.jobschedulerIds);
                     }
+                    vm.switchScheduler = false;
 
                 }, function (err) {
                     if (logout == false && (err.status == 420 || err.status == 434)) {
@@ -887,8 +893,10 @@
             if (eventFilter && angular.isArray(eventFilter) && eventFilter.length > 0) {
                 for (var i = 0; i < vm.allEvents.length; i++) {
 
-                    if (vm.allEvents[i] && vm.allEvents[i].eventSnapshots && vm.allEvents[i].jobschedulerId != vm.schedulerIds.selected) {
+                    if (vm.allEvents[i] && vm.allEvents[i].eventSnapshots) {
                         for (var j = 0; j < vm.allEvents[i].eventSnapshots.length; j++) {
+                            if (vm.allEvents[i].eventSnapshots[j].eventId) {
+
                             var evnType = vm.allEvents[i].eventSnapshots[j].eventType;
                             if (evnType != 'JobStateChanged' && evnType != 'JobChainStateChanged') {
                                 if (eventFilter.indexOf(evnType) != -1) {
@@ -1036,6 +1044,7 @@
                                 }
                             }
                         }
+                        }
                     }
                 }
                 $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
@@ -1157,6 +1166,7 @@
             $interval.cancel(interval);
             if (eventTimeOut)
                 $timeout.cancel(eventTimeOut);
+            $('.cluster-rect').popover('dispose');
         });
     }
 
@@ -1706,8 +1716,6 @@
                     for (var i = 0; i < z.length; i++) {
                         angular.forEach(z[i].attributes, function (value) {
                             if(value.nodeName == 'day' && (value.nodeValue =='' || value.nodeValue =='undefined' || value.nodeValue ==undefined || value.nodeValue =='null' || value.nodeValue ==null)){
-                                 console.log(value.nodeName + ''+value.nodeValue);
-                                 console.log(value.nodeName + ''+value.nodeValue);
                                 z[i].removeAttribute('day');
                             }
                         });
@@ -4298,7 +4306,6 @@
             }else{
                 vm.weekdays= true;
             }
-            console.log(JSON.stringify(vm.updateTime))
 
             if (!isEmpty(vm.updateTime.obj) && !angular.isArray(vm.updateTime.obj)) {
                 if (vm.updateTime.type == 'month') {

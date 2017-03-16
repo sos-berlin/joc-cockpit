@@ -949,5 +949,6 @@
   "label.folder": "Folder",
   "placeholder.enterAccount": "Enter account",
   "button.expandDetails": "Expand Details",
-  "button.collapseDetails": "Collapse Details"
+  "button.collapseDetails": "Collapse Details",
+  "label.ofJobChain": "of job chain"
 }

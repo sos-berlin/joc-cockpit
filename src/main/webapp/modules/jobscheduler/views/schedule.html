@@ -74,7 +74,11 @@
                             <td colspan="8">
                                 <span ng-if="schedule.usedByOrders">{{'label.usedByOrders' |translate}}: </span>
                                 <div class="p-l">
-                                    <div ng-repeat="order in schedule.usedByOrders"> <a class="text-hover-primary" ng-click="showOrderLink(order.jobChain);">{{order.jobChain}}</a></div>
+                                    <div ng-repeat="order in schedule.usedByOrders">
+                                        <a class="text-hover-primary" ng-click="showOrderLink(order.jobChain);">{{order.orderId}}</a>
+                                        <span class="text-muted" translate>label.ofJobChain</span>
+                                        <a class="text-hover-primary" ng-click="showJobChain(order.jobChain);">{{order.jobChain}}</a>
+                                    </div>
                                 </div>
                                 <span ng-if="schedule.usedByJobs">{{'label.usedByJobs' |translate}}:</span>
                                 <div class="p-l">

@@ -142,7 +142,7 @@
         /**
          * Function to initialized SCHEDULE tree
          */
-        function initAgentTree() {
+        function initAgentTree(type) {
 
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -151,7 +151,7 @@
             }).then(function (res) {
                 if (vm.isEmpty(vm.agentsFilters.expand_to)) {
                     vm.treeAgent = res.folders;
-                    filteredTreeDataA();
+                    filteredTreeDataA(type);
                 } else {
                     vm.agentsFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.agentsFilters.expand_to, 'agent');
                     vm.treeAgent = vm.agentsFilters.expand_to;
@@ -165,12 +165,13 @@
             });
         }
 
-        function filteredTreeDataA() {
+        function filteredTreeDataA(type) {
             angular.forEach(vm.treeAgent, function (value) {
                 value.expanded = true;
                 value.selected1 = true;
                 vm.allAgentClusters = [];
-                checkExpandA(value);
+                console.log('type '+type)
+                checkExpandA(value,type);
             });
         }
 
@@ -227,7 +228,7 @@
             });
         }
 
-        function checkExpandA(data) {
+        function checkExpandA(data, type) {
             if (data.selected1) {
                 data.agentClusters = [];
                 loadAgentsV(data);
@@ -240,12 +241,16 @@
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
-                checkExpandA(value);
-                if (value.expanded || value.selected1) {
+                if(type == 'all') {
+                    value.selected1 = true;
+                    value.selected1 = true;
+                }
+                else if (value.expanded || value.selected1) {
                     if (data.path == '/') {
                         data.selected1 = false;
                     }
                 }
+                checkExpandA(value, type);
             });
         }
 
@@ -1625,7 +1630,29 @@
             });
         }
 
+        vm.expandDetails = function() {
+            if(vm.resourceFilters.state == 'schedules') {
+                angular.forEach(vm.allSchedules, function (value, index) {
+                    value.show = true;
+                });
+            }else if (vm.resourceFilters.state == 'agent'){
+                angular.forEach(vm.allAgentClusters, function (value, index) {
+                    value.show = true;
+                });
+            }
+        };
 
+        vm.collapseDetails = function(){
+            if(vm.resourceFilters.state == 'schedules') {
+                angular.forEach(vm.allSchedules, function (value, index) {
+                    value.show = false;
+                });
+            }else if (vm.resourceFilters.state == 'agent'){
+                angular.forEach(vm.allAgentClusters, function (value, index) {
+                    value.show = false;
+                });
+            }
+        };
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
@@ -1849,10 +1876,10 @@
 
             if (toState.name == 'app.resources.agentClusters') {
                 vm.resourceFilters.state = 'agent';
-                if (toParams.type)
+                if (toParams.type && toParams.type !='all')
                     vm.agentsFilters.filter.state = toParams.type == 'healthy' ? '0' : toParams.type == 'unhealthy' ? '1' : '2';
                 vm.treeAgent = [];
-                initAgentTree();
+                initAgentTree(toParams.type);
             } else if (toState.name == 'app.resources.locks') {
                 vm.resourceFilters.state = 'lock';
                 vm.treeLock = [];
@@ -2568,7 +2595,7 @@
         };
 
         vm.viewAllAgents = function () {
-            $state.go('app.resources.agentClusters');
+            $state.go('app.resources.agentClusters',{type:'all'});
         };
 
         var states = [];

@@ -173,7 +173,7 @@
 </div>
 <div class="padding">
     <div class="row">
-             <div class="col-md-12">
+             <div class="col-md-8">
                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
                      <li class="nav-item" ng-if="permission.ProcessClass.view.status">
                         <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentClusters">
@@ -205,6 +205,16 @@
                         </a>
                     </li>
                  </ul>
+            </div>
+            <div class="col-md-4 text-right" ng-if="pageView!='grid' && ((resourceFilters.state == 'agent' && allAgentClusters && allAgentClusters.length>0) || (resourceFilters.state == 'schedules' && allSchedules && allSchedules.length>0))">
+                <button class="btn btn-sm btn-grey" ng-click="expandDetails()" >
+                    <i class="fa fa fa-caret-down"></i>
+                    <span translate>button.expandDetails</span>
+                </button>
+                <button class="btn btn-sm btn-grey m-l-sm" ng-click="collapseDetails()">
+                    <i class="fa fa fa-caret-up"></i>
+                    <span translate>button.collapseDetails</span>
+                </button>
             </div>
     </div>
 </div>

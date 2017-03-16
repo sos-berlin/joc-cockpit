@@ -36,7 +36,7 @@
                         <td><a class="text-hover-primary" ui-sref="app.resources.agentClusters"
                                ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
                         <td>
-                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending || 0"></a>
+                            <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')" ng-bind="jobChain.ordersSummary.pending"></a>
                         </td>
                         <td>
                             <a class="text-hover-primary" ng-click="viewOrders(jobChain,'RUNNING')" ng-bind="jobChain.ordersSummary.running"></a>
@@ -762,19 +762,19 @@
                                                                                    translate>button.unstopJob</a>
                                                                                 <a class="dropdown-item bg-hover-color"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() != 'stopped' && permission.JobChain.stopJobChainNode"
-                                                                                   ng-click="stopNode(nestedNode,jobChain)"
+                                                                                   ng-click="stopNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.stopNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() == 'stopped' && permission.JobChain.processJobChainNode"
-                                                                                   ng-click="unStopNode(nestedNode,jobChain)"
+                                                                                   ng-click="unStopNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.unstopNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() != 'skipped' && permission.JobChain.skipJobChainNode"
-                                                                                   ng-click="skipNode(nestedNode,jobChain)"
+                                                                                   ng-click="skipNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.skipNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-if="nestedNode.state._text.toLowerCase() == 'skipped' && permission.JobChain.processJobChainNode"
-                                                                                   ng-click="unskipNode(nestedNode,jobChain)"
+                                                                                   ng-click="unskipNode(nestedNode,nestedJobChain)"
                                                                                    translate>button.unskipNode</a>
                                                                                 <a class="dropdown-item"
                                                                                    ng-click="copyLinkToObject('job',nestedNode.job.path)"

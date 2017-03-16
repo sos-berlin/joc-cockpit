@@ -22,6 +22,7 @@
                             <th><span translate>label.jobName</span></th>
                             <th><span translate>label.path</span></th>
                             <th><span translate>label.status</span></th>
+                            <th><span translate>label.state</span></th>
                             <th><span translate>label.jobChainsAssociated</span></th>
                             <th><span translate>label.taskRunning</span></th>
                             <th><span translate>label.nextStartTime</span></th>
@@ -75,7 +76,10 @@
                                 </td>
                                 <td ng-bind="job.path"></td>
                                 <td>
-                                    <span uib-tooltip="{{job.stateText}}" class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
+                                    <span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
+                                </td>
+                                <td>
+                                    {{job.stateText}}
                                 </td>
                                 <td>
                                     <span ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
@@ -151,13 +155,11 @@
                                 </td>
                             </tr>
                             <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
-                                <td></td>
                                 <td colspan="12">
                                     {{job.configurationStatus._text | translate}} :<span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                                 </td>
                             </tr>
                             <tr ng-if="job.showJobChains" style="background: transparent !important;" ng-repeat="jobChain in job.jobChains">
-                                        <td></td>
                                         <td colspan="12">
                                          <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
                                             <div class="btn-group dropdown">
@@ -197,7 +199,7 @@
                                 <div class="b-b">
                                   <ul class="nav nav-tabs">
                                       <li class="nav-item" >
-                                          <a class="nav-link" ng-class="{active: !isRunning}" ng-click="loadHistory(showTaskPanel)" href data-toggle="tab" data-target="#tab1" translate>label.taskHistory</a>
+                                          <a class="nav-link" ng-class="{active: !isRunning && !isAuditLog}" ng-click="loadHistory(showTaskPanel)" href data-toggle="tab" data-target="#tab1" translate>label.taskHistory</a>
                                       </li>
                                       <li class="nav-item" >
                                           <a class="nav-link" href data-toggle="tab" data-target="#tab2" translate>label.taskQueue</a>
@@ -214,7 +216,7 @@
                                   </ul>
                                 </div>
                                  <div class="tab-content p-a" >
-                                     <div class="tab-pane animated fadeIn " ng-class="{active: !isRunning}" id="tab1" >
+                                     <div class="tab-pane animated fadeIn " ng-class="{active: !isRunning && !isAuditLog}" id="tab1" >
                                          <div class="row">
                                              <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
                                                 <table class="table table-hover table-bordered ">
