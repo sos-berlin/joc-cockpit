@@ -948,7 +948,7 @@
   "button.editPeriod": "ピリオド変更",
   "label.folder": "フォルダ",
   "placeholder.enterAccount": "アカウント入力",
-  "button.expandDetails": "Expand Details",
-  "button.collapseDetails": "Collapse Details",
-  "label.ofJobChain": "of job chain"
+  "button.expandDetails": "詳細表示",
+  "button.collapseDetails": "詳細非表示",
+  "label.ofJobChain": "ジョブチェーン"
 }
