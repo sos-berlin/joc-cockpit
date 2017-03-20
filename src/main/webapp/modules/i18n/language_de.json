@@ -805,7 +805,7 @@
   "placeholder.regularExpression": "Regulärer Ausdruck",
   "label.folders": "Ordner",
   "label.repeatType": "Startart",
-  "label.singleStartMode": "indivdidueller Start",
+  "label.singleStartMode": "individueller Start",
   "label.startStartRepeatMode": "Wiederholung Start-Start",
   "label.startEndRepeatMode": "Wiederholung Ende-Start",
   "label.showOrders": "Aufträge in Sichten sofort anzeigen",
