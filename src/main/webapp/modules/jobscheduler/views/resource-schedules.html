@@ -159,7 +159,7 @@
                             <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="schedule.show" ng-click="schedule.show = false"></i>
                             <span ng-class="{'crimson':schedule.configurationStatus.severity==2}">{{schedule.name}}</span>
                             <span ng-if="schedule.title">-</span>
-                            <i class="text-muted" ng-bind-html="schedule.title"></i>
+                            <i class="text-muted" ng-bind-html="schedule.title | linky:'_blank'" ></i>
                         </td>
                         <td ng-bind="schedule.path"></td>
                         <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"

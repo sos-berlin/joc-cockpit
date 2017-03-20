@@ -172,18 +172,18 @@
                                                            data-checklist-value="order"><i class="primary"></i>
                                                 </label>
                                             </td>
-                                            <td class="nowrap">
+                                            <td>
                                                 <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
                                                    ng-click="showPanelFuc(order)"></i>
                                                 <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
                                                 <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                                <i class="text-muted">{{order.title}}</i></span>
+                                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
                                             </td>
                                             <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
                                             <td>
                                                 <a class="label" ng-click="showLogWindow(order)"  ng-if="order.historyId && permission.Order.view.orderLog" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
                                                 <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
-                                                <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback}}</span>
+                                                <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
                                             </td>
                                             <td uib-tooltip="{{order.stateText}}" ng-bind="order.state"></td>
                                             <td >
@@ -249,6 +249,7 @@
                                                     <thead>
                                                     <tr>
                                                         <th translate>label.type</th>
+                                                        <th translate>label.stateText</th>
                                                         <th translate>label.endState</th>
                                                         <th translate>label.priority</th>
                                                         <th translate>label.params</th>
@@ -258,6 +259,7 @@
                                                     <tbody>
                                                     <tr>
                                                         <td>{{order._type | translate}}</td>
+                                                        <td><span ng-bind-html="order.stateText | linky:'_blank'"></span></td>
                                                         <td>{{order.endState || '-'}}</td>
                                                         <td>{{order.priority}}</td>
                                                         <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
@@ -302,7 +304,7 @@
                             <div class="col-md-12">
                                 <div class="box white">
                                     <div class="box-header">
-                                        <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted">{{showLogPanel.title}}</i></span>
+                                        <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
                                     </div>
                                     <div class="box-tool">
                                         <ul class="nav text-muted text-md">
@@ -374,7 +376,7 @@
                                                     </thead>
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
-                                                        <td nowrap>
+                                                        <td>
                                                         <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
                                                         <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                         <span ng-bind="auditLog.created | stringToDate"></span>

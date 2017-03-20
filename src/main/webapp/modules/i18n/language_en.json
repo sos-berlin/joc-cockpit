@@ -950,5 +950,6 @@
   "placeholder.enterAccount": "Enter account",
   "button.expandDetails": "Expand Details",
   "button.collapseDetails": "Collapse Details",
-  "label.ofJobChain": "of Job Chain"
+  "label.ofJobChain": "of Job Chain",
+  "label.stateText": "State Text"
 }

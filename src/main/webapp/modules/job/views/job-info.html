@@ -22,7 +22,7 @@
                             <th><span translate>label.jobName</span></th>
                             <th><span translate>label.path</span></th>
                             <th><span translate>label.status</span></th>
-                            <th><span translate>label.state</span></th>
+                            <th><span translate>label.stateText</span></th>
                             <th><span translate>label.jobChainsAssociated</span></th>
                             <th><span translate>label.taskRunning</span></th>
                             <th><span translate>label.nextStartTime</span></th>
@@ -41,7 +41,7 @@
                                     <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)"
                                           ng-class="{'text-u-l':job.isOrderJob!=true, 'crimson':job.configurationStatus.severity==2}"
                                           ng-bind="job.name"></span>
-                                    <span ng-if="job.title">-</span><i class="text-muted" ng-bind="job.title"></i>
+                                    <span ng-if="job.title">-</span><i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
 
                                     <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask"
                                          ng-repeat="task in job.runningTasks">
@@ -79,7 +79,7 @@
                                     <span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate"></span>
                                 </td>
                                 <td>
-                                    {{job.stateText}}
+                                    <span ng-bind-html="job.stateText | linky:'_blank'"></span>
                                 </td>
                                 <td>
                                     <span ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
@@ -185,7 +185,7 @@
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
-                                <span class="text">{{showTaskPanel.path}} <i ng-if="showTaskPanel.title">-</i> <i class="text-sm text-muted">{{showTaskPanel.title}}</i></span>
+                                <span class="text">{{showTaskPanel.path}} <i ng-if="showTaskPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showTaskPanel.title | linky:'_blank'"></i></span>
                             </div>
                             <div class="box-tool">
                                 <ul class="nav text-muted text-md">
@@ -372,7 +372,7 @@
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
 
-                                                        <td nowrap>
+                                                        <td>
                                                         <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
                                                         <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                         <span ng-bind="auditLog.created | stringToDate"></span>

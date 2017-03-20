@@ -950,5 +950,6 @@
   "placeholder.enterAccount": "Konto eingeben",
   "button.expandDetails": "Details ausklappen",
   "button.collapseDetails": "Details einklappen",
-  "label.ofJobChain": "der Job-Kette"
+  "label.ofJobChain": "der Job-Kette",
+  "label.stateText": "State Text"
 }

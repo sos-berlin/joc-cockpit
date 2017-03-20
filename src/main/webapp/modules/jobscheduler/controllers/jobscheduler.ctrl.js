@@ -170,7 +170,6 @@
                 value.expanded = true;
                 value.selected1 = true;
                 vm.allAgentClusters = [];
-                console.log('type '+type)
                 checkExpandA(value,type);
             });
         }

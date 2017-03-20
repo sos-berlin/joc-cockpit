@@ -950,5 +950,6 @@
   "placeholder.enterAccount": "Entrer un compte",
   "button.expandDetails": "Développer les Détails",
   "button.collapseDetails": "Déplier les Détails",
-  "label.ofJobChain": "de la Chaîne des Tâches"
+  "label.ofJobChain": "de la Chaîne des Tâches",
+  "label.stateText": "State Text"
 }

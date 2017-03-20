@@ -36,7 +36,7 @@
                                 <tbody ng-repeat="jobChain in jobChains" ng-class="{'light-bg':jobChain.show}">
                                 <tr title="{{jobChain.configurationStatus._text | translate}}">
 
-                                    <td class="nowrap">
+                                    <td>
                                         <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!jobChain.show"
                                            ng-click="showNodePanelFuc(jobChain)"></i>
                                         <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="jobChain.show" ng-click="hideNodePanelFuc(jobChain)"></i>
@@ -44,7 +44,7 @@
                                         <span class="text-hover-primary" ng-click="showHistory(jobChain)"
                                            ng-class="{'text-danger':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED' || jobChain.state._text == 'STOPPED')}" ng-bind="jobChain.name"></span>
                                         <span ng-if="jobChain.title"> - </span>
-                                        <i class="text-muted"><span ng-bind-html="jobChain.title"></span></i>
+                                        <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                                     </td>
                                     <td ng-bind="jobChain.path"></td>
                                     <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text  | translate"></span></td>
@@ -130,8 +130,7 @@
                                                                   ng-class="{'text-danger':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED' || nestedJobChain.state._text == 'STOPPED')}"
                                                                   ng-bind="nestedJobChain.name"></span>
                                                             <span ng-if="nestedJobChain.title"> - </span>
-                                                            <i class="text-muted"><span
-                                                                    ng-bind-html="nestedJobChain.title"></span></i>
+                                                            <i class="text-muted"><span ng-bind-html="nestedJobChain.title | linky:'_blank'"></span></i>
                                                         </td>
                                                         <td ng-bind="nestedJobChain.path"></td>
                                                         <td><span class="label"
@@ -248,7 +247,7 @@
                                                                                         href="" class="text-hover-primary"
                                                                                         ng-click="viewOrders(jobChain)">{{order.orderId}}</a> <i
                                                                                         class="text-muted text-xs" ng-if="order.title">-
-                                                                                    {{order.title}}</i> - <span class="label"
+                                                                                    <span ng-bind-html="order.title | linky:'_blank'"></span></i> - <span class="label"
                                                                                                                 ng-class="bgColorFunction(order.processingState.severity)"
                                                                                                                 ng-bind="order.processingState._text | translate"></span>
                                                                                     <span class="hide text-success text-xs"
@@ -336,6 +335,7 @@
                                                                                            translate>button.copyLinkToObject</a>
                                                                                     </div>
                                                                                 </div>
+                                                                                <div class="text-sm p-l-sm" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                                             </div>
                                                                             <i class="cursor text-xs"
                                                                                ng-if="nestedNode.numOfOrders>limitNum"
@@ -536,7 +536,7 @@
                                                                     href="" class="text-hover-primary"
                                                                     ng-click="viewOrders(jobChain)">{{order.orderId}}</a> <i
                                                                     class="text-muted text-xs" ng-if="order.title">-
-                                                                {{order.title}}</i> - <span class="label"
+                                                                <span ng-bind-html="order.title | linky:'_blank'"></span></i> - <span class="label"
                                                                                             ng-class="bgColorFunction(order.processingState.severity)"
                                                                                             ng-bind="order.processingState._text | translate"></span>
                                                                 <span class="hide text-success text-xs"
@@ -758,7 +758,7 @@
                         <div class="box white">
                             <div class="box-header">
                                 <span class="text">{{showHistoryPanel.path}}: {{showHistoryPanel.name}} <i
-                                        ng-if="showHistoryPanel.title">-</i> <i class="text-sm text-muted">{{showHistoryPanel.title}}</i></span>
+                                        ng-if="showHistoryPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showHistoryPanel.title | linky:'_blank'"></i></span>
                             </div>
                             <div class="box-tool">
                                 <ul class="nav text-muted text-md">

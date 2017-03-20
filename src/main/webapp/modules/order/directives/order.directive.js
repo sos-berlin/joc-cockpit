@@ -180,15 +180,17 @@
                 var compiledHtml;
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
-                     console.log("draw 01");
+
                     arrangeItems();
                 });
               scope.arrangeItems = arrangeItems;
 
                 function arrangeItems() {
+
                     if(SOSAuth && SOSAuth.jobChain){
                          scope.jobChain = JSON.parse(SOSAuth.jobChain);
                     }
+
                     scope.jobChainData = angular.copy(scope.nestedChain || scope.jobChain);
                     scope.jobChainData.nodes = [];
                     var jobChainData2 = angular.copy(scope.nestedChain || scope.jobChain);
@@ -236,7 +238,6 @@
                                 var cursor = index;
                                 if (splitRegex.test(item.name)) {
                                     if(!item.position || item.position==0){
-                                        console.log("Item.position found for "+item.name);
                                         item.position=1;
                                     }
                                     cursor = cursor + item.position;
@@ -329,7 +330,6 @@
 
                     });
                     draw();
-
                 }
 
                 function draw() {
@@ -582,7 +582,6 @@
                             scope.coords[length+ index].left = left + rectW + margin;
                             scope.coords[length+ index].name=endNode.name;
 
-
                             if (scope.errorNodes.indexOf(endNode.name) >= 0) {
 
                                 endErrorNodes++;
@@ -628,11 +627,9 @@
 
                             if (index == scope.jobChainData.endNodes.length - 1) {
                                 checkHeight();
-
                             }
                         })
                     }
-
 
                     function getCircularNode(item, labelLeft, labelTop, left, top) {
                         var node = '<div id="lb' + item.name + '"  class="nowrap text-success" ' +
@@ -643,7 +640,6 @@
                             'style="position: absolute;left: ' + labelLeft + 'px;top: ' + (labelTop - 30) + 'px' + '">Move: ' + item.move + ' </div>' +
                             '<span id="' + item.name + '" class="avatar w-32 success text-white" ' +
                             'style="position: absolute;left: ' + left + 'px;top: ' + top + 'px' + '"> </span>'
-
                         return node;
                     }
 
@@ -654,7 +650,6 @@
                             if (maxUTop > obj.top) {
                                 maxUTop = obj.top;
                             }
-
                         });
                         height = window.innerHeight - 300;
 
@@ -716,12 +711,9 @@
                                     rect.style['top'] = top - maxUTop + iTop + 'px';
                                 }
                             })
-
-
                         } else {
                             drawLinks();
                         }
-
                     }
 
                     function drawLinks() {
@@ -729,11 +721,6 @@
                     }
 
                 }
-
-
-
-
-
 
             },
             scope: {
@@ -756,7 +743,7 @@
             },
             controller: ['$scope', '$interval', 'gettextCatalog', '$timeout', '$filter', 'SOSAuth', '$compile', '$location','$rootScope',
                 function ($scope, $interval, gettextCatalog, $timeout, $filter, SOSAuth, $compile, $location,$rootScope) {
-                    console.log("Controller loading");
+
                     var vm = $scope;
                     vm.left = 0;
                     vm.object = {};

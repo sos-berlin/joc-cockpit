@@ -464,7 +464,7 @@
                     angular.forEach(data.jobChains, function (jobChains) {
                         if (vm.userPreferences.showOrders)
                             jobChains.show = true;
-                        jobChain.nestedJobChains = res.nestedJobChains;
+                        jobChains.nestedJobChains = res.nestedJobChains;
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
                             if (jobChains.path == res.jobChains[i].path) {
@@ -514,7 +514,6 @@
                         value.path1 = data.path;
                         temp.push(value);
                     });
-
                 }
                 vm.allJobChains = temp;
                 vm.folderPath = data.name || '/';
@@ -2212,6 +2211,7 @@
                             });
                         }
                     });
+
             });
             for (var i = 0; i < vm.tree.length; i++) {
                 if (vm.tree[i].path.match(jobChain.path1) || jobChain.path1.match(vm.tree[i].path)) {
@@ -4183,7 +4183,6 @@
                     }
                 });
             });
-            console.log(JSON.stringify(obj));
         };
 
         vm.collapseDetails = function () {

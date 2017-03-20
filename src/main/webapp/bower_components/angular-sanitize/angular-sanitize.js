@@ -680,7 +680,12 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
   return function(text, target, attributes) {
     if (text == null || text === '') return text;
     if (!isString(text)) throw linkyMinErr('notstring', 'Expected string but received: {0}', text);
+var pattern = /<a\s.*?<\/a>/;
+            var index = text.search(pattern);
 
+            if (index != -1) {
+                return text.replace('<a ', '<a class="text-u-l text-hover-primary" target="_blank" ');
+            }
     var attributesFn =
       isFunction(attributes) ? attributes :
       isObject(attributes) ? function getAttributesObject() {return attributes;} :
@@ -715,7 +720,7 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 
     function addLink(url, text) {
       var key, linkAttributes = attributesFn(url);
-      html.push('<a ');
+      html.push('<a class="text-u-l text-hover-primary" ');
 
       for (key in linkAttributes) {
         html.push(key + '="' + linkAttributes[key] + '" ');

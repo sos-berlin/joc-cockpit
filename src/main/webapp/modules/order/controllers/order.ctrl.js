@@ -32,6 +32,7 @@
                             if (order.path == res.orders[i].path) {
                                 res.orders[i].title = angular.copy(order.title);
                                 res.orders[i].params = angular.copy(order.params);
+                                res.orders[i].show = angular.copy(order.show);
                                 order = res.orders[i];
                                 data.push(order);
                                 res.orders.splice(i,1);
@@ -1973,6 +1974,7 @@ vm.loadHistory=loadHistory;
                 jobChain: vm.path,
                 maxOrders : vm.userPreferences.maxOrderPerJobchain
             }).then(function (res) {
+                vm.jobChain.fileOrderSources=[];
                 var temp=[];
                 temp=angular.merge({},vm.jobChain, res.jobChain);
                 temp.nodes=[];
@@ -2020,7 +2022,6 @@ vm.loadHistory=loadHistory;
                 if (draw) {
                     $rootScope.$broadcast('drawJobChainFlowDiagram');
                 }
-
                 $rootScope.$broadcast('reloadJobChain');
             });
         }
@@ -2070,7 +2071,6 @@ vm.loadHistory=loadHistory;
 
         $rootScope.expand_to = '';
         vm.setPath = function (path) {
-
             $rootScope.expand_to = {
                 name: path,
                 path: vm.path
@@ -2081,7 +2081,7 @@ vm.loadHistory=loadHistory;
         $scope.$on('$stateChangeSuccess', function (event, toState, param, fromState) {
             vm.object = {};
             vm.orderFilters.isOverview = toState.url == '/overview';
-            if (vm.orderFilters.isOverview && fromState.url == '/orders') {
+            if (vm.orderFilters.isOverview && fromState.name == 'app.jobChainDetails.orders') {
                 t1 = $timeout(function () {
                     $rootScope.$broadcast('drawJobChainFlowDiagram');
                     $timeout.cancel(t1);
@@ -2286,7 +2286,6 @@ vm.loadHistory=loadHistory;
         };
 
         vm.viewFlowDiagram = function (jobChain) {
-            console.log("View flow diagram");
             SOSAuth.setJobChain(JSON.stringify(jobChain));
             SOSAuth.save();
             $location.path('/job_chain_detail/overview').search({path: jobChain.path});
@@ -2599,7 +2598,6 @@ vm.loadHistory=loadHistory;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    console.log("Event type 01 "+vm.events[0].eventSnapshots[i].eventType);
                     if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' ||vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated')) {
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
@@ -2630,8 +2628,8 @@ vm.loadHistory=loadHistory;
         });
     }
 
-    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "toasty", "gettextCatalog", "CoreService", "$timeout", "AuditLogService", "$location"];
-    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, toasty, gettextCatalog, CoreService, $timeout, AuditLogService, $location) {
+    OrderCtrl.$inject = ["$scope", "$rootScope", "OrderService", "UserService", "orderByFilter", "$uibModal", "SavedFilter", "CoreService", "$timeout", "AuditLogService", "$location"];
+    function OrderCtrl($scope, $rootScope, OrderService, UserService, orderBy, $uibModal, SavedFilter, CoreService, $timeout, AuditLogService, $location) {
         var vm = $scope;
 
         vm.orderFilters = CoreService.getOrderTab();
@@ -2959,6 +2957,7 @@ vm.loadHistory=loadHistory;
                             if (orders.path == res.orders[i].path) {
                                 res.orders[i].title = angular.copy(orders.title);
                                 res.orders[i].path1 = angular.copy(orders.path1);
+                                res.orders[i].show = angular.copy(orders.show);
                                 orders = res.orders[i];
                                 data1.push(orders);
                                 res.orders.splice(i,1);
@@ -3032,6 +3031,7 @@ vm.loadHistory=loadHistory;
                             if (orders.path == res.orders[i].path) {
                                 res.orders[i].title = angular.copy(orders.title);
                                 res.orders[i].path1 = angular.copy(orders.path1);
+                                res.orders[i].show = angular.copy(orders.show);
                                 orders = res.orders[i];
                                 data1.push(orders);
                                 res.orders.splice(i,1);
@@ -3310,6 +3310,7 @@ vm.loadHistory=loadHistory;
                             if (order.path == res.orders[i].path) {
                                 res.orders[i].title = angular.copy(order.title);
                                 res.orders[i].path1 = angular.copy(order.path1);
+                                res.orders[i].show = angular.copy(order.show);
                                 order = res.orders[i];
                                 data.push(order);
                                 res.orders.splice(i,1);
@@ -3376,6 +3377,7 @@ vm.loadHistory=loadHistory;
                             for (var i = 0; i < res.orders.length; i++) {
                                 if (orders.path == res.orders[i].path) {
                                     res.orders[i].title = angular.copy(orders.title);
+                                    res.orders[i].show = angular.copy(orders.show);
                                     orders = res.orders[i];
                                     x.push(orders);
                                     res.orders.splice(i,1);
@@ -4353,6 +4355,7 @@ vm.loadHistory=loadHistory;
                                                 res.order.title = angular.copy(vm.allOrders[index].title);
                                                 res.order.path1 = angular.copy(vm.allOrders[index].path1);
                                                 res.order.params = angular.copy(vm.allOrders[index].params);
+                                                res.order.show = angular.copy(vm.allOrders[index].show);
                                                 vm.allOrders[index] = res.order;
                                             }else{
                                                 vm.allOrders.splice(index,1);
@@ -5603,9 +5606,9 @@ vm.loadHistory=loadHistory;
 
     }
 
-    HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "toasty", "$timeout", "gettextCatalog",
+    HistoryCtrl.$inject = ["$scope", "OrderService", "TaskService", "$uibModal", "SavedFilter", "$timeout",
         "JobService", "orderByFilter", "CoreService", "UserService"];
-    function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, toasty, $timeout, gettextCatalog,
+    function HistoryCtrl($scope, OrderService, TaskService, $uibModal, SavedFilter, $timeout,
                          JobService, orderBy, CoreService, UserService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;

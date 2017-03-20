@@ -32,8 +32,10 @@
                 $rootScope.$broadcast('reloadUser');
                 if (err.data && err.data.message)
                     $window.sessionStorage.errorMsg = err.data.message;
-                else
+                else if(err.data.error)
                     $window.sessionStorage.errorMsg = err.data.error.message;
+                else
+                     $window.sessionStorage.errorMsg = 'Internal server error';
                 $rootScope.error = $window.sessionStorage.errorMsg;
                 $location.path('/error');
             });

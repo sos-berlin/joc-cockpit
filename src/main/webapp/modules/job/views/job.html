@@ -428,7 +428,7 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'state._text' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('stateText')" ><a><span translate>label.state</span>
+                                <th ng-click="sortBy('stateText')" ><a><span translate>label.stateText</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'stateText' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="jobFilters.filter.sortBy == 'stateText' && jobFilters.reverse"
@@ -493,7 +493,7 @@
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                         </label>
                                     </td>
-                                    <td class="nowrap">
+                                    <td>
                                         <i class="cursor fa fa-caret-down noExl fa-lg" ng-class="{'disable-link': !job.usedInJobChains}" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
                                         <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains" ng-click="job.showJobChains = false"></i>
                                         <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name"></span>
@@ -521,7 +521,7 @@
                                         <td>
                                             <span class="label" ng-class="bgColorFunction(job.state.severity)" ng-bind="job.state._text  | translate" ></span>
                                         </td>
-                                        <td ng-bind-html="job.stateText | linky:'_blank'"></td>
+                                        <td><span  ng-bind-html="job.stateText | linky:'_blank'"></span></td>
                                         <td>
                                             <span ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
                                             <span ng-if="!job.usedInJobChains">0</span>
@@ -636,7 +636,7 @@
                     <div class="col-md-12">
                         <div class="box white" id="scrollToTask">
                             <div class="box-header">
-                                <span class="text">{{showTaskPanel.path}} <i ng-if="showTaskPanel.title">-</i> <i class="text-sm text-muted">{{showTaskPanel.title}}</i></span>
+                                <span class="text">{{showTaskPanel.path}} <i ng-if="showTaskPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showTaskPanel.title | linky:'_blank'"></i></span>
                             </div>
                             <div class="box-tool">
                                 <ul class="nav text-muted text-md">
@@ -826,7 +826,7 @@
                                                     </thead>
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
-                                                        <td nowrap>
+                                                        <td>
                                                         <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
                                                         <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                         <span ng-bind="auditLog.created | stringToDate"></span>

@@ -430,7 +430,6 @@
             if (newWindow) {
                 try {
                     newWindow.onbeforeunload = function () {
-                        console.log('before close');
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
@@ -438,7 +437,6 @@
                         return null;
                     };
                     $(newWindow).resize(function () {
-                        console.log('resize');
                         $window.localStorage.log_window_wt = newWindow.innerWidth;
                         $window.localStorage.log_window_ht = newWindow.innerHeight;
                         $window.localStorage.log_window_x = newWindow.screenX;
