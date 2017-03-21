@@ -2013,16 +2013,19 @@ vm.loadHistory=loadHistory;
                 SOSAuth.save();
                 if (draw) {
                     $rootScope.$broadcast('drawJobChainFlowDiagram');
+                }else{
+                    $rootScope.$broadcast('reloadJobChain');
                 }
-                $rootScope.$broadcast('reloadJobChain');
+
             }, function () {
                 SOSAuth.setJobChain(JSON.stringify(vm.jobChain));
                 SOSAuth.save();
 
                 if (draw) {
                     $rootScope.$broadcast('drawJobChainFlowDiagram');
+                }else{
+                    $rootScope.$broadcast('reloadJobChain');
                 }
-                $rootScope.$broadcast('reloadJobChain');
             });
         }
 
@@ -2598,7 +2601,7 @@ vm.loadHistory=loadHistory;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' ||vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated')) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' || (vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
                             path = vm.events[0].eventSnapshots[i].path.split(",");
@@ -3191,8 +3194,7 @@ vm.loadHistory=loadHistory;
                 } else {
                     p[0] = x[i].path;
                 }
-
-                if (node.path == p[0].substring(0, p[0].lastIndexOf('/'))) {
+                if (node.path == p[0].substring(0, p[0].lastIndexOf('/')) || p[0].substring(0, p[0].lastIndexOf('/'))=='') {
                     x[i].path1 = node.path;
                     node.orders.push(x[i]);
                     vm.allOrders.push(x[i]);
@@ -4335,7 +4337,7 @@ vm.loadHistory=loadHistory;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (value1) {
-                    if (value1.path && value1.eventType === "OrderStateChanged") {
+                    if (value1.path && value1.eventType === "OrderStateChanged" && !value1.eventId) {
                         if($location.search().path){
                             if (value1.path == $location.search().path)
                             getOrderByPath($location.search().path);
@@ -4823,7 +4825,7 @@ vm.loadHistory=loadHistory;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType !== "OrderStateChanged" && waitForResponse) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId && waitForResponse) {
                         waitForResponse = false;
                         var obj = {};
                         obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -5579,7 +5581,7 @@ vm.loadHistory=loadHistory;
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.showLogPanel)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged") {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId) {
                         var path = vm.events[0].eventSnapshots[i].path;
                         if (vm.showLogPanel.path == path) {
                             var orders = {};
@@ -7154,8 +7156,8 @@ vm.loadHistory=loadHistory;
         });
     }
 
-    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$stateParams", "$location", "FileSaver", "Blob", "$sce"];
-    function LogCtrl($scope, OrderService, TaskService, $stateParams, $location, FileSaver, Blob, $sce) {
+    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$stateParams", "$location", "FileSaver", "Blob", "$sce","$timeout"];
+    function LogCtrl($scope, OrderService, TaskService, $stateParams, $location, FileSaver, Blob, $sce,$timeout) {
         var vm = $scope;
         vm.isLoading = false;
 
@@ -7168,6 +7170,7 @@ vm.loadHistory=loadHistory;
             FileSaver.saveAs(data, 'history.log');
         };
         var object = $location.search();
+        var t1;
         vm.loadOrderLog = function () {
 
             vm.jobChain = object.jobChain;
@@ -7181,6 +7184,11 @@ vm.loadHistory=loadHistory;
                 if (res.log)
                     vm.logs = $sce.trustAsHtml(res.log.html);
                 vm.isLoading = true;
+
+              t1 = $timeout(function() {
+                    if (vm.userPreferences.theme != 'light')
+                        $('.log_info').css('color', 'white')
+                },100);
             }, function () {
                 vm.isLoading = true;
             });
@@ -7196,6 +7204,10 @@ vm.loadHistory=loadHistory;
                 if (res.log)
                     vm.logs = $sce.trustAsHtml(res.log.html);
                 vm.isLoading = true;
+                t1 = $timeout(function() {
+                    if (vm.userPreferences.theme != 'light')
+                        $('.log_info').css('color', 'white')
+                },100);
             }, function () {
                 vm.isLoading = true;
             });
@@ -7208,6 +7220,10 @@ vm.loadHistory=loadHistory;
             vm.taskId = $stateParams.taskId;
             vm.loadJobLog();
         }
+        $scope.$on('$destroy', function () {
+            if (t1)
+                $timeout.cancel(t1);
+        });
 
     }
 })();

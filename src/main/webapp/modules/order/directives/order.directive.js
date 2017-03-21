@@ -472,9 +472,9 @@
 
                         var jobName;
 
-                        var  host = '<div class="text-left text-xs p-t-xs ">' +
+                        var  host = '<div class="text-left text-sm p-t-xs ">' +
                             '<span  ng-if="jobChainData.nodes[\''+index+'\'].processClass || jobChainData.nodes[\''+index+'\'].jobChain.processClass"><i class="fa fa-server "></i><span  class="p-l-sm" ng-bind="jobChainData.nodes[\''+index+'\'].processClass || jobChainData.nodes[\''+index+'\'].jobChain.processClass"></span></span>' +
-                            '<span class="pull-right hide" ng-class="{show:jobChainData.nodes[\''+index+'\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-xs" ng-bind-html="formatLock(\''+index+'\')"></span></span>' +
+                            '<span class="pull-right hide" ng-class="{show:jobChainData.nodes[\''+index+'\'].locks}"><i class="fa fa-lock"></i><span class="p-l-sm text-sm" ng-bind-html="formatLock(\''+index+'\')"></span></span>' +
                             '</div>';
 
                         if (item.job) {
@@ -530,7 +530,7 @@
                         '<a href="" class="dropdown-item" ng-click="copyLinkToObject({type:\''+itemType+'\',path:\''+itemPath+'\'})"  translate>button.copyLinkToObject</a>' +
                         '</div></div></div><div class="text-left text-muted p-t-xs block-ellipsis-job"><a class="text-hover-primary" title="' + itemPath + '" ng-click="navigateToItem(\''+index+'\')">' + jobName +
                         '</a>' +
-                            '<div class="text-xs p-t-xs" ><span translate>label.orders</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\''+index+'\'].numOfOrders ||jobChainData.nodes[\''+index+'\'].jobChain.numOfOrders || 0"></span></div><div class="text-sm crimson" translate>' + msg + '</div></div>' + host + '</div >' +
+                            '<div class="text-sm p-t-xs" ><span translate>label.orders</span>: <span class="text-black-dk" ng-bind="jobChainData.nodes[\''+index+'\'].numOfOrders ||jobChainData.nodes[\''+index+'\'].jobChain.numOfOrders || 0"></span></div><div class="text-sm crimson" translate>' + msg + '</div></div>' + host + '</div >' +
                         '<div class="box-footer b-t" style="position: absolute; bottom: 0; padding: 6px 10px; width: 100%; ">' +
                         '<a title="{{\'button.stopNode\' | translate}}" href ng-click="stopNode(\'' + index + '\')" ng-if="permission.JobChain.stopJobChainNode"' +
                         'class="hide pull-left w-half text-hover-color" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text!==\'STOPPED\'}">' +
@@ -765,7 +765,7 @@
                             $rootScope.$broadcast('showNested');
                         }
 
-                    }
+                    };
 
                     vm.stopNode = function (index) {
 
@@ -1464,7 +1464,7 @@
                                         + '</span>'
                                         + '<div class="btn-group dropdown "><button type="button"  class="btn-drop more-option-h dropdown1" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                         + '<div class="dropdown-menu dropdown-ac " role="menu" style="position: fixed;z-index: 9999;">'
-                                        + '<a class="hide" id="log-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.orderLog && \'' + order._type + '\'!==\'AD_HOC\'}">' + gettextCatalog.getString("button.viewLog") + '</a>'
+                                        + '<a class="hide" id="log-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.orderLog && \'' + order._type + '\'!==\'AD_HOC\' && \'' + order.historyId + '\'!==\'undefined\'}">' + gettextCatalog.getString("button.viewLog") + '</a>'
                                         + '<a class="hide" id="configuration-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.configuration && \'' + order.historyId + '\'}">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
                                         + '<a class="hide" id="ordernow-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.start}">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
                                         + '<a class="hide" id="orderat-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.start}">' + gettextCatalog.getString("button.startOrderat") + '</a>'
@@ -1488,7 +1488,7 @@
                                     vm.onOrderAction({
                                         order: order,
                                         action: 'view log'
-                                    })
+                                    });
                                 });
 
 

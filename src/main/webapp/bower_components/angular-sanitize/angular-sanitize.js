@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.6.1
- * (c) 2010-2016 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.6.2
+ * (c) 2010-2017 Google, Inc. http://angularjs.org
  * License: MIT
  */
 (function(window, angular) {'use strict';
@@ -667,77 +667,81 @@ angular.module('ngSanitize', []).provider('$sanitize', $SanitizeProvider);
    </example>
  */
 angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
-  var LINKY_URL_REGEXP =
-        /((ftp|https?):\/\/|(www\.)|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s.;,(){}<>"\u201d\u2019]/i,
-      MAILTO_REGEXP = /^mailto:/i;
+ var LINKY_URL_REGEXP =
+                /((ftp|https?):\/\/|(www\.)|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s.;,(){}<>"\u201d\u2019]/i,
+            MAILTO_REGEXP = /^mailto:/i;
 
-  var linkyMinErr = angular.$$minErr('linky');
-  var isDefined = angular.isDefined;
-  var isFunction = angular.isFunction;
-  var isObject = angular.isObject;
-  var isString = angular.isString;
+        var linkyMinErr = angular.$$minErr('linky');
+        var isDefined = angular.isDefined;
+        var isFunction = angular.isFunction;
+        var isObject = angular.isObject;
+        var isString = angular.isString;
 
-  return function(text, target, attributes) {
-    if (text == null || text === '') return text;
-    if (!isString(text)) throw linkyMinErr('notstring', 'Expected string but received: {0}', text);
-var pattern = /<a\s.*?<\/a>/;
+        return function (text, target, attributes) {
+
+            if (text == null || text === '') return text;
+            if (!isString(text)) throw linkyMinErr('notstring', 'Expected string but received: {0}', text);
+            var pattern = /<a\s.*?<\/a>/;
             var index = text.search(pattern);
 
             if (index != -1) {
                 return text.replace('<a ', '<a class="text-u-l text-hover-primary" target="_blank" ');
             }
-    var attributesFn =
-      isFunction(attributes) ? attributes :
-      isObject(attributes) ? function getAttributesObject() {return attributes;} :
-      function getEmptyAttributesObject() {return {};};
 
-    var match;
-    var raw = text;
-    var html = [];
-    var url;
-    var i;
-    while ((match = raw.match(LINKY_URL_REGEXP))) {
-      // We can not end in these as they are sometimes found at the end of the sentence
-      url = match[0];
-      // if we did not match ftp/http/www/mailto then assume mailto
-      if (!match[2] && !match[4]) {
-        url = (match[3] ? 'http://' : 'mailto:') + url;
-      }
-      i = match.index;
-      addText(raw.substr(0, i));
-      addLink(url, match[0].replace(MAILTO_REGEXP, ''));
-      raw = raw.substring(i + match[0].length);
-    }
-    addText(raw);
-    return $sanitize(html.join(''));
+            var attributesFn =
+                isFunction(attributes) ? attributes :
+                    isObject(attributes) ? function getAttributesObject() {
+                        return attributes;
+                    } :
+                        function getEmptyAttributesObject() {
+                            return {};
+                        };
 
-    function addText(text) {
-      if (!text) {
-        return;
-      }
-      html.push(sanitizeText(text));
-    }
+            var match;
+            var raw = text;
+            var html = [];
+            var url;
+            var i;
+            while ((match = raw.match(LINKY_URL_REGEXP))) {
+                // We can not end in these as they are sometimes found at the end of the sentence
+                url = match[0];
+                // if we did not match ftp/http/www/mailto then assume mailto
+                if (!match[2] && !match[4]) {
+                    url = (match[3] ? 'http://' : 'mailto:') + url;
+                }
+                i = match.index;
+                addText(raw.substr(0, i));
+                addLink(url, match[0].replace(MAILTO_REGEXP, ''));
+                raw = raw.substring(i + match[0].length);
+            }
+            addText(raw);
 
-    function addLink(url, text) {
-      var key, linkAttributes = attributesFn(url);
-      html.push('<a class="text-u-l text-hover-primary" ');
+            return $sanitize(html.join(''));
 
-      for (key in linkAttributes) {
-        html.push(key + '="' + linkAttributes[key] + '" ');
-      }
+            function addText(text) {
+                if (!text) {
+                    return;
+                }
+                html.push(sanitizeText(text));
+            }
 
-      if (isDefined(target) && !('target' in linkAttributes)) {
-        html.push('target="',
-                  target,
-                  '" ');
-      }
-      html.push('href="',
-                url.replace(/"/g, '&quot;'),
-                '">');
-      addText(text);
-      html.push('</a>');
-    }
-  };
+            function addLink(url, text) {
+                var key, linkAttributes = attributesFn(url);
+                html.push('<a class="text-u-l text-hover-primary"');
+
+                for (key in linkAttributes) {
+                    html.push(key + '="' + linkAttributes[key] + '" ');
+                }
+
+                html.push('target="', '_blank', '" ');
+
+                html.push('href="',
+                    url.replace(/"/g, '&quot;'),
+                    '">');
+                addText(text);
+                html.push('</a>');
+            }
+        };
 }]);
 
 

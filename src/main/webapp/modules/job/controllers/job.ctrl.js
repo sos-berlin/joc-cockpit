@@ -625,7 +625,6 @@
         }
 
         function checkExpandTreeForUpdates(data) {
-
             if (data.selected1) {
                 obj.folders.push({folder: data.path, recursive: false});
                 obj1.folders.push({folder: data.path, recursive: false});
@@ -642,7 +641,7 @@
         function insertData(node, x) {
             node.jobChains = [];
             for (var i = 0; i < x.length; i++) {
-                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/'))) {
+                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/')) == '')) {
                     x[i].path1 = node.path;
                     node.jobChains.push(x[i]);
                     vm.allJobChains.push(x[i]);
@@ -2364,7 +2363,7 @@
 
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
 
-                    if (event.eventType == 'JobChainStateChanged') {
+                    if (event.eventType == 'JobChainStateChanged' && !event.eventId) {
                         if (event.path != undefined) {
                             var path = [];
                             if (event.path.indexOf(",") > -1) {
@@ -3199,7 +3198,7 @@
 
             node.jobs = [];
             for (var i = 0; i < x.length; i++) {
-                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/'))) {
+                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/')) =='')) {
                     x[i].path1 = node.path;
                     node.jobs.push(x[i]);
                     vm.allJobs.push(x[i]);
@@ -4967,7 +4966,7 @@
             if (vm.events && vm.events.length > 0) {
                 angular.forEach(vm.events[0].eventSnapshots, function (value1) {
 
-                    if (value1.eventType == "JobStateChanged") {
+                    if (value1.eventType == "JobStateChanged" && !value1.eventId) {
                         if (value1.path != undefined) {
                             var path = [];
                             if (value1.path.indexOf(",") > -1) {

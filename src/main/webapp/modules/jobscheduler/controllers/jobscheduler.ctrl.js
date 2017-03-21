@@ -2269,6 +2269,7 @@
         }
 
         vm.dashboardFilters = CoreService.getDashboardTab();
+        var isLoadedSnapshot = true, isLoadedSummary = true,isLoadedDailyPlan = true,isLoadedAgentCluster = true, isLoadedRunningTask =true;
 
         function groupBy(data) {
             var results = [];
@@ -2303,6 +2304,7 @@
         }
 
         vm.getAgentCluster = function () {
+             isLoadedAgentCluster = false;
             JobSchedulerService.getAgentCluster({
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (res) {
@@ -2310,6 +2312,9 @@
                     vm.agentClusters = res.agentClusters;
                     prepareAgentClusterData(vm.agentClusters);
                 }
+                isLoadedAgentCluster = true;
+            }, function(){
+                 isLoadedAgentCluster = true;
             });
         };
         vm.getAgentCluster();
@@ -2421,6 +2426,7 @@
         };
 
         vm.getAgentClusterRunningTask = function () {
+            isLoadedRunningTask = false;
             var agentArray = [];
             ResourceService.getProcessClass({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -2439,12 +2445,14 @@
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
                 }
+                isLoadedRunningTask = true;
             }, function () {
                 vm.processClasses = [];
                 vm.agentStatusChart = [{
                     "key": "Agents",
                     "values": agentArray
                 }];
+                isLoadedRunningTask = true;
             });
         };
 
@@ -2804,13 +2812,18 @@
         };
 
         vm.loadOrderSnapshot = function () {
+            isLoadedSnapshot = false;
             OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.snapshot = res.orders;
+                isLoadedSnapshot = true;
+            }, function(){
+                isLoadedSnapshot = true;
             });
         };
         vm.loadOrderSnapshot();
 
         vm.getOrderSummary = function () {
+            isLoadedSummary = false;
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
             if (vm.dashboardFilters.filter.orderRange == 'next-24-hours') {
@@ -2827,6 +2840,9 @@
             }
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
+                isLoadedSummary = true;
+            }, function(){
+                isLoadedSummary = true;
             })
         };
         vm.getOrderSummary();
@@ -2854,6 +2870,7 @@
         }
 
         vm.getDailyPlans = function () {
+            isLoadedDailyPlan = false;
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
@@ -2874,6 +2891,9 @@
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.planItemData = res.planItems;
                 filterData();
+                isLoadedDailyPlan = true;
+            }, function(){
+                isLoadedDailyPlan = true;
             })
         };
 
@@ -3026,20 +3046,24 @@
             $state.go('app.history');
         };
 
-
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged") {
+                    if (vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot) {
+                        isLoadedSnapshot = false;
                         vm.loadOrderSnapshot();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder") {
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && isLoadedSummary) {
+                         isLoadedSummary = false;
                         vm.getOrderSummary();
-                    }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged") {
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
+                         isLoadedDailyPlan = false;
                         vm.getDailyPlans();
-                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS") {
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && isLoadedAgentCluster) {
+                         isLoadedAgentCluster = false;
                          vm.getAgentCluster();
                          vm.getAgentClusterRunningTask();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged") {
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedRunningTask) {
+                         isLoadedRunningTask = false;
                         vm.getAgentClusterRunningTask();
                     }
                 }
@@ -3906,6 +3930,7 @@
         });
 
         vm.getPlansByEvents = function () {
+            isLoaded = false;
             if (vm.dailyPlanFilters.range != 'period') {
                 vm.dailyPlanFilters.filter.range = undefined;
             }

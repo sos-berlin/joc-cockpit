@@ -543,8 +543,10 @@
                                                                            ng-click="showJob(nestedNode.job.path)">{{nestedNode.job.path}}</a>
 
                                                                         <div class="p-l-sm ">
-                                                                            <div ng-repeat="order in nestedNode.orders | limitTo : limitNum | orderBy:'orderId'">
+                                                                            <div ng-repeat="order in nestedNode.orders | limitTo : limitNum | orderBy:'orderId'"
+                                                                                    ng-if="order.path.split(',')[0]==nestedJobChain.path || order.path.split(',')[0]==jobChain.path ">
                                                                                 <span>
+
                                                                                 <span class="text-sm">
                                                                                     <span>{{'label.order'| translate}}:&nbsp;</span><a
                                                                                         href="" class="text-hover-primary"

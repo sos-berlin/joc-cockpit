@@ -198,7 +198,7 @@
         };
 
         function setUserPrefrences(preferences, configObj) {
-            if($window.sessionStorage.preferenceId == 0) {
+            if ($window.sessionStorage.preferenceId == 0) {
                 preferences.zone = jstz().timezone_name;
                 preferences.locale = $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
@@ -231,7 +231,8 @@
                 UserService.saveConfiguration(configObj).then(function (res) {
                     $window.sessionStorage.preferenceId = res.id;
                 })
-            };
+            }
+            ;
 
         }
 
@@ -296,7 +297,6 @@
         setPreferences();
 
         $scope.$on('reloadPreferences', function () {
-
             setPreferences();
         });
 
@@ -304,10 +304,10 @@
             vm.username = SOSAuth.currentUserData;
             setPermission();
             setIds();
-            if($scope.schedulerIds.selected)
-            loadSettingConfiguration();
-            if($scope.schedulerIds.selected)
-            getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
+            if ($scope.schedulerIds.selected)
+                loadSettingConfiguration();
+            if ($scope.schedulerIds.selected)
+                getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
         });
 
         function setPermission() {
@@ -402,7 +402,7 @@
                             if (task.job)
                                 url = '#!/show_log?taskId=' + task.taskId + '&job=' + task.job;
                             else
-                                url = '#!/show_log?taskId=' + task.taskId + '&job=' + task.job;
+                                url = '#!/show_log?taskId=' + task.taskId + '&job=' + job;
 
                         } else {
                             return;
@@ -420,9 +420,16 @@
                 if (order && order.historyId && order.orderId) {
                     url = '#!/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
                 } else if (task && task.taskId) {
-                    url = '#!/job/log/' + task.taskId + '?job=' + task.job ? task.job : job;
+                    if (task.job)
+                        url = '#!/job/log/' + task.taskId + '?job=' + task.job;
+                    else
+                       url = '#!/job/log/' + task.taskId + '?job=' + job;
+
+                } else {
+                    return;
                 }
                 $window.open(url, '_blank');
+
             }
         };
 
@@ -657,7 +664,7 @@
                 $interval.cancel(interval);
                 $window.localStorage.$SOS$URL = $location.path();
                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
-                vm.logout();
+                vm.logout('timeout');
             }
             if ($rootScope.clientLogFilter.isEnable) {
                 try {
@@ -699,18 +706,22 @@
         });
 
         var logout = false;
-        vm.logout = function () {
+        vm.logout = function (timeout) {
             logout = true;
             UserService.logout().then(function () {
                 SOSAuth.clearUser();
                 SOSAuth.clearStorage();
-                CoreService.setDefaultTab();
-
-                $window.localStorage.setItem('clientLogs', {});
-                $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
-                $window.sessionStorage.setItem('$SOS$ALLEVENT' , null);
-
-                 $location.path('/login').search({});
+                if (timeout) {
+                    $window.localStorage.setItem('clientLogs', {});
+                    $window.sessionStorage.setItem('$SOS$JOBSCHEDULE', null);
+                    $window.sessionStorage.setItem('$SOS$ALLEVENT', null);
+                } else {
+                    CoreService.setDefaultTab();
+                    angular.forEach($window.sessionStorage, function (item, key) {
+                        $window.sessionStorage.removeItem(key);
+                    });
+                }
+                $location.path('/login').search({});
             });
         };
 
@@ -795,7 +806,7 @@
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
-            if(!eventLoading) {
+            if (!eventLoading) {
                 eventLoading = true;
                 var obj = {};
                 obj.jobscheduler = [];
@@ -820,7 +831,7 @@
                 }
 
                 CoreService.getEvents(obj).then(function (res) {
-                    if(!vm.switchScheduler) {
+                    if (!vm.switchScheduler) {
                         vm.eventsRequest = [];
                         for (var i = 0; i < res.events.length; i++) {
                             if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
@@ -877,12 +888,12 @@
         $scope.allSessionEvent = {group: [], eventUnReadCount: 0};
 
 
-        if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length>0)
+        if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length > 0)
             vm.changeEvent(vm.schedulerIds.jobschedulerIds);
 
         if ($window.sessionStorage.$SOS$ALLEVENT != "null" && $window.sessionStorage.$SOS$ALLEVENT != null) {
             if ($window.sessionStorage.$SOS$ALLEVENT.length != 0) {
-                $scope.allSessionEvent = JSON.parse($window.sessionStorage.$SOS$ALLEVENT);
+                $scope.allSessionEvent = angular.copy(JSON.parse($window.sessionStorage.$SOS$ALLEVENT));
             }
         }
 
@@ -895,157 +906,157 @@
                         for (var j = 0; j < vm.allEvents[i].eventSnapshots.length; j++) {
                             if (vm.allEvents[i].eventSnapshots[j].eventId) {
 
-                            var evnType = vm.allEvents[i].eventSnapshots[j].eventType;
-                            if (evnType != 'JobStateChanged' && evnType != 'JobChainStateChanged') {
-                                if (eventFilter.indexOf(evnType) != -1) {
+                                var evnType = vm.allEvents[i].eventSnapshots[j].eventType;
+                                if (evnType != 'JobStateChanged' && evnType != 'JobChainStateChanged') {
+                                    if (eventFilter.indexOf(evnType) != -1) {
 
-                                    var eventByPath = {};
-                                    eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
+                                        var eventByPath = {};
+                                        eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
 
-                                    eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
-                                    if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
-                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
-                                    } else {
-                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
-                                    }
-                                    eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
-                                    eventByPath.events = [];
-                                    eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
+                                        eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
+                                        if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
+                                            eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
+                                        } else {
+                                            eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
+                                        }
+                                        eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
+                                        eventByPath.events = [];
+                                        eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
 
-                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                        eventByPath.events[m].read = false;
-                                    }
-                                    var flag = true;
+                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                            eventByPath.events[m].read = false;
+                                        }
+                                        var flag = true;
 
-                                    if ($scope.allSessionEvent.group != undefined)
-                                        for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
+                                        if ($scope.allSessionEvent.group != undefined)
+                                            for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
 
-                                            if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
+                                                if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
 
-                                                for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                    if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
+                                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                        if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
-                                                        $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                            $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
 
-                                                        $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                                        eventByPath.events[m].read = false;
+                                                            $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
+                                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                            eventByPath.events[m].read = false;
 
-                                                        $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                            $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                        }
                                                     }
+                                                    flag = false;
+
                                                 }
-                                                flag = false;
 
                                             }
 
+                                        if (flag) {
+
+                                            eventByPath.readCount = 1;
+                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+
+                                            $scope.allSessionEvent.group.push(eventByPath);
+
+
+                                        }
+                                    }
+                                } else if (evnType == 'JobStateChanged') {
+                                    var type = "Job" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
+
+                                    if (eventFilter.indexOf(type) != -1) {
+
+                                        var eventByPath = {};
+                                        eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
+
+                                        eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
+                                        eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
+                                        if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
+                                            eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
+
+                                        } else {
+                                            eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
+                                        }
+                                        eventByPath.events = [];
+                                        eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
+
+                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                            eventByPath.events[m].read = false;
                                         }
 
-                                    if (flag) {
+                                        var flag = true;
+                                        if ($scope.allSessionEvent.group != undefined)
+                                            for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
 
-                                        eventByPath.readCount = 1;
-                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
 
-                                        $scope.allSessionEvent.group.push(eventByPath);
+                                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                        if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
+                                                            $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
+                                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                            eventByPath.events[m].read = false;
 
-                                    }
-                                }
-                            } else if (evnType == 'JobStateChanged') {
-                                var type = "Job" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
-
-                                if (eventFilter.indexOf(type) != -1) {
-
-                                    var eventByPath = {};
-                                    eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
-
-                                    eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
-                                    eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
-                                    if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
-                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
-
-                                    } else {
-                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
-                                    }
-                                    eventByPath.events = [];
-                                    eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
-
-                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                        eventByPath.events[m].read = false;
-                                    }
-
-                                    var flag = true;
-                                    if ($scope.allSessionEvent.group != undefined)
-                                        for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
-
-                                            if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-
-                                                for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                    if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
-
-                                                        $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                                        eventByPath.events[m].read = false;
-
-                                                        $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
-                                                        $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                            $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                            $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                        }
                                                     }
+                                                    flag = false;
                                                 }
-                                                flag = false;
                                             }
+                                        if (flag) {
+                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                            eventByPath.readCount = 1;
+                                            $scope.allSessionEvent.group.push(eventByPath);
                                         }
-                                    if (flag) {
-                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                        eventByPath.readCount = 1;
-                                        $scope.allSessionEvent.group.push(eventByPath);
                                     }
-                                }
-                            } else if (evnType == 'JobChainStateChanged') {
-                                var type = "JobChain" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
-                                if (eventFilter.indexOf(type) != -1) {
-                                    var eventByPath = {};
-                                    eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
-                                    eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
-                                    eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
-                                    if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
-                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
-                                    } else {
-                                        eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
-                                    }
-                                    eventByPath.events = [];
-                                    eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
-                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                        eventByPath.events[m].read = false;
-                                    }
-                                    var flag = true;
-                                    if ($scope.allSessionEvent.group != undefined)
-                                        for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
-                                            if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
-                                                for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                    if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
+                                } else if (evnType == 'JobChainStateChanged') {
+                                    var type = "JobChain" + vm.allEvents[i].eventSnapshots[j].state.charAt(0).toUpperCase() + vm.allEvents[i].eventSnapshots[j].state.slice(1);
+                                    if (eventFilter.indexOf(type) != -1) {
+                                        var eventByPath = {};
+                                        eventByPath.jobschedulerId = vm.allEvents[i].jobschedulerId;
+                                        eventByPath.eventId = vm.allEvents[i].eventSnapshots[j].eventId;
+                                        eventByPath.objectType = vm.allEvents[i].eventSnapshots[j].objectType;
+                                        if (vm.allEvents[i].eventSnapshots[j].path.indexOf(',') != -1) {
+                                            eventByPath.path = vm.allEvents[i].eventSnapshots[j].path.substring(0, vm.allEvents[i].eventSnapshots[j].path.lastIndexOf(','));
+                                        } else {
+                                            eventByPath.path = vm.allEvents[i].eventSnapshots[j].path;
+                                        }
+                                        eventByPath.events = [];
+                                        eventByPath.events.push(vm.allEvents[i].eventSnapshots[j]);
+                                        for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                            eventByPath.events[m].read = false;
+                                        }
+                                        var flag = true;
+                                        if ($scope.allSessionEvent.group != undefined)
+                                            for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
+                                                if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
+                                                    for (var m = 0; m <= eventByPath.events.length - 1; m++) {
+                                                        if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
-                                                        $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                                        eventByPath.events[m].read = false;
+                                                            $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
+                                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                            eventByPath.events[m].read = false;
 
-                                                        $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
-                                                        $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                            $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                            $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                        }
                                                     }
+                                                    flag = false;
                                                 }
-                                                flag = false;
                                             }
+                                        if (flag) {
+                                            eventByPath.readCount = 1;
+                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                            $scope.allSessionEvent.group.push(eventByPath);
                                         }
-                                    if (flag) {
-                                        eventByPath.readCount = 1;
-                                        $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                        $scope.allSessionEvent.group.push(eventByPath);
                                     }
                                 }
                             }
                         }
-                        }
                     }
                 }
-                $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
+                $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify($scope.allSessionEvent));
             }
         }
 
@@ -1053,12 +1064,12 @@
         vm.expandNotification = function (group) {
             vm.showEvent = !vm.showEvent;
             vm.showGroupEvent = group;
-            $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
+            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify($scope.allSessionEvent));
 
         };
         vm.collapseNotification = function () {
             vm.showEvent = !vm.showEvent;
-            $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify($scope.allSessionEvent);
+            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify($scope.allSessionEvent));
         };
 
         vm.updateAllEvent = function (event) {
@@ -1142,7 +1153,7 @@
                 }
                 allSessionEvent.eventUnReadCount = 0;
             }
-            $window.sessionStorage.$SOS$ALLEVENT = JSON.stringify(allSessionEvent);
+            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify(allSessionEvent));
 
 
         };
@@ -1410,7 +1421,7 @@
 
                 });
             } else {
-                if(arr.period) {
+                if (arr.period) {
                     var flag = arr.period._single_start == vm.updateTime.obj._period._single_start || arr.period._absolute_repeat == vm.updateTime.obj._period._absolute_repeat ||
                         arr.period._repeat == vm.updateTime.obj._period._repeat || arr.period._begin == vm.updateTime.obj._period._begin || arr.period._end == vm.updateTime.obj._period._end
                         || arr.period._when_holiday == vm.updateTime.obj._period._when_holiday;
@@ -1713,7 +1724,7 @@
                     var z = dom_document.getElementsByTagName("day");
                     for (var i = 0; i < z.length; i++) {
                         angular.forEach(z[i].attributes, function (value) {
-                            if(value.nodeName == 'day' && (value.nodeValue =='' || value.nodeValue =='undefined' || value.nodeValue ==undefined || value.nodeValue =='null' || value.nodeValue ==null)){
+                            if (value.nodeName == 'day' && (value.nodeValue == '' || value.nodeValue == 'undefined' || value.nodeValue == undefined || value.nodeValue == 'null' || value.nodeValue == null)) {
                                 z[i].removeAttribute('day');
                             }
                         });
@@ -1960,7 +1971,7 @@
                                                         });
                                                     });
                                                 } else {
-                                                    if(val.period) {
+                                                    if (val.period) {
                                                         if (val.period._single_start) {
                                                             str = str + ' single start at ' + val.period._single_start;
                                                         }
@@ -2033,7 +2044,7 @@
                                                         });
                                                 });
                                             } else {
-                                                if(value1.period) {
+                                                if (value1.period) {
                                                     if (value1.period._single_start) {
                                                         str = str + ' single start at ' + value1.period._single_start;
                                                     }
@@ -2111,7 +2122,7 @@
                                                         });
                                                 });
                                             } else {
-                                                if(val.period) {
+                                                if (val.period) {
                                                     if (val.period._single_start) {
                                                         str = str + ' single start at ' + val.period._single_start;
                                                     }
@@ -2177,7 +2188,7 @@
                                                 });
                                             });
                                         } else {
-                                            if(res.weekdays.day.period) {
+                                            if (res.weekdays.day.period) {
                                                 if (res.weekdays.day.period._single_start) {
                                                     str = str + ' single start at ' + res.weekdays.day.period._single_start;
                                                 }
@@ -2256,7 +2267,7 @@
                                                         });
                                                     });
                                                 } else {
-                                                    if(val.period) {
+                                                    if (val.period) {
                                                         if (val.period._single_start) {
                                                             str = str + ' single start at ' + val.period._single_start;
                                                         }
@@ -2328,7 +2339,7 @@
                                                     });
                                                 });
                                             } else {
-                                                if(value1.period) {
+                                                if (value1.period) {
                                                     if (value1.period._single_start) {
                                                         str = str + ' single start at ' + value1.period._single_start;
                                                     }
@@ -2401,7 +2412,7 @@
                                                     });
                                                 });
                                             } else {
-                                                if(val.period) {
+                                                if (val.period) {
                                                     if (val.period._single_start) {
                                                         str = str + ' single start at ' + val.period._single_start;
                                                     }
@@ -2470,7 +2481,7 @@
                                                 });
                                             });
                                         } else {
-                                            if(res.ultimos.day.period) {
+                                            if (res.ultimos.day.period) {
                                                 if (res.ultimos.day.period._single_start) {
                                                     str = str + ' single start at ' + res.ultimos.day.period._single_start;
                                                 }
@@ -2547,7 +2558,7 @@
                                                         });
                                                     });
                                                 } else {
-                                                    if(val.period) {
+                                                    if (val.period) {
                                                         if (val.period._single_start) {
                                                             str = str + ' single start at ' + val.period._single_start;
                                                         }
@@ -2613,7 +2624,7 @@
                                                     });
                                                 });
                                             } else {
-                                                if(value1.period) {
+                                                if (value1.period) {
                                                     if (value1.period._single_start) {
                                                         str = str + ' single start at ' + value1.period._single_start;
                                                     }
@@ -2686,7 +2697,7 @@
                                                     });
                                                 });
                                             } else {
-                                                if(val.period) {
+                                                if (val.period) {
                                                     if (val.period._single_start) {
                                                         str = str + ' single start at ' + val.period._single_start;
                                                     }
@@ -2754,7 +2765,7 @@
                                                 });
                                             });
                                         } else {
-                                            if(res.monthdays.day.period) {
+                                            if (res.monthdays.day.period) {
                                                 if (res.monthdays.day.period._single_start) {
                                                     str = str + ' single start at ' + res.monthdays.day.period._single_start;
                                                 }
@@ -2842,12 +2853,12 @@
                                 }
 
                             }
-                                vm.runtimeList.push({
-                                    runTime: str, obj: {
-                                        _day: res._day,
-                                        _period: res.period
-                                    }, type: 'weekdays'
-                                });
+                            vm.runtimeList.push({
+                                runTime: str, obj: {
+                                    _day: res._day,
+                                    _period: res.period
+                                }, type: 'weekdays'
+                            });
 
                         }
                     }
@@ -2907,12 +2918,12 @@
 
 
                                 }
-                                  vm.runtimeList.push({
-                                        runTime: str, obj: {
-                                            _day: res._day,
-                                            _period: res.period
-                                        }, type: 'monthdays'
-                                    });
+                                vm.runtimeList.push({
+                                    runTime: str, obj: {
+                                        _day: res._day,
+                                        _period: res.period
+                                    }, type: 'monthdays'
+                                });
                             }
 
 
@@ -2980,13 +2991,13 @@
 
 
                                     }
-                                        vm.runtimeList.push({
-                                            runTime: str, obj: {
-                                                _day: value._day,
-                                                _period: value.period,
-                                                _which: value._which
-                                            }, type: 'weekday'
-                                        });
+                                    vm.runtimeList.push({
+                                        runTime: str, obj: {
+                                            _day: value._day,
+                                            _period: value.period,
+                                            _which: value._which
+                                        }, type: 'weekday'
+                                    });
                                 }
                             }
                         }
@@ -3048,15 +3059,15 @@
                                         str = str + ' and end at ' + res.period._end;
                                     }
                                 }
-                                                                    vm.runtimeList.push(
-                                        {
-                                            runTime: str,
-                                            obj: {
-                                                _day: res._day,
-                                                _period: res.period
-                                            },
-                                            type: 'ultimos'
-                                        });
+                                vm.runtimeList.push(
+                                    {
+                                        runTime: str,
+                                        obj: {
+                                            _day: res._day,
+                                            _period: res.period
+                                        },
+                                        type: 'ultimos'
+                                    });
                             }
 
 
@@ -3868,7 +3879,6 @@
             }
 
 
-
             var temp = angular.copy(vm.runTime);
 
             vm.runTime = {};
@@ -4282,8 +4292,8 @@
         vm.removeCalendarFile = function (index) {
             vm.calendarFiles.splice(index, 1);
         };
-             vm.specificWeekDays= false;
-             vm.weekdays= false;
+        vm.specificWeekDays = false;
+        vm.weekdays = false;
         vm.editRunTime = function (data) {
 
             vm.updateTime = angular.copy(data);
@@ -4297,12 +4307,12 @@
             vm.runTime = {};
             var runTime = {};
             selectedMonths = [];
-             vm.specificWeekDays= false;
-             vm.weekdays= false;
-            if(vm.updateTime.type == 'weekdays'){
-                vm.specificWeekDays= true;
-            }else{
-                vm.weekdays= true;
+            vm.specificWeekDays = false;
+            vm.weekdays = false;
+            if (vm.updateTime.type == 'weekdays') {
+                vm.specificWeekDays = true;
+            } else {
+                vm.weekdays = true;
             }
 
             if (!isEmpty(vm.updateTime.obj) && !angular.isArray(vm.updateTime.obj)) {
@@ -4402,7 +4412,7 @@
 
             var xml = x2js.xml_str2json(vm.xml);
             var _xml = xml.run_time || xml.schedule;
-            if(!xml){
+            if (!xml) {
                 return;
             }
             if (!isEmpty(data.obj) && !angular.isArray(data.obj)) {
@@ -4501,7 +4511,7 @@
                                             }
                                         });
                                     } else {
-                                          if (val1.monthdays.day._day == data.obj._day) {
+                                        if (val1.monthdays.day._day == data.obj._day) {
                                             if (angular.isArray(val1.monthdays.day.period)) {
                                                 angular.forEach(val1.monthdays.day.period, function (x, i) {
                                                     if (x == data.obj._period || angular.equals(x, data.obj._period)) {
@@ -4524,111 +4534,111 @@
 
                         if (_xml.month._month == data.obj._month) {
 
-                                if (data.type2 == 'weekdays') {
-                                    if (angular.isArray(_xml.month.weekdays.day)) {
-                                        angular.forEach(_xml.month.weekdays.day, function (val, index) {
-                                            if (val._day == data.obj._day) {
-                                                if (angular.isArray(val.period)) {
-                                                    angular.forEach(val.period, function (x, i) {
-                                                        if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                                            _xml.month.weekdays.day[index].period.splice(i, 1);
-                                                        }
-                                                    });
-                                                } else {
-                                                    if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
-                                                        _xml.month.weekdays.day.splice(index, 1);
-                                                    }
-                                                }
-
-                                            }
-                                        });
-                                    } else {
-
-                                          if (_xml.month.weekdays.day._day == data.obj._day) {
-                                            if (angular.isArray(_xml.month.weekdays.day.period)) {
-                                                angular.forEach(_xml.month.weekdays.day.period, function (x, i) {
+                            if (data.type2 == 'weekdays') {
+                                if (angular.isArray(_xml.month.weekdays.day)) {
+                                    angular.forEach(_xml.month.weekdays.day, function (val, index) {
+                                        if (val._day == data.obj._day) {
+                                            if (angular.isArray(val.period)) {
+                                                angular.forEach(val.period, function (x, i) {
                                                     if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                                        _xml.month.weekdays.day.period.splice(i, 1);
+                                                        _xml.month.weekdays.day[index].period.splice(i, 1);
                                                     }
                                                 });
                                             } else {
-                                                if (_xml.month.weekdays.day.period == data.obj._period || angular.equals(_xml.month.weekdays.day.period, data.obj._period)) {
-                                                    delete _xml.month ['weekdays'];
+                                                if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
+                                                    _xml.month.weekdays.day.splice(index, 1);
                                                 }
                                             }
+
                                         }
-                                    }
+                                    });
+                                } else {
 
-                                } else if (data.type2 == 'ultimos') {
-
-                                    if (angular.isArray(_xml.month.ultimos.day)) {
-                                        angular.forEach(_xml.month.ultimos.day, function (val, index) {
-                                            if (val._day == data.obj._day) {
-                                                if (angular.isArray(val.period)) {
-                                                    angular.forEach(val.period, function (x, i) {
-                                                        if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                                            _xml.month.ultimos.day[index].period.splice(i, 1);
-                                                        }
-                                                    });
-                                                } else {
-                                                    if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
-                                                        _xml.month.ultimos.day.splice(index, 1);
-                                                    }
+                                    if (_xml.month.weekdays.day._day == data.obj._day) {
+                                        if (angular.isArray(_xml.month.weekdays.day.period)) {
+                                            angular.forEach(_xml.month.weekdays.day.period, function (x, i) {
+                                                if (x == data.obj._period || angular.equals(x, data.obj._period)) {
+                                                    _xml.month.weekdays.day.period.splice(i, 1);
                                                 }
-                                            }
-                                        });
-                                    } else {
-                                         if (_xml.month.ultimos.day._day == data.obj._day) {
-                                            if (angular.isArray(_xml.month.ultimos.day.period)) {
-                                                angular.forEach(_xml.month.ultimos.day.period, function (x, i) {
-                                                    if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                                        _xml.month.ultimos.day.period.splice(i, 1);
-                                                    }
-                                                });
-                                            } else {
-                                                if (_xml.month.ultimos.day.period == data.obj._period || angular.equals(_xml.month.ultimos.day.period, data.obj._period)) {
-                                                    delete _xml.month ['ultimos'];
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else if (data.type2 == 'monthdays') {
-
-                                    if (angular.isArray(_xml.month.monthdays.day)) {
-                                        angular.forEach(_xml.month.monthdays.day, function (val, index) {
-                                            if (val._day == data.obj._day) {
-                                                if (angular.isArray(val.period)) {
-                                                    angular.forEach(val.period, function (x, i) {
-                                                        if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                                            _xml.month.monthdays.day[index].period.splice(i, 1);
-                                                        }
-                                                    });
-                                                } else {
-                                                    if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
-                                                        _xml.month.monthdays.day.splice(index, 1);
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                       if (_xml.month.monthdays.day._day == data.obj._day) {
-                                            if (angular.isArray(_xml.month.monthdays.day.period)) {
-                                                angular.forEach(_xml.month.monthdays.day.period, function (x, i) {
-                                                    if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                                        _xml.month.monthdays.day.period.splice(i, 1);
-                                                    }
-                                                });
-                                            } else {
-                                                if (_xml.month.monthdays.day.period == data.obj._period || angular.equals(_xml.month.monthdays.day.period, data.obj._period)) {
-                                                    delete _xml.month ['monthdays'];
-                                                }
+                                            });
+                                        } else {
+                                            if (_xml.month.weekdays.day.period == data.obj._period || angular.equals(_xml.month.weekdays.day.period, data.obj._period)) {
+                                                delete _xml.month ['weekdays'];
                                             }
                                         }
                                     }
                                 }
 
+                            } else if (data.type2 == 'ultimos') {
 
+                                if (angular.isArray(_xml.month.ultimos.day)) {
+                                    angular.forEach(_xml.month.ultimos.day, function (val, index) {
+                                        if (val._day == data.obj._day) {
+                                            if (angular.isArray(val.period)) {
+                                                angular.forEach(val.period, function (x, i) {
+                                                    if (x == data.obj._period || angular.equals(x, data.obj._period)) {
+                                                        _xml.month.ultimos.day[index].period.splice(i, 1);
+                                                    }
+                                                });
+                                            } else {
+                                                if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
+                                                    _xml.month.ultimos.day.splice(index, 1);
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    if (_xml.month.ultimos.day._day == data.obj._day) {
+                                        if (angular.isArray(_xml.month.ultimos.day.period)) {
+                                            angular.forEach(_xml.month.ultimos.day.period, function (x, i) {
+                                                if (x == data.obj._period || angular.equals(x, data.obj._period)) {
+                                                    _xml.month.ultimos.day.period.splice(i, 1);
+                                                }
+                                            });
+                                        } else {
+                                            if (_xml.month.ultimos.day.period == data.obj._period || angular.equals(_xml.month.ultimos.day.period, data.obj._period)) {
+                                                delete _xml.month ['ultimos'];
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (data.type2 == 'monthdays') {
+
+                                if (angular.isArray(_xml.month.monthdays.day)) {
+                                    angular.forEach(_xml.month.monthdays.day, function (val, index) {
+                                        if (val._day == data.obj._day) {
+                                            if (angular.isArray(val.period)) {
+                                                angular.forEach(val.period, function (x, i) {
+                                                    if (x == data.obj._period || angular.equals(x, data.obj._period)) {
+                                                        _xml.month.monthdays.day[index].period.splice(i, 1);
+                                                    }
+                                                });
+                                            } else {
+                                                if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
+                                                    _xml.month.monthdays.day.splice(index, 1);
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    if (_xml.month.monthdays.day._day == data.obj._day) {
+                                        if (angular.isArray(_xml.month.monthdays.day.period)) {
+                                            angular.forEach(_xml.month.monthdays.day.period, function (x, i) {
+                                                if (x == data.obj._period || angular.equals(x, data.obj._period)) {
+                                                    _xml.month.monthdays.day.period.splice(i, 1);
+                                                }
+                                            });
+                                        } else {
+                                            if (_xml.month.monthdays.day.period == data.obj._period || angular.equals(_xml.month.monthdays.day.period, data.obj._period)) {
+                                                delete _xml.month ['monthdays'];
+                                            }
+                                        }
+                                    }
+                                }
                             }
+
+
+                        }
                     }
 
                 } else if (data.type == 'weekdays') {
@@ -4636,12 +4646,12 @@
                         angular.forEach(_xml.weekdays.day, function (val, index) {
                             if (val._day == data.obj._day) {
                                 if (angular.isArray(val.period)) {
-                                    angular.forEach(val.period, function (x,i) {
+                                    angular.forEach(val.period, function (x, i) {
                                         if (x == data.obj._period || angular.equals(x, data.obj._period)) {
                                             _xml.weekdays.day[index].period.splice(i, 1);
                                         }
                                     });
-                                }else{
+                                } else {
                                     if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
                                         _xml.weekdays.day.splice(index, 1);
                                     }
@@ -4705,19 +4715,19 @@
 
                     if (angular.isArray(_xml.monthdays.day)) {
                         angular.forEach(_xml.monthdays.day, function (val, index) {
-                             if (val._day == data.obj._day) {
-                                 if (angular.isArray(val.period)) {
-                                     angular.forEach(val.period, function (x, i) {
-                                         if (x == data.obj._period || angular.equals(x, data.obj._period)) {
-                                             _xml.monthdays.day[index].period.splice(i, 1);
-                                         }
-                                     });
-                                 } else {
-                                     if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
-                                         _xml.monthdays.day.splice(index, 1);
-                                     }
-                                 }
-                             }
+                            if (val._day == data.obj._day) {
+                                if (angular.isArray(val.period)) {
+                                    angular.forEach(val.period, function (x, i) {
+                                        if (x == data.obj._period || angular.equals(x, data.obj._period)) {
+                                            _xml.monthdays.day[index].period.splice(i, 1);
+                                        }
+                                    });
+                                } else {
+                                    if (val.period == data.obj._period || angular.equals(val.period, data.obj._period)) {
+                                        _xml.monthdays.day.splice(index, 1);
+                                    }
+                                }
+                            }
                         });
                     } else {
 
@@ -4737,11 +4747,11 @@
                     }
                 } else if (data.type == 'weekday') {
 
-                    if(angular.isArray(_xml.monthdays.weekday)){
+                    if (angular.isArray(_xml.monthdays.weekday)) {
                         angular.forEach(_xml.monthdays.weekday, function (val, index) {
                             if (val._day == data.obj._day && val._which == data.obj._which) {
                                 if (angular.isArray(val.period)) {
-                                    angular.forEach(val.period, function (x,i) {
+                                    angular.forEach(val.period, function (x, i) {
 
                                         if (x == data.obj._period || angular.equals(x, data.obj._period)) {
                                             _xml.monthdays.weekday[index].period.splice(i, 1);
@@ -4755,7 +4765,7 @@
 
                             }
                         });
-                    }else{
+                    } else {
                         if (_xml.monthdays.weekday._day == data.obj._day && _xml.monthdays.weekday._which == data.obj._which) {
 
                             if (angular.isArray(_xml.monthdays.weekday.period)) {
@@ -4819,8 +4829,8 @@
             vm.editor.nextPage = false;
             vm.editor.create = false;
             vm.editor.update = false;
-            vm.specificWeekDays= false;
-            vm.weekdays= false;
+            vm.specificWeekDays = false;
+            vm.weekdays = false;
 
 
             if (isEmpty(vm.tempRunTime)) {
@@ -4871,12 +4881,12 @@
 
                     angular.forEach(vm.run_time.weekdays.day, function (value, index1) {
                         if (!angular.isArray(value.period)) {
-                             if(value.period && value.period._when_holiday == 'suppress')
-                            delete vm.run_time.weekdays.day[index1].period['_when_holiday'];
+                            if (value.period && value.period._when_holiday == 'suppress')
+                                delete vm.run_time.weekdays.day[index1].period['_when_holiday'];
                         } else {
-                            angular.forEach(value.period, function (val,index2) {
-                                if(val._when_holiday == 'suppress')
-                               delete vm.run_time.weekdays.day[index1].period[index2]['_when_holiday'];
+                            angular.forEach(value.period, function (val, index2) {
+                                if (val._when_holiday == 'suppress')
+                                    delete vm.run_time.weekdays.day[index1].period[index2]['_when_holiday'];
                             });
                         }
                     });
@@ -4890,16 +4900,16 @@
             if (!isEmpty(vm.run_time.monthdays)) {
                 if (!(vm.run_time.monthdays.weekday && vm.run_time.monthdays.weekday.length > 0)) {
                     delete vm.run_time.monthdays['weekday'];
-                }else {
+                } else {
                     angular.forEach(vm.run_time.monthdays.weekday, function (value, index1) {
 
                         if (!angular.isArray(value.period)) {
-                            if(value.period && value.period._when_holiday == 'suppress')
-                            delete vm.run_time.monthdays.weekday[index1].period['_when_holiday'];
+                            if (value.period && value.period._when_holiday == 'suppress')
+                                delete vm.run_time.monthdays.weekday[index1].period['_when_holiday'];
                         } else {
                             angular.forEach(value.period, function (val, index2) {
-                                if(val._when_holiday == 'suppress')
-                                delete vm.run_time.monthdays.weekday[index1].period[index2]['_when_holiday'];
+                                if (val._when_holiday == 'suppress')
+                                    delete vm.run_time.monthdays.weekday[index1].period[index2]['_when_holiday'];
                             });
                         }
                     });
@@ -4907,23 +4917,23 @@
                 if (!(vm.run_time.monthdays.day && (vm.run_time.monthdays.day.length > 0 || vm.run_time.monthdays.day._day))) {
                     if (!vm.run_time.monthdays.weekday) {
                         delete vm.run_time['monthdays'];
-                    }else{
-                        if(vm.run_time.monthdays.day.length==0 && vm.run_time.monthdays.weekday.length==0){
-                             delete vm.run_time['monthdays'];
+                    } else {
+                        if (vm.run_time.monthdays.day.length == 0 && vm.run_time.monthdays.weekday.length == 0) {
+                            delete vm.run_time['monthdays'];
                         }
                     }
-                }else{
-                     angular.forEach(vm.run_time.monthdays.day, function (value, index1) {
-                            if (!angular.isArray(value.period)) {
-                                if(value.period && value.period._when_holiday == 'suppress')
+                } else {
+                    angular.forEach(vm.run_time.monthdays.day, function (value, index1) {
+                        if (!angular.isArray(value.period)) {
+                            if (value.period && value.period._when_holiday == 'suppress')
                                 delete vm.run_time.monthdays.day[index1].period['_when_holiday'];
-                            } else {
-                                angular.forEach(value.period, function (val,index2) {
-                                    if(val._when_holiday == 'suppress')
+                        } else {
+                            angular.forEach(value.period, function (val, index2) {
+                                if (val._when_holiday == 'suppress')
                                     delete vm.run_time.monthdays.day[index1].period[index2]['_when_holiday'];
-                                });
-                            }
-                        });
+                            });
+                        }
+                    });
                 }
             } else {
                 delete vm.run_time['monthdays'];
@@ -4933,14 +4943,14 @@
                 if (!(vm.run_time.ultimos.day && (vm.run_time.ultimos.day.length > 0 || vm.run_time.ultimos.day._day))) {
                     delete vm.run_time['ultimos'];
                 } else {
-                    angular.forEach(vm.run_time.ultimos.day, function (value,index1) {
+                    angular.forEach(vm.run_time.ultimos.day, function (value, index1) {
                         if (!angular.isArray(value.period)) {
-                            if(value.period._when_holiday == 'suppress')
-                           delete vm.run_time.ultimos.day[index1].period['_when_holiday'];
+                            if (value.period._when_holiday == 'suppress')
+                                delete vm.run_time.ultimos.day[index1].period['_when_holiday'];
                         } else {
-                            angular.forEach(value.period, function (val,index2) {
-                                if(val._when_holiday == 'suppress')
-                                delete vm.run_time.ultimos.day[index1].period[index2]['_when_holiday'];
+                            angular.forEach(value.period, function (val, index2) {
+                                if (val._when_holiday == 'suppress')
+                                    delete vm.run_time.ultimos.day[index1].period[index2]['_when_holiday'];
                             });
                         }
                     });

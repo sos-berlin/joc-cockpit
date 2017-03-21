@@ -305,7 +305,7 @@
                                         <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span></span>
                                     </td>
                                     <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
-                                    <td >
+                                    <td>
                                         <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
                                         <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
                                     </td>
