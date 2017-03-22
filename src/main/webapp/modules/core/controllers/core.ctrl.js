@@ -418,12 +418,12 @@
             } else {
                 var url = null;
                 if (order && order.historyId && order.orderId) {
-                    url = '#!/order/log/' + order.historyId + '/' + order.orderId + '?jobChain=' + order.jobChain;
+                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
                 } else if (task && task.taskId) {
                     if (task.job)
-                        url = '#!/job/log/' + task.taskId + '?job=' + task.job;
+                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job;
                     else
-                       url = '#!/job/log/' + task.taskId + '?job=' + job;
+                       url = '#!/job/log?taskId=' + task.taskId + '&job=' + job;
 
                 } else {
                     return;

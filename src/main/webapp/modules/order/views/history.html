@@ -443,16 +443,16 @@
                                  </tr>
                                  </thead>
                                  <tbody>
-                                 <tr ng-repeat="order in history.steps">
-                                     <td>{{order.step}}</td>
-                                     <td>{{order.node}}</td>
-                                     <td>{{order.job}}</td>
-                                     <td>{{order.startTime | stringToDate}}</td>
-                                     <td>{{order.endTime  | stringToDate}}</td>
-                                     <td>{{order.startTime | duration:order.endTime}}</td>
-                                     <td>{{order.exitCode}}</td>
-                                     <td>{{order.error.code}}</td>
-                                     <td class="text-danger">{{order.error.message}}</td>
+                                 <tr ng-repeat="step in history.steps" class="cursor">
+                                     <td ng-click="showLogWindow(null,step)">{{step.step}}</td>
+                                     <td ng-click="showLogWindow(null,step)">{{step.node}}</td>
+                                     <td ng-click="showLogWindow(null,step)"><a ng-click="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
+                                     <td ng-click="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
+                                     <td ng-click="showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
+                                     <td ng-click="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
+                                     <td ng-click="showLogWindow(null,step)">{{step.exitCode}}</td>
+                                     <td ng-click="showLogWindow(null,step)">{{step.error.code}}</td>
+                                     <td ng-click="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
                                  </tr>
                                  </tbody>
                              </table>

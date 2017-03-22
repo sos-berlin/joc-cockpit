@@ -285,7 +285,7 @@
             })
 
             .state('app.orderLog', {
-                url: '/order/log/:historyId/:orderId',
+                url: '/order/log',
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
                 ncyBreadcrumb: {
@@ -293,7 +293,7 @@
                 }
             })
             .state('app.jobLog', {
-                url: '/job/log/:taskId',
+                url: '/job/log',
                 templateUrl: 'modules/order/views/log.html',
                 controller: 'LogCtrl',
                 ncyBreadcrumb: {

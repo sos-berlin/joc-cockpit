@@ -7156,8 +7156,8 @@ vm.loadHistory=loadHistory;
         });
     }
 
-    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$stateParams", "$location", "FileSaver", "Blob", "$sce","$timeout"];
-    function LogCtrl($scope, OrderService, TaskService, $stateParams, $location, FileSaver, Blob, $sce,$timeout) {
+    LogCtrl.$inject = ["$scope", "OrderService", "TaskService", "$location", "FileSaver", "Blob", "$sce","$timeout"];
+    function LogCtrl($scope, OrderService, TaskService, $location, FileSaver, Blob, $sce,$timeout) {
         var vm = $scope;
         vm.isLoading = false;
 
@@ -7177,8 +7177,8 @@ vm.loadHistory=loadHistory;
             var orders = {};
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.jobChain = vm.jobChain;
-            orders.orderId = $stateParams.orderId;
-            orders.historyId = $stateParams.historyId;
+            orders.orderId = object.orderId;
+            orders.historyId = object.historyId;
             orders.mime = ['HTML'];
             OrderService.log(orders).then(function (res) {
                 if (res.log)
@@ -7198,7 +7198,7 @@ vm.loadHistory=loadHistory;
             vm.job = object.job;
             var jobs = {};
             jobs.jobschedulerId = $scope.schedulerIds.selected;
-            jobs.taskId = $stateParams.taskId;
+            jobs.taskId = object.taskId;
             jobs.mime = ['HTML'];
             TaskService.log(jobs).then(function (res) {
                 if (res.log)
@@ -7212,12 +7212,12 @@ vm.loadHistory=loadHistory;
                 vm.isLoading = true;
             });
         };
-        if ($stateParams.historyId) {
-            vm.orderId = $stateParams.orderId;
+        if (object.historyId) {
+            vm.orderId = object.orderId;
             vm.loadOrderLog();
         }
         else {
-            vm.taskId = $stateParams.taskId;
+            vm.taskId = object.taskId;
             vm.loadJobLog();
         }
         $scope.$on('$destroy', function () {

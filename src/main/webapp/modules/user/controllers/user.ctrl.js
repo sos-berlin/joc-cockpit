@@ -604,7 +604,7 @@
             vm.showSearchPanel = false;
             vm.auditSearch = {};
             auditSearch = false;
-
+            vm.load();
         };
 
         vm.exportToExcel = function () {

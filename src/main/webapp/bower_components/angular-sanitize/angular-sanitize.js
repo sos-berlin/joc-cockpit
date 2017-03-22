@@ -681,11 +681,16 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 
             if (text == null || text === '') return text;
             if (!isString(text)) throw linkyMinErr('notstring', 'Expected string but received: {0}', text);
-            var pattern = /<a\s.*?<\/a>/;
+            var pattern = /<a\s.*?<\/a>/g;
             var index = text.search(pattern);
+            var x = [];
 
             if (index != -1) {
-                return text.replace('<a ', '<a class="text-u-l text-hover-primary" target="_blank" ');
+              text.match(pattern)
+                  .map(function (val,index) {
+                    x.push(val);
+                    text = text.replace(val, '$SOS$'+index);
+                  });
             }
 
             var attributesFn =
@@ -715,6 +720,16 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
                 raw = raw.substring(i + match[0].length);
             }
             addText(raw);
+            if (index != -1) {
+              var temp = html.join('');
+              for(var j=0; j< x.length;j++) {
+                temp = temp.replace('$SOS$'+j, x[j]);
+                temp =  temp.replace(/<a/g, '<a class="text-u-l text-hover-primary" target="_blank" ');
+              }
+
+              return $sanitize(temp);
+            }
+
 
             return $sanitize(html.join(''));
 

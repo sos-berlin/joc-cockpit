@@ -3058,7 +3058,7 @@
                     }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                          isLoadedDailyPlan = false;
                         vm.getDailyPlans();
-                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && isLoadedAgentCluster) {
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (isLoadedAgentCluster || isLoadedRunningTask)) {
                          isLoadedAgentCluster = false;
                          vm.getAgentCluster();
                          vm.getAgentClusterRunningTask();
