@@ -951,5 +951,8 @@
   "button.expandDetails": "Details ausklappen",
   "button.collapseDetails": "Details einklappen",
   "label.ofJobChain": "der Job-Kette",
-  "label.stateText": "State Text"
+  "label.stateText": "State Text",
+  "label.themeTitle": "Theme Title",
+  "label.lightBlue": "Light Blue",
+  "label.white": "White"
 }

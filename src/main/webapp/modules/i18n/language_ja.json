@@ -951,5 +951,8 @@
   "button.expandDetails": "詳細表示",
   "button.collapseDetails": "詳細非表示",
   "label.ofJobChain": "ジョブチェーン",
-  "label.stateText": "State Text"
+  "label.stateText": "State Text",
+  "label.themeTitle": "Theme Title",
+  "label.lightBlue": "Light Blue",
+  "label.white": "White"
 }

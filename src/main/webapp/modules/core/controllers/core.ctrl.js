@@ -142,11 +142,11 @@
                 var headerHt = $('.app-header').height() || 60;
                 //var footerHt = $('.app-footer').height() || 30;
                 var topHeaderHt = $('.top-header-bar').height() || 16;
-                var subHeaderHt = 58;
+                var subHeaderHt = 59;
                 var ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt));
                 $('.max-ht').css('height', ht + 'px');
-                $('.max-ht2').css('height', ht - 54 + 'px');
-                $('.max-tree-ht').css('height', ht - 42 + 'px');
+                $('.max-ht2').css('height', ht - 55 + 'px');
+                $('.max-tree-ht').css('height', ht - 43 + 'px');
             } else {
                 $('.max-ht').css('height', 'auto');
                 $('.max-ht2').css('height', 'auto');

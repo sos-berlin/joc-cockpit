@@ -687,9 +687,10 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
 
             if (index != -1) {
               text.match(pattern)
-                  .map(function (val,index) {
+                  .map(function (val, index) {
+
                     x.push(val);
-                    text = text.replace(val, '$SOS$'+index);
+                    text = text.replace(val, '$SOS$' + index);
                   });
             }
 
@@ -723,8 +724,9 @@ angular.module('ngSanitize').filter('linky', ['$sanitize', function($sanitize) {
             if (index != -1) {
               var temp = html.join('');
               for(var j=0; j< x.length;j++) {
-                temp = temp.replace('$SOS$'+j, x[j]);
-                temp =  temp.replace(/<a/g, '<a class="text-u-l text-hover-primary" target="_blank" ');
+                temp = temp.replace('$SOS$' + j, x[j]);
+                temp = temp.replace(/(href=\s*[' "]\s*)www\./g, '\$1http://www.');
+                temp = temp.replace(/<a/g, '<a class="text-u-l text-hover-primary" target="_blank" ');
               }
 
               return $sanitize(temp);

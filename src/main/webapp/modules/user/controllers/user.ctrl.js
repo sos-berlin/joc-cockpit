@@ -167,6 +167,17 @@
         vm.changeTheme = function (theme) {
             document.getElementById('style-color').href = 'css/' + theme + '-style.css';
             $window.localStorage.$SOS$THEME = theme;
+            if (theme == 'lighter') {
+                $('#orders_id img').attr("src", 'images/order.png');
+                $('#jobs_id img').attr("src", 'images/job.png');
+                $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
+                $('#resources_id img').attr("src", 'images/resources1.png');
+            }else{
+                  $('#orders_id img').attr("src", 'images/order1.png');
+                $('#jobs_id img').attr("src", 'images/job1.png');
+                $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
+                $('#resources_id img').attr("src", 'images/resources.png');
+            }
             configObj.configurationItem = JSON.stringify(vm.preferences);
              $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
