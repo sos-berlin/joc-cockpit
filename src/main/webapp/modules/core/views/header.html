@@ -4,7 +4,7 @@
         <i class="fa fa-navicon text-white"></i>
     </a>
     <!-- brand -->
-    <a class="navbar-brand white">
+    <a class="navbar-brand white fa-fa-color b-b-transparent p-l-3">
         <img class="cursor" ng-click="about()" src="images/jobscheduler-logo.png" alt="JobScheduler">
     </a>
     <!-- / brand -->
@@ -182,47 +182,47 @@
         <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.dashboard" ui-sref-active="active">
-                    <span class="nav-text">
+                    <span class="nav-text" id="dashboard_id">
                          <i class="fa fa-dashboard text-white dashboard-icon" ></i>
-                        <span id="dashboard_id" class="font11 text-white text-u-c _600" translate>label.dashboard</span>
+                        <span  class="font11 text-white text-u-c _600" translate>label.dashboard</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item" ng-if="permission.DailyPlan.view.status">
                 <a class="nav-link" ui-sref="app.dailyPlan" ui-sref-active="active">
-                    <span class="nav-text">
+                    <span class="nav-text" id="dailyPlan_id">
                          <img src="images/daily_plan.png" width="15" height="16">
-                        <span id="dailyPlan_id" class="font11 text-white text-u-c _600" translate>label.dailyPlan</span>
+                        <span  class="font11 text-white text-u-c _600" translate>label.dailyPlan</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item" ng-if="permission.JobChain.view.status">
                 <a class="nav-link" ui-sref="app.jobChains" ui-sref-active-eq="active">
-                    <span class="nav-text ">
+                    <span class="nav-text " id="jobChain_id">
                         <i class="fa fa-chain text-white jobchain-icon"></i>
-                        <span id="jobChain_id" class="font11 text-white text-u-c _600" translate>label.jobChains</span>
+                        <span  class="font11 text-white text-u-c _600" translate>label.jobChains</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item" ng-if="permission.Order.view.status">
                 <a class="nav-link" ui-sref="app.orders" ui-sref-active="active">
-                    <span class="nav-text ">
+                    <span class="nav-text " id="orders_id" >
                         <img src="images/order1.png" width="18" height="22" class="order-icon">
-                        <span id="orders_id" class="font11 text-white text-u-c _600" translate>label.orders</span>
+                        <span class="font11 text-white text-u-c _600" translate>label.orders</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item" ng-if="permission.Job.view.status">
                 <a class="nav-link" ui-sref="app.jobs" ui-sref-active="active">
-                    <span class="nav-text ">
+                    <span class="nav-text " id="jobs_id">
                         <img src="images/job1.png" width="22" height="21" class="job-icon">
-                        <span id="jobs_id" class="font11 text-white text-u-c _600" translate>label.jobs</span>
+                        <span  class="font11 text-white text-u-c _600" translate>label.jobs</span>
                     </span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" ng-click="navigateToResource()" ui-sref-active-eq="active">
-                    <span class="nav-text" >
+                    <span class="nav-text" id="resources_id">
                         <img src="images/resources.png">
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
                     </span>
@@ -258,4 +258,13 @@
     $("#notification").click(function (e) {
         e.stopPropagation();
     });
+
+    window.setTimeout(function () {
+        if (window.localStorage.$SOS$THEME == 'lighter') {
+            $('#orders_id img').attr("src", 'images/order.png');
+            $('#jobs_id img').attr("src", 'images/job.png');
+            $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
+            $('#resources_id img').attr("src", 'images/resources1.png');
+        }
+    }, 0);
 </script>

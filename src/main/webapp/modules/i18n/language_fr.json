@@ -951,5 +951,8 @@
   "button.expandDetails": "Développer les Détails",
   "button.collapseDetails": "Déplier les Détails",
   "label.ofJobChain": "de la Chaîne des Tâches",
-  "label.stateText": "State Text"
+  "label.stateText": "State Text",
+  "label.themeTitle": "Theme Title",
+  "label.lightBlue": "Light Blue",
+  "label.white": "White"
 }

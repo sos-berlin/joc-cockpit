@@ -674,7 +674,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr ng-repeat="history in historys" ng-click="showLogWindow(history,null)" class="cursor">
+                                                        <tr ng-repeat="history in historys | orderBy: 'startTime':true" ng-click="showLogWindow(history,null)" class="cursor">
                                                             <td ng-bind="history.orderId"></td>
                                                             <td><span class="label" ng-bind="history.state._text | translate"
                                                                       ng-class="bgColorFunction(history.state.severity)"></span>

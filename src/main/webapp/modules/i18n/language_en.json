@@ -951,5 +951,8 @@
   "button.expandDetails": "Expand Details",
   "button.collapseDetails": "Collapse Details",
   "label.ofJobChain": "of Job Chain",
-  "label.stateText": "State Text"
+  "label.stateText": "State Text",
+  "label.themeTitle": "Theme Title",
+  "label.lightBlue": "Light Blue",
+  "label.white": "White"
 }

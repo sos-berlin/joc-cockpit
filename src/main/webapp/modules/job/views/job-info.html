@@ -233,7 +233,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="task in taskHistory" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
+                                                        <tr ng-repeat="task in taskHistory | orderBy: 'startTime':true" class="cursor" ng-click="showLogWindow(null,task)" title="Show logs">
                                                            <td>{{task.taskId}}</td>
                                                            <td><span class="label" ng-class="bgColorFunction(task.state.severity)">{{task.state._text | translate}}</span></td>
                                                            <td>{{task.startTime | stringToDate}}</td>

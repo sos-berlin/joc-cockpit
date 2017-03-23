@@ -796,7 +796,7 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <tr ng-repeat="history in historys"
+                                                    <tr ng-repeat="history in historys | orderBy: 'startTime':true"
                                                         ng-click="showLogWindow(history,null)" class="cursor">
                                                         <td ng-bind="history.orderId"></td>
                                                         <td>
