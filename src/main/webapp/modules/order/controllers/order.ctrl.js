@@ -3160,8 +3160,11 @@ vm.loadHistory=loadHistory;
                     $rootScope.order_expand_to = '';
                     vm.flag = true;
                 }
+                if(splitPath.length==1){
+                     value.selected1 = true;
+                }
                 value.expanded = true;
-                value.selected1 = true;
+
                 vm.allOrders = [];
                 checkExpand(value);
             });

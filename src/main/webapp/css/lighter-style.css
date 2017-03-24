@@ -3,7 +3,7 @@
 }
 
 .text-white, .text-white:hover, a[href]:hover span.text-white {
-    color: #3d464d !important;
+    color: #4d4d4d !important;
 }
 
 body, .box-footer, .fa-fa-color {
@@ -65,13 +65,29 @@ body, .box-footer, .fa-fa-color {
 
 }
 .modal-header{
-    background:#f2f2f2;
+    background:#f5f5f5;
     color:#3d464d
 }
 .more-option i,.more-option-h i{
     background-color:#fafafa;
 }
 .more-option i:hover,.more-option-h i:hover {
-    background: #f2f2f2
+    background: #f5f5f5
 }
-.table>tbody>tr{border-bottom:2px solid #f5f5f5}.table-bordered>tbody>tr{border-bottom:1px solid #f5f5f5;border-color:#f5f5f5}.table-bordered,.table>thead>tr>th{border-color:#f5f5f5}
+
+.table > tbody > tr {
+    border-bottom: 2px solid #f5f5f5
+}
+
+.table-bordered > tbody > tr {
+    border-bottom: 1px solid #f5f5f5;
+    border-color: #f5f5f5;
+}
+
+.table-bordered, .table > thead > tr > th {
+    border-color: #f5f5f5
+}
+button.primary{
+    color: #ffffff;
+}
+.close{color:#3d464d}

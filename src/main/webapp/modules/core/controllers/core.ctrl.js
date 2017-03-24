@@ -261,7 +261,17 @@
                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
                             }
                             $window.localStorage.$SOS$THEME = preferences.theme;
-
+                            if (preferences.theme == 'lighter') {
+                                $('#orders_id img').attr("src", 'images/order.png');
+                                $('#jobs_id img').attr("src", 'images/job.png');
+                                $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
+                                $('#resources_id img').attr("src", 'images/resources1.png');
+                            }else{
+                                  $('#orders_id img').attr("src", 'images/order1.png');
+                                $('#jobs_id img').attr("src", 'images/job1.png');
+                                $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
+                                $('#resources_id img').attr("src", 'images/resources.png');
+                            }
                             $window.localStorage.$SOS$LANG = preferences.locale;
 
                             $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {

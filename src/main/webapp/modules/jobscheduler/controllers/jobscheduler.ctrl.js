@@ -3910,20 +3910,13 @@
 
         };
 
-        var int = '';
+
         var isLoaded = true;
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType == 'DailyPlanChanged' && isLoaded) {
-                        isLoaded = false;
-                        if (int) {
-                            $timeout.cancel(int);
-                        }
-                        int = $timeout(function () {
-                            vm.getPlansByEvents();
-                            $timeout.cancel(int);
-                        }, 1000);
+                        vm.getPlansByEvents();
                         break;
                     }
                 }
@@ -3977,8 +3970,6 @@
         vm.$on('$destroy', function () {
             if (promise1)
                 $timeout.cancel(promise1);
-            if (int)
-                $timeout.cancel(int);
         });
 
 

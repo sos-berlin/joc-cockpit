@@ -614,9 +614,11 @@
                     splitPath = vm.expand_to.path.split('/');
                     $rootScope.expand_to = '';
                     vm.flag = true;
+                } if(splitPath.length==1){
+                    vm.tree[i].selected1 = true;
                 }
                 vm.tree[i].expanded = true;
-                vm.tree[i].selected1 = true;
+
                 vm.allJobChains = [];
                 checkExpand(vm.tree[i]);
 
@@ -3168,9 +3170,11 @@
                     splitPath = vm.expand_to.path.split('/');
                     $rootScope.job_expand_to = '';
                     vm.flag = true;
+                } if(splitPath.length==1){
+                    value.selected1 = true;
                 }
                 value.expanded = true;
-                value.selected1 = true;
+
                 vm.allJobs = [];
                 checkExpand(value);
             });
