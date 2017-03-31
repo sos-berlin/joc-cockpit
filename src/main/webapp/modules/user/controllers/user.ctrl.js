@@ -136,8 +136,8 @@
         vm.zones = moment.tz.names();
         vm.locales = $rootScope.locales;
 
+        if($window.sessionStorage.preferences)
         vm.preferences = JSON.parse($window.sessionStorage.preferences);
-
         vm.timezone = jstz().timezone_name;
         function setPreferences() {
             if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {

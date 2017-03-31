@@ -33,7 +33,10 @@
                                             <a class="dropdown-item" ng-click="ok();copyFilter(filter)" translate>button.copy</a>
                                             <a class="dropdown-item" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makePrivate && filter.shared" ng-click="makePrivate(filter)" translate>button.makePrivate</a>
                                             <a class="dropdown-item" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared && filter.account==username && !filter.shared" ng-click="makeShare(filter)" translate>button.share</a>
-                                            <a class="dropdown-item bg-hover-color" ng-if="permission.JOCConfigurations.share.change.delete || filter.account==username" ng-click="ok();deleteFilter(filter)" translate>button.delete</a>
+                                            <a class="dropdown-item bg-hover-color" ng-if="permission.JOCConfigurations.share.change.delete || filter.account==username" >
+                                                <span ng-if="filters.list.length==1" ng-click="ok();deleteFilter(filter)" translate>button.delete</span>
+                                                <span ng-if="filters.list.length>1" ng-click="deleteFilter(filter)" translate>button.delete</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </td>

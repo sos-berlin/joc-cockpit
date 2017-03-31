@@ -954,5 +954,11 @@
   "label.stateText": "State Text",
   "label.themeTitle": "Theme Title",
   "label.midnightBlue": "Midnight Blue",
-  "label.white": "White"
+  "label.white": "White",
+  "label.grey": "Grey",
+  "label.cyan": "Cyan",
+  "label.timeRangeFrom": "Time Range From",
+  "label.timeRangeTo": "Time Range To",
+  "placeholder.timeRangeFrom": "now-600, -1h, -1d, today",
+  "placeholder.timeRangeTo": "now+600,1h, 1d, today"
 }

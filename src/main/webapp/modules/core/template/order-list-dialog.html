@@ -75,7 +75,7 @@
                                                ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                             <a href class="dropdown-item" ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                ng-click="viewCalendar(order)" translate>button.showCalendar</a>
-                                            <a href class="dropdown-item bg-hover-color" ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
+                                            <a href class="dropdown-item bg-hover-color" ng-if="(order._type =='AD_HOC' || order._type == 'FILE_ORDER') && permission.Order.delete.permanent"
                                                ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                         </div>

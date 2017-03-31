@@ -168,8 +168,8 @@
         };
     }
 
-    flowDiagram.$inject = ["$compile", "$window", "gettextCatalog", "$timeout","$animate","SOSAuth","$rootScope"];
-    function flowDiagram($compile, $window, gettextCatalog, $timeout,$animate,SOSAuth,$rootScope) {
+    flowDiagram.$inject = ["$compile", "$window", "gettextCatalog", "$timeout","SOSAuth","$rootScope"];
+    function flowDiagram($compile, $window, gettextCatalog, $timeout,SOSAuth,$rootScope) {
         return {
             restrict: 'E',
             transclude: true,
@@ -1274,6 +1274,7 @@
 
 
                     vm.$on('reloadJobChain', function () {
+
                         vm.jobChain = JSON.parse(SOSAuth.jobChain);
                         if (vm.jobChainData)
                             var temp = vm.jobChainData.nodes;
@@ -1287,6 +1288,7 @@
                                     vm.jobChainData.nodes[index2] = item;
                                 }
                                 if (index1 == vm.jobChain.nodes.length - 1 && vm.jobChainData.nodes.length - 1 == index2) {
+                                     getInfo(0);
                                     updateJobChain();
                                 }
 
@@ -1477,7 +1479,7 @@
                                         + '<a class="hide" id="orderreset-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& permission.Order.reset}">' + gettextCatalog.getString("button.resetOrder") + '</a>'
                                         + '<a class="hide" id="orderremove-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.removeSetback}">' + gettextCatalog.getString("button.removeOrder") + '</a>'
                                         + '<a class="hide" id="calendar-' + order.orderId + '" ng-class="{\'show dropdown-item \':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& ' + order._type + '!==\'AD_HOC\' && permission.DailyPlan.view.status}">' + gettextCatalog.getString("button.showCalendar") + '</a>'
-                                        + '<a class="hide" id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \': permission.Order.delete.permanent && \'' + order._type + '\'==\'AD_HOC\'}">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
+                                        + '<a class="hide" id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \': permission.Order.delete.permanent && (\'' + order._type + '\'==\'AD_HOC\' || \'' + order._type + '\'==\'FILE_ORDER\') }">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
                                         + '<a class="dropdown-item" ng-click="copyLinkToObject({type:\'order\',path:\'' + order.path + '\'})" id="copyLinkToObject-' + order.orderId + '" >' + gettextCatalog.getString("button.copyLinkToObject") + '</a>'
                                         + '</div></div>';
                                     return menu;

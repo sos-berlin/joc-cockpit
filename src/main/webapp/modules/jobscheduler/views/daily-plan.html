@@ -8,6 +8,37 @@
                     </div>
                     <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
                         <div class="btn-group m-l-sm hidden-btn-group">
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="getPlans()" translate>button.allStatus
+                            </button>
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
+                            </button>
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'LATE'"
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='LATE'}" ng-click="getPlans()" translate>button.late
+                            </button>
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.executed
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.allStatus
+                                </a>
+                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.waiting
+                                </a>
+                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'LATE'"
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='LATE', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.late
+                                </a>
+                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='EXECUTED', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.executed
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today'}"
                                     ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.today
@@ -27,37 +58,6 @@
                                 </a>
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'next-24-hours'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours', 'disable-link':savedDailyPlanFilter.selected}" ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.next24
-                                </a>
-                            </div>
-                        </div>
-                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="getPlans()" translate>button.all
-                            </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
-                            </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'LATE'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='LATE'}" ng-click="getPlans()" translate>button.late
-                            </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
-                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.executed
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
-                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.all
-                                </a>
-                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
-                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.waiting
-                                </a>
-                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'LATE'"
-                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='LATE', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.late
-                                </a>
-                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
-                                   ng-class="{'btn-primary': dailyPlanFilters.filter.status=='EXECUTED', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.executed
                                 </a>
                             </div>
                         </div>
@@ -128,10 +128,10 @@
     </div>
 </div>
 <div class="scroll-y max-ht">
-    <div class="padding p-b-0 p-t">
-        <div class="row m-b-sm sub-header-2">
-            <div class="col-lg-10 col-md-10 col-sm-12">
-                <div class="">
+    <div class="padding p-b-0">
+        <div class="row m-b-sm m-t-xs">
+            <div class="col-lg-12">
+                <div class="pull-left">
                 <span class="m-r-sm" translate>label.from</span>
                 <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date"
                        ng-model="dailyPlanFilters.filter.from"
@@ -151,13 +151,18 @@
                        placeholder="HH:MM:SS" data-length="1" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
                 </div>
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-12 hide" ng-class="{'show': pageView=='list'}" >
-                <input type="search"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="margin-top: -3px">
+<!--                <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>-->
+                <input type="search" class="pull-right hide" ng-class="{'show-block': pageView=='list'}"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="width: 180px">
             </div>
         </div>
-        <div class="hide p-t-xs" ng-class="{'show': isLoading }">
-            <div class="hide" ng-class="{'show': pageView=='grid'}">
+       
+        <div class="hide p-t-sm" ng-class="{'show': isLoading }">
+            <div class=" hide " ng-class="{'show': pageView=='grid' && plans.length>0}">
                 <div class="box p-a">
                     <div class="hide" ng-class="{show:data.length>0}">
                          <div gantt
@@ -197,7 +202,7 @@
 
                 </div>
             </div>
-            <div class="hide box p-a " ng-class="{'show': pageView=='list'}">
+            <div class="hide box p-a " ng-class="{'show': pageView=='list' && plans.length>0}">
                 <div class="table-responsive" ng-if="plans.length>0">
                         <table class="table table-hover table-bordered " id="dailyPlanTableId">
                             <thead>
