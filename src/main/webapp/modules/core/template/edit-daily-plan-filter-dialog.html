@@ -40,22 +40,11 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row " ng-class="{'m-b-sm': dailyPlanFilter.radio == 'planned' }">
-                <label class="col-sm-4 " translate>label.orderState</label>
+            <div class="form-group row ">
+                <label class="col-sm-4 " translate>label.status</label>
 
-                <div class=" col-sm-8" ng-init="dailyPlanFilter.radio = 'current'">
-                    <div>
+                <div class=" col-sm-8">
                         <label class="md-check w">
-                            <input type="radio" name="radio" ng-model="dailyPlanFilter.radio" value="current">
-                            <i class="primary"></i> <span translate>label.current</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="radio" name="radio" ng-model="dailyPlanFilter.radio" value="planned">
-                            <i class="primary"></i> <span translate>label.planned</span>
-                        </label>
-                    </div>
-                    <div ng-show="dailyPlanFilter.radio == 'current'">
-                        <label class="md-check m-t w">
                             <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
                                    data-checklist-value="'WAITING'">
                             <i class="primary"></i><span translate>label.waiting</span>
@@ -65,64 +54,36 @@
                                    data-checklist-value="'LATE'">
                             <i class="primary"></i><span translate>label.late</span>
                         </label>
-                        <label class="md-check w">
+                    <label class="md-check w">
                             <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
                                    data-checklist-value="'EXECUTED'">
                             <i class="primary"></i><span translate>label.executed</span>
                         </label>
-                    </div>
                 </div>
             </div>
+            <div class="form-group row m-t-sm">
+                <label class="col-sm-4 form-control-label" translate>label.timeRangeFrom</label>
 
-            <div class="form-group row m-t-sm" ng-show="dailyPlanFilter.radio == 'planned'">
-                <label class="col-sm-4 form-control-label" translate>label.processPlanned</label>
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
+                    <input valid-history-filter-regex type="text" name="from" class="form-control"
+                           placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="dailyPlanFilter.from"
+                           ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime">
 
-                <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                    <input valid-filter-regex type="text" name="planned" class="form-control"
-                           placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="dailyPlanFilter.planned"
-                           ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime"
-                            >
-
-                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                    <div class="help-block text-danger" ng-messages="form.from.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                 </div>
 
             </div>
-            <div class="form-group row" ng-show="dailyPlanFilter.radio == 'planned'">
-                <label class="col-sm-4 form-control-label" translate>label.from</label>
-
-                <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="dailyPlanFilter.fromDate"
-                           ng-disabled="dailyPlanFilter.planned"
-                           data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
-                           bs-datepicker
-                           type="text">
-
-                    <input ng-disabled="!dailyPlanFilter.fromDate" class="form-control input-time"
-                           ng-model="dailyPlanFilter.fromTime"
-                           ng-disabled="dailyPlanFilter.planned"
-                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS"
-                           bs-timepicker
-                           type="text"></div>
+            <div class="form-group row m-t-sm" >
+               <label class="col-sm-4 form-control-label" translate>label.timeRangeTo</label>
+               <div class=" col-sm-6" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
+                <input valid-filter-regex type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="dailyPlanFilter.to">
+                   <div class="help-block text-danger" ng-messages="form.to.$error">
+                       <div ng-message="invalid" translate>message.invalid</div>
+                   </div>
+               </div>
             </div>
-            <div class="form-group row" ng-show="dailyPlanFilter.radio == 'planned'">
-                <label class="col-sm-4 form-control-label" translate>label.to</label>
-
-                <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="dailyPlanFilter.toDate"
-                           ng-disabled="dailyPlanFilter.planned"
-                           data-date-format="{{dataFormat}}" data-autoclose="1"
-                           data-min-date="{{dailyPlanFilter.fromDate}}"
-                           placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input ng-disabled="!dailyPlanFilter.toDate" class="form-control input-time"
-                           ng-model="dailyPlanFilter.toTime" data-time-format="HH:mm:ss"
-                           data-length="1" ng-disabled="dailyPlanFilter.planned"
-                           data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text"></div>
-
-            </div>
-
-
             <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
                 <label class="col-sm-4" translate>label.sharedFilter</label>
 

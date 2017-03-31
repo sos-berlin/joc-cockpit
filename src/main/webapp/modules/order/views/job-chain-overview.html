@@ -65,14 +65,6 @@
                 <div class="col-md-12 p-t-12">
                     <div>
                         <div class="text-right ">
-                            <div class="pull-left text-left">
-                                <span translate>label.runningOn </span>
-
-                                <div class="hide font14" ng-class="{show:jobChain.processClass}" ng-bind="jobChain.processClass || '-'"></div>
-                                <div class="hide font14" ng-class="{show:!jobChain.processClass}" ng-bind="schedulerIds.selected"></div>
-
-                            </div>
-
                             <div class="hide" ng-class="{'show-block':selectedNodes.length>0}">
                                 <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-inline':isJobChain && !isStoppedJobChain && permission.JobChain.stop}" ng-click="stopJobChains()" translate>
                                     button.stopJobChain
@@ -108,7 +100,7 @@
                                             <span translate>label.fitToScreen</span>
                                         </label>
                                     </div>
-                                    <div class="m-r-sm m-l-sm inline">
+                                    <div class="m-r m-l inline">
                                         <label class="md-check" ng-init="showErrorNodes = true">
                                             <input data-ng-model="showErrorNodes" type="checkbox"><i
                                                 class="primary"></i>
@@ -116,12 +108,12 @@
                                         </label>
                                     </div>
 
-                                    <div class="light p-r-xs inline w-lg hidden-btn-group">
+                                    <div class="light p-r-xs inline w-lg">
                                         <span class="p-r-sm " translate>label.zoom</span>
                                         <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
                                     </div>
                                 </div>
-                                <div class="btn-group m-l-sm">
+                                <div class="btn-group m-l">
                                     <button class="btn btn-grey btn-sm" ng-model="orderFilters.pageView" uib-btn-radio="'grid'"
                                             ng-class="{'btn-primary': orderFilters.pageView=='grid'}"><i class="fa fa-sitemap"></i>
                                     </button>
@@ -131,16 +123,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" ng-show="orderFilters.pageView=='grid'">
-
-                <div class="col-md-12 hidden-dropdown pull-right" >
-
-                    <div class="light p-l inline w-xxl pull-right">
-                        <span class="p-r-sm " translate>label.zoom</span>
-                        <rzslider rz-slider-model="slider.value" rz-slider-options="slider.options"></rzslider>
                     </div>
                 </div>
             </div>
@@ -274,7 +256,7 @@
                                                        ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                        ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                     <a href class="dropdown-item bg-hover-color"
-                                                       ng-if="order._type =='AD_HOC' && permission.Order.delete.permanent"
+                                                       ng-if="(order._type =='AD_HOC' || order._type == 'FILE_ORDER') && permission.Order.delete.permanent"
                                                        ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
                                                         <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                                 </div>

@@ -670,7 +670,7 @@
                 vm.remainingSessionTime = d + 'd ' + h + 'h';
             }
 
-            if (count < 0) {
+            if (count < 1) {
                 $interval.cancel(interval);
                 $window.localStorage.$SOS$URL = $location.path();
                 $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
@@ -696,7 +696,6 @@
             } catch (e) {
 
             }
-
         }, 1000);
 
         vm.refreshSession = function () {
@@ -816,6 +815,7 @@
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
+
             if (!eventLoading) {
                 eventLoading = true;
                 var obj = {};
@@ -841,7 +841,8 @@
                 }
 
                 CoreService.getEvents(obj).then(function (res) {
-                    if (!vm.switchScheduler) {
+
+                    if (!vm.switchScheduler && !logout) {
                         vm.eventsRequest = [];
                         for (var i = 0; i < res.events.length; i++) {
                             if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
@@ -853,7 +854,10 @@
                                         otherEvents: res.events
                                     });
                                 } else {
-                                    $rootScope.$broadcast('event-started', {events: vm.events, otherEvents: vm.events});
+                                    $rootScope.$broadcast('event-started', {
+                                        events: vm.events,
+                                        otherEvents: vm.events
+                                    });
                                 }
                                 vm.eventsRequest.push({
                                     jobschedulerId: res.events[i].jobschedulerId,
@@ -892,9 +896,15 @@
                             $timeout.cancel(eventTimeOut);
                         }, 1000);
                     }
-                })
+                });
             }
         };
+        $scope.$on('reloadEvents', function (event, data) {
+            if (logout == false) {
+                eventLoading = false;
+                vm.changeEvent(vm.schedulerIds.jobschedulerIds);
+            }
+        });
         $scope.allSessionEvent = {group: [], eventUnReadCount: 0};
 
 

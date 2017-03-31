@@ -20,10 +20,7 @@
                                     'Content-Type': 'application/json'
                                 }
                             }
-
                             config.url = './api/' + config.url;
-
-
                             if ($rootScope.clientLogFilter.isEnable && !config.url.match('touch')) {
                                 var date = new Date();
                                 var info = {
@@ -75,6 +72,10 @@
                                 level: 'error'
                             };
                             $rootScope.clientLogs.push(error);
+                        }
+
+                        if(rejection.config && rejection.config.url.match('events') && rejection.status ==-1){
+                            $rootScope.$broadcast('reloadEvents');
                         }
 
                         return $q.reject(rejection);

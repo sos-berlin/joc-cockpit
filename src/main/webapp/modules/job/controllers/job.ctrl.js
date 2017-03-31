@@ -614,7 +614,7 @@
                     splitPath = vm.expand_to.path.split('/');
                     $rootScope.expand_to = '';
                     vm.flag = true;
-                } if(splitPath.length==1){
+                } if(splitPath.length<2){
                     vm.tree[i].selected1 = true;
                 }
                 vm.tree[i].expanded = true;
@@ -3170,7 +3170,7 @@
                     splitPath = vm.expand_to.path.split('/');
                     $rootScope.job_expand_to = '';
                     vm.flag = true;
-                } if(splitPath.length==1){
+                } if(splitPath.length<2){
                     value.selected1 = true;
                 }
                 value.expanded = true;
@@ -3231,13 +3231,17 @@
                 } else if (/^\s*\d+[d,h]\s*$/i.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = new Date();
-
+                     fromDate = new Date();
                     fromDate.setHours(0);
                     fromDate.setMinutes(0);
+                    fromDate.setSeconds(0);
+                    fromDate.setMilliseconds(0);
                     toDate = new Date();
-                    toDate.setHours(23);
-                    toDate.setMinutes(59);
+                    toDate.setDate(toDate.getDate() +1);
+                    toDate.setHours(0);
+                    toDate.setMinutes(0);
+                    toDate.setSeconds(0);
+                    toDate.setMilliseconds(0);
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
@@ -4176,10 +4180,10 @@
                     obj.jobs.push({job: value.path});
             });
             JobService.getJobsP(obj).then(function (res) {
-                angular.forEach(res.jobs, function (value) {
+                angular.forEach(res.jobs, function (value,index) {
                     for (var i = 0; i < vm.allJobs.length; i++) {
-                        if (value.path == vm.allJobs[i].path) {
-                            vm.allJobs[i].jobChains = value.jobChains;
+                        if (value.path == vm.allJobs[i].path && value.name == vm.allJobs[i].name) {
+                            vm.allJobs[i].jobChains = res.jobs[index].jobChains;
                             vm.allJobs[i].showJobChains = true;
                             break;
                         }
