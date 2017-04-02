@@ -957,8 +957,8 @@
   "label.white": "White",
   "label.grey": "Grey",
   "label.cyan": "Cyan",
-  "label.timeRangeFrom": "Time Range From",
-  "label.timeRangeTo": "Time Range To",
+  "label.timeRangeFrom": "Time Range from",
+  "label.timeRangeTo": "Time Range to",
   "placeholder.timeRangeFrom": "now-600, -1h, -1d, today",
-  "placeholder.timeRangeTo": "now+600,1h, 1d, today"
+  "placeholder.timeRangeTo": "now+600, 1h, 1d, today"
 }
