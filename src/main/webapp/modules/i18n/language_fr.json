@@ -959,6 +959,8 @@
   "label.cyan": "Cyan",
   "label.timeRangeFrom": "Debut de Portée",
   "label.timeRangeTo": "Fin de Portée",
-  "placeholder.timeRangeFrom": "now-600, -1h, -1d, today",
-  "placeholder.timeRangeTo": "now+600, 1h, 1d, today"
+  "placeholder.timeRangeFrom": "now(-/+)300, (-/+)1h, (-/+)1d, (-/+)1w,today",
+  "placeholder.timeRangeTo": "now(-/+)300, (-/+)1h, (-/+)1d, (-/+)1w,today",
+  "placeholder.enterOrderId": "Enter OrderId",
+  "placeholder.enterJobPath": "Enter Job Path"
 }

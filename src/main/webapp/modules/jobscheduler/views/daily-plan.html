@@ -131,7 +131,7 @@
     <div class="padding p-b-0">
         <div class="row m-b-sm m-t-xs">
             <div class="col-lg-12">
-                <div class="pull-left">
+<!--                <div class="pull-left">
                 <span class="m-r-sm" translate>label.from</span>
                 <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date"
                        ng-model="dailyPlanFilters.filter.from"
@@ -150,17 +150,145 @@
                        data-autoclose="1"
                        placeholder="HH:MM:SS" data-length="1" bs-timepicker type="text" style="width: 110px;background-position: 85px"
                        ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
-                </div>
-<!--                <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
+                </div>-->
+                <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
                 <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
-                </button>-->
+                </button>
                 <input type="search" class="pull-right hide" ng-class="{'show-block': pageView=='list'}"  placeholder="{{'placeholder.search' | translate}}" ng-model="q" style="width: 180px">
             </div>
         </div>
-       
+        <div class="row hide" ng-class="{'show':showSearchPanel}">
+                <div class="col-md-12">
+                <div class="box p-a m-b-xs">
+                    <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
+                        <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                            <label class="col-sm-2 form-control-label" translate>label.filterName</label>
+
+                            <div class=" col-sm-6">
+                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
+                                       class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                                       name="filterName" ng-maxlength="25" ng-model="searchDailyPlanFilter.name"
+                                       ng-blur="checkFilterName()">
+
+                                <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                                     ng-messages="form.filterName.$error">
+                                    <div ng-message="required" translate>message.requiredError</div>
+                                    <div ng-message="maxlength" translate>message.tooLongError</div>
+                                </div>
+                                <div class="help-block text-danger" ng-if="!isUnique">
+                                    <div translate>message.uniqueError</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="searchDailyPlanFilter.from"
+                                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
+                                       bs-datepicker type="text">
+                                <input ng-disabled="!searchDailyPlanFilter.from" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.fromTime" data-time-format="HH:mm:ss"
+                                       data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <div class="col-sm-6">
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                                       ng-model="searchDailyPlanFilter.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{searchDailyPlanFilter.from}}"
+                                       bs-datepicker type="text">
+                                <input ng-disabled="!searchDailyPlanFilter.to" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.toTime" data-time-format="HH:mm:ss" data-length="1"
+                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.regularExpression</label>
+
+                            <div class="col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                                <input valid-regex type="text" class="form-control" name="regex"
+                                       placeholder="{{'placeholder.regularExpression' | translate}}"
+                                       ng-model="searchDailyPlanFilter.regex">
+
+                                <div class="help-block text-danger" ng-messages="form.regex.$error">
+                                    <div ng-message="invalid" translate>message.invalid</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.jobChain</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="jobChain"
+                                       placeholder="{{'placeholder.enterJobChainPath' | translate}}"
+                                       ng-model="searchDailyPlanFilter.jobChain">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.orderId</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="orderId"
+                                       placeholder="{{'placeholder.enterOrderId' | translate}}"
+                                       ng-model="searchDailyPlanFilter.orderId">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 form-control-label" translate>label.job</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" name="job"
+                                       placeholder="{{'placeholder.enterJobPath' | translate}}"
+                                       ng-model="searchDailyPlanFilter.job">
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <label class="col-sm-2 " translate>label.status</label>
+
+                            <div class=" col-sm-8">
+                                    <label class="md-check w">
+                                        <input type="checkbox" data-checklist-model="searchDailyPlanFilter.state"
+                                               data-checklist-value="'WAITING'">
+                                        <i class="primary"></i><span translate>label.waiting</span>
+                                    </label>
+                                    <label class="md-check w">
+                                        <input type="checkbox" data-checklist-model="searchDailyPlanFilter.state"
+                                               data-checklist-value="'LATE'">
+                                        <i class="primary"></i><span translate>label.late</span>
+                                    </label>
+                                <label class="md-check w">
+                                        <input type="checkbox" data-checklist-model="searchDailyPlanFilter.state"
+                                               data-checklist-value="'EXECUTED'">
+                                        <i class="primary"></i><span translate>label.executed</span>
+                                    </label>
+                            </div>
+                        </div>
+<!--                        <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+                            <label class="col-sm-2" translate>label.sharedFilter</label>
+
+                            <div class="col-sm-6">
+                                <label class="md-check">
+                                    <input type="checkbox" ng-model="searchDailyPlanFilter.shared">
+                                    <i class="primary"></i>
+                                </label>
+                            </div>
+                        </div>-->
+                        <div class="form-group m-t m-b-xs">
+                            <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
+                                button.search
+                            </button>
+                            <button type="submit" class="btn orange btn-sm m-l-sm"
+                                    ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter
+                            </button>
+                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
+                                button.cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            </div>
         <div class="hide p-t-sm" ng-class="{'show': isLoading }">
             <div class=" hide " ng-class="{'show': pageView=='grid' && plans.length>0}">
                 <div class="box p-a">

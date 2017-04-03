@@ -180,7 +180,6 @@
                 var compiledHtml;
                 var splitRegex = new RegExp('(.+):(.+)');
                 scope.$on("drawJobChainFlowDiagram", function () {
-
                     arrangeItems();
                 });
               scope.arrangeItems = arrangeItems;
@@ -273,14 +272,14 @@
                                     gotSplitted = true;
                                     proceed = false;
                                     position++;
-                                    item2.position = position;
+                                    jobChainData2.nodes[index2].position = position;
                                     scope.jobChainData.nodes.splice(index + 1, 0, angular.copy(item2));
                                     removables.push(index2);
                                 }
                             });
 
-                            angular.forEach(removables,function(rm){
-                                jobChainData2.nodes.splice(removables[rm] - rm, 1);
+                            angular.forEach(removables,function(rm,index3){
+                               jobChainData2.nodes.splice(rm - index3, 1);
                             })
 
 
@@ -333,7 +332,6 @@
                 }
 
                 function draw() {
-
                     var left = 0;
                     scope.width = window.outerWidth;
                     scope.height = window.outerHeight;
@@ -449,13 +447,12 @@
                                         scope.coords[index].top = obj.top;
                                     }
                                     matched = true;
+                                }
 
-                                }
-                                if(!matched){
-                                    scope.coords[index].left = scope.coords[index-1].left + margin + rectW;
-                                }
                             });
-
+                            if(!matched){
+                                  scope.coords[index].left = scope.coords[index-1].left + margin + rectW;
+                                }
                             var errorNodeCls = '';
                             if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
 

@@ -26,6 +26,7 @@
         vm.filter_tree = {};
         vm.filterTree1 = [];
         vm.object.paths = [];
+         vm.temp_filter ={};
 
         var modalInstance;
         vm.selectedFiltered;
@@ -159,7 +160,19 @@
                 initTree();
             })
         }
-
+        function isCustomizationSelected(flag) {
+            console.log('flag '+flag);
+            if(flag) {
+                vm.temp_filter.state = angular.copy(vm.jobChainFilters.filter.state);
+                vm.jobChainFilters.filter.state = '';
+            }else{
+                if(vm.temp_filter.state)
+                vm.jobChainFilters.filter.state = angular.copy(vm.temp_filter.state);
+                else
+                vm.jobChainFilters.filter.state = 'ALL';
+                console.log('State '+vm.jobChainFilters.filter.state)
+            }
+        }
         /**
          * Function to initialized tree view
          */
@@ -169,6 +182,9 @@
                 for (var i = 0; i < vm.selectedFiltered.paths.length; i++) {
                     folders.push({folder: vm.selectedFiltered.paths[i]});
                 }
+            }
+            if(vm.selectedFiltered){
+                 isCustomizationSelected(true);
             }
 
             JobChainService.tree({
@@ -1714,7 +1730,7 @@
             configObj.objectType = "JOBCHAIN";
             configObj.name = vm.jobChainFilter.name;
             configObj.id = 0;
-            configObj.shared = vm.jobChainFilter.shared;
+            //configObj.shared = vm.jobChainFilter.shared;
 
             configObj.configurationItem = JSON.stringify(vm.jobChainFilter);
             UserService.saveConfiguration(configObj).then(function (res) {
@@ -1724,15 +1740,6 @@
                 form.$setPristine();
 
                 vm.jobChainFilterList.push(configObj);
-
-                if (vm.jobChainFilterList.length == 1) {
-                    vm.savedJobChainFilter.selected = res.id;
-                    vm.jobChainFilters.selectedView = true;
-                    vm.selectedFiltered = vm.jobChainFilter;
-                    vm.selectedFiltered.account = vm.permission.user;
-                    SavedFilter.setJobChain(vm.savedJobChainFilter);
-                    SavedFilter.save();
-                }
             })
         };
         vm.advancedSearch = function () {
@@ -1906,7 +1913,7 @@
                         vm.jobChainFilters.selectedView = true;
                         vm.selectedFiltered = vm.jobChainFilter;
                         vm.selectedFiltered.account = vm.permission.user;
-
+                        isCustomizationSelected(true);
                         SavedFilter.setJobChain(vm.savedJobChainFilter);
                         SavedFilter.save();
                         vm.load();
@@ -1949,6 +1956,7 @@
                 if (vm.savedJobChainFilter.selected == filter.id) {
                     vm.selectedFiltered = vm.jobChainFilter;
                     vm.jobChainFilters.selectedView = true;
+                     isCustomizationSelected(true);
                     vm.load();
                 }
                 var configObj = {};
@@ -2023,12 +2031,14 @@
                     vm.savedJobChainFilter.selected = undefined;
                     vm.jobChainFilters.selectedView = false;
                     vm.selectedFiltered = undefined;
+                     isCustomizationSelected(false);
                     vm.load();
                 } else {
                     if (vm.jobChainFilterList.length == 0) {
                         vm.savedJobChainFilter.selected = undefined;
                         vm.jobChainFilters.selectedView = false;
                         vm.selectedFiltered = undefined;
+                         isCustomizationSelected(false);
                     }
                 }
                 SavedFilter.setJobChain(vm.savedJobChainFilter);
@@ -2098,6 +2108,7 @@
                 });
             }
             else {
+                 isCustomizationSelected(false);
                 vm.savedJobChainFilter.selected = filter;
                 vm.jobChainFilters.selectedView = false;
                 vm.selectedFiltered = filter;
@@ -2467,7 +2478,7 @@
                             }
                         }
                     }
-                    if (event.eventType === "FileBasedActivated" && (event.objectType == "JOBCHAIN" || event.objectType == "ORDER") && loadFileBasedObj) {
+                    if ((event.eventType === "FileBasedActivated" || event.eventType == "FileBasedRemoved") && (event.objectType == "JOBCHAIN" || event.objectType == "ORDER") && loadFileBasedObj) {
                         loadFileBasedObj = false;
                         if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                             var folders = [];
@@ -2580,6 +2591,7 @@
         vm.object.paths = [];
 
         vm.selectedFiltered;
+         vm.temp_filter ={};
 
         vm.savedJobFilter = JSON.parse(SavedFilter.jobFilters) || {};
         vm.jobFilterList = [];
@@ -2735,7 +2747,12 @@
                 angular.forEach(vm.selectedFiltered.paths, function (v) {
                     folders.push({folder: v});
                 });
+
             }
+            if(vm.selectedFiltered){
+                 isCustomizationSelected(true);
+            }
+
             JobService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
@@ -3618,7 +3635,7 @@
             configObj.objectType = "JOB";
             configObj.name = vm.jobFilter.name;
             configObj.id = 0;
-            configObj.shared = vm.jobFilter.shared;
+           // configObj.shared = vm.jobFilter.shared;
 
             configObj.configurationItem = JSON.stringify(vm.jobFilter);
             UserService.saveConfiguration(configObj).then(function (res) {
@@ -3627,14 +3644,6 @@
                  if(form)
                 form.$setPristine();
                 vm.jobFilterList.push(configObj);
-                if (vm.jobFilterList.length == 1) {
-                    vm.savedJobFilter.selected = res.id;
-                    vm.selectedFiltered = vm.jobFilter;
-                    vm.selectedFiltered.account = vm.permission.user;
-                    vm.jobFilters.selectedView = true;
-                    SavedFilter.setJob(vm.savedJobFilter);
-                    SavedFilter.save();
-                }
             });
         };
         vm.advancedSearch = function () {
@@ -3748,7 +3757,22 @@
             navFullTree();
         }
 
-
+        function isCustomizationSelected(flag) {
+            if(flag) {
+                vm.temp_filter.state = angular.copy(vm.jobFilters.filter.state);
+                vm.temp_filter.type = angular.copy(vm.jobFilters.filter.type);
+                vm.jobFilters.filter.state = '';
+                vm.jobFilters.filter.type = '';
+            }else {
+                if (vm.temp_filter.state) {
+                    vm.jobFilters.filter.state = angular.copy(vm.temp_filter.state);
+                    vm.jobFilters.filter.type = angular.copy(vm.temp_filter.type);
+                } else {
+                    vm.jobFilters.filter.state = 'ALL';
+                    vm.jobFilters.filter.type = 'ALL';
+                }
+            }
+        }
         vm.applyFilter = function () {
             vm.jobFilter = {};
             vm.isUnique = true;
@@ -3787,9 +3811,10 @@
                         vm.selectedFiltered = vm.jobFilter;
                         vm.selectedFiltered.account = vm.permission.user;
                         vm.jobFilters.selectedView = true;
-                        vm.load();
+                        isCustomizationSelected(true);
                         SavedFilter.setJob(vm.savedJobFilter);
                         SavedFilter.save();
+                        vm.load();
                     }
                 });
 
@@ -3830,6 +3855,7 @@
                 if (vm.savedJobFilter.selected == filter.id) {
                     vm.selectedFiltered = vm.jobFilter;
                     vm.jobFilters.selectedView = true;
+                     isCustomizationSelected(true);
                     vm.load();
                 }
                 var configObj = {};
@@ -3912,6 +3938,7 @@
                 if (vm.savedJobFilter.selected == filter.id) {
                     vm.savedJobFilter.selected = undefined;
                     vm.jobFilters.selectedView = false;
+                     isCustomizationSelected(false);
                     vm.selectedFiltered = undefined;
                     vm.load();
                 } else {
@@ -3919,6 +3946,7 @@
                         vm.savedJobFilter.selected = undefined;
                         vm.jobFilters.selectedView = false;
                         vm.selectedFiltered = undefined;
+                         isCustomizationSelected(false);
                     }
                 }
                 SavedFilter.setJob(vm.savedJobFilter);
@@ -3985,6 +4013,7 @@
                 });
             }
             else {
+                 isCustomizationSelected(false);
                 vm.savedJobFilter.selected = filter;
                 vm.jobFilters.selectedView = false;
                 vm.selectedFiltered = filter;
@@ -5033,7 +5062,7 @@
                         }
 
                     }
-                    if (value1.eventType == "FileBasedActivated" && value1.objectType == "JOB") {
+                    if ((value1.eventType == "FileBasedActivated" || value1.eventType == "FileBasedRemoved" )&& value1.objectType == "JOB") {
 
                         if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
                             var folders = [];

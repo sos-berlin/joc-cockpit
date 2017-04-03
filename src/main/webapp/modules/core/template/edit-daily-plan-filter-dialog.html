@@ -26,7 +26,24 @@
                     </div>
                 </div>
             </div>
-
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.jobChain</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="jobChain" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="dailyPlanFilter.jobChain">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.orderId</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="orderId" placeholder="{{'placeholder.enterOrderId' | translate}}" ng-model="dailyPlanFilter.orderId">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.job</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="job" placeholder="{{'placeholder.enterJobPath' | translate}}" ng-model="dailyPlanFilter.job">
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.regularExpression</label>
 
@@ -65,7 +82,7 @@
                 <label class="col-sm-4 form-control-label" translate>label.timeRangeFrom</label>
 
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
-                    <input valid-history-filter-regex type="text" name="from" class="form-control"
+                    <input valid-daily-plan-filter-regex type="text" name="from" class="form-control"
                            placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="dailyPlanFilter.from"
                            ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime">
 
@@ -78,7 +95,7 @@
             <div class="form-group row m-t-sm" >
                <label class="col-sm-4 form-control-label" translate>label.timeRangeTo</label>
                <div class=" col-sm-6" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
-                <input valid-filter-regex type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="dailyPlanFilter.to">
+                <input valid-daily-plan-filter-regex type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="dailyPlanFilter.to">
                    <div class="help-block text-danger" ng-messages="form.to.$error">
                        <div ng-message="invalid" translate>message.invalid</div>
                    </div>
