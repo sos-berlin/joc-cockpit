@@ -150,14 +150,13 @@
                             <label class="col-sm-2 form-control-label" translate>label.filterName</label>
 
                             <div class=" col-sm-6">
-                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
+                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text"
                                        class="form-control" placeholder="{{'placeholder.name' | translate}}"
                                        name="filterName" ng-maxlength="25" ng-model="jobFilter.name"
                                        ng-blur="checkFilterName()">
 
                                 <div class="help-block text-danger" ng-if="form.filterName.$dirty"
                                      ng-messages="form.filterName.$error">
-                                    <div ng-message="required" translate>message.requiredError</div>
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                 </div>
                                 <div class="help-block text-danger" ng-if="!isUnique">
@@ -309,7 +308,7 @@
                                 button.search
                             </button>
                             <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter
+                                    ng-disabled="form.$invalid || !isUnique || !jobFilter.name" translate>button.saveAsFilter
                             </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
                                 button.cancel

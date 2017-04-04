@@ -182,10 +182,9 @@
                                    <div class="form-group row"  ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                                        <label class="col-sm-2 form-control-label" translate>label.filterName</label>
                                        <div class=" col-sm-6">
-                                            <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="orderFilter1.name" ng-blur="checkFilterName()">
+                                            <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25" ng-model="orderFilter1.name" ng-blur="checkFilterName()">
                                            <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                                               <div ng-message="required" translate>message.requiredError</div>
-                                                    <div ng-message="maxlength" translate>message.tooLongError</div>
+                                               <div ng-message="maxlength" translate>message.tooLongError</div>
                                            </div>
                                            <div class="help-block text-danger" ng-if="!isUnique">
                                               <div translate>message.uniqueError</div>
@@ -305,7 +304,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+<!--                                    <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
                                         <label class="col-sm-2" translate>label.sharedFilter</label>
 
                                             <div class="col-sm-8">
@@ -314,10 +313,10 @@
                                                     <i class="primary"></i>
                                                 </label>
                                             </div>
-                                    </div>
+                                    </div>-->
                                     <div class="form-group m-t m-b-xs">
                                         <button type="button" class="btn btn-primary btn-sm" ng-click="search()" translate>button.search</button>
-                                        <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter</button>
+                                        <button type="submit" class="btn orange btn-sm m-l-sm" ng-disabled="form.$invalid || !isUnique || !orderFilter1.name" translate>button.saveAsFilter</button>
                                         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>button.cancel</button>
                                     </div>
                             </form>
