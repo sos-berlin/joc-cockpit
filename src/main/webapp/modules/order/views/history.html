@@ -236,12 +236,11 @@
             <div class="col-md-12" ng-show="historyFilters.type == 'jobChain'">
                 <div class="box p-a m-b-xs">
                     <form name="form" ng-submit="saveAsFilter(form)" novalidate>
-                        <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                            <label class="col-sm-2 form-control-label" translate>label.filterName</label>
                            <div class=" col-sm-6">
-                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobChainSearch.name" ng-blur="checkFilterName()">
+                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobChainSearch.name" ng-blur="checkFilterName()">
                                <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                                    <div ng-message="required" translate>message.requiredError</div>
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                </div>
                                <div class="help-block text-danger" ng-if="!isUnique">
@@ -256,7 +255,8 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!jobChainSearch.from" class="form-control input-time m-l" ng-model="jobChainSearch.fromTime" data-time-format="HH:mm:ss"
-                                       data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                 <a class="text-sm text-primary" ng-show="jobChainSearch.from || jobChainSearch.fromTime" ng-click="jobChainSearch.from='';jobChainSearch.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -265,8 +265,9 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!jobChainSearch.to" class="form-control input-time m-l" ng-model="jobChainSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
-                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input ng-disabled="!jobChainSearch.to" class="form-control input-time m-l" ng-model="jobChainSearch.toTime" data-time-format="HH:mm:ss"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" ng-show="jobChainSearch.to || jobChainSearch.toTime" ng-click="jobChainSearch.to='';jobChainSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -339,7 +340,7 @@
                                 button.search
                             </button>
                             <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter
+                                    ng-disabled="form.$invalid || !isUnique || !jobChainSearch.name" translate>button.saveAsFilter
                             </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
                                 button.cancel
@@ -350,13 +351,12 @@
             </div>
             <div class="col-md-12" ng-show="historyFilters.type == 'job'">
                 <div class="box p-a m-b-xs">
-                    <form name="form" ng-submit="saveAsFilter(form)" novalidate>
-                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                    <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
+                         <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
                            <label class="col-sm-2 form-control-label" translate>label.filterName</label>
                            <div class=" col-sm-6">
-                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobSearch.name" ng-blur="checkFilterName()">
-                               <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                                    <div ng-message="required" translate>message.requiredError</div>
+                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobSearch.name" ng-blur="checkFilterName()">
+                               <div class="help-block text-danger" ng-if="form1.filterName.$dirty" ng-messages="form1.filterName.$error">
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                </div>
                                <div class="help-block text-danger" ng-if="!isUnique">
@@ -371,7 +371,8 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!jobSearch.from" class="form-control input-time m-l" ng-model="jobSearch.fromTime" data-time-format="HH:mm:ss"
-                                       data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" ng-show="jobSearch.from || jobSearch.fromTime" ng-click="jobSearch.from='';jobSearch.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -380,15 +381,16 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="jobSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!jobSearch.to" class="form-control input-time m-l" ng-model="jobSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
-                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input ng-disabled="!jobSearch.to" class="form-control input-time m-l" ng-model="jobSearch.toTime" data-time-format="HH:mm:ss"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime" ng-click="jobSearch.to='';jobSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
                         <div class="form-group row">
                            <label class="col-sm-2 form-control-label" translate>label.regex</label>
-                           <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                           <div class=" col-sm-6" ng-class="{ 'has-error' : form1.regex.$invalid && form1.regex.$dirty }">
                                <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobSearch.regex">
-                               <div class="help-block text-danger" ng-messages="form.regex.$error">
+                               <div class="help-block text-danger" ng-messages="form1.regex.$error">
                                     <div ng-message="invalid" translate>message.invalid</div>
                                 </div>
                            </div>
@@ -448,9 +450,9 @@
                                 button.search
                             </button>
                             <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter
+                                    ng-disabled="form1.$invalid || !isUnique || !jobSearch.name" translate>button.saveAsFilter
                             </button>
-                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
+                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
                                 button.cancel
                             </button>
                         </div>

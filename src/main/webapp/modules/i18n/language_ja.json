@@ -962,5 +962,9 @@
   "placeholder.timeRangeFrom": "now(-/+)300, (-/+)1h, (-/+)1d, (-/+)1w,today",
   "placeholder.timeRangeTo": "now(-/+)300, (-/+)1h, (-/+)1d, (-/+)1w,today",
   "placeholder.enterOrderId": "Enter OrderId",
-  "placeholder.enterJobPath": "Enter Job Path"
+  "placeholder.enterJobPath": "Enter Job Path",
+  "button.clear": "Clear",
+  "label.dateRange": "Date Range",
+  "label.specificDate": "Specific Date",
+  "label.manualDate": "Manual Date"
 }

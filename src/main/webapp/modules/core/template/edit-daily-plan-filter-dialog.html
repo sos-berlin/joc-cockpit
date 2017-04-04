@@ -27,6 +27,19 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.regularExpression</label>
+
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                    <input valid-regex type="text" class="form-control" name="regex"
+                           placeholder="{{'placeholder.regularExpression' | translate}}"
+                           ng-model="dailyPlanFilter.regex">
+
+                    <div class="help-block text-danger" ng-messages="form.regex.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.jobChain</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" name="jobChain" placeholder="{{'placeholder.enterJobChainPath' | translate}}" ng-model="dailyPlanFilter.jobChain">
@@ -44,53 +57,16 @@
                     <input type="text" class="form-control" name="job" placeholder="{{'placeholder.enterJobPath' | translate}}" ng-model="dailyPlanFilter.job">
                 </div>
             </div>
-            <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.regularExpression</label>
-
-                <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
-                    <input valid-regex type="text" class="form-control" name="regex"
-                           placeholder="{{'placeholder.regularExpression' | translate}}"
-                           ng-model="dailyPlanFilter.regex">
-
-                    <div class="help-block text-danger" ng-messages="form.regex.$error">
-                        <div ng-message="invalid" translate>message.invalid</div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row ">
-                <label class="col-sm-4 " translate>label.status</label>
-
-                <div class=" col-sm-8">
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
-                                   data-checklist-value="'WAITING'">
-                            <i class="primary"></i><span translate>label.waiting</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
-                                   data-checklist-value="'LATE'">
-                            <i class="primary"></i><span translate>label.late</span>
-                        </label>
-                    <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
-                                   data-checklist-value="'EXECUTED'">
-                            <i class="primary"></i><span translate>label.executed</span>
-                        </label>
-                </div>
-            </div>
             <div class="form-group row m-t-sm">
                 <label class="col-sm-4 form-control-label" translate>label.timeRangeFrom</label>
-
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
                     <input valid-daily-plan-filter-regex type="text" name="from" class="form-control"
-                           placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="dailyPlanFilter.from"
-                           ng-disabled="dailyPlanFilter.fromDate ||dailyPlanFilter.fromTime || dailyPlanFilter.toDate ||dailyPlanFilter.toTime">
+                           placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="dailyPlanFilter.from">
 
                     <div class="help-block text-danger" ng-messages="form.from.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                 </div>
-
             </div>
             <div class="form-group row m-t-sm" >
                <label class="col-sm-4 form-control-label" translate>label.timeRangeTo</label>
@@ -100,6 +76,26 @@
                        <div ng-message="invalid" translate>message.invalid</div>
                    </div>
                </div>
+            </div>
+            <div class="form-group row ">
+                <label class="col-sm-4 " translate>label.status</label>
+                <div class=" col-sm-8">
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
+                               data-checklist-value="'WAITING'">
+                        <i class="primary"></i><span translate>label.waiting</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
+                               data-checklist-value="'LATE'">
+                        <i class="primary"></i><span translate>label.late</span>
+                    </label>
+                    <label class="md-check w">
+                        <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
+                               data-checklist-value="'EXECUTED'">
+                        <i class="primary"></i><span translate>label.executed</span>
+                    </label>
+                </div>
             </div>
             <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
                 <label class="col-sm-4" translate>label.sharedFilter</label>

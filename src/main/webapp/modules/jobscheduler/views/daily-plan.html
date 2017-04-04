@@ -162,20 +162,18 @@
         </div>
         <div class="row hide" ng-class="{'show':showSearchPanel}">
                 <div class="col-md-12">
-                <div class="box p-a m-b-xs">
+                <div class="box p-a m-b-sm m-t-sm">
                     <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
                             <label class="col-sm-2 form-control-label" translate>label.filterName</label>
 
                             <div class=" col-sm-6">
-                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
-                                       class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}"
                                        name="filterName" ng-maxlength="25" ng-model="searchDailyPlanFilter.name"
                                        ng-blur="checkFilterName()">
 
                                 <div class="help-block text-danger" ng-if="form.filterName.$dirty"
                                      ng-messages="form.filterName.$error">
-                                    <div ng-message="required" translate>message.requiredError</div>
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                 </div>
                                 <div class="help-block text-danger" ng-if="!isUnique">
@@ -183,25 +181,64 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row m-b-sm">
+                            <label class="col-sm-2" translate>label.dateRange</label>
+                            <div class=" col-sm-8" ng-init="searchDailyPlanFilter.radio = 'current'">
+                                <div>
+                                    <label class="md-check w">
+                                        <input type="radio" name="date" ng-model="searchDailyPlanFilter.radio" value="current">
+                                        <i class="primary"></i> <span translate>label.specificDate</span>
+                                    </label>
+                                    <label class="md-check w">
+                                        <input type="radio" name="date" ng-model="searchDailyPlanFilter.radio" value="planned">
+                                        <i class="primary"></i> <span translate>label.manualDate</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'current'">
                             <label class="col-sm-2 form-control-label" translate>label.from</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="searchDailyPlanFilter.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!searchDailyPlanFilter.from" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.fromTime" data-time-format="HH:mm:ss"
-                                       data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.from || searchDailyPlanFilter.fromTime" ng-click="searchDailyPlanFilter.from='';searchDailyPlanFilter.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'current'">
                             <label class="col-sm-2 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="searchDailyPlanFilter.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{searchDailyPlanFilter.from}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!searchDailyPlanFilter.to" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.toTime" data-time-format="HH:mm:ss" data-length="1"
-                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input ng-disabled="!searchDailyPlanFilter.to" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.toTime" data-time-format="HH:mm:ss"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                 <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.to || searchDailyPlanFilter.toTime" ng-click="searchDailyPlanFilter.to='';searchDailyPlanFilter.toTime=''; " translate>button.clear</a>
                             </div>
+                        </div>
+                        <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'planned'">
+                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+
+                            <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
+                                <input valid-daily-plan-filter-regex type="text" name="from" class="form-control"
+                                       placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="searchDailyPlanFilter.from1">
+
+                                <div class="help-block text-danger" ng-messages="form.from.$error">
+                                    <div ng-message="invalid" translate>message.invalid</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'planned'">
+                           <label class="col-sm-2 form-control-label" translate>label.to</label>
+                           <div class=" col-sm-6" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
+                            <input valid-daily-plan-filter-regex type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="searchDailyPlanFilter.to1">
+                               <div class="help-block text-danger" ng-messages="form.to.$error">
+                                   <div ng-message="invalid" translate>message.invalid</div>
+                               </div>
+                           </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-2 form-control-label" translate>label.regularExpression</label>
@@ -279,7 +316,7 @@
                                 button.search
                             </button>
                             <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form.$invalid || !isUnique" translate>button.saveAsFilter
+                                    ng-disabled="form.$invalid || !isUnique || !searchDailyPlanFilter.name" translate>button.saveAsFilter
                             </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
                                 button.cancel

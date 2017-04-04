@@ -3620,7 +3620,7 @@
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
-            vm.orderFilter1 = {};
+            vm.orderFilter1 = undefined;
             if (form)
                 form.$setPristine();
         };
@@ -3736,6 +3736,7 @@
         }
 
         vm.applyFilter = function () {
+            vm.cancel();
             vm.orderFilter1 = {};
             vm.isUnique = true;
 
@@ -3798,9 +3799,12 @@
                 scope: vm
             });
         };
+        var temp_name ='';
         vm.editFilter = function (filter) {
+            vm.cancel();
             vm.action = 'edit';
             vm.isUnique = true;
+            temp_name = angular.copy(filter.name);
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.orderFilter1 = JSON.parse(conf.configuration.configurationItem);
                 vm.orderFilter1.shared = filter.shared;
@@ -3833,8 +3837,9 @@
                 configObj.shared = vm.orderFilter1.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.orderFilter1.name;
+                temp_name ='';
             }, function () {
-
+temp_name ='';
             });
         };
 
@@ -3962,7 +3967,7 @@
         vm.checkFilterName = function () {
             vm.isUnique = true;
             angular.forEach(vm.orderFilterList, function (value) {
-                if (vm.orderFilter1.name == value.name && vm.permission.user == value.account) {
+                if (vm.orderFilter1.name == value.name && vm.permission.user == value.account && vm.orderFilter1.name != temp_name) {
                     vm.isUnique = false;
                 }
             });
@@ -6260,6 +6265,10 @@
         vm.advancedSearch = function () {
             vm.isUnique = true;
             vm.showSearchPanel = true;
+            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
         };
         vm.cancel = function (form) {
             if (!vm.order.filter.historyStates) {
@@ -6586,17 +6595,36 @@
             configObj.jobschedulerId = vm.schedulerIds.selected;
             configObj.account = vm.permission.user;
             configObj.configurationType = "CUSTOMIZATION";
-            configObj.name = vm.historyFilter.name;
+            var fromDate;
+            var obj = {};
+            if(vm.jobChainSearch.name) {
+                configObj.name = vm.jobChainSearch.name;
+                obj.regex = vm.jobChainSearch.regex;
+                obj.paths = vm.jobChainSearch.paths;
+                obj.jobChains = vm.jobChainSearch.jobChains;
+                obj.orders = vm.jobChainSearch.orders;
+                obj.state = vm.jobChainSearch.states;
+                obj.name = vm.jobChainSearch.name;
+            }
+            else {
+                configObj.name = vm.jobSearch.name;
+                obj.regex = vm.jobSearch.regex;
+                obj.paths = vm.jobSearch.paths;
+                obj.jobs = vm.jobSearch.jobs;
+                obj.state = vm.jobSearch.states;
+                obj.name = vm.jobSearch.name;
+            }
             //configObj.shared = vm.historyFilter.shared;
             configObj.id = 0;
 
             if (vm.historyFilters.type == 'jobChain') {
                 configObj.objectType = "ORDER_HISTORY";
-                configObj.configurationItem = JSON.stringify(vm.jobChainSearch);
+
             } else {
                 configObj.objectType = "TASK_HISTORY";
-                configObj.configurationItem = JSON.stringify(vm.jobSearch);
+
             }
+            configObj.configurationItem = JSON.stringify(obj);
             UserService.saveConfiguration(configObj).then(function (res) {
                 configObj.id = res.id;
                 if (vm.historyFilters.type == 'jobChain') {
@@ -6616,6 +6644,7 @@
             });
         };
         vm.advanceFilter = function () {
+            vm.cancel();
             vm.object.paths = [];
             vm.object.orders = [];
             vm.object.jobChains = [];
@@ -6696,10 +6725,12 @@
                 scope: vm
             });
         };
-
+var temp_name ='';
         vm.editFilter = function (filter) {
+            vm.cancel();
             vm.action = 'edit';
             vm.isUnique = true;
+            temp_name = angular.copy(filter.name);
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.historyFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.historyFilter.shared = filter.shared;
@@ -6752,8 +6783,9 @@
                 configObj.shared = vm.historyFilter.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.historyFilter.name;
+                temp_name ='';
             }, function () {
-
+temp_name ='';
             });
         };
 
@@ -6929,17 +6961,33 @@
         vm.checkFilterName = function () {
             vm.isUnique = true;
             if (vm.historyFilters.type == 'jobChain') {
-                angular.forEach(vm.orderHistoryFilterList, function (value) {
-                    if (vm.historyFilter.name == value.name && vm.permission.user == value.account) {
-                        vm.isUnique = false;
-                    }
-                });
+                if (vm.jobChainSearch && vm.jobChainSearch.name) {
+                    angular.forEach(vm.orderHistoryFilterList, function (value) {
+                        if (vm.jobChainSearch.name == value.name && vm.permission.user == value.account) {
+                            vm.isUnique = false;
+                        }
+                    });
+                } else if (vm.historyFilter) {
+                    angular.forEach(vm.orderHistoryFilterList, function (value) {
+                        if (vm.historyFilter.name == value.name && vm.permission.user == value.account && vm.historyFilter.name != temp_name) {
+                            vm.isUnique = false;
+                        }
+                    });
+                }
             } else {
-                angular.forEach(vm.jobHistoryFilterList, function (value) {
-                    if (vm.historyFilter.name == value.name && vm.permission.user == value.account) {
-                        vm.isUnique = false;
-                    }
-                });
+                 if (vm.jobSearch && vm.jobSearch.name) {
+                    angular.forEach(vm.jobHistoryFilterList, function (value) {
+                        if (vm.jobSearch.name == value.name && vm.permission.user == value.account) {
+                            vm.isUnique = false;
+                        }
+                    });
+                } else if (vm.historyFilter) {
+                     angular.forEach(vm.jobHistoryFilterList, function (value) {
+                         if (vm.historyFilter.name == value.name && vm.permission.user == value.account && vm.historyFilter.name != temp_name) {
+                             vm.isUnique = false;
+                         }
+                     });
+                 }
             }
         };
 
@@ -7053,30 +7101,36 @@
         };
 
         vm.treeHandler = function (data) {
-            if (vm.historyFilters.type == 'jobChain') {
+            data.expanded = !data.expanded;
+            if (data.expanded) {
+                if (vm.historyFilters.type == 'jobChain') {
+                    data.jobChains = [];
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.compact = true;
+                    obj.folders = [{folder: data.path, recursive: false}];
+                    OrderService.getOrdersP(obj).then(function (result) {
+                        data.jobChains = result.orders;
+                        if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
+                            $('.order_img').attr("src", 'images/order.png');
+                        }
+                    });
+                } else {
+                    data.jobs = [];
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.compact = true;
+                    obj.folders = [{folder: data.path, recursive: false}];
+                    JobService.getJobsP(obj).then(function (result) {
+                        data.jobs = result.jobs;
+                        if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
+                            $('.job_img').attr("src", 'images/job.png');
+                        }
+                    });
+                }
+            }else{
                 data.jobChains = [];
-                var obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.compact = true;
-                obj.folders = [{folder: data.path, recursive: false}];
-                OrderService.getOrdersP(obj).then(function (result) {
-                    data.jobChains = result.orders;
-                    if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
-                        $('.order_img').attr("src", 'images/order.png');
-                    }
-                });
-            } else {
                 data.jobs = [];
-                var obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.compact = true;
-                obj.folders = [{folder: data.path, recursive: false}];
-                JobService.getJobsP(obj).then(function (result) {
-                    data.jobs = result.jobs;
-                    if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
-                        $('.job_img').attr("src", 'images/job.png');
-                    }
-                });
             }
         };
 
@@ -7140,25 +7194,28 @@
         };
         vm.remove = function (object, type) {
             if (type == 'jobChain') {
-                if (vm.historyFilter) {
+                if (vm.historyFilter && vm.historyFilter.jobChains) {
                     vm.historyFilter.jobChains.splice(object, 1);
                 } else {
                     vm.jobChainSearch.jobChains.splice(object, 1);
                 }
+                vm.object.jobChains.splice(object, 1);
             } else if (type == 'job') {
-                if (vm.historyFilter) {
+                if (vm.historyFilter && vm.historyFilter.jobs) {
                     vm.historyFilter.jobs.splice(object, 1);
                 } else {
                     vm.jobSearch.jobs.splice(object, 1);
                 }
+                vm.object.jobs.splice(object, 1);
             } else if (type == 'order') {
-                if (vm.historyFilter) {
+                if (vm.historyFilter && vm.historyFilter.orders) {
                     vm.historyFilter.orders.splice(object, 1);
                 } else {
                     vm.jobChainSearch.orders.splice(object, 1);
                 }
+                vm.object.orders.splice(object, 1);
             } else {
-                if (vm.historyFilter) {
+                if (vm.historyFilter && vm.historyFilter.paths) {
                     vm.historyFilter.paths.splice(object, 1);
                 } else {
                     if (vm.jobChainSearch && vm.historyFilters.type == 'jobChain')
@@ -7166,6 +7223,7 @@
                     else if (vm.jobSearch && vm.historyFilters.type == 'job')
                         vm.jobSearch.paths.splice(object, 1);
                 }
+                vm.object.paths.splice(object, 1);
             }
         };
 
@@ -7251,7 +7309,7 @@
             configObj.id = vm.ignoreListConfigId;
             UserService.saveConfiguration(configObj).then(function (res) {
                 vm.ignoreListConfigId = res.id;
-            })
+            });
             if ((vm.savedIgnoreList.isEnable == 'true' || vm.savedIgnoreList.isEnable == true)) {
                 if ((jobChainSearch && vm.historyFilters.type == 'jobChain')) {
                     vm.search(true);
