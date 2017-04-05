@@ -959,12 +959,12 @@
   "label.cyan": "Cyan",
   "label.timeRangeFrom": "Debut de Portée",
   "label.timeRangeTo": "Fin de Portée",
-  "placeholder.timeRangeFrom": "now(-/+)300, (-/+)1h, (-/+)1d, (-/+)1w,today",
-  "placeholder.timeRangeTo": "now(-/+)300, (-/+)1h, (-/+)1d, (-/+)1w,today",
-  "placeholder.enterOrderId": "Enter OrderId",
-  "placeholder.enterJobPath": "Enter Job Path",
-  "button.clear": "Clear",
-  "label.dateRange": "Date Range",
-  "label.specificDate": "Specific Date",
-  "label.manualDate": "Manual Date"
+  "placeholder.timeRangeFrom": "now(+/-)1, (+/-)1h, (+/-)1d, (+/-)1w, today",
+  "placeholder.timeRangeTo": "now(+/-)1, (+/-)1h, (+/-)1d, (+/-)1w, today",
+  "placeholder.enterOrderId": "Entrer ID Ordre",
+  "placeholder.enterJobPath": "Entrer le Chemin d'Accès de la Tâche",
+  "button.clear": "Effacer",
+  "label.dateRange": "Période",
+  "label.specificDate": "Date spécifique",
+  "label.manualDate": "Date relative"
 }

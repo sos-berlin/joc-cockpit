@@ -131,26 +131,6 @@
     <div class="padding p-b-0">
         <div class="row m-b-sm m-t-xs">
             <div class="col-lg-12">
-<!--                <div class="pull-left">
-                <span class="m-r-sm" translate>label.from</span>
-                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date"
-                       ng-model="dailyPlanFilters.filter.from"
-                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
-                       bs-datepicker type="text" ng-change="dailyPlanFilters.range='dateRange';getPlans()">
-                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time" ng-model="dailyPlanFilters.filter.from" data-time-format="HH:mm:ss"
-                       data-autoclose="1"
-                       placeholder="HH:MM:SS" data-length="1" bs-timepicker type="text" style="width: 110px;background-position: 85px"
-                       ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
-                <span class="m-l-sm m-r-sm" translate>label.to</span>
-                <input  ng-disabled="savedDailyPlanFilter.selected" class="form-control input-date"
-                       ng-model="dailyPlanFilters.filter.to"
-                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" data-min-date="{{dailyPlanFilters.filter.from}}"
-                       bs-datepicker type="text" ng-change="dailyPlanFilters.range='dateRange';getPlans()">
-                <input ng-disabled="savedDailyPlanFilter.selected" class="form-control input-time" ng-model="dailyPlanFilters.filter.to" data-time-format="HH:mm:ss"
-                       data-autoclose="1"
-                       placeholder="HH:MM:SS" data-length="1" bs-timepicker type="text" style="width: 110px;background-position: 85px"
-                       ng-change="dailyPlanFilters.range='dateRange';getPlans('dateRange')">
-                </div>-->
                 <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
@@ -165,7 +145,7 @@
                 <div class="box p-a m-b-sm m-t-sm">
                     <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
                         <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                            <label class="col-sm-2 form-control-label" translate>label.filterName</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
 
                             <div class=" col-sm-6">
                                 <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}"
@@ -182,7 +162,7 @@
                             </div>
                         </div>
                         <div class="form-group row m-b-sm">
-                            <label class="col-sm-2" translate>label.dateRange</label>
+                            <label class="col-md-2 col-sm-4" translate>label.dateRange</label>
                             <div class=" col-sm-8" ng-init="searchDailyPlanFilter.radio = 'current'">
                                 <div>
                                     <label class="md-check w">
@@ -197,7 +177,7 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'current'">
-                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="searchDailyPlanFilter.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
@@ -208,7 +188,7 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'current'">
-                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="searchDailyPlanFilter.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{searchDailyPlanFilter.from}}"
@@ -219,7 +199,7 @@
                             </div>
                         </div>
                         <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'planned'">
-                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
 
                             <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
                                 <input valid-daily-plan-filter-regex type="text" name="from" class="form-control"
@@ -232,7 +212,7 @@
 
                         </div>
                         <div class="form-group row" ng-if="searchDailyPlanFilter.radio == 'planned'">
-                           <label class="col-sm-2 form-control-label" translate>label.to</label>
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
                            <div class=" col-sm-6" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
                             <input valid-daily-plan-filter-regex type="text" name="to" class="form-control" placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="searchDailyPlanFilter.to1">
                                <div class="help-block text-danger" ng-messages="form.to.$error">
@@ -241,7 +221,7 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.regularExpression</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regularExpression</label>
 
                             <div class="col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
                                 <input valid-regex type="text" class="form-control" name="regex"
@@ -254,7 +234,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.jobChain</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobChain</label>
 
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="jobChain"
@@ -263,7 +243,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.orderId</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.orderId</label>
 
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="orderId"
@@ -272,7 +252,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.job</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.job</label>
 
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" name="job"
@@ -281,7 +261,7 @@
                             </div>
                         </div>
                         <div class="form-group row ">
-                            <label class="col-sm-2 " translate>label.status</label>
+                            <label class="col-md-2 col-sm-4 " translate>label.status</label>
 
                             <div class=" col-sm-8">
                                     <label class="md-check w">
@@ -301,16 +281,6 @@
                                     </label>
                             </div>
                         </div>
-<!--                        <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
-                            <label class="col-sm-2" translate>label.sharedFilter</label>
-
-                            <div class="col-sm-6">
-                                <label class="md-check">
-                                    <input type="checkbox" ng-model="searchDailyPlanFilter.shared">
-                                    <i class="primary"></i>
-                                </label>
-                            </div>
-                        </div>-->
                         <div class="form-group m-t m-b-xs">
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
                                 button.search

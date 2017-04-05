@@ -3272,36 +3272,6 @@
                     toDate.setMinutes(parseInt(time[5]));
                 }
             }
-            if (vm.selectedFiltered.fromDate) {
-                fromDate = new Date(vm.selectedFiltered.fromDate);
-                if (vm.selectedFiltered.fromTime) {
-                    vm.selectedFiltered.fromTime = new Date(vm.selectedFiltered.fromTime);
-                    fromDate.setHours(vm.selectedFiltered.fromTime.getHours());
-                    fromDate.setMinutes(vm.selectedFiltered.fromTime.getMinutes());
-                    fromDate.setSeconds(vm.selectedFiltered.fromTime.getSeconds());
-                } else {
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
-                }
-
-            }
-            if (vm.selectedFiltered.toDate) {
-                toDate = new Date(vm.selectedFiltered.toDate);
-                if (vm.selectedFiltered.toTime) {
-
-                    vm.selectedFiltered.toTime = new Date(vm.selectedFiltered.toTime);
-                    toDate.setHours(vm.selectedFiltered.toTime.getHours());
-                    toDate.setMinutes(vm.selectedFiltered.toTime.getMinutes());
-                    toDate.setSeconds(vm.selectedFiltered.toTime.getSeconds());
-                } else {
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
-                }
-            }
 
             if (fromDate && toDate) {
                 obj.dateFrom = fromDate;
@@ -3504,48 +3474,6 @@
             if (vm.orderFilter1.type) {
                 obj.types = vm.orderFilter1.type;
             }
-            if (vm.orderFilter1.planned) {
-                if (/^\s*(now\s*\+)\s*(\d+)\s*$/i.test(vm.orderFilter1.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.orderFilter1.planned)[2]);
-                    toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*\d+[d,h]\s*$/i.test(vm.orderFilter1.planned)) {
-                    obj.dateFrom = vm.orderFilter1.planned;
-                } else if (/^\s*(Today)\s*$/i.test(vm.orderFilter1.planned)) {
-                    fromDate = new Date();
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
-                    toDate = new Date();
-                    toDate.setDate(toDate.getDate() + 1);
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
-                } else if (/^\s*(now)\s*$/i.test(vm.orderFilter1.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.orderFilter1.planned)) {
-                    var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.orderFilter1.planned);
-                    fromDate = new Date();
-                    if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                        fromDate.setHours(parseInt(time[1]) + 12);
-                    } else {
-                        fromDate.setHours(parseInt(time[1]));
-                    }
-
-                    fromDate.setMinutes(parseInt(time[2]));
-                    toDate = new Date();
-                    if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                        toDate.setHours(parseInt(time[4]) + 12);
-                    } else {
-                        toDate.setHours(parseInt(time[4]));
-                    }
-                    toDate.setMinutes(parseInt(time[5]));
-                }
-            }
 
             if (vm.orderFilter1.fromDate) {
                 fromDate = new Date(vm.orderFilter1.fromDate);
@@ -3586,15 +3514,6 @@
         }
 
         vm.saveAsFilter = function (form) {
-            if (vm.orderFilter1.radio == 'current') {
-                vm.orderFilter1.fromDate = undefined;
-                vm.orderFilter1.fromTime = undefined;
-                vm.orderFilter1.toDate = undefined;
-                vm.orderFilter1.toTime = undefined;
-                vm.orderFilter1.planned = undefined;
-            } else if (vm.orderFilter1.radio == 'planned') {
-                vm.orderFilter1.processingState = undefined;
-            }
             var configObj = {};
             configObj.jobschedulerId = vm.schedulerIds.selected;
             configObj.account = vm.permission.user;
@@ -3676,7 +3595,7 @@
             if (vm.orderFilter1.paths && vm.orderFilter1.paths.length > 0) {
                 obj.folders = [];
                 for (var i = 0; i < vm.orderFilter1.paths.length; i++) {
-                    obj.folders.push({folder: vm.orderFilter1.paths[i], recursive: false});
+                    obj.folders.push({folder: vm.orderFilter1.paths[i], recursive: true});
                 }
             }
 
@@ -3749,15 +3668,6 @@
             });
             modalInstance.result.then(function () {
 
-                if (vm.orderFilter1.radio == 'current') {
-                    vm.orderFilter1.fromDate = undefined;
-                    vm.orderFilter1.fromTime = undefined;
-                    vm.orderFilter1.toDate = undefined;
-                    vm.orderFilter1.toTime = undefined;
-                    vm.orderFilter1.planned = undefined;
-                } else if (vm.orderFilter1.radio == 'planned') {
-                    vm.orderFilter1.processingState = undefined;
-                }
                 var configObj = {};
                 configObj.jobschedulerId = vm.schedulerIds.selected;
                 configObj.account = vm.permission.user;
@@ -3781,10 +3691,12 @@
                         SavedFilter.setOrder(vm.savedOrderFilter);
                         SavedFilter.save();
                         vm.load();
+
                     }
                 });
+                vm.object.paths = [];
             }, function () {
-
+vm.object.paths = [];
             });
         };
 
@@ -3838,8 +3750,10 @@
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.orderFilter1.name;
                 temp_name ='';
+                vm.object.paths = [];
             }, function () {
 temp_name ='';
+                vm.object.paths = [];
             });
         };
 
@@ -3864,16 +3778,6 @@ temp_name ='';
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
-                if (vm.orderFilter1.radio == 'current') {
-                    vm.orderFilter1.fromDate = undefined;
-                    vm.orderFilter1.fromTime = undefined;
-                    vm.orderFilter1.toDate = undefined;
-                    vm.orderFilter1.toTime = undefined;
-                    vm.orderFilter1.planned = undefined;
-                } else if (vm.orderFilter1.radio == 'planned') {
-                    vm.orderFilter1.processingState = undefined;
-                }
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
                 configObj.account = vm.permission.user;
@@ -3887,9 +3791,9 @@ temp_name ='';
                     configObj.id = res.id;
                     vm.orderFilterList.push(configObj);
                 })
-
+vm.object.paths = [];
             }, function () {
-
+vm.object.paths = [];
             });
         };
 
@@ -3974,6 +3878,7 @@ temp_name ='';
         };
 
         vm.changeFilter = function (filter) {
+            vm.cancel();
             if (filter) {
                 vm.savedOrderFilter.selected = filter.id;
                 vm.orderFilters.selectedView = true;
@@ -6000,6 +5905,7 @@ temp_name ='';
             } else {
                 filter.dateFrom = vm.order.filter.date;
             }
+
             return filter;
         }
 
@@ -6138,6 +6044,7 @@ temp_name ='';
                     }
                     filter.dateTo = toDate;
                 }
+
                 if (vm.jobSearch.regex) {
                     filter.regex = vm.jobSearch.regex;
                 }
@@ -6216,6 +6123,7 @@ temp_name ='';
                     }
                     filter.dateTo = toDate;
                 }
+
                 if (vm.jobChainSearch.regex) {
                     filter.regex = vm.jobChainSearch.regex;
                 }
@@ -6704,8 +6612,15 @@ temp_name ='';
                     SavedFilter.setHistory(vm.historyFilterObj);
                     SavedFilter.save();
                 });
+                            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
             }, function () {
-
+            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
             });
         };
 
@@ -6784,8 +6699,16 @@ var temp_name ='';
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.historyFilter.name;
                 temp_name ='';
+                            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
             }, function () {
 temp_name ='';
+                            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
             });
         };
 
@@ -6835,8 +6758,15 @@ temp_name ='';
                         vm.jobHistoryFilterList.push(configObj);
                     }
                 });
+                            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
             }, function () {
-
+            vm.object.paths = [];
+            vm.object.orders = [];
+            vm.object.jobChains = [];
+            vm.object.jobs = [];
             });
         };
         vm.deleteFilter = function (filter) {
@@ -6992,6 +6922,7 @@ temp_name ='';
         };
 
         vm.changeFilter = function (filter) {
+            vm.cancel();
             if (vm.historyFilters.type == 'jobChain') {
                 if (filter) {
                     vm.savedHistoryFilter.selected = filter.id;

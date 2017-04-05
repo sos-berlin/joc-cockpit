@@ -45,22 +45,23 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group row" ng-class="{'m-b-sm': jobFilter.radio == 'planned' }">
-                <label class="col-sm-4 " translate>label.jobState</label>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.jobPlanned</label>
 
-                <div class=" col-sm-8" ng-init="jobFilter.radio = 'current'">
+                <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                    <input valid-filter-regex type="text" name="planned" class="form-control"
+                           placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="jobFilter.planned">
+
+                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 " translate>label.jobState</label>
+                <div class=" col-sm-8">
                     <div>
                         <label class="md-check w">
-                            <input type="radio" name="radio" ng-model="jobFilter.radio" value="current">
-                            <i class="primary"></i> <span translate>label.current</span>
-                        </label>
-                        <label class="md-check  w">
-                            <input type="radio" name="radio" ng-model="jobFilter.radio" value="planned">
-                            <i class="primary"></i> <span translate>label.planned</span>
-                        </label>
-                    </div>
-                    <div ng-show="jobFilter.radio == 'current'">
-                        <label class="md-check m-t  w">
                             <input type="checkbox" data-checklist-model="jobFilter.state"
                                    data-checklist-value="'PENDING'">
                             <i class="primary"></i><span translate>label.pending</span>
@@ -81,43 +82,6 @@
                             <i class="primary"></i><span translate>label.waitingForResource</span>
                         </label>
                     </div>
-                </div>
-            </div>
-            <div class="form-group row m-t-sm" ng-show="jobFilter.radio == 'planned'">
-                <label class="col-sm-4 form-control-label" translate>label.jobPlanned</label>
-
-                <div class="col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                    <input valid-filter-regex type="text" name="planned" class="form-control"
-                           placeholder="{{'placeholder.processPlanned' | translate}}" ng-model="jobFilter.planned"
-                           ng-disabled="jobFilter.fromDate ||jobFilter.fromTime || jobFilter.toDate ||jobFilter.toTime">
-
-                    <div class="help-block text-danger" ng-messages="form.planned.$error">
-                        <div ng-message="invalid" translate>message.invalid</div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row" ng-show="jobFilter.radio == 'planned'">
-                <label class="col-sm-4 form-control-label" translate>label.from</label>
-
-                <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="jobFilter.fromDate" ng-disabled="jobFilter.planned"
-                           data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker
-                           type="text">
-                    <input ng-disabled="!jobFilter.fromDate" class="form-control input-time" ng-model="jobFilter.fromTime" ng-disabled="jobFilter.planned"
-                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker
-                           type="text">
-                </div>
-            </div>
-            <div class="form-group row" ng-show="jobFilter.radio == 'planned'">
-                <label class="col-sm-4 form-control-label" translate>label.to</label>
-
-                <div class="col-sm-8">
-                    <input class="form-control input-date" ng-model="jobFilter.toDate" ng-disabled="jobFilter.planned"
-                           data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{jobFilter.fromDate}}"
-                           placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input ng-disabled="!jobFilter.toDate" class="form-control input-time" ng-model="jobFilter.toTime" ng-disabled="jobFilter.planned"
-                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker
-                           type="text">
                 </div>
             </div>
             <div class="form-group row">
