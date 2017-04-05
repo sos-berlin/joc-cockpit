@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$timeout"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $timeout) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -2860,9 +2860,11 @@
             if (vm.dashboardFilters.filter.orderRange == "today") {
                 obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
                 obj.dateTo = vm.dashboardFilters.filter.orderSummaryto;
+
             } else {
                 obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
             }
+
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
                 isLoadedSummary = true;
@@ -3261,10 +3263,6 @@
         }
 
         vm.getPlans = function () {
-
-/*            if (vm.dailyPlanFilters.range != 'period') {
-                vm.dailyPlanFilters.filter.range = undefined;
-            }*/
             setDateRange(vm.dailyPlanFilters.filter.range);
             vm.load();
         };
@@ -3452,8 +3450,6 @@
                         fromDate.setMilliseconds(0);
                     }
 
-                } else {
-                    fromDate = '0d';
                 }
                 if (vm.searchDailyPlanFilter.to) {
                     toDate = new Date(vm.searchDailyPlanFilter.to);
@@ -3468,8 +3464,6 @@
                         toDate.setSeconds(0);
                         toDate.setMilliseconds(0);
                     }
-                } else {
-                    toDate = '0d';
                 }
             } else {
                 if (vm.searchDailyPlanFilter.from1) {
@@ -3498,8 +3492,6 @@
                         toDate = new Date();
                     }
                 }
-
-
             }
             if (fromDate) {
                 obj.dateFrom = fromDate;
@@ -3618,7 +3610,7 @@
                         groupJobChain.push({job: data2[i].job});
                 }
             }
-
+            var theme = window.localStorage.$SOS$THEME ;
             for (var index = 0; index < groupJobChain.length; index++) {
                 var i = 0;
                 orders[index] = {};
@@ -3639,7 +3631,10 @@
                             orders[index].tasks[i].color = "#e86680";
                         }
                         else if (data2[index1].late) {
-                            orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
+                            orders[index].tasks[i].color = "#ffc300";
+                        }else{
+                            if(theme != 'light' || theme != 'lighter')
+                             orders[index].tasks[i].color = "#fafafa";
                         }
                         orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
 
@@ -3686,7 +3681,10 @@
                             orders[index].tasks[i].color = "#e86680";
                         }
                         else if (data2[index1].late) {
-                            orders[index].tasks[i].color = "rgba(255, 195, 0, .9)";
+                            orders[index].tasks[i].color = "#ffc300";
+                        }else{
+                            if(theme != 'light' || theme != 'lighter')
+                             orders[index].tasks[i].color = "#fafafa";
                         }
                         orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
 
@@ -3834,56 +3832,7 @@
             obj.job = vm.searchDailyPlanFilter.job;
             obj.state = vm.searchDailyPlanFilter.state;
             obj.name = vm.searchDailyPlanFilter.name;
-            if (vm.searchDailyPlanFilter.radio == 'current') {
-                if (vm.searchDailyPlanFilter.from) {
-                    fromDate = new Date(vm.searchDailyPlanFilter.from);
-                    if (vm.searchDailyPlanFilter.fromTime) {
-                        vm.searchDailyPlanFilter.fromTime = new Date(vm.searchDailyPlanFilter.fromTime);
-                        fromDate.setHours(vm.searchDailyPlanFilter.fromTime.getHours());
-                        fromDate.setMinutes(vm.searchDailyPlanFilter.fromTime.getMinutes());
-                        fromDate.setSeconds(vm.searchDailyPlanFilter.fromTime.getSeconds());
-                    } else {
-                        fromDate.setHours(0);
-                        fromDate.setMinutes(0);
-                        fromDate.setSeconds(0);
-                        fromDate.setMilliseconds(0);
-                    }
-                }
-                if (vm.searchDailyPlanFilter.to) {
-                    toDate = new Date(vm.searchDailyPlanFilter.to);
-                    if (vm.searchDailyPlanFilter.toTime) {
-                        vm.searchDailyPlanFilter.toTime = new Date(vm.searchDailyPlanFilter.toTime);
-                        toDate.setHours(vm.searchDailyPlanFilter.toTime.getHours());
-                        toDate.setMinutes(vm.searchDailyPlanFilter.toTime.getMinutes());
-                        toDate.setSeconds(vm.searchDailyPlanFilter.toTime.getSeconds());
-                    } else {
-                        toDate.setHours(0);
-                        toDate.setMinutes(0);
-                        toDate.setSeconds(0);
-                        toDate.setMilliseconds(0);
-                    }
-                }
-                if (fromDate) {
-                    var duration = moment(fromDate).diff(new Date());
-                    if (duration < 0) {
-                        obj.from = 'now' + Math.round(duration / 1000);
-                    } else {
-                        obj.from = 'now+' + Math.round(duration / 1000);
-                    }
-                } else {
-                    obj.from = '0d';
-                }
-                if (toDate) {
-                    var duration = moment(toDate).diff(new Date());
-                    if (duration < 0) {
-                        obj.to = 'now' + Math.round(duration / 1000);
-                    } else {
-                        obj.to = 'now+' + Math.round(duration / 1000);
-                    }
-                } else {
-                    obj.to = '0d';
-                }
-            }else{
+            if (vm.searchDailyPlanFilter.radio != 'current') {
                 if (vm.searchDailyPlanFilter.from1) {
                     if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
                         fromDate = new Date();
@@ -4165,6 +4114,7 @@
         };
 
         vm.changeFilter = function (filter) {
+            vm.cancel();
             if (filter) {
                 vm.savedDailyPlanFilter.selected = filter.id;
                 vm.dailyPlanFilters.selectedView = true;

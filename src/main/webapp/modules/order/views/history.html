@@ -237,7 +237,7 @@
                 <div class="box p-a m-b-xs">
                     <form name="form" ng-submit="saveAsFilter(form)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                           <label class="col-sm-2 form-control-label" translate>label.filterName</label>
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
                            <div class=" col-sm-6">
                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobChainSearch.name" ng-blur="checkFilterName()">
                                <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
@@ -249,7 +249,7 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobChainSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
@@ -260,7 +260,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
@@ -271,7 +271,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                           <label class="col-sm-2 form-control-label" translate>label.regex</label>
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
                            <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
                                <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobChainSearch.regex">
                                <div class="help-block text-danger" ng-messages="form.regex.$error">
@@ -281,7 +281,7 @@
                            <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
                         </div>
                         <div class="form-group row" ng-if="jobChainSearch.paths.length>0">
-                             <label class="col-sm-2" translate>label.folders</label>
+                             <label class="col-md-2 col-sm-4" translate>label.folders</label>
                             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                                 <div ng-repeat="path in jobChainSearch.paths track by $index">
                                         <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
@@ -289,7 +289,7 @@
                             </div>
                         </div>
                         <div class="form-group row m-b-sm" ng-class="{'m-t-sm': jobChainSearch.paths.length>0}">
-                           <label class="col-sm-2" >
+                           <label class="col-md-2 col-sm-4" >
                                <span translate>label.jobChains</span>
                                <span>/</span>
                                <span translate>label.orders</span>
@@ -309,7 +309,7 @@
                            <div class="col-sm-1" ng-class="{'p-l-0': jobChainSearch.jobChains.length>0 || jobChainSearch.orders.length>0}"><a href="" ng-click="getTreeStructureForObjects()"><i class="fa fa-folder-o fa-lg"></i></a></div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 " translate>label.status</label>
+                            <label class="col-md-2 col-sm-4 " translate>label.status</label>
                             <div class="col-sm-9">
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="jobChainSearch.states" data-checklist-value="'SUCCESSFUL'">
@@ -325,16 +325,6 @@
                                 </label>
                             </div>
                         </div>
-<!--                        <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
-                            <label class="col-sm-2" translate>label.sharedFilter</label>
-
-                            <div class="col-sm-8">
-                                <label class="md-check">
-                                    <input type="checkbox"  ng-model="jobChainSearch.shared" >
-                                    <i class="primary"></i>
-                                </label>
-                            </div>
-                        </div>-->
                         <div class="form-group m-t m-b-xs">
                             <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
                                 button.search
@@ -353,7 +343,7 @@
                 <div class="box p-a m-b-xs">
                     <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                           <label class="col-sm-2 form-control-label" translate>label.filterName</label>
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
                            <div class=" col-sm-6">
                                <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobSearch.name" ng-blur="checkFilterName()">
                                <div class="help-block text-danger" ng-if="form1.filterName.$dirty" ng-messages="form1.filterName.$error">
@@ -365,7 +355,7 @@
                            </div>
                         </div>
                         <div class="form-group row ">
-                            <label class="col-sm-2 form-control-label" translate>label.from</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
@@ -376,7 +366,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 form-control-label" translate>label.to</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="jobSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
@@ -387,7 +377,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                           <label class="col-sm-2 form-control-label" translate>label.regex</label>
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
                            <div class=" col-sm-6" ng-class="{ 'has-error' : form1.regex.$invalid && form1.regex.$dirty }">
                                <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobSearch.regex">
                                <div class="help-block text-danger" ng-messages="form1.regex.$error">
@@ -397,7 +387,7 @@
                            <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
                         </div>
                         <div class="form-group row" ng-if="jobSearch.paths.length>0">
-                             <label class="col-sm-2" translate>label.folders</label>
+                             <label class="col-md-2 col-sm-4" translate>label.folders</label>
                             <div class="col-sm-6" style="max-height: 140px; overflow: auto">
                                 <div ng-repeat="path in jobSearch.paths track by $index">
                                         <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
@@ -405,7 +395,7 @@
                             </div>
                         </div>
                         <div class="form-group row m-b-sm" ng-class="{'m-t-sm': jobSearch.paths.length>0}">
-                           <label class="col-sm-2" >
+                           <label class="col-md-2 col-sm-4" >
                                <span translate>label.jobs</span>
                            </label>
                             <div class="col-sm-6" ng-if="jobSearch.jobs.length>0">
@@ -418,7 +408,7 @@
                            <div class="col-sm-1" ng-class="{'p-l-0': jobSearch.jobs.length>0}"><a href="" ng-click="getTreeStructureForObjects()"><i class="fa fa-folder-o fa-lg"></i></a></div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-2 " translate>label.status</label>
+                            <label class="col-md-2 col-sm-4 " translate>label.status</label>
 
                             <div class="col-sm-9">
                                 <label class="md-check w">
@@ -432,16 +422,6 @@
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'FAILED'">
                                     <i class="primary"></i><span translate>label.failed</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-if="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
-                            <label class="col-sm-2" translate>label.sharedFilter</label>
-
-                            <div class="col-sm-8">
-                                <label class="md-check">
-                                    <input type="checkbox"  ng-model="jobChainSearch.shared" >
-                                    <i class="primary"></i>
                                 </label>
                             </div>
                         </div>
