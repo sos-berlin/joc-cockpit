@@ -184,6 +184,7 @@
   "label.order": "Auftrag",
   "label.jobs": "Jobs",
   "label.job": "Job",
+  "label.jobChainOrJob": "Job-Kette/Job",
   "label.logs": "Protokolle",
   "label.history": "Historie",
   "label.agentClusterStatus": "Agent Cluster Status",
@@ -966,5 +967,7 @@
   "button.clear": "Inhalt löschen",
   "label.dateRange": "Zeitspanne",
   "label.specificDate": "Bestimmtes Datum",
-  "label.manualDate": "Relatives Datum"
+  "label.manualDate": "Relatives Datum",
+  "label.successfulLate": "Successful Late",
+  "label.failedLate": "Failed Late"
 }

@@ -3584,6 +3584,19 @@
             vm.jobFilter = {};
             vm.isUnique = true;
             vm.showSearchPanel = true;
+            vm.jobFilter.fromDate = new Date();
+            vm.jobFilter.fromDate.setHours(0);
+            vm.jobFilter.fromDate.setMinutes(0);
+            vm.jobFilter.fromDate.setSeconds(0);
+            vm.jobFilter.fromDate.setMilliseconds(0);
+            vm.jobFilter.fromTime = angular.copy(vm.jobFilter.fromDate);
+            vm.jobFilter.toDate = new Date();
+            vm.jobFilter.toDate.setDate(vm.jobFilter.toDate.getDate() + 1);
+            vm.jobFilter.toDate.setHours(0);
+            vm.jobFilter.toDate.setMinutes(0);
+            vm.jobFilter.toDate.setSeconds(0);
+            vm.jobFilter.toDate.setMilliseconds(0);
+            vm.jobFilter.toTime = angular.copy(vm.jobFilter.toDate);
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -3711,6 +3724,7 @@
         vm.applyFilter = function () {
             vm.cancel();
             vm.jobFilter = {};
+             vm.jobFilter.planned = 'today';
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/job-filter-dialog.html',

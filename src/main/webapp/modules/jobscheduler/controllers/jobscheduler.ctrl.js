@@ -2243,8 +2243,8 @@
     }
 
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', 'gettext', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog,gettext, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
         var vm = $scope;
         if (SOSAuth.jobChain) {
             SOSAuth.setJobChain(undefined);
@@ -2355,8 +2355,6 @@
                 },
                 duration: 500,
                 interactive: true,
-                noData: gettextCatalog.getString('message.noDataAvailable')
-
             }
         };
 
@@ -2482,12 +2480,6 @@
                 return d.key;
             }
         };
-        function toolTipContentFunction() {
-            return function (key, x) {
-                return '<h3>' + gettextCatalog.getString(key) + '</h3>' +
-                    '<p>' + d3.format(',f')(x) + '</p>'
-            }
-        }
 
         var format = d3.format(',.0f');
         vm.valueFormatFunction = function () {
@@ -2615,43 +2607,25 @@
                 }
 
                 if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminate') {
-                    JobSchedulerService.terminate(obj).then(function (res) {
-                        success('stopped', host, port);
-                    });
+                    JobSchedulerService.terminate(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abort') {
-                    JobSchedulerService.abort(obj).then(function (res) {
-                        success('running', host, port);
-                    });
+                    JobSchedulerService.abort(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'abortAndRestart') {
-                    JobSchedulerService.abortAndRestart(obj).then(function (res) {
-                        success('running', host, port);
-                    });
+                    JobSchedulerService.abortAndRestart(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestart') {
-                    JobSchedulerService.restart(obj).then(function (res) {
-                        success('running', host, port);
-                    });
+                    JobSchedulerService.restart(obj);
                 }
                 else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
-                    JobSchedulerService.pause(obj).then(function (res) {
-                        success('paused', host, port);
-                    });
+                    JobSchedulerService.pause(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
-                    JobSchedulerService.continue(obj).then(function (res) {
-                        success('running', host, port);
-                    });
+                    JobSchedulerService.continue(obj);
                 } else if (objectType == 'cluster' && action == 'terminate') {
 
-                    JobSchedulerService.terminateCluster(obj1).then(function (res) {
-                        clusterSuccess('stopped', host, port);
-                    });
+                    JobSchedulerService.terminateCluster(obj1);
                 } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
-                    JobSchedulerService.terminateFailsafeCluster(obj1).then(function (res) {
-                        clusterSuccess('stopped', host, port);
-                    });
+                    JobSchedulerService.terminateFailsafeCluster(obj1);
                 } else if (objectType == 'cluster' && action == 'restart') {
-                    JobSchedulerService.restartCluster(obj1).then(function (res) {
-                        clusterSuccess('running', host, port);
-                    });
+                    JobSchedulerService.restartCluster(obj1);
                 } else if (action == 'downloadLog') {
                     vm.loading = true;
                     if (!id) {
@@ -2706,39 +2680,8 @@
                 }
             }
 
-            function clusterSuccess(state) {
-
-                if (vm.clusterStatusData.supervisors.length == 0) {
-                    drawForRemainings();
-                }
-                angular.forEach(vm.clusterStatusData.supervisors, function (supervisor, sIndex) {
-                    states[supervisor.host + supervisor.port] = state;
-                    angular.forEach(supervisor.masters, function (master, mIndex) {
-                        states[master.host + master.port] = state;
-                        if (sIndex == vm.clusterStatusData.supervisors.length - 1 && mIndex == supervisor.masters.length - 1) {
-                            drawForRemainings();
-                        }
-                    })
-                });
-
-                function drawForRemainings() {
-                    if (vm.clusterStatusData.members.masters.length == 0) {
-                        determineClusterStatus();
-                        return;
-                    }
-                    angular.forEach(vm.clusterStatusData.members.masters, function (master, index) {
-                        states[master.host + master.port] = state;
-                        if (index == vm.clusterStatusData.members.masters.length - 1) {
-                            determineClusterStatus();
-                        }
-                    })
-                }
-            }
         };
 
-        function success(state, host, port) {
-            states[host + port] = state;
-        }
 
         /*-------------Menu active function call-------------------*/
         vm.terminate = function () {
@@ -2786,9 +2729,7 @@
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 }
 
-                JobSchedulerService.restartWithin(obj).then(function (res) {
-                    success('running', host, port);
-                });
+                JobSchedulerService.restartWithin(obj);
             }, function () {
 
             });
@@ -2809,18 +2750,16 @@
             isLoadedSummary = false;
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
-            if (vm.dashboardFilters.filter.orderRange == 'next-24-hours') {
-                setOrderDateRange(vm.dashboardFilters.filter.orderRange);
-            }
+
             if (vm.dashboardFilters.filter.orderRange == 'today') {
                 setOrderDateRange(vm.dashboardFilters.filter.orderRange);
             }
             if (vm.dashboardFilters.filter.orderRange == "today") {
                 obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
                 obj.dateTo = vm.dashboardFilters.filter.orderSummaryto;
-
             } else {
                 obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
+                obj.timeZone = vm.userPreferences.zone;
             }
 
             OrderService.getSummary(obj).then(function (res) {
@@ -2833,10 +2772,10 @@
         vm.getOrderSummary();
         /*----------------- Daily plan overview -----------------*/
 
-        function setDateRange(range) {
+        function setDateRange() {
             var from = new Date();
             var to = new Date();
-            if (range == 'today' || !range) {
+            if (vm.dashboardFilters.filter.range == 'today' || !vm.dashboardFilters.filter.range) {
                 from.setHours(0);
                 from.setMinutes(0);
                 from.setSeconds(0);
@@ -2846,7 +2785,7 @@
                 to.setMinutes(0);
                 to.setSeconds(0);
                 to.setMilliseconds(0);
-            } else if (range == 'next-24-hours') {
+            } else {
                 from.setDate(from.getDate() + 1);
                 to.setDate(to.getDate() + 2);
             }
@@ -2859,34 +2798,10 @@
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
-            if (vm.dashboardFilters.filter.range == 'next-24-hours') {
-                setDateRange(vm.dashboardFilters.filter.range);
-            }
-            if (vm.dashboardFilters.filter.range == 'today') {
-                setDateRange(vm.dashboardFilters.filter.range);
-            }
-            if (vm.dashboardFilters.filter.range == "today") {
-                obj.dateFrom = vm.dashboardFilters.filter.from;
-                obj.dateTo = vm.dashboardFilters.filter.to;
-            } else {
-                obj.dateFrom = vm.dashboardFilters.filter.from;
-                obj.dateTo = vm.dashboardFilters.filter.to;
-            }
-           if(!obj.dateFrom) {
-               obj.dateFrom = new Date();
-               obj.dateFrom.setHours(0);
-               obj.dateFrom.setMinutes(0);
-               obj.dateFrom.setSeconds(0);
-               obj.dateFrom.setMilliseconds(0);
-           }
-            if(!obj.dateTo) {
-                obj.dateTo = new Date();
-                obj.dateTo.setDate(toDate.getDate() + 1);
-                obj.dateTo.setHours(0);
-                obj.dateTo.setMinutes(0);
-                obj.dateTo.setSeconds(0);
-                obj.dateTo.setMilliseconds(0);
-            }
+            setDateRange();
+
+            obj.dateFrom = vm.dashboardFilters.filter.from;
+            obj.dateTo = vm.dashboardFilters.filter.to;
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.planItemData = res.planItems;
                 filterData();
@@ -2899,23 +2814,18 @@
         if (vm.permission && vm.permission.DailyPlan.view.status)
             vm.getDailyPlans();
 
-        function setOrderDateRange(range) {
+        function setOrderDateRange() {
             var from = new Date();
             var to = new Date();
-            if (range == 'today' || !range) {
-                from.setHours(0);
-                from.setMinutes(0);
-                from.setSeconds(0);
-                from.setMilliseconds(0);
-                to.setDate(to.getDate() + 1);
-                to.setHours(0);
-                to.setMinutes(0);
-                to.setSeconds(0);
-                to.setMilliseconds(0);
-            } else if (range == 'next-24-hours') {
-                from.setDate(from.getDate() + 1);
-                to.setDate(to.getDate() + 2);
-            }
+            from.setHours(0);
+            from.setMinutes(0);
+            from.setSeconds(0);
+            from.setMilliseconds(0);
+            to.setDate(to.getDate() + 1);
+            to.setHours(0);
+            to.setMinutes(0);
+            to.setSeconds(0);
+            to.setMilliseconds(0);
 
             vm.dashboardFilters.filter.orderSummaryfrom = from;
             vm.dashboardFilters.filter.orderSummaryto = to;
@@ -2926,31 +2836,29 @@
             vm.late = 0;
             vm.lateSuccess = 0;
             vm.lateError = 0;
-            vm.executed = 0;
+            vm.success = 0;
             vm.error = 0;
             if (!vm.planItemData) {
                 return;
             }
             vm.totalPlanData = vm.planItemData.length;
             angular.forEach(vm.planItemData, function (value) {
+
                 var time;
-                if (!value.startTime) {
-                    time = moment(value.plannedStartTime).diff(moment(new Date()));
-                    if (time < 0) {
+                if (value.state._text == 'PLANNED' || value.state._text == 'INCOMPLETE') {
+                    if (value.late) {
                         vm.late++;
                     } else {
                         vm.waiting++;
                     }
-                } else if (value.state._text == 'SUCCESSFUL' && value.startTime) {
-                    time = moment(value.plannedStartTime).diff(moment(value.startTime));
-                    if (time == 0) {
-                        vm.executed++;
+                } else if (value.state._text == 'SUCCESSFUL') {
+                    if (!value.late) {
+                        vm.success++;
                     } else {
                         vm.lateSuccess++;
                     }
                 } else {
-                    time = moment(value.plannedStartTime).diff(moment(value.startTime));
-                    if (time == 0) {
+                    if (!value.late) {
                         vm.error++;
                     } else {
                         vm.lateError++;
@@ -2959,14 +2867,14 @@
             });
             vm.waiting = getPlanPercent(vm.waiting);
             vm.late = getPlanPercent(vm.late);
-            vm.executed = getPlanPercent(vm.executed);
+            vm.success = getPlanPercent(vm.success);
             vm.lateSuccess = getPlanPercent(vm.lateSuccess);
             vm.error = getPlanPercent(vm.error);
             vm.lateError = getPlanPercent(vm.lateError);
             vm.arrayWidth = [];
             vm.arrayWidth[0] = vm.waiting;
             vm.arrayWidth[1] = vm.late;
-            vm.arrayWidth[2] = vm.executed;
+            vm.arrayWidth[2] = vm.success;
             vm.arrayWidth[3] = vm.lateSuccess;
             vm.arrayWidth[4] = vm.error;
             vm.arrayWidth[5] = vm.lateError;
@@ -2999,7 +2907,7 @@
             if (!flag) {
                 vm.arrayWidth[0] = vm.waiting;
                 vm.arrayWidth[1] = vm.late;
-                vm.arrayWidth[2] = vm.executed;
+                vm.arrayWidth[2] = vm.success;
                 vm.arrayWidth[3] = vm.lateSuccess;
                 vm.arrayWidth[4] = vm.error;
                 vm.arrayWidth[5] = vm.lateError;
@@ -3086,8 +2994,8 @@
         });
     }
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettextCatalog', 'orderByFilter', '$uibModal', 'SavedFilter', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService'];
-    function DailyPlanCtrl($scope, $timeout, gettextCatalog, orderBy, $uibModal, SavedFilter, DailyPlanService, $stateParams, CoreService, UserService) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettext', 'orderByFilter', '$uibModal', 'SavedFilter', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService'];
+    function DailyPlanCtrl($scope, $timeout, gettext, orderBy, $uibModal, SavedFilter, DailyPlanService, $stateParams, CoreService, UserService) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
@@ -3098,7 +3006,22 @@
 
         vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
         vm.dailyPlanFilterList = [];
+        if ($stateParams.filter != null) {
+            vm.dailyPlanFilters.selectedView = false;
+            if ($stateParams.filter == 1) {
+                vm.dailyPlanFilters.filter.status = 'WAITING';
+            }
+            if ($stateParams.filter == 2) {
+                vm.dailyPlanFilters.filter.status = 'LATE';
+            }
 
+            if ($stateParams.filter == 3) {
+                vm.dailyPlanFilters.filter.status = 'EXECUTED';
+            }
+        }
+        if ($stateParams.day != null) {
+            vm.dailyPlanFilters.filter.range = $stateParams.day;
+        }
 
         if (vm.dailyPlanFilters.selectedView) {
             vm.savedDailyPlanFilter.selected = vm.savedDailyPlanFilter.selected || vm.savedDailyPlanFilter.favorite;
@@ -3187,30 +3110,13 @@
             })
         }
 
-
-        if ($stateParams.filter != null) {
-            if ($stateParams.filter == 1) {
-                vm.dailyPlanFilters.filter.status = 'WAITING';
-            }
-            if ($stateParams.filter == 2) {
-                vm.dailyPlanFilters.filter.status = 'LATE';
-            }
-
-            if ($stateParams.filter == 3) {
-                vm.dailyPlanFilters.filter.status = 'EXECUTED';
-            }
-        }
-        if ($stateParams.day != null) {
-            vm.dailyPlanFilters.filter.range = $stateParams.day;
-        }
-
         vm.$on('resetDailyPlanDate', function () {
             vm.getPlans();
         });
-        function setDateRange(range) {
+        function setDateRange() {
             var from = new Date();
             var to = new Date();
-            if (range == 'today' || !range) {
+            if (vm.dailyPlanFilters.filter.range == 'today' || !vm.dailyPlanFilters.filter.range) {
                 from.setHours(0);
                 from.setMinutes(0);
                 from.setSeconds(0);
@@ -3221,21 +3127,19 @@
                 to.setSeconds(0);
                 to.setMilliseconds(0);
                 vm.currentDateValue = new Date();
-            } else if (range == 'next-24-hours') {
+            } else {
                 from.setDate(from.getDate());
                 to.setDate(to.getDate() + 1);
                 vm.currentDateValue = from;
             }
             vm.dailyPlanFilters.filter.from = from;
             vm.dailyPlanFilters.filter.to = to;
-        }
 
-        if (!vm.dailyPlanFilters.filter.from || !vm.dailyPlanFilters.filter.to) {
-            setDateRange();
         }
+        setDateRange();
 
         vm.getPlans = function () {
-            setDateRange(vm.dailyPlanFilters.filter.range);
+            setDateRange();
             vm.load();
         };
 
@@ -3265,16 +3169,16 @@
             zoom: 1.1,
             treeTableColumns: ['model.name', 'model.orderId'],
             columnsHeaders: {
-                'model.name': gettextCatalog.getString('label.jobChain') + '/' + gettextCatalog.getString('label.job'),
-                'model.orderId': gettextCatalog.getString('label.orderId')
+                'model.name': gettext('label.jobChainOrJob'),
+                'model.orderId': gettext('label.orderId')
             },
             columnsClasses: {
                 'model.name': 'gantt-column-name',
                 'model.orderId': 'gantt-column-from'
             },
             columnsHeaderContents: {
-                'model.name': '{{getHeader()}}',
-                'model.orderId': '{{getHeader()}}'
+                'model.name': '{{getHeader() | translate}}',
+                'model.orderId': '{{getHeader() | translate}}'
             },
             autoExpand: 'none',
             taskOutOfRange: 'truncate',
@@ -3793,6 +3697,8 @@
                     }
                     if (vm.dailyPlanFilters.filter.status == 'LATE') {
                         obj.late = true;
+                    } else {
+                        obj.late = false;
                     }
                 }
             }
@@ -4193,9 +4099,7 @@
         vm.getPlansByEvents = function () {
             isLoaded = false;
 
-
-            setDateRange(vm.dailyPlanFilters.filter.range);
-
+            setDateRange();
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             if (vm.searchDailyPlanFilter && hitSearch) {
@@ -4217,7 +4121,9 @@
                         }
                         if (vm.dailyPlanFilters.filter.status == 'LATE') {
                             obj.late = true;
-                        }
+                        } else{
+                    obj.late = false;
+                }
                     }
                 }
             }
