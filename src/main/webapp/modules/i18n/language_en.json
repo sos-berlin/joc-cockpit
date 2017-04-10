@@ -184,6 +184,7 @@
   "label.order": "Order",
   "label.jobs": "Jobs",
   "label.job": "Job",
+  "label.jobChainOrJob": "Job Chain/Job",
   "label.logs": "Logs",
   "label.history": "History",
   "label.agentClusterStatus": "Agent Cluster Status",
@@ -966,5 +967,7 @@
   "button.clear": "Clear",
   "label.dateRange": "Date Range",
   "label.specificDate": "Specific Date",
-  "label.manualDate": "Relative Date"
+  "label.manualDate": "Relative Date",
+  "label.successfulLate": "Successful Late",
+  "label.failedLate": "Failed Late"
 }

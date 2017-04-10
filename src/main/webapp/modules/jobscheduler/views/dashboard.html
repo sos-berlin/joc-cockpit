@@ -28,7 +28,7 @@
                                     <div ng-class="{'hide': agentClusterData.length==0}">
                                         <nvd3 options="pieOptions" data="agentClusterData"></nvd3>
                                     </div>
-                                    <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 15px">
+                                    <div ng-if="agentClusterData.length==0" class="text-u-c" style="padding: 58px;text-align: center; font-size: 17px;margin-right: 40px">
                                         {{'message.noDataAvailable' | translate}}
                                     </div>
                                     </div>
@@ -54,11 +54,14 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div style="overflow: auto;width: 100%">
+                            <div style="overflow: auto;width: 100%" ng-class="{'hide':agentStatusChart[0].values.length==0}">
                                 <nvd3 options="barOptions"
                                         data="agentStatusChart"
                                         on-ready="barChartReadyCallback">
                                 </nvd3>
+                            </div>
+                            <div ng-if="agentStatusChart[0].values.length==0" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
+                                        {{'message.noDataAvailable' | translate}}
                             </div>
                         </div>
                     </div>
@@ -236,7 +239,7 @@
                     <div class="box-body p-a">
                         <div class="hide" ng-class="{'show': totalPlanData > 0}">
                             <daily-plan-overview waiting="waiting" late="late" late-success="lateSuccess" width="arrayWidth"
-                                    late-error="lateError" executed="executed" error="error" total="totalPlanData" day="dashboardFilters.filter.range"></daily-plan-overview>
+                                    late-error="lateError" success="success" error="error" total="totalPlanData" day="dashboardFilters.filter.range"></daily-plan-overview>
                         </div>
                         <div class="hide text-center m-t h6 text-u-c"
                             ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable

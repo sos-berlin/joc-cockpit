@@ -120,6 +120,7 @@
   "label.jobChains": "ジョブチェーン",
   "label.orders": "オーダー",
   "label.jobs": "ジョブ",
+  "label.jobChainOrJob": "ジョブチェーン/ジョブ",
   "label.history": "履歴",
   "label.agentClusterStatus": "エージェント・ステータス",
   "label.url": "URL",
@@ -966,5 +967,7 @@
   "button.clear": "削除",
   "label.dateRange": "期間",
   "label.specificDate": "特定日付",
-  "label.manualDate": "相対日付"
+  "label.manualDate": "相対日付",
+  "label.successfulLate": "Successful Late",
+  "label.failedLate": "Failed Late"
 }

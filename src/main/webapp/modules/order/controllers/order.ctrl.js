@@ -3536,6 +3536,19 @@
             vm.isUnique = true;
             vm.showSearchPanel = true;
             vm.orderFilter1 = {};
+                        vm.orderFilter1.fromDate = new Date();
+             vm.orderFilter1.fromDate.setHours(0);
+             vm.orderFilter1.fromDate.setMinutes(0);
+             vm.orderFilter1.fromDate.setSeconds(0);
+             vm.orderFilter1.fromDate.setMilliseconds(0);
+             vm.orderFilter1.fromTime = angular.copy(vm.orderFilter1.fromDate);
+             vm.orderFilter1.toDate = new Date();
+             vm.orderFilter1.toDate.setDate(vm.orderFilter1.toDate.getDate() + 1);
+             vm.orderFilter1.toDate.setHours(0);
+             vm.orderFilter1.toDate.setMinutes(0);
+             vm.orderFilter1.toDate.setSeconds(0);
+             vm.orderFilter1.toDate.setMilliseconds(0);
+             vm.orderFilter1.toTime = angular.copy(vm.orderFilter1.toDate);
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -3658,6 +3671,7 @@
             vm.cancel();
             vm.orderFilter1 = {};
             vm.isUnique = true;
+            vm.orderFilter1.planned = 'today';
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/order-filter-dialog.html',
@@ -5733,7 +5747,6 @@ vm.object.paths = [];
             obj.objectType = "TASK_HISTORY";
             UserService.configurations(obj).then(function (res) {
 
-
                 if (vm.jobHistoryFilterList && vm.jobHistoryFilterList.length > 0) {
                     if (res.configurations && res.configurations.length > 0) {
                         vm.jobHistoryFilterList = vm.jobHistoryFilterList.concat(res.configurations);
@@ -6177,6 +6190,38 @@ vm.object.paths = [];
             vm.object.orders = [];
             vm.object.jobChains = [];
             vm.object.jobs = [];
+
+            vm.jobChainSearch.from = new Date();
+            vm.jobChainSearch.from.setDate(vm.jobChainSearch.from.getDate() - 1);
+            vm.jobChainSearch.from.setHours(0);
+            vm.jobChainSearch.from.setMinutes(0);
+            vm.jobChainSearch.from.setSeconds(0);
+            vm.jobChainSearch.from.setMilliseconds(0);
+            vm.jobChainSearch.fromTime = angular.copy(vm.jobChainSearch.from);
+            vm.jobChainSearch.to = new Date();
+
+            vm.jobChainSearch.to.setHours(0);
+            vm.jobChainSearch.to.setMinutes(0);
+            vm.jobChainSearch.to.setSeconds(0);
+            vm.jobChainSearch.to.setMilliseconds(0);
+            vm.jobChainSearch.toTime = angular.copy(vm.jobChainSearch.to);
+
+
+            vm.jobSearch.from = new Date();
+            vm.jobSearch.from.setDate(vm.jobSearch.from.getDate() - 1);
+            vm.jobSearch.from.setHours(0);
+            vm.jobSearch.from.setMinutes(0);
+            vm.jobSearch.from.setSeconds(0);
+            vm.jobSearch.from.setMilliseconds(0);
+            vm.jobSearch.fromTime = angular.copy(vm.jobSearch.from);
+            vm.jobSearch.to = new Date();
+
+            vm.jobSearch.to.setHours(0);
+            vm.jobSearch.to.setMinutes(0);
+            vm.jobSearch.to.setSeconds(0);
+            vm.jobSearch.to.setMilliseconds(0);
+            vm.jobSearch.toTime = angular.copy(vm.jobSearch.to);
+
         };
         vm.cancel = function (form) {
             if (!vm.order.filter.historyStates) {
@@ -6563,6 +6608,7 @@ vm.object.paths = [];
             vm.jobs = [];
             vm.historyFilter = {};
             vm.isUnique = true;
+            vm.historyFilter.planned = 'today';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/history-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -7419,7 +7465,7 @@ temp_name ='';
                 vm.isLoading = true;
 
                 t1 = $timeout(function () {
-                    if (vm.userPreferences.theme != 'light')
+                    if (vm.userPreferences.theme != 'light' || vm.userPreferences.theme != 'lighter')
                         $('.log_info').css('color', 'white')
                 }, 100);
             }, function () {
@@ -7438,7 +7484,7 @@ temp_name ='';
                     vm.logs = $sce.trustAsHtml(res.log.html);
                 vm.isLoading = true;
                 t1 = $timeout(function () {
-                    if (vm.userPreferences.theme != 'light')
+                    if (vm.userPreferences.theme != 'light'  || vm.userPreferences.theme != 'lighter')
                         $('.log_info').css('color', 'white')
                 }, 100);
             }, function () {
