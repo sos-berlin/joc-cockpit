@@ -1,0 +1,111 @@
+<div class="modal fade" id="period-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.02)">
+    <div class="modal-dialog box-shadow b-a " style="margin-top: 8%" ng-controller="PeriodEditorCtrl">
+        <div class="modal-content">
+            <div class="modal-body p-a-md">
+                <form name="form1" ng-submit="save(form1)" novalidate>
+                    <div>
+                        <div class="row m-b-sm">
+                            <label class="col-sm-12" ng-show="editor.createPeriod">
+                                <span class="text-primary text-u-l text-capitalize" translate>label.create</span>
+                                <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{strPeriod}}
+                            </label>
+                            <label class="col-sm-12" ng-show="editor.editPeriod">
+                                <span class="text-primary text-u-l text-capitalize" translate>label.edit</span>
+                                <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{strPeriod}}
+                            </label>
+                            <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -8px; top: -17px; font-size: 27px; opacity: .5"><i class="fa fa-times-circle"></i></a>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.repeatInterval</label>
+
+                            <div class="col-sm-9">
+                                <select class="form-control" ng-model="period.frequency" ng-change="changeFrequency()">
+                                    <option value="single_start" translate>label.singleStart</option>
+                                    <option value="repeat" translate>label.repeatStartEnd</option>
+                                    <option value="absolute_repeat" translate>label.absoluteRepeatEndEnd</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-show="period.frequency=='single_start'">
+                            <label class="col-sm-3 form-control-label" translate>label.startTime</label>
+
+                            <div class="col-sm-3">
+                                <input class="form-control input-time" ng-model="period.period._single_start"
+                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
+                                       placeholder="HH:MM:SS" bs-timepicker data-length="1"
+                                       data-minute-step="1"
+                                       data-arrow-behavior="picker" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-show="period.frequency=='repeat'">
+                            <label class="col-sm-3 form-control-label" translate>label.repeatTime</label>
+
+                            <div class="col-sm-3">
+                                <input class="form-control input-time" ng-model="period.period._repeat"
+                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
+                                       placeholder="HH:MM:SS" bs-timepicker data-length="1"
+                                       data-minute-step="1"
+                                       data-arrow-behavior="picker" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group row"
+                             ng-show="period.frequency=='absolute_repeat'">
+                            <label class="col-sm-3 form-control-label" translate>label.interval</label>
+
+                            <div class="col-sm-3">
+                                <input class="form-control input-time" ng-model="period.period._absolute_repeat"
+                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
+                                       placeholder="HH:MM:SS" bs-timepicker data-length="1"
+                                       data-minute-step="1"
+                                       data-arrow-behavior="picker" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-hide="period.frequency=='single_start'"
+                             ng-class="{'has-error': (form1.time1.$invalid || form1.time2.$invalid)}">
+                            <label class="col-sm-3 form-control-label" translate>label.begin</label>
+
+                            <div class="col-sm-3">
+                                <input class="form-control input-time" name="time1"
+                                       ng-model="period.period._begin"
+                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
+                                       placeholder="HH:MM:SS" bs-timepicker
+                                       data-length="1"
+                                       data-minute-step="1" data-arrow-behavior="picker" type="text">
+                            </div>
+                            <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
+
+                            <div class="col-sm-3">
+                                <input class="form-control input-time" name="time2"
+                                       ng-model="period.period._end"
+                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
+                                       placeholder="HH:MM:SS"
+                                       data-min-time="{{period.period._begin}}" bs-timepicker data-length="1"
+                                       data-minute-step="1" data-arrow-behavior="picker" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.onHoliday</label>
+
+                            <div class="col-sm-9">
+                                <select class="form-control" ng-model="period.period._when_holiday">
+                                    <option value="{{k}}" ng-repeat="(k,v) in editor.when_holiday_options" translate>
+                                        {{v}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form1.$invalid">
+                            <span translate>button.save</span>
+                        </button>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
+                            button.cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

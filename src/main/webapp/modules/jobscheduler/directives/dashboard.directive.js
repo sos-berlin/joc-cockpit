@@ -938,17 +938,17 @@
                 width: "="
             },
             template: '<div class="plan-overview bg-dimgrey" style="width:{{width[0]}}%">\n'
-            + '<label class="hide text-white" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:1,day:day})" ><span class="text-white" translate>label.waiting</span> - {{waiting |number:1}} %  </a></label></div>'
-            + '<div class="plan-overview text-white bg-gold" style="width:{{width[1]}}%">\n'
-            + '<label class="hide text-white plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.late</span> - {{late |number:1}} % </a></label></div>'
-            + '<div class="plan-overview text-white bg-green1" style="width:{{width[3]}}%">\n'
-            + '<label class="hide text-white plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.successfulLate</span> - {{lateSuccess |number:1}} % </a></label></div>'
-            + '<div class="plan-overview text-white bg-crimson1" style="width:{{width[5]}}%">\n'
-            + '<label class="hide text-white" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span class="text-white" translate>label.lateFailed</span> - {{lateError |number:1}} % </a></label></div>'
-            + '<div class="plan-overview text-white bg-green" style="width:{{width[2]}}%">\n'
-            + '<label class="hide text-white plan-status" ng-class="{\'show\': success > 0}" uib-tooltip="{{success*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.successful</span> - {{success |number:1}} % </a></label></div>'
-            + '<div class="plan-overview text-white bg-crimson" style="width:{{width[4]}}%">\n'
-            + '<label class="hide text-white" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span class="text-white" translate>label.failed</span> - {{error |number:1}} % </a></label></div>'
+            + '<label class="hide" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:1,day:day})" ><span  translate>label.waiting</span> - {{waiting |number:1}} %  </a></label></div>'
+            + '<div class="plan-overview bg-gold" style="width:{{width[1]}}%">\n'
+            + '<label class="hide plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span  translate>label.late</span> - {{late |number:1}} % </a></label></div>'
+            + '<div class="plan-overview bg-green1" style="width:{{width[3]}}%">\n'
+            + '<label class="hide plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.successfulLate</span> - {{lateSuccess |number:1}} % </a></label></div>'
+            + '<div class="plan-overview bg-crimson1" style="width:{{width[5]}}%">\n'
+            + '<label class="hide" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span  translate>label.failedLate</span> - {{lateError |number:1}} % </a></label></div>'
+            + '<div class="plan-overview bg-green" style="width:{{width[2]}}%">\n'
+            + '<label class="hide plan-status" ng-class="{\'show\': success > 0}" uib-tooltip="{{success*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.successful</span> - {{success |number:1}} % </a></label></div>'
+            + '<div class="plan-overview bg-crimson" style="width:{{width[4]}}%">\n'
+            + '<label class="hide" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.failed</span> - {{error |number:1}} % </a></label></div>'
         }
     }
 })();

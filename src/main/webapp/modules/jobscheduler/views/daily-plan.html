@@ -183,7 +183,7 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!searchDailyPlanFilter.from" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.fromTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.from || searchDailyPlanFilter.fromTime" ng-click="searchDailyPlanFilter.from='';searchDailyPlanFilter.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
@@ -194,7 +194,7 @@
                                        ng-model="searchDailyPlanFilter.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{searchDailyPlanFilter.from}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!searchDailyPlanFilter.to" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.toTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                                  <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.to || searchDailyPlanFilter.toTime" ng-click="searchDailyPlanFilter.to='';searchDailyPlanFilter.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
@@ -417,7 +417,7 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
                                 <td>
                                     <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></span>
                                     <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></span>

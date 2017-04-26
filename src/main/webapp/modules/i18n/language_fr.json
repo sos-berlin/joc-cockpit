@@ -247,7 +247,7 @@
   "label.month": "Mois",
   "label.ultimos": "Ultimos",
   "label.weekDays": "Jours de la semaine",
-  "label.monthDays": "Jours du mois",
+  "tab.monthDays": "Jours du mois",
   "label.yearDays": "Jours de l'an",
   "label.monthly": "Mensuel",
   "label.weekly": "Hebdomadaire",
@@ -969,5 +969,11 @@
   "label.specificDate": "Date spécifique",
   "label.manualDate": "Date relative",
   "label.successfulLate": "Successful Late",
-  "label.failedLate": "Failed Late"
+  "label.failedLate": "Failed Late",
+  "label.specificDays": "Specific Days",
+  "label.listOfFrequencies": "List of Frequencies",
+  "button.addNewFrequency": "Add Frequency",
+  "button.save": "Save",
+  "button.applyPeriod": "Apply Period",
+  "label.monthDays": "Month Days"
 }

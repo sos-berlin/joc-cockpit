@@ -176,7 +176,7 @@
   "label.monthRange": "期間",
   "label.month": "月",
   "label.weekDays": "平日",
-  "label.monthDays": "日",
+  "tab.monthDays": "日",
   "label.yearDays": "日",
   "label.monthly": "毎月",
   "label.weekly": "週次",
@@ -969,5 +969,11 @@
   "label.specificDate": "特定日付",
   "label.manualDate": "相対日付",
   "label.successfulLate": "Successful Late",
-  "label.failedLate": "Failed Late"
+  "label.failedLate": "Failed Late",
+  "label.specificDays": "Specific Days",
+  "label.listOfFrequencies": "List of Frequencies",
+  "button.addNewFrequency": "Add Frequency",
+  "button.save": "Save",
+  "button.applyPeriod": "Apply Period",
+  "label.monthDays": "Month Days"
 }

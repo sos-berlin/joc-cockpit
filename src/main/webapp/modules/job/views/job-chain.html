@@ -233,12 +233,12 @@
             </div>
             <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                 <div class="row hide" ng-class="{'show': pageView=='grid'}">
-                    <div ng-repeat="(key, value) in filtered = (allJobChains | filter: filterString:strict) | groupBy: 'path1'">
+                    <div ng-repeat="(key, value) in filtered = (allJobChains | filter: filterString:strict) | orderBy:'path1' | groupBy: 'path1' track by $index">
                         <div class="col-sm-12" style="margin-bottom: 10px">
                             <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                         </div>
                         <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                             ng-repeat="jobChain in value | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse">
+                             ng-repeat="jobChain in value | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse track by $index">
                             <div class="box card">
                                 <div class="box-body" title="{{jobChain.configurationStatus._text | translate}}">
                                     <div>
@@ -460,7 +460,7 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="jobChain in filtered = (allJobChains | filter: filterString:strict) | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize"
+                            <tbody ng-repeat="jobChain in filtered = (allJobChains | filter: filterString:strict) | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * jobChainFilters.pageSize | limitTo: jobChainFilters.pageSize track by $index"
                                    ng-class="{'light-bg':jobChain.show}">
                             <tr title="{{jobChain.configurationStatus._text | translate}}">
                                 <td class="noExl" ng-if="permission.JobChain.stop || permission.JobChain.unstop">
@@ -1256,8 +1256,10 @@
                 <div class="cssload-loading">{{'label.loading' | translate}}...</div>
             </div>
             <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
+                <div class="backdrop" ></div>
                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
             </div>
+
             <div class="hide " ng-class="{'show': isLoading}">
                 <div class="row hide" ng-show="showHistoryPanel" ng-class="{'show': pageView=='list'}">
                     <div class="col-md-12">

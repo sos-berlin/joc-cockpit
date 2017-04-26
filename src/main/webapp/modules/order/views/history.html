@@ -255,7 +255,7 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!jobChainSearch.from" class="form-control input-time m-l" ng-model="jobChainSearch.fromTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                                  <a class="text-sm text-primary" ng-show="jobChainSearch.from || jobChainSearch.fromTime" ng-click="jobChainSearch.from='';jobChainSearch.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
@@ -266,7 +266,7 @@
                                        ng-model="jobChainSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobChainSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!jobChainSearch.to" class="form-control input-time m-l" ng-model="jobChainSearch.toTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobChainSearch.to || jobChainSearch.toTime" ng-click="jobChainSearch.to='';jobChainSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
@@ -361,7 +361,7 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!jobSearch.from" class="form-control input-time m-l" ng-model="jobSearch.fromTime" data-time-format="HH:mm:ss"
-                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobSearch.from || jobSearch.fromTime" ng-click="jobSearch.from='';jobSearch.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
@@ -372,7 +372,7 @@
                                        ng-model="jobSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input ng-disabled="!jobSearch.to" class="form-control input-time m-l" ng-model="jobSearch.toTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime" ng-click="jobSearch.to='';jobSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>

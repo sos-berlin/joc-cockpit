@@ -471,8 +471,8 @@
         });
     }
 
-    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "CoreService", "$window"];
-    function AuditLogCtrl($scope, AuditLogService, CoreService, $window) {
+    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "CoreService"];
+    function AuditLogCtrl($scope, AuditLogService, CoreService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.adtLog = CoreService.getAuditLogTab();

@@ -1,0 +1,62 @@
+<html lang="en" ng-app="myapp">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>JobScheduler</title>
+    <meta charset="utf-8"/>
+    <meta name="description" content="opensource, scheduler, sos, jobscheduler"/>
+    <style>
+        pre.log {
+            color: #3d464d;
+            margin-bottom: 0;
+            line-height: .6557143;
+            font-family: Lucida Console, monospace;
+            font-size: 12px;
+        }
+        .log_error, .log_stderr {
+            color: red !important
+        }
+        .log_warn {
+            color: tomato
+        }
+        .log_info {
+            color: #000
+        }
+        .log_debug {
+            color: #006400
+        }
+        .log_debug2 {
+            color: #408040
+        }
+        .log_debug3 {
+            color: grey
+        }
+        .log_debug4, .log_debug5, .log_debug6, .log_debug7, .log_debug8 {
+            color: #8080FF
+        }
+        .log_debug9 {
+            color: #a0a0a0
+        }
+        .p-l-sm {
+            padding-left: 8px !important
+        }
+
+    </style>
+</head>
+<body ng-controller="LogCtrl">
+
+
+<pre class="p-l-sm log">
+    <span ng-bind-html="logs"></span>
+</pre>
+
+<!-- Angular -->
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="modules/log.js"></script>
+
+</body>
+</html>
+
+
+
+

@@ -105,6 +105,7 @@
                             scrTree[i].selected = destTree[j].selected;
                             scrTree[i].selected1 = destTree[j].selected1;
                             recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders, type);
+                            destTree.splice(j,1);
                             break;
                         }
                     }
@@ -129,6 +130,7 @@
                             scrTree[i].selected = destTree[j].selected;
                             scrTree[i].selected1 = destTree[j].selected1;
                             recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders, type);
+                            destTree.splice(j,1);
                             break;
                         }
                     }
@@ -3562,7 +3564,7 @@
                         else if (data2[index1].late) {
                             orders[index].tasks[i].color = "#ffc300";
                         }else{
-                            if(theme != 'light' || theme != 'lighter')
+                            if(theme != 'light' && theme != 'lighter')
                              orders[index].tasks[i].color = "#fafafa";
                         }
                         orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
@@ -3612,7 +3614,7 @@
                         else if (data2[index1].late) {
                             orders[index].tasks[i].color = "#ffc300";
                         }else{
-                            if(theme != 'light' || theme != 'lighter')
+                            if(theme != 'light' && theme != 'lighter')
                              orders[index].tasks[i].color = "#fafafa";
                         }
                         orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);

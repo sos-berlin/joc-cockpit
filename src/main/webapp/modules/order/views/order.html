@@ -110,7 +110,6 @@
                     </div>
 
                      <div class="hide" ng-class="{'show-block':object.orders.length>0}">
-                          <!--<button class="btn btn-grey btn-sm m-l-sm" ng-click="reset()" translate>button.reset</button>-->
                          <button class="hide btn btn-grey btn-sm m-l-sm bg-hover-color" ng-class="{'show-block':permission.Order.delete.permanent}"
                                   ng-disabled="deletedSelected" ng-click="deleteAllOrder()"><i class="fa fa-trash"></i> <span class="hidden-sm-down" translate>button.deleteOrder</span></button>
                          <button class="hide btn btn-grey btn-sm m-l-sm" ng-class="{'show-block':permission.Order.suspend}"
@@ -197,7 +196,7 @@
                                             <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="orderFilter1.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1"
                                                    placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text" ng-disabled="orderFilter1.planned">
                                             <input ng-disabled="!orderFilter1.fromDate" class="form-control input-time" ng-model="orderFilter1.fromTime" data-time-format="HH:mm:ss"
-                                                    placeholder="HH:MM:SS" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                                    placeholder="HH:MM:SS" bs-timepicker data-length="1" data-minute-step="1"  type="text" style="width: 175px;background-position: 150px">
                                             <a class="text-sm text-primary" ng-show="orderFilter1.fromDate || orderFilter1.fromTime" ng-click="orderFilter1.fromDate='';orderFilter1.fromTime=''; " translate>button.clear</a>
                                         </div>
                                     </div>
@@ -207,7 +206,7 @@
                                             <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="orderFilter1.toDate" data-date-format="{{dataFormat}}" data-autoclose="1"
                                                    data-min-date="{{orderFilter1.fromDate}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text" ng-disabled="orderFilter1.planned">
                                             <input ng-disabled="!orderFilter1.toDate" class="form-control input-time" ng-model="orderFilter1.toTime" data-time-format="HH:mm:ss"
-                                                   placeholder="HH:MM:SS" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                                   placeholder="HH:MM:SS" bs-timepicker data-length="1" data-minute-step="1"  type="text" style="width: 175px;background-position: 150px">
                                             <a class="text-sm text-primary" ng-show="orderFilter1.toDate || orderFilter1.toTime" ng-click="orderFilter1.toDate='';orderFilter1.toTime=''; " translate>button.clear</a>
                                         </div>
                                     </div>
@@ -296,12 +295,12 @@
                     <div ng-controller="OrderFunctionCtrl">
                         <div class="hide m-t-sm" ng-class="{'show': isLoading}" ng-hide="loading">
                             <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
-                                <div ng-repeat="(key, value) in filtered = (allOrders | filter: filterString:strict) | groupBy: 'path1'">
+                                <div ng-repeat="(key, value) in filtered = (allOrders | filter: filterString:strict) | orderBy:'path1' | groupBy: 'path1' track by $index">
                                     <div class="col-sm-12"  style="margin-bottom: 10px">
                                         <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
                                     </div>
                                     <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                                         ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse">
+                                         ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse track by $index">
                                         <div class="box card" >
                                             <div class="box-body">
                                                 <div>
@@ -455,7 +454,7 @@
 
                                         </tr>
                                         </thead>
-                                        <tbody ng-repeat="order in filtered = (allOrders | filter: filterString:strict) | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize" ng-class="{'light-bg':showLogPanel == order}">
+                                        <tbody ng-repeat="order in filtered = (allOrders | filter: filterString:strict) | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize track by $index" ng-class="{'light-bg':showLogPanel == order}">
                                             <tr>
                                                 <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                                     <label class="md-check">
@@ -592,6 +591,7 @@
 
                         </div>
                         <div class="hide text-center m-t-lg m-b-lg text-primary text" ng-class="{'show': loading}">
+                            <div class="backdrop" ></div>
                             <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                         </div>
                         <div ng-if="isLoading && !loading && folderPath && allOrders.length==0" class="text-center m-t m-b-lg h6">
@@ -765,6 +765,7 @@
         </div>
     </div>
 </div>
+
 <script>
   $('.table-responsive').on('shown.bs.dropdown', function (e) {
     var $table = $(this),
