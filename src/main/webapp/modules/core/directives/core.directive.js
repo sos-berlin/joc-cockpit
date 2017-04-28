@@ -46,9 +46,11 @@
                         e.clientLogs.push(i)
                     }
                 }), e.$on("$stateChangeError", function (i, a, r, o, l, s) {
-                    if (n.addClass("hide"), "login" === s)t.go("login"); else if (e.clientLogFilter.isEnable) {
+                    if (n.addClass("hide"), "login" === s)t.go("login"); else {if (e.clientLogFilter.isEnable) {
                         var s = {message: "ERROR ON LOADING : " + a.url, logTime: new Date, level: "error"};
                         e.clientLogs.push(s)
+                    }
+                        t.go("app.dashboard");
                     }
                 })
             }
@@ -135,7 +137,7 @@
             controller: ["CoreService", "$scope", "$rootScope", function (e, t, i) {
                 var n = t;
                 n.pageView = e.getView(), n.setView = function () {
-                    i.$broadcast("rebuild:me"), e.setView(t.pageView)
+                   e.setView(t.pageView)
                 }
             }]
         }

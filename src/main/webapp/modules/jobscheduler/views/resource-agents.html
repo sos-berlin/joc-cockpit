@@ -129,7 +129,7 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody ng-repeat="cluster in allAgentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * agentsFilters.pageSize | limitTo: agentsFilters.pageSize" ng-class="{'light-bg':cluster.show}">
+                        <tbody ng-repeat="cluster in allAgentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':cluster.show}">
                         <tr>
                             <td>
                                 <i class="cursor fa fa-caret-down noExl" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
@@ -193,23 +193,23 @@
                         <span translate ng-if="allAgentClusters.length >1">label.agentClustersFound</span>
                         <span translate ng-if="allAgentClusters.length ==1">label.agentClusterFound</span>
                     </div>
-                    <ul ng-show="allAgentClusters.length > agentsFilters.pageSize" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='agentsFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                    <ul ng-show="allAgentClusters.length > userPreferences.entryPerPage" uib-pagination total-items="allAgentClusters.length" ng-model="agentsFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                     <div class="pull-left" ng-show="allAgentClusters.length > 10">
                         <div class="btn-group m-r-xxs">
-                            <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'10'"
-                                    ng-class="{'primary': agentsFilters.pageSize=='10'}" >10
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'25'"
-                                    ng-class="{'primary': agentsFilters.pageSize=='25'}" >25
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'50'"
-                                    ng-class="{'primary': agentsFilters.pageSize=='50'}" >50
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="'100'"
-                                    ng-class="{'primary': agentsFilters.pageSize=='100'}">100
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="agentsFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
-                                    ng-class="{'primary': agentsFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                    ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                             </button>
                         </div>
                     </div>
@@ -221,6 +221,7 @@
         </div>
     </div>
     <div class="hide text-center m-t text-primary text" ng-class="{'show': loading}">
+        <div class="backdrop" ></div>
         <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg">

@@ -162,7 +162,7 @@
         }
 
         function isCustomizationSelected(flag) {
-            console.log('flag ' + flag);
+
             if (flag) {
                 vm.temp_filter.state = angular.copy(vm.jobChainFilters.filter.state);
                 vm.jobChainFilters.filter.state = '';
@@ -171,7 +171,7 @@
                     vm.jobChainFilters.filter.state = angular.copy(vm.temp_filter.state);
                 else
                     vm.jobChainFilters.filter.state = 'ALL';
-                console.log('State ' + vm.jobChainFilters.filter.state)
+
             }
         }
 
@@ -222,6 +222,7 @@
         });
 
         vm.treeHandler = function (data) {
+
             vm.reset();
             navFullTree();
             if (vm.showHistoryPanel && (vm.showHistoryPanel.path1 != data.path)) {
@@ -264,7 +265,6 @@
                 volatileInformation(obj, data);
             }, function () {
                 volatileInformation(obj, data);
-                vm.loading = false;
             });
         };
 
@@ -293,7 +293,7 @@
 
                 data.jobChains = [];
                 for (var i = 0; i < vm.jobChains.length; i++) {
-                    if (data.path == vm.jobChains[i].path.substring(0, vm.jobChains[i].path.lastIndexOf('/'))) {
+                    if (data.path == vm.jobChains[i].path.substring(0, vm.jobChains[i].path.lastIndexOf('/')) || data.path == vm.jobChains[i].path.substring(0, vm.jobChains[i].path.lastIndexOf('/')+1)) {
                         data.jobChains.push(vm.jobChains[i]);
                         vm.jobChains[i].path1 = data.path;
                         vm.allJobChains.push(vm.jobChains[i]);
@@ -323,18 +323,19 @@
             JobChainService.getJobChainsP(obj).then(function (result) {
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(result.jobChains, function (newValue, index) {
-                        angular.forEach(data.jobChains, function (oldValue) {
-                            if (newValue.path == oldValue.path) {
-                                result.jobChains[index].path1 = oldValue.path1;
-                                result.jobChains[index].show = oldValue.show;
+                        for(var i=0; i<data.jobChains.length;i++) {
+                            if (newValue.path == data.jobChains[i].path) {
+                                result.jobChains[index].path1 = data.jobChains[i].path1;
+                                result.jobChains[index].show = data.jobChains[i].show;
+                                data.jobChains.splice(i,1);
+                                break;
                             }
-                        });
+                        }
                     });
                 }
                 data.jobChains = result.jobChains;
                 volatileFolderData(data, obj);
             }, function (err) {
-                vm.loading = false;
                 volatileFolderData(data, obj);
             });
         }
@@ -351,10 +352,24 @@
             ];
 
             JobChainService.getJobChainsP(obj).then(function (result) {
+                 if (data.jobChains && data.jobChains.length > 0) {
+                    angular.forEach(result.jobChains, function (newValue, index) {
+                        for(var i=0; i<data.jobChains.length;i++) {
+                            if (newValue.path == data.jobChains[i].path) {
+                                result.jobChains[index].path1 = data.jobChains[i].path1;
+                                result.jobChains[index].show = data.jobChains[i].show;
+                                data.jobChains.splice(i,1);
+                                if(result.jobChains[index].show){
+                                    obj.compact = false;
+                                }
+                                break;
+                            }
+                        }
+                    });
+                }
                 data.jobChains = result.jobChains;
                 volatileFolderData1(data, obj);
             }, function (err) {
-                vm.loading = false;
                 volatileFolderData1(data, obj);
             });
         }
@@ -381,6 +396,7 @@
                     angular.forEach(data.jobChains, function (jobChains) {
                         if (vm.userPreferences.showOrders)
                             jobChains.show = true;
+                        if(res.nestedJobChains)
                         jobChains.nestedJobChains = res.nestedJobChains;
 
                         for (var i = 0; i < res.jobChains.length; i++) {
@@ -394,6 +410,7 @@
                                 }
                                 if (flag1)
                                     data1.push(jobChains);
+                                res.jobChains.splice(i,1);
                                 break;
                             }
                         }
@@ -494,6 +511,7 @@
                                 }
                                 if (flag1)
                                     data1.push(jobChains);
+                                res.jobChains.splice(i,1);
                                 break;
                             }
                         }
@@ -533,7 +551,7 @@
                         temp.push(value);
                     });
                 }
-                vm.allJobChains = temp;
+                vm.allJobChains = angular.copy(temp);
                 vm.folderPath = data.name || '/';
 
 
@@ -552,7 +570,7 @@
                         temp.push(value);
                     });
                 }
-                vm.allJobChains = temp;
+                vm.allJobChains = angular.copy(temp);
                 vm.folderPath = data.name || '/';
                 vm.loading = false;
             });
@@ -660,9 +678,10 @@
         }
 
         function insertData(node, x) {
+
             node.jobChains = [];
             for (var i = 0; i < x.length; i++) {
-                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/')) == '')) {
+                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/')+1) == node.path)) {
                     x[i].path1 = node.path;
                     node.jobChains.push(x[i]);
                     vm.allJobChains.push(x[i]);
@@ -729,6 +748,7 @@
                                 if (flag1) {
                                     data.push(jobChains);
                                 }
+                                res.jobChains.splice(i,1);
                                 break;
                             }
                         }
@@ -804,51 +824,49 @@
 
             JobChainService.getJobChainsP(obj1).then(function (result) {
                 JobChainService.get(obj).then(function (res) {
-
+                    vm.allJobChains = [];
                     if (result.jobChains && result.jobChains.length > 0) {
                         var x = [];
-                        angular.forEach(result.jobChains, function (jobChain) {
+                        angular.forEach(result.jobChains, function (jobChain, index) {
                             if (vm.userPreferences.showOrders)
-                                jobChain.show = true;
+                                result.jobChains[index].show = true;
                             for (var i = 0; i < res.jobChains.length; i++) {
                                 var flag1 = true;
-                                if (jobChain.path == res.jobChains[i].path) {
-                                    jobChain = angular.merge(jobChain, res.jobChains[i]);
-                                    if (vm.selectedFiltered && vm.selectedFiltered.agentName && jobChain.processClass) {
-                                        if (!jobChain.processClass.match(vm.selectedFiltered.agentName)) {
+                                if (result.jobChains[index].path == res.jobChains[i].path) {
+                                    result.jobChains[index] = angular.merge(result.jobChains[index], res.jobChains[i]);
+                                    if (vm.selectedFiltered && vm.selectedFiltered.agentName && result.jobChains[index].processClass) {
+                                        if (!result.jobChains[index].processClass.match(vm.selectedFiltered.agentName)) {
                                             flag1 = false;
                                         }
                                     }
-                                    if (vm.userPreferences.showTasks)
-                                        angular.forEach(jobChain.nodes, function (val, index) {
+                                    if (vm.userPreferences.showTasks && result.jobChains[index].show)
+                                        angular.forEach(result.jobChains[index].nodes, function (val, index) {
                                             if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
 
                                                 JobService.get({
                                                     jobschedulerId: vm.schedulerIds.selected,
                                                     jobs: [{job: val.job.path}]
                                                 }).then(function (res1) {
-                                                    jobChain.nodes[index].job = angular.merge(jobChain.nodes[index].job, res1.jobs[0]);
+                                                    result.jobChains[index].nodes[index].job = angular.merge(result.jobChains[index].nodes[index].job, res1.jobs[0]);
                                                 });
                                             }
                                         });
                                     if (flag1)
-                                        x.push(jobChain);
+                                        x.push(result.jobChains[index]);
+                                    res.jobChains.splice(i, 1);
                                     break;
                                 }
 
                             }
                         });
-
-                        angular.forEach(vm.tree, function (node, index) {
+                        angular.forEach(vm.tree, function (node) {
                             insertData(node, x);
                         })
 
-
                     } else {
-                        angular.forEach(vm.tree, function (node, index) {
+                        angular.forEach(vm.tree, function (node) {
                             insertData(node, res.jobChains);
                         })
-
                     }
 
                     vm.loading = false;
@@ -863,6 +881,7 @@
 
                 JobChainService.get(obj).then(function (res) {
                     if (res.jobChains) {
+                        vm.allJobChains = [];
                         angular.forEach(vm.tree, function (node, index) {
                             insertData(node, res.jobChains);
                         })
@@ -980,11 +999,12 @@
                 var data = [];
                 if (res && res.orders) {
                     if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
-                        angular.forEach(vm.orders, function (orders) {
+                        angular.forEach(vm.orders, function (order) {
                             for (var i = 0; i < res.orders.length; i++) {
-                                if (orders.path == orderData.path) {
-                                    orders = angular.merge(orders, orderData);
-                                    data.push(orders);
+                                if (order.path == res.orders[i].path) {
+                                    order = angular.merge(orders, res.orders[i]);
+                                    data.push(order);
+                                    res.orders.splice(i,1);
                                     break;
                                 }
                             }
@@ -1767,24 +1787,25 @@
             JobChainService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.jobChains && vm.jobChains.length > 0) {
-                    angular.forEach(vm.jobChains, function (jobChains) {
+                    angular.forEach(vm.jobChains, function (jobChain) {
                         if (vm.userPreferences.showOrders)
-                            jobChains.show = true;
+                            jobChain.show = true;
                         for (var i = 0; i < res.jobChains.length; i++) {
 
 
                             var flag1 = true;
-                            if (jobChains.path == res.jobChains[i].path) {
-                                jobChains = angular.merge(jobChains, res.jobChains[i]);
-                                if (vm.jobChainFilter && vm.jobChainFilter.agentName && jobChains.processClass) {
-                                    if (!jobChains.processClass.match(vm.jobChainFilter.agentName)) {
+                            if (jobChain.path == res.jobChains[i].path) {
+                                jobChain = angular.merge(jobChain, res.jobChains[i]);
+                                if (vm.jobChainFilter && vm.jobChainFilter.agentName && jobChain.processClass) {
+                                    if (!jobChain.processClass.match(vm.jobChainFilter.agentName)) {
                                         flag1 = false;
                                     }
                                 }
                                 if (flag1) {
-                                    jobChains.path1 = jobChains.path.substring(0, jobChains.path.lastIndexOf('/'));
-                                    data.push(jobChains);
+                                    jobChain.path1 = jobChain.path.substring(0, jobChain.path.lastIndexOf('/')) || jobChain.path.substring(0, jobChain.path.lastIndexOf('/')+1);
+                                    data.push(jobChain);
                                 }
+                                res.jobChains.splice(i,1);
                                 break;
                             }
                         }
@@ -1800,14 +1821,14 @@
                             }
                         }
                         if (flag1) {
-                            jobChainData.path1 = jobChainData.path.substring(0, jobChainData.path.lastIndexOf('/'));
+                            jobChainData.path1 = jobChainData.path.substring(0, jobChainData.path.lastIndexOf('/')) || jobChainData.path.substring(0, jobChainData.path.lastIndexOf('/')+1);
                             data.push(jobChainData);
                         }
 
                     })
                 }
                 vm.jobChains = data;
-                vm.allJobChains = vm.jobChains;
+                vm.allJobChains = angular.copy(vm.jobChains);
                 traverseTreeForSearchData();
             }, function () {
                 angular.forEach(vm.jobChains, function (jobChainData) {
@@ -1820,12 +1841,12 @@
                         }
                     }
                     if (flag1) {
-                        jobChainData.path1 = jobChainData.path.substring(0, jobChainData.path.lastIndexOf('/'));
+                        jobChainData.path1 = jobChainData.path.substring(0, jobChainData.path.lastIndexOf('/')) || jobChainData.path.substring(0, jobChainData.path.lastIndexOf('/')+1);
                         data.push(jobChainData);
                     }
 
                 });
-                vm.allJobChains = vm.jobChains;
+                vm.allJobChains = angular.copy(vm.jobChains);
                 traverseTreeForSearchData();
             });
         }
@@ -2259,12 +2280,13 @@
             angular.forEach(vm.allJobChains, function (value, index) {
                 obj.jobChains.push({jobChain: value.path});
             });
+
             JobChainService.get(obj).then(function (res) {
-                angular.forEach(res.jobChains, function (value) {
-                    for (var i = 0; i < vm.allJobChains.length; i++) {
-                        if (value.path == vm.allJobChains[i].path) {
+                for (var i = 0; i < vm.allJobChains.length; i++) {
+                    for(var j=0; j<res.jobChains.length; j++) {
+                        if (res.jobChains[j].path == vm.allJobChains[i].path) {
                             vm.allJobChains[i].nodes = [];
-                            vm.allJobChains[i] = angular.merge(vm.allJobChains[i], value);
+                            vm.allJobChains[i] = angular.merge(vm.allJobChains[i], res.jobChains[j]);
                             vm.allJobChains[i].nestedJobChains = res.nestedJobChains;
                             vm.allJobChains[i].show = true;
                             if (vm.userPreferences.showTasks)
@@ -2279,16 +2301,18 @@
                                         });
                                     }
                                 });
+                            res.jobChains.splice(j,1);
                             break;
                         }
+
                     }
-                });
+                }
             });
         };
 
 
         vm.collapseDetails = function () {
-            angular.forEach(vm.allJobChains, function (value, index) {
+            angular.forEach(vm.allJobChains, function (value) {
                 value.show = false;
             });
         };
@@ -2341,6 +2365,7 @@
                             scrTree[i].selected = destTree[j].selected;
                             scrTree[i].selected1 = destTree[j].selected1;
                             recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders);
+                            destTree.splice(j,1);
                             break;
                         }
                     }
@@ -2358,6 +2383,7 @@
                             scrTree[i].selected = destTree[j].selected;
                             scrTree[i].selected1 = destTree[j].selected1;
                             recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders);
+                            destTree.splice(j,1);
                             break;
                         }
                     }
@@ -2365,168 +2391,104 @@
             return scrTree;
         };
 
-        /*        vm.showTask = function(task,node){
-         if(!task.order){
-         return false;
-         }
-         var show = false;
-         angular.forEach(node.orders,function(order){
-         if(order.orderId==task.order.orderId){
-         show=true;
-         }
-         });
-         return show;
-         }*/
+
         var loadOrderObj = true;
         var loadFileBasedObj = true;
 
         var t1 = '';
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0 && vm.events[0].eventSnapshots) {
+                var arr = [];
+                var arr1 = [];
+                var callTree =false;
+                for(var j =0;j<vm.events[0].eventSnapshots.length;j++) {
+                    if (vm.events[0].eventSnapshots[j].eventType == 'JobChainStateChanged' && !vm.events[0].eventSnapshots[j].eventId) {
+                        arr.push({jobChain: vm.events[0].eventSnapshots[j].path});
+                    }
+                    if ((vm.events[0].eventSnapshots[j].eventType === "FileBasedActivated" || vm.events[0].eventSnapshots[j].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[j].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[j].objectType == "ORDER") && loadFileBasedObj && !callTree) {
+                        callTree =vm.events[0].eventSnapshots[j].path;
+                    }
+                }
+                if(callTree) {
+                    loadFileBasedObj = false;
+                    if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
+                        var folders = [];
+                        angular.forEach(vm.selectedFiltered.paths, function (v) {
+                            folders.push({folder: v});
+                        });
+                    }
+                    JobChainService.tree({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        compact: true,
+                        folders: folders,
+                        types: ['JOBCHAIN']
+                    }).then(function (res) {
+                        loadFileBasedObj = true;
+                        vm.jobChainFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobChainFilters.expand_to);
+                        vm.tree = vm.jobChainFilters.expand_to;
+                    }, function () {
+                        loadFileBasedObj = true;
+                    });
+                    navFullTreeForUpdateJobChain(callTree.substring(0, callTree.lastIndexOf('/')));
+                }
+                if(arr.length>0) {
+                    for (var i = 0; i < vm.allJobChains.length; i++) {
+                        for (var j = 0; j < arr.length; j++) {
 
-                angular.forEach(vm.events[0].eventSnapshots, function (event) {
-
-                    if (event.eventType == 'JobChainStateChanged' && !event.eventId) {
-                        if (event.path != undefined) {
-                            var path = [];
-                            if (event.path.indexOf(",") > -1) {
-                                path = event.path.split(",");
-                            } else {
-                                path[0] = event.path;
-                            }
-                            if ($location.search().path) {
-                                if (event.path == $location.search().path) {
-                                    getJobChainByPath($location.search().path);
-                                }
-                            } else {
-
-                                if (vm.jobChainFilters.filter.state == 'ALL') {
-
-                                    angular.forEach(vm.allJobChains, function (value2, index) {
-                                        var flag = false;
-                                        if (event.eventType == 'JobStateChanged' && value2.nodes && value2.nodes.length > 0) {
-                                            angular.forEach(value2.nodes, function (node) {
-                                                if (path[0] == node.job.path) {
-                                                    flag = true;
-                                                }
-                                            });
-                                        }
-
-                                        if ((value2.path == path[0] || flag)) {
-                                            var obj = {};
-                                            obj.jobschedulerId = $scope.schedulerIds.selected;
-                                            obj.jobChain = value2.path;
-
-                                            JobChainService.getJobChain(obj).then(function (res) {
-                                                if (res.jobChain) {
-                                                    res.jobChain.path1 = angular.copy(value2.path1);
-                                                    res.jobChain.distributed = angular.copy(value2.distributed);
-                                                    res.jobChain.title = angular.copy(value2.title);
-                                                    res.jobChain.endNodes = angular.copy(value2.endNodes);
-                                                    res.jobChain.show = angular.copy(value2.show);
-                                                    vm.allJobChains[index] = res.jobChain;
-                                                    vm.allJobChains[index].nestedJobChains = res.nestedJobChains;
-                                                    if (vm.userPreferences.showTasks)
-                                                        angular.forEach(res.jobChain.nodes, function (val, index) {
-                                                            if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
-
-                                                                JobService.get({
-                                                                    jobschedulerId: vm.schedulerIds.selected,
-                                                                    jobs: [{job: val.job.path}]
-                                                                }).then(function (res1) {
-                                                                    res.jobChain.nodes[index].job = angular.merge(res.jobChain.nodes[index].job, res1.jobs[0]);
-                                                                });
-                                                            }
-                                                        });
-                                                }
-                                            });
-
-                                        }
-
-                                        if (vm.orders && vm.orders.length > 0 && vm.orders[0].jobChain == path[0] && loadOrderObj) {
-                                            loadOrderObj = false;
-                                            var obj = {};
-                                            obj.jobschedulerId = vm.schedulerIds.selected;
-                                            obj.compact = true;
-                                            obj.orders = [];
-                                            obj.orders.push({jobChain: path[0]});
-                                            OrderService.get(obj).then(function (res) {
-                                                loadOrderObj = true;
-                                                var data = [];
-                                                if (res && res.orders) {
-                                                    if (vm.orders.length > 0 && vm.orders.length > res.orders.length) {
-                                                        angular.forEach(vm.orders, function (orders) {
-                                                            for (var i = 0; i < res.orders.length; i++) {
-                                                                if (orders.path == res.orders[i].path) {
-                                                                    orders = angular.merge(orders, res.orders[i]);
-                                                                    data.push(orders);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        });
-                                                        vm.orders = data;
-                                                    } else {
-                                                        vm.orders = res.orders;
-                                                    }
-                                                }
-                                            }, function () {
-                                                loadOrderObj = true;
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
-                                }
-                            }
-                            if (vm.showHistoryPanel && vm.showHistoryPanel.path == path[0]) {
-                                var filter = {};
-                                filter.jobChain = vm.showHistoryPanel.path;
-                                filter.jobschedulerId = $scope.schedulerIds.selected;
-                                JobChainService.histories(filter).then(function (res) {
-                                    vm.historys = res.history;
-                                });
+                            if (arr[j].jobChain == vm.allJobChains[i].path) {
+                                arr1.push(arr[j]);
+                                arr.splice(j, 1);
+                                break;
                             }
                         }
                     }
-                    if ((event.eventType === "FileBasedActivated" || event.eventType == "FileBasedRemoved") && (event.objectType == "JOBCHAIN" || event.objectType == "ORDER") && loadFileBasedObj) {
-                        loadFileBasedObj = false;
-                        if (vm.selectedFiltered && vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
-                            var folders = [];
-                            angular.forEach(vm.selectedFiltered.paths, function (v) {
-                                folders.push({folder: v});
+                }
+
+                if (arr1.length > 0 && !vm.loading) {
+                    var obj = {};
+                    obj.jobschedulerId = $scope.schedulerIds.selected;
+                    obj.jobChains = arr1;
+                    JobChainService.get(obj).then(function (res) {
+                        if (res.jobChains) {
+                            angular.forEach(vm.allJobChains, function (jobChain, index) {
+                                if (vm.userPreferences.showOrders)
+                                    vm.allJobChains[index].show = true;
+                                for (var i = 0; i < res.jobChains.length; i++) {
+                                    if (vm.allJobChains[index].path == res.jobChains[i].path) {
+                                        vm.allJobChains[index].nodes = [];
+                                        vm.allJobChains[index] = angular.merge(vm.allJobChains[index],res.jobChains[i]);
+                                        vm.allJobChains[index].nestedJobChains = res.nestedJobChains;
+                                        if (vm.userPreferences.showTasks && vm.allJobChains[index].show)
+                                            angular.forEach(vm.allJobChains[index].nodes, function (val, index) {
+                                                if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
+
+                                                    JobService.get({
+                                                        jobschedulerId: vm.schedulerIds.selected,
+                                                        jobs: [{job: val.job.path}]
+                                                    }).then(function (res1) {
+                                                        vm.allJobChains[index].nodes[index].job = angular.merge(vm.allJobChains[index].nodes[index].job, res1.jobs[0]);
+                                                    });
+                                                }
+                                            });
+
+                                        res.jobChains.splice(i, 1);
+                                        break;
+                                    }
+
+                                }
                             });
                         }
-                        JobChainService.tree({
-                            jobschedulerId: vm.schedulerIds.selected,
-                            compact: true,
-                            folders: folders,
-                            types: ['JOBCHAIN']
-                        }).then(function (res) {
-                            loadFileBasedObj = true;
-                            vm.jobChainFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobChainFilters.expand_to);
-                            vm.tree = vm.jobChainFilters.expand_to;
-                        }, function () {
-                            loadFileBasedObj = true;
-                        });
-                        var path = [];
-                        if (event.path.indexOf(",") > -1) {
-                            path = event.path.split(",");
-                        } else {
-                            path[0] = event.path;
-                        }
-                        if (vm.allJobChains.length > 0) {
-                            for (var j = 0; j < vm.allJobChains.length; j++) {
-                                if (path[0].substring(0, path[0].lastIndexOf('/')) == vm.allJobChains[j].path.substring(0, vm.allJobChains[j].path.lastIndexOf('/'))) {
-                                    navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
-                                    break;
-                                }
-                            }
-                        } else {
-                            navFullTreeForUpdateJobChain(path[0].substring(0, path[0].lastIndexOf('/')));
-                        }
+                    });
 
+                      if (vm.showHistoryPanel && vm.showHistoryPanel.path == path[0]) {
+                        var filter = {};
+                        filter.jobChain = vm.showHistoryPanel.path;
+                        filter.jobschedulerId = $scope.schedulerIds.selected;
+                        JobChainService.histories(filter).then(function (res) {
+                            vm.historys = res.history;
+                        });
                     }
-                });
+                }
             }
 
         });
@@ -2846,7 +2808,6 @@
                 volatileInformation(obj, data);
             }, function () {
                 volatileInformation(obj, data);
-                vm.loading = false;
             });
         };
 
@@ -2919,12 +2880,14 @@
             JobService.getJobsP(obj).then(function (result) {
                 if (data.jobs && data.jobs.length > 0) {
                     angular.forEach(result.jobs, function (newValue, index) {
-                        angular.forEach(data.jobs, function (oldValue) {
-                            if (newValue.path == oldValue.path) {
-                                result.jobs[index].path1 = oldValue.path1;
-                                result.jobs[index].showJobChains = oldValue.showJobChains;
+                        for(var i=0; i<data.jobs.length;i++) {
+                            if (result.jobs[index].path == data.jobs[i].path) {
+                                result.jobs[index].path1 = data.jobs[i].path1;
+                                result.jobs[index].showJobChains = data.jobs[i].showJobChains;
+                                data.jobs.splice(i,1);
+                                break;
                             }
-                        });
+                        }
                     });
                 }
 
@@ -2932,7 +2895,6 @@
                 volatileFolderData(data, obj);
             }, function (err) {
                 volatileFolderData(data, obj);
-                vm.loading = false;
             });
         }
 
@@ -2941,6 +2903,12 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
+            for(var i=0; i<data.jobs.length;i++) {
+                if(data.jobs[i].showJobChains) {
+                    obj.compact = false;
+                    break;
+                }
+            }
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
                 if (vm.selectedFiltered.type && vm.selectedFiltered.type.length > 0) {
@@ -2955,11 +2923,22 @@
             }
             obj.folders = [{folder: data.path, recursive: false}];
             JobService.getJobsP(obj).then(function (result) {
+                 if (data.jobs && data.jobs.length > 0) {
+                    angular.forEach(result.jobs, function (newValue, index) {
+                        for(var i=0; i<data.jobs.length;i++) {
+                            if (result.jobs[index].path == data.jobs[i].path) {
+                                result.jobs[index].path1 = data.jobs[i].path1;
+                                result.jobs[index].showJobChains = data.jobs[i].showJobChains;
+                                data.jobs.splice(i,1);
+                                break;
+                            }
+                        }
+                    });
+                }
                 data.jobs = result.jobs;
                 volatileFolderData1(data, obj);
             }, function (err) {
                 volatileFolderData1(data, obj);
-                vm.loading = false;
             });
         }
 
@@ -2984,6 +2963,7 @@
                             if (jobs.path == res.jobs[i].path) {
                                 jobs = angular.merge(jobs, res.jobs[i]);
                                 data.push(jobs);
+                                res.jobs.splice(i,1);
                                 break;
                             }
                         }
@@ -3072,6 +3052,7 @@
                             if (jobs.path == res.jobs[i].path) {
                                 jobs = angular.merge(jobs, res.jobs[i]);
                                 data1.push(jobs);
+                                 res.jobs.splice(i,1);
                                 break;
                             }
                         }
@@ -3095,7 +3076,7 @@
                     });
 
                 }
-                vm.allJobs = temp;
+                vm.allJobs = angular.copy(temp);
 
                 vm.folderPath = data.name || '/';
 
@@ -3123,7 +3104,7 @@
                     });
 
                 }
-                vm.allJobs = temp;
+                vm.allJobs = angular.copy(temp);
                 vm.folderPath = data.name || '/';
 
                 vm.loading = false;
@@ -3230,7 +3211,7 @@
 
             node.jobs = [];
             for (var i = 0; i < x.length; i++) {
-                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/')) == '')) {
+                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')+1))) {
                     x[i].path1 = node.path;
                     node.jobs.push(x[i]);
                     vm.allJobs.push(x[i]);
@@ -3327,6 +3308,7 @@
                             if (jobs.path == res.jobs[i].path) {
                                 jobs = angular.merge(jobs, res.jobs[i]);
                                 data.push(jobs);
+                                 res.jobs.splice(i,1);
                                 break;
                             }
                         }
@@ -3395,7 +3377,7 @@
 
             JobService.getJobsP(obj1).then(function (result) {
                 JobService.get(obj).then(function (res) {
-
+                    vm.allJobs = [];
                     if (result.jobs && result.jobs.length > 0) {
                         var x = [];
                         angular.forEach(result.jobs, function (jobs) {
@@ -3404,6 +3386,8 @@
                                 if (jobs.path == res.jobs[i].path) {
                                     jobs = angular.merge(jobs, res.jobs[i]);
                                     x.push(jobs);
+                                     res.jobs.splice(i,1);
+                                    break;
                                 }
                             }
                         });
@@ -3428,7 +3412,7 @@
 
                 JobService.get(obj).then(function (res) {
                     if (res.jobs) {
-                        //update card view
+                        vm.allJobs = [];
                         angular.forEach(vm.tree, function (node, index) {
                             insertData(node, res.jobs);
                         })
@@ -3612,12 +3596,13 @@
             JobService.get(obj).then(function (res) {
                 var data = [];
                 if (vm.jobs && vm.jobs.length > 0) {
-                    angular.forEach(vm.jobs, function (jobs) {
+                    angular.forEach(vm.jobs, function (job) {
                         for (var i = 0; i < res.jobs.length; i++) {
-                            if (jobs.path == res.jobs[i].path) {
-                                jobs = angular.merge(jobs, res.jobs[i]);
-                                jobs.path1 = jobs.path.substring(0, jobs.path.lastIndexOf('/'));
-                                data.push(jobs);
+                            if (job.path == res.jobs[i].path) {
+                                job = angular.merge(job, res.jobs[i]);
+                                job.path1 = job.path.substring(0, job.path.lastIndexOf('/')) || job.path.substring(0, job.path.lastIndexOf('/')+1);
+                                data.push(job);
+                                 res.jobs.splice(i,1);
                                 break;
                             }
                         }
@@ -3625,18 +3610,18 @@
 
                 } else {
                     for (var i = 0; i < res.jobs.length; i++) {
-                        res.jobs.path1 = res.jobs.path.substring(0, res.jobs.path.lastIndexOf('/'));
+                        res.jobs[i].path1 = res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/')) || res.jobs[i].path.substring(0, res.jobs[i].path.lastIndexOf('/')+1);
                         data.push(res.jobs);
                     }
                 }
                 vm.jobs = data;
-                vm.allJobs = vm.jobs;
+                vm.allJobs = angular.copy(vm.jobs);
                 traverseTreeForSearchData();
             }, function () {
                 angular.forEach(vm.jobs, function (job) {
-                    job.path1 = jobChainData.path.substring(0, job.path.lastIndexOf('/'));
+                    job.path1 = job.path.substring(0, job.path.lastIndexOf('/')) || job.path.substring(0, job.path.lastIndexOf('/'));
                 });
-                vm.allJobs = vm.jobs;
+                vm.allJobs = angular.copy(vm.jobs);
                 traverseTreeForSearchData();
             });
         }
@@ -4145,12 +4130,14 @@
                 if (value.usedInJobChains > 0)
                     obj.jobs.push({job: value.path});
             });
+
             JobService.getJobsP(obj).then(function (res) {
-                angular.forEach(res.jobs, function (value, index) {
-                    for (var i = 0; i < vm.allJobs.length; i++) {
-                        if (value.path == vm.allJobs[i].path && value.name == vm.allJobs[i].name) {
-                            vm.allJobs[i].jobChains = res.jobs[index].jobChains;
-                            vm.allJobs[i].showJobChains = true;
+                angular.forEach(vm.allJobs, function (value, index) {
+                    for (var i = 0; i < res.jobs.length; i++) {
+                        if (res.jobs[i].path == vm.allJobs[index].path && res.jobs[i].name == vm.allJobs[index].name) {
+                            vm.allJobs[index].jobChains = res.jobs[i].jobChains;
+                            vm.allJobs[index].showJobChains = true;
+                            res.jobs.splice(i,1);
                             break;
                         }
                     }
@@ -4159,7 +4146,7 @@
         };
 
         vm.collapseDetails = function () {
-            angular.forEach(vm.allJobs, function (value, index) {
+            angular.forEach(vm.allJobs, function (value) {
                 value.showJobChains = false;
             });
         };
@@ -4331,7 +4318,7 @@
                 job: vm.job.path
             }).then(function (res) {
                 vm.job = angular.merge(vm.job, res.job);
-            })
+            });
             vm.paramObject = {};
             vm.paramObject.params = [];
             vm.job.atTime = 'now';
@@ -4912,6 +4899,7 @@
                             scrTree[i].selected = destTree[j].selected;
                             scrTree[i].selected1 = destTree[j].selected1;
                             recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders);
+                            destTree.splice(j,1);
                             break;
                         }
                     }
@@ -4928,6 +4916,7 @@
                             scrTree[i].selected = destTree[j].selected;
                             scrTree[i].selected1 = destTree[j].selected1;
                             recursiveTreeUpdate(scrTree[i].folders, destTree[j].folders);
+                            destTree.splice(j,1);
                             break;
                         }
                     }
@@ -4936,6 +4925,7 @@
         };
 
         var t1 = '';
+         var mapObj = new Object();
         $scope.$on('event-started', function () {
             if (vm.events && vm.events.length > 0) {
                 angular.forEach(vm.events[0].eventSnapshots, function (value1) {
@@ -4956,15 +4946,16 @@
                                 if (vm.jobFilters.filter.state == 'ALL') {
                                     angular.forEach(vm.allJobs, function (value2, index) {
 
-                                        if (value2.path == path[0]) {
-
+                                        if (vm.allJobs[index].path == path[0] && !vm.loading && (!mapObj[vm.allJobs[index].path])) {
+                                            mapObj[path[0]]= path[0];
                                             var obj = {};
                                             obj.jobschedulerId = $scope.schedulerIds.selected;
                                             obj.jobs = [];
-                                            obj.jobs.push({job: value2.path});
+                                            obj.jobs.push({job: vm.allJobs[index].path});
 
                                             JobService.get(obj).then(function (res) {
-                                                if (res.jobs && res.jobs.length > 0) {
+                                                delete mapObj[path[0]];
+                                                if (res.jobs && res.jobs.length > 0 && res.jobs[0].path == vm.allJobs[index].path) {
 
                                                     res.jobs[0].title = vm.allJobs[index].title;
                                                     res.jobs[0].path1 = vm.allJobs[index].path1;
@@ -4976,15 +4967,18 @@
                                                     res.jobs[0].jobChains = vm.allJobs[index].jobChains;
                                                     res.jobs[0].showJobChains = vm.allJobs[index].showJobChains;
                                                     vm.allJobs[index] = res.jobs[0];
-                                                    if (vm.showTaskPanel && (vm.showTaskPanel.path == value2.path)) {
+                                                    if (vm.showTaskPanel && (vm.showTaskPanel.path == vm.allJobs[index].path)) {
                                                         vm.showTaskPanel = vm.allJobs[index];
                                                     }
 
                                                 }
+                                            },function(){
+                                                delete mapObj[path[0]];
                                             });
                                         }
                                     });
                                 } else {
+                                    if(!vm.loading)
                                     navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
                                 }
                             }

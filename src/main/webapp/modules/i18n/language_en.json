@@ -247,7 +247,7 @@
   "label.month": "Month",
   "label.ultimos": "Ultimos",
   "label.weekDays": "Week Days",
-  "label.monthDays": "Days of Month",
+  "tab.monthDays": "Days of Month",
   "label.yearDays": "Days of Year",
   "label.monthly": "Monthly",
   "label.weekly": "Weekly",
@@ -969,5 +969,12 @@
   "label.specificDate": "Specific Date",
   "label.manualDate": "Relative Date",
   "label.successfulLate": "Successful Late",
-  "label.failedLate": "Failed Late"
+  "label.failedLate": "Failed Late",
+  "label.specificDays": "Specific Days",
+  "label.listOfFrequencies": "List of Frequencies",
+  "button.addNewFrequency": "Add Frequency",
+  "button.save": "Save",
+  "button.applyPeriod": "Apply Period",
+  "label.monthDays": "Month Days",
+  "label.entryPerPage": "Entries per page"
 }

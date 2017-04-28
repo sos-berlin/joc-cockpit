@@ -59,12 +59,7 @@
                                     timeout: 10000
                                 });
                         }
-                        if (rejection.status == 403) {
-                            toasty.warning({
-                                title: 'Permission denied',
-                                timeout: 6000
-                            });
-                        }
+
                         if ($rootScope.clientLogFilter.isEnable) {
                             var error = {
                                 message: rejection,

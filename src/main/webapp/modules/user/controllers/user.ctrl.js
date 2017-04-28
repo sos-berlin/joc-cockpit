@@ -208,7 +208,9 @@
             if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
                 vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
-
+            if(vm.preferences.entryPerPage>100){
+                vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
+            }
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             $rootScope.$broadcast('reloadPreferences');
 
@@ -471,8 +473,8 @@
         });
     }
 
-    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "CoreService", "$window"];
-    function AuditLogCtrl($scope, AuditLogService, CoreService, $window) {
+    AuditLogCtrl.$inject = ["$scope", "AuditLogService", "CoreService"];
+    function AuditLogCtrl($scope, AuditLogService, CoreService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.adtLog = CoreService.getAuditLogTab();
