@@ -208,7 +208,9 @@
             if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
                 vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
-
+            if(vm.preferences.entryPerPage>100){
+                vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
+            }
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             $rootScope.$broadcast('reloadPreferences');
 

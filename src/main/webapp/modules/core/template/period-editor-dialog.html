@@ -30,7 +30,7 @@
                             <label class="col-sm-3 form-control-label" translate>label.startTime</label>
 
                             <div class="col-sm-3">
-                                <input class="form-control input-time" ng-model="period.period._single_start"
+                                <input class="form-control input-time" name="startTime" ng-model="period.period._single_start" ng-required="period.frequency == 'single_start'"
                                        data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
                                        placeholder="HH:MM:SS" bs-timepicker data-length="1"
                                        data-minute-step="1"

@@ -8,7 +8,7 @@
                 <span>{{schedule.path}}</span>
             </h4>
         </div>
-    <div class="modal-body p-a">
+    <div class="modal-body p-a" style="min-height: 390px;">
         <div ng-hide="editor.hidePervious || editor.showHoildayTab">
                 <div class="row">
                     <div class="col-md-12 hide" ng-class="{'show': display}">
@@ -111,7 +111,7 @@
                     </div>
                     <div class="col-md-6" ng-if="substituteObj.showText">
                         <div class="form-group row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-12" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
                                     <table class="table table-hover table-bordered frequency-table">
                                         <thead>
@@ -128,8 +128,8 @@
                                             </td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
-                                                    <a ng-click="editPeriodFromFrequency(data, data.obj[$index]._period,p)">{{p}}</a>
-                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="deletePeriodFromFrequency(data, data.obj[$index]._period)"><i
+                                                    <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
+                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
                                                             class="fa fa-times"></i></a>
                                                 </div>
                                                 <div class="text-xs cursor text-hover-primary"><i
@@ -147,7 +147,7 @@
                         </div>
                     </div>
                     <div class="col-md-6" ng-if="substituteObj.showText">
-                        <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)"></textarea>
+                        <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)" placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
 
@@ -240,22 +240,7 @@
                             </div>
                             <div class="tab-pane animated fadeIn" id="tab2"
                                  ng-class="{'active':runTime.tab == 'specificWeekDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
-
-                                    <div class="col-sm-6">
-                                        <select class="form-control" ng-model="runTime.specificWeekDay">
-                                            <option value="monday">{{'label.monday' | translate}}</option>
-                                            <option value="tuesday">{{'label.tuesday' | translate}}</option>
-                                            <option value="wednesday">{{'label.wednesday' | translate}}</option>
-                                            <option value="thursday">{{'label.thursday' | translate}}</option>
-                                            <option value="friday">{{'label.friday' | translate}}</option>
-                                            <option value="saturday">{{'label.saturday' | translate}}</option>
-                                            <option value="sunday">{{'label.sunday' | translate}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
+                                 <div class="form-group row">
                                     <label class="col-sm-3" translate>label.dayNumber</label>
 
                                     <div class="col-sm-6">
@@ -268,6 +253,21 @@
                                             <option value="-2" translate>label.secondLast</option>
                                             <option value="-3" translate>label.thirdLast</option>
                                             <option value="-4" translate>label.fourthLast</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
+
+                                    <div class="col-sm-6">
+                                        <select class="form-control" ng-model="runTime.specificWeekDay">
+                                            <option value="monday">{{'label.monday' | translate}}</option>
+                                            <option value="tuesday">{{'label.tuesday' | translate}}</option>
+                                            <option value="wednesday">{{'label.wednesday' | translate}}</option>
+                                            <option value="thursday">{{'label.thursday' | translate}}</option>
+                                            <option value="friday">{{'label.friday' | translate}}</option>
+                                            <option value="saturday">{{'label.saturday' | translate}}</option>
+                                            <option value="sunday">{{'label.sunday' | translate}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -381,7 +381,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="form-group row" ng-hide="runTime.tab == 'specificWeekDays' || runTime.tab =='specificDays'">
+                        <div class="form-group row" ng-hide="runTime.tab =='specificDays'">
                             <label class="col-sm-3">{{'label.monthRange' | translate}}
                             <a href>
                                 <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showMonthRange"
@@ -542,7 +542,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-12" style="max-height: 260px; overflow: auto">
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>

@@ -10,8 +10,8 @@
                 <span class="_500 text-orange" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
             </a>
             <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
-                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler);$event.stopPropagation()">
-                    <span><i class="fa fa-circle text-muted text-xs" ng-class="{'text-success':schedulerIds.selected == jobScheduler}"></i> {{jobScheduler}}</span>
+                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler);$event.stopPropagation()" ng-class="{'primary':schedulerIds.selected == jobScheduler}">
+                    <span><i class="fa fa-circle text-muted text-xs"></i> {{jobScheduler}}</span>
                 </a>
             </div>
         </span>

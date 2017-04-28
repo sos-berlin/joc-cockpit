@@ -99,7 +99,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * locksFilters.pageSize | limitTo: locksFilters.pageSize">
+                        <tr ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                             <td ng-bind="lock.name || '-'"></td>
                             <td>{{lock.path}}</td>
                             <td ng-bind="lock.status || '-'"></td>
@@ -127,23 +127,23 @@
                     <span translate ng-if="allLocks.length >1">label.locksFound</span>
                     <span translate ng-if="allLocks.length ==1">label.lockFound</span>
                 </div>
-                <ul ng-show="allLocks.length > locksFilters.pageSize" uib-pagination total-items="allLocks.length" ng-model="locksFilters.currentPage" items-per-page='locksFilters.pageSize' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <ul ng-show="allLocks.length > userPreferences.entryPerPage" uib-pagination total-items="allLocks.length" ng-model="locksFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
                 <div class="pull-left" ng-show="allLocks.length > 10">
                         <div class="btn-group m-r-xxs">
-                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'10'"
-                                    ng-class="{'primary': locksFilters.pageSize=='10'}" >10
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'25'"
-                                    ng-class="{'primary': locksFilters.pageSize=='25'}" >25
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'50'"
-                                    ng-class="{'primary': locksFilters.pageSize=='50'}" >50
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="'100'"
-                                    ng-class="{'primary': locksFilters.pageSize=='100'}">100
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                    ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                             </button>
-                            <button class="btn btn-default white btn-sm" ng-model="locksFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
-                                    ng-class="{'primary': locksFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                            <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                    ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                             </button>
                         </div>
                     </div>

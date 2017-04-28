@@ -452,7 +452,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * jobFilters.pageSize|limitTo: jobFilters.pageSize track by $index"
+                            <tbody ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index"
                                 ng-class="{'light-bg':showTaskPanel == job}">
                                 <tr title="{{job.configurationStatus._text | translate}}">
                                     <td class="noExl" ng-if="permission.Job.start || permission.Job.stop || permission.Job.unstop || permission.Job.kill || permission.Job.terminate">
@@ -564,23 +564,23 @@
                              <span translate  ng-if="filtered.length >1">label.jobsFound</span>
                              <span translate  ng-if="filtered.length ==1">label.jobFound</span>
                          </div>
-                        <ul ng-show="filtered.length > jobFilters.pageSize" uib-pagination total-items="filtered.length" ng-model="jobFilters.currentPage" items-per-page='jobFilters.pageSize' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                        <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length" ng-model="jobFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                         <div class="pull-left" ng-show="filtered.length > 10">
                                 <div class="btn-group  m-r-xxs">
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'10'"
-                                            ng-class="{'primary': jobFilters.pageSize=='10'}" >10
+                                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                            ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                                     </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'25'"
-                                            ng-class="{'primary': jobFilters.pageSize=='25'}" >25
+                                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                            ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                                     </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'50'"
-                                            ng-class="{'primary': jobFilters.pageSize=='50'}" >50
+                                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                            ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                                     </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="'100'"
-                                            ng-class="{'primary': jobFilters.pageSize=='100'}">100
+                                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                            ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                     </button>
-                                    <button class="btn btn-default white btn-sm" ng-model="jobFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
-                                            ng-class="{'primary': jobFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                            ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                     </button>
                                 </div>
                             </div>

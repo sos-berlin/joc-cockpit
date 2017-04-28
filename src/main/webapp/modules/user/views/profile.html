@@ -220,6 +220,18 @@
                        </div>
                    </div>
                     <div class="row m-t">
+                       <div class="col-sm-3 text-dark form-control-label" translate>label.entryPerPage</div>
+                       <div class="col-sm-6">
+                           <select class="form-control w-xl" ng-model="upc.preferences.entryPerPage" ng-change="upc.changeConfiguration()">
+                              <option value="10">10</option>
+                              <option value="25">25</option>
+                              <option value="50">50</option>
+                              <option value="100">100</option>
+                              <option value="{{upc.preferences.maxEntryPerPage}}">{{upc.preferences.maxEntryPerPage}}</option>
+                           </select>
+                       </div>
+                    </div>
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark form-control-label" translate>label.theme</div>
                        <div class="col-sm-6">
                            <select class="form-control w-xl" ng-model="upc.preferences.theme" ng-change="upc.changeTheme(upc.preferences.theme)">
@@ -230,7 +242,6 @@
                                <option value="cyan" translate>label.cyan</option>
                                <option value="grey" translate>label.grey</option>
                                <option value="dark" translate>label.dark</option>
-
                            </select>
                        </div>
                    </div>

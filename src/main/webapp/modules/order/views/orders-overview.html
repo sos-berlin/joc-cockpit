@@ -282,7 +282,7 @@
 
                             </tr>
                             </thead>
-                            <tbody ng-repeat="order in allOrders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * orderFilters.pageSize | limitTo: orderFilters.pageSize" ng-class="{'light-bg':showLogPanel == order}">
+                            <tbody ng-repeat="order in allOrders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':showLogPanel == order}">
                                 <tr>
                                     <td class="noExl" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
                                         <label class="md-check">
@@ -393,23 +393,23 @@
                         <span translate ng-if="allOrders.length >1">label.ordersFound</span>
                         <span translate ng-if="allOrders.length==1">label.orderFound</span>
                     </div>
-                    <ul ng-show="allOrders.length > orderFilters.pageSize" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='orderFilters.pageSize' ng-change="pageChange()" class="pagination-sm m-t-0 pull-right text-sm" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <ul ng-show="allOrders.length > userPreferences.entryPerPage" uib-pagination total-items="allOrders.length" ng-model="orderFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()" class="pagination-sm m-t-0 pull-right text-sm" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="allOrders.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'10'"
-                                        ng-class="{'primary': orderFilters.pageSize=='10'}" >10
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'25'"
-                                        ng-class="{'primary': orderFilters.pageSize=='25'}" >25
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'50'"
-                                        ng-class="{'primary': orderFilters.pageSize=='50'}" >50
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="'100'"
-                                        ng-class="{'primary': orderFilters.pageSize=='100'}">100
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="orderFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
-                                        ng-class="{'primary': orderFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
                         </div>

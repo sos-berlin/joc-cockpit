@@ -417,7 +417,7 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse | startFrom:(dailyPlanFilters.currentPage - 1) * dailyPlanFilters.pageSize | limitTo: dailyPlanFilters.pageSize" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse | startFrom:(dailyPlanFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
                                 <td>
                                     <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></span>
                                     <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></span>
@@ -446,26 +446,26 @@
                         </table>
                         <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && plans.length !==0)}" translate>message.noDataMatched</div>
                         <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': plans.length > 10}" ng-if="plans.length >0"><span translate>label.total</span> {{filtered.length}} <span translate>label.plansFound</span></div>
-                        <ul ng-show="filtered.length > dailyPlanFilters.pageSize" uib-pagination total-items="filtered.length"
-                            ng-model="dailyPlanFilters.currentPage" items-per-page='dailyPlanFilters.pageSize' ng-change="pageChange()"
+                        <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination total-items="filtered.length"
+                            ng-model="dailyPlanFilters.currentPage" items-per-page='userPreferences.entryPerPage' ng-change="pageChange()"
                             class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false"
                             previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                         <div class="pull-left" ng-show="filtered.length > 10">
                             <div class="btn-group m-r-xxs">
-                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'10'"
-                                        ng-class="{'primary': dailyPlanFilters.pageSize=='10'}">10
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'25'"
-                                        ng-class="{'primary': dailyPlanFilters.pageSize=='25'}">25
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'50'"
-                                        ng-class="{'primary': dailyPlanFilters.pageSize=='50'}">50
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="'100'"
-                                        ng-class="{'primary': dailyPlanFilters.pageSize=='100'}">100
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
                                 </button>
-                                <button class="btn btn-default white btn-sm" ng-model="dailyPlanFilters.pageSize" uib-btn-radio="{{maxEntryPerPage}}"
-                                        ng-class="{'primary': dailyPlanFilters.pageSize==maxEntryPerPage}">{{maxEntryPerPage}}
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
                                 </button>
                             </div>
                         </div>
