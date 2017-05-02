@@ -2245,8 +2245,8 @@
     }
 
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', 'gettext', '$state', '$uibModal', 'DailyPlanService', 'moment', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog,gettext, $state, $uibModal, DailyPlanService, moment, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
         var vm = $scope;
         if (SOSAuth.jobChain) {
             SOSAuth.setJobChain(undefined);
@@ -2788,11 +2788,12 @@
                 to.setSeconds(0);
                 to.setMilliseconds(0);
             } else {
-                from.setDate(from.getDate() + 1);
-                to.setDate(to.getDate() + 2);
+                from.setDate(from.getDate());
+                to.setDate(to.getDate() + 1);
             }
             vm.dashboardFilters.filter.from = from;
             vm.dashboardFilters.filter.to = to;
+
         }
 
         vm.getDailyPlans = function () {
@@ -2850,7 +2851,8 @@
                 if (value.state._text == 'PLANNED' || value.state._text == 'INCOMPLETE') {
                     if (value.late) {
                         vm.late++;
-                    } else {
+                    }
+                    if(value.state._text == 'PLANNED'){
                         vm.waiting++;
                     }
                 } else if (value.state._text == 'SUCCESSFUL') {
@@ -3018,7 +3020,21 @@
             }
 
             if ($stateParams.filter == 3) {
-                vm.dailyPlanFilters.filter.status = 'EXECUTED';
+                vm.dailyPlanFilters.filter.status = 'LATE';
+                vm.dailyPlanFilters.filter.state = 'SUCCESSFUL';
+            }
+            if ($stateParams.filter == 4) {
+                vm.dailyPlanFilters.filter.status = 'LATE';
+                vm.dailyPlanFilters.filter.state = 'FAILED';
+            }
+            if ($stateParams.filter == 5) {
+                vm.dailyPlanFilters.filter.status = '';
+                vm.dailyPlanFilters.filter.state = 'SUCCESSFUL';
+            }
+
+            if ($stateParams.filter == 6) {
+                vm.dailyPlanFilters.filter.status = '';
+                vm.dailyPlanFilters.filter.state = 'FAILED';
             }
         }
         if ($stateParams.day != null) {
@@ -3336,6 +3352,7 @@
                         fromDate.setHours(vm.searchDailyPlanFilter.fromTime.getHours());
                         fromDate.setMinutes(vm.searchDailyPlanFilter.fromTime.getMinutes());
                         fromDate.setSeconds(vm.searchDailyPlanFilter.fromTime.getSeconds());
+                        fromDate.setMilliseconds(0);
                     } else {
                         fromDate.setHours(0);
                         fromDate.setMinutes(0);
@@ -3351,6 +3368,7 @@
                         toDate.setHours(vm.searchDailyPlanFilter.toTime.getHours());
                         toDate.setMinutes(vm.searchDailyPlanFilter.toTime.getMinutes());
                         toDate.setSeconds(vm.searchDailyPlanFilter.toTime.getSeconds());
+                        toDate.setMilliseconds(0);
                     } else {
                         toDate.setHours(0);
                         toDate.setMinutes(0);
@@ -3689,7 +3707,7 @@
                 obj.dateFrom = vm.dailyPlanFilters.filter.from;
                 obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                if (vm.dailyPlanFilters.filter.status && vm.dailyPlanFilters.filter.status != 'ALL') {
                     obj.states = [];
                     if (vm.dailyPlanFilters.filter.status == 'WAITING') {
                         obj.states.push("PLANNED");
@@ -3700,7 +3718,18 @@
                     if (vm.dailyPlanFilters.filter.status == 'LATE') {
                         obj.late = true;
                     } else {
-                        obj.late = false;
+                        obj.late = undefined;
+                    }
+                    if(vm.dailyPlanFilters.filter.state)
+                    obj.states.push(vm.dailyPlanFilters.filter.state);
+                     if (vm.dailyPlanFilters.filter.status == 'EXECUTED')
+                    vm.dailyPlanFilters.filter.state = '';
+                }else if(vm.dailyPlanFilters.filter.state) {
+                    if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                        obj.states = [];
+                        obj.states.push(vm.dailyPlanFilters.filter.state);
+                    } else {
+                        vm.dailyPlanFilters.filter.state = '';
                     }
                 }
             }
@@ -4113,7 +4142,7 @@
                     obj.dateFrom = vm.dailyPlanFilters.filter.from;
                     obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                    if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                    if (vm.dailyPlanFilters.filter.status && vm.dailyPlanFilters.filter.status != 'ALL') {
                         obj.states = [];
                         if (vm.dailyPlanFilters.filter.status == 'WAITING') {
                             obj.states.push("PLANNED");
@@ -4123,9 +4152,20 @@
                         }
                         if (vm.dailyPlanFilters.filter.status == 'LATE') {
                             obj.late = true;
-                        } else{
-                    obj.late = false;
-                }
+                        } else {
+                            obj.late = undefined;
+                        }
+                        if (vm.dailyPlanFilters.filter.state)
+                            obj.states.push(vm.dailyPlanFilters.filter.state);
+                        if (vm.dailyPlanFilters.filter.status == 'EXECUTED')
+                            vm.dailyPlanFilters.filter.state = '';
+                    } else if (vm.dailyPlanFilters.filter.state) {
+                        if (vm.dailyPlanFilters.filter.status != 'ALL') {
+                            obj.states = [];
+                            obj.states.push(vm.dailyPlanFilters.filter.state);
+                        } else {
+                            vm.dailyPlanFilters.filter.state = '';
+                        }
                     }
                 }
             }

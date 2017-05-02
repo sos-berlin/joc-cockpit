@@ -7,6 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
+
                         <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="getPlans()" translate>button.allStatus
@@ -35,6 +36,25 @@
                                 </a>
                                 <a class="dropdown-item" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
                                    ng-class="{'btn-primary': dailyPlanFilters.filter.status=='EXECUTED', 'disable-link':savedDailyPlanFilter.selected}" ng-click="getPlans()" translate>button.executed
+                                </a>
+                            </div>
+                        </div>
+                        <div class="btn-group m-l-sm hidden-btn-group">
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'SUCCESSFUL'"
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.state=='SUCCESSFUL'}" ng-click="dailyPlanFilters.filter.status='';getPlans();" translate>button.successful
+                            </button>
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'FAILED'"
+                                    ng-class="{'btn-primary': dailyPlanFilters.filter.state=='FAILED'}" ng-click="dailyPlanFilters.filter.status='';getPlans()" translate>button.failed
+                            </button>
+                        </div>
+                        <div class="btn-group dropdown hidden-dropdown">
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
+                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'SUCCESSFUL'"
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.state=='SUCCESSFUL', 'disable-link':savedDailyPlanFilter.selected || dailyPlanFilters.filter.status=='ALL' || dailyPlanFilters.filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.successful
+                                </a>
+                                <a class="dropdown-item" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'FAILED'"
+                                   ng-class="{'btn-primary': dailyPlanFilters.filter.state=='FAILED', 'disable-link':savedDailyPlanFilter.selected || dailyPlanFilters.filter.status=='ALL' || dailyPlanFilters.filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.failed
                                 </a>
                             </div>
                         </div>

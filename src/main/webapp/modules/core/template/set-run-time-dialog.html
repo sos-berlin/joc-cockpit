@@ -574,6 +574,7 @@
                                 <tr ng-repeat="period in periodList track by $index" class="cursor">
                                     <td ng-click="editPeriod(period)">{{$index+1}}</td>
                                     <td ng-click="editPeriod(period)">
+                                        <span ng-if="period.isUltimos">{{label.ultimos | translate}} - </span>
                                         <span>{{period.str}}</span>
                                     </td>
                                     <td ng-click="editPeriod(period)">

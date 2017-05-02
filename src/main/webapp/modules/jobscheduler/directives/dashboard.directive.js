@@ -944,11 +944,11 @@
             + '<div class="plan-overview bg-green1" style="width:{{width[3]}}%">\n'
             + '<label class="hide plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.successfulLate</span> - {{lateSuccess |number:1}} % </a></label></div>'
             + '<div class="plan-overview bg-crimson1" style="width:{{width[5]}}%">\n'
-            + '<label class="hide" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span  translate>label.failedLate</span> - {{lateError |number:1}} % </a></label></div>'
+            + '<label class="hide" ng-class="{\'show\': lateError > 0}" uib-tooltip="{{lateError*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:4,day:day})" > <span  translate>label.failedLate</span> - {{lateError |number:1}} % </a></label></div>'
             + '<div class="plan-overview bg-green" style="width:{{width[2]}}%">\n'
-            + '<label class="hide plan-status" ng-class="{\'show\': success > 0}" uib-tooltip="{{success*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.successful</span> - {{success |number:1}} % </a></label></div>'
+            + '<label class="hide plan-status" ng-class="{\'show\': success > 0}" uib-tooltip="{{success*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:5,day:day})" > <span  translate>label.successful</span> - {{success |number:1}} % </a></label></div>'
             + '<div class="plan-overview bg-crimson" style="width:{{width[4]}}%">\n'
-            + '<label class="hide" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.failed</span> - {{error |number:1}} % </a></label></div>'
+            + '<label class="hide" ng-class="{\'show\': error > 0}" uib-tooltip="{{error*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:6,day:day})" > <span  translate>label.failed</span> - {{error |number:1}} % </a></label></div>'
         }
     }
 })();
