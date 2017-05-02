@@ -3012,6 +3012,7 @@
         vm.dailyPlanFilterList = [];
         if ($stateParams.filter != null) {
             vm.dailyPlanFilters.selectedView = false;
+            vm.dailyPlanFilters.filter.state = '';
             if ($stateParams.filter == 1) {
                 vm.dailyPlanFilters.filter.status = 'WAITING';
             }
