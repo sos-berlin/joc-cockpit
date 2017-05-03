@@ -4805,7 +4805,7 @@
             });
         }
 
-        vm.setRunTime = function (job) {
+        function loadRuntime(job) {
             vm.order = job;
             vm.comments = {};
             vm.comments.radio = 'predefined';
@@ -4821,6 +4821,9 @@
                 $rootScope.$broadcast('loadXml');
 
             });
+        }
+        vm.setRunTime = function (job) {
+           loadRuntime(job);
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -4843,6 +4846,48 @@
                 vm.schedules = res.schedules;
             });
             vm.zones = moment.tz.names();
+        };
+
+        vm.resetRuntime = function (job) {
+
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobs.push({job: job.path});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = job.path;
+                vm.comments.operation = 'Reset the run time';
+                vm.comments.type = 'Job';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+
+                    JobService.resetRunTime(jobs).then(function(res){
+                        loadRuntime(job);
+                    });
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                JobService.resetRunTime(jobs).then(function(res){
+                        loadRuntime(job);
+                    });
+            }
         };
 
         vm.viewCalendar = function (job) {
