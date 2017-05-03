@@ -192,6 +192,16 @@
                 });
                 return deferred.promise;
             },
+            resetRunTime: function (jobs) {
+                var deferred = $q.defer();
+                var Job = $resource('jobs/reset_run_time');
+                Job.save(jobs,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             getRunTime: function (jobs) {
                 var deferred = $q.defer();
                 var Job = $resource('job/run_time');

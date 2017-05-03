@@ -574,7 +574,7 @@
                                 <tr ng-repeat="period in periodList track by $index" class="cursor">
                                     <td ng-click="editPeriod(period)">{{$index+1}}</td>
                                     <td ng-click="editPeriod(period)">
-                                        <span ng-if="period.isUltimos">{{label.ultimos | translate}} - </span>
+                                        <span ng-if="period.isUltimos">{{'label.ultimos' | translate}} - </span>
                                         <span>{{period.str}}</span>
                                     </td>
                                     <td ng-click="editPeriod(period)">
@@ -732,6 +732,9 @@
             </button>
             <button ng-if="editor.hidePervious" type="button"
                     class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
+            </button>
+            <button ng-if="order.runTimeIsTemporary" ng-click="resetRuntime(order)" type="button" class="btn btn-default btn-sm pull-right"
+                    translate>button.markAsUndirty
             </button>
         </div>
         <div class="modal-footer text-left" ng-if="editor.showHoildayTab">

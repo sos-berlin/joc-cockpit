@@ -2604,7 +2604,7 @@
                                             if (res._month) {
                                                 str1 = getMonths(res._month);
                                             }
-                                            str = 'ultimos: ' + getMonthDays(value1._day) + ' of ' + str1;
+                                            str = 'Ultimos: ' + getMonthDays(value1._day) + ' of ' + str1;
                                             var periodStrArr = [], objArr = [];
                                             if (angular.isArray(value1.period)) {
                                                 angular.forEach(value1.period, function (res1) {
@@ -2680,7 +2680,7 @@
                                         if (res._month)
                                             str1 = getMonths(res._month);
                                         if (val._day) {
-                                            str = 'ultimos: ' + getMonthDays(val._day) + ' of ' + str1;
+                                            str = 'Ultimos: ' + getMonthDays(val._day) + ' of ' + str1;
                                             var periodStrArr = [], objArr = [];
                                             if (angular.isArray(val.period)) {
                                                 angular.forEach(val.period, function (res1) {
@@ -2753,7 +2753,7 @@
 
                                     if (res.ultimos.day._day) {
 
-                                        str = 'ultimos: ' + getMonthDays(res.ultimos.day._day) + ' of ' + str1;
+                                        str = 'Ultimos: ' + getMonthDays(res.ultimos.day._day) + ' of ' + str1;
                                         var periodStrArr = [], objArr = [];
                                         if (angular.isArray(res.ultimos.day.period)) {
                                             angular.forEach(res.ultimos.day.period, function (res1) {

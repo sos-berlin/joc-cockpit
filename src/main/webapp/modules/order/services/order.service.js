@@ -123,6 +123,16 @@
                 });
                 return deferred.promise;
             },
+            resetRunTime: function (orders) {
+                var deferred = $q.defer();
+                var Order = $resource('orders/reset_run_time');
+                Order.save(orders,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             startOrder: function (orders) {
                 var deferred = $q.defer();
                 var Order = $resource('orders/start');

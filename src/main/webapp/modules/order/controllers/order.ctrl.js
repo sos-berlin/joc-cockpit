@@ -5127,8 +5127,8 @@
             });
             vm.reset();
         }
-
-        vm.setRunTime = function (order) {
+        function loadRuntime(job) {
+            vm.order = order;
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.scheduleAction = undefined;
@@ -5144,8 +5144,9 @@
                 $rootScope.$broadcast('loadXml');
 
             });
-
-            vm.order = order;
+        }
+        vm.setRunTime = function (order) {
+            loadRuntime(order);
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -5169,6 +5170,47 @@
             });
 
             vm.zones = moment.tz.names();
+        };
+        vm.resetRuntime = function (order) {
+
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({jobChain: order.jobChain,orderId: order.orderId});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = order.path;
+                vm.comments.operation = 'Reset the run time';
+                vm.comments.type = 'Order';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+
+                    OrderService.resetRunTime(orders).then(function(res){
+                        loadRuntime(order);
+                    });
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                OrderService.resetRunTime(orders).then(function(res){
+                        loadRuntime(order);
+                    });
+            }
         };
         /**------------------------------------------------------end run time editor -------------------------------------------------------*/
 
@@ -5208,7 +5250,6 @@
             } else {
                 OrderService.suspendOrder(orders);
             }
-
         };
 
         vm.resumeOrder = function (order) {

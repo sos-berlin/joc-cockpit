@@ -975,6 +975,7 @@
   "button.addNewFrequency": "Add Frequency",
   "button.save": "Save",
   "button.applyPeriod": "Apply Period",
+  "button.markAsUndirty": "Mark as un-dirty",
   "label.monthDays": "Month Days",
   "label.entryPerPage": "Entries per page"
 }
