@@ -1565,7 +1565,55 @@
                 backdrop: 'static'
             });
         }
+        vm.resetRuntime = function (order) {
 
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({jobChain: order.jobChain,orderId: order.orderId});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = order.path;
+                vm.comments.operation = 'Reset the run time';
+                vm.comments.type = 'Order';
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+
+                    OrderService.resetRunTime(orders).then(function (res) {
+                        if (vm.permanentRunTime && vm.runTimeIsTemporary) {
+                            vm.runTimeIsTemporary = false;
+                            vm.xml = vm.permanentRunTime;
+                            $rootScope.$broadcast('loadXml',{xml : vm.xml});
+                        }
+                    });
+
+                }, function () {
+
+                });
+            } else {
+                OrderService.resetRunTime(orders).then(function (res) {
+                    if (vm.permanentRunTime && vm.runTimeIsTemporary) {
+                        vm.runTimeIsTemporary = false;
+                        vm.xml = vm.permanentRunTime;
+                       $rootScope.$broadcast('loadXml',{xml : vm.xml});
+                    }
+                });
+            }
+        };
         vm.onOrderAction = function (order, action) {
             var modalInstance = '';
             vm.comments = {};
@@ -1671,10 +1719,14 @@
                     orderId: order.orderId
                 }).then(function (res) {
                     if (res.runTime) {
+                        vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
+                        if (vm.runTimeIsTemporary) {
+                            vm.permanentRunTime = res.runTime.permanentRunTime;
+                        }
                         vm.runTimes = res.runTime;
                         vm.xml = vm.runTimes.runTime;
                     }
-                    $rootScope.$broadcast('loadXml');
+                    $rootScope.$broadcast('loadXml',{xml : vm.xml});
                 });
 
                 vm.order = order;
@@ -5127,7 +5179,7 @@
             });
             vm.reset();
         }
-        function loadRuntime(job) {
+        function loadRuntime(order) {
             vm.order = order;
             vm.comments = {};
             vm.comments.radio = 'predefined';
@@ -5138,10 +5190,14 @@
                 orderId: order.orderId
             }).then(function (res) {
                 if (res.runTime) {
+                    vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
+                    if(vm.runTimeIsTemporary){
+                        vm.permanentRunTime = res.runTime.permanentRunTime;
+                    }
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
                 }
-                $rootScope.$broadcast('loadXml');
+                 $rootScope.$broadcast('loadXml',{xml : vm.xml});
 
             });
         }
@@ -5156,7 +5212,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 setRunTime(order);
             }, function () {
                 vm.reset();
@@ -5199,17 +5254,25 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
 
-                    OrderService.resetRunTime(orders).then(function(res){
-                        loadRuntime(order);
+                    OrderService.resetRunTime(orders).then(function (res) {
+                        if (vm.permanentRunTime && vm.runTimeIsTemporary) {
+                            vm.runTimeIsTemporary = false;
+                            vm.xml = vm.permanentRunTime;
+                            $rootScope.$broadcast('loadXml',{xml : vm.xml});
+                        }
                     });
-                    vm.reset();
+
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
-                OrderService.resetRunTime(orders).then(function(res){
-                        loadRuntime(order);
-                    });
+                OrderService.resetRunTime(orders).then(function (res) {
+                    if (vm.permanentRunTime && vm.runTimeIsTemporary) {
+                        vm.runTimeIsTemporary = false;
+                        vm.xml = vm.permanentRunTime;
+                       $rootScope.$broadcast('loadXml',{xml : vm.xml});
+                    }
+                });
             }
         };
         /**------------------------------------------------------end run time editor -------------------------------------------------------*/
