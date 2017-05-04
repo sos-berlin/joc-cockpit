@@ -4883,6 +4883,7 @@
                     JobService.resetRunTime(jobs).then(function (res) {
                         if (vm.permanentRunTime && vm.runTimeIsTemporary) {
                             vm.runTimeIsTemporary = false;
+                            job.runTimeIsTemporary = false;
                             vm.xml = vm.permanentRunTime;
                             $rootScope.$broadcast('loadXml', {xml: vm.xml});
                         }
@@ -4895,6 +4896,7 @@
                 JobService.resetRunTime(jobs).then(function (res) {
                     if (vm.permanentRunTime && vm.runTimeIsTemporary) {
                         vm.runTimeIsTemporary = false;
+                        job.runTimeIsTemporary = false;
                         vm.xml = vm.permanentRunTime;
                         $rootScope.$broadcast('loadXml', {xml: vm.xml});
                     }

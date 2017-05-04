@@ -1596,6 +1596,7 @@
                     OrderService.resetRunTime(orders).then(function (res) {
                         if (vm.permanentRunTime && vm.runTimeIsTemporary) {
                             vm.runTimeIsTemporary = false;
+                            order.runTimeIsTemporary = false;
                             vm.xml = vm.permanentRunTime;
                             $rootScope.$broadcast('loadXml',{xml : vm.xml});
                         }
@@ -1608,6 +1609,7 @@
                 OrderService.resetRunTime(orders).then(function (res) {
                     if (vm.permanentRunTime && vm.runTimeIsTemporary) {
                         vm.runTimeIsTemporary = false;
+                        order.runTimeIsTemporary = false;
                         vm.xml = vm.permanentRunTime;
                        $rootScope.$broadcast('loadXml',{xml : vm.xml});
                     }
@@ -5257,6 +5259,7 @@
                     OrderService.resetRunTime(orders).then(function (res) {
                         if (vm.permanentRunTime && vm.runTimeIsTemporary) {
                             vm.runTimeIsTemporary = false;
+                            order.runTimeIsTemporary = false;
                             vm.xml = vm.permanentRunTime;
                             $rootScope.$broadcast('loadXml',{xml : vm.xml});
                         }
@@ -5269,6 +5272,7 @@
                 OrderService.resetRunTime(orders).then(function (res) {
                     if (vm.permanentRunTime && vm.runTimeIsTemporary) {
                         vm.runTimeIsTemporary = false;
+                        order.runTimeIsTemporary = false;
                         vm.xml = vm.permanentRunTime;
                        $rootScope.$broadcast('loadXml',{xml : vm.xml});
                     }
