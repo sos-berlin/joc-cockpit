@@ -1212,7 +1212,7 @@
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
                 }
-                $rootScope.$broadcast('loadXml');
+                 $rootScope.$broadcast('loadXml', {xml: vm.xml});
 
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -2233,7 +2233,7 @@
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
                 }
-                $rootScope.$broadcast('loadXml');
+                 $rootScope.$broadcast('loadXml', {xml: vm.xml});
 
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {

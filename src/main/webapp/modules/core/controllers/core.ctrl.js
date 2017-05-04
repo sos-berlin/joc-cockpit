@@ -250,11 +250,13 @@
                     }).then(function (res) {
 
                         if (res.configuration && res.configuration.configurationItem) {
+
+
                             $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                             document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
                             preferences = JSON.parse($window.sessionStorage.preferences);
 
-                            if(!preferences.entryPerPage){
+                            if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
                             }
@@ -402,7 +404,7 @@
                 });
                 return;
             }
-             var url = null;
+            var url = null;
             if (vm.userPreferences.isNewWindow == 'newWindow') {
 
                 try {
@@ -699,11 +701,18 @@
             }
         }, 1000);
 
+        var isTouch = false;
         vm.refreshSession = function () {
-            UserService.touch().then(function (res) {
-                if (res && res.ok)
-                    count = parseInt(SOSAuth.sessionTimeout / 1000);
-            });
+            if(!isTouch) {
+                isTouch = true;
+                UserService.touch().then(function (res) {
+                    isTouch = false;
+                    if (res && res.ok)
+                        count = parseInt(SOSAuth.sessionTimeout / 1000) - 2;
+                },function(){
+                    isTouch = false;
+                });
+            }
         };
         vm.refreshSession();
 
@@ -1350,7 +1359,7 @@
         };
         var frequency = {};
         $scope.$on('period-editor', function (event, data1) {
-             var data = angular.copy(data1);
+            var data = angular.copy(data1);
             frequency = data;
 
             $scope.period = {};
@@ -1392,7 +1401,7 @@
         $scope.$on('update-period', function (event, data1) {
             frequency = {};
             var data = angular.copy(data1);
-             $scope.period = {};
+            $scope.period = {};
             $scope.period.period = {};
             if (!data.period) {
                 $scope.period.frequency = 'single_start';
@@ -1467,6 +1476,7 @@
             $('#period-editor').modal('hide');
         };
         $scope.save = function (form1) {
+
             if ($scope.period.frequency == 'single_start') {
                 delete $scope.period.period['_repeat'];
                 delete $scope.period.period['_absolute_repeat'];
@@ -2527,7 +2537,7 @@
                                                 str1 = getMonths(res._month);
                                             }
                                             if (val._day) {
-                                                str = 'ultimos: ' + getMonthDays(val._day) + ' of ' + str1;
+                                                str = 'Ultimos: ' + getMonthDays(val._day) + ' of ' + str1;
                                                 var periodStrArr = [], objArr = [];
                                                 if (angular.isArray(val.period)) {
                                                     angular.forEach(val.period, function (res1) {
@@ -8121,7 +8131,12 @@
             }
         }
 
-        $scope.$on('loadXml', function () {
+        $scope.$on('loadXml', function (e, x) {
+
+            if(x.xml){
+              vm.xml =x.xml;
+            }
+
             if (!vm.xml) {
                 if (!isEmpty(vm.order)) {
                     vm.xml = '<run_time></run_time>';

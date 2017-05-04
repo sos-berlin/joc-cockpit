@@ -4815,10 +4815,14 @@
                 job: job.path
             }).then(function (res) {
                 if (res.runTime) {
+                     vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
+                    if(vm.runTimeIsTemporary){
+                        vm.permanentRunTime = res.runTime.permanentRunTime;
+                    }
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
                 }
-                $rootScope.$broadcast('loadXml');
+                $rootScope.$broadcast('loadXml',{xml : vm.xml});
 
             });
         }
@@ -4876,17 +4880,27 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
 
-                    JobService.resetRunTime(jobs).then(function(res){
-                        loadRuntime(job);
+                    JobService.resetRunTime(jobs).then(function (res) {
+                        if (vm.permanentRunTime && vm.runTimeIsTemporary) {
+                            vm.runTimeIsTemporary = false;
+                            job.runTimeIsTemporary = false;
+                            vm.xml = vm.permanentRunTime;
+                            $rootScope.$broadcast('loadXml', {xml: vm.xml});
+                        }
                     });
-                    vm.reset();
+
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
-                JobService.resetRunTime(jobs).then(function(res){
-                        loadRuntime(job);
-                    });
+                JobService.resetRunTime(jobs).then(function (res) {
+                    if (vm.permanentRunTime && vm.runTimeIsTemporary) {
+                        vm.runTimeIsTemporary = false;
+                        job.runTimeIsTemporary = false;
+                        vm.xml = vm.permanentRunTime;
+                        $rootScope.$broadcast('loadXml', {xml: vm.xml});
+                    }
+                });
             }
         };
 
