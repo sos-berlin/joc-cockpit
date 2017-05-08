@@ -98,7 +98,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="hide" ng-class="{'show-inline':job.nextStartTime}">{{job.nextStartTime | stringToDate}}
+                                    <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
+                                        <i class="fa fa-circle-o text-info text-xs" ng-if="job.runTimeIsTemporary"></i> {{job.nextStartTime | stringToDate}}
                                         <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
                                     </span>
                                 </td>
@@ -127,7 +128,10 @@
                                                translate>button.startTaskat</a>
                                             <a class="dropdown-item" ng-click="setRunTime(job)"
                                                ng-show="permission.Job.setRunTime"
-                                               ng-class="{'disable-link':job.configurationStatus.severity==2}" ><img ng-if="job.runTimeIsTemporary" class="previous-version" src="images/previous-version.png"><span translate>button.setRunTime</span></a>
+                                               ng-class="{'disable-link':job.configurationStatus.severity==2}" ><span translate>button.setRunTime</span></a>
+                                            <a href class="dropdown-item" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                                <span translate>button.resetRunTime</span>
+                                            </a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="job.state._text !='STOPPED' && permission.Job.stop"
                                                ng-click="stop(job)" translate>button.stop</a>

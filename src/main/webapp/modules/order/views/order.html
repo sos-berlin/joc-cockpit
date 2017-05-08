@@ -305,9 +305,8 @@
                                             <div class="box-body">
                                                 <div>
                                                     <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start">
-                                                        <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i
-                                                            class="primary"></i></label>
-
+                                                        <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order">
+                                                        <i class="primary"></i></label>
                                                     <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.suspend || permission.Order.resume || permission.Order.reset || permission.Order.start}">
                                                         <span uib-tooltip="{{order.title}}" >{{order.orderId}}</span></div>
                                                     <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -329,7 +328,10 @@
                                                             <a href class="dropdown-item"
                                                                ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.setRunTime"
                                                                ng-click="setRunTime(order)" >
-                                                                <img ng-if="order.runTimeIsTemporary" class="previous-version" src="images/previous-version.png"><span translate>button.setRunTime</span>
+                                                                <span translate>button.setRunTime</span>
+                                                            </a>
+                                                            <a href class="dropdown-item" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                                                <span translate>button.resetRunTime</span>
                                                             </a>
                                                             <a href class="dropdown-item bg-hover-color"
                                                                ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
@@ -358,7 +360,7 @@
                                                 </div>
                                                 <div class="text-left text-muted text-sm p-t-sm">
                                                     <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
-                                                        {{'label.nextStart' | translate}}:
+                                                        {{'label.nextStart' | translate}}: <i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i>
                                                         {{order.nextStartTime | stringToDate}}
                                                        <span class="text-success" >(<span time="{{order.nextStartTime}}"></span>)</span>
                                                     </span>
@@ -486,7 +488,8 @@
                                                 <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
                                                 <td ng-bind="order.historyId || '-'"></td>
                                                 <td>
-                                                    <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
+                                                    <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                                                        <i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i>{{order.nextStartTime | stringToDate}}
                                                         <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                                     <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                                 </td>
@@ -509,7 +512,10 @@
                                                                ng-click="setOrderState(order)" translate>button.setOrderState</a>
                                                             <a href class="dropdown-item"
                                                                ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.setRunTime"
-                                                               ng-click="setRunTime(order)"><img ng-if="order.runTimeIsTemporary" class="previous-version" src="images/previous-version.png"><span translate>button.setRunTime</span></a>
+                                                               ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
+                                                            <a href class="dropdown-item" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                                                <span translate>button.resetRunTime</span>
+                                                            </a>
                                                             <a href class="dropdown-item bg-hover-color"
                                                                ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                                                ng-click="suspendOrder(order)" translate>button.suspendOrder</a>

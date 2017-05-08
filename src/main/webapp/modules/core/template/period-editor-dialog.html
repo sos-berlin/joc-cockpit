@@ -1,6 +1,6 @@
 <div class="modal fade" id="period-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.02)">
     <div class="modal-dialog box-shadow b-a " style="margin-top: 8%" ng-controller="PeriodEditorCtrl">
-        <div class="modal-content">
+        <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18)">
             <div class="modal-body p-a-md">
                 <form name="form1" ng-submit="save(form1)" novalidate>
                     <div>
@@ -26,61 +26,44 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row" ng-show="period.frequency=='single_start'">
+                        <div class="form-group row" ng-show="period.frequency=='single_start'" >
                             <label class="col-sm-3 form-control-label" translate>label.startTime</label>
 
-                            <div class="col-sm-3">
-                                <input class="form-control input-time" name="startTime" ng-model="period.period._single_start" ng-required="period.frequency == 'single_start'"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       placeholder="HH:MM:SS" bs-timepicker data-length="1"
-                                       data-minute-step="1"
-                                       data-arrow-behavior="picker" type="text">
+                            <div class="col-sm-3" ng-class="{ 'has-error' : form1.startTime.$invalid && form1.startTime.$dirty }">
+                                <input valid-time maxlength="8" class="form-control" name="startTime" ng-model="period.period._single_start"
+                                       placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
                         <div class="form-group row" ng-show="period.frequency=='repeat'">
                             <label class="col-sm-3 form-control-label" translate>label.repeatTime</label>
 
-                            <div class="col-sm-3">
-                                <input class="form-control input-time" ng-model="period.period._repeat"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       placeholder="HH:MM:SS" bs-timepicker data-length="1"
-                                       data-minute-step="1"
-                                       data-arrow-behavior="picker" type="text">
+                            <div class="col-sm-3" ng-class="{ 'has-error' : form1.repeat.$invalid && form1.repeat.$dirty }">
+                                <input valid-time maxlength="8" class="form-control" name="repeat" ng-model="period.period._repeat"
+                                       placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
                         <div class="form-group row"
                              ng-show="period.frequency=='absolute_repeat'">
                             <label class="col-sm-3 form-control-label" translate>label.interval</label>
 
-                            <div class="col-sm-3">
-                                <input class="form-control input-time" ng-model="period.period._absolute_repeat"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       placeholder="HH:MM:SS" bs-timepicker data-length="1"
-                                       data-minute-step="1"
-                                       data-arrow-behavior="picker" type="text">
+                            <div class="col-sm-3" ng-class="{ 'has-error' : form1.absolute.$invalid && form1.absolute.$dirty }">
+                                <input valid-time maxlength="8" class="form-control" name="absolute" ng-model="period.period._absolute_repeat"
+                                       placeholder="HH:MM:SS"type="text">
                             </div>
                         </div>
                         <div class="form-group row" ng-hide="period.frequency=='single_start'"
                              ng-class="{'has-error': (form1.time1.$invalid || form1.time2.$invalid)}">
                             <label class="col-sm-3 form-control-label" translate>label.begin</label>
 
-                            <div class="col-sm-3">
-                                <input class="form-control input-time" name="time1"
-                                       ng-model="period.period._begin"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       placeholder="HH:MM:SS" bs-timepicker
-                                       data-length="1"
-                                       data-minute-step="1" data-arrow-behavior="picker" type="text">
+                            <div class="col-sm-3" ng-class="{ 'has-error' : form1.begin.$invalid && form1.begin.$dirty }">
+                                <input valid-time maxlength="8" class="form-control" name="begin" ng-model="period.period._begin"
+                                       placeholder="HH:MM:SS" type="text">
                             </div>
                             <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
 
-                            <div class="col-sm-3">
-                                <input class="form-control input-time" name="time2"
-                                       ng-model="period.period._end"
-                                       data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                       placeholder="HH:MM:SS"
-                                       data-min-time="{{period.period._begin}}" bs-timepicker data-length="1"
-                                       data-minute-step="1" data-arrow-behavior="picker" type="text">
+                            <div class="col-sm-3" ng-class="{ 'has-error' : form1.end.$invalid && form1.end.$dirty }">
+                                <input valid-time maxlength="8" class="form-control" name="end" ng-model="period.period._end"
+                                       placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
                         <div class="form-group row">

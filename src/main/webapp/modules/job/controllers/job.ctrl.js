@@ -4834,7 +4834,8 @@
                 controller: 'RuntimeEditorDialogCtrl',
                 scope: vm,
                 size: 'lg',
-                backdrop: 'static'
+                backdrop: 'static',
+                windowClass: 'fade-modal'
             });
             modalInstance.result.then(function () {
                 setRunTime(job);
@@ -4850,6 +4851,55 @@
                 vm.schedules = res.schedules;
             });
             vm.zones = moment.tz.names();
+        };
+
+        function resetRunTime(job) {
+
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobs.push({job: job.path});
+            if (vm.userPreferences.auditLog) {
+                jobs.auditLog = {};
+                if (vm.comments.comment)
+                    jobs.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    jobs.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+            JobService.resetRunTime(jobs).then(function (res) {
+                job.runTimeIsTemporary = false;
+            });
+
+        };
+        vm.resetRunTime = function (job) {
+            vm.order = job;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            JobService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                job: job.path
+            }).then(function (res) {
+                if (res.runTime) {
+                    vm.xml =  vkbeautify.xml(res.runTime.permanentRunTime, 2);
+                    vm.xml1 = vkbeautify.xml(res.runTime.runTime,2);
+                }
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/reset-run-time-dialog.html',
+                controller: 'ResetRuntimeDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                resetRunTime(job);
+            }, function () {
+                vm.reset();
+            });
         };
 
         vm.resetRuntime = function (job) {

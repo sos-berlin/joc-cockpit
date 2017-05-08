@@ -1565,6 +1565,56 @@
                 backdrop: 'static'
             });
         }
+
+        function resetRunTime(order) {
+
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({jobChain: order.jobChain, orderId: order.orderId});
+            if (vm.userPreferences.auditLog) {
+                orders.auditLog = {};
+                if (vm.comments.comment)
+                    orders.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+            OrderService.resetRunTime(orders).then(function (res) {
+                order.runTimeIsTemporary = false;
+            });
+
+        };
+        vm.resetRunTime = function (order) {
+            vm.order = order;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            OrderService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain,
+                orderId: order.orderId
+            }).then(function (res) {
+                if (res.runTime) {
+                    vm.xml =  vkbeautify.xml(res.runTime.permanentRunTime, 2);
+                    vm.xml1 = vkbeautify.xml(res.runTime.runTime,2);
+                }
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/reset-run-time-dialog.html',
+                controller: 'ResetRuntimeDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                resetRunTime(order);
+            }, function () {
+                vm.reset();
+            });
+        };
         vm.resetRuntime = function (order) {
 
             var orders = {};
@@ -1747,7 +1797,9 @@
 
                 });
             }
-
+            if (action == 'reset run time') {
+                vm.resetRunTime(order);
+            }
             if (action == 'suspend order') {
                 var orders = {};
                 orders.orders = [];
@@ -5211,7 +5263,8 @@
                 controller: 'RuntimeEditorDialogCtrl',
                 scope: vm,
                 size: 'lg',
-                backdrop: 'static'
+                backdrop: 'static',
+                windowClass: 'fade-modal'
             });
             modalInstance.result.then(function () {
                 setRunTime(order);
@@ -5227,6 +5280,55 @@
             });
 
             vm.zones = moment.tz.names();
+        };
+        function resetRunTime(order) {
+
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({jobChain: order.jobChain, orderId: order.orderId});
+            if (vm.userPreferences.auditLog) {
+                orders.auditLog = {};
+                if (vm.comments.comment)
+                    orders.auditLog.comment = vm.comments.comment;
+                if (vm.comments.timeSpent)
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                if (vm.comments.ticketLink)
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+            OrderService.resetRunTime(orders).then(function (res) {
+                order.runTimeIsTemporary = false;
+            });
+
+        };
+        vm.resetRunTime = function (order) {
+            vm.order = order;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            OrderService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain,
+                orderId: order.orderId
+            }).then(function (res) {
+                if (res.runTime) {
+                    vm.xml =  vkbeautify.xml(res.runTime.permanentRunTime, 2);
+                    vm.xml1 = vkbeautify.xml(res.runTime.runTime,2);
+                }
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/reset-run-time-dialog.html',
+                controller: 'ResetRuntimeDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                resetRunTime(order);
+            }, function () {
+                vm.reset();
+            });
         };
         vm.resetRuntime = function (order) {
 

@@ -975,7 +975,10 @@
   "button.addNewFrequency": "Add Frequency",
   "button.save": "Save",
   "button.applyPeriod": "Apply Period",
-  "button.markAsUndirty": "Mark as un-dirty",
+  "button.resetRunTime": "Reset Run-time",
   "label.monthDays": "Month Days",
-  "label.entryPerPage": "Entries per page"
+  "label.entryPerPage": "Entries per page",
+  "label.currentRuntime": "Current Run-time",
+  "label.previousRuntime":"Previous Run-time",
+  "label.resetRunTimeOf":"Reset Run-time of"
 }
