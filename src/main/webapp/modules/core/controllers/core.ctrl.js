@@ -12,6 +12,7 @@
         .controller('DialogCtrl', DialogCtrl)
         .controller('PeriodEditorCtrl', PeriodEditorCtrl)
         .controller('RuntimeEditorDialogCtrl', RuntimeEditorDialogCtrl)
+        .controller('ResetRuntimeDialogCtrl', ResetRuntimeDialogCtrl)
         .controller('ClientLogCtrl', ClientLogCtrl);
 
 
@@ -1366,6 +1367,7 @@
             $scope.period.period = {};
             if (!data.periodStr) {
                 $scope.period.frequency = 'single_start';
+                $scope.period.period._single_start = '00:00';
                 $scope.period.period._when_holiday = 'suppress';
                 $scope.editor.editPeriod = false;
                 $scope.editor.createPeriod = true;
@@ -1373,21 +1375,21 @@
             } else {
                 if (data.period._single_start) {
                     $scope.period.frequency = 'single_start';
-                    $scope.period.period._single_start = stringToTime(data.period._single_start);
+                    $scope.period.period._single_start = data.period._single_start;
                 }
                 else if (data.period._absolute_repeat) {
                     $scope.period.frequency = 'absolute_repeat';
-                    $scope.period.period._absolute_repeat = stringToTime(data.period._absolute_repeat);
+                    $scope.period.period._absolute_repeat = data.period._absolute_repeat;
                 }
                 else if (data.period._repeat) {
                     $scope.period.frequency = 'repeat';
-                    $scope.period.period._repeat = stringToTime(data.period._repeat);
+                    $scope.period.period._repeat = data.period._repeat;
                 }
                 if (data.period._begin) {
-                    $scope.period.period._begin = stringToTime(data.period._begin);
+                    $scope.period.period._begin = data.period._begin;
                 }
                 if (data.period._end) {
-                    $scope.period.period._end = stringToTime(data.period._end);
+                    $scope.period.period._end = data.period._end;
                 }
 
                 $scope.period.period._when_holiday = data.period._when_holiday || 'suppress';
@@ -1405,6 +1407,7 @@
             $scope.period.period = {};
             if (!data.period) {
                 $scope.period.frequency = 'single_start';
+                $scope.period.period._single_start = '00:00';
                 $scope.period.period._when_holiday = 'suppress';
                 $scope.editor.editPeriod = false;
                 $scope.editor.createPeriod = true;
@@ -1412,26 +1415,26 @@
             } else {
                 var str = '';
                 if (data.period.period._begin) {
-                    $scope.period.period._begin = stringToTime(data.period.period._begin);
+                    $scope.period.period._begin = data.period.period._begin;
                     str = data.period.period._begin;
                 }
                 if (data.period.period._end) {
-                    $scope.period.period._end = stringToTime(data.period.period._end);
+                    $scope.period.period._end = data.period.period._end;
                     str = str + '-' + data.period.period._begin;
                 }
                 if (data.period.period._single_start) {
                     $scope.period.frequency = 'single_start';
-                    $scope.period.period._single_start = stringToTime(data.period.period._single_start);
+                    $scope.period.period._single_start = data.period.period._single_start;
                     str = 'Single start: ' + data.period.period._single_start;
                 }
                 else if (data.period.period._absolute_repeat) {
                     $scope.period.frequency = 'absolute_repeat';
-                    $scope.period.period._absolute_repeat = stringToTime(data.period.period._absolute_repeat);
+                    $scope.period.period._absolute_repeat = data.period.period._absolute_repeat;
                     str = str + ' every ' + getTimeInString(data.period.period._absolute_repeat);
                 }
                 else if (data.period.period._repeat) {
                     $scope.period.frequency = 'repeat';
-                    $scope.period.period._repeat = stringToTime(data.period.period._repeat);
+                    $scope.period.period._repeat = data.period.period._repeat;
                     str = str + ' every ' + getTimeInString(data.period.period._repeat);
                 }
                 $scope.strPeriod = str;
@@ -1441,28 +1444,16 @@
                 $scope.editor.editPeriod = true;
             }
         });
-        function stringToTime(str) {
-            if (str) {
-                var date = new Date();
-                date.setHours(str.substring(0, 2));
-                date.setMinutes(str.substring(3, 5));
-                if (str.substring(7)) {
-                    date.setSeconds(str.substring(7));
-                } else {
-                    date.setSeconds(0)
-                }
-                return date;
-            }
-        }
+
 
         function getTimeInString(time) {
             if (time.toString().substring(0, 2) == '00' && time.toString().substring(3, 5) == '00') {
                 return time.toString().substring(6, time.length) + ' seconds'
             } else if (time.toString().substring(0, 2) == '00') {
                 return time.toString().substring(3, time.length) + ' minutes'
-            } else if (time.toString().substring(0, 2) != '00' && time.toString().substring(6, time.length) == '00') {
+            } else if ((time.toString().substring(0, 2) != '00' && time.length==5) ||(time.length>5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
                 return time.toString().substring(0, 5) + ' hours'
-            } else {
+            } else{
                 return time;
             }
         }
@@ -1474,6 +1465,7 @@
             if (form1)
                 form1.$setPristine();
             $('#period-editor').modal('hide');
+            $('.fade-modal').css('opacity',1);
         };
         $scope.save = function (form1) {
 
@@ -1503,6 +1495,7 @@
                 form1.$setUntouched();
             }
             $('#period-editor').modal('hide');
+            $('.fade-modal').css('opacity',1);
 
         };
 
@@ -1560,6 +1553,8 @@
         vm.runTime = {};
         vm.runTime.tab = 'weekDays';
         vm.runTime.frequency = 'single_start';
+        vm.runTime.period = {};
+        vm.runTime.period._single_start = '00:00';
         vm.tempRunTime = {};
         vm.runTime1 = {};
         var promise1, promise2, promise3;
@@ -1582,32 +1577,17 @@
             'ignore_holiday': gettextCatalog.getString('ignore holiday')
         };
 
-        function stringToTime(str) {
-            if (str) {
-                var date = new Date();
-                date.setHours(str.substring(0, 2));
-                date.setMinutes(str.substring(3, 5));
-                if (str.substring(7)) {
-                    date.setSeconds(str.substring(7));
-                } else {
-                    date.setSeconds(0)
-                }
-                return date;
-            }
-        }
-
         function getTimeInString(time) {
             if (time.toString().substring(0, 2) == '00' && time.toString().substring(3, 5) == '00') {
                 return time.toString().substring(6, time.length) + ' seconds'
             } else if (time.toString().substring(0, 2) == '00') {
                 return time.toString().substring(3, time.length) + ' minutes'
-            } else if (time.toString().substring(0, 2) != '00' && time.toString().substring(6, time.length) == '00') {
+            } else if ((time.toString().substring(0, 2) != '00' && time.length==5) ||(time.length>5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
                 return time.toString().substring(0, 5) + ' hours'
-            } else {
+            } else{
                 return time;
             }
         }
-
         function getWeekDays(day) {
             if (!day) {
                 return;
@@ -1909,7 +1889,25 @@
             var temp = angular.copy(vm.runTime.period);
             vm.runTime.period = {};
             vm.runTime.period._when_holiday = temp._when_holiday;
-
+            if (vm.runTime.frequency == 'single_start') {
+                vm.runTime.period._single_start = '00:00';
+                delete vm.runTime.period._absolute_repeat;
+                delete vm.runTime.period._repeat;
+                delete vm.runTime.period._begin;
+                delete vm.runTime.period._end;
+            } else if (vm.runTime.frequency == 'repeat') {
+                delete vm.runTime.period._single_start;
+                delete vm.runTime.period._absolute_repeat;
+                vm.runTime.period._repeat = '00:00';
+                vm.runTime.period._begin = '00:00';
+                vm.runTime.period._end = '24:00';
+            } else {
+                delete vm.runTime.period._single_start;
+                delete vm.runTime.period._repeat;
+                vm.runTime.period._absolute_repeat = '00:00';
+                vm.runTime.period._begin = '00:00';
+                vm.runTime.period._end = '24:00';
+            }
         };
 
         vm._sch = {};
@@ -3680,6 +3678,7 @@
                 frequency: data
             });
             $('#period-editor').modal('show');
+             $('.fade-modal').css('opacity','0.85');
         };
         vm.editPeriodFromFrequency = function (data, index, periodStr) {
             var period = data.obj[index]._period;
@@ -3700,6 +3699,7 @@
                 periodStr: periodStr
             });
             $('#period-editor').modal('show');
+             $('.fade-modal').css('opacity','0.85');
         };
         $rootScope.$on('cancel-period', function () {
             _tempPeriod = {};
@@ -3710,24 +3710,6 @@
             if (data.frequency && !isEmpty(data.frequency)) {
                 editRunTime(data);
             } else {
-
-                if (data.period.frequency == 'single_start' && data.period.period._single_start) {
-                    data.period.period._single_start = moment(data.period.period._single_start).format('HH:mm:ss');
-                }
-                else if (data.period.frequency == 'absolute_repeat' && data.period.period._absolute_repeat) {
-                    data.period.period._absolute_repeat = moment(data.period.period._absolute_repeat).format('HH:mm:ss');
-                }
-                else if (data.period.frequency == 'repeat' && data.period.period._repeat) {
-                    data.period.period._repeat = moment(data.period.period._repeat).format('HH:mm:ss');
-                }
-                if (data.period.frequency == 'repeat' || data.period.frequency == 'absolute_repeat') {
-                    if (data.period.period._begin) {
-                        data.period.period._begin = moment(data.period.period._begin).format('HH:mm:ss');
-                    }
-                    if (data.period.period._end) {
-                        data.period.period._end = moment(data.period.period._end).format('HH:mm:ss');
-                    }
-                }
 
                 vm.runTime.period = data.period.period;
                 vm.runTime.frequency = data.period.frequency;
@@ -4000,26 +3982,6 @@
                 }
             }
 
-            if (data.period) {
-                if (data.period.frequency == 'single_start' && data.period.period._single_start) {
-                    data.period.period._single_start = moment(data.period.period._single_start).format('HH:mm:ss');
-                }
-                else if (data.period.frequency == 'absolute_repeat' && data.period.period._absolute_repeat) {
-                    data.period.period._absolute_repeat = moment(data.period.period._absolute_repeat).format('HH:mm:ss');
-                }
-                else if (data.period.frequency == 'repeat' && data.period.period._repeat) {
-                    data.period.period._repeat = moment(data.period.period._repeat).format('HH:mm:ss');
-                }
-                if (data.period.frequency == 'repeat' || data.period.frequency == 'absolute_repeat') {
-                    if (data.period.period._begin) {
-                        data.period.period._begin = moment(data.period.period._begin).format('HH:mm:ss');
-                    }
-                    if (data.period.period._end) {
-                        data.period.period._end = moment(data.period.period._end).format('HH:mm:ss');
-                    }
-                }
-            }
-
             if (data.frequency.period) {
 
                 for (var i = 0; i < vm.periodList.length; i++) {
@@ -4118,7 +4080,26 @@
                 }
 
             }
+            if (!isEmpty(vm.run_time.date)) {
+                if (!(vm.run_time.date && (vm.run_time.date.length > 0))) {
+                    delete vm.run_time['date'];
+                } else {
+                    angular.forEach(vm.run_time.date, function (value, index1) {
+                        if (!angular.isArray(value.period)) {
+                            if (value.period && value.period._when_holiday == 'suppress')
+                                delete vm.run_time.date[index1].period['_when_holiday'];
+                        } else {
+                            angular.forEach(value.period, function (val, index2) {
+                                if (val._when_holiday == 'suppress')
+                                    delete vm.run_time.date[index1].period[index2]['_when_holiday'];
+                            });
+                        }
+                    });
+                }
 
+            } else {
+                delete vm.run_time['date'];
+            }
             if (!isEmpty(vm.run_time.weekdays)) {
                 if (!(vm.run_time.weekdays.day && (vm.run_time.weekdays.day.length > 0 || vm.run_time.weekdays.day._day))) {
                     delete vm.run_time['weekdays'];
@@ -4282,32 +4263,13 @@
             $rootScope.$broadcast('update-period', {
                 period: undefined
             });
+            $('.fade-modal').css('opacity','0.85');
             $('#period-editor').modal('show');
 
         };
 
         vm.periodList = [];
         vm.addPeriod = function () {
-            if (vm.runTime.period) {
-                if (vm.runTime.frequency == 'single_start' && vm.runTime.period._single_start) {
-                    vm.runTime.period._single_start = moment(vm.runTime.period._single_start).format('HH:mm:ss');
-                }
-                else if (vm.runTime.frequency == 'repeat' && vm.runTime.period._repeat) {
-                    vm.runTime.period._repeat = moment(vm.runTime.period._repeat).format('HH:mm:ss');
-                }
-                else if (vm.runTime.frequency == 'absolute_repeat' && vm.runTime.period._absolute_repeat) {
-                    vm.runTime.period._absolute_repeat = moment(vm.runTime.period._absolute_repeat).format('HH:mm:ss');
-                }
-                if (vm.runTime.frequency == 'repeat' || vm.runTime.frequency == 'absolute_repeat') {
-                    if (vm.runTime.period._begin) {
-                        vm.runTime.period._begin = moment(vm.runTime.period._begin).format('HH:mm:ss');
-                    }
-                    if (vm.runTime.period._end) {
-                        vm.runTime.period._end = moment(vm.runTime.period._end).format('HH:mm:ss');
-                    }
-                }
-
-            }
 
             if (vm.periodList.length > 0) {
                 for (var i = 0; i < vm.periodList.length; i++) {
@@ -4317,7 +4279,6 @@
                     }
                 }
             }
-
 
             if (!isEmpty(_tempPeriod) && vm.periodList.length > 0) {
 
@@ -4648,22 +4609,17 @@
                     if (temp)
                         run_time.month.push(temp);
                 } else {
-
                     angular.forEach(run_time.month, function (res) {
 
                         if (res.weekdays) {
-
                             if (!angular.isArray(res.weekdays.day)) {
-
                                 var temp = angular.copy(res.weekdays.day);
                                 res.weekdays.day = [];
                                 if (temp.period || temp._day)
                                     res.weekdays.day.push(temp);
-
                             } else {
                                 if (res.weekdays.day)
                                     angular.forEach(res.weekdays.day, function (value) {
-
                                         if (!value.period && !value._day)
                                             res.weekdays.day = [];
                                     });
@@ -6694,6 +6650,7 @@
                 vm.runTime = {};
                 vm.runTime.period = {};
                 vm.runTime.frequency = 'single_start';
+                vm.runTime.period._single_start = '00:00';
                 vm.runTime.period._when_holiday = 'suppress';
                 vm.runTime.tab = temp.tab;
                 vm.runTime.isUltimos = temp.isUltimos;
@@ -7041,26 +6998,28 @@
                     period: period
                 });
                 $('#period-editor').modal('show');
+                $('.fade-modal').css('opacity','0.85')
+
             }
 
 
             if (runTime.period._single_start) {
                 runTime.frequency = 'single_start';
-                runTime.period._single_start = stringToTime(runTime.period._single_start);
+
             }
             else if (runTime.period._absolute_repeat) {
                 runTime.frequency = 'absolute_repeat';
-                runTime.period._absolute_repeat = stringToTime(runTime.period._absolute_repeat);
+
             }
             else if (runTime.period._repeat) {
                 runTime.frequency = 'repeat';
-                runTime.period._repeat = stringToTime(runTime.period._repeat);
+
             }
             if (runTime.period._begin) {
-                runTime.period._begin = stringToTime(runTime.period._begin);
+
             }
             if (runTime.period._end) {
-                runTime.period._end = stringToTime(runTime.period._end);
+
             }
 
 
@@ -7818,6 +7777,7 @@
             vm.runTime.frequency = 'single_start';
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = 'weekDays';
+            vm.runTime.period._single_start = '00:00';
         };
 
         vm.createRunTime = function (form) {
@@ -8178,6 +8138,36 @@
             if (promise3)
                 $timeout.cancel(promise3);
         });
+    }
+
+    ResetRuntimeDialogCtrl.$inject = ["$scope", "$uibModalInstance","$window"];
+    function ResetRuntimeDialogCtrl($scope,  $uibModalInstance,$window) {
+        var vm = $scope;
+
+        vm.logError = false;
+        if (vm.userPreferences.auditLog) {
+            vm.display = true;
+        }
+        if ($window.sessionStorage.$SOS$FORCELOGING == 'true') {
+            vm.required = true;
+        }
+        vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
+        vm.ok = function () {
+            vm.logError = false;
+            if (vm.required) {
+                if (vm.comments.comment) {
+                    $uibModalInstance.close('ok');
+                } else {
+                    vm.logError = true;
+                }
+            } else {
+                $uibModalInstance.close('ok');
+            }
+        };
+        vm.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
     }
 
     ClientLogCtrl.$inject = ['$scope', '$window', '$interval'];

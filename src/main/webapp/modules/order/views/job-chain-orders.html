@@ -39,7 +39,10 @@
                                                            ng-click="setOrderState(order)" translate>button.setOrderState</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.setRunTime"
-                                                           ng-click="setRunTime(order)"><img ng-if="order.runTimeIsTemporary" class="previous-version" src="images/previous-version.png"><span translate>button.setRunTime</span></a>
+                                                           ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
+                                                        <a href class="dropdown-item" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                                            <span translate>button.resetRunTime</span>
+                                                        </a>
                                                         <a href class="dropdown-item bg-hover-color"
                                                            ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                                            ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
@@ -217,7 +220,10 @@
                                                            ng-click="setOrderState(order)" translate>button.setOrderState</a>
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.setRunTime"
-                                                           ng-click="setRunTime(order)" ><img ng-if="order.runTimeIsTemporary" class="previous-version" src="images/previous-version.png"><span translate>button.setRunTime</span></a>
+                                                           ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
+                                                        <a href class="dropdown-item" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                                            <span translate>button.resetRunTime</span>
+                                                        </a>
                                                         <a href class="dropdown-item bg-hover-color"
                                                            ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.suspend"
                                                            ng-click="suspendOrder(order)" translate>button.suspendOrder</a>

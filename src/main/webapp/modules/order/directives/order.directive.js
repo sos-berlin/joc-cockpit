@@ -1344,24 +1344,35 @@
                         }
 
                         var diff;
-                        vm.calWidth = function (order, state) {
+                        vm.calWidth = function (order, state, flag) {
                             var container = document.getElementById('lbl-order-' + state);
                             diff = document.getElementById('diff-' + order);
-                            if(container && diff && diff.innerHTML) {
+                            if (container && diff && diff.innerHTML) {
                                 diff = diff.innerHTML;
+
                                 if (diff.indexOf('never') != -1 && container.clientHeight == container.scrollHeight) {
-                                    return '150px';
+                                    if (flag)
+                                        return '145px';
+                                    else
+                                        return '150px';
                                 } else if (diff.indexOf('never') != -1 && container.clientHeight !== container.scrollHeight) {
-                                    return '145px';
+                                    if (flag)
+                                        return '135px';
+                                    else
+                                        return '145px';
                                 } else if (container.clientHeight == container.scrollHeight) {
-                                    return 214-(diff.length *5 +147) +'px';
+                                    if (flag)
+                                        return 209 - (diff.length * 5 + 147) + 'px';
+                                    else
+                                        return 214 - (diff.length * 5 + 147) + 'px';
                                 } else if (container.clientHeight !== container.scrollHeight) {
-
-                                    return 210-(diff.length *5 +146+9) +'px';
+                                    if (flag)
+                                        return 205 - (diff.length * 5 + 146 + 9) + 'px';
+                                    else
+                                        return 210 - (diff.length * 5 + 146 + 9) + 'px';
                                 }
-                            }else{
+                            } else {
                                 return '30px';
-
                             }
                         };
 
@@ -1393,10 +1404,8 @@
                                         if (index == 5) {
                                             container.style['max-height'] = container.clientHeight + container.firstChild.clientHeight + 'px';
                                         }
-
                                         $compile(label)(vm);
                                         return;
-
                                     }
                                     var container = document.getElementById('lbl-order-' + order.state);
 
@@ -1446,8 +1455,9 @@
 
                                         if ($filter('durationFromCurrent')(undefined, order.nextStartTime) == 'never')
                                             diff = '<span id="diff-'+order.orderId+'">never</span>';
-                                        else
-                                            diff = '-<span id="diff-'+order.orderId+'" time="' + order.nextStartTime + '"></span>';
+                                        else {
+                                            diff = '-<span id="diff-' + order.orderId + '" time="' + order.nextStartTime + '"></span>';
+                                        }
 
                                         if (order.nextStartTime) {
                                             time = order.nextStartTime;
@@ -1457,9 +1467,8 @@
 
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
 
-                                        '<span    ng-style="{\'max-width\':calWidth(\'' + order.orderId + '\',\'' + order.state + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
-                                        + '<span  class="show-block v-m text-success text-xs"> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + '(' + diff + ')</span>'
-
+                                        '<span ng-style="{\'max-width\':calWidth(\'' + order.orderId + '\',\'' + order.state + '\',\'' + order.runTimeIsTemporary + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
+                                        + '<span  class="show-block v-m text-success text-xs"> <small class="fa fa-circle-o text-info hide" ng-class="{\'show-block\':\''+order.runTimeIsTemporary+'\' == \'true\'}"></small> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + '(' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="btn-group dropdown "><button type="button"  class="btn-drop more-option-h dropdown1" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                         + '<div class="dropdown-menu dropdown-ac " role="menu" style="position: fixed;z-index: 9999;">'
@@ -1468,7 +1477,8 @@
                                         + '<a class="hide" id="ordernow-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.start}">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
                                         + '<a class="hide" id="orderat-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.start}">' + gettextCatalog.getString("button.startOrderat") + '</a>'
                                         + '<a class="hide" id="orderstate-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\' ||\'' + order.processingState._text + '\'== \'PENDING\'))&& permission.Order.setState}">' + gettextCatalog.getString("button.setOrderState") + '</a>'
-                                        + '<a class="hide" id="runtime-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\' ||\'' + order.processingState._text + '\'== \'PENDING\'))&& permission.Order.setRunTime}"><img ng-if="order.runTimeIsTemporary" class="previous-version" src="images/previous-version.png">' + gettextCatalog.getString("button.setRunTime") + '</a>'
+                                        + '<a class="hide" id="runtime-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\' ||\'' + order.processingState._text + '\'== \'PENDING\'))&& permission.Order.setRunTime}">' + gettextCatalog.getString("button.setRunTime") + '</a>'
+                                        + '<a class="hide" id="resetruntime-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\' ||\'' + order.processingState._text + '\'== \'PENDING\'))&& permission.Order.setRunTime, \'disable-link\':\''+order.runTimeIsTemporary+'\' == \'false\'}">' + gettextCatalog.getString("button.resetRunTime") + '</a>'
                                         + '<a class="hide" id="suspend-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'SUSPENDED\' && \'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& permission.Order.suspend}">' + gettextCatalog.getString("button.suspendOrder") + '</a>'
                                         + '<a class="hide" id="resume-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\'))&& permission.Order.resume}">' + gettextCatalog.getString("button.resumeOrder") + '</a>'
                                         + '<a class="hide" id="resumeodrprmt-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\'))&& permission.Order.resume}">' + gettextCatalog.getString("button.resumeOrderParametrized") + '</a>'
@@ -1525,6 +1535,14 @@
                                     vm.onOrderAction({
                                         order: order,
                                         action: 'set run time'
+                                    })
+                                });
+
+                                var resetruntime = document.getElementById('resetruntime-' + order.orderId);
+                                resetruntime.addEventListener('click', function () {
+                                    vm.onOrderAction({
+                                        order: order,
+                                        action: 'reset run time'
                                     })
                                 });
 

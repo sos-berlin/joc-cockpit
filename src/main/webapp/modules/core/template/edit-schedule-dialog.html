@@ -528,61 +528,44 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row" ng-show="runTime.frequency=='single_start'">
+                    <div class="form-group row" ng-show="runTime.frequency=='single_start'" >
                         <label class="col-sm-3 form-control-label" translate>label.startTime</label>
 
-                        <div class="col-sm-2">
-                            <input class="form-control input-time" ng-model="runTime.period._single_start"
-                                   data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                   placeholder="HH:MM:SS" bs-timepicker data-length="1"
-                                   data-minute-step="1"
-                                   data-arrow-behavior="picker" type="text">
+                        <div class="col-sm-2" ng-class="{ 'has-error' : form.startTime.$invalid && form.startTime.$dirty }">
+                            <input valid-time maxlength="8" class="form-control" name="startTime" ng-model="runTime.period._single_start"
+                                   placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
                     <div class="form-group row" ng-show="runTime.frequency=='repeat'">
                         <label class="col-sm-3 form-control-label" translate>label.repeatTime</label>
 
-                        <div class="col-sm-2">
-                            <input class="form-control input-time" ng-model="runTime.period._repeat"
-                                   data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                   placeholder="HH:MM:SS" bs-timepicker data-length="1"
-                                   data-minute-step="1"
-                                   data-arrow-behavior="picker" type="text">
+                        <div class="col-sm-2" ng-class="{ 'has-error' : form.repeat.$invalid && form.repeat.$dirty }">
+                            <input valid-time maxlength="8" class="form-control" name="repeat" ng-model="runTime.period._repeat"
+                                   placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
                     <div class="form-group row"
                          ng-show="runTime.frequency=='absolute_repeat'">
                         <label class="col-sm-3 form-control-label" translate>label.interval</label>
 
-                        <div class="col-sm-2">
-                            <input class="form-control input-time" ng-model="runTime.period._absolute_repeat"
-                                   data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                   placeholder="HH:MM:SS" bs-timepicker data-length="1"
-                                   data-minute-step="1"
-                                   data-arrow-behavior="picker" type="text">
+                        <div class="col-sm-2" ng-class="{ 'has-error' : form.absolute.$invalid && form.absolute.$dirty }">
+                            <input valid-time maxlength="8" class="form-control" name="absolute" ng-model="runTime.period._absolute_repeat"
+                                   placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
                     <div class="form-group row" ng-hide="!runTime.frequency || runTime.frequency=='single_start'"
                          ng-class="{'has-error': (form.time1.$invalid || form.time2.$invalid)}">
                         <label class="col-sm-3 form-control-label" translate>label.begin</label>
 
-                        <div class="col-sm-2">
-                            <input class="form-control input-time" name="time1"
-                                   ng-model="runTime.period._begin"
-                                   data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                   placeholder="HH:MM:SS" bs-timepicker
-                                   data-length="1"
-                                   data-minute-step="1" data-arrow-behavior="picker" type="text">
+                        <div class="col-sm-2" ng-class="{ 'has-error' : form.begin.$invalid && form.begin.$dirty }">
+                            <input valid-time maxlength="8" class="form-control" name="time1"
+                                   ng-model="runTime.period._begin" name="begin" placeholder="HH:MM:SS" type="text">
                         </div>
                         <label class="col-sm-2 form-control-label text-right" translate>label.end</label>
 
-                        <div class="col-sm-2">
-                            <input class="form-control input-time" name="time2"
-                                   ng-model="runTime.period._end"
-                                   data-time-format="HH:mm:ss" style="width: 100%; background-position: 95% 8px;"
-                                   placeholder="HH:MM:SS"
-                                   data-min-time="{{runTime.period._begin}}" bs-timepicker data-length="1"
-                                   data-minute-step="1" data-arrow-behavior="picker" type="text">
+                        <div class="col-sm-2" ng-class="{ 'has-error' : form.end.$invalid && form.end.$dirty }">
+                            <input valid-time maxlength="8" class="form-control" name="time2"
+                                   ng-model="runTime.period._end" name="end" placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
                     <div class="form-group row" ng-if="runTime.period._when_holiday">
