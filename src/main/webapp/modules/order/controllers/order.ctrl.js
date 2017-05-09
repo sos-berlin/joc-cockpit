@@ -1586,7 +1586,8 @@
                 order.runTimeIsTemporary = false;
             });
 
-        };
+        }
+
         vm.resetRunTime = function (order) {
             vm.order = order;
             vm.comments = {};
@@ -1597,22 +1598,21 @@
                 orderId: order.orderId
             }).then(function (res) {
                 if (res.runTime) {
-                    vm.xml =  vkbeautify.xml(res.runTime.permanentRunTime, 2);
-                    vm.xml1 = vkbeautify.xml(res.runTime.runTime,2);
+                    vm.xml = res.runTime.permanentRunTime;
+                    vm.xml1 = res.runTime.runTime;
                 }
-            });
-
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/reset-run-time-dialog.html',
-                controller: 'ResetRuntimeDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                resetRunTime(order);
-            }, function () {
-                vm.reset();
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/reset-run-time-dialog.html',
+                    controller: 'ResetRuntimeDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    resetRunTime(order);
+                }, function () {
+                    vm.reset();
+                });
             });
         };
         vm.resetRuntime = function (order) {
@@ -5301,7 +5301,7 @@
                 order.runTimeIsTemporary = false;
             });
 
-        };
+        }
         vm.resetRunTime = function (order) {
             vm.order = order;
             vm.comments = {};
@@ -5312,22 +5312,21 @@
                 orderId: order.orderId
             }).then(function (res) {
                 if (res.runTime) {
-                    vm.xml =  vkbeautify.xml(res.runTime.permanentRunTime, 2);
-                    vm.xml1 = vkbeautify.xml(res.runTime.runTime,2);
+                    vm.xml = res.runTime.permanentRunTime;
+                    vm.xml1 = res.runTime.runTime;
                 }
-            });
-
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/reset-run-time-dialog.html',
-                controller: 'ResetRuntimeDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                resetRunTime(order);
-            }, function () {
-                vm.reset();
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/reset-run-time-dialog.html',
+                    controller: 'ResetRuntimeDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    resetRunTime(order);
+                }, function () {
+                    vm.reset();
+                });
             });
         };
         vm.resetRuntime = function (order) {
@@ -7678,7 +7677,8 @@
             return "log_" + logStatus.toLowerCase();
         };
         vm.downloadLog = function () {
-            var data = new Blob([vm.logs], {type: 'text/plain;charset=utf-8'});
+             var code = String(vm.logs).replace(/<[^>]+>/gm, '');
+            var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
             FileSaver.saveAs(data, 'history.log');
         };
         var object = $location.search();

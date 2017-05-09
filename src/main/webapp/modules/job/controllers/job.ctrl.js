@@ -4883,23 +4883,23 @@
                 job: job.path
             }).then(function (res) {
                 if (res.runTime) {
-                    vm.xml =  vkbeautify.xml(res.runTime.permanentRunTime, 2);
-                    vm.xml1 = vkbeautify.xml(res.runTime.runTime,2);
+                    vm.xml = res.runTime.permanentRunTime;
+                    vm.xml1 = res.runTime.runTime;
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'modules/core/template/reset-run-time-dialog.html',
+                        controller: 'ResetRuntimeDialogCtrl',
+                        scope: vm,
+                        size: 'lg',
+                        backdrop: 'static'
+                    });
+                    modalInstance.result.then(function () {
+                        resetRunTime(job);
+                    }, function () {
+                        vm.reset();
+                    });
                 }
             });
 
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/reset-run-time-dialog.html',
-                controller: 'ResetRuntimeDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                resetRunTime(job);
-            }, function () {
-                vm.reset();
-            });
         };
 
         vm.resetRuntime = function (job) {

@@ -53,7 +53,7 @@
                             <div class=" col-sm-9">
                                 <textarea rows="3" class="form-control" maxlength="2000" name="comment"
                                           ng-model="comments.comment"
-                                          placeholder="{{'placeholder.enterComment' | translate}}"
+                                          ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
                                           ng-focus="logError = false"></textarea>
 
                                 <div class="help-block text-danger" ng-if="logError">
@@ -81,15 +81,84 @@
                         </div>
                     </div>
                 </div>
-                <div class="row text-center">
-                    <div class="col-md-6">
-                        <label class=" _600">{{'label.previousRuntime' | translate}}</label>
-                        <textarea readonly class="form-control" rows="15" ng-model="xml" placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
+                <div class="row m-b-xs">
+                    <div class="col-md-12 m-b-sm">
+                        <button type="button" ng-if="!resetXml.importXml" class="btn btn-grey btn-sm pull-right" ng-click="resetXml.importXml = true" translate>button.importXml</button>
+                        <button type="button" ng-if="resetXml.importXml" class="btn btn-grey btn-sm pull-right" ng-click="resetXml.importXml = false" translate>button.showList</button>
+                    </div>
+                </div>
 
+                <div class="row" ng-if="resetXml.importXml">
+                    <div class="col-md-6">
+                       <label class=" _600">{{'label.previousRuntime' | translate}}</label>
+                        <textarea readonly class="form-control" rows="15" ng-model="xml" ng-attr-placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                     <div class="col-md-6">
                         <label class=" _600">{{'label.currentRuntime' | translate}}</label>
-                        <textarea readonly class="form-control" rows="15" ng-model="xml1" placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
+                        <textarea readonly class="form-control" rows="15" ng-model="xml1" ng-attr-placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
+                    </div>
+                </div>
+                <div class="row" ng-if="!resetXml.importXml">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <div class="col-sm-12" style="max-height: 600px; overflow: auto">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered frequency-table">
+                                        <thead>
+                                        <tr>
+                                            <th translate colspan="2" align="center">label.previousListOfFrequencies</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody ng-repeat="data in runtimeList track by $index">
+                                        <tr>
+                                            <td style="border-right: none !important;vertical-align: top !important; ">
+                                                {{data.frequency}}
+                                            </td>
+                                            <td style="border-left: none !important; ">
+                                                <div ng-repeat="p in data.period track by $index">
+                                                    {{p}}
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center" ng-if="runtimeList.length==0">
+                                        <span translate>message.noFrequencyFound</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <div class="col-sm-12" style="max-height: 600px; overflow: auto">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered frequency-table">
+                                        <thead>
+                                        <tr>
+                                            <th translate colspan="2" align="center">label.currentListOfFrequencies</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody ng-repeat="data in runtimeList1 track by $index">
+                                        <tr>
+                                            <td style="border-right: none !important;vertical-align: top !important; ">
+                                                {{data.frequency}}
+                                            </td>
+                                            <td style="border-left: none !important; ">
+                                                <div ng-repeat="p in data.period track by $index">
+                                                    {{p}}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="text-center" ng-if="runtimeList1.length==0">
+                                        <span translate>message.noFrequencyFound</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

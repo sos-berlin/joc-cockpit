@@ -42,7 +42,7 @@
                         <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
                            <label class="col-sm-3 " translate>label.comment</label>
                            <div class=" col-sm-9">
-                                <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="logError = false"></textarea>
+                                <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="logError = false"></textarea>
                                <div class="help-block text-danger" ng-if="logError">
                                    <div translate>message.requiredError</div>
                                </div>
@@ -147,7 +147,7 @@
                         </div>
                     </div>
                     <div class="col-md-6" ng-if="substituteObj.showText">
-                        <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)" placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
+                        <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)" ng-attr-placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
 
