@@ -52,7 +52,7 @@
                             <div class=" col-sm-9">
                                 <textarea rows="3" class="form-control" maxlength="2000" name="comment"
                                           ng-model="comments.comment"
-                                          placeholder="{{'placeholder.enterComment' | translate}}"
+                                          ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
                                           ng-focus="logError = false"></textarea>
 
                                 <div class="help-block text-danger" ng-if="logError">
@@ -161,7 +161,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <textarea class="form-control" rows="15" ng-model="xml" ng-blur="textEditor(xml)" placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
+                        <textarea class="form-control" rows="15" ng-model="xml" ng-blur="textEditor(xml)" ng-attr-placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
             </div>

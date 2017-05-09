@@ -65,7 +65,7 @@
 
                 <div class=" col-sm-6">
                     <textarea rows="3" class="form-control" maxlength="2000" name="comment" ng-model="comments.comment"
-                              placeholder="{{'placeholder.enterComment' | translate}}"
+                              ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
                               ng-focus="error = false"></textarea>
 
                     <div class="help-block text-danger" ng-if="error">

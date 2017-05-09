@@ -7502,7 +7502,6 @@
 
         };
 
-
         vm.deleteRunTime = function (data) {
 
             var xml = x2js.xml_str2json(vm.xml);
@@ -8143,7 +8142,11 @@
     ResetRuntimeDialogCtrl.$inject = ["$scope", "$uibModalInstance","$window"];
     function ResetRuntimeDialogCtrl($scope,  $uibModalInstance,$window) {
         var vm = $scope;
+        var dom_parser = new DOMParser();
+        vm.resetXml = {};
 
+        var run_time = {};
+        var x2js = new X2JS();
         vm.logError = false;
         if (vm.userPreferences.auditLog) {
             vm.display = true;
@@ -8167,7 +8170,1669 @@
         vm.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+        function getWeekDays(day) {
+            if (!day) {
+                return;
+            }
+            var days = day;
+            if (!angular.isArray(day)) {
+                days = day.toString().split(' ');
+            }
+            if (days.length == 7) {
+                return 'Every day';
+            }
+            var str = '';
+            angular.forEach(days.sort(), function (value) {
+                if (value == 1) {
+                    str = str + 'Mon,';
+                } else if (value == 2) {
+                    str = str + 'Tue,';
+                }
+                else if (value == 3) {
+                    str = str + 'Wed,';
+                }
+                else if (value == 4) {
+                    str = str + 'Thu,';
+                } else if (value == 5) {
+                    str = str + 'Fri,';
+                } else if (value == 6) {
+                    str = str + 'Sat,';
+                }
+                else if (value == 7) {
+                    str = str + 'Sun';
+                }
+            });
 
+            if (str.length == 1) {
+                return '';
+            } else {
+                if (str.substring(str.length - 1) == ',')
+                    str = str.substring(0, str.length - 1);
+
+            }
+            return str;
+        }
+
+        function getMonths(month) {
+            var str = '';
+            if (!month)
+                return;
+
+            var months = month;
+            if (!angular.isArray(month)) {
+                months = month.toString().split(' ');
+            }
+            if (months.length == 12) {
+                return 'every month';
+            }
+
+            angular.forEach(months.sort(compareNumbers), function (value) {
+                if (value == 1) {
+                    str = str + 'Jan,';
+                } else if (value == 2) {
+                    str = str + 'Feb,';
+                } else if (value == 3) {
+                    str = str + 'Mar,';
+                } else if (value == 4) {
+                    str = str + 'Apr,';
+                } else if (value == 5) {
+                    str = str + 'May,';
+                }
+                else if (value == 6) {
+                    str = str + 'Jun,';
+                }
+                else if (value == 7) {
+                    str = str + 'Jul,';
+                }
+                else if (value == 8) {
+                    str = str + 'Aug,';
+                }
+                else if (value == 9) {
+                    str = str + 'Sep,';
+                }
+                else if (value == 10) {
+                    str = str + 'Oct,';
+                }
+                else if (value == 11) {
+                    str = str + 'Nov,';
+                }
+                else if (value == 12) {
+                    str = str + 'Dec';
+                }
+            });
+
+            if (str.length == 1) {
+                return '';
+            } else {
+                if (str.substring(str.length - 1) == ',') {
+                    str = str.substring(0, str.length - 1);
+                }
+            }
+            return str;
+        }
+
+
+        function getSpecificDay(day) {
+
+            if (!day) {
+                return;
+            }
+            if (day == 1) {
+                return '1st ';
+            } else if (day == 2) {
+                return '2nd ';
+            } else if (day == 3) {
+                return '3rd ';
+            } else if (day == 4) {
+                return '4th ';
+            } else if (day == -1) {
+                return 'last ';
+            } else if (day == -2) {
+                return '2nd last ';
+            } else if (day == -3) {
+                return '3rd last ';
+            } else if (day == -4) {
+                return '4th last ';
+            }
+        }
+
+        function getMonthDays(month) {
+            var str = '';
+            if (!month) {
+                return month;
+            }
+            var months = month;
+            if (!angular.isArray(month)) {
+                months = month.toString().split(' ');
+            }
+            angular.forEach(months.sort(compareNumbers), function (value) {
+
+                if (value == 1) {
+                    str = str + value + 'st,';
+                }
+                else if (value == 2) {
+                    str = str + value + 'nd,';
+                }
+                else if (value == 3) {
+                    str = str + value + 'rd,';
+                } else {
+                    str = str + value + 'th,';
+                }
+
+            });
+
+            if (str.length == 1) {
+                return '';
+            } else {
+                if (str.substring(str.length - 1) == ',') {
+                    str = str.substring(0, str.length - 1);
+                }
+            }
+            return str;
+        }
+
+        function isEmpty(obj) {
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key))
+                    return false;
+            }
+            return true;
+        }
+
+        function xml2Json(xml) {
+
+            var runtimeList = [];
+            if (!xml) {
+                return;
+            }
+
+            var _xml = {};
+            try {
+                var dom_document = dom_parser.parseFromString(xml, "text/xml");
+
+                if (dom_document.documentElement.nodeName == "parsererror") {
+                    throw new Error("Error at XML answer: " + dom_document.documentElement.firstChild.nodeValue);
+                } else {
+                    _xml = x2js.xml_str2json(xml);
+                }
+
+                var xmlAsString;
+                try {
+
+                    if (window.DOMParser) {
+                        xmlAsString = new XMLSerializer().serializeToString(dom_document);
+
+                    } else {
+                        xmlAsString = dom_document.documentElement.xml;
+                        xmlAsString = xmlAsString.replace(/\t/g, "  ");
+
+                    }
+                    if (y.length > 0)
+                        xmlAsString = xmlAsString.replace(/<\w+\/>/g, " ");
+
+                } catch (x) {
+                    throw new Error(x.message);
+                }
+
+            } catch (e) {
+                console.log(e)
+            }
+
+
+            if (isEmpty(_xml)) {
+                return;
+            }
+
+            run_time = _xml.run_time || {};
+
+            if (!run_time.month) {
+                run_time.month = [];
+            } else {
+                if (!angular.isArray(run_time.month)) {
+                    var temp = angular.copy(run_time.month);
+                    run_time.month = [];
+                    if (temp)
+                        run_time.month.push(temp)
+                }
+            }
+
+
+            if (!run_time.weekdays) {
+                run_time.weekdays = {};
+                run_time.weekdays.day = [];
+            } else {
+                if (!angular.isArray(run_time.weekdays.day)) {
+                    var temp = angular.copy(run_time.weekdays.day);
+                    run_time.weekdays.day = [];
+                    if (temp)
+                        run_time.weekdays.day.push(temp)
+                }
+            }
+
+            if (!run_time.monthdays) {
+                run_time.monthdays = {};
+                run_time.monthdays.day = [];
+                run_time.monthdays.weekday = [];
+            } else {
+                if (!angular.isArray(run_time.monthdays.day)) {
+                    var temp = angular.copy(run_time.monthdays);
+                    run_time.monthdays.day = [];
+                    if (temp.day)
+                        run_time.monthdays.day.push(temp.day);
+                    run_time.monthdays.weekday = [];
+                    if (temp.weekday) {
+                        if (angular.isArray(temp.weekday)) {
+                            run_time.monthdays.weekday = temp.weekday;
+                        } else {
+                            run_time.monthdays.weekday.push(temp.weekday);
+                        }
+                    }
+                }
+            }
+            if (!run_time.ultimos) {
+                run_time.ultimos = {};
+                run_time.ultimos.day = [];
+            } else {
+                if (!angular.isArray(run_time.ultimos.day)) {
+                    var temp = angular.copy(run_time.ultimos.day);
+                    run_time.ultimos.day = [];
+                    run_time.ultimos.day.push(temp)
+                }
+            }
+            if (run_time.month) {
+                if (angular.isArray(run_time.month)) {
+                    angular.forEach(run_time.month, function (res) {
+                        if (!isEmpty(res.weekdays)) {
+                            if (angular.isArray(res.weekdays)) {
+                                angular.forEach(res.weekdays, function (value1) {
+                                    if (angular.isArray(value1)) {
+                                        angular.forEach(value1, function (val) {
+                                            var str, str1;
+                                            if (res._month) {
+                                                str1 = getMonths(res._month);
+                                            }
+                                            var periodStrArr = [], objArr = [];
+                                            if (val._day) {
+                                                str = getWeekDays(val._day) + ' on ' + str1;
+                                                if (angular.isArray(val.period)) {
+                                                    angular.forEach(val.period, function (res1) {
+                                                        var periodStr = null;
+                                                        if (res1._begin) {
+                                                            periodStr = res1._begin;
+                                                        }
+                                                        if (res1._end) {
+                                                            periodStr = periodStr + '-' + res1._end;
+                                                        }
+                                                        if (res1._single_start) {
+                                                            periodStr = 'Single start: ' + res1._single_start;
+                                                        }
+                                                        else if (res1._absolute_repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                        }
+                                                        else if (res1._repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                        }
+                                                        if (periodStr)
+                                                            periodStrArr.push(periodStr);
+                                                        objArr.push({
+                                                            _day: val._day,
+                                                            _month: res._month,
+                                                            _period: res1
+                                                        });
+                                                    });
+                                                } else {
+                                                    var periodStr = null;
+                                                    if (val.period) {
+                                                        if (val.period._begin) {
+                                                            periodStr = val.period._begin;
+                                                        }
+                                                        if (val.period._end) {
+                                                            periodStr = periodStr + '-' + val.period._end;
+                                                        }
+                                                        if (val.period._single_start) {
+                                                            periodStr = 'Single start: ' + val.period._single_start;
+                                                        }
+                                                        else if (val.period._absolute_repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(val.period._absolute_repeat);
+                                                        }
+                                                        else if (val.period._repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(val.period._repeat);
+                                                        }
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: val._day,
+                                                        _month: res._month,
+                                                        _period: val.period
+                                                    });
+
+                                                }
+
+                                                runtimeList.push(
+                                                    {
+                                                        frequency: str,
+                                                        period: periodStrArr,
+                                                        obj: objArr,
+                                                        type: 'month',
+                                                        type2: 'weekdays'
+                                                    });
+
+                                            }
+
+                                        });
+                                    } else {
+                                        var periodStrArr = [], objArr = [];
+                                        if (value1._day) {
+                                            var str, str1;
+                                            if (res._month) {
+                                                str1 = getMonths(res._month);
+                                            }
+                                            str = getWeekDays(value1._day) + ' on ' + str1;
+                                            if (angular.isArray(value1.period)) {
+                                                angular.forEach(value1.period, function (res1) {
+                                                    var periodStr = null;
+                                                    if (res1._begin) {
+                                                        periodStr = res1._begin;
+                                                    }
+                                                    if (res1._end) {
+                                                        periodStr = periodStr + '-' + res1._end;
+                                                    }
+                                                    if (res1._single_start) {
+                                                        periodStr = 'Single start: ' + res1._single_start;
+                                                    }
+                                                    else if (res1._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                    }
+                                                    else if (res1._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: value1._day,
+                                                        _month: res._month,
+                                                        _period: res1
+                                                    });
+
+                                                });
+                                            } else {
+                                                var periodStr = null;
+                                                if (value1.period) {
+                                                    if (value1.period._begin) {
+                                                        periodStr = value1.period._begin;
+                                                    }
+                                                    if (value1.period._end) {
+                                                        periodStr = periodStr + '-' + value1.period._end;
+                                                    }
+                                                    if (value1.period._single_start) {
+                                                        periodStr = 'Single start: ' + value1.period._single_start;
+                                                    }
+                                                    else if (value1.period._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(value1.period._absolute_repeat);
+                                                    }
+                                                    else if (value1.period._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(value1.period._repeat);
+                                                    }
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: value1._day,
+                                                    _month: res._month,
+                                                    _period: value1.period
+                                                });
+
+                                            }
+
+                                            runtimeList.push(
+                                                {
+                                                    frequency: str,
+                                                    period: periodStrArr,
+                                                    obj: objArr,
+                                                    type: 'month',
+                                                    type2: 'weekdays'
+                                                });
+                                        }
+                                    }
+
+                                });
+                            } else {
+
+                                if (angular.isArray(res.weekdays.day)) {
+                                    angular.forEach(res.weekdays.day, function (val) {
+                                        var str, str1;
+                                        if (res._month)
+                                            str1 = getMonths(res._month);
+                                        if (val._day) {
+                                            str = getWeekDays(val._day) + ' on ' + str1;
+                                            var periodStrArr = [], objArr = [];
+                                            if (angular.isArray(val.period)) {
+                                                angular.forEach(val.period, function (res1) {
+                                                    var periodStr = null;
+                                                    if (res1._begin) {
+                                                        periodStr = res1._begin;
+                                                    }
+                                                    if (res1._end) {
+                                                        periodStr = periodStr + '-' + res1._end;
+                                                    }
+                                                    if (res1._single_start) {
+                                                        periodStr = 'Single start: ' + res1._single_start;
+                                                    }
+                                                    else if (res1._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                    }
+                                                    else if (res1._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: val._day,
+                                                        _month: res._month,
+                                                        _period: res1
+                                                    });
+
+                                                });
+                                            } else {
+                                                var periodStr = null;
+                                                if (val.period) {
+
+                                                    if (val.period._begin) {
+                                                        periodStr = val.period._begin;
+                                                    }
+                                                    if (val.period._end) {
+                                                        periodStr = periodStr + '-' + val.period._end;
+                                                    }
+                                                    if (val.period._single_start) {
+                                                        periodStr = 'Single start: ' + val.period._single_start;
+                                                    }
+                                                    else if (val.period._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(val.period._absolute_repeat);
+                                                    }
+                                                    else if (val.period._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(val.period._repeat);
+                                                    }
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: val._day,
+                                                    _month: res._month,
+                                                    _period: val.period
+                                                });
+
+                                            }
+
+                                            runtimeList.push({
+                                                frequency: str,
+                                                period: periodStrArr,
+                                                obj: objArr,
+                                                type: 'month', type2: 'weekdays'
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    var str, str1;
+
+                                    if (res._month)
+                                        str1 = getMonths(res._month);
+
+                                    if (res.weekdays.day._day) {
+
+                                        str = getWeekDays(res.weekdays.day._day) + ' on ' + str1;
+                                        var periodStrArr = [], objArr = [];
+
+                                        if (angular.isArray(res.weekdays.day.period)) {
+                                            angular.forEach(res.weekdays.day.period, function (res1) {
+                                                var periodStr = null;
+                                                if (res1._begin) {
+                                                    periodStr = res1._begin;
+                                                }
+                                                if (res1._end) {
+                                                    periodStr = periodStr + '-' + res1._end;
+                                                }
+                                                if (res1._single_start) {
+                                                    periodStr = 'Single start: ' + res1._single_start;
+                                                }
+                                                else if (res1._absolute_repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                }
+                                                else if (res1._repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: res.weekdays.day._day,
+                                                    _month: res._month,
+                                                    _period: res1
+                                                });
+                                            });
+                                        } else {
+                                            var periodStr = null;
+                                            if (res.weekdays.day.period) {
+                                                if (res.weekdays.day.period._begin) {
+                                                    periodStr = res.weekdays.day.period._begin;
+                                                }
+                                                if (res.weekdays.day.period._end) {
+                                                    periodStr = periodStr + '-' + res.weekdays.day.period._end;
+                                                }
+                                                if (res.weekdays.day.period._single_start) {
+                                                    periodStr = 'Single start: ' + res.weekdays.day.period._single_start;
+                                                }
+                                                else if (res.weekdays.day.period._absolute_repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res.weekdays.day.period._absolute_repeat);
+                                                }
+                                                else if (res.weekdays.day.period._repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res.weekdays.day.period._repeat);
+                                                }
+                                            }
+                                            if (periodStr)
+                                                periodStrArr.push(periodStr);
+                                            objArr.push({
+                                                _day: res.weekdays.day._day,
+                                                _month: res._month,
+                                                _period: res.weekdays.day.period
+                                            });
+
+                                        }
+
+                                        runtimeList.push({
+                                            frequency: str,
+                                            period: periodStrArr,
+                                            obj: objArr,
+                                            type: 'month',
+                                            type2: 'weekdays'
+                                        });
+
+                                    }
+                                }
+                            }
+                        }
+                        if (!isEmpty(res.ultimos)) {
+
+                            if (angular.isArray(res.ultimos)) {
+                                angular.forEach(res.ultimos, function (value1) {
+                                    if (angular.isArray(value1)) {
+                                        angular.forEach(value1, function (val) {
+                                            var str, str1;
+                                            if (res._month) {
+                                                str1 = getMonths(res._month);
+                                            }
+                                            if (val._day) {
+                                                str = 'Ultimos: ' + getMonthDays(val._day) + ' of ' + str1;
+                                                var periodStrArr = [], objArr = [];
+                                                if (angular.isArray(val.period)) {
+                                                    angular.forEach(val.period, function (res1) {
+                                                        var periodStr = null;
+                                                        if (res1._begin) {
+                                                            periodStr = res1._begin;
+                                                        }
+                                                        if (res1._end) {
+                                                            periodStr = periodStr + '-' + res1._end;
+                                                        }
+                                                        if (res1._single_start) {
+                                                            periodStr = 'Single start: ' + res1._single_start;
+                                                        }
+                                                        else if (res1._absolute_repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                        }
+                                                        else if (res1._repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                        }
+                                                        if (periodStr)
+                                                            periodStrArr.push(periodStr);
+                                                        objArr.push({
+                                                            _day: val._day,
+                                                            _month: res._month,
+                                                            _period: res1
+                                                        });
+
+                                                    });
+                                                } else {
+                                                    var periodStr = null;
+                                                    if (val.period) {
+                                                        if (val.period._begin) {
+                                                            periodStr = val.period._begin;
+                                                        }
+                                                        if (val.period._end) {
+                                                            periodStr = periodStr + '-' + val.period._end;
+                                                        }
+                                                        if (val.period._single_start) {
+                                                            periodStr = 'Single start: ' + val.period._single_start;
+                                                        }
+                                                        else if (val.period._absolute_repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(val.period._absolute_repeat);
+                                                        }
+                                                        else if (val.period._repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(val.period._repeat);
+                                                        }
+                                                    }
+
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: val._day,
+                                                        _month: res._month,
+                                                        _period: val.period
+                                                    });
+
+                                                }
+
+                                                runtimeList.push(
+                                                    {
+                                                        frequency: str,
+                                                        period: periodStrArr,
+                                                        obj: objArr,
+                                                        type: 'month',
+                                                        type2: 'ultimos'
+                                                    });
+                                            }
+
+                                        });
+                                    } else {
+
+                                        if (value1._day) {
+                                            var str, str1;
+                                            if (res._month) {
+                                                str1 = getMonths(res._month);
+                                            }
+                                            str = 'Ultimos: ' + getMonthDays(value1._day) + ' of ' + str1;
+                                            var periodStrArr = [], objArr = [];
+                                            if (angular.isArray(value1.period)) {
+                                                angular.forEach(value1.period, function (res1) {
+                                                    var periodStr = null;
+                                                    if (res1._begin) {
+                                                        periodStr = res1._begin;
+                                                    }
+                                                    if (res1._end) {
+                                                        periodStr = periodStr + '-' + res1._end;
+                                                    }
+                                                    if (res1._single_start) {
+                                                        periodStr = 'Single start: ' + res1._single_start;
+                                                    }
+                                                    else if (res1._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                    }
+                                                    else if (res1._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: value1._day,
+                                                        _month: res._month,
+                                                        _period: res1
+                                                    });
+
+                                                });
+                                            } else {
+                                                var periodStr = null;
+                                                if (value1.period) {
+                                                    if (value1.period._begin) {
+                                                        periodStr = value1.period._begin;
+                                                    }
+                                                    if (value1.period._end) {
+                                                        periodStr = periodStr + '-' + value1.period._end;
+                                                    }
+                                                    if (value1.period._single_start) {
+                                                        periodStr = 'Single start: ' + value1.period._single_start;
+                                                    }
+                                                    else if (value1.period._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(value1.period._absolute_repeat);
+                                                    }
+                                                    else if (value1.period._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(value1.period._repeat);
+                                                    }
+                                                }
+
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: value1._day,
+                                                    _month: res._month,
+                                                    _period: value1.period
+                                                });
+                                            }
+
+                                            runtimeList.push({
+                                                frequency: str,
+                                                period: periodStrArr,
+                                                obj: objArr,
+                                                type: 'month', type2: 'ultimos'
+                                            });
+                                        }
+                                    }
+
+                                });
+                            } else {
+
+                                if (angular.isArray(res.ultimos.day)) {
+                                    angular.forEach(res.ultimos.day, function (val) {
+                                        var str, str1;
+                                        if (res._month)
+                                            str1 = getMonths(res._month);
+                                        if (val._day) {
+                                            str = 'Ultimos: ' + getMonthDays(val._day) + ' of ' + str1;
+                                            var periodStrArr = [], objArr = [];
+                                            if (angular.isArray(val.period)) {
+                                                angular.forEach(val.period, function (res1) {
+                                                    var periodStr = null;
+                                                    if (res1._begin) {
+                                                        periodStr = res1._begin;
+                                                    }
+                                                    if (res1._end) {
+                                                        periodStr = periodStr + '-' + res1._end;
+                                                    }
+                                                    if (res1._single_start) {
+                                                        periodStr = 'Single start: ' + res1._single_start;
+                                                    }
+                                                    else if (res1._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                    }
+                                                    else if (res1._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: val._day,
+                                                        _month: res._month,
+                                                        _period: res1
+                                                    });
+
+                                                });
+                                            } else {
+                                                var periodStr = null;
+                                                if (val.period) {
+                                                    if (val.period._begin) {
+                                                        periodStr = val.period._begin;
+                                                    }
+                                                    if (val.period._end) {
+                                                        periodStr = periodStr + '-' + val.period._end;
+                                                    }
+                                                    if (val.period._single_start) {
+                                                        periodStr = 'Single start: ' + val.period._single_start;
+                                                    }
+                                                    else if (val.period._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(val.period._absolute_repeat);
+                                                    }
+                                                    else if (val.period._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(val.period._repeat);
+                                                    }
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: val._day,
+                                                    _month: res._month,
+                                                    _period: val.period
+                                                });
+
+                                            }
+
+                                            runtimeList.push({
+                                                frequency: str,
+                                                period: periodStrArr, obj: objArr,
+                                                type: 'month', type2: 'ultimos'
+                                            });
+                                        }
+                                    });
+                                } else {
+
+                                    var str, str1;
+                                    if (res._month)
+                                        str1 = getMonths(res._month);
+
+                                    if (res.ultimos.day._day) {
+
+                                        str = 'Ultimos: ' + getMonthDays(res.ultimos.day._day) + ' of ' + str1;
+                                        var periodStrArr = [], objArr = [];
+                                        if (angular.isArray(res.ultimos.day.period)) {
+                                            angular.forEach(res.ultimos.day.period, function (res1) {
+                                                var periodStr = null;
+                                                if (res1._begin) {
+                                                    periodStr = res1._begin;
+                                                }
+                                                if (res1._end) {
+                                                    periodStr = periodStr + '-' + res1._end;
+                                                }
+                                                if (res1._single_start) {
+                                                    periodStr = 'Single start: ' + res1._single_start;
+                                                }
+                                                else if (res1._absolute_repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                }
+                                                else if (res1._repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: res.ultimos.day._day,
+                                                    _month: res._month,
+                                                    _period: res1
+                                                });
+
+                                            });
+                                        } else {
+                                            var periodStr = null;
+                                            if (res.ultimos.day.period) {
+                                                if (res.ultimos.day.period._begin) {
+                                                    periodStr = res.ultimos.day.period._begin;
+                                                }
+                                                if (res.ultimos.day.period._end) {
+                                                    periodStr = periodStr + '-' + res.ultimos.day.period._end;
+                                                }
+                                                if (res.ultimos.day.period._single_start) {
+                                                    periodStr = 'Single start: ' + res.ultimos.day.period._single_start;
+                                                }
+                                                else if (res.ultimos.day.period._absolute_repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res.ultimos.day.period._absolute_repeat);
+                                                }
+                                                else if (res.ultimos.day.period._repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res.ultimos.day.period._repeat);
+                                                }
+                                            }
+
+                                            if (periodStr)
+                                                periodStrArr.push(periodStr);
+                                            objArr.push({
+                                                _day: res.ultimos.day._day,
+                                                _month: res._month,
+                                                _period: res.ultimos.day.period
+                                            });
+
+                                        }
+
+                                        runtimeList.push(
+                                            {
+                                                frequency: str,
+                                                period: periodStrArr,
+                                                obj: objArr,
+                                                type: 'month',
+                                                type2: 'ultimos'
+                                            });
+                                    }
+                                }
+                            }
+                        }
+                        if (!isEmpty(res.monthdays)) {
+
+                            if (res.monthdays.weekday) {
+
+                                if (angular.isArray(res.monthdays.weekday)) {
+
+                                    angular.forEach(res.monthdays.weekday, function (value) {
+                                        if (!angular.isArray(value)) {
+
+                                            var str, str1;
+                                            if (res._month)
+                                                str1 = getMonths(res._month);
+                                            if (value._day) {
+
+                                                str = getSpecificDay(value._which) + value._day + ' of ' + str1;
+                                                var periodStrArr = [], objArr = [];
+
+                                                if (angular.isArray(value.period)) {
+                                                    angular.forEach(value.period, function (value1) {
+                                                        var periodStr = null;
+                                                        if (value1._begin) {
+                                                            periodStr = value1._begin;
+                                                        }
+                                                        if (value1._end) {
+                                                            periodStr = periodStr + '-' + value1._end;
+                                                        }
+                                                        if (value1._single_start) {
+                                                            periodStr = 'Single start : ' + value1._single_start;
+                                                        }
+                                                        else if (value1._absolute_repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(value1._absolute_repeat);
+                                                        }
+                                                        else if (value1._repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(value1._repeat);
+                                                        }
+                                                        if (periodStr)
+                                                            periodStrArr.push(periodStr);
+                                                        objArr.push({
+                                                            _day: value._day,
+                                                            _month: res._month,
+                                                            _period: value1,
+                                                            _which: value._which
+                                                        });
+
+                                                    });
+                                                } else {
+                                                    var periodStr = null;
+                                                    if (value.period) {
+                                                        if (value.period._begin) {
+                                                            periodStr = value.period._begin;
+                                                        }
+                                                        if (value.period._end) {
+                                                            periodStr = periodStr + '-' + value.period._end;
+                                                        }
+                                                        if (value.period._single_start) {
+                                                            periodStr = 'Single start : ' + value.period._single_start;
+                                                        }
+                                                        else if (value.period._absolute_repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(value.period._absolute_repeat);
+                                                        }
+                                                        else if (value.period._repeat) {
+                                                            periodStr = periodStr + ' every ' + getTimeInString(value.period._repeat);
+                                                        }
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: value._day,
+                                                        _month: res._month,
+                                                        _period: value.period,
+                                                        _which: value._which
+                                                    });
+                                                }
+
+                                                runtimeList.push({
+                                                    frequency: str,
+                                                    period: periodStrArr,
+                                                    obj: objArr,
+                                                    type: 'month',
+                                                    type2: 'weekday'
+                                                });
+
+                                            }
+                                        }
+                                    });
+                                }
+                                else {
+                                    if (res.monthdays.weekday) {
+
+                                        var str, str1;
+                                        if (res._month)
+                                            str1 = getMonths(res._month);
+                                        if (res.monthdays.weekday._day) {
+
+                                            str = getSpecificDay(res.monthdays.weekday._which) + res.monthdays.weekday._day + ' of ' + str1;
+                                            var periodStrArr = [], objArr = [];
+                                            if (angular.isArray(res.monthdays.weekday.period)) {
+                                                angular.forEach(res.monthdays.weekday.period, function (value1) {
+                                                    var periodStr = null;
+                                                    if (value1._begin) {
+                                                        periodStr = value1._begin;
+                                                    }
+                                                    if (value1._end) {
+                                                        periodStr = periodStr + '-' + value1._end;
+                                                    }
+                                                    if (value1._single_start) {
+                                                        periodStr = 'Single start : ' + value1._single_start;
+                                                    }
+                                                    else if (value1._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(value1._absolute_repeat);
+                                                    }
+                                                    else if (value1._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(value1._repeat);
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: res.monthdays.weekday._day,
+                                                        _month: res._month,
+                                                        _period: value1,
+                                                        _which: res.monthdays.weekday._which
+                                                    });
+
+                                                });
+                                            } else {
+                                                var periodStr = null;
+                                                if (res.monthdays.weekday.period) {
+                                                    if (res.monthdays.weekday.period._begin) {
+                                                        periodStr = res.monthdays.weekday.period._begin;
+                                                    }
+                                                    if (res.monthdays.weekday.period._end) {
+                                                        periodStr = periodStr + '-' + res.monthdays.weekday.period._end;
+                                                    }
+                                                    if (res.monthdays.weekday.period._single_start) {
+                                                        periodStr = 'Single start : ' + res.monthdays.weekday.period._single_start;
+                                                    }
+                                                    else if (res.monthdays.weekday.period._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res.monthdays.weekday.period._absolute_repeat);
+                                                    }
+                                                    else if (res.monthdays.weekday.period._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res.monthdays.weekday.period._repeat);
+                                                    }
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: res.monthdays.weekday._day,
+                                                    _month: res._month,
+                                                    _period: res.monthdays.weekday.period,
+                                                    _which: res.monthdays.weekday._which
+                                                });
+                                            }
+                                            runtimeList.push({
+                                                frequency: str,
+                                                period: periodStrArr,
+                                                obj: objArr,
+                                                type: 'month',
+                                                type2: 'weekday'
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                            if (res.monthdays.day) {
+
+                                if (angular.isArray(res.monthdays.day)) {
+                                    angular.forEach(res.monthdays.day, function (val) {
+                                        var str, str1;
+                                        if (res._month)
+                                            str1 = getMonths(res._month);
+                                        if (val._day) {
+                                            str = getMonthDays(val._day) + ' of ' + str1;
+                                            var periodStrArr = [], objArr = [];
+                                            if (angular.isArray(val.period)) {
+                                                angular.forEach(val.period, function (res1) {
+                                                    var periodStr = null;
+                                                    if (res1._begin) {
+                                                        periodStr = res1._begin;
+                                                    }
+                                                    if (res1._end) {
+                                                        periodStr = periodStr + '-' + res1._end;
+                                                    }
+                                                    if (res1._single_start) {
+                                                        periodStr = 'Single start: ' + res1._single_start;
+                                                    }
+                                                    else if (res1._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                    }
+                                                    else if (res1._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                    }
+                                                    if (periodStr)
+                                                        periodStrArr.push(periodStr);
+                                                    objArr.push({
+                                                        _day: val._day,
+                                                        _month: res._month,
+                                                        _period: res1
+                                                    });
+
+                                                });
+                                            } else {
+                                                var periodStr = null;
+                                                if (val.period) {
+                                                    if (val.period._begin) {
+                                                        periodStr = val.period._begin;
+                                                    }
+                                                    if (val.period._end) {
+                                                        periodStr = periodStr + '-' + val.period._end;
+                                                    }
+                                                    if (val.period._single_start) {
+                                                        periodStr = 'Single start: ' + val.period._single_start;
+                                                    }
+                                                    else if (val.period._absolute_repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(val.period._absolute_repeat);
+                                                    }
+                                                    else if (val.period._repeat) {
+                                                        periodStr = periodStr + ' every ' + getTimeInString(val.period._repeat);
+                                                    }
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: val._day,
+                                                    _month: res._month,
+                                                    _period: val.period
+                                                });
+                                            }
+
+                                            runtimeList.push({
+                                                frequency: str,
+                                                period: periodStrArr,
+                                                obj: objArr, type: 'month', type2: 'monthdays'
+                                            });
+
+                                        }
+                                    });
+                                } else {
+
+                                    var str, str1;
+                                    if (res._month)
+                                        str1 = getMonths(res._month);
+
+                                    if (res.monthdays.day._day) {
+
+                                        str = getMonthDays(res.monthdays.day._day) + ' of ' + str1;
+                                        var periodStrArr = [], objArr = [];
+                                        if (angular.isArray(res.monthdays.day.period)) {
+                                            angular.forEach(res.monthdays.day.period, function (res1) {
+                                                var periodStr = null;
+                                                if (res1._begin) {
+                                                    periodStr = res1._begin;
+                                                }
+                                                if (res1._end) {
+                                                    periodStr = periodStr + '-' + res1._end;
+                                                }
+                                                if (res1._single_start) {
+                                                    periodStr = 'Single start: ' + res1._single_start;
+                                                }
+                                                else if (res1._absolute_repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                                }
+                                                else if (res1._repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                                }
+                                                if (periodStr)
+                                                    periodStrArr.push(periodStr);
+                                                objArr.push({
+                                                    _day: res.monthdays.day._day,
+                                                    _month: res._month,
+                                                    _period: res1
+                                                });
+
+                                            });
+                                        } else {
+
+                                            var periodStr = null;
+                                            if (res.monthdays.day.period) {
+                                                if (res.monthdays.day.period._begin) {
+                                                    periodStr = res.monthdays.day.period._begin;
+                                                }
+                                                if (res.monthdays.day.period._end) {
+                                                    periodStr = periodStr + '-' + res.monthdays.day.period._end;
+                                                }
+                                                if (res.monthdays.day.period._single_start) {
+                                                    periodStr = 'Single start: ' + res.monthdays.day.period._single_start;
+                                                }
+                                                else if (res.monthdays.day.period._absolute_repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res.monthdays.day.period._absolute_repeat);
+                                                }
+                                                else if (res.monthdays.day.period._repeat) {
+                                                    periodStr = periodStr + ' every ' + getTimeInString(res.monthdays.day.period._repeat);
+                                                }
+                                            }
+
+                                            if (periodStr)
+                                                periodStrArr.push(periodStr);
+                                            objArr.push({
+                                                _day: res.monthdays.day._day,
+                                                _month: res._month,
+                                                _period: res.monthdays.day.period
+                                            });
+                                        }
+
+                                        runtimeList.push({
+                                            frequency: str,
+                                            period: periodStrArr,
+                                            obj: objArr, type: 'month', type2: 'monthdays'
+                                        });
+
+                                    }
+                                }
+
+                            }
+                        }
+                    });
+                }
+            }
+
+            if (run_time.weekdays && run_time.weekdays.day) {
+
+                angular.forEach(run_time.weekdays.day, function (res) {
+                    var str = '';
+                    if (res._day) {
+                        str = getWeekDays(res._day);
+                        var periodStrArr = [], objArr = [];
+                        if (angular.isArray(res.period)) {
+                            angular.forEach(res.period, function (value1) {
+                                var periodStr = null;
+                                if (value1._begin) {
+                                    periodStr = value1._begin;
+                                }
+                                if (value1._end) {
+                                    periodStr = periodStr + '-' + value1._end;
+                                }
+                                if (value1._single_start) {
+                                    periodStr = 'Single start : ' + value1._single_start;
+                                }
+                                else if (value1._absolute_repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(value1._absolute_repeat);
+                                }
+                                else if (value1._repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(value1._repeat);
+                                }
+                                if (periodStr)
+                                    periodStrArr.push(periodStr);
+                                objArr.push({
+                                    _day: res._day,
+                                    _period: value1
+                                });
+
+                            });
+                        } else {
+                            var periodStr = null;
+                            if (res.period) {
+                                if (res.period._begin) {
+                                    periodStr = res.period._begin;
+                                }
+                                if (res.period._end) {
+                                    periodStr = periodStr + '-' + res.period._end;
+                                }
+                                if (res.period._single_start) {
+                                    periodStr = 'Single start : ' + res.period._single_start;
+                                }
+                                else if (res.period._absolute_repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res.period._absolute_repeat);
+                                }
+                                else if (res.period._repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res.period._repeat);
+                                }
+                            }
+                            if (periodStr)
+                                periodStrArr.push(periodStr);
+                            objArr.push({
+                                _day: res._day,
+                                _period: res.period
+                            });
+                        }
+
+                        runtimeList.push({
+                            frequency: str,
+                            period: periodStrArr,
+                            obj: objArr, type: 'weekdays'
+                        });
+
+
+                    }
+                });
+            }
+
+            if (run_time.monthdays && run_time.monthdays.day && run_time.monthdays.day.length > 0) {
+
+                angular.forEach(run_time.monthdays.day, function (res) {
+
+                    var str = '';
+                    if (res && res._day) {
+                        str = getMonthDays(res._day) + ' of month';
+                        var periodStrArr = [], objArr = [];
+
+                        if (angular.isArray(res.period)) {
+                            angular.forEach(res.period, function (res1) {
+                                var periodStr = null;
+                                if (res1._begin) {
+                                    periodStr = res1._begin;
+                                }
+                                if (res1._end) {
+                                    periodStr = periodStr + '-' + res1._end;
+                                }
+                                if (res1._single_start) {
+                                    periodStr = 'Single start: ' + res1._single_start;
+                                }
+                                else if (res1._absolute_repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                }
+                                else if (res1._repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                }
+                                if (periodStr)
+                                    periodStrArr.push(periodStr);
+                                objArr.push({
+                                    _day: res._day,
+                                    _period: res1
+                                });
+
+                            });
+                        } else {
+                            var periodStr = null;
+                            if (res.period) {
+                                if (res.period._begin) {
+                                    periodStr = res.period._begin;
+                                }
+                                if (res.period._end) {
+                                    periodStr = periodStr + '-' + res.period._end;
+                                }
+                                if (res.period._single_start) {
+                                    periodStr = 'Single start : ' + res.period._single_start;
+                                }
+                                else if (res.period._absolute_repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res.period._absolute_repeat);
+                                }
+                                else if (res.period._repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res.period._repeat);
+                                }
+                            }
+                            if (periodStr)
+                                periodStrArr.push(periodStr);
+                            objArr.push({
+                                _day: res._day,
+                                _period: res.period
+                            });
+                        }
+
+                        runtimeList.push({
+                            frequency: str,
+                            period: periodStrArr, obj: objArr, type: 'monthdays'
+                        });
+                    }
+
+                });
+            }
+
+            if (run_time.monthdays && run_time.monthdays.weekday && run_time.monthdays.weekday.length > 0) {
+
+                angular.forEach(run_time.monthdays.weekday, function (value) {
+                    if (!angular.isArray(value)) {
+
+                        var str = '';
+                        if (value._day) {
+
+                            str = getSpecificDay(value._which) + value._day + ' of month';
+                            var periodStrArr = [], objArr = [];
+
+                            if (angular.isArray(value.period)) {
+                                angular.forEach(value.period, function (value1) {
+                                    var periodStr = null;
+                                    if (value1._begin) {
+                                        periodStr = value1._begin;
+                                    }
+                                    if (value1._end) {
+                                        periodStr = periodStr + '-' + value1._end;
+                                    }
+                                    if (value1._single_start) {
+                                        periodStr = 'Single start : ' + value1._single_start;
+                                    }
+                                    else if (value1._absolute_repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(value1._absolute_repeat);
+                                    }
+                                    else if (value1._repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(value1._repeat);
+                                    }
+                                    if (periodStr)
+                                        periodStrArr.push(periodStr);
+                                    objArr.push({
+                                        _day: value._day,
+                                        _period: value1,
+                                        _which: value._which
+                                    });
+
+                                });
+                            } else {
+                                var periodStr = null;
+                                if (value.period) {
+                                    if (value.period._begin) {
+                                        periodStr = value.period._begin;
+                                    }
+                                    if (value.period._end) {
+                                        periodStr = periodStr + '-' + value.period._end;
+                                    }
+                                    if (value.period._single_start) {
+                                        periodStr = 'Single start : ' + value.period._single_start;
+                                    }
+                                    else if (value.period._absolute_repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(value.period._absolute_repeat);
+                                    }
+                                    else if (value.period._repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(value.period._repeat);
+                                    }
+                                }
+                                if (periodStr)
+                                    periodStrArr.push(periodStr);
+                                objArr.push({
+                                    _day: value._day,
+                                    _period: value.period,
+                                    _which: value._which
+                                });
+                            }
+
+                            runtimeList.push({
+                                frequency: str,
+                                period: periodStrArr,
+                                obj: objArr, type: 'weekday'
+                            });
+
+                        }
+                    }
+                });
+            }
+            else {
+
+                if (run_time.monthdays && run_time.monthdays.weekday) {
+
+                    if (!angular.isArray(run_time.monthdays.weekday)) {
+
+                        var str = '';
+                        if (run_time.monthdays.weekday._day) {
+
+                            str = getSpecificDay(run_time.monthdays.weekday._which) + run_time.monthdays.weekday._day + ' of month';
+                            var periodStrArr = [], objArr = [];
+                            if (run_time.monthdays.weekday.period) {
+                                if (angular.isArray(run_time.monthdays.weekday.period)) {
+                                    angular.forEach(run_time.monthdays.weekday.period, function (value1) {
+                                        var periodStr = null;
+                                        if (value1._begin) {
+                                            periodStr = value1._begin;
+                                        }
+                                        if (value1._end) {
+                                            periodStr = periodStr + '-' + value1._end;
+                                        }
+                                        if (value1._single_start) {
+                                            periodStr = 'Single start : ' + value1._single_start;
+                                        }
+                                        else if (value1._absolute_repeat) {
+                                            periodStr = periodStr + ' every ' + getTimeInString(value1._absolute_repeat);
+                                        }
+                                        else if (value1._repeat) {
+                                            periodStr = periodStr + ' every ' + getTimeInString(value1._repeat);
+                                        }
+                                        if (periodStr)
+                                            periodStrArr.push(periodStr);
+                                        objArr.push({
+                                            _day: run_time.monthdays.weekday._day,
+                                            _period: value1,
+                                            _which: run_time.monthdays.weekday._which
+                                        });
+
+                                    });
+                                } else {
+                                    var periodStr = null;
+                                    if (run_time.monthdays.weekday.period) {
+                                        if (run_time.monthdays.weekday.period._begin) {
+                                            periodStr = run_time.monthdays.weekday.period._begin;
+                                        }
+                                        if (run_time.monthdays.weekday.period._end) {
+                                            periodStr = periodStr + '-' + run_time.monthdays.weekday.period._end;
+                                        }
+                                        if (run_time.monthdays.weekday.period._single_start) {
+                                            periodStr = 'Single start : ' + run_time.monthdays.weekday.period._single_start;
+                                        }
+                                        else if (run_time.monthdays.weekday.period._absolute_repeat) {
+                                            periodStr = periodStr + ' every ' + getTimeInString(run_time.monthdays.weekday.period._absolute_repeat);
+                                        }
+                                        else if (run_time.monthdays.weekday.period._repeat) {
+                                            periodStr = periodStr + ' every ' + getTimeInString(run_time.monthdays.weekday.period._repeat);
+                                        }
+                                    }
+                                    if (periodStr)
+                                        periodStrArr.push(periodStr);
+                                    objArr.push({
+                                        _day: run_time.monthdays.weekday._day,
+                                        _period: run_time.monthdays.weekday.period,
+                                        _which: run_time.monthdays.weekday._which
+                                    });
+                                }
+                            }
+                            runtimeList.push({
+                                frequency: str,
+                                period: periodStrArr,
+                                obj: objArr, type: 'weekday'
+                            });
+                        }
+                    }
+
+                }
+            }
+
+            if (run_time.ultimos) {
+
+                angular.forEach(run_time.ultimos, function (value) {
+                    angular.forEach(value, function (res) {
+                        var str = '';
+
+                        if (res._day) {
+                            str = getMonthDays(res._day) + ' of ultimos';
+                            var periodStrArr = [], objArr = [];
+                            if (angular.isArray(res.period)) {
+                                angular.forEach(res.period, function (res1) {
+                                    var periodStr = null;
+                                    if (res1._begin) {
+                                        periodStr = res1._begin;
+                                    }
+                                    if (res1._end) {
+                                        periodStr = periodStr + '-' + res1._end;
+                                    }
+                                    if (res1._single_start) {
+                                        periodStr = 'Single start : ' + res1._single_start;
+                                    }
+                                    else if (res1._absolute_repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                    }
+                                    else if (res1._repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                    }
+                                    if (periodStr)
+                                        periodStrArr.push(periodStr);
+                                    objArr.push({
+                                        _day: res._day,
+                                        _period: res1
+                                    });
+
+                                });
+                            } else {
+                                var periodStr = null;
+                                if (res.period) {
+                                    if (res.period._begin) {
+                                        periodStr = res.period._begin;
+                                    }
+                                    if (res.period._end) {
+                                        periodStr = periodStr + '-' + res.period._end;
+                                    }
+                                    if (res.period._single_start) {
+                                        periodStr = 'Single start : ' + res.period._single_start;
+                                    }
+                                    else if (res.period._absolute_repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(res.period._absolute_repeat);
+                                    }
+                                    else if (res.period._repeat) {
+                                        periodStr = periodStr + ' every ' + getTimeInString(res.period._repeat);
+                                    }
+                                }
+                                if (periodStr)
+                                    periodStrArr.push(periodStr);
+                                objArr.push({
+                                    _day: res._day,
+                                    _period: res.period
+                                });
+                            }
+
+                            runtimeList.push(
+                                {
+                                    frequency: str,
+                                    period: periodStrArr,
+                                    obj: objArr,
+                                    type: 'ultimos'
+                                });
+
+                        }
+                    });
+                });
+            }
+
+            if (run_time.date) {
+
+                angular.forEach(run_time.date, function (res) {
+                    var str = '';
+                    if (res._date) {
+                        str = 'On ' + res._date;
+                        var periodStrArr = [], objArr = [];
+                        if (angular.isArray(res.period)) {
+                            angular.forEach(res.period, function (res1) {
+                                var periodStr = null;
+                                if (res1._begin) {
+                                    periodStr = res1._begin;
+                                }
+                                if (res1._end) {
+                                    periodStr = periodStr + '-' + res1._end;
+                                }
+                                if (res1._single_start) {
+                                    periodStr = 'Single start : ' + res1._single_start;
+                                }
+                                else if (res1._absolute_repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res1._absolute_repeat);
+                                }
+                                else if (res1._repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res1._repeat);
+                                }
+                                if (periodStr)
+                                    periodStrArr.push(periodStr);
+                                objArr.push({
+                                    _date: res._date,
+                                    _period: res1
+                                });
+
+                            });
+                        } else {
+                            var periodStr = null;
+                            if (res.period) {
+                                if (res.period._begin) {
+                                    periodStr = res.period._begin;
+                                }
+                                if (res.period._end) {
+                                    periodStr = periodStr + '-' + res.period._end;
+                                }
+                                if (res.period._single_start) {
+                                    periodStr = 'Single start : ' + res.period._single_start;
+                                }
+                                else if (res.period._absolute_repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res.period._absolute_repeat);
+                                }
+                                else if (res.period._repeat) {
+                                    periodStr = periodStr + ' every ' + getTimeInString(res.period._repeat);
+                                }
+                            }
+                            if (periodStr)
+                                periodStrArr.push(periodStr);
+                            objArr.push({
+                                _date: res._date,
+                                _period: res.period
+                            });
+                        }
+                        runtimeList.push(
+                            {
+                                frequency: str,
+                                period: periodStrArr,
+                                obj: objArr,
+                                type: 'date'
+                            });
+
+                    }
+
+                });
+            }
+
+            return runtimeList;
+        }
+
+
+        vm.runtimeList = xml2Json(vm.xml);
+        vm.runtimeList1 = xml2Json(vm.xml1);
+        vm.xml = vkbeautify.xml(vm.xml, 2);
+        vm.xml1 = vkbeautify.xml(vm.xml1, 2);
+        if (!vm.xml) {
+            vm.xml = '<run_time/>';
+        }
+        if (!vm.xml1) {
+            vm.xml1 = '<run_time/>';
+        }
     }
 
     ClientLogCtrl.$inject = ['$scope', '$window', '$interval'];
