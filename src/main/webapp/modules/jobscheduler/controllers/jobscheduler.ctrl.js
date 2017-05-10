@@ -1011,20 +1011,20 @@
 
         var watcher1 = $scope.$watchCollection('object.schedules', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.allSchedules.slice((vm.schdeuleFilters.pageSize * (vm.schdeuleFilters.currentPage - 1)), (vm.schdeuleFilters.pageSize * vm.schdeuleFilters.currentPage)).length;
+                vm.allCheck.checkbox = newNames.length == vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.schdeuleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.schdeuleFilters.currentPage)).length;
             } else {
                 vm.allCheck.checkbox = false;
             }
         });
 
-        var watcher3 = $scope.$watch('schdeuleFilters.pageSize', function (newNames) {
+        var watcher3 = $scope.$watch('userPreferences.entryPerPage', function (newNames) {
             if (newNames)
                 vm.object.schedules = [];
         });
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                vm.object.schedules = vm.allSchedules.slice((vm.schdeuleFilters.pageSize * (vm.schdeuleFilters.currentPage - 1)), (vm.schdeuleFilters.pageSize * vm.schdeuleFilters.currentPage));
+                vm.object.schedules = vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.schdeuleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.schdeuleFilters.currentPage));
             } else {
                 vm.object.schedules = [];
             }
@@ -2852,7 +2852,7 @@
                     if (value.late) {
                         vm.late++;
                     }
-                    if(value.state._text == 'PLANNED'){
+                    if(value.state._text == 'PLANNED' && !value.late){
                         vm.waiting++;
                     }
                 } else if (value.state._text == 'SUCCESSFUL') {
@@ -3719,7 +3719,7 @@
                     if (vm.dailyPlanFilters.filter.status == 'LATE') {
                         obj.late = true;
                     } else {
-                        obj.late = undefined;
+                        obj.late = false;
                     }
                     if(vm.dailyPlanFilters.filter.state)
                     obj.states.push(vm.dailyPlanFilters.filter.state);
@@ -4154,7 +4154,7 @@
                         if (vm.dailyPlanFilters.filter.status == 'LATE') {
                             obj.late = true;
                         } else {
-                            obj.late = undefined;
+                            obj.late = false;
                         }
                         if (vm.dailyPlanFilters.filter.state)
                             obj.states.push(vm.dailyPlanFilters.filter.state);

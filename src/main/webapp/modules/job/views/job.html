@@ -8,13 +8,13 @@
                     </div>
                     <div class="inline" ng-class="{'hide':object.jobs.length>0}">
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'"
+                            <button ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.type" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': jobFilters.filter.type=='ALL'}" ng-click="changeStatus()" translate>button.allJobTypes
                             </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.type"
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.type"
                                      uib-btn-radio="'order'" ng-class="{'btn-primary': jobFilters.filter.type=='order'}" ng-click="changeStatus()" translate>button.orderJobs
                             </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.type"
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.type"
                                     uib-btn-radio="'standalone'" ng-class="{'btn-primary': jobFilters.filter.type=='standalone'}" ng-click="changeStatus()" translate>button.standaloneJobs
                             </button>
                         </div>
@@ -27,19 +27,19 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedJobFilter.selected" id="jobs" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'"
+                            <button ng-disabled="savedJobFilter.selected" id="jobs" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.state" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': jobFilters.filter.state=='ALL'}" ng-click="changeStatus()" translate>button.allJobs
                             </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.state"
                                      uib-btn-radio="'PENDING'" ng-class="{'btn-primary': jobFilters.filter.state=='PENDING'}" ng-click="changeStatus()" translate>button.pending
                             </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.state"
                                     uib-btn-radio="'RUNNING'" ng-class="{'btn-primary': jobFilters.filter.state=='RUNNING'}" ng-click="changeStatus()" translate>button.running
                             </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.state"
                                     uib-btn-radio="'STOPPED'" ng-class="{'btn-primary': jobFilters.filter.state=='STOPPED'}" ng-click="changeStatus()" translate>button.stopped
                             </button>
-                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm" ng-model="jobFilters.filter.state"
+                            <button  ng-disabled="savedJobFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="jobFilters.filter.state"
                                     uib-btn-radio="'WAITINGFORRESOURCE'" ng-class="{'btn-primary': jobFilters.filter.state=='WAITINGFORRESOURCE'}" ng-click="changeStatus()" translate>button.waitingForResource
                             </button>
                         </div>
@@ -310,7 +310,7 @@
                                             <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.start" translate>button.startTask</a>
                                             <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.start" translate>button.startTaskat</a>
                                             <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}" ng-if="permission.Job.setRunTime" ><span translate>button.setRunTime</span></a>
-                                            <a href class="dropdown-item" ng-class="{'disable-link':!job.runTimeIsTemporary}" ng-click="resetRunTime(job)" ><span translate>button.resetRunTime</span></a>
+                                            <a href class="dropdown-item" ng-class="{'disable-link':!job.runTimeIsTemporary}" ng-click="resetRunTime(job)" ng-if="permission.Job.setRunTime"><span translate>button.resetRunTime</span></a>
                                             <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
                                             <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
                                             <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
@@ -378,6 +378,7 @@
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                     </label>
                                 </th>
+                                <th><span translate>label.action</span></th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'name' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -461,6 +462,26 @@
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                         </label>
                                     </td>
+                                    <td class="noExl">
+                                            <div class="btn-group dropdown">
+                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                                    <a class="hide dropdown-item"ng-click="showConfiguration('job',job.path,job.name)" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
+                                                    <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.start" translate>button.startTask</a>
+                                                    <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true)  && permission.Job.start" translate>button.startTaskat</a>
+                                                    <a class="dropdown-item" ng-click="setRunTime(job)" ng-if="permission.Job.setRunTime" ng-class="{'disable-link':job.configurationStatus.severity==2}" ><span translate>button.setRunTime</span></a>
+                                                    <a class="dropdown-item" ng-class="{'disable-link':!job.runTimeIsTemporary}" ng-if="permission.Job.setRunTime" ng-click="resetRunTime(job)" ><span translate>button.resetRunTime</span></a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
+                                                    <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
+                                                    <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status" ng-click="viewCalendar(job)" translate>button.showCalendar</a>
+                                                    <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
+                                                    <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
+                                                </div>
+                                            </div>
+                                        </td>
                                     <td>
                                         <i class="cursor fa fa-caret-down noExl fa-lg" ng-class="{'disable-link': !job.usedInJobChains}" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
                                         <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains" ng-click="job.showJobChains = false"></i>
@@ -475,7 +496,7 @@
                                             <div class="btn-group dropdown" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more" role="menu">
+                                                <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
                                                     <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,job.path)" translate>button.viewLog</a>
                                                     <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,job.path)" translate>button.end</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,job.path)" translate>button.killImmediately</a>
@@ -517,27 +538,6 @@
                                         <td ng-bind="job.ordersSummary.suspended"></td>
                                         <td ng-bind="job.ordersSummary.waitingForResource"></td>
                                         <td ng-bind="job.ordersSummary.setback"></td>
-
-                                        <td class="noExl">
-                                            <div class="btn-group dropdown">
-                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
-                                                    <a class="hide dropdown-item"ng-click="showConfiguration('job',job.path,job.name)" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
-                                                    <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.start" translate>button.startTask</a>
-                                                    <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true)  && permission.Job.start" translate>button.startTaskat</a>
-                                                    <a class="dropdown-item" ng-click="setRunTime(job)" ng-show="permission.Job.setRunTime" ng-class="{'disable-link':job.configurationStatus.severity==2}" ><span translate>button.setRunTime</span></a>
-                                                    <a href class="dropdown-item" ng-class="{'disable-link':!job.runTimeIsTemporary}" ng-click="resetRunTime(job)" ><span translate>button.resetRunTime</span></a>
-                                                    <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.stop" ng-click="stop(job)" translate>button.stop</a>
-                                                    <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.unstop" ng-click="unstop(job)" translate>button.unstop</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateAllTask(job)" translate>button.terminateAllTasks</a>
-                                                    <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.terminate" ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
-                                                    <a class="dropdown-item" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status" ng-click="viewCalendar(job)" translate>button.showCalendar</a>
-                                                    <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
-                                                    <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
-                                                </div>
-                                            </div>
-                                        </td>
                                     </tr>
                                 <tr ng-if="job.configurationStatus._text" style="background: transparent !important;">
                                     <td></td>
@@ -552,7 +552,7 @@
                                         <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
+                                                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                                     <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
                                                 </div>
                                             </div>
@@ -749,18 +749,11 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showTaskPanel.runningTasks" class="cursor">
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.pid}}</td>
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.taskId}}</td>
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task._cause | translate}}</td>
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)" ng-if="showTaskPanel.isOrderJob==true">{{task.order.orderId}}</td>
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.steps}}</td>
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
-                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)" ng-if="showTaskPanel.isOrderJob!=true">{{task.enqueued | stringToDate}} <span class="text-success">(<span time="{{task.enqueued}}"></span>)</span></td>
-                                                            <td width="40" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
+                                                             <td width="40" ng-if="permission.Job.view.taskLog || permission.Job.endAllTasks || permission.Job.kill || permission.Job.terminate">
                                                                 <div class="btn-group dropdown">
                                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                                             class="fa fa-ellipsis-h"></i></button>
-                                                                    <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
+                                                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
                                                                         <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,showTaskPanel.path)" translate>button.viewLog</a>
                                                                         <a class="dropdown-item" ng-if="permission.Job.endAllTasks" ng-click="end(task,showTaskPanel.path)" translate>button.end</a>
                                                                         <a class="dropdown-item bg-hover-color" ng-if="permission.Job.kill" ng-click="killTask(task,showTaskPanel.path)" translate>button.killImmediately</a>
@@ -769,6 +762,14 @@
                                                                     </div>
                                                                 </div>
                                                             </td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.pid}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.taskId}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task._cause | translate}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)" ng-if="showTaskPanel.isOrderJob==true">{{task.order.orderId}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.steps}}</td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)">{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
+                                                            <td ng-click="showLogWindow(null,task,showTaskPanel.path)" ng-if="showTaskPanel.isOrderJob!=true">{{task.enqueued | stringToDate}} <span class="text-success">(<span time="{{task.enqueued}}"></span>)</span></td>
+
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -881,20 +882,25 @@
     </div>
 </div>
 <script>
-   $('.table-responsive').on('shown.bs.dropdown', function (e) {
-    var $table = $(this),
-        $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 235 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 235 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
+    });
 
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
-
-  $('.table-responsive').on('hide.bs.dropdown', function () {
-      $(this).css("padding-bottom", 0);
-  });
-
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
+    });
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({
             sidebarTopMargin: 155

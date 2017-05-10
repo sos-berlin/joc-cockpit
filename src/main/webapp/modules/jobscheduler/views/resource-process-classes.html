@@ -63,6 +63,7 @@
                 <table class="table table-hover table-bordered  ">
                     <thead>
                     <tr>
+                        <th class="noExl"><span translate>label.action</span></th>
                         <th ng-click="sortByP('name')"><a><span translate>label.name</span>
                             <i ng-show="processFilters.filter.sortBy == 'name' && !processFilters.reverse"
                                class="fa fa-caret-up "></i>
@@ -91,18 +92,11 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="processClass in allProcessClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
-                        <td ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name"></td>
-                        <td ng-bind="processClass.path"></td>
-                        <td ng-bind="processClass.maxProcesses"></td>
-                        <td>
-                            <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
-                            <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
-                        </td>
                         <td>
                              <div class="btn-group dropdown">
                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                      <i class="fa fa-ellipsis-h"></i></button>
-                                 <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                      <a ng-click="showConfiguration('processClass',processClass.path,processClass.name)"
                                         class="dropdown-item"
                                         translate>button.showConfiguration</a>
@@ -113,6 +107,13 @@
                                  </div>
                              </div>
                          </td>
+                        <td ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name"></td>
+                        <td ng-bind="processClass.path"></td>
+                        <td ng-bind="processClass.maxProcesses"></td>
+                        <td>
+                            <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>
+                            <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -155,12 +156,24 @@
 </div>
 <div ng-if="isLoading && treeProcess.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "inherit");
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
     });
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "auto");
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
     });
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({

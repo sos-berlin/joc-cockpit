@@ -95,6 +95,7 @@
                                 <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                             </label>
                         </th>
+                         <th class="noExl"><span translate>label.action</span></th>
                         <th ng-click="sortByS('name')"><a><span translate>label.scheduleName</span>
                             <i ng-show="schdeuleFilters.filter.sortBy == 'name' && !schdeuleFilters.reverse"
                                class="fa fa-caret-up "></i>
@@ -155,6 +156,23 @@
                             </label>
                         </td>
                         <td>
+                            <div class="btn-group dropdown">
+                                  <button type="button" class="btn-drop more-option-h"
+                                                        data-toggle="dropdown"><i
+                                                        class="fa fa-ellipsis-h"></i></button>
+
+                                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                    <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
+                                       class="hide dropdown-item"
+                                       ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
+                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
+                                       translate>button.addSubstitute</a>
+                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                    <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!schedule.show" ng-click="schedule.show = true"></i>
                             <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="schedule.show" ng-click="schedule.show = false"></i>
                             <span ng-class="{'crimson':schedule.configurationStatus.severity==2}">{{schedule.name}}</span>
@@ -175,22 +193,6 @@
                         <td ng-bind="schedule.substitute.validFrom | stringToDate"></td>
                         <td ng-bind="schedule.substitute.validTo | stringToDate"></td>
                         <td ng-bind="schedule.substitute.path"></td>
-                        <td>
-                            <div class="btn-group dropdown">
-                                <a class="more-option-h" href data-toggle="dropdown"><i
-                                        class="fa fa-ellipsis-h"></i></a>
-
-                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                    <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
-                                       class="hide dropdown-item"
-                                       ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
-                                       translate>button.addSubstitute</a>
-                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
-                                    <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
-                                </div>
-                            </div>
-                        </td>
                     </tr>
                     <tr ng-if="schedule.configurationStatus._text" style="background: transparent !important;">
                         <td></td>
@@ -264,12 +266,24 @@
 
 <div ng-if="isLoading && tree.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noScheduleFound</div>
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "inherit");
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 105 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 105 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
     });
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "auto");
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
     });
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({

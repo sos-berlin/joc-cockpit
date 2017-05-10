@@ -9,16 +9,16 @@
                     <div class="inline m-l-sm" ng-class="{'hide':object.jobChains.length>0}">
 
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'ALL'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='ALL'}" ng-click="getPlans()" translate>button.allStatus
                             </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'WAITING'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='WAITING'}" ng-click="getPlans()" translate>button.waiting
                             </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'LATE'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'LATE'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='LATE'}" ng-click="getPlans()" translate>button.late
                             </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.status" uib-btn-radio="'EXECUTED'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.status=='EXECUTED'}" ng-click="getPlans()" translate>button.executed
                             </button>
                         </div>
@@ -40,10 +40,10 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'SUCCESSFUL'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'SUCCESSFUL'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.state=='SUCCESSFUL'}" ng-click="dailyPlanFilters.filter.status='';getPlans();" translate>button.successful
                             </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'FAILED'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.state" uib-btn-radio="'FAILED'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.state=='FAILED'}" ng-click="dailyPlanFilters.filter.status='';getPlans()" translate>button.failed
                             </button>
                         </div>
@@ -59,11 +59,11 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.range" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='today'}"
                                     ng-click="dailyPlanFilters.range='period';getPlans()" translate>button.today
                             </button>
-                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm" ng-model="dailyPlanFilters.filter.range"
+                            <button ng-disabled="savedDailyPlanFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="dailyPlanFilters.filter.range"
                                     uib-btn-radio="'next-24-hours'"
                                     ng-class="{'btn-primary': dailyPlanFilters.filter.range=='next-24-hours'}"
                                     ng-click="dailyPlanFilters.range='period';getPlans();setDateRange('next-24-hours');"
