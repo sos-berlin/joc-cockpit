@@ -72,6 +72,7 @@
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
+                            <th class="noExl"><span translate>label.action</span></th>
                             <th ng-click="sortByA('path')"><a><span translate>label.agentCluster</span>
                                 <i ng-show="agentsFilters.filter.sortBy == 'path' && !agentsFilters.reverse"
                                    class="fa fa-caret-up "></i>
@@ -126,11 +127,22 @@
                                 <i ng-show="agentsFilters.filter.sortBy == 'numOfProcesses' && agentsFilters.reverse"
                                    class="fa fa-caret-down "></i></a>
                             </th>
-                            <th></th>
+
                         </tr>
                         </thead>
                         <tbody ng-repeat="cluster in allAgentClusters | orderBy: agentsFilters.filter.sortBy:agentsFilters.reverse | startFrom:(agentsFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':cluster.show}">
                         <tr>
+                            <td>
+                                <div class="btn-group dropdown">
+                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                            <i class="fa fa-ellipsis-h"></i></button>
+                                        <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                            <a ng-click="copyLinkToObject('agentCluster',cluster.path)"
+                                               class="dropdown-item"
+                                               translate>button.copyLinkToObject</a>
+                                        </div>
+                                </div>
+                            </td>
                             <td>
                                 <i class="cursor fa fa-caret-down noExl" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                 <i class="cursor fa fa-caret-up noExl" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
@@ -150,17 +162,6 @@
                             <td>
                                 <a ng-click="showProcesses(cluster)" ng-if="cluster.numOfProcesses>0" class="text-hover-primary" ng-bind="cluster.numOfProcesses"></a>
                                 <span ng-if="!cluster.numOfProcesses" ng-bind="cluster.numOfProcesses || 0"></span>
-                            </td>
-                            <td>
-                                <div class="btn-group dropdown">
-                                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                            <i class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
-                                            <a ng-click="copyLinkToObject('agentCluster',cluster.path)"
-                                               class="dropdown-item"
-                                               translate>button.copyLinkToObject</a>
-                                        </div>
-                                </div>
                             </td>
                         </tr>
                         <tr ng-if="cluster.show">
@@ -230,13 +231,26 @@
 </div>
 <div ng-if="isLoading && treeAgent.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noAgentClusterFound</div>
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "inherit");
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 80 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 80 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
     });
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "auto");
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
     });
+
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
             sidebarTopMargin: 190

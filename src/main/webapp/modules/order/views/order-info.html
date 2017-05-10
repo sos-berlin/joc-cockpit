@@ -79,7 +79,8 @@
                                     <a href class="dropdown-item"
                                        ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.setRunTime"
                                        ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
-                                    <a href class="dropdown-item" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
+                                    <a href class="dropdown-item"  ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.setRunTime"
+                                       ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
                                         <span translate>button.resetRunTime</span>
                                     </a>
                                     <a href class="dropdown-item bg-hover-color"
@@ -266,20 +267,3 @@
         </div>
     </div>
 </div>
-
-<script>
-   $('.table-responsive').on('shown.bs.dropdown', function (e) {
-    var $table = $(this),
-        $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
-
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
-
-  $('.table-responsive').on('hide.bs.dropdown', function () {
-      $(this).css("padding-bottom", 0);
-  });
-
-</script>

@@ -1584,10 +1584,11 @@
                 return time.toString().substring(3, time.length) + ' minutes'
             } else if ((time.toString().substring(0, 2) != '00' && time.length==5) ||(time.length>5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
                 return time.toString().substring(0, 5) + ' hours'
-            } else{
+            } else {
                 return time;
             }
         }
+
         function getWeekDays(day) {
             if (!day) {
                 return;
@@ -3678,7 +3679,7 @@
                 frequency: data
             });
             $('#period-editor').modal('show');
-             $('.fade-modal').css('opacity','0.85');
+            $('.fade-modal').css('opacity', '0.85');
         };
         vm.editPeriodFromFrequency = function (data, index, periodStr) {
             var period = data.obj[index]._period;
@@ -3699,7 +3700,7 @@
                 periodStr: periodStr
             });
             $('#period-editor').modal('show');
-             $('.fade-modal').css('opacity','0.85');
+            $('.fade-modal').css('opacity', '0.85');
         };
         $rootScope.$on('cancel-period', function () {
             _tempPeriod = {};
@@ -4263,7 +4264,7 @@
             $rootScope.$broadcast('update-period', {
                 period: undefined
             });
-            $('.fade-modal').css('opacity','0.85');
+            $('.fade-modal').css('opacity', '0.85');
             $('#period-editor').modal('show');
 
         };
@@ -6998,7 +6999,7 @@
                     period: period
                 });
                 $('#period-editor').modal('show');
-                $('.fade-modal').css('opacity','0.85')
+                $('.fade-modal').css('opacity', '0.85')
 
             }
 
@@ -8090,12 +8091,7 @@
             }
         }
 
-        $scope.$on('loadXml', function (e, x) {
-
-            if(x.xml){
-              vm.xml =x.xml;
-            }
-
+        function loadXml() {
             if (!vm.xml) {
                 if (!isEmpty(vm.order)) {
                     vm.xml = '<run_time></run_time>';
@@ -8124,6 +8120,15 @@
             }
 
             getXml2Json(vm.xml);
+        }
+
+        $scope.$on('loadXml', function (e, x) {
+
+            if (x.xml) {
+                vm.xml = x.xml;
+            }
+            loadXml();
+
         });
 
         $scope.$on('$destroy', function () {
@@ -8354,24 +8359,6 @@
                     throw new Error("Error at XML answer: " + dom_document.documentElement.firstChild.nodeValue);
                 } else {
                     _xml = x2js.xml_str2json(xml);
-                }
-
-                var xmlAsString;
-                try {
-
-                    if (window.DOMParser) {
-                        xmlAsString = new XMLSerializer().serializeToString(dom_document);
-
-                    } else {
-                        xmlAsString = dom_document.documentElement.xml;
-                        xmlAsString = xmlAsString.replace(/\t/g, "  ");
-
-                    }
-                    if (y.length > 0)
-                        xmlAsString = xmlAsString.replace(/<\w+\/>/g, " ");
-
-                } catch (x) {
-                    throw new Error(x.message);
                 }
 
             } catch (e) {

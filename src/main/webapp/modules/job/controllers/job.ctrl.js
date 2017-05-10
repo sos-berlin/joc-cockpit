@@ -902,9 +902,9 @@
             checkbox: false
         };
 
-        var watcher1 = $scope.$watchCollection('object.jobChains', function (newNames) {
+        var watcher1 = vm.$watchCollection('object.jobChains', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.jobChainCheckAll.checkbox = newNames.length == vm.allJobChains.slice((vm.jobChainFilters.pageSize * (vm.jobChainFilters.currentPage - 1)), (vm.jobChainFilters.pageSize * vm.jobChainFilters.currentPage)).length;
+                vm.jobChainCheckAll.checkbox = newNames.length == vm.allJobChains.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage)).length;
                 vm.isStopped = false;
                 vm.isUnstopped = false;
                 angular.forEach(newNames, function (value) {
@@ -923,13 +923,13 @@
             }
         });
 
-        var watcher3 = $scope.$watch('jobChainFilters.pageSize', function () {
+        var watcher3 = $scope.$watch('userPreferences.entryPerPage', function () {
             vm.reset();
         });
 
         vm.jobChainCheckAll = function () {
             if (vm.jobChainCheckAll.checkbox && vm.allJobChains && vm.allJobChains.length > 0) {
-                vm.object.jobChains = vm.allJobChains.slice((vm.jobChainFilters.pageSize * (vm.jobChainFilters.currentPage - 1)), (vm.jobChainFilters.pageSize * vm.jobChainFilters.currentPage));
+                vm.object.jobChains = vm.allJobChains.slice((vm.userPreferences.entryPerPage * (vm.jobChainFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobChainFilters.currentPage));
             } else {
                 vm.reset();
             }
@@ -3438,7 +3438,7 @@
 
         var watcher1 = $scope.$watchCollection('object.jobs', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.allJobs.slice((vm.jobFilters.pageSize * (vm.jobFilters.currentPage - 1)), (vm.jobFilters.pageSize * vm.jobFilters.currentPage)).length;
+                vm.allCheck.checkbox = newNames.length == vm.allJobs.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage)).length;
 
                 vm.isTasks = false;
                 vm.isStopped = false;
@@ -3465,13 +3465,13 @@
             }
         });
 
-        var watcher3 = $scope.$watch('jobFilters.pageSize', function (newNames) {
+        var watcher3 = $scope.$watch('userPreferences.entryPerPage', function (newNames) {
             if (newNames)
                 vm.reset();
         });
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allJobs.length > 0) {
-                vm.object.jobs = vm.allJobs.slice((vm.jobFilters.pageSize * (vm.jobFilters.currentPage - 1)), (vm.jobFilters.pageSize * vm.jobFilters.currentPage));
+                vm.object.jobs = vm.allJobs.slice((vm.userPreferences.entryPerPage * (vm.jobFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.jobFilters.currentPage));
             } else {
                 vm.reset();
             }
@@ -4815,34 +4815,33 @@
                 job: job.path
             }).then(function (res) {
                 if (res.runTime) {
-                     vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
-                    if(vm.runTimeIsTemporary){
+                    vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
+                    if (vm.runTimeIsTemporary) {
                         vm.permanentRunTime = res.runTime.permanentRunTime;
                     }
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
+
                 }
-                $rootScope.$broadcast('loadXml',{xml : vm.xml});
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/set-run-time-dialog.html',
+                    controller: 'RuntimeEditorDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
+                });
+                modalInstance.result.then(function () {
+                    setRunTime(job);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
 
             });
         }
         vm.setRunTime = function (job) {
            loadRuntime(job);
-
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/set-run-time-dialog.html',
-                controller: 'RuntimeEditorDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static',
-                windowClass: 'fade-modal'
-            });
-            modalInstance.result.then(function () {
-                setRunTime(job);
-                vm.reset();
-            }, function () {
-                vm.reset();
-            });
 
             ScheduleService.getSchedulesP({
                 jobschedulerId: vm.schedulerIds.selected,

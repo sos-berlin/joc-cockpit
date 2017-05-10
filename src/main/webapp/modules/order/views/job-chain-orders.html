@@ -115,6 +115,7 @@
                                                     class="primary"></i>
                                             </label>
                                         </th>
+                                        <th class="noExl"><span translate>label.action</span></th>
                                         <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
                                             <i ng-show="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
                                                class="fa fa-caret-up "></i>
@@ -175,36 +176,11 @@
                                                            data-checklist-value="order"><i class="primary"></i>
                                                 </label>
                                             </td>
-                                            <td>
-                                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
-                                                   ng-click="showPanelFuc(order)"></i>
-                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
-                                                <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
-                                            </td>
-                                            <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
-                                            <td>
-                                                <a class="label" ng-click="showLogWindow(order)"  ng-if="order.historyId && permission.Order.view.orderLog" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
-                                                <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
-                                                <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
-                                            </td>
-                                            <td uib-tooltip="{{order.stateText}}" ng-bind="order.state"></td>
-                                            <td >
-                                                <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
-                                                <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
-                                            </td>
-                                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
-                                            <td ng-bind="order.historyId || '-'"></td>
-                                            <td>
-                                                <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
-                                                    <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
-                                            </td>
-                                            <td class="noExl">
+                                             <td class="noExl">
                                                 <div class="btn-group dropdown ">
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28"
+                                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list"
                                                          role="menu">
                                                               <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                            ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
@@ -245,6 +221,31 @@
                                                         <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td>
+                                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
+                                                   ng-click="showPanelFuc(order)"></i>
+                                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
+                                                <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
+                                            </td>
+                                            <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
+                                            <td>
+                                                <a class="label" ng-click="showLogWindow(order)"  ng-if="order.historyId && permission.Order.view.orderLog" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></a>
+                                                <span class="label" ng-if="!order.historyId" ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                                                <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
+                                            </td>
+                                            <td uib-tooltip="{{order.stateText}}" ng-bind="order.state"></td>
+                                            <td >
+                                                <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
+                                                <span class="hide " ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
+                                            </td>
+                                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
+                                            <td ng-bind="order.historyId || '-'"></td>
+                                            <td>
+                                                <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{order.nextStartTime | stringToDate}}
+                                                    <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
+                                                <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                                             </td>
                                         </tr>
                                         <tr ng-show="order.show" class="noExl">
@@ -439,19 +440,25 @@
 </div>
 
 <script>
-   $('.table-responsive').on('shown.bs.dropdown', function (e) {
-    var $table = $(this),
-        $menu = $(e.target).find('.dropdown-menu'),
-        tableOffsetHeight = $table.offset().top + $table.height(),
-        menuOffsetHeight = $menu.offset().top + $menu.outerHeight(true);
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 280 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 280 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
+    });
 
-    if (menuOffsetHeight > tableOffsetHeight)
-      $table.css("padding-bottom", menuOffsetHeight - tableOffsetHeight +10);
-  });
-
-  $('.table-responsive').on('hide.bs.dropdown', function () {
-      $(this).css("padding-bottom", 0);
-  });
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
+    });
   $(document).ready(function () {
       $('#leftPanel').stickySidebar({
             sidebarTopMargin: 170

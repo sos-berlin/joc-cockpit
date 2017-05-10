@@ -97,8 +97,11 @@
                                 ng-disabled="order.at == 'later'"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                                ng-click="editor.editXml = true" translate>button.editXml
+                        </button>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">
                             <label class="col-md-4" translate>label.chooseRunTime</label>
 
@@ -160,7 +163,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" ng-if="editor.editXml">
                         <textarea class="form-control" rows="15" ng-model="xml" ng-blur="textEditor(xml)" ng-attr-placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>

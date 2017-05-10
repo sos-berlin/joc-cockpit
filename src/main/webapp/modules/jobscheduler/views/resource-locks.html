@@ -60,6 +60,7 @@
                 <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
+                            <th class="noExl"><span translate>label.action</span></th>
                             <th ng-click="sortByL('name')"><a><span translate>label.lockName</span>
                                 <i ng-show="locksFilters.filter.sortBy == 'name' && !locksFilters.reverse"
                                    class="fa fa-caret-up "></i>
@@ -100,17 +101,11 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="lock in allLocks | orderBy: locksFilters.filter.sortBy:locksFilters.reverse | startFrom:(locksFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
-                            <td ng-bind="lock.name || '-'"></td>
-                            <td>{{lock.path}}</td>
-                            <td ng-bind="lock.status || '-'"></td>
-                            <td ng-bind="lock.maxNonExclusive || '0'"></td>
-                            <td ng-bind="lock.holders.tasks.length || '0'"></td>
-                            <td ng-bind="lock.queue.length || '0'"></td>
                             <td>
                                 <div class="btn-group dropdown">
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i></button>
-                                        <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                        <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                             <a ng-click="showConfiguration('lock',lock.path,lock.name)"
                                                class="dropdown-item"
                                                translate>button.showConfiguration</a>
@@ -120,6 +115,13 @@
                                         </div>
                                 </div>
                             </td>
+                            <td ng-bind="lock.name || '-'"></td>
+                            <td>{{lock.path}}</td>
+                            <td ng-bind="lock.status || '-'"></td>
+                            <td ng-bind="lock.maxNonExclusive || '0'"></td>
+                            <td ng-bind="lock.holders.tasks.length || '0'"></td>
+                            <td ng-bind="lock.queue.length || '0'"></td>
+
                         </tr>
                         </tbody>
                     </table>
@@ -163,12 +165,24 @@
 </div>
 <div ng-if="isLoading && treeLock.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noLocksFound</div>
 <script>
-    $('.table-responsive').on('show.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "inherit");
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
     });
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.table-responsive').css("overflow", "auto");
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
     });
     $(document).ready(function () {
         $('#leftPanel').stickySidebar({
