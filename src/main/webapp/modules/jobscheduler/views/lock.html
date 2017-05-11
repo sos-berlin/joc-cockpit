@@ -23,6 +23,7 @@
                     <table class="table table-hover table-bordered  ">
                         <thead>
                         <tr>
+                            <th class="hide"  ng-class="{show:permission.Lock.view.configuration}" width="45"><span translate>label.action</span></th>
                             <th><span translate>label.lockName</span>
                             </th>
                             <th><span translate>label.path</span>
@@ -42,23 +43,23 @@
                         </thead>
                         <tbody>
                         <tr ng-repeat="lock in locks">
-                            <td ng-bind="lock.name || '-'"></td>
-                            <td>{{lock.path}}</td>
-                            <td ng-bind="lock.status || '-'"></td>
-                            <td ng-bind="lock.maxNonExclusive || '0'"></td>
-                            <td ng-bind="lock.holders.tasks.length || '0'"></td>
-                            <td ng-bind="lock.queue.length || '0'"></td>
                             <td class="hide"  ng-class="{show:permission.Lock.view.configuration}">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                         <i class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
                                         <a ng-click="showConfiguration('lock',lock.path,lock.name)"
                                            class="dropdown-item"
                                            translate>button.showConfiguration</a>
                                     </div>
                                 </div>
                             </td>
+                            <td ng-bind="lock.name || '-'"></td>
+                            <td>{{lock.path}}</td>
+                            <td ng-bind="lock.status || '-'"></td>
+                            <td ng-bind="lock.maxNonExclusive || '0'"></td>
+                            <td ng-bind="lock.holders.tasks.length || '0'"></td>
+                            <td ng-bind="lock.queue.length || '0'"></td>
                         </tr>
                         </tbody>
                     </table>

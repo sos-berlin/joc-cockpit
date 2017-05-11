@@ -19,6 +19,7 @@
                 <table class="table table-hover table-bordered " id="orderTableId">
                     <thead>
                     <tr>
+                        <th width="45"><span translate>label.action</span></th>
                         <th><span translate>label.orderId</span></th>
                         <th><span translate>label.jobChain</span></th>
                         <th><span translate>label.processingStatus</span></th>
@@ -27,41 +28,15 @@
                         <th><span translate>label.runningSince</span></th>
                         <th><span translate>label.historyId</span></th>
                         <th><span translate>label.nextStartTime</span></th>
-                        <th></th>
                     </tr>
                     </thead>
                     <tbody ng-repeat="order in orders" ng-class="{'light-bg':showLogPanel == order}">
                     <tr>
-                        <td>
-                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
-                               ng-click="showPanelFuc(order)"></i>
-                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
-
-                            <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
-                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
-                        </td>
-                        <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
-                        <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
-                            <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
-                        </td>
-                        <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
                         <td >
-                            <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
-                            <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
-                        </td>
-                        <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
-                        <td ng-bind="order.historyId || '-'"></td>
-                        <td>
-                            <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
-                                <i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i> {{order.nextStartTime | stringToDate}}
-                                <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                            <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
-                        </td>
-                        <td class="noExl">
                             <div class="btn-group dropdown ">
                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                         class="fa fa-ellipsis-h"></i></button>
-                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu" id="menu{{$index}}">
+                                <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu" id="menu{{$index}}">
                                     <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                        ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
                                        translate>button.viewLog</a>
@@ -101,6 +76,31 @@
                                     <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
                                 </div>
                             </div>
+                        </td>
+                        <td>
+                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
+                               ng-click="showPanelFuc(order)"></i>
+                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
+
+                            <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
+                        </td>
+                        <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
+                        <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
+                            <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
+                        </td>
+                        <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
+                        <td >
+                            <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
+                            <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
+                        </td>
+                        <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
+                        <td ng-bind="order.historyId || '-'"></td>
+                        <td>
+                            <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                                <i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i> {{order.nextStartTime | stringToDate}}
+                                <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
+                            <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                         </td>
                     </tr>
                     <tr ng-show="order.show" class="noExl">

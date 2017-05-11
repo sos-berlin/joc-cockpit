@@ -538,7 +538,7 @@
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>
-                                        <th class="noExl"
+                                        <th class="noExl" width="30"
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="allCheck.checkbox"
@@ -546,7 +546,7 @@
                                                     class="primary"></i>
                                             </label>
                                         </th>
-                                        <th class="noExl"><span translate>label.action</span></th>
+                                        <th class="noExl" width="45"><span translate>label.action</span></th>
                                         <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
                                             <i ng-show="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
                                                class="fa fa-caret-up "></i>

@@ -381,14 +381,14 @@
                                ng-controller="OrderFunctionCtrl">
                             <thead>
                             <tr>
-                                <th class="noExl" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
+                                <th class="noExl" width="30" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="jobChainCheckAll.checkbox"
                                                ng-click="jobChainCheckAll()">
                                         <i class="primary"></i>
                                     </label>
                                 </th>
-                                <th><span translate>label.action</span></th>
+                                <th class="noExl" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobChain</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'name' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -656,7 +656,7 @@
                                                         <td><a class="text-hover-primary"
                                                                ng-click="viewOrders(nestedJobChain,'RUNNING')"
                                                                ng-bind="nestedJobChain.ordersSummary.running"></a></td>
-                                                        <td><a lass="text-hover-primary"
+                                                        <td><a class="text-hover-primary"
                                                                ng-click="viewOrders(nestedJobChain,'SUSPENDED')"
                                                                ng-bind="nestedJobChain.ordersSummary.suspended"></a>
                                                         </td>
@@ -678,6 +678,7 @@
                                                             <table class="table m-a-0">
                                                                 <thead>
                                                                 <tr>
+                                                                    <th width="45"><span translate>label.action</span></th>
                                                                     <th translate>label.state</th>
                                                                     <th translate>label.job</th>
                                                                     <th translate>label.noOfOrders</th>
@@ -688,7 +689,7 @@
                                                                 <tbody>
                                                                 <tr ng-repeat="nestedNode in nestedJobChain.nodes | orderBy:state"
                                                                     ng-if="nestedNode.job">
-                                                                      <td width="30">
+                                                                    <td width="30">
                                                                         <div class="btn-group dropdown">
                                                                             <button type="button"
                                                                                     class="btn-drop more-option-h"
@@ -937,8 +938,7 @@
                                                                     </td>
                                                                     <td><span class="label"
                                                                               ng-class="bgColorFunction(nestedNode.state.severity)"
-                                                                              ng-bind="nestedNode.state._text | translate"></span>
-                                                                    </td>
+                                                                              ng-bind="nestedNode.state._text | translate"></span></td>
                                                                 </tr>
                                                                 <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
                                                                     <td colspan="4">
@@ -972,6 +972,7 @@
                                     <table class="table m-a-0" ng-if="!jobChain.nestedJobChains">
                                         <thead>
                                         <tr>
+                                            <th width="45"><span translate>label.action</span></th>
                                             <th translate>label.state</th>
                                             <th translate>label.job</th>
                                             <th translate>label.noOfOrders</th>
@@ -981,7 +982,7 @@
                                         </thead>
                                         <tbody>
                                         <tr ng-repeat="node in jobChain.nodes | orderBy:state" ng-if="node.job">
-                                             <td width="30">
+                                             <td>
                                                 <div class="btn-group dropdown">
                                                     <button type="button" class="btn-drop more-option-h"
                                                             data-toggle="dropdown">

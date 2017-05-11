@@ -8,7 +8,8 @@
     angular.module('app')
         .controller('LoginCtrl', LoginCtrl)
         .controller('UserProfileCtrl', UserProfileCtrl)
-        .controller('AuditLogCtrl', AuditLogCtrl);
+        .controller('AuditLogCtrl', AuditLogCtrl)
+        .controller('UsersCtrl', UsersCtrl);
 
 
     LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog', 'AuditLogService'];
@@ -632,5 +633,362 @@
             });
             $('#exportToExcelBtn').attr("disabled", false);
         };
+    }
+
+    UsersCtrl.$inject = ['$rootScope', '$window', 'gettextCatalog', "$resource", '$scope', 'UserService', 'hotkeys'];
+    function UsersCtrl($rootScope, $window, gettextCatalog, $resource, $scope, UserService, hotkeys) {
+        var vm = this;
+
+        var configObj = {};
+        configObj.jobschedulerId = $scope.schedulerIds.selected;
+        configObj.account = $scope.permission.user;
+        configObj.configurationType = "PROFILE";
+        configObj.id = parseInt($window.sessionStorage.preferenceId);
+
+
+        vm.zones = moment.tz.names();
+        vm.locales = $rootScope.locales;
+
+        if($window.sessionStorage.preferences)
+        vm.preferences = JSON.parse($window.sessionStorage.preferences);
+        vm.timezone = jstz().timezone_name;
+        function setPreferences() {
+            if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {
+                vm.preferences = JSON.parse($window.sessionStorage.preferences);
+            }
+        }
+        $scope.$on('reloadPreferences', function () {
+            setPreferences();
+        });
+
+        vm.setLocale = function () {
+            $window.localStorage.$SOS$LANG = vm.preferences.locale;
+            $resource("modules/i18n/language_" + vm.preferences.locale + ".json").get(function (data) {
+                gettextCatalog.setCurrentLanguage(vm.preferences.locale);
+                gettextCatalog.setStrings(vm.preferences.locale, data);
+            });
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
+        };
+
+        if ($window.sessionStorage.$SOS$FORCELOGING === 'true') {
+            vm.forceLoging = true;
+            vm.preferences.auditLog = true;
+        }
+
+        vm.changeTheme = function (theme) {
+            document.getElementById('style-color').href = 'css/' + theme + '-style.css';
+            $window.localStorage.$SOS$THEME = theme;
+            if (theme == 'lighter') {
+                $('#orders_id img').attr("src", 'images/order.png');
+                $('#jobs_id img').attr("src", 'images/job.png');
+                $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
+                $('#resources_id img').attr("src", 'images/resources1.png');
+            }else{
+                  $('#orders_id img').attr("src", 'images/order1.png');
+                $('#jobs_id img').attr("src", 'images/job1.png');
+                $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
+                $('#resources_id img').attr("src", 'images/resources.png');
+            }
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
+        };
+
+        vm.changeConfiguration = function (reload) {
+            if (!vm.preferences.keyboardShortcuts) {
+                hotkeys.del($scope.combo)
+            } else {
+                angular.forEach($scope.keys, function (value) {
+                    hotkeys.add(value);
+                });
+            }
+
+            if (isNaN(parseInt(vm.preferences.maxRecords))) {
+                vm.preferences.maxRecords = parseInt(angular.copy($scope.userPreferences).maxRecords);
+            }
+            if (isNaN(parseInt(vm.preferences.maxAuditLogRecords))) {
+                vm.preferences.maxAuditLogRecords = parseInt(angular.copy($scope.userPreferences).maxAuditLogRecords);
+            }
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerOrder))) {
+                vm.preferences.maxHistoryPerOrder = parseInt(angular.copy($scope.userPreferences).maxHistoryPerOrder);
+            }
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerTask))) {
+                vm.preferences.maxHistoryPerTask = parseInt(angular.copy($scope.userPreferences).maxHistoryPerTask);
+            }
+            if (isNaN(parseInt(vm.preferences.maxAuditLogPerObject))) {
+                vm.preferences.maxAuditLogPerObject = parseInt(angular.copy($scope.userPreferences).maxAuditLogPerObject);
+            }
+
+            if (isNaN(parseInt(vm.preferences.maxOrderPerJobchain))) {
+                vm.preferences.maxOrderPerJobchain = parseInt(angular.copy($scope.userPreferences).maxOrderPerJobchain);
+            }
+            if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
+                vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
+            }
+            if(vm.preferences.entryPerPage>100){
+                vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
+            }
+            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            $rootScope.$broadcast('reloadPreferences');
+
+            if (reload)
+                $rootScope.$broadcast('reloadDate');
+            configObj.configurationItem = JSON.stringify(vm.preferences);
+            UserService.saveConfiguration(configObj);
+        };
+
+        $scope.tasks = [
+            {value: 'TaskStarted', label: "label.taskStarted"},
+            {value: 'TaskEnded', label: "label.taskEnded"},
+            {value: 'TaskClosed', label: "label.taskClosed"}
+        ];
+        $scope.jobs = [
+            {value: 'JobStopped', label: "label.jobStopped"},
+            {value: 'JobPending', label: "label.jobPending"}
+        ];
+        $scope.jobChains = [
+            {value: 'JobChainStopped', label: "label.jobChainStopped"},
+            {value: 'JobChainPending', label: "label.jobChainPending"},
+            {value: 'JobChainRunning', label: "label.jobChainUnstopped"}
+        ];
+
+        $scope.positiveOrders = [
+            {value: 'OrderStarted', label: "label.orderStarted"},
+            {value: 'OrderStepStarted', label: "label.orderStepStarted"},
+            {value: 'OrderStepEnded', label: "label.orderStepEnded"},
+            {value: 'OrderNodeChanged', label: "label.orderNodeChanged"},
+            {value: 'OrderResumed', label: "label.orderResumed"},
+            {value: 'OrderFinished', label: "label.orderFinished"}
+        ];
+
+        $scope.negativeOrders = [
+            {value: 'OrderSetback', label: "label.orderSetback"},
+            {value: 'OrderSuspended', label: "label.orderSuspended"}
+        ];
+
+        if (angular.isArray(vm.preferences.events.filter)) {
+            $scope.eventFilter = vm.preferences.events.filter;
+        } else {
+            $scope.eventFilter = JSON.parse(vm.preferences.events.filter);
+        }
+        $scope.tasks.count = vm.preferences.events.taskCount;
+        $scope.jobs.count = vm.preferences.events.jobCount;
+        $scope.jobChains.count = vm.preferences.events.jobChainCount;
+        $scope.positiveOrders.count = vm.preferences.events.positiveOrderCount;
+        $scope.negativeOrders.count = vm.preferences.events.negativeOrderCount;
+
+
+        if ($scope.tasks.length == $scope.tasks.count) {
+            $scope.selectAllTaskModel = true;
+        }
+        if ($scope.jobs.length == $scope.jobs.count) {
+            $scope.selectAllJobModel = true;
+        }
+        if ($scope.jobChains.length == $scope.jobChains.count) {
+            $scope.selectAllJobChainModel = true;
+        }
+        if ($scope.positiveOrders.length == $scope.positiveOrders.count) {
+            $scope.selectAllPositiveOrderModel = true;
+        }
+        if ($scope.negativeOrders.length == $scope.negativeOrders.count) {
+
+            $scope.selectAllNegativeOrderModel = true;
+        }
+
+
+        vm.selectAllTaskFunction = function (value) {
+
+            if (value) {
+                angular.forEach($scope.tasks, function (value1) {
+                    var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2) {
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+                    });
+
+                    if (flag) {
+                        $scope.eventFilter.push(value1.value);
+                    }
+                });
+                $scope.tasks.count = $scope.tasks.length;
+            }
+            else {
+                angular.forEach($scope.tasks, function (value1) {
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+                });
+                $scope.tasks.count = 0;
+            }
+        };
+
+        vm.selectTaskFunction = function (checked) {
+            if (checked) {
+                $scope.tasks.count++;
+            }
+            else {
+                $scope.tasks.count--;
+            }
+            $scope.selectAllTaskModel = $scope.tasks.length == $scope.tasks.count;
+        };
+
+
+        vm.selectAllJobFunction = function (value) {
+            if (value) {
+                angular.forEach($scope.jobs, function (value1) {
+                    var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2) {
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+                    });
+
+                    if (flag) {
+                        $scope.eventFilter.push(value1.value);
+                    }
+                });
+                $scope.jobs.count = $scope.jobs.length;
+            }
+            else {
+                angular.forEach($scope.jobs, function (value1) {
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+                });
+                $scope.jobs.count = 0;
+            }
+        };
+
+        vm.selectJobFunction = function (checked) {
+            if (checked) {
+                $scope.jobs.count++;
+            }
+            else {
+                $scope.jobs.count--;
+            }
+            $scope.selectAllJobModel = $scope.jobs.length == $scope.jobs.count;
+
+        };
+
+        vm.selectAllJobChainFunction = function (value) {
+            if (value) {
+                angular.forEach($scope.jobChains, function (value1) {
+                    var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2) {
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+                    });
+
+                    if (flag) {
+                        $scope.eventFilter.push(value1.value);
+                    }
+                });
+                $scope.jobChains.count = $scope.jobChains.length;
+            }
+            else {
+                angular.forEach($scope.jobChains, function (value1) {
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+                });
+                $scope.jobChains.count = 0;
+            }
+        };
+
+        vm.selectJobChainFunction = function (checked) {
+            if (checked) {
+                $scope.jobChains.count++;
+            }
+            else {
+                $scope.jobChains.count--;
+            }
+            $scope.selectAllJobChainModel = $scope.jobChains.length == $scope.jobChains.count;
+        };
+
+
+        vm.selectAllPositiveOrderFunction = function (value) {
+
+            if (value) {
+                angular.forEach($scope.positiveOrders, function (value1) {
+                    var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2) {
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+                    });
+
+                    if (flag) {
+                        $scope.eventFilter.push(value1.value);
+                    }
+                });
+                $scope.positiveOrders.count = $scope.positiveOrders.length;
+            }
+            else {
+                angular.forEach($scope.positiveOrders, function (value1) {
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+                });
+                $scope.positiveOrders.count = 0;
+            }
+        };
+
+        vm.selectPositiveOrderFunction = function (checked) {
+            if (checked) {
+                $scope.positiveOrders.count++;
+            }
+            else {
+                $scope.positiveOrders.count--;
+            }
+            $scope.selectAllPositiveOrderModel = $scope.positiveOrders.length == $scope.positiveOrders.count;
+        };
+
+        vm.selectAllNegativeOrdersFunction = function (value) {
+            if (value) {
+                angular.forEach($scope.negativeOrders, function (value1) {
+                    var flag = true;
+                    angular.forEach($scope.eventFilter, function (value2) {
+                        if (value1.value == value2) {
+                            flag = false;
+                        }
+                    });
+                    if (flag) {
+                        $scope.eventFilter.push(value1.value);
+                    }
+                });
+                $scope.negativeOrders.count = $scope.negativeOrders.length;
+            }
+            else {
+                angular.forEach($scope.negativeOrders, function (value1) {
+                    $scope.eventFilter.splice($scope.eventFilter.indexOf(value1.value), 1);
+                });
+                $scope.negativeOrders.count = 0;
+            }
+        };
+
+        vm.selectNegativeOrderFunction = function (checked) {
+            if (checked) {
+                $scope.negativeOrders.count++;
+            }
+            else {
+                $scope.negativeOrders.count--;
+            }
+            $scope.selectAllNegativeOrderModel = $scope.negativeOrders.length == $scope.negativeOrders.count;
+        };
+
+        var watcher = $scope.$watchCollection('eventFilter', function (newValue, oldValue) {
+            if (newValue != oldValue) {
+                vm.preferences.events.taskCount = $scope.tasks.count;
+                vm.preferences.events.filter = $scope.eventFilter;
+                vm.preferences.events.jobCount = $scope.jobs.count;
+                vm.preferences.events.jobChainCount = $scope.jobChains.count;
+                vm.preferences.events.positiveOrderCount = $scope.positiveOrders.count;
+                vm.preferences.events.negativeOrderCount = $scope.negativeOrders.count;
+                $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+                $rootScope.$broadcast('reloadPreferences');
+                configObj.configurationItem = JSON.stringify(vm.preferences);
+                UserService.saveConfiguration(configObj);
+            }
+        });
+
+        $scope.$on('$destroy', function () {
+            watcher();
+        });
     }
 })();
