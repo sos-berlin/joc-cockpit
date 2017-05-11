@@ -968,6 +968,7 @@
   "label.manualDate": "相対日付",
   "label.successfulLate": "Successful Late",
   "label.failedLate": "Failed Late",
+  "label.PlannedLate": "Planned Late",
   "label.specificDays": "Specific Days",
   "label.listOfFrequencies": "List of Frequencies",
   "button.addNewFrequency": "Add Frequency",
@@ -975,8 +976,9 @@
   "button.applyPeriod": "Apply Period",
   "button.resetRunTime": "Reset Run-time",
   "button.showXml": "Show XML",
-  "button.importXml": "Import XML",
+  "button.editXml": "Edit XML",
   "button.showList": "Show List",
+  "button.mangeUser": "Mange Users",
   "label.monthDays": "Month Days",
   "label.entryPerPage": "Entries per page",
   "label.currentRuntime": "Current Run-time",
@@ -986,5 +988,6 @@
   "label.absoluteRepeatEndEnd": "Absolute Repeat Start-Start",
   "label.repeatStartEnd": "Repeat End-Start",
   "label.resetRunTimeOf": "Reset Run-time of",
-  "message.noFrequencyFound": "No Frequency Found"
+  "message.noFrequencyFound": "No Frequency Found",
+  "breadcrumb.mangeUser": "Mange Users"
 }

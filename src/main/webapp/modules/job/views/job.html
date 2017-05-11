@@ -373,12 +373,12 @@
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
                             <tr>
-                                <th class="noExl" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                <th class="noExl" width="30" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                     </label>
                                 </th>
-                                <th><span translate>label.action</span></th>
+                                <th class="noExl" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'name' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -465,7 +465,7 @@
                                     <td class="noExl">
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                                <div class="dropdown-menu list-drop dropdown-ac dropdown-more" role="menu">
                                                     <a class="hide dropdown-item"ng-click="showConfiguration('job',job.path,job.name)" ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}" translate>button.showConfiguration</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start" translate>button.startTask</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true)  && permission.Job.execute.start" translate>button.startTaskat</a>
@@ -496,7 +496,7 @@
                                             <div class="btn-group dropdown" ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                                <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
                                                     <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,job.path)" translate>button.viewLog</a>
                                                     <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks" ng-click="end(task,job.path)" translate>button.end</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="permission.Job.execute.kill" ng-click="killTask(task,job.path)" translate>button.killImmediately</a>
@@ -738,6 +738,7 @@
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
+                                                        <th width="45"><span translate>label.action</span></th>
                                                         <th translate>label.pid</th>
                                                         <th translate>label.taskId</th>
                                                         <th translate>label.cause</th>

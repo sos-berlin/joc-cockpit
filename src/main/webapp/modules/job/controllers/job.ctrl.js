@@ -4901,57 +4901,6 @@
 
         };
 
-        vm.resetRuntime = function (job) {
-
-            var jobs = {};
-            jobs.jobs = [];
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
-            jobs.jobs.push({job: job.path});
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = job.path;
-                vm.comments.operation = 'Reset the run time';
-                vm.comments.type = 'Job';
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/comment-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    jobs.auditLog = {};
-                    if (vm.comments.comment)
-                        jobs.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
-                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                    if (vm.comments.ticketLink)
-                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
-
-                    JobService.resetRunTime(jobs).then(function (res) {
-                        if (vm.permanentRunTime && vm.runTimeIsTemporary) {
-                            vm.runTimeIsTemporary = false;
-                            job.runTimeIsTemporary = false;
-                            vm.xml = vm.permanentRunTime;
-                            $rootScope.$broadcast('loadXml', {xml: vm.xml});
-                        }
-                    });
-
-                }, function () {
-
-                });
-            } else {
-                JobService.resetRunTime(jobs).then(function (res) {
-                    if (vm.permanentRunTime && vm.runTimeIsTemporary) {
-                        vm.runTimeIsTemporary = false;
-                        job.runTimeIsTemporary = false;
-                        vm.xml = vm.permanentRunTime;
-                        $rootScope.$broadcast('loadXml', {xml: vm.xml});
-                    }
-                });
-            }
-        };
 
         vm.viewCalendar = function (job) {
             vm.maxPlannedTime = undefined;

@@ -1615,57 +1615,7 @@
                 });
             });
         };
-        vm.resetRuntime = function (order) {
 
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.orders.push({jobChain: order.jobChain,orderId: order.orderId});
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = order.path;
-                vm.comments.operation = 'Reset the run time';
-                vm.comments.type = 'Order';
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/comment-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    orders.auditLog = {};
-                    if (vm.comments.comment)
-                        orders.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
-                        orders.auditLog.timeSpent = vm.comments.timeSpent;
-
-                    if (vm.comments.ticketLink)
-                        orders.auditLog.ticketLink = vm.comments.ticketLink;
-
-                    OrderService.resetRunTime(orders).then(function (res) {
-                        if (vm.permanentRunTime && vm.runTimeIsTemporary) {
-                            vm.runTimeIsTemporary = false;
-                            order.runTimeIsTemporary = false;
-                            vm.xml = vm.permanentRunTime;
-                            $rootScope.$broadcast('loadXml',{xml : vm.xml});
-                        }
-                    });
-
-                }, function () {
-
-                });
-            } else {
-                OrderService.resetRunTime(orders).then(function (res) {
-                    if (vm.permanentRunTime && vm.runTimeIsTemporary) {
-                        vm.runTimeIsTemporary = false;
-                        order.runTimeIsTemporary = false;
-                        vm.xml = vm.permanentRunTime;
-                       $rootScope.$broadcast('loadXml',{xml : vm.xml});
-                    }
-                });
-            }
-        };
         vm.onOrderAction = function (order, action) {
             var modalInstance = '';
             vm.comments = {};
@@ -5325,57 +5275,7 @@
                 });
             });
         };
-        vm.resetRuntime = function (order) {
 
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.orders.push({jobChain: order.jobChain,orderId: order.orderId});
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = order.path;
-                vm.comments.operation = 'Reset the run time';
-                vm.comments.type = 'Order';
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/comment-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    orders.auditLog = {};
-                    if (vm.comments.comment)
-                        orders.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
-                        orders.auditLog.timeSpent = vm.comments.timeSpent;
-
-                    if (vm.comments.ticketLink)
-                        orders.auditLog.ticketLink = vm.comments.ticketLink;
-
-                    OrderService.resetRunTime(orders).then(function (res) {
-                        if (vm.permanentRunTime && vm.runTimeIsTemporary) {
-                            vm.runTimeIsTemporary = false;
-                            order.runTimeIsTemporary = false;
-                            vm.xml = vm.permanentRunTime;
-                            $rootScope.$broadcast('loadXml',{xml : vm.xml});
-                        }
-                    });
-
-                }, function () {
-
-                });
-            } else {
-                OrderService.resetRunTime(orders).then(function (res) {
-                    if (vm.permanentRunTime && vm.runTimeIsTemporary) {
-                        vm.runTimeIsTemporary = false;
-                        order.runTimeIsTemporary = false;
-                        vm.xml = vm.permanentRunTime;
-                       $rootScope.$broadcast('loadXml',{xml : vm.xml});
-                    }
-                });
-            }
-        };
         /**------------------------------------------------------end run time editor -------------------------------------------------------*/
 
 

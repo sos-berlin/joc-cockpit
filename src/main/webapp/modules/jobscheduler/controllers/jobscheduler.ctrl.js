@@ -2356,7 +2356,7 @@
                     }
                 },
                 duration: 500,
-                interactive: true,
+                interactive: true
             }
         };
 
@@ -2844,29 +2844,31 @@
             if (!vm.planItemData) {
                 return;
             }
-            vm.totalPlanData = vm.planItemData.length;
+            vm.totalPlanData = 0;
             angular.forEach(vm.planItemData, function (value) {
-
+              vm.totalPlanData++;
                 var time;
-                if (value.state._text == 'PLANNED' || value.state._text == 'INCOMPLETE') {
-                    if (value.late) {
-                        vm.late++;
+                if (value.state._text == 'FAILED') {
+                    if (!value.late) {
+                        vm.error++;
+                    } else {
+                        vm.lateError++;
                     }
-                    if(value.state._text == 'PLANNED' && !value.late){
-                        vm.waiting++;
-                    }
+
                 } else if (value.state._text == 'SUCCESSFUL') {
                     if (!value.late) {
                         vm.success++;
                     } else {
                         vm.lateSuccess++;
                     }
-                } else {
-                    if (!value.late) {
-                        vm.error++;
+                } else if(value.state._text == 'PLANNED'){
+                    if (value.late) {
+                        vm.late++;
                     } else {
-                        vm.lateError++;
+                        vm.waiting++;
                     }
+                }else{
+                   // vm.totalPlanData--;
                 }
             });
             vm.waiting = getPlanPercent(vm.waiting);
@@ -3015,27 +3017,19 @@
             vm.dailyPlanFilters.filter.state = '';
             if ($stateParams.filter == 1) {
                 vm.dailyPlanFilters.filter.status = 'WAITING';
-            }
-            if ($stateParams.filter == 2) {
-                vm.dailyPlanFilters.filter.status = 'LATE';
-            }
-
-            if ($stateParams.filter == 3) {
-                vm.dailyPlanFilters.filter.status = 'LATE';
-                vm.dailyPlanFilters.filter.state = 'SUCCESSFUL';
-            }
-            if ($stateParams.filter == 4) {
-                vm.dailyPlanFilters.filter.status = 'LATE';
-                vm.dailyPlanFilters.filter.state = 'FAILED';
-            }
-            if ($stateParams.filter == 5) {
-                vm.dailyPlanFilters.filter.status = '';
-                vm.dailyPlanFilters.filter.state = 'SUCCESSFUL';
-            }
-
-            if ($stateParams.filter == 6) {
-                vm.dailyPlanFilters.filter.status = '';
-                vm.dailyPlanFilters.filter.state = 'FAILED';
+            } else if ($stateParams.filter == 2) {
+                vm.dailyPlanFilters.filter.status = 'WAITING';
+                vm.dailyPlanFilters.filter.state = 'LATE';
+            } else if ($stateParams.filter == 3) {
+                vm.dailyPlanFilters.filter.state = 'LATE';
+                vm.dailyPlanFilters.filter.status = 'SUCCESSFUL';
+            } else if ($stateParams.filter == 4) {
+                vm.dailyPlanFilters.filter.state = 'LATE';
+                vm.dailyPlanFilters.filter.status = 'FAILED';
+            } else if ($stateParams.filter == 5) {
+                vm.dailyPlanFilters.filter.status = 'SUCCESSFUL';
+            } else if ($stateParams.filter == 6) {
+                vm.dailyPlanFilters.filter.status = 'FAILED';
             }
         }
         if ($stateParams.day != null) {
@@ -3156,6 +3150,20 @@
 
         }
         setDateRange();
+        var late = true;
+
+        vm.changeLate = function(){
+            late = !late;
+            if(late){
+                vm.dailyPlanFilters.filter.state = '';
+            }else{
+                if(vm.dailyPlanFilters.filter.status == 'ALL'){
+                    vm.dailyPlanFilters.filter.status = '';
+                }
+            }
+            setDateRange();
+            vm.load();
+        };
 
         vm.getPlans = function () {
             setDateRange();
@@ -3333,8 +3341,10 @@
                 if (vm.searchDailyPlanFilter.state.indexOf('WAITING') !== -1) {
                     obj.states.push("PLANNED");
                 }
-                if (vm.searchDailyPlanFilter.state.indexOf('EXECUTED') !== -1) {
+                if (vm.searchDailyPlanFilter.state.indexOf('SUCCESSFUL') !== -1) {
                     obj.states.push("SUCCESSFUL");
+                }
+                if (vm.searchDailyPlanFilter.state.indexOf('FAILED') !== -1) {
                     obj.states.push("FAILED");
                 }
                 if (vm.searchDailyPlanFilter.state.indexOf('LATE') !== -1) {
@@ -3452,8 +3462,10 @@
                 if (vm.selectedFiltered.state.indexOf('WAITING') !== -1) {
                     obj.states.push("PLANNED");
                 }
-                if (vm.selectedFiltered.state.indexOf('EXECUTED') !== -1) {
+                if (vm.selectedFiltered.state.indexOf('SUCCESSFUL') !== -1) {
                     obj.states.push("SUCCESSFUL");
+                }
+                if (vm.selectedFiltered.state.indexOf('FAILED') !== -1) {
                     obj.states.push("FAILED");
                 }
                 if (vm.selectedFiltered.state.indexOf('LATE') !== -1) {
@@ -3708,30 +3720,19 @@
                 obj.dateFrom = vm.dailyPlanFilters.filter.from;
                 obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                if (vm.dailyPlanFilters.filter.status && vm.dailyPlanFilters.filter.status != 'ALL') {
+                if (vm.dailyPlanFilters.filter.status != 'ALL') {
                     obj.states = [];
                     if (vm.dailyPlanFilters.filter.status == 'WAITING') {
                         obj.states.push("PLANNED");
-                    } else if (vm.dailyPlanFilters.filter.status == 'EXECUTED') {
-                        obj.states.push("SUCCESSFUL");
-                        obj.states.push("FAILED");
-                    }
-                    if (vm.dailyPlanFilters.filter.status == 'LATE') {
-                        obj.late = true;
                     } else {
-                        obj.late = false;
+                        obj.states.push(vm.dailyPlanFilters.filter.status);
                     }
-                    if(vm.dailyPlanFilters.filter.state)
-                    obj.states.push(vm.dailyPlanFilters.filter.state);
-                     if (vm.dailyPlanFilters.filter.status == 'EXECUTED')
-                    vm.dailyPlanFilters.filter.state = '';
-                }else if(vm.dailyPlanFilters.filter.state) {
-                    if (vm.dailyPlanFilters.filter.status != 'ALL') {
-                        obj.states = [];
-                        obj.states.push(vm.dailyPlanFilters.filter.state);
-                    } else {
-                        vm.dailyPlanFilters.filter.state = '';
-                    }
+                }
+                if (vm.dailyPlanFilters.filter.state == 'LATE') {
+                    obj.late = true;
+                } else {
+                    if (vm.dailyPlanFilters.filter.status != 'ALL')
+                    obj.late = false;
                 }
             }
             if(!obj.dateFrom) {
@@ -4143,31 +4144,21 @@
                     obj.dateFrom = vm.dailyPlanFilters.filter.from;
                     obj.dateTo = vm.dailyPlanFilters.filter.to;
 
-                    if (vm.dailyPlanFilters.filter.status && vm.dailyPlanFilters.filter.status != 'ALL') {
+                    if (vm.dailyPlanFilters.filter.status != 'ALL') {
                         obj.states = [];
                         if (vm.dailyPlanFilters.filter.status == 'WAITING') {
                             obj.states.push("PLANNED");
-                        } else if (vm.dailyPlanFilters.filter.status == 'EXECUTED') {
-                            obj.states.push("SUCCESSFUL");
-                            obj.states.push("FAILED");
-                        }
-                        if (vm.dailyPlanFilters.filter.status == 'LATE') {
-                            obj.late = true;
                         } else {
-                            obj.late = false;
-                        }
-                        if (vm.dailyPlanFilters.filter.state)
-                            obj.states.push(vm.dailyPlanFilters.filter.state);
-                        if (vm.dailyPlanFilters.filter.status == 'EXECUTED')
-                            vm.dailyPlanFilters.filter.state = '';
-                    } else if (vm.dailyPlanFilters.filter.state) {
-                        if (vm.dailyPlanFilters.filter.status != 'ALL') {
-                            obj.states = [];
-                            obj.states.push(vm.dailyPlanFilters.filter.state);
-                        } else {
-                            vm.dailyPlanFilters.filter.state = '';
+                            obj.states.push(vm.dailyPlanFilters.filter.status);
                         }
                     }
+                    if (vm.dailyPlanFilters.filter.state == 'LATE') {
+                        obj.late = true;
+                    } else {
+                        if (vm.dailyPlanFilters.filter.status != 'ALL')
+                        obj.late = false;
+                    }
+
                 }
             }
             if(!obj.dateFrom) {
