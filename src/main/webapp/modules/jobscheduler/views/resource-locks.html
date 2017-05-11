@@ -42,7 +42,7 @@
                                 <a href class=" more-option text-black-lt" data-toggle="dropdown"><i
                                         class="text fa fa-ellipsis-h"></i></a>
                                 <div class="dropdown-menu dropdown-ac dropdown-more">
-                                    <a ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
+                                    <a ng-if="permission.Lock.view.configuration" ng-click="showConfiguration('lock',lock.path,lock.name)" class="dropdown-item" translate>button.showConfiguration</a>
                                     <a ng-click="copyLinkToObject('lock',lock.path)" class="dropdown-item" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                            <a ng-click="showConfiguration('lock',lock.path,lock.name)"
+                                            <a ng-click="showConfiguration('lock',lock.path,lock.name)" ng-if="permission.Lock.view.configuration"
                                                class="dropdown-item"
                                                translate>button.showConfiguration</a>
                                             <a ng-click="copyLinkToObject('lock',lock.path)"

@@ -34,11 +34,11 @@
                         <div class="box-body">
 
                             <div>
-                                <label class="md-check pos-abt" ng-if="permission.Schedule.edit">
+                                <label class="md-check pos-abt" ng-if="permission.Schedule.change.addSubstitute">
                                     <input type="checkbox" data-checklist-model="object.schedules" data-checklist-value="schedule"><i class="primary"></i>
                                 </label>
 
-                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Schedule.edit}">
+                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Schedule.change.addSubstitute}">
                                     <span uib-tooltip="{{schedule.title}}" ng-class="{'crimson':schedule.configurationStatus.severity==2}" ng-bind="schedule.name"></span>
                                     <span class="fa fa-stop text-xs" ng-class="colorFunction(schedule.state.severity)"></span>
                                 </div>
@@ -47,8 +47,8 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
                                            ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)" translate>button.addSubstitute</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.addSubstitute}" ng-click="substitute(schedule)" translate>button.addSubstitute</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
@@ -77,8 +77,8 @@
                         </div>
                         <div class="box-footer b-t" >
                             <div>
-                                <a ng-if="permission.Schedule.edit" href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.addSubstitute</span></a>
-                                <a ng-if="permission.Schedule.edit" href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
+                                <a ng-if="permission.Schedule.addSubstitute" href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.addSubstitute</span></a>
+                                <a ng-if="permission.Schedule.change.editContent" href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                 <table class="table table-hover table-bordered  ">
                     <thead>
                     <tr>
-                        <th ng-if="permission.Schedule.edit">
+                        <th ng-if="permission.Schedule.change.addSubstitute">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                             </label>
@@ -149,7 +149,7 @@
                     </thead>
                     <tbody  ng-repeat="schedule in allSchedules | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse | startFrom:(schdeuleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
                     <tr>
-                        <td ng-if="permission.Schedule.edit">
+                        <td ng-if="permission.Schedule.change.addSubstitute">
                             <label class="md-check">
                                 <input type="checkbox" data-checklist-model="object.schedules"
                                        data-checklist-value="schedule"><i class="primary"></i>
@@ -165,9 +165,9 @@
                                     <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
                                        class="hide dropdown-item"
                                        ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="substitute(schedule)"
+                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.addSubstitute}" ng-click="substitute(schedule)"
                                        translate>button.addSubstitute</a>
-                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.edit}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                    <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                     <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>

@@ -97,13 +97,13 @@
 
                 <label class="col-sm-4 form-control-label">{{param.name}}</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control " ng-model="param.value" placeholder="{{'placeholder.value' | translate}}">
+                    <input type="text" class="form-control " ng-model="param.value" placeholder="{{'placeholder.value' | translate}}" ng-readonly="!permission.Order.change.parameter">
                 </div>
             </div>
-            <div class="form-group row m-b-sm m-t _600" ng-if="order.params.length>0">
+            <div class="form-group row m-b-sm m-t _600" ng-if="order.params.length>0" ng-if="permission.Order.change.parameter">
                 <div class="col-md-12" translate>label.declareNewParameters</div>
             </div>
-            <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index">
+            <div class="form-group row m-b-0" ng-repeat="param in paramObject.params track by $index" ng-if="permission.Order.change.parameter">
                 <div class="col-sm-4 m-b-sm" ng-if="$index==0" translate>label.name</div>
                 <div class="col-sm-8 m-b-sm" ng-if="$index==0" translate>label.value</div>
                 <div class="col-sm-4 m-b-sm">
@@ -116,7 +116,7 @@
                     <a><i ng-click="removeParams($index)" class="fa fa-times m-t-sm text-muted"></i></a>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row" ng-if="permission.Order.change.parameter">
                 <div class="col-sm-12">
                     <a href class="text-u-l" ng-if="paramObject.params.length>0" ng-click="addCriteria()" translate>button.addAnotherParameter</a>
                     <a href class="text-u-l" ng-if="paramObject.params.length==0" ng-click="addCriteria()" translate>button.addParameter</a>
