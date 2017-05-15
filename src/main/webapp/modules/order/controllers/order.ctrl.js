@@ -1494,13 +1494,7 @@
                 runTime: vkbeautify.xmlmin(order.runTime)
             });
             OrderService.setRunTime(orders).then(function () {
-                var orders = {};
-                orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
-                OrderService.get(orders).then(function (res) {
-                    order = angular.merge(order, res.orders[0]);
-                });
+                $scope.$emit('refreshList');
             });
         }
 
@@ -1583,7 +1577,7 @@
                     orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
             OrderService.resetRunTime(orders).then(function (res) {
-                order.runTimeIsTemporary = false;
+                $scope.$emit('refreshList');
             });
 
         }
@@ -5244,7 +5238,9 @@
                     orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
             OrderService.resetRunTime(orders).then(function (res) {
-                order.runTimeIsTemporary = false;
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
             });
 
         }
@@ -5663,7 +5659,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots && vm.showLogPanel)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && !vm.events[0].eventSnapshots[i].eventId) {
                         var path = vm.events[0].eventSnapshots[i].path;
                         if (vm.showLogPanel.path == path) {
                             var orders = {};

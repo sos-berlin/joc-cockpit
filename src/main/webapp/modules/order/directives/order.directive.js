@@ -1618,7 +1618,6 @@
 
                     vm.showOrderPanelFun = showOrderPanelFun;
                     function showOrderPanelFun(path) {
-
                         $location.path('/job_chain_detail/orders').search({path: path});
                     }
 

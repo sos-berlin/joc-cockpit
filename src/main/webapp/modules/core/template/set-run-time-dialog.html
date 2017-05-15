@@ -100,6 +100,9 @@
                         <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                                ng-click="editor.editXml = false" translate>button.hideXml
+                        </button>
                     </div>
                     <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">

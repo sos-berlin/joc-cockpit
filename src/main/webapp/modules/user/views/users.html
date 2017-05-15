@@ -15,7 +15,395 @@
     <div class="padding p-b-0">
         <div class="row m-t-sm">
             <div class="col-sm-12">
-                //TODO
+                <div class="box p-a p-b-lg">
+<!--                   <h5 translate>label.userDetails</h5>
+                    <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.userName</span></div>
+                       <div class="col-sm-9">
+                          <span class="text-black-lt">{{permission.user}}</span>
+                       </div>
+                   </div>
+                   <hr>
+                   <h5 translate>label.roles</h5>
+                   <div class="row m-t-sm">
+                       <div class="col-sm-6">
+                           <div class="m-t-sm" ng-repeat="role in permission.SOSPermissionRoles.SOSPermissionRole">
+                               <div class="col-sm-3 text-black-lt">{{role}}</div>
+                           </div>
+                       </div>
+                   </div>
+                   <hr>-->
+                   <h5 translate>label.editPermissions</h5>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.jobSchedulerMaster</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.view.mainlog">
+                               <i class="primary"></i><span translate>label.viewMainLog</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.execute.pause">
+                               <i class="primary"></i><span translate>label.pause</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.execute.continue">
+                               <i class="primary"></i><span translate>label.continue</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.execute.terminate">
+                               <i class="primary"></i><span translate>label.terminate</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.execute.abort">
+                               <i class="primary"></i><span translate>label.abort</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.execute.restart.terminate">
+                               <i class="primary"></i><span translate>label.restartTerminate</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.execute.restart.abort">
+                               <i class="primary"></i><span translate>label.restartAbort</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.administration.removeOldInstances">
+                               <i class="primary"></i><span translate>label.removeOldInstances</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerMaster.administration.manageCategories">
+                               <i class="primary"></i><span translate>label.manageCategories</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.jobSchedulerMasterCluster</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMasterCluster.view.status">
+                               <i class="primary"></i><span translate>label.viewClusterStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMasterCluster.execute.terminate">
+                               <i class="primary"></i><span translate>label.terminate</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMasterCluster.execute.terminateFailSafe">
+                               <i class="primary"></i><span translate>label.terminateFailsafe</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerMasterCluster.execute.restart">
+                               <i class="primary"></i><span translate>label.restart</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.jobSchedulerUniversalAgent</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerUniversalAgent.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerUniversalAgent.execute.terminate">
+                               <i class="primary"></i><span translate>label.terminate</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerUniversalAgent.execute.abort">
+                               <i class="primary"></i><span translate>label.abort</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobschedulerUniversalAgent.execute.restart.terminate">
+                               <i class="primary"></i><span translate>label.restartTerminate</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobschedulerUniversalAgent.execute.restart.abort">
+                               <i class="primary"></i><span translate>label.restartAbort</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.dailyPlan</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.DailyPlan.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.history</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.History.view">
+                               <i class="primary"></i>
+                               <span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.view</span></span>
+                           </label>
+
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.order</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Order.view.configuration">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewConfiguration</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Order.view.orderLog">
+                               <i class="primary"></i><span translate>label.viewOrderLog</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Order.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Order.change.startAndEndNode">
+                               <i class="primary"></i><span translate>label.changeStartAndEndNode</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.change.timeForAdhocOrder">
+                               <i class="primary"></i><span translate>label.changeTimeForAdhocOrder</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.change.parameter">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.changeParameters</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.execute.start">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.start</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.execute.update">
+                               <i class="primary"></i><span translate>label.update</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.execute.suspend">
+                               <i class="primary"></i><span translate>label.suspend</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.execute.resume">
+                               <i class="primary"></i><span translate>label.resume</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.delete.permanent">
+                               <i class="primary"></i><span translate>label.deletePermanent</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.delete.temporary">
+                               <i class="primary"></i><span translate>label.deleteTemporary</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.execute.removeSetback">
+                               <i class="primary"></i><span translate>label.removeSetback</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.change.runTime">
+                               <i class="primary"></i><span translate>label.setRunTime</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.change.state">
+                               <i class="primary"></i><span translate>label.setState</span>
+                           </label>
+
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Order.execute.reset">
+                               <i class="primary"></i><span translate>label.reset</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.jobChain</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobChain.view.configuration">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewConfiguration</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobChain.view.history">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewHistory</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobChain.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JobChain.execute.stop">
+                               <i class="primary"></i><span translate>label.stop</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobChain.execute.unstop">
+                               <i class="primary"></i><span translate>label.unstop</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobChain.execute.addOrder">
+                               <i class="primary"></i><span translate>label.addOrder</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobChain.execute.skipJobChainNode">
+                               <i class="primary"></i><span translate>label.skipJobChainNode</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobChain.execute.processJobChainNode">
+                               <i class="primary"></i><span translate>label.processJobChainNode</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JobChain.execute.stopJobChainNode">
+                               <i class="primary"></i><span translate>label.stopJobChainNode</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.job</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Job.view.configuration">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewConfiguration</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Job.view.history">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewHistory</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Job.view.taskLog">
+                               <i class="primary"></i><span translate>label.taskLog</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Job.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.start">
+                               <i class="primary"></i><span translate>label.start</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.stop">
+                               <i class="primary"></i><span translate>label.stop</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.unstop">
+                               <i class="primary"></i><span translate>label.unstop</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.terminate">
+                               <i class="primary"></i><span translate>label.terminate</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.kill">
+                               <i class="primary"></i><span translate>label.kill</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.change.runTime">
+                               <i class="primary"></i><span translate>label.setRunTime</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.endAllTasks">
+                               <i class="primary"></i><span translate>label.endAllTasks</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.suspendAllTasks">
+                               <i class="primary"></i><span translate>label.suspendAllTasks</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.Job.execute.continueAllTasks">
+                               <i class="primary"></i><span translate>label.continueAllTasks</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.processClass</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.ProcessClass.view.configuration">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewConfiguration</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.ProcessClass.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.lock</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Lock.view.configuration">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewConfiguration</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Lock.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.schedule</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Schedule.view.configuration">
+                               <i class="primary"></i><span ng-class="{'text-l-c' : preferences.locale.lang=='en'}"><span translate>label.viewConfiguration</span></span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Schedule.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Schedule.change.editContent">
+                               <i class="primary"></i><span translate>label.edit</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.Schedule.change.addSubstitute">
+                               <i class="primary"></i><span translate>label.addSubstitute</span>
+                           </label>
+                       </div>
+                   </div>
+                   <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.holidayCalendar</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.HolidayCalendar.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.auditLog</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JOCConfigurations.view.status">
+                               <i class="primary"></i><span translate>label.viewStatus</span>
+                           </label>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.JOCConfiguration</span></div>
+                       <div class="row col-sm-9">
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JOCConfigurations.share.view">
+                               <i class="primary"></i><span translate>label.view</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JOCConfigurations.share.change.editContent">
+                               <i class="primary"></i><span translate>label.edit</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JOCConfigurations.share.change.delete">
+                               <i class="primary"></i><span translate>label.delete</span>
+                           </label>
+                           <label class="md-check  col-sm-3">
+                               <input type="checkbox" ng-model="permission.JOCConfigurations.share.change.sharedStatus.makePrivate">
+                               <i class="primary"></i><span translate>label.makePrivate</span>
+                           </label>
+                           <label class="md-check  col-sm-3 m-t">
+                               <input type="checkbox" ng-model="permission.JOCConfigurations.share.change.sharedStatus.makeShared">
+                               <i class="primary"></i><span translate>label.makeShared</span>
+                           </label>
+                       </div>
+                   </div>
+               </div>
 
             </div>
         </div>

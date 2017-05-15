@@ -2480,7 +2480,7 @@
                         }
                     });
 
-                      if (vm.showHistoryPanel && vm.showHistoryPanel.path == path[0]) {
+                      if (vm.showHistoryPanel && vm.showHistoryPanel.path == arr1[0].jobChain) {
                         var filter = {};
                         filter.jobChain = vm.showHistoryPanel.path;
                         filter.jobschedulerId = $scope.schedulerIds.selected;
