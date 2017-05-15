@@ -977,6 +977,7 @@
   "button.resetRunTime": "Reset Run-time",
   "button.showXml": "Show XML",
   "button.editXml": "Edit XML",
+  "button.hideXml": "Hide XML",
   "button.showList": "Show List",
   "button.mangeUser": "Mange Users",
   "label.monthDays": "Month Days",
@@ -989,5 +990,8 @@
   "label.repeatStartEnd": "Repeat End-Start",
   "label.resetRunTimeOf": "Reset Run-time of",
   "message.noFrequencyFound": "No Frequency Found",
-  "breadcrumb.mangeUser": "Mange Users"
+  "breadcrumb.mangeUser": "Mange Users",
+  "label.removeOldInstances": "remove old instances",
+  "label.editPermissions": "Edit Permissions",
+  "label.editRole": "Edit Role"
 }

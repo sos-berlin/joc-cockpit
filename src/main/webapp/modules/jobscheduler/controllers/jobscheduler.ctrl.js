@@ -3151,7 +3151,9 @@
         }
         setDateRange();
         var late = true;
-
+            if(vm.dailyPlanFilters.filter.state=='LATE'){
+                late = false;
+            }
         vm.changeLate = function(){
             late = !late;
             if(late){

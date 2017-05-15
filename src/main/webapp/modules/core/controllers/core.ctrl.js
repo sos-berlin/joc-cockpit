@@ -8121,7 +8121,8 @@
 
             getXml2Json(vm.xml);
         }
-        
+        loadXml();
+
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();

@@ -168,6 +168,10 @@
                     <i class="fa fa-file text-xs"></i>
                     {{'button.setting' | translate}}
                 </a>
+                <a class="dropdown-item" ui-sref="app.users" ng-if="permission.JobschedulerMaster.administration.editPermissions">
+                    <s class="fa fa-users"></s>
+                    {{'button.mangeUser' | translate}}
+                </a>
                 <a class="dropdown-item" ng-click="logout();$event.stopPropagation()">
                     <i class="fa fa-sign-out"></i>
                     {{'button.logOut' | translate}}
