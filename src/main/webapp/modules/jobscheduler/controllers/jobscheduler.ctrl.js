@@ -2439,7 +2439,7 @@
             });
         };
 
-        if (vm.permission && vm.permission.ProcessClass.view.status)
+        if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
             vm.getAgentClusterRunningTask();
 
         function prepareAgentClusterData(result) {
@@ -2814,7 +2814,7 @@
             })
         };
 
-        if (vm.permission && vm.permission.DailyPlan.view.status)
+        if (vm.permission && vm.permission.DailyPlan && vm.permission.DailyPlan.view.status)
             vm.getDailyPlans();
 
         function setOrderDateRange() {
@@ -3175,17 +3175,26 @@
 
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
-            $('#dailyPlanTableId').table2excel({
-                exclude: ".noExl",
-                filename: "jobscheduler-dailyplan",
-                fileext: ".xls",
-                exclude_img: false,
-                exclude_links: false,
-                exclude_inputs: false
-            });
+            if (!vm.isIE()) {
+                $('#dailyPlanTableId').table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: "jobscheduler-dailyplan",
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            } else {
+                var ExportButtons = document.getElementById('dailyPlanTableId');
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false
+                });
+                var exportData = instance.getExportData()['dailyPlanTableId']['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, "jobscheduler-dailyplan", exportData.fileExtension);
+            }
             $('#exportToExcelBtn').attr("disabled", false);
         };
-
         vm.dataFormate = vm.userPreferences.dateFormat;
         vm.options = {
             mode: 'custom',

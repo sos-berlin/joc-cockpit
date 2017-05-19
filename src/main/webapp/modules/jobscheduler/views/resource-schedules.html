@@ -47,7 +47,7 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
                                            ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.addSubstitute}" ng-click="substitute(schedule)" translate>button.addSubstitute</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.addSubstitute}" ng-click="substitute(schedule)" translate>button.addSubstitute</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                     </div>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="box-footer b-t" >
                             <div>
-                                <a ng-if="permission.Schedule.addSubstitute" href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.addSubstitute</span></a>
+                                <a ng-if="permission.Schedule.change.addSubstitute" href class="text-left primary-text-hover-color" ng-click="substitute(schedule)"><i class="fa fa-repeat text-black-lt"></i> <span class="text-black-lt" translate>button.addSubstitute</span></a>
                                 <a ng-if="permission.Schedule.change.editContent" href class="pull-right primary-text-hover-color" ng-click="editSchedule(schedule)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editSchedule</span></a>
                             </div>
                         </div>

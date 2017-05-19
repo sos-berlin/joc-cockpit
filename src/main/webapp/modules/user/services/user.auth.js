@@ -15,9 +15,17 @@
                         if (config.method == 'POST' || config.url.match('jobscheduler/log?')) {
 
                             if (SOSAuth.accessTokenId) {
-                                config.headers = {
-                                    'access_token': SOSAuth.accessTokenId,
-                                    'Content-Type': 'application/json'
+                                if (config.url.match('security/permission')) {
+                                    config.headers = {
+                                        'access_token': SOSAuth.accessTokenId,
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json'
+                                    }
+                                } else {
+                                    config.headers = {
+                                        'access_token': SOSAuth.accessTokenId,
+                                        'Content-Type': 'application/json'
+                                    }
                                 }
                             }
                             config.url = './api/' + config.url;

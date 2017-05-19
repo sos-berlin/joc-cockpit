@@ -4941,19 +4941,29 @@
 
         $scope.$on('exportData', function () {
             $('#exportToExcelBtn').attr("disabled", true);
+           if (!vm.isIE()) {
+                $('#orderTableId').table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: "jobscheduler-orders",
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            }else {
+                var ExportButtons = document.getElementById('orderTableId');
 
-            $('#orderTableId').table2excel({
-                exclude: ".noExl",
-                filename: "jobscheduler-orders",
-                fileext: ".xls",
-                exclude_img: false,
-                exclude_links: false,
-                exclude_inputs: false
-            });
-
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false,
+                    trimWhitespace: true,
+                    bootstrap: false
+                });
+                var exportData = instance.getExportData()['orderTableId']['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, 'jobscheduler-orders', exportData.fileExtension);
+            }
             $('#exportToExcelBtn').attr("disabled", false);
         });
-
 
         /**--------------- sorting and pagination -------------------*/
         vm.pageChange = function () {
@@ -6616,22 +6626,35 @@
             isLoaded = false;
             $('#exportToExcelBtn').attr("disabled", true);
 
+
             var fileName = 'jobscheduler-order-history-report';
             if (vm.historyFilters.type == 'job') {
                 fileName = 'jobscheduler-task-history-report';
             }
-            $('#' + vm.historyFilters.type).table2excel({
-                exclude: ".noExl",
-                filename: fileName,
-                fileext: ".xls",
-                exclude_img: false,
-                exclude_links: false,
-                exclude_inputs: false
-            });
+            if (!vm.isIE()) {
+                $('#' + vm.historyFilters.type).table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: fileName,
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            } else {
+                var ExportButtons = document.getElementById(vm.historyFilters.type);
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false,
+                    trimWhitespace: true,
+                    bootstrap: false
+                });
+                var exportData = instance.getExportData()[vm.historyFilters.type]['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, fileName, exportData.fileExtension);
+            }
+
             $('#exportToExcelBtn').attr("disabled", false);
             isLoaded = true;
         };
-
         function isCustomizationSelected1(flag) {
             if (flag) {
                 vm.temp_filter1.historyStates = angular.copy(vm.order.filter.historyStates);

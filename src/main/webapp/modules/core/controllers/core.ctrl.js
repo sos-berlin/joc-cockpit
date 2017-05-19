@@ -307,8 +307,8 @@
         vm.username = SOSAuth.currentUserData;
         setPermission();
         setIds();
-        if (vm.username && $scope.schedulerIds.selected) {
-            getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
+        if (vm.username && vm.schedulerIds.selected) {
+            getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
         }
         setPreferences();
 
@@ -320,15 +320,17 @@
             vm.username = SOSAuth.currentUserData;
             setPermission();
             setIds();
-            if ($scope.schedulerIds.selected)
+            if (vm.schedulerIds.selected)
                 loadSettingConfiguration();
-            if ($scope.schedulerIds.selected)
-                getUserProfileConfiguration($scope.schedulerIds.selected, vm.username);
+            if (vm.schedulerIds.selected)
+                getUserProfileConfiguration(vm.schedulerIds.selected, vm.username);
         });
 
         function setPermission() {
             if (SOSAuth.permission) {
                 vm.permission = JSON.parse(SOSAuth.permission);
+            }else{
+                vm.permission ={};
             }
         }
 
@@ -339,10 +341,13 @@
         }
 
         function setIds() {
+
             if (SOSAuth.scheduleIds) {
                 vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
             } else if ($location.search() && $location.search().scheduler_id) {
                 vm.schedulerIds = $location.search().scheduler_id;
+            }else{
+                vm.schedulerIds ={};
             }
         }
 
@@ -505,7 +510,6 @@
             $location.path('/orders')
         };
 
-
         vm.isEmpty = function (obj) {
             for (var key in obj) {
                 if (obj.hasOwnProperty(key))
@@ -576,6 +580,9 @@
                 scope: vm
             });
         };
+        vm.isIE = function() {
+          return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
+        }
 
         
  var watcher = vm.$watchCollection('clientLogFilter.status', function (newNames, oldValues) {
@@ -741,6 +748,7 @@
                         $window.sessionStorage.removeItem(key);
                     });
                 }
+                $rootScope.$broadcast('reloadUser');
                 $location.path('/login').search({});
             });
         };
@@ -810,7 +818,7 @@
         $scope.$on('$stateChangeSuccess', function (event, toState, toParam, fromState) {
             vm.currentState = toState.name;
             if (toState.name != 'app.dashboard' && fromState.name == 'login') {
-                JobSchedulerService.getClusterMembersP({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                JobSchedulerService.getClusterMembersP({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
                     getScheduleDetail(res);
                 });
             }
@@ -916,7 +924,7 @@
                 vm.changeEvent(vm.schedulerIds.jobschedulerIds);
             }
         });
-        $scope.allSessionEvent = {group: [], eventUnReadCount: 0};
+        vm.allSessionEvent = {group: [], eventUnReadCount: 0};
 
 
         if (vm.schedulerIds && vm.schedulerIds.jobschedulerIds && vm.schedulerIds.jobschedulerIds.length > 0)
@@ -924,7 +932,7 @@
 
         if ($window.sessionStorage.$SOS$ALLEVENT != "null" && $window.sessionStorage.$SOS$ALLEVENT != null) {
             if ($window.sessionStorage.$SOS$ALLEVENT.length != 0) {
-                $scope.allSessionEvent = angular.copy(JSON.parse($window.sessionStorage.$SOS$ALLEVENT));
+                vm.allSessionEvent = angular.copy(JSON.parse($window.sessionStorage.$SOS$ALLEVENT));
             }
         }
 
@@ -959,21 +967,21 @@
                                         }
                                         var flag = true;
 
-                                        if ($scope.allSessionEvent.group != undefined)
-                                            for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
+                                        if (vm.allSessionEvent.group != undefined)
+                                            for (var k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
 
-                                                if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
+                                                if (vm.allSessionEvent.group[k].objectType == eventByPath.objectType && vm.allSessionEvent.group[k].path == eventByPath.path && vm.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
 
                                                     for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                        if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
+                                                        if (vm.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
-                                                            $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                            vm.allSessionEvent.group[k].eventId = eventByPath.eventId;
 
-                                                            $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                            vm.allSessionEvent.group[k].readCount = vm.allSessionEvent.group[k].readCount + 1;
+                                                            vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
                                                             eventByPath.events[m].read = false;
 
-                                                            $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                            vm.allSessionEvent.group[k].events.push(eventByPath.events[m]);
                                                         }
                                                     }
                                                     flag = false;
@@ -985,9 +993,9 @@
                                         if (flag) {
 
                                             eventByPath.readCount = 1;
-                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                            vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
 
-                                            $scope.allSessionEvent.group.push(eventByPath);
+                                            vm.allSessionEvent.group.push(eventByPath);
 
 
                                         }
@@ -1016,29 +1024,29 @@
                                         }
 
                                         var flag = true;
-                                        if ($scope.allSessionEvent.group != undefined)
-                                            for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
+                                        if (vm.allSessionEvent.group != undefined)
+                                            for (var k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
 
-                                                if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
+                                                if (vm.allSessionEvent.group[k].objectType == eventByPath.objectType && vm.allSessionEvent.group[k].path == eventByPath.path && vm.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
 
                                                     for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                        if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
+                                                        if (vm.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
-                                                            $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                            vm.allSessionEvent.group[k].readCount = vm.allSessionEvent.group[k].readCount + 1;
+                                                            vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
                                                             eventByPath.events[m].read = false;
 
-                                                            $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
-                                                            $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                            vm.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                            vm.allSessionEvent.group[k].events.push(eventByPath.events[m]);
                                                         }
                                                     }
                                                     flag = false;
                                                 }
                                             }
                                         if (flag) {
-                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                            vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
                                             eventByPath.readCount = 1;
-                                            $scope.allSessionEvent.group.push(eventByPath);
+                                            vm.allSessionEvent.group.push(eventByPath);
                                         }
                                     }
                                 } else if (evnType == 'JobChainStateChanged') {
@@ -1059,18 +1067,18 @@
                                             eventByPath.events[m].read = false;
                                         }
                                         var flag = true;
-                                        if ($scope.allSessionEvent.group != undefined)
-                                            for (var k = 0; k <= $scope.allSessionEvent.group.length - 1; k++) {
-                                                if ($scope.allSessionEvent.group[k].objectType == eventByPath.objectType && $scope.allSessionEvent.group[k].path == eventByPath.path && $scope.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
+                                        if (vm.allSessionEvent.group != undefined)
+                                            for (var k = 0; k <= vm.allSessionEvent.group.length - 1; k++) {
+                                                if (vm.allSessionEvent.group[k].objectType == eventByPath.objectType && vm.allSessionEvent.group[k].path == eventByPath.path && vm.allSessionEvent.group[k].jobschedulerId == eventByPath.jobschedulerId) {
                                                     for (var m = 0; m <= eventByPath.events.length - 1; m++) {
-                                                        if ($scope.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
+                                                        if (vm.allSessionEvent.group[k].events.indexOf(eventByPath.events[m]) == -1) {
 
-                                                            $scope.allSessionEvent.group[k].readCount = $scope.allSessionEvent.group[k].readCount + 1;
-                                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
+                                                            vm.allSessionEvent.group[k].readCount = vm.allSessionEvent.group[k].readCount + 1;
+                                                            vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
                                                             eventByPath.events[m].read = false;
 
-                                                            $scope.allSessionEvent.group[k].eventId = eventByPath.eventId;
-                                                            $scope.allSessionEvent.group[k].events.push(eventByPath.events[m]);
+                                                            vm.allSessionEvent.group[k].eventId = eventByPath.eventId;
+                                                            vm.allSessionEvent.group[k].events.push(eventByPath.events[m]);
                                                         }
                                                     }
                                                     flag = false;
@@ -1078,8 +1086,8 @@
                                             }
                                         if (flag) {
                                             eventByPath.readCount = 1;
-                                            $scope.allSessionEvent.eventUnReadCount = $scope.allSessionEvent.eventUnReadCount + 1;
-                                            $scope.allSessionEvent.group.push(eventByPath);
+                                            vm.allSessionEvent.eventUnReadCount = vm.allSessionEvent.eventUnReadCount + 1;
+                                            vm.allSessionEvent.group.push(eventByPath);
                                         }
                                     }
                                 }
@@ -1087,7 +1095,7 @@
                         }
                     }
                 }
-                $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify($scope.allSessionEvent));
+                $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify(vm.allSessionEvent));
             }
         }
 
@@ -1095,17 +1103,17 @@
         vm.expandNotification = function (group) {
             vm.showEvent = !vm.showEvent;
             vm.showGroupEvent = group;
-            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify($scope.allSessionEvent));
+            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify(vm.allSessionEvent));
 
         };
         vm.collapseNotification = function () {
             vm.showEvent = !vm.showEvent;
-            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify($scope.allSessionEvent));
+            $window.sessionStorage.$SOS$ALLEVENT = angular.copy(JSON.stringify(vm.allSessionEvent));
         };
 
         vm.updateAllEvent = function (event) {
-            $scope.allSessionEvent = [];
-            $scope.allSessionEvent = event;
+            vm.allSessionEvent = [];
+            vm.allSessionEvent = event;
         };
         vm.readEvent = function (group, event, allSessionEvent) {
             if (event.read == false) {
@@ -1350,9 +1358,10 @@
 
     PeriodEditorCtrl.$inject = ["$scope", "$rootScope", "gettextCatalog"];
     function PeriodEditorCtrl($scope, $rootScope, gettextCatalog) {
-        $scope.period = {};
-        $scope.editor = {};
-        $scope.editor.when_holiday_options = {
+        var vm = $scope;
+        vm.period = {};
+        vm.editor = {};
+        vm.editor.when_holiday_options = {
             'previous_non_holiday': gettextCatalog.getString('previous non holiday'),
             'next_non_holiday': gettextCatalog.getString('next non holiday'),
             'suppress': gettextCatalog.getString('suppress execution (default)'),
@@ -1363,85 +1372,85 @@
             var data = angular.copy(data1);
             frequency = data;
 
-            $scope.period = {};
-            $scope.period.period = {};
+            vm.period = {};
+            vm.period.period = {};
             if (!data.periodStr) {
-                $scope.period.frequency = 'single_start';
-                $scope.period.period._single_start = '00:00';
-                $scope.period.period._when_holiday = 'suppress';
-                $scope.editor.editPeriod = false;
-                $scope.editor.createPeriod = true;
-                $scope.strPeriod = 'New period';
+                vm.period.frequency = 'single_start';
+                vm.period.period._single_start = '00:00';
+                vm.period.period._when_holiday = 'suppress';
+                vm.editor.editPeriod = false;
+                vm.editor.createPeriod = true;
+                vm.strPeriod = 'New period';
             } else {
                 if (data.period._single_start) {
-                    $scope.period.frequency = 'single_start';
-                    $scope.period.period._single_start = data.period._single_start;
+                    vm.period.frequency = 'single_start';
+                    vm.period.period._single_start = data.period._single_start;
                 }
                 else if (data.period._absolute_repeat) {
-                    $scope.period.frequency = 'absolute_repeat';
-                    $scope.period.period._absolute_repeat = data.period._absolute_repeat;
+                    vm.period.frequency = 'absolute_repeat';
+                    vm.period.period._absolute_repeat = data.period._absolute_repeat;
                 }
                 else if (data.period._repeat) {
-                    $scope.period.frequency = 'repeat';
-                    $scope.period.period._repeat = data.period._repeat;
+                    vm.period.frequency = 'repeat';
+                    vm.period.period._repeat = data.period._repeat;
                 }
                 if (data.period._begin) {
-                    $scope.period.period._begin = data.period._begin;
+                    vm.period.period._begin = data.period._begin;
                 }
                 if (data.period._end) {
-                    $scope.period.period._end = data.period._end;
+                    vm.period.period._end = data.period._end;
                 }
 
-                $scope.period.period._when_holiday = data.period._when_holiday || 'suppress';
+                vm.period.period._when_holiday = data.period._when_holiday || 'suppress';
 
-                $scope.editor.createPeriod = false;
-                $scope.editor.editPeriod = true;
-                $scope.strPeriod = data.periodStr;
+                vm.editor.createPeriod = false;
+                vm.editor.editPeriod = true;
+                vm.strPeriod = data.periodStr;
             }
         });
 
         $scope.$on('update-period', function (event, data1) {
             frequency = {};
             var data = angular.copy(data1);
-            $scope.period = {};
-            $scope.period.period = {};
+            vm.period = {};
+            vm.period.period = {};
             if (!data.period) {
-                $scope.period.frequency = 'single_start';
-                $scope.period.period._single_start = '00:00';
-                $scope.period.period._when_holiday = 'suppress';
-                $scope.editor.editPeriod = false;
-                $scope.editor.createPeriod = true;
-                $scope.strPeriod = 'New period';
+                vm.period.frequency = 'single_start';
+                vm.period.period._single_start = '00:00';
+                vm.period.period._when_holiday = 'suppress';
+                vm.editor.editPeriod = false;
+                vm.editor.createPeriod = true;
+                vm.strPeriod = 'New period';
             } else {
                 var str = '';
                 if (data.period.period._begin) {
-                    $scope.period.period._begin = data.period.period._begin;
+                    vm.period.period._begin = data.period.period._begin;
                     str = data.period.period._begin;
                 }
                 if (data.period.period._end) {
-                    $scope.period.period._end = data.period.period._end;
+                    vm.period.period._end = data.period.period._end;
                     str = str + '-' + data.period.period._begin;
                 }
                 if (data.period.period._single_start) {
-                    $scope.period.frequency = 'single_start';
-                    $scope.period.period._single_start = data.period.period._single_start;
+                    vm.period.frequency = 'single_start';
+                    vm.period.period._single_start = data.period.period._single_start;
                     str = 'Single start: ' + data.period.period._single_start;
                 }
                 else if (data.period.period._absolute_repeat) {
-                    $scope.period.frequency = 'absolute_repeat';
-                    $scope.period.period._absolute_repeat = data.period.period._absolute_repeat;
+                    vm.period.frequency = 'absolute_repeat';
+                    vm.period.period._absolute_repeat = data.period.period._absolute_repeat;
                     str = str + ' every ' + getTimeInString(data.period.period._absolute_repeat);
                 }
                 else if (data.period.period._repeat) {
-                    $scope.period.frequency = 'repeat';
-                    $scope.period.period._repeat = data.period.period._repeat;
+                    vm.period.frequency = 'repeat';
+                    vm.period.period._repeat = data.period.period._repeat;
                     str = str + ' every ' + getTimeInString(data.period.period._repeat);
                 }
-                $scope.strPeriod = str;
-                $scope.period.period._when_holiday = data.period.period._when_holiday || 'suppress';
+                vm.strPeriod = str;
+                vm.period.period._when_holiday = data.period.period._when_holiday || 'suppress';
 
-                $scope.editor.createPeriod = false;
-                $scope.editor.editPeriod = true;
+                vm.editor.createPeriod = false;
+                vm.editor.editPeriod = true;
             }
         });
 
@@ -1458,38 +1467,38 @@
             }
         }
 
-        $scope.cancel = function (form1) {
-            $scope.period = {};
-            $scope.period.period = {};
+        vm.cancel = function (form1) {
+            vm.period = {};
+            vm.period.period = {};
             $rootScope.$broadcast('cancel-period');
             if (form1)
                 form1.$setPristine();
             $('#period-editor').modal('hide');
             $('.fade-modal').css('opacity',1);
         };
-        $scope.save = function (form1) {
+        vm.save = function (form1) {
 
-            if ($scope.period.frequency == 'single_start') {
-                delete $scope.period.period['_repeat'];
-                delete $scope.period.period['_absolute_repeat'];
-                delete $scope.period.period['_begin'];
-                delete $scope.period.period['_end'];
+            if (vm.period.frequency == 'single_start') {
+                delete vm.period.period['_repeat'];
+                delete vm.period.period['_absolute_repeat'];
+                delete vm.period.period['_begin'];
+                delete vm.period.period['_end'];
             }
-            else if ($scope.period.frequency == 'repeat' || $scope.period.frequency == 'absolute_repeat') {
-                delete $scope.period.period['_single_start'];
-                if ($scope.period.frequency == 'repeat') {
-                    delete $scope.period.period['_absolute_repeat'];
+            else if (vm.period.frequency == 'repeat' || vm.period.frequency == 'absolute_repeat') {
+                delete vm.period.period['_single_start'];
+                if (vm.period.frequency == 'repeat') {
+                    delete vm.period.period['_absolute_repeat'];
                 } else {
-                    delete $scope.period.period['_repeat'];
+                    delete vm.period.period['_repeat'];
                 }
             }
 
             $rootScope.$broadcast('save-period', {
-                period: $scope.period,
+                period: vm.period,
                 frequency: frequency
             });
-            $scope.period = {};
-            $scope.period.period = {};
+            vm.period = {};
+            vm.period.period = {};
             if (form1) {
                 form1.$setPristine();
                 form1.$setUntouched();
@@ -1582,7 +1591,7 @@
                 return time.toString().substring(6, time.length) + ' seconds'
             } else if (time.toString().substring(0, 2) == '00') {
                 return time.toString().substring(3, time.length) + ' minutes'
-            } else if ((time.toString().substring(0, 2) != '00' && time.length==5) ||(time.length>5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
+            } else if ((time.toString().substring(0, 2) != '00' && time.length == 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
                 return time.toString().substring(0, 5) + ' hours'
             } else {
                 return time;
@@ -1924,7 +1933,7 @@
                 xmlStr = xmlStr.replace(/,/g, ' ');
                 vm.xml = xmlStr;
             } else {
-                vm.xml = x2js.json2xml_str({run_time: 'run_time'});
+                vm.xml = x2js.json2xml_str({run_time: {}});
             }
             vm.runTime1 = {};
             vm.holidayDates = [];
@@ -7766,6 +7775,11 @@
             getXml2Json(xmlStr);
         };
 
+        vm.removeTimeZone = function() {
+            vm.runTime1.timeZone = '';
+            vm.createRunTime();
+        };
+
         vm.createNewRunTime = function () {
             vm.editor.hidePervious = true;
             vm.editor.create = true;
@@ -8022,6 +8036,8 @@
 
             if (vm.runTime1.timeZone) {
                 vm.run_time._time_zone = vm.runTime1.timeZone;
+            }else{
+                delete vm.run_time['_time_zone'];
             }
             if (vm.sch) {
                 if (vm.sch._name) {
@@ -8041,7 +8057,7 @@
                     vm.run_time._title = vm.sch._title;
                 }
             }
-            deleteEmptyValue(vm.run_time)
+            deleteEmptyValue(vm.run_time);
             if (vm.order) {
                 vm.run_time = {run_time: vm.run_time};
             }
@@ -9800,7 +9816,6 @@
 
             return runtimeList;
         }
-
 
         vm.runtimeList = xml2Json(vm.xml);
         vm.runtimeList1 = xml2Json(vm.xml1);

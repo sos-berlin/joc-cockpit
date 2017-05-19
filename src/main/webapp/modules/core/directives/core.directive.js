@@ -18,6 +18,7 @@
                 e.$on("$stateChangeStart", function (i, r, o, l) {
                     if (n.removeClass("hide"), a = new Date, "/job_chain_detail" === r.url)return t.go("app.jobChainDetails.orders"), void i.preventDefault();
                     if ("/resources" === r.url && "app.resources.agentClusters" != l.name)return t.go("app.resources.agentClusters"), void i.preventDefault();
+                    if ("/users" === r.url && "app.users.user" != l.name)return t.go("app.users.user"), void i.preventDefault();
                     if ("/resources" === r.url && "app.resources.agentClusters" == l.name)return n.addClass("hide"), void i.preventDefault();
                     if (e.clientLogFilter.isEnable) {
                         var s = {message: "START LOADING " + r.url, logTime: a, level: "debug2"};

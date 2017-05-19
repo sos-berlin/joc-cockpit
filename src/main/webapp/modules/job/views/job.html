@@ -373,12 +373,12 @@
                         <table class="table table-hover table-bordered" id="jobTableId">
                             <thead>
                             <tr>
-                                <th class="noExl" width="30" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                <th class="tableexport-ignore" width="30" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                                     </label>
                                 </th>
-                                <th class="noExl" width="45"><span translate>label.action</span></th>
+                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobName</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'name' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -457,12 +457,12 @@
                             <tbody ng-repeat="job in filtered = (allJobs | filter: filterString:strict) | orderBy:jobFilters.filter.sortBy:jobFilters.reverse | startFrom:(jobFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage track by $index"
                                 ng-class="{'light-bg':showTaskPanel == job}">
                                 <tr title="{{job.configurationStatus._text | translate}}">
-                                    <td class="noExl" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                    <td class="tableexport-ignore" ng-if="permission.Job.execute.start || permission.Job.execute.stop || permission.Job.execute.unstop || permission.Job.execute.kill || permission.Job.execute.terminate">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="object.jobs" data-checklist-value="job"><i class="primary"></i>
                                         </label>
                                     </td>
-                                    <td class="noExl">
+                                    <td class="tableexport-ignore">
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i class="fa fa-ellipsis-h"></i></button>
                                                 <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
@@ -481,13 +481,13 @@
                                                     <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)" translate>button.copyLinkToObject</a>
                                                 </div>
                                             </div>
-                                        </td>
+                                    </td>
                                     <td>
-                                        <i class="cursor fa fa-caret-down noExl fa-lg" ng-class="{'disable-link': !job.usedInJobChains}" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
-                                        <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="job.showJobChains" ng-click="job.showJobChains = false"></i>
+                                        <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-class="{'disable-link': !job.usedInJobChains}" ng-if="!job.showJobChains" ng-click="showJobChains(job)"></i>
+                                        <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="job.showJobChains" ng-click="job.showJobChains = false"></i>
                                         <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name"></span>
                                         <span ng-if="job.title">-</span><i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
-                                        <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask" ng-repeat="task in job.runningTasks">
+                                        <div class="p-l-sm tableexport-ignore" ng-if="job.runningTasks && showTask" ng-repeat="task in job.runningTasks">
                                             <span class="text-xs">
                                                 <span translate>label.task</span>:
                                                 <span class="text-primary">{{task.taskId}}</span> -
@@ -798,8 +798,8 @@
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
                                                         <td>
-                                                        <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                        <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                        <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                        <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                         <span ng-bind="auditLog.created | stringToDate"></span>
                                                         </td>
                                                         <td><span ng-bind="auditLog.account"></span></td>
@@ -814,7 +814,7 @@
                                                         </td>
                                                         <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
-                                                    <tr class="noExl" ng-show="auditLog.show">
+                                                    <tr class="tableexport-ignore" ng-show="auditLog.show">
                                                         <td colspan="6">
                                                             <table class="table m-a-0">
                                                             <thead>

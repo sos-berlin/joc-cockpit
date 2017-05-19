@@ -446,7 +446,7 @@
                     <table class="table table-hover table-bordered " id="jobChain" >
                         <thead>
                             <tr>
-                                <th class="noExl" width="45"><span translate>label.action</span></th>
+                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
                                     <i ng-show="order.filter.sortBy == 'orderId' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -494,7 +494,7 @@
                         </thead>
                         <tbody ng-repeat="history in filtered = (historys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':history.show}">
                         <tr  class="cursor">
-                            <td class="noExl">
+                            <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
@@ -505,8 +505,8 @@
                                 </div>
                             </td>
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
                                 <span ng-bind="history.orderId"></span>
                             </td>
                             <td ng-click="showLogWindow(history,null)">
@@ -518,12 +518,12 @@
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | duration:history.endTime"></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.node || '-' "></td>
                         </tr>
-                        <tr class="noExl" ng-show="history.show">
+                        <tr class="tableexport-ignore" ng-show="history.show">
                             <td></td>
-                         <td colspan="8">
+                         <td colspan="8" >
                              <table class="table m-a-0">
                                  <thead>
-                                 <tr>
+                                 <tr class="tableexport-ignore">
                                      <th translate>label.step</th>
                                      <th translate>label.state</th>
                                      <th translate>label.job</th>
@@ -587,7 +587,7 @@
                     <table class="table table-hover table-bordered " id="job">
                         <thead>
                             <tr>
-                               <th class="noExl" width="45"><span translate>label.action</span></th>
+                               <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy1('taskId')"><a><span translate>label.taskId</span>
                                     <i ng-show="task.filter.sortBy == 'taskId' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -631,12 +631,12 @@
                                     <i ng-show="task.filter.sortBy == 'exitCode' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th class="noExl"></th>
+                                <th class="tableexport-ignore"></th>
                             </tr>
                         </thead>
                         <tbody >
                         <tr ng-repeat="jobHistory in jobFiltered = (jobHistorys | filter: filterString:strict) | orderBy:task.filter.sortBy:task.sortReverse | startFrom:(task.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" class="cursor">
-                            <td class="noExl">
+                            <td class="tableexport-ignore">
                                 <div class="btn-group dropdown">
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
@@ -760,8 +760,7 @@
 </div>
 <script>
     $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
+        var $menu = $(e.target).find('.more-option-h');
         if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
             $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
             $('.dropdown-menu-list').removeClass('dropdown-ac');

@@ -532,13 +532,12 @@
                                  ng-class="{'show': (filtered.length===0 && allOrders.length !==0)}"
                                  translate>message.noDataMatched</div>
                         </div>
-
                         <div class="hide box p-a " ng-class="{'show': pageView=='list' && allOrders.length >0}">
                             <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
                                 <table class="table table-hover table-bordered " id="orderTableId">
                                     <thead>
                                     <tr>
-                                        <th class="noExl" width="30"
+                                        <th class="tableexport-ignore" width="30"
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="allCheck.checkbox"
@@ -546,7 +545,7 @@
                                                     class="primary"></i>
                                             </label>
                                         </th>
-                                        <th class="noExl" width="45"><span translate>label.action</span></th>
+                                        <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                         <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
                                             <i ng-show="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
                                                class="fa fa-caret-up "></i>
@@ -603,14 +602,14 @@
                                     <tbody ng-repeat="order in filtered = (allOrders | filter: filterString:strict) | orderBy:orderFilters.filter.sortBy:orderFilters.reverse | startFrom:(orderFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage track by $index"
                                            ng-class="{'light-bg':showLogPanel == order}">
                                     <tr>
-                                        <td class="noExl"
+                                        <td class="tableexport-ignore"
                                             ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
                                             <label class="md-check">
                                                 <input type="checkbox" data-checklist-model="object.orders"
                                                        data-checklist-value="order"><i class="primary"></i>
                                             </label>
                                         </td>
-                                        <td class="noExl">
+                                        <td class="tableexport-ignore">
                                             <div class="btn-group dropdown ">
                                                 <button type="button" class="btn-drop more-option-h"
                                                         data-toggle="dropdown"><i
@@ -675,9 +674,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
+                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!order.show"
                                                ng-click="showPanelFuc(order)"></i>
-                                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show"
+                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="order.show"
                                                ng-click="order.show=false"></i>
 
                                                     <span class="text-hover-primary" ng-click="showLogFuc(order)"><span
@@ -704,7 +703,7 @@
                                         <td>
                                             <span ng-if="order.startedAt"
                                                   ng-bind="order.startedAt | stringToDate"></span>
-                                            <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}"
+                                            <span class="hide tableexport-ignore" ng-class="{'show-inline':!order.startedAt}"
                                                   translate>label.never</span>
                                         </td>
                                         <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span
@@ -718,18 +717,18 @@
                                                            ng-if="order.runTimeIsTemporary"></i>{{order.nextStartTime | stringToDate}}
                                                         <span class="text-success">(<span
                                                                 time="{{order.nextStartTime}}"></span>)</span></span>
-                                            <span class="hide noExl"
+                                            <span class="hide tableexport-ignore"
                                                   ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
                                                   translate>label.never</span>
                                         </td>
                                     </tr>
-                                    <tr ng-show="order.show" class="noExl">
+                                    <tr ng-show="order.show" class="tableexport-ignore">
 
                                         <td></td>
                                         <td colspan="9" style="padding: 1px !important;">
                                             <table class="table m-a-0">
                                                 <thead>
-                                                <tr>
+                                                <tr class="tableexport-ignore">
                                                     <th translate>label.type</th>
                                                     <th translate>label.stateText</th>
                                                     <th translate>label.endState</th>
@@ -739,7 +738,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr>
+                                                <tr class="tableexport-ignore">
                                                     <td>{{order._type | translate}}</td>
                                                     <td><span ng-bind-html="order.stateText | linky:'_blank'"></span>
                                                     </td>
@@ -905,10 +904,10 @@
                                                         <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                         <tr>
                                                             <td>
-                                                                <i class="cursor fa fa-caret-down fa-lg noExl"
+                                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
                                                                    ng-if="!auditLog.show"
                                                                    ng-click="auditLog.show =true"></i>
-                                                                <i class="cursor fa fa-caret-up fa-lg noExl"
+                                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
                                                                    ng-if="auditLog.show"
                                                                    ng-click="auditLog.show =false"></i>
                                                                 <span ng-bind="auditLog.created | stringToDate"></span>
@@ -927,7 +926,7 @@
                                                                    class="text-hover-primary" target="_blank"
                                                                    ng-bind="auditLog.ticketLink"></a></td>
                                                         </tr>
-                                                        <tr class="noExl" ng-show="auditLog.show">
+                                                        <tr class="tableexport-ignore" ng-show="auditLog.show">
                                                             <td colspan="6">
                                                                 <table class="table m-a-0">
                                                                     <thead>
