@@ -218,22 +218,22 @@
                             </td>
                             <td><a href="{{auditLog.ticketLink}}" target="_blank" class="text-hover-primary" ng-bind="auditLog.ticketLink"></a></td>
                         </tr>
-                        <tr class="noExl" ng-show="auditLog.show">
-                         <td colspan="9">
-                             <table class="table m-a-0">
-                                 <thead>
-                                 <tr>
-                                     <th translate>label.parameters</th>
-                                 </tr>
-                                 </thead>
-                                 <tbody>
-                                 <tr>
-                                     <td><span ng-bind="auditLog.parameters"></span></td>
-                                 </tr>
-                                 </tbody>
-                             </table>
-                         </td>
-                     </tr>
+                        <tr class="tableexport-ignore" ng-show="auditLog.show">
+                            <td colspan="9">
+                                <table class="table m-a-0">
+                                    <thead>
+                                    <tr class="tableexport-ignore">
+                                        <th translate>label.parameters</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="tableexport-ignore">
+                                        <td><span ng-bind="auditLog.parameters"></span></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}

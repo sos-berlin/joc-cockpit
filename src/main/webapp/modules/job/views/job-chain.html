@@ -381,14 +381,14 @@
                                ng-controller="OrderFunctionCtrl">
                             <thead>
                             <tr>
-                                <th class="noExl" width="30" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
+                                <th class="tableexport-ignore" width="30" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
                                     <label class="md-check lg-check">
                                         <input type="checkbox" ng-model="jobChainCheckAll.checkbox"
                                                ng-click="jobChainCheckAll()">
                                         <i class="primary"></i>
                                     </label>
                                 </th>
-                                <th class="noExl" width="45" translate>label.action</th>
+                                <th class="tableexport-ignore" width="45" translate>label.action</th>
                                 <th ng-click="sortBy('name')"><a><span translate>label.jobChain</span>
                                     <i ng-show="jobChainFilters.filter.sortBy == 'name' && !jobChainFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -464,13 +464,13 @@
                             <tbody ng-repeat="jobChain in filtered = (allJobChains | filter: filterString:strict) | orderBy:jobChainFilters.filter.sortBy:jobChainFilters.reverse | startFrom:(jobChainFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage track by $index"
                                    ng-class="{'light-bg':jobChain.show}">
                             <tr title="{{jobChain.configurationStatus._text | translate}}">
-                                <td class="noExl" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
+                                <td class="tableexport-ignore" ng-if="permission.JobChain.execute.stop || permission.JobChain.execute.unstop">
                                     <label class="md-check">
                                         <input type="checkbox" data-checklist-model="object.jobChains"
                                                data-checklist-value="jobChain"><i class="primary"></i>
                                     </label>
                                 </td>
-                                <td class="noExl">
+                                <td class="tableexport-ignore">
                                     <div class="btn-group dropdown">
                                         <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                             <i class="fa fa-ellipsis-h"></i></button>
@@ -510,9 +510,9 @@
                                     </div>
                                 </td>
                                 <td >
-                                    <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!jobChain.show"
+                                    <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="!jobChain.show"
                                        ng-click="showNodePanelFuc(jobChain)"></i>
-                                    <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="jobChain.show"
+                                    <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="jobChain.show"
                                        ng-click="hideNodePanelFuc(jobChain)"></i>
 
                                     <span class="text-hover-primary" ng-click="showHistory(jobChain)"
@@ -552,7 +552,7 @@
                                        ng-bind="jobChain.ordersSummary.blacklist"></a>
                                 </td>
                             </tr>
-                            <tr ng-show="jobChain.show" class="noExl light-bg">
+                            <tr ng-show="jobChain.show" class="light-bg tableexport-ignore">
                                 <td></td>
                                 <td colspan="12" style="padding: 1px 2px 0 2px !important">
                                     <div ng-if="jobChain.configurationStatus">
@@ -577,7 +577,7 @@
                                                     <tbody ng-repeat="nestedJobChain in jobChain.nestedJobChains"
                                                            ng-if="nestedJobChain.path == node.jobChain.path">
                                                     <tr title="{{nestedJobChain.configurationStatus._text | translate}}" ng-class="{'light-bg':!nestedJobChain.hide}">
-                                                         <td class="noExl">
+                                                         <td class="tableexport-ignore">
                                                             <div class="btn-group dropdown">
                                                                 <button type="button" class="btn-drop more-option-h"
                                                                         data-toggle="dropdown">
@@ -628,9 +628,9 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="!nestedJobChain.hide"
+                                                            <i class="cursor fa fa-caret-up tableexport-ignore fa-lg" ng-if="!nestedJobChain.hide"
                                                                ng-click="nestedJobChain.hide =true"></i>
-                                                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="nestedJobChain.hide"
+                                                            <i class="cursor fa fa-caret-down tableexport-ignore fa-lg" ng-if="nestedJobChain.hide"
                                                                ng-click="nestedJobChain.hide = false"></i>
                                                             <span class="text-hover-primary"
                                                                   ng-click="showHistory(nestedJobChain)"
@@ -673,7 +673,7 @@
                                                                ng-bind="nestedJobChain.ordersSummary.blacklist"></a>
                                                         </td>
                                                     </tr>
-                                                    <tr ng-if="!nestedJobChain.hide" class="noExl light-bg">
+                                                    <tr ng-if="!nestedJobChain.hide" class="light-bg tableexport-ignore">
                                                         <td colspan="12">
                                                             <table class="table m-a-0">
                                                                 <thead>
@@ -971,7 +971,7 @@
                                     </table>
                                     <table class="table m-a-0" ng-if="!jobChain.nestedJobChains">
                                         <thead>
-                                        <tr>
+                                        <tr class="tableexport-ignore">
                                             <th width="45"><span translate>label.action</span></th>
                                             <th translate>label.state</th>
                                             <th translate>label.job</th>
@@ -1356,10 +1356,10 @@
                                                     <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
                                                     <tr>
                                                         <td >
-                                                            <i class="cursor fa fa-caret-down fa-lg noExl"
+                                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
                                                                ng-if="!auditLog.show"
                                                                ng-click="auditLog.show =true"></i>
-                                                            <i class="cursor fa fa-caret-up fa-lg noExl"
+                                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
                                                                ng-if="auditLog.show"
                                                                ng-click="auditLog.show =false"></i>
                                                             <span ng-bind="auditLog.created | stringToDate"></span>
@@ -1378,7 +1378,7 @@
                                                         <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
                                                                target="_blank" ng-bind="auditLog.ticketLink"></a></td>
                                                     </tr>
-                                                    <tr class="noExl" ng-show="auditLog.show">
+                                                    <tr class="tableexport-ignore" ng-show="auditLog.show">
                                                         <td colspan="7">
                                                             <table class="table m-a-0">
                                                                 <thead>

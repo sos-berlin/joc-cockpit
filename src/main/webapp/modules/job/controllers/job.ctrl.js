@@ -1721,15 +1721,26 @@
         };
 
         vm.exportToExcel = function () {
+
             $('#exportToExcelBtn').attr("disabled", true);
-            $('#jobChainTableId').table2excel({
-                exclude: ".noExl",
-                filename: "jobscheduler-jobchain",
-                fileext: ".xls",
-                exclude_img: false,
-                exclude_links: false,
-                exclude_inputs: false
-            });
+            if (!vm.isIE()) {
+                $('#jobChainTableId').table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: "jobscheduler-jobchain",
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            } else {
+                var ExportButtons = document.getElementById('jobChainTableId');
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false
+                });
+                var exportData = instance.getExportData()['jobChainTableId']['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, "jobscheduler-jobchain", exportData.fileExtension);
+            }
             $('#exportToExcelBtn').attr("disabled", false);
         };
 
@@ -2692,23 +2703,29 @@
                 initTree();
             })
         }
-
-
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
 
-            $('#jobTableId').table2excel({
-                exclude: ".noExl",
-                filename: "jobscheduler-job",
-                fileext: ".xls",
-                exclude_img: false,
-                exclude_links: false,
-                exclude_inputs: false
-            });
-
-            $('#exportToExcelBtn').attr("disabled", false);
+            if (!vm.isIE()) {
+                $('#jobTableId').table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: "jobscheduler-job",
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            }else {
+                var ExportButtons = document.getElementById('jobTableId');
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false
+                });
+                var exportData = instance.getExportData()['jobTableId']['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, "jobscheduler-job", exportData.fileExtension);
+            }
+             $('#exportToExcelBtn').attr("disabled", false);
         };
-
 
         /**
          * Function to initialized tree view
@@ -4869,10 +4886,15 @@
                     jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
             JobService.resetRunTime(jobs).then(function (res) {
-                job.runTimeIsTemporary = false;
+                JobService.get({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    jobs: [{job: job.path}]
+                }).then(function (res1) {
+                    job = angular.merge(job, res1.jobs[0]);
+                });
             });
 
-        };
+        }
         vm.resetRunTime = function (job) {
             vm.order = job;
             vm.comments = {};
@@ -5039,16 +5061,17 @@
                                     navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
                                 }
                             }
-                            if (vm.showTaskPanel && vm.showTaskPanel.path == path[0]) {
-                                var jobs = {};
-                                jobs.jobschedulerId = vm.schedulerIds.selected;
-                                jobs.job = path[0];
-                                JobService.history(jobs).then(function (res) {
-                                    vm.taskHistory = res.history;
-                                });
-                            }
+
                         }
 
+                    }
+                    if (vm.showTaskPanel && value1.eventType == "ReportingChangedJob" && !value1.eventId) {
+                        var jobs = {};
+                        jobs.jobschedulerId = vm.schedulerIds.selected;
+                        jobs.job = vm.showTaskPanel.path;
+                        JobService.history(jobs).then(function (res) {
+                            vm.taskHistory = res.history;
+                        });
                     }
                     if ((value1.eventType == "FileBasedActivated" || value1.eventType == "FileBasedRemoved" ) && value1.objectType == "JOB") {
 

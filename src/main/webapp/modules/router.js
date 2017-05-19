@@ -194,10 +194,23 @@
             ncyBreadcrumb: {label: "{{ 'breadcrumb.userProfile' | translate}}"}
         }).state("app.users", {
             url: "/users",
-            templateUrl: "modules/user/views/users.html",
+            templateUrl: "modules/user/views/user-main.html",
             controller: "UsersCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.mangeUser' | translate}}"}
+        }).state("app.users.user", {
+            url: "/all",
+            templateUrl: "modules/user/views/user.html",
+            ncyBreadcrumb: {skip: !0}
+        }).state("app.users.permission", {
+            url: "/permission/:master/:role",
+            templateUrl: "modules/user/views/permission.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.permissions' | translate}}", parent: "app.users.role"}
+        }).state("app.users.role", {
+            url: "/role",
+            templateUrl: "modules/user/views/role.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.roles' | translate}}", parent: "app.users.user"}
         })
+
     }
 
     angular.module("app").config(e), e.$inject = ["$stateProvider", "$urlRouterProvider"]

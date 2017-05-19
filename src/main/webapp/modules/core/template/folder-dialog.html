@@ -1,0 +1,39 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title" >
+            <span ng-if="!newFolder">
+                <span translate>label.editFolder</span>:
+                <span>{{:: folder.folder}}</span>
+            </span>
+            <span ng-if="newFolder" translate>label.addFolder</span>
+        </h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.folder</label>
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+                    <input type="text" class="form-control" name="name" placeholder="{{'placeholder.folderPath' | translate}}" ng-model="folder.folder" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.recursive</label>
+                <div class=" col-sm-6">
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="folder.recursive">
+                        <i class="primary"></i><span class="m-l-xs" translate> </span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
