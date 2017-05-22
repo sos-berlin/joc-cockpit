@@ -4817,6 +4817,8 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     jobs: [{job: job.path}]
                 }).then(function (res1) {
+                    job.nextStartTime = undefined;
+                    job.startedAt = undefined;
                     job = angular.merge(job, res1.jobs[0]);
                 });
             });
@@ -4890,6 +4892,8 @@
                     jobschedulerId: vm.schedulerIds.selected,
                     jobs: [{job: job.path}]
                 }).then(function (res1) {
+                    job.nextStartTime = undefined;
+                    job.startedAt = undefined;
                     job = angular.merge(job, res1.jobs[0]);
                 });
             });

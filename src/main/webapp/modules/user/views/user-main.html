@@ -18,10 +18,8 @@
                         <i class="fa fa-plus"></i>
                         {{'button.addRole'| translate}}
                     </button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="!editor.edit && state == 'permission'" ng-click="addFolder()" translate="">button.addFolder</button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="!editor.edit && state == 'permission'" ng-click="editor.edit = true;"  translate="">button.editPermission</button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="editor.edit && state == 'permission'" ng-click="cancelPermission();editor.edit = false;"  translate="">button.cancel</button>
-                    <button type="button" class="btn btn-sm btn-primary m-l-sm" ng-if="editor.edit && state == 'permission'" ng-click="savePermission();editor.edit = false;" translate="">button.save</button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addFolder()" translate="">button.addFolder</button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addPermission();"  translate="">button.addPermission</button>
                 </div>
             </div>
         </div>
@@ -41,8 +39,8 @@
                         <span class="separator"></span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" ui-sref-active="active" ui-sref="app.users.role">
-                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.roles</span></span>
+                        <a class="nav-link" ui-sref-active="active" ui-sref="app.users.master">
+                            <span class="nav-text text-dark p-b-sm"><span class="text" translate>label.masters</span></span>
                         </a>
                     </li>
                 </ul>

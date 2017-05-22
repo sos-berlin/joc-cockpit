@@ -204,11 +204,11 @@
         }).state("app.users.permission", {
             url: "/permission/:master/:role",
             templateUrl: "modules/user/views/permission.html",
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.permissions' | translate}}", parent: "app.users.role"}
-        }).state("app.users.role", {
-            url: "/role",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.permissions' | translate}}", parent: "app.users.master"}
+        }).state("app.users.master", {
+            url: "/master",
             templateUrl: "modules/user/views/role.html",
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.roles' | translate}}", parent: "app.users.user"}
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.masters' | translate}}", parent: "app.users.user"}
         })
 
     }

@@ -3,7 +3,7 @@
         <table class="table table-hover table-bordered ">
             <thead>
             <tr>
-                <th width="55"><span translate>label.action</span></th>
+                <!--<th width="55"><span translate>label.action</span></th>-->
                 <th><span translate>label.user</span></th>
                 <th><span translate>label.password</span></th>
                 <th><span translate>label.roles</span></th>
@@ -11,20 +11,14 @@
             </thead>
             <tbody ng-repeat="user in filtered = (users | filter: filterString:strict)  | orderBy:'user' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
             <tr>
-                <td class="noExl">
-                    <div class="btn-group dropdown">
-                        <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
-                                class="fa fa-ellipsis-h"></i></button>
-                        <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
-                            <a class="dropdown-item" ng-click="editUser(user)" translate>button.edit</a>
-                            <a class="dropdown-item" ng-click="deleteUser(user)" ng-class="{'disable-link' :username==user.user}" translate>button.delete</a>
-                        </div>
-                    </div>
-                </td>
                 <td><span ng-bind="user.user"></span></td>
                 <td><span>{{'********************************' | limitTo:user.password.length}}</span></td>
                 <td>
                     <div ng-repeat="role in user.roles"><a ui-sref="app.users.role" class="text-primary" ng-bind="role"></a></div>
+                </td>
+                <td>
+                    <a><i ng-click="editUser(user)" class="fa fa-pencil m-r-sm"></i></a>
+                    <a ng-class="{'disable-link' :username==user.user}"><i ng-click="deleteUser(user)" class="fa fa-times "></i></a>
                 </td>
             </tr>
             </tbody>

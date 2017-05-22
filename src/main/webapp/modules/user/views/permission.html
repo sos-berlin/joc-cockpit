@@ -9,11 +9,11 @@
         <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel2" ng-click="showPanel2=true"></i>
         <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel2" ng-click="showPanel2=false"></i>
     </div>
-    <div class="col-sm-12 m-t-sm" ng-show="!showPanel2">
+    <div class="col-sm-12 m-t-sm" ng-show="!showPanel2" >
         <div class="box p-a m-b-0">
             <div class="row ">
-                <div class="col-md-6 role m-b-sm" ng-repeat="f in folderArr track by $index">
-                    <span  >
+                <div class="col-md-12 role" ng-repeat="f in folderArr track by $index">
+                    <span>
                         {{f.folder}}<span ng-if="f.recursive">/*</span>
                         <i ng-click="editFolder(f)" class="fa fa-pencil m-l-xs" uib-tooltip="{{'label.edit' | translate}}" ></i>
                         <i ng-click="deleteFolder(f)" class="fa fa-times m-l-xs" uib-tooltip="{{'label.delete' | translate}}" ></i>
@@ -36,14 +36,19 @@
     <div class="col-sm-12 m-t-sm" ng-show="!showPanel1">
         <div class="box p-a ">
             <div class="row ">
-                <div class="col-md-6" ng-repeat="p in permissionArr track by $index">
+<!--                <div class="col-md-6" ng-repeat="p in permissionArr track by $index">
                     <label class="md-check">
                         <input type="checkbox" ng-model="p.checked" ng-disabled="!editor.edit">
                         <i class="primary"></i><span class="m-l-xs" translate> {{p.permission}}</span>
                     </label>
+                </div>-->
+                <div class="col-md-12 role" ng-repeat="p in rolePermissions track by $index">
+                    <span>
+                        <span ng-if="p.excluded" class="_600">-</span>{{p.path}}
+                        <i ng-click="deletePermission(p)" class="fa fa-times m-l-xs" uib-tooltip="{{'label.delete' | translate}}" ></i>
+                    </span>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

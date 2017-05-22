@@ -335,7 +335,16 @@
                 });
                 return deferred.promise;
             },
-
+             cleanup: function (filter) {
+                var deferred = $q.defer();
+                var JobScheduler = $resource('jobscheduler/cleanup');
+                JobScheduler.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
              restartWithin: function (filter) {
                 var deferred = $q.defer();
                 var JobScheduler = $resource('jobscheduler/restart');
