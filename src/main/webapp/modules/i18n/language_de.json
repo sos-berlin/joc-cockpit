@@ -1000,6 +1000,7 @@
   "label.role": "Role",
   "label.users": "Users",
   "label.master": "Master",
+  "label.masters": "Masters",
   "label.addUser": "Create User",
   "label.addRole": "Create Role",
   "label.editUser": "Edit User",
@@ -1011,8 +1012,9 @@
   "button.addUser": "Create User",
   "button.addRole": "Create Role",
   "button.addMaster": "Create Master",
-  "button.editPermission": "Edit Permission",
+  "button.addPermission": "Add Permission",
   "button.addFolder": "Add Folder",
+  "button.removeInstance": "Remove Old Instances",
   "label.masterList": "List of Masters",
   "placeholder.user": "Enter user",
   "placeholder.password": "Enter password",
@@ -1021,10 +1023,12 @@
   "placeholder.selectRoles": "Select Roles",
   "placeholder.folderPath": "Enter folder path",
   "breadcrumb.permissions": "Permissions",
-  "breadcrumb.roles": "Roles",
+  "breadcrumb.masters": "Masters",
   "message.deleteUser": "Deleting a user will permanently remove it from this application.",
   "message.deleteRole": "Deleting a role will permanently remove it from this master.",
   "message.deleteMaster": "Deleting a master will permanently remove it from this application.",
   "message.deleteFolder": "Deleting a folder will permanently remove it from the permission list.",
-  "message.noFolderFound": "No Folder Found"
+  "message.deletePermission": "Deleting a permission will permanently remove it from the application.",
+  "message.noFolderFound": "No Folder Found",
+  "message.noInformationAvailable": "no information available"
 }

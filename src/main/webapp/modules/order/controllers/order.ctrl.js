@@ -5180,6 +5180,10 @@
                 orders.jobschedulerId = $scope.schedulerIds.selected;
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
                 OrderService.get(orders).then(function (res) {
+                    order.nextStartTime = undefined;
+                    order.startedAt = undefined;
+                    order.at = undefined;
+                    order.runTime = undefined;
                     order = angular.merge(order, res.orders[0]);
                 });
             });
@@ -5249,6 +5253,8 @@
             }
             OrderService.resetRunTime(orders).then(function (res) {
                 OrderService.get(orders).then(function (res) {
+                    order.nextStartTime = undefined;
+                    order.startedAt = undefined;
                     order = angular.merge(order, res.orders[0]);
                 });
             });

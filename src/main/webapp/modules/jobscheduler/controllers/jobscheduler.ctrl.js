@@ -313,6 +313,13 @@
 
 
         function insertData(node, x) {
+            for (var i = 0; i < node.agentClusters.length; i++) {
+                for (var j = 0; j < x.length; j++) {
+                    if (node.path == x[j].path.substring(0, x[j].path.lastIndexOf('/')) || node.path == x[j].path.substring(0, x[j].path.lastIndexOf('/') + 1)) {
+                        x[j].show = node.agentClusters[i].show;
+                    }
+                }
+            }
             node.agentClusters = [];
             for (var i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1)) {
@@ -1675,7 +1682,7 @@
 
                             var path = event.path;
 
-                            if (vm.allLocks.length > 0) {
+                            if (vm.allLocks && vm.allLocks.length > 0) {
                                 for (var j = 0; j < vm.allLocks.length; j++) {
                                     if (path.substring(0, path.lastIndexOf('/')) == vm.allLocks[j].path.substring(0, vm.allLocks[j].path.lastIndexOf('/'))) {
                                         navFullTreeForUpdateLock(path.substring(0, path.lastIndexOf('/')));
@@ -1683,9 +1690,9 @@
                                     }
                                 }
                             } else {
+                                vm.allLocks = [];
                                 navFullTreeForUpdateLock(path.substring(0, path.lastIndexOf('/')));
                             }
-
                         } else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
                             ResourceService.tree({
                                 jobschedulerId: vm.schedulerIds.selected,
@@ -2302,6 +2309,7 @@
                  isLoadedAgentCluster = true;
             });
         };
+        if (vm.permission && vm.permission.JobschedulerUniversalAgent && vm.permission.JobschedulerUniversalAgent.view.status)
         vm.getAgentCluster();
 
         vm.barOptions = {
@@ -2621,14 +2629,17 @@
                     JobSchedulerService.pause(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
                     JobSchedulerService.continue(obj);
-                } else if (objectType == 'cluster' && action == 'terminate') {
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'remove') {
+                    JobSchedulerService.cleanup(obj);
+                }else if (objectType == 'cluster' && action == 'terminate') {
 
                     JobSchedulerService.terminateCluster(obj1);
                 } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
                     JobSchedulerService.terminateFailsafeCluster(obj1);
                 } else if (objectType == 'cluster' && action == 'restart') {
                     JobSchedulerService.restartCluster(obj1);
-                } else if (action == 'downloadLog') {
+                }
+                else if (action == 'downloadLog') {
                     vm.loading = true;
                     if (!id) {
                         id = vm.schedulerIds.selected;
@@ -2742,7 +2753,9 @@
             OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.snapshot = res.orders;
                 isLoadedSnapshot = true;
-            }, function(){
+            }, function(err){
+                   vm.notPermissionForSnapshot = !err.data.isPermitted
+     
                 isLoadedSnapshot = true;
             });
         };
@@ -2767,7 +2780,9 @@
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
                 isLoadedSummary = true;
-            }, function(){
+            }, function(err){
+                    vm.notPermissionForSummary = !err.data.isPermitted
+         
                 isLoadedSummary = true;
             })
         };
@@ -2964,19 +2979,24 @@
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot) {
                         isLoadedSnapshot = false;
+                        if(!vm.notPermissionForSnapshot)
                         vm.loadOrderSnapshot();
                     } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedOrder" && isLoadedSummary) {
                          isLoadedSummary = false;
+                        if(!vm.notPermissionForSummary)
                         vm.getOrderSummary();
                     }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                          isLoadedDailyPlan = false;
                         vm.getDailyPlans();
                     }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (isLoadedAgentCluster || isLoadedRunningTask)) {
                          isLoadedAgentCluster = false;
+                        if (vm.permission && vm.permission.JobschedulerUniversalAgent && vm.permission.JobschedulerUniversalAgent.view.status)
                          vm.getAgentCluster();
+                        if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                          vm.getAgentClusterRunningTask();
                     } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedRunningTask) {
                          isLoadedRunningTask = false;
+                        if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                         vm.getAgentClusterRunningTask();
                     }
                 }
@@ -2990,6 +3010,7 @@
             }, 60 * 1000)
         }
 
+        if (vm.permission && vm.permission.JobschedulerUniversalAgent && vm.permission.JobschedulerUniversalAgent.view.status)
         poll();
 
 

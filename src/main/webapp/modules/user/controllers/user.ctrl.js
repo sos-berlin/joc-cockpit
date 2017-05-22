@@ -17,7 +17,7 @@
         var vm = this;
         vm.user = {};
         vm.rememberMe = false;
-        if(!$window.sessionStorage.errorMsg)
+        if (!$window.sessionStorage.errorMsg)
             $rootScope.error = '';
         else
             $rootScope.error = $window.sessionStorage.errorMsg;
@@ -33,10 +33,10 @@
                 $rootScope.$broadcast('reloadUser');
                 if (err.data && err.data.message)
                     $window.sessionStorage.errorMsg = err.data.message;
-                else if(err.data.error)
+                else if (err.data.error)
                     $window.sessionStorage.errorMsg = err.data.error.message;
                 else
-                     $window.sessionStorage.errorMsg = 'Internal server error';
+                    $window.sessionStorage.errorMsg = 'Internal server error';
                 $rootScope.error = $window.sessionStorage.errorMsg;
                 $location.path('/error');
             });
@@ -79,7 +79,7 @@
         }
 
         vm.login = function () {
-            $window.sessionStorage.errorMsg ='';
+            $window.sessionStorage.errorMsg = '';
             if (vm.user.username && vm.user.password) {
                 $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...');
                 $('#loginBtn').attr("disabled", true);
@@ -95,7 +95,7 @@
                             SOSAuth.rememberMe = vm.rememberMe;
                             if (vm.rememberMe) {
                                 var urs = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
-                                var pwd = CryptoJS.AES.encrypt(vm.user.username, '$SOSJOBSCHEDULER');
+                                var pwd = CryptoJS.AES.encrypt(vm.user.password, '$SOSJOBSCHEDULER');
                                 $window.localStorage.$SOS$FOO = urs;
                                 $window.localStorage.$SOS$BOO = pwd;
                                 $window.localStorage.$SOS$REMEMBER = vm.rememberMe;
@@ -137,17 +137,19 @@
         configObj.configurationType = "PROFILE";
         configObj.id = parseInt($window.sessionStorage.preferenceId);
 
+
         vm.zones = moment.tz.names();
         vm.locales = $rootScope.locales;
 
-        if($window.sessionStorage.preferences)
-        vm.preferences = JSON.parse($window.sessionStorage.preferences);
+        if ($window.sessionStorage.preferences)
+            vm.preferences = JSON.parse($window.sessionStorage.preferences);
         vm.timezone = jstz().timezone_name;
         function setPreferences() {
             if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {
                 vm.preferences = JSON.parse($window.sessionStorage.preferences);
             }
         }
+
         $scope.$on('reloadPreferences', function () {
             setPreferences();
         });
@@ -159,7 +161,7 @@
                 gettextCatalog.setStrings(vm.preferences.locale, data);
             });
             configObj.configurationItem = JSON.stringify(vm.preferences);
-             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
 
@@ -176,14 +178,14 @@
                 $('#jobs_id img').attr("src", 'images/job.png');
                 $('#dailyPlan_id img').attr("src", 'images/daily_plan1.png');
                 $('#resources_id img').attr("src", 'images/resources1.png');
-            }else{
-                  $('#orders_id img').attr("src", 'images/order1.png');
+            } else {
+                $('#orders_id img').attr("src", 'images/order1.png');
                 $('#jobs_id img').attr("src", 'images/job1.png');
                 $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
                 $('#resources_id img').attr("src", 'images/resources.png');
             }
             configObj.configurationItem = JSON.stringify(vm.preferences);
-             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
+            $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
             UserService.saveConfiguration(configObj);
         };
 
@@ -212,7 +214,7 @@
             if (isNaN(parseInt(vm.preferences.maxHistoryPerJobchain))) {
                 vm.preferences.maxHistoryPerJobchain = parseInt(angular.copy($scope.userPreferences).maxHistoryPerJobchain);
             }
-            if(vm.preferences.entryPerPage>100){
+            if (vm.preferences.entryPerPage > 100) {
                 vm.preferences.entryPerPage = vm.preferences.maxEntryPerPage;
             }
             $window.sessionStorage.preferences = JSON.stringify(vm.preferences);
@@ -971,8 +973,24 @@
             });
         };
 
-        vm.savePermission = function () {
-            vm.rolePermissions = [];
+        vm.deletePermission = function (permission) {
+            vm.permission = angular.copy(permission);
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/confirm-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.permission = {};
+                vm.rolePermissions.splice(vm.rolePermissions.indexOf(permission), 1);
+                saveInfo();
+            }, function () {
+                vm.permission = {};
+            });
+        };
+        vm.addPermission = function () {
+/*            vm.rolePermissions = [];
             for (var i = 0; i < vm.permissionArr.length; i++) {
                 if (vm.permissionArr[i].checked) {
                     vm.rolePermissions.push({path: vm.permissionArr[i].permission, excluded: false});
@@ -990,23 +1008,11 @@
                     break;
                 }
             }
-            saveInfo();
-        };
-
-        vm.cancelPermission = function () {
-            for (var i = 0; i < vm.permissionArr.length; i++) {
-                vm.permissionArr[i].checked =  false;
-                for (var j = 0; j < vm.rolePermissions.length; j++) {
-                    if (vm.permissionArr[i].permission.match(vm.rolePermissions[j].path)) {
-                       vm.permissionArr[i].checked =  true;
-                        break;
-                    }
-                }
-            }
+            saveInfo();*/
         };
 
         vm.permissionArr = [];
-        function getPermissionList() {
+/*        function getPermissionList() {
             var permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
             permissionArr = permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
             for (var i = 0; i < permissionArr.length; i++) {
@@ -1022,7 +1028,7 @@
                 else
                     vm.permissionArr.push({checked: true, permission: permissionArr[i]});
             }
-        }
+        }*/
 
         function loadPermission() {
             angular.forEach(vm.masters, function (master, index) {
@@ -1031,7 +1037,7 @@
                         if (angular.equals(value.role, vm.roleName)) {
                             vm.rolePermissions = value.permissions;
                             vm.folderArr = value.folders;
-                            getPermissionList();
+                           // getPermissionList();
                         }
                     });
                 }

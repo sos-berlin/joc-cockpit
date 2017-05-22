@@ -24,17 +24,26 @@
             <button type="button" class="btn btn-grey btn-sm pull-right m-l-sm" ng-click="downloadLog()" uib-tooltip="{{'tooltip.saveLogFile'| translate}}" tooltip-placement="bottom"><i class="fa fa-save"></i></button>
         </div>
     </div>
-    <div class="scroll-y max-ht2" >
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box white">
-                    <div class="box-body m-t-sm p-a p-b-xs">
-                       <pre class="log">
-                          <span ng-bind-html="logs"></span>
-                       </pre>
-                   </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box white">
+                <div class="box-body m-t-sm p-a p-b-xs">
+                    <pre class="log" style="overflow: auto">
+                        <span ng-bind-html="logs"></span>
+                    </pre>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    $(function(){
+        var $header = $('app-header').height() || 60;
+        var $topHeader = $('.top-header-bar').height() || 16;
+        var $subHeaderHt = 59;
+        var $window = $(window).on('resize', function(){
+           var height = $(this).height() - ($header + $topHeader +$subHeaderHt +104);
+           $('.log').height(height);
+        }).trigger('resize'); //on page load
+    });
+</script>

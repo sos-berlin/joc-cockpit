@@ -1,7 +1,7 @@
 <div>
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
-        <h4 class="modal-title" ><span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}?</h4>
+        <h4 class="modal-title" ><span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}}?</h4>
     </div>
     <div class="modal-body p-a">
         <div class="row">
@@ -10,6 +10,7 @@
                 <span ng-if="role.role" translate class="text">message.deleteRole</span>
                 <span ng-if="master.master" translate class="text">message.deleteMaster</span>
                 <span ng-if="folder.folder" translate class="text">message.deleteFolder</span>
+                <span ng-if="permission.path" translate class="text">message.deletePermission</span>
             </div>
         </div>
         <div class="row m-t-md">
