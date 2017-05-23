@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <span class="text-md text-primary" style="font-size: 18px"><a ui-sref="app.users.role">{{masterName}}</a> <i class="text-black-lt">></i> {{roleName}}</span>
+        <span class="text-md text-primary" style="font-size: 18px"><a ui-sref="app.users.master">{{masterName}}</a> <i class="text-black-lt">></i> {{roleName}}</span>
     </div>
 </div>
 <div class="row m-t">
@@ -36,19 +36,53 @@
     <div class="col-sm-12 m-t-sm" ng-show="!showPanel1">
         <div class="box p-a ">
             <div class="row ">
-<!--                <div class="col-md-6" ng-repeat="p in permissionArr track by $index">
-                    <label class="md-check">
-                        <input type="checkbox" ng-model="p.checked" ng-disabled="!editor.edit">
-                        <i class="primary"></i><span class="m-l-xs" translate> {{p.permission}}</span>
-                    </label>
-                </div>-->
                 <div class="col-md-12 role" ng-repeat="p in rolePermissions track by $index">
                     <span>
                         <span ng-if="p.excluded" class="_600">-</span>{{p.path}}
+                        <i ng-click="editPermission(p)" class="fa fa-pencil m-l-xs" uib-tooltip="{{'label.edit' | translate}}" ></i>
                         <i ng-click="deletePermission(p)" class="fa fa-times m-l-xs" uib-tooltip="{{'label.delete' | translate}}" ></i>
                     </span>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editPermission" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+                <h4 class="modal-title" >
+                    <span translate>label.editPermission</span>
+                </h4>
+            </div>
+            <form name="form" ng-submit="savePermission()" novalidate>
+                <div class="modal-body p-a">
+                    <div class="form-group row">
+                        <label class="col-sm-4" translate>label.permission</label>
+                        <div class=" col-sm-6">
+                            <span>{{permission.path}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4" translate>label.excluded</label>
+                        <div class=" col-sm-6">
+                            <label class="md-check">
+                                <input type="checkbox" ng-model="permission.excluded">
+                                <i class="primary"></i><span class="m-l-xs" translate> </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row m-t-md">
+                        <div class="b-t"></div>
+                    </div>
+                    <div class="form-group m-t m-b-xs">
+                        <button type="submit" class="btn btn-primary btn-sm" translate>button.submit</button>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" data-dismiss="modal" translate>button.cancel</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

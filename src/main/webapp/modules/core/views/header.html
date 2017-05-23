@@ -225,7 +225,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || vm.permission.Schedule.view.status || permission.Lock.view.status">
+                <a class="nav-link" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Lock.view.status">
                     <span class="nav-text" id="resources_id">
                         <img src="images/resources.png">
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>

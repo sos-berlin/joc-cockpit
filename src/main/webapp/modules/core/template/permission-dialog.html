@@ -1,0 +1,47 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
+        <h4 class="modal-title">
+            <span translate>label.addPermission</span>
+        </h4>
+    </div>
+    <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.permission</label>
+
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="permission.path"
+                            style="padding-top: 6px; padding-bottom: 6px; border-bottom: none"
+                            ng-options="p as p for p in permissionArr">
+                        <option value="" translate>label.selectASchedule</option>
+                    </select>
+                    <div style="position:absolute;top:0;left:12px;width:87.6%;">
+                        <input class="form-control" ng-model="permission.path" type="text" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4" translate>label.excluded</label>
+                <div class=" col-sm-6">
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="permission.excluded">
+                        <i class="primary"></i><span class="m-l-xs" translate> </span>
+                    </label>
+                </div>
+            </div>
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                    button.submit
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -108,8 +108,14 @@
                                 ng-disabled="order.at == 'later'"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                                ng-click="editor.editXml = true" translate>button.editXml
+                        </button>
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                                ng-click="editor.editXml = false" translate>button.hideXml
+                        </button>
                     </div>
-                    <div class="col-md-6" ng-if="substituteObj.showText">
+                    <div class="col-md-6" ng-if="substituteObj.showText" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">
                             <div class="col-sm-12" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
@@ -146,7 +152,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6" ng-if="substituteObj.showText">
+                    <div class="col-md-6" ng-if="substituteObj.showText && editor.editXml">
                         <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)" ng-attr-placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
