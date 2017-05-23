@@ -3,7 +3,7 @@
         <table class="table table-hover table-bordered ">
             <thead>
             <tr>
-                <!--<th width="55"><span translate>label.action</span></th>-->
+                <th width="55"><span translate>label.action</span></th>
                 <th><span translate>label.user</span></th>
                 <th><span translate>label.password</span></th>
                 <th><span translate>label.roles</span></th>
@@ -11,14 +11,14 @@
             </thead>
             <tbody ng-repeat="user in filtered = (users | filter: filterString:strict)  | orderBy:'user' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
             <tr>
-                <td><span ng-bind="user.user"></span></td>
-                <td><span>{{'********************************' | limitTo:user.password.length}}</span></td>
-                <td>
-                    <div ng-repeat="role in user.roles"><a ui-sref="app.users.role" class="text-primary" ng-bind="role"></a></div>
-                </td>
                 <td>
                     <a><i ng-click="editUser(user)" class="fa fa-pencil m-r-sm"></i></a>
                     <a ng-class="{'disable-link' :username==user.user}"><i ng-click="deleteUser(user)" class="fa fa-times "></i></a>
+                </td>
+                <td><a ng-click="editUser(user)" class="text-hover-primary" ng-bind="user.user"></a></td>
+                <td><span>{{'********************************' | limitTo:user.password.length}}</span></td>
+                <td>
+                    <div ng-repeat="role in user.roles"><span ng-bind="role"></span></div>
                 </td>
             </tr>
             </tbody>

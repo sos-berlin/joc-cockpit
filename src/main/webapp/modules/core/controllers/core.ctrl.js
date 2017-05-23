@@ -561,16 +561,28 @@
 
         vm.navigateToResource = function () {
             vm.resourceFilters = CoreService.getResourceTab();
-            if (vm.resourceFilters.state == 'agent' && vm.permission.ProcessClass.view.status) {
-                $state.go('app.resources.agentClusters');
-            } else if (vm.resourceFilters.state == 'processClass' && vm.permission.ProcessClass.view.status) {
-                $state.go('app.resources.processClasses');
-            } else if (vm.resourceFilters.state == 'schedules' && vm.permission.Schedule.view.status) {
-                $state.go('app.resources.schedules');
+            if (vm.resourceFilters.state == 'agent') {
+                if (vm.permission.JobschedulerUniversalAgent.view.status) {
+                    $state.go('app.resources.agentClusters');
+                } else {
+                    vm.resourceFilters.state = 'processClass';
+                }
+            } else if (vm.resourceFilters.state == 'processClass') {
+                if (vm.permission.ProcessClass.view.status) {
+                    $state.go('app.resources.processClasses');
+                } else {
+                    vm.resourceFilters.state = 'schedules';
+                }
+            } else if (vm.resourceFilters.state == 'schedules') {
+
+                if (vm.permission.Schedule.view.status) {
+                    $state.go('app.resources.schedules');
+                } else {
+                    vm.resourceFilters.state = 'locks';
+                }
             } else if (vm.permission.Lock.view.status) {
                 $state.go('app.resources.locks');
             }
-
         };
 
         vm.displaykeyboardshortcuts = function () {

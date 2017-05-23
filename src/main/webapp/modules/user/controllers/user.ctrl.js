@@ -683,6 +683,7 @@
                     vm.masterName = $stateParams.master;
                 }
                 loadPermission();
+                preparePermissionJSON();
             });
         }
 
@@ -738,8 +739,9 @@
             modalInstance.result.then(function () {
                 vm.users.push(vm.user);
                 saveInfo();
+                vm.user = {};
             }, function () {
-
+                vm.user = {};
             });
         };
 
@@ -761,8 +763,9 @@
                         vm.users[index] = vm.user;
                 });
                 saveInfo();
+                vm.user = {};
             }, function () {
-
+                vm.user = {};
             });
         };
         vm.deleteUser = function (user) {
@@ -800,8 +803,9 @@
                     }
                 });
                 saveInfo();
+                vm.role = {};
             }, function () {
-
+                vm.role = {};
             });
         };
         vm.editRole = function (role, mast) {
@@ -827,8 +831,9 @@
                 });
 
                 saveInfo();
+                vm.role = {};
             }, function () {
-
+                vm.role = {};
             });
         };
         vm.deleteRole = function (role, mast) {
@@ -877,8 +882,9 @@
 
                 vm.masters.push(vm.master);
                 saveInfo();
+                vm.master = {};
             }, function () {
-
+                vm.master = {};
             });
         };
         vm.copyMaster = function (mast) {
@@ -895,8 +901,9 @@
                 vm.master.roles = angular.copy(mast.roles);
                 vm.masters.push(vm.master);
                 saveInfo();
+                vm.master = {};
             }, function () {
-
+                vm.master = {};
             });
         };
         vm.deleteMaster = function (mast) {
@@ -921,6 +928,7 @@
         };
         vm.addFolder = function () {
             vm.folder = {};
+            vm.folder.recursive = true;
             vm.newFolder = true;
 
             var modalInstance = $uibModal.open({
@@ -932,8 +940,9 @@
             modalInstance.result.then(function () {
                 vm.folderArr.push(vm.folder);
                 saveInfo();
+                vm.folder = {};
             }, function () {
-
+                vm.folder = {};
             });
         };
         vm.editFolder = function (folder) {
@@ -952,8 +961,9 @@
                         vm.folderArr[index] = vm.folder;
                 });
                 saveInfo();
+                vm.folder = {};
             }, function () {
-
+                vm.folder = {};
             });
         };
         vm.deleteFolder = function (folder) {
@@ -989,46 +999,115 @@
                 vm.permission = {};
             });
         };
-        vm.addPermission = function () {
-/*            vm.rolePermissions = [];
-            for (var i = 0; i < vm.permissionArr.length; i++) {
-                if (vm.permissionArr[i].checked) {
-                    vm.rolePermissions.push({path: vm.permissionArr[i].permission, excluded: false});
-                }
-            }
-
-            for (var x = 0; x < vm.masters.length; x++) {
-                if (angular.equals(vm.masters[x].master, vm.masterName) || (vm.masters[x].master == '' && vm.masterName == 'default')) {
-                    for (var y = 0; y < vm.masters[x].roles.length; y++) {
-                        if (angular.equals(vm.masters[x].roles[y].role, vm.roleName)) {
-                            vm.masters[x].roles[y].permissions = vm.rolePermissions;
-                            break;
-                        }
-                    }
+        vm.editPermission = function (p) {
+            $('#editPermission').modal('show');
+            vm.permission = angular.copy(p);
+        };
+        vm.savePermission = function (p) {
+            $('#editPermission').modal('hide');
+            var flag = true;
+            for (var i = 0; i < vm.rolePermissions.length; i++) {
+                if (vm.rolePermissions[i].path == vm.permission.path) {
+                    if (vm.rolePermissions[i].excluded != vm.permission.excluded)
+                        vm.rolePermissions[i].excluded = vm.permission.excluded;
+                    else
+                        flag = false;
                     break;
                 }
             }
-            saveInfo();*/
+            if (flag)
+                saveInfo();
         };
 
-        vm.permissionArr = [];
-/*        function getPermissionList() {
-            var permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
-            permissionArr = permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
-            for (var i = 0; i < permissionArr.length; i++) {
-                var flag = true;
-                for (var j = 0; j < vm.rolePermissions.length; j++) {
-                    if (permissionArr[i].match(vm.rolePermissions[j].path)) {
+        vm.addPermission = function () {
+            vm.permission = {};
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/permission-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.rolePermissions.push(vm.permission);
+                saveInfo();
+                vm.permission = {};
+            }, function () {
+                vm.permission = {};
+            });
+        };
+        var permissionNodes = [];
+        var count = 1;
+
+        function recursiveUpdate(arr, obj) {
+            if (arr._parents.length == 0) {
+                arr._parents.push(obj);
+            } else {
+                recursiveUpdate(arr._parents[0], obj);
+            }
+        }
+
+        function recursiveUpdate1(permission, arr) {
+            var flag = true;
+            if (arr[0]._parents) {
+                for (var y = 0; y < permission._parents.length; y++) {
+                    if (arr[0].name == permission._parents[y].name) {
+                        //console.log(permission.name + ' :: '+arr[0].name)
                         flag = false;
-                        break;
+                        recursiveUpdate1(permission._parents[y], arr[0]._parents);
+                    }
+                }
+            }
+            if (flag)
+                permission._parents.push(arr[0]);
+
+        }
+
+        vm.permissionArr = [];
+        function preparePermissionJSON() {
+
+            vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
+            vm.permissionArr = vm.permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
+            for (var i = 0; i < vm.permissionArr.length; i++) {
+                var nodes = vm.permissionArr[i].split(':');
+
+                var arr = [];
+                var flag = true, index = 0;
+                for (var j = 0; j < nodes.length; j++) {
+                    var obj = {};
+                    obj.id = count++;
+                    obj.name = nodes[j];
+                    if (j < nodes.length - 1) {
+                        obj.icon = 'images/plus.png';
+                        obj._parents = [];
+                    }
+                    if (permissionNodes[0] && permissionNodes[0][j]) {
+                        if (permissionNodes[0][j].name == nodes[j]) {
+                            flag = false;
+                            index = j;
+                        } else {
+                            if (arr.length == 0) {
+                                arr.push(obj);
+                            } else if (arr.length > 0) {
+                                recursiveUpdate(arr[0], obj);
+                            }
+                        }
+                    } else {
+                        if (arr.length == 0) {
+                            arr.push(obj);
+                        } else if (arr.length > 0) {
+                            recursiveUpdate(arr[0], obj);
+                        }
                     }
                 }
                 if (flag)
-                    vm.permissionArr.push({checked: false, permission: permissionArr[i]});
-                else
-                    vm.permissionArr.push({checked: true, permission: permissionArr[i]});
+                    permissionNodes.push(arr);
+                else {
+                    recursiveUpdate1(permissionNodes[0][index], arr);
+                }
             }
-        }*/
+           // console.log(JSON.stringify(permissionNodes));
+        }
+
 
         function loadPermission() {
             angular.forEach(vm.masters, function (master, index) {
@@ -1037,7 +1116,6 @@
                         if (angular.equals(value.role, vm.roleName)) {
                             vm.rolePermissions = value.permissions;
                             vm.folderArr = value.folders;
-                           // getPermissionList();
                         }
                     });
                 }
@@ -1047,7 +1125,7 @@
         vm.$on('$stateChangeSuccess', function (event, toState, toParams) {
             if (toState.name == 'app.users.user') {
                 vm.state = 'user';
-            } else if (toState.name == 'app.users.role') {
+            } else if (toState.name == 'app.users.master') {
                 vm.state = 'role';
             } else if (toState.name == 'app.users.permission') {
                 vm.state = 'permission';

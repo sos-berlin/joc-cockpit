@@ -15,7 +15,7 @@
 <div class="scroll-y max-ht">
     <div class="padding p-b-0">
         <div class="row m-t-sm">
-            <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" ng-class="{'col-xxl-12 col-lg-12': (!permission.JobschedulerMasterCluster.view.status)}">
+            <div class=" col-xxl-4 col-lg-5 col-md-12 col-sm-12" ng-class="{'col-xxl-12 col-lg-12': !permission.JobschedulerMasterCluster.view.status}">
                 <div class="row">
                     <div class="col-md-12" id="agent-cluster-status" ng-show="permission.JobschedulerUniversalAgent.view.status" >
                         <div class="box" style="max-height: 186px">
@@ -67,7 +67,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xxl-8 col-lg-7 col-md-12 col-sm-12" ng-show="permission.JobschedulerMasterCluster.view.status" ng-class="{'col-xxl-12 col-lg-12': (!permission.ProcessClass.view.status && !permission.JobschedulerUniversalAgent.view.status)}">
+            <div class="col-xxl-8 col-lg-7 col-md-12 col-sm-12" ng-show="permission.JobschedulerMasterCluster.view.status"
+                 ng-class="{'col-xxl-12 col-lg-12': (!permission.ProcessClass.view.status && !permission.JobschedulerUniversalAgent.view.status)}">
                  <div class="row" >
                      <div class="col-md-12" >
                         <div class=" box" id="master-cluster-status">
@@ -102,7 +103,7 @@
                             <h3 class="m-t-xs" translate>label.ordersOverview</h3>
                         </div>
                         <div class="box-body" >
-                            <table style="width: 100%">
+                            <table style="width: 100%" ng-if="!notPermissionForSnapshot">
                             <tr class="text-center">
                                 <td width="16.6">
                                     <div translate>label.pending</div>
@@ -143,14 +144,12 @@
                                     <a href="#!/orders_overview/BLACKLIST" class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
                                 </td>
                             </tr>
-                             <tr ng-if="!snapshot">
-                                 <td colspan="6">
-                                     <div class="text-u-c text-center _600 m-t-md m-b">
+                            </table>
+                            <div ng-if="notPermissionForSnapshot">
+                                     <div class="text-u-c text-center text m-t-md m-b">
                                                 {{'message.noInformationAvailable' | translate}}
                                     </div>
-                                 </td>
-                             </tr>
-                            </table>
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -162,7 +161,7 @@
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
-                            <div class="pull-right">
+                            <div class="pull-right" ng-if="notPermissionForSummary">
                                 <div class="btn-group m-l-sm" style="padding-right:5px">
                                     <div class="btn-group dropdown ">
                                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
@@ -198,12 +197,11 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                     <div class="box-body">
-                        <table style="width: 100%">
+                        <table style="width: 100%" ng-if="!notPermissionForSummary">
                             <tr class="text-center">
                                 <td width="50">
                                     <div translate>label.successful</div>
@@ -220,14 +218,15 @@
                                     <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 " ng-class="{'crimson':orderSummary.failed  >0}" ng-bind="orderSummary.failed || 0"></a>
                                 </td>
                             </tr>
-                            <tr ng-if="!orderSummary">
-                                 <td colspan="6">
-                                     <div class="text-u-c text-center _600 m-t-md m-b">
-                                                {{'message.noInformationAvailable' | translate}}
-                                    </div>
-                                 </td>
-                             </tr>
+
+
                         </table>
+
+                        <div ng-if="notPermissionForSummary">
+                            <div class="text-u-c text-center text m-t-md m-b">
+                                {{'message.noInformationAvailable' | translate}}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

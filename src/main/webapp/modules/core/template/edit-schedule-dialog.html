@@ -99,8 +99,14 @@
                         <button type="button" class="btn btn-sm btn-grey pull-right m-r"
                                 ng-click="showScheduleTab()" translate>label.schedule
                         </button>
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r"
+                                ng-click="editor.editXml = true" translate>button.editXml
+                        </button>
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r"
+                                ng-click="editor.editXml = false" translate>button.hideXml
+                        </button>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">
                             <div class="col-sm-12" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
@@ -141,7 +147,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" ng-if="editor.editXml">
                         <textarea class="form-control" rows="12" ng-model="xml" ng-blur="textEditor(xml)" placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>

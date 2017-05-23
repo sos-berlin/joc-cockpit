@@ -1,24 +1,23 @@
 <div class="box p-a ">
-      <div  class="box-body p-b-0" ng-repeat="master in masters">
+      <div  class="box-body p-b-0" ng-repeat="master in masters" ng-init="showPanel= (masterName == master.master || (masterName =='default' && master.master==''))">
           <div class="row">
-              <div class="col-sm-6">
-                  <h5 class="text-dark">{{master.master || 'default'}}
-                      <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
-                      <i class="cursor fa fa-caret-down m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i></h5>
-              </div>
-              <div class="col-sm-6">
-                  <div class="btn-group dropdown pull-right">
+              <div class="col-sm-12">
+                  <div class="btn-group dropdown pull-left m-r-sm">
                       <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
-                      <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                      <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
                           <a class="dropdown-item" ng-click="copyMaster(master)" translate>button.copy</a>
                           <a class="dropdown-item" ng-click="deleteMaster(master)" translate="">button.delete</a>
                       </div>
                   </div>
+                  <h5 class="text-dark">{{master.master || 'default'}}
+                      <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showPanel" ng-click="showPanel=true"></i>
+                      <i class="cursor fa fa-caret-down m-l-xs" ng-show="showPanel" ng-click="showPanel=false"></i></h5>
               </div>
+
           </div>
           <div class="row" ng-repeat="role in master.roles" ng-show="showPanel">
-              <div class="col-md-1 col-sm-2 col-xs-6"><span class="p-l" ng-if="$index==0" translate>label.roles</span></div>
-              <div class="col-md-11 col-sm-10 col-xs-6 role">
+              <div class="col-md-1 col-sm-2 col-xs-4"><span class="p-l-lg" ng-if="$index==0" translate>label.roles</span></div>
+              <div class="col-md-10 col-sm-9 col-xs-6 role">
                   <span class="fa fa-circle" style="font-size: 9px"></span>
                   <a href="#!/users/permission/{{master.master || 'default'}}/{{role.role}}" class="text-primary">
                       {{role.role}}
