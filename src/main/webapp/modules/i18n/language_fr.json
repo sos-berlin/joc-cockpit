@@ -991,7 +991,7 @@
   "label.resetRunTimeOf": "Réinitialiser la date de démarrage de",
   "message.noFrequencyFound": "Aucune Fréquence trouvé",
   "breadcrumb.manageUser": "Gérer les Comptes",
-  "label.removeOldInstances": "effacer les Masters non-utilisés",
+  "label.removeOldInstances": "supprimer les Masters non-utilisés",
   "label.editPermissions": "editer les Permissions",
   "label.editRole": "Editer la Rôle",
   "label.usersFound": "Comptes trouvé",
@@ -1014,7 +1014,7 @@
   "button.addMaster": "Créer un Master",
   "button.addPermission": "Ajouter la Permission",
   "button.addFolder": "Ajouter un dossier",
-  "button.removeInstance": "Effacer les Masters non-utilisés",
+  "button.removeInstance": "Supprimer les Masters non-utilisés",
   "label.permission": "Permission",
   "label.addPermission": "Ajouter une Permission",
   "label.editPermission": "Editer la Permission",
@@ -1032,8 +1032,8 @@
   "message.deleteRole": "Le Rôle est supprimé de la liste des Rôles.",
   "message.deleteMaster": "Le Master est supprimé de la liste des Masters.",
   "message.deleteFolder": "Le Dossier est supprimé de la liste des Dossiers.",
-  "message.deletePermission": "La Pemission est supprimé de la liste des Permissions.",
+  "message.deletePermission": "La Permission est supprimé de la liste des Permissions.",
   "message.noFolderFound": "Aucun dossier trouvé",
   "message.noInformationAvailable": "Aucune information disponible",
-  "label.selectFolder":"Select a Folder"
+  "label.selectFolder": "Sélectionner un Dossier"
 }
