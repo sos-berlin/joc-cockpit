@@ -196,7 +196,7 @@
             url: "/users",
             templateUrl: "modules/user/views/user-main.html",
             controller: "UsersCtrl",
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.mangeUser' | translate}}"}
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.manageUser' | translate}}"}
         }).state("app.users.user", {
             url: "/all",
             templateUrl: "modules/user/views/user.html",
@@ -204,6 +204,7 @@
         }).state("app.users.permission", {
             url: "/permission/:master/:role",
             templateUrl: "modules/user/views/permission.html",
+            controller:"PermissionCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.permissions' | translate}}", parent: "app.users.master"}
         }).state("app.users.master", {
             url: "/master",

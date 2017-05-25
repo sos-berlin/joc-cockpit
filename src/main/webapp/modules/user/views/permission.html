@@ -1,8 +1,13 @@
+
 <div class="row">
     <div class="col-md-12">
-        <span class="text-md text-primary" style="font-size: 18px"><a ui-sref="app.users.master">{{masterName}}</a> <i class="text-black-lt">></i> {{roleName}}</span>
+        <span class="text-md text-primary" style="font-size: 16px">
+            <a ui-sref="app.users.master">{{masterName}}</a>
+            <i class="text-black-lt m-l-sm m-r-sm">/</i>
+            <span class="text-muted text-black-dk">{{roleName}}</span></span>
     </div>
 </div>
+<div class="hide" ng-class="{'show':view.pageView =='list'}">
 <div class="row m-t">
     <div class="col-md-12">
         <span class="text _600" ng-bind="'label.folder' | translate"></span>
@@ -47,6 +52,14 @@
         </div>
     </div>
 </div>
+</div>
+
+
+<div ng-if="view.pageView !='list'">
+    <div id="container"></div>
+    <div id="mainTree" class="box m-t"></div>
+</div>
+
 <div class="modal fade" id="editPermission" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -86,3 +99,4 @@
         </div>
     </div>
 </div>
+

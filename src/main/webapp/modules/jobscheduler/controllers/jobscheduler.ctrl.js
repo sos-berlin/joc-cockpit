@@ -1113,18 +1113,7 @@
             vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
 
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/add-substitute-dialog.html',
-                controller: 'RuntimeEditorDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                createSchedule(schedule);
-            }, function () {
 
-            });
             ScheduleService.getRunTime({
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
@@ -1134,8 +1123,18 @@
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.tempXML = vm.runTimes.content;
                 }
-                $rootScope.$broadcast('loadXml');
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/add-substitute-dialog.html',
+                    controller: 'RuntimeEditorDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    createSchedule(schedule);
+                }, function () {
 
+                });
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -1198,7 +1197,17 @@
             vm.schedule = schedule;
             vm.sch._title = schedule.title;
             vm.scheduleAction = 'edit';
-            var modalInstance = $uibModal.open({
+
+            ScheduleService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                schedule: schedule.path
+            }).then(function (res) {
+                if (res.configuration) {
+                    vm.runTimes = res.configuration;
+                    vm.runTimes.content = vm.runTimes.content.xml;
+                    vm.xml = vm.runTimes.content;
+                }
+                             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
                 scope: vm,
@@ -1210,17 +1219,6 @@
             }, function () {
                 vm.object.schedules = [];
             });
-            ScheduleService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                schedule: schedule.path
-            }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
-                }
-                 $rootScope.$broadcast('loadXml', {xml: vm.xml});
-
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = result.schedules;
@@ -2158,18 +2156,7 @@
             vm.substituteObj.folder = '/';
             vm.scheduleAction = undefined;
 
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/add-substitute-dialog.html',
-                controller: 'RuntimeEditorDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                createSchedule(schedule);
-            }, function () {
 
-            });
             ScheduleService.getRunTime({
                 jobschedulerId: $scope.schedulerIds.selected,
                 schedule: schedule.path
@@ -2179,8 +2166,19 @@
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.tempXML = vm.runTimes.content;
                 }
-                $rootScope.$broadcast('loadXml');
 
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/add-substitute-dialog.html',
+                    controller: 'RuntimeEditorDialogCtrl',
+                    scope: vm,
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    createSchedule(schedule);
+                }, function () {
+
+                });
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -2218,6 +2216,17 @@
             vm.schedule = schedule;
             vm.sch._title = schedule.title;
             vm.scheduleAction = 'edit';
+
+            ScheduleService.getRunTime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                schedule: schedule.path
+            }).then(function (res) {
+                if (res.configuration) {
+                    vm.runTimes = res.configuration;
+                    vm.runTimes.content = vm.runTimes.content.xml;
+                    vm.xml = vm.runTimes.content;
+                }
+
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                 controller: 'RuntimeEditorDialogCtrl',
@@ -2231,17 +2240,6 @@
             }, function () {
                 vm.object.schedules = [];
             });
-            ScheduleService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                schedule: schedule.path
-            }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.xml = vm.runTimes.content;
-                }
-                 $rootScope.$broadcast('loadXml', {xml: vm.xml});
-
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = result.schedules;
@@ -2624,15 +2622,13 @@
                     JobSchedulerService.abortAndRestart(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestart') {
                     JobSchedulerService.restart(obj);
-                }
-                else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
+                } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'pause') {
                     JobSchedulerService.pause(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
                     JobSchedulerService.continue(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'remove') {
                     JobSchedulerService.cleanup(obj);
                 }else if (objectType == 'cluster' && action == 'terminate') {
-
                     JobSchedulerService.terminateCluster(obj1);
                 } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
                     JobSchedulerService.terminateFailsafeCluster(obj1);
@@ -2675,7 +2671,7 @@
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
                     vm.comments.name = objectType;
-                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : "Continue";
+                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove unused Masters" : "Continue";
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',

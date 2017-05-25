@@ -979,7 +979,7 @@
   "button.editXml": "Edit XML",
   "button.hideXml": "Hide XML",
   "button.showList": "Show List",
-  "button.mangeUser": "Manage Accounts",
+  "button.manageUser": "Manage Accounts",
   "label.monthDays": "Month Days",
   "label.entryPerPage": "Default number of entries per page",
   "label.currentRuntime": "Current Run-time",
@@ -990,7 +990,7 @@
   "label.repeatStartEnd": "Repeat End-Start",
   "label.resetRunTimeOf": "Reset Run-time of",
   "message.noFrequencyFound": "No frequency found",
-  "breadcrumb.mangeUser": "Manage Accounts",
+  "breadcrumb.manageUser": "Manage Accounts",
   "label.removeOldInstances": "remove unused Masters",
   "label.editPermissions": "Edit Permissions",
   "label.editRole": "Edit Role",
@@ -1015,7 +1015,6 @@
   "button.addPermission": "Add Permission",
   "button.addFolder": "Add Folder",
   "button.removeInstance": "Remove unused Masters",
-  "label.masterList": "List of Masters",
   "label.permission": "Permission",
   "label.addPermission": "Add Permission",
   "label.editPermission": "Edit Permission",
@@ -1035,5 +1034,6 @@
   "message.deleteFolder": "Deleting a folder will permanently remove it from the folder list.",
   "message.deletePermission": "Deleting a permission will permanently remove it from the permission list.",
   "message.noFolderFound": "No folder found",
-  "message.noInformationAvailable": "no information available"
+  "message.noInformationAvailable": "no information available",
+  "label.selectFolder":"Select a Folder"
 }

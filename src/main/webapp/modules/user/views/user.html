@@ -12,8 +12,13 @@
             <tbody ng-repeat="user in filtered = (users | filter: filterString:strict)  | orderBy:'user' | startFrom:(usr.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
             <tr>
                 <td>
-                    <a><i ng-click="editUser(user)" class="fa fa-pencil m-r-sm"></i></a>
-                    <a ng-class="{'disable-link' :username==user.user}"><i ng-click="deleteUser(user)" class="fa fa-times "></i></a>
+                    <div class="btn-group dropdown pull-left m-r-sm">
+                      <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
+                      <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                          <a class="dropdown-item" ng-click="editUser(user)" translate>button.edit</a>
+                          <a class="dropdown-item" ng-class="{'disable-link' :username==user.user}" ng-click="deleteUser(user)" translate="">button.delete</a>
+                      </div>
+                  </div>
                 </td>
                 <td><a ng-click="editUser(user)" class="text-hover-primary" ng-bind="user.user"></a></td>
                 <td><span>{{'********************************' | limitTo:user.password.length}}</span></td>

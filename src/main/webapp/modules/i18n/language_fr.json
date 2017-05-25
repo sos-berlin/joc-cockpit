@@ -979,7 +979,7 @@
   "button.editXml": "Editer le format XML",
   "button.hideXml": "Cacher le format XML",
   "button.showList": "Visualiser la Liste",
-  "button.mangeUser": "Gérer les Comptes",
+  "button.manageUser": "Gérer les Comptes",
   "label.monthDays": "Jours du mois",
   "label.entryPerPage": "Nombre prédefini des entrées par page",
   "label.currentRuntime": "Date de démarrage actuelle",
@@ -990,7 +990,7 @@
   "label.repeatStartEnd": "Répétition fin-début",
   "label.resetRunTimeOf": "Réinitialiser la date de démarrage de",
   "message.noFrequencyFound": "Aucune Fréquence trouvé",
-  "breadcrumb.mangeUser": "Gérer les Comptes",
+  "breadcrumb.manageUser": "Gérer les Comptes",
   "label.removeOldInstances": "effacer les Masters non-utilisés",
   "label.editPermissions": "editer les Permissions",
   "label.editRole": "Editer la Rôle",
@@ -1015,7 +1015,6 @@
   "button.addPermission": "Ajouter la Permission",
   "button.addFolder": "Ajouter un dossier",
   "button.removeInstance": "Effacer les Masters non-utilisés",
-  "label.masterList": "Liste des Masters",
   "label.permission": "Permission",
   "label.addPermission": "Ajouter une Permission",
   "label.editPermission": "Editer la Permission",
@@ -1035,5 +1034,6 @@
   "message.deleteFolder": "Le Dossier est supprimé de la liste des Dossiers.",
   "message.deletePermission": "La Pemission est supprimé de la liste des Permissions.",
   "message.noFolderFound": "Aucun dossier trouvé",
-  "message.noInformationAvailable": "Aucune information disponible"
+  "message.noInformationAvailable": "Aucune information disponible",
+  "label.selectFolder":"Select a Folder"
 }

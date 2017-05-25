@@ -979,7 +979,7 @@
   "button.editXml": "XML Format ändern",
   "button.hideXml": "XML Format verbergen",
   "button.showList": "Liste anzeigen",
-  "button.mangeUser": "Konten verwalten",
+  "button.manageUser": "Konten verwalten",
   "label.monthDays": "Tage im Monat",
   "label.entryPerPage": "Voreingestellte Anzahl Einträge pro Seite",
   "label.currentRuntime": "Aktuelle Startzeit",
@@ -990,7 +990,7 @@
   "label.repeatStartEnd": "Wiederholung Ende-Start",
   "label.resetRunTimeOf": "Startzeit zurücksetzen für",
   "message.noFrequencyFound": "Keine Frequenzen gefunden",
-  "breadcrumb.mangeUser": "Konten verwalten",
+  "breadcrumb.manageUser": "Konten verwalten",
   "label.removeOldInstances": "Nicht verwendete Master entfernen",
   "label.editPermissions": "Berechtigungen ändern",
   "label.editRole": "Rolle ändern",
@@ -1015,7 +1015,6 @@
   "button.addPermission": "Berechtigung hinzufügen",
   "button.addFolder": "Ordner hinzufügen",
   "button.removeInstance": "Nicht verwendete Master entfernen",
-  "label.masterList": "Liste der Master",
   "label.permission": "Berechtigung",
   "label.addPermission": "Berechtigung hinzufügen",
   "label.editPermission": "Berechtigung ändern",
@@ -1035,5 +1034,6 @@
   "message.deleteFolder": "Der Ordner wird aus der Liste der Ordner entfernt.",
   "message.deletePermission": "Die Berechtigung wird aus der Liste der Berechtigungen entfernt.",
   "message.noFolderFound": "Keine Ordner gefunden",
-  "message.noInformationAvailable": "Keine Information vefügbar"
+  "message.noInformationAvailable": "Keine Information vefügbar",
+  "label.selectFolder": "Select a Folder"
 }
