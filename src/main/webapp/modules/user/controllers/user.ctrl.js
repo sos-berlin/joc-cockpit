@@ -9,7 +9,8 @@
         .controller('LoginCtrl', LoginCtrl)
         .controller('UserProfileCtrl', UserProfileCtrl)
         .controller('AuditLogCtrl', AuditLogCtrl)
-        .controller('UsersCtrl', UsersCtrl);
+        .controller('UsersCtrl', UsersCtrl)
+        .controller('PermissionCtrl', PermissionCtrl);
 
 
     LoginCtrl.$inject = ['SOSAuth', '$location', '$rootScope', 'UserService', '$window', 'JobSchedulerService', 'gettextCatalog', 'AuditLogService'];
@@ -653,8 +654,8 @@
         };
     }
 
-    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams'];
-    function UsersCtrl($scope, UserService, $uibModal, $stateParams) {
+    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope'];
+    function UsersCtrl($scope, UserService, $uibModal, $rootScope) {
         var vm = $scope;
         vm.usr = {};
         vm.usr.currentPage = 1;
@@ -662,30 +663,25 @@
         vm.state = '';
         vm.editor = {};
         vm.editor.edit = false;
-
+        vm.view = {};
+        vm.view.pageView = 'list';
 
         function get() {
             UserService.securityConfigurationRead({}).then(function (res) {
                 vm.users = res.users;
                 vm.masters = res.masters;
-                getPermissions();
+                getRoles();
+                $rootScope.$broadcast('reloadPermission');
             });
         }
 
         get();
-
-        function getPermissions() {
+        function getRoles() {
             UserService.permissions({}).then(function (res) {
                 vm.roles = res.SOSPermissionRoles.SOSPermissionRole;
-                vm.permissions = res.SOSPermissions;
-                if ($stateParams.role && $stateParams.master) {
-                    vm.roleName = $stateParams.role;
-                    vm.masterName = $stateParams.master;
-                }
-                loadPermission();
-                preparePermissionJSON();
             });
         }
+
 
         function saveInfo() {
             var obj = {};
@@ -926,10 +922,166 @@
                 vm.master = {};
             });
         };
+
+
+        vm.$on('$stateChangeSuccess', function (event, toState, toParams) {
+            if (toState.name == 'app.users.user') {
+                vm.state = 'user';
+            } else if (toState.name == 'app.users.master') {
+                vm.state = 'role';
+            } else if (toState.name == 'app.users.permission') {
+                vm.state = 'permission';
+                vm.roleName = toParams.role;
+                vm.masterName = toParams.master;
+                vm.view.pageView = 'list';
+            }
+        });
+
+
+        vm.switchTree = function () {
+            $rootScope.$broadcast('switchTree');
+        };
         vm.addFolder = function () {
+            $rootScope.$broadcast('addFolder');
+        };
+        vm.addPermission = function () {
+            $rootScope.$broadcast('addPermission');
+        };
+    }
+
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams','ResourceService'];
+    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService) {
+        var vm = $scope;
+
+        function getPermissions() {
+            UserService.permissions({}).then(function (res) {
+                vm.roles = res.SOSPermissionRoles.SOSPermissionRole;
+                vm.permissions = res.SOSPermissions;
+                if ($stateParams.role && $stateParams.master) {
+                    vm.roleName = $stateParams.role;
+                    vm.masterName = $stateParams.master;
+                }
+                loadPermission();
+                preparePermissionJSON();
+            });
+        }
+        if(vm.masters)
+            getPermissions();
+        vm.$on('reloadPermission', function(){
+            getPermissions();
+        });
+        function saveInfo() {
+            var obj = {};
+            obj.users = vm.users;
+            obj.masters = vm.masters;
+            UserService.securityConfigurationWrite(obj);
+
+        }
+
+        var permissionNodes = [];
+        var count = 1;
+
+        function recursiveUpdate(arr, obj) {
+            if (arr._parents.length == 0) {
+                arr._parents.push(obj);
+            } else {
+                recursiveUpdate(arr._parents[0], obj);
+            }
+        }
+
+        function recursiveUpdate1(permission, arr) {
+            var flag = true;
+            if (arr[0]._parents) {
+                for (var y = 0; y < permission._parents.length; y++) {
+                    if (arr[0].name == permission._parents[y].name) {
+                        flag = false;
+                        recursiveUpdate1(permission._parents[y], arr[0]._parents);
+                    }
+                }
+            }
+            if (flag)
+                permission._parents.push(arr[0]);
+        }
+
+        vm.permissionArr = [];
+        function preparePermissionJSON() {
+
+            vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
+            vm.permissionArr = vm.permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
+            for (var i = 0; i < vm.permissionArr.length; i++) {
+                var nodes = vm.permissionArr[i].split(':');
+
+                var arr = [];
+                var flag = true, index = 0;
+                for (var j = 0; j < nodes.length; j++) {
+                    var obj = {};
+                    obj.id = count++;
+                    obj.name = nodes[j];
+                    obj.path = vm.permissionArr[i].substring(0, vm.permissionArr[i].indexOf(nodes[j]));
+                    if (j < nodes.length - 1) {
+                        obj.icon = 'images/minus.png';
+                        obj._parents = [];
+                    }
+                    if (permissionNodes[0] && permissionNodes[0][j]) {
+                        if (permissionNodes[0][j].name == nodes[j]) {
+                            flag = false;
+                            index = j;
+                        } else {
+                            if (arr.length == 0) {
+                                arr.push(obj);
+                            } else if (arr.length > 0) {
+                                recursiveUpdate(arr[0], obj);
+                            }
+                        }
+                    } else {
+                        if (arr.length == 0) {
+                            arr.push(obj);
+                        } else if (arr.length > 0) {
+                            recursiveUpdate(arr[0], obj);
+                        }
+                    }
+                }
+                if (flag)
+                    permissionNodes.push(arr);
+                else {
+                    recursiveUpdate1(permissionNodes[0][index], arr);
+                }
+            }
+        }
+
+
+        function loadPermission() {
+            angular.forEach(vm.masters, function (master, index) {
+                if (angular.equals(master.master, vm.masterName) || (master.master == '' && vm.masterName == 'default')) {
+                    angular.forEach(master.roles, function (value) {
+                        if (angular.equals(value.role, vm.roleName)) {
+                            vm.rolePermissions = value.permissions;
+                            vm.folderArr = value.folders;
+                        }
+                    });
+                }
+            });
+        }
+
+        function setFolderList(folder) {
+
+            for (var i = 0; i < folder.length; i++) {
+                console.log(folder[i].name )
+                vm.folderList.push(folder[i].path)
+                if (folder[i].folders) {
+                    setFolderList(folder[i].folders);
+                }
+            }
+        }
+        vm.$on('addFolder', function () {
+            vm.folderList = [];
             vm.folder = {};
             vm.folder.recursive = true;
             vm.newFolder = true;
+            ResourceService.tree({jobschedulerId: vm.schedulerIds.selected,compact: true}).then(function(res){
+                setFolderList(res.folders);
+             });
+
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
@@ -938,16 +1090,22 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                vm.folderArr.push(vm.folder);
-                saveInfo();
+                if (vm.folder.folder) {
+                    vm.folderArr.push(vm.folder);
+                    saveInfo();
+                }
                 vm.folder = {};
             }, function () {
                 vm.folder = {};
             });
-        };
+
+        });
         vm.editFolder = function (folder) {
             vm.folder = angular.copy(folder);
-
+            vm.folderList = [];
+            ResourceService.tree({jobschedulerId: vm.schedulerIds.selected,compact: true}).then(function(res){
+                setFolderList(res.folders);
+             });
             vm.newFolder = false;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
@@ -956,6 +1114,9 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+                if (vm.folder.folder && vm.folder.folder.substring(0, 1) != '/') {
+                    vm.folder.folder = '/' + vm.folder.folder;
+                }
                 angular.forEach(vm.folderArr, function (fold, index) {
                     if (angular.equals(folder, fold))
                         vm.folderArr[index] = vm.folder;
@@ -1019,7 +1180,7 @@
                 saveInfo();
         };
 
-        vm.addPermission = function () {
+        vm.$on('addPermission', function () {
             vm.permission = {};
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/permission-dialog.html',
@@ -1034,105 +1195,401 @@
             }, function () {
                 vm.permission = {};
             });
-        };
-        var permissionNodes = [];
-        var count = 1;
+        });
 
-        function recursiveUpdate(arr, obj) {
-            if (arr._parents.length == 0) {
-                arr._parents.push(obj);
-            } else {
-                recursiveUpdate(arr._parents[0], obj);
-            }
-        }
-
-        function recursiveUpdate1(permission, arr) {
-            var flag = true;
-            if (arr[0]._parents) {
-                for (var y = 0; y < permission._parents.length; y++) {
-                    if (arr[0].name == permission._parents[y].name) {
-                        //console.log(permission.name + ' :: '+arr[0].name)
-                        flag = false;
-                        recursiveUpdate1(permission._parents[y], arr[0]._parents);
-                    }
-                }
-            }
-            if (flag)
-                permission._parents.push(arr[0]);
-
-        }
-
-        vm.permissionArr = [];
-        function preparePermissionJSON() {
-
-            vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
-            vm.permissionArr = vm.permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
-            for (var i = 0; i < vm.permissionArr.length; i++) {
-                var nodes = vm.permissionArr[i].split(':');
-
-                var arr = [];
-                var flag = true, index = 0;
-                for (var j = 0; j < nodes.length; j++) {
-                    var obj = {};
-                    obj.id = count++;
-                    obj.name = nodes[j];
-                    if (j < nodes.length - 1) {
-                        obj.icon = 'images/plus.png';
-                        obj._parents = [];
-                    }
-                    if (permissionNodes[0] && permissionNodes[0][j]) {
-                        if (permissionNodes[0][j].name == nodes[j]) {
-                            flag = false;
-                            index = j;
-                        } else {
-                            if (arr.length == 0) {
-                                arr.push(obj);
-                            } else if (arr.length > 0) {
-                                recursiveUpdate(arr[0], obj);
+        function test(permission_node,list) {
+            if(list.length>0) {
+                if (permission_node && permission_node._parents) {
+                    for (var j = 0; j < permission_node._parents.length; j++) {
+                        for (var i = 0; i < list.length; i++) {
+                            if (list[i].path == (permission_node._parents[j].path + '' + permission_node._parents[j].name)) {
+                                permission_node._parents[j].greyed = false;
+                                permission_node._parents[j].selected = true;
+                                if (permission_node._parents[j]._parents)
+                                for (var x = 0; x < permission_node._parents[j]._parents.length; x++) {
+                                    permission_node._parents[j]._parents[x].selected = false;
+                                    permission_node._parents[j]._parents[x].greyed = true;
+                                }
+                                list.splice(i, 1)
+                                break;
                             }
                         }
-                    } else {
-                        if (arr.length == 0) {
-                            arr.push(obj);
-                        } else if (arr.length > 0) {
-                            recursiveUpdate(arr[0], obj);
+                        test(permission_node._parents[j],list);
+                    }
+                } else {
+                    for (var i = 0; i < list.length; i++) {
+                        if (list[i].path == (permission_node.path + '' + permission_node.name)) {
+                            permission_node._parents[j].greyed = false;
+                            permission_node._parents[j].selected = true;
+                            list.splice(i, 1)
+                            break;
                         }
                     }
                 }
-                if (flag)
-                    permissionNodes.push(arr);
-                else {
-                    recursiveUpdate1(permissionNodes[0][index], arr);
-                }
             }
-           // console.log(JSON.stringify(permissionNodes));
+
         }
 
-
-        function loadPermission() {
-            angular.forEach(vm.masters, function (master, index) {
-                if (angular.equals(master.master, vm.masterName) || (master.master == '' && vm.masterName == 'default')) {
-                    angular.forEach(master.roles, function (value) {
-                        if (angular.equals(value.role, vm.roleName)) {
-                            vm.rolePermissions = value.permissions;
-                            vm.folderArr = value.folders;
-                        }
-                    });
+        function selectedNode(permission_node) {
+            if (permission_node && permission_node._parents) {
+                for (var j = 0; j < permission_node._parents.length; j++) {
+                    permission_node._parents[j].greyed = true;
+                    permission_node._parents[j].selected = false;
+                    selectedNode(permission_node._parents[j]);
                 }
-            });
+            }
         }
 
-        vm.$on('$stateChangeSuccess', function (event, toState, toParams) {
-            if (toState.name == 'app.users.user') {
-                vm.state = 'user';
-            } else if (toState.name == 'app.users.master') {
-                vm.state = 'role';
-            } else if (toState.name == 'app.users.permission') {
-                vm.state = 'permission';
-                vm.roleName = toParams.role;
-                vm.masterName = toParams.master;
-                loadPermission();
+        function unSelectedNode(permission_node) {
+            if (permission_node && permission_node._parents) {
+                for (var j = 0; j < permission_node._parents.length; j++) {
+                    permission_node._parents[j].greyed = false;
+                    permission_node._parents[j].selected = false;
+                    unSelectedNode(permission_node._parents[j]);
+                }
             }
+        }
+
+        vm.$on('switchTree', function () {
+            drawTree(permissionNodes[0][0])
         });
+        var root;
+        var boxWidth = 152,
+            boxHeight = 30,
+            duration = 500; // duration of transitions in ms
+        var ht = 600;
+        vm.calculateHeight = function () {
+            var headerHt = $('.app-header').height() || 60;
+            var topHeaderHt = $('.top-header-bar').height() || 16;
+            var subHeaderHt = 59;
+            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + 90));
+        };
+        vm.calculateHeight();
+        $(window).resize(function () {
+            vm.calculateHeight();
+            $('svg').attr("height", ht);
+        });
+
+        function drawTree(json) {
+
+            var zoom = d3.behavior.zoom()
+                .scaleExtent([.1, 1])
+                .on('zoom', function () {
+                    svg.attr("transform", "translate(" + d3.event.translate + ") scale(1)");
+                })
+                // Offset so that first pan and zoom does not jump back to the origin
+                .translate([150, 300]);
+
+            var div = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 1e-6);
+
+
+            var svg = d3.select("#mainTree").append("svg")
+                .attr('width', 1800)
+                .attr('height', ht)
+                .call(zoom)
+                .append('g')
+                .attr("transform", "translate(150,300)");
+
+            var tree = d3.layout.tree()
+                .nodeSize([100, 200])
+                .separation(function () {
+                    return .5;
+                })
+
+                .children(function (permission_node) {
+                    if (permission_node.collapsed) {
+                        return;
+                    } else {
+                        return permission_node._parents;
+                    }
+                });
+
+            // Start with only the first few generations showing
+            json._parents.forEach(function (gen2) {
+                gen2._parents.forEach(function (gen3) {
+                    collapse(gen3);
+                });
+            });
+
+            root = json;
+            root.x0 = 0;
+            root.y0 = 0;
+            var _pList = angular.copy(vm.rolePermissions);
+            test(root,_pList)
+            draw(root);
+
+            function draw(source) {
+                var nodes = tree.nodes(root),
+                    links = tree.links(nodes);
+                // Update links
+                var link = svg.selectAll("path.link")
+                    .data(links, function (d) {
+                        return d.target.id;
+                    });
+
+                link.enter().append("path")
+                    .attr("class", "link")
+                    .attr("d", function (d) {
+                        var o = {x: source.x0, y: (source.y0 + boxWidth / 2)};
+                        return transitionElbow({source: o, target: o});
+                    });
+
+                // Update the old links positions
+                link.transition()
+                    .duration(duration)
+                    .attr("d", elbow);
+
+                link.exit()
+                    .transition()
+                    .duration(duration)
+                    .attr("d", function (d) {
+                        var o = {x: source.x, y: (source.y + boxWidth / 2)};
+                        return transitionElbow({source: o, target: o});
+                    })
+                    .remove();
+                // Update nodes
+                var node = svg.selectAll("g.permission_node")
+                    .data(nodes, function (permission_node) {
+
+                        return permission_node.id;
+                    });
+
+                // Add any new nodes
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "permission_node")
+                    .style("cursor", function (d) {
+                        if (d.name == 'sos') {
+                            return "default";
+                        }
+                        return d.greyed ? "default" : "pointer";
+                    })
+                    .attr('transform', function () {
+                        return 'translate(' + (source.y0 + boxWidth / 2) + ',' + source.x0 + ')';
+                    })
+                    .on("mouseover", mouseover)
+                    .on("mousemove", function (d) {
+                        mousemove(d);
+                    })
+                    .on("mouseout", mouseout);
+
+                svg.selectAll("rect").style("fill", function (d) {
+                    if (d.greyed) {
+                        return "#eff";
+                    } else
+                        return d.selected ? "#99c1d6" : "#fff";
+                });
+                nodeEnter.append("image")
+                    .attr("xlink:href", function (d) {
+                        return d.icon;
+                    })
+                    .attr("class", "img")
+                    .attr("x", "-12px")
+                    .attr("y", "-12px")
+                    .attr("width", "24px")
+                    .attr("height", "24px")
+                    .on('click', togglePermission);
+
+                nodeEnter.append("rect")
+                    .style("fill", function (d) {
+                        if (d.greyed) {
+                            return "#eff";
+                        } else
+                            return d.selected ? "#99c1d6" : "#fff";
+                    })
+                    .on('click', selectPermission)
+                    .attr({
+                        x: 0,
+                        y: 0,
+                        width: 20,
+                        height: 0
+                    });
+
+                // Draw the permission_node's name and position it inside the box
+                nodeEnter.append("text")
+                    .attr("dx", 0)
+                    .attr("dy", 4)
+                    .attr("text-anchor", "start")
+                    .attr('class', 'name')
+                    .text(function (d) {
+                        var n = (d.name).length;
+                        if (n < 16) {
+                            return d.name;
+                        }
+                        else {
+                            var shortname = (d.name).substring(0, 16);
+                            shortname = shortname + "...";
+                            return shortname;
+                        }
+                    })
+                    .on('click', selectPermission)
+                    .style('fill-opacity', 0);
+
+                // Update the position of both old and new nodes
+                var nodeUpdate = node.transition()
+                    .duration(duration)
+                    .attr("transform", function (d) {
+                        return "translate(" + d.y + "," + d.x + ")";
+                    });
+
+                // Grow boxes to their proper size
+                nodeUpdate.select('rect')
+                    .attr({
+                        x: -(boxWidth / 2),
+                        y: -(boxHeight / 2),
+                        width: boxWidth,
+                        height: boxHeight
+                    });
+
+                nodeUpdate.select("image")
+                    .attr("xlink:href", function (d) {
+                        return d.icon;
+                    })
+                    .attr("x", "76px")
+                    .attr("y", "-12px")
+                    .attr("width", "15px")
+                    .attr("height", "23px");
+
+
+                // Move text to it's proper position
+                nodeUpdate.select('text')
+                    .attr("dx", -(boxWidth / 2) + 25)
+                    .style('fill-opacity', 1);
+
+                // Remove nodes we aren't showing anymore
+                var nodeExit = node.exit()
+                    .transition()
+                    .duration(duration)
+
+                    // Transition exit nodes to the source's position
+                    .attr("transform", function (d) {
+                        return "translate(" + (source.y + boxWidth / 2) + "," + source.x + ")";
+                    })
+                    .remove();
+
+                // Shrink boxes as we remove them
+                nodeExit.select('rect')
+                    .attr({
+                        x: 0,
+                        y: 0,
+                        width: 0,
+                        height: 0
+                    });
+
+                // Fade out the text as we remove it
+                nodeExit.select('text')
+                    .style('fill-opacity', 0)
+                    .attr('dx', 0);
+
+                // Stash the old positions for transition.
+                nodes.forEach(function (permission_node) {
+                    permission_node.x0 = permission_node.x;
+                    permission_node.y0 = permission_node.y;
+                });
+            }
+
+            /**
+             * Update a permission_node's state when they are clicked.
+             */
+            function togglePermission(permission_node) {
+                if (permission_node.icon)
+                    permission_node.icon = "images/minus.png";
+                //var ht1 = $('svg').attr('height');
+                //var xVal = 0;
+                if (permission_node.collapsed) {
+                    permission_node.collapsed = false;
+                    //ht1 = parseInt(ht1) + (permission_node._parents.length * 30)
+                } else {
+                    //ht1 = parseInt(ht1) - (permission_node._parents.length * 30);
+                    collapse(permission_node);
+                }
+                /*                if(ht<ht1)
+                 $('svg').attr('height',ht1);*/
+                draw(permission_node);
+            }
+
+            var _temp =[];
+            function generatePermissionList(permission){
+                  if (permission.selected)
+                      _temp.push({path:permission.path + '' + permission.name, excluded:false});
+                if(permission._parents) {
+                    for (var i = 0; i<permission._parents.length; i++) {
+
+                        if (permission._parents[i]) {
+                            if (permission._parents[i].selected)
+                                _temp.push({path:permission._parents[i].path + '' + permission._parents[i].name, excluded:false});
+                            else {
+                                generatePermissionList(permission._parents[i]);
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
+            function selectPermission(permission_node) {
+                if (!permission_node.greyed && permission_node.name != 'sos') {
+                    permission_node.selected = !permission_node.selected;
+                    if (permission_node.selected) {
+                        selectedNode(permission_node);
+                    } else {
+                        unSelectedNode(permission_node);
+                    }
+                    _temp =[];
+                    generatePermissionList(permissionNodes[0][0]);
+                    draw(permission_node);
+                    vm.rolePermissions = _temp;
+                    saveInfo();
+                }
+            }
+
+            function collapse(permission_node) {
+                permission_node.collapsed = true;
+                if (permission_node.icon)
+                    permission_node.icon = "images/plus.png";
+                if (permission_node._parents) {
+                    permission_node._parents.forEach(collapse);
+                }
+            }
+
+            function elbow(d) {
+                var sourceX = d.source.x,
+                    sourceY = d.source.y + (boxWidth / 2),
+                    targetX = d.target.x,
+                    targetY = d.target.y - (boxWidth / 2);
+
+                return "M" + sourceY + "," + sourceX
+                    + "H" + (sourceY + (targetY - sourceY) / 2)
+                    + "V" + targetX
+                    + "H" + targetY;
+            }
+
+            function transitionElbow(d) {
+                return "M" + d.source.y + "," + d.source.x
+                    + "H" + d.source.y
+                    + "V" + d.source.x
+                    + "H" + d.source.y;
+            }
+
+            function mouseover() {
+                div.transition()
+                    .duration(300)
+                    .style("opacity", 1);
+            }
+
+            function mousemove(d) {
+                div.text(d.name)
+                    .style("left", (d3.event.pageX ) + "px")
+                    .style("top", (d3.event.pageY) + "px");
+            }
+
+            function mouseout() {
+                div.transition()
+                    .duration(300)
+                    .style("opacity", 1e-6);
+            }
+        }
     }
 })();
