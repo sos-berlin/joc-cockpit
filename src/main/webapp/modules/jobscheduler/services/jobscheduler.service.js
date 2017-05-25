@@ -76,8 +76,8 @@
             },
             tree: function (filter) {
                 var deferred = $q.defer();
-                var Job = $resource('tree');
-                Job.save(filter,function (res) {
+                var Tree = $resource('tree');
+                Tree.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);
