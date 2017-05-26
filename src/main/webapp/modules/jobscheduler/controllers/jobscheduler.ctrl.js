@@ -1066,8 +1066,12 @@
                 vm.substituteObj.folder = vm.substituteObj.folder+'/';
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
+            var x2js = new X2JS();
 
-            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            var x = x2js.xml_str2json(schedule.runTime);
+            x.schedule._substitute = vm.sch._substitute;
+            schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
+
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
@@ -1081,9 +1085,8 @@
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
 
-            var x2js = new X2JS();
             var _xml = x2js.xml_str2json(vm.tempXML);
-            _xml.schedule._substitute = vm.sch._substitute;
+
             if (vm.sch._title)
                 _xml.schedule._title = vm.sch._title;
             if (vm.sch._valid_from)
@@ -2110,7 +2113,13 @@
             }
             schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
 
-            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+
+            schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
+            var x2js = new X2JS();
+
+            var x = x2js.xml_str2json(schedule.runTime);
+            x.schedule._substitute = vm.sch._substitute;
+            schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
@@ -2124,9 +2133,9 @@
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
 
-            var x2js = new X2JS();
+
             var _xml = x2js.xml_str2json(vm.tempXML);
-            _xml.schedule._substitute = vm.sch._substitute;
+
             if (vm.sch._title)
                 _xml.schedule._title = vm.sch._title;
             if (vm.sch._valid_from)
@@ -2259,7 +2268,7 @@
         }
 
         vm.dashboardFilters = CoreService.getDashboardTab();
-        var isLoadedSnapshot = true, isLoadedSummary = true,isLoadedDailyPlan = true,isLoadedAgentCluster = true, isLoadedRunningTask =true;
+        var isLoadedSnapshot = true, isLoadedSummary = true,isLoadedDailyPlan = true;
 
         function groupBy(data) {
             var results = [];
@@ -2294,7 +2303,7 @@
         }
 
         vm.getAgentCluster = function () {
-             isLoadedAgentCluster = false;
+             vm.isLoadedAgentCluster = false;
             JobSchedulerService.getAgentCluster({
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (res) {
@@ -2302,9 +2311,9 @@
                     vm.agentClusters = res.agentClusters;
                     prepareAgentClusterData(vm.agentClusters);
                 }
-                isLoadedAgentCluster = true;
+                vm.isLoadedAgentCluster = true;
             }, function(){
-                 isLoadedAgentCluster = true;
+                 vm.isLoadedAgentCluster = true;
             });
         };
         if (vm.permission && vm.permission.JobschedulerUniversalAgent && vm.permission.JobschedulerUniversalAgent.view.status)
@@ -2415,7 +2424,7 @@
         };
 
         vm.getAgentClusterRunningTask = function () {
-            isLoadedRunningTask = false;
+            vm.isLoadedRunningTask = false;
             var agentArray = [];
             ResourceService.getProcessClass({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -2434,14 +2443,14 @@
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
                 }
-                isLoadedRunningTask = true;
+                vm.isLoadedRunningTask = true;
             }, function () {
                 vm.processClasses = [];
                 vm.agentStatusChart = [{
                     "key": "Agents",
                     "values": agentArray
                 }];
-                isLoadedRunningTask = true;
+                vm.isLoadedRunningTask = true;
             });
         };
 
@@ -2984,14 +2993,14 @@
                     }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                          isLoadedDailyPlan = false;
                         vm.getDailyPlans();
-                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (isLoadedAgentCluster || isLoadedRunningTask)) {
-                         isLoadedAgentCluster = false;
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (vm.isLoadedAgentCluster || vm.isLoadedRunningTask)) {
+                         vm.isLoadedAgentCluster = false;
                         if (vm.permission && vm.permission.JobschedulerUniversalAgent && vm.permission.JobschedulerUniversalAgent.view.status)
                          vm.getAgentCluster();
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                          vm.getAgentClusterRunningTask();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedRunningTask) {
-                         isLoadedRunningTask = false;
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
+                         vm.isLoadedRunningTask = false;
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                         vm.getAgentClusterRunningTask();
                     }

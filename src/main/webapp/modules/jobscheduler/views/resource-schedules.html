@@ -65,7 +65,7 @@
 
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
-                                <span translate>label.substituteBy </span>:
+                                <span translate>label.substitute </span>:
                                 <span ng-bind="schedule.substitute.path || '-'"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
@@ -138,10 +138,10 @@
                             <i ng-show="schdeuleFilters.filter.sortBy == 'validityTo' && schdeuleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByS('subsituteBy')"><a><span translate>label.substituteBy</span>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'subsituteBy' && !schdeuleFilters.reverse"
+                        <th ng-click="sortByS('substitute')"><a><span translate>label.substitute</span>
+                            <i ng-show="schdeuleFilters.filter.sortBy == 'substitute' && !schdeuleFilters.reverse"
                                class="fa fa-caret-up "></i>
-                            <i ng-show="schdeuleFilters.filter.sortBy == 'subsituteBy' && schdeuleFilters.reverse"
+                            <i ng-show="schdeuleFilters.filter.sortBy == 'substitute' && schdeuleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
 

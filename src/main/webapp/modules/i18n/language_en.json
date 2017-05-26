@@ -1035,5 +1035,9 @@
   "message.deletePermission": "Deleting a permission will permanently remove it from the permission list.",
   "message.noFolderFound": "No folder found",
   "message.noInformationAvailable": "no information available",
-  "label.selectFolder": "Select a Folder"
+  "label.selectFolder":"Select a Folder",
+  "label.includeFiles": "Include Files",
+  "label.liveFile":"Live File",
+  "label.file":"File",
+  "label.substitutes":"Substitutes"
 }

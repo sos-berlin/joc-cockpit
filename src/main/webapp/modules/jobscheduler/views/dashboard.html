@@ -40,6 +40,9 @@
                                         </ul>
                                     </div>
                                 </div>
+                            <div class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedAgentCluster}">
+                                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12" id="agent-running-task" ng-show="permission.ProcessClass.view.status" >
@@ -62,6 +65,9 @@
                             </div>
                             <div ng-if="agentStatusChart[0].values.length==0" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
                                         {{'message.noDataAvailable' | translate}}
+                            </div>
+                            <div class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedRunningTask}">
+                                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                             </div>
                         </div>
                     </div>

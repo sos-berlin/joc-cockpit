@@ -1035,5 +1035,9 @@
   "message.deletePermission": "Die Berechtigung wird aus der Liste der Berechtigungen entfernt.",
   "message.noFolderFound": "Keine Ordner gefunden",
   "message.noInformationAvailable": "Keine Information vefügbar",
-  "label.selectFolder": "Ordner auswählen"
+  "label.selectFolder": "Ordner auswählenr",
+  "label.includeFiles": "Include Files",
+  "label.liveFile":"Live File",
+  "label.file":"File",
+  "label.substitutes":"Substitutes"
 }

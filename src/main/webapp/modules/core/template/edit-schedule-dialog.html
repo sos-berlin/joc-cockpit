@@ -166,14 +166,13 @@
                     </div>
                     <div class="form-group row"
                          ng-class="{ 'has-error' : (form.substitue.$invalid && form.substitue.$dirty) || error.scheduleRequired }">
-                        <label class="col-sm-3 form-control-label" translate>label.substitute</label>
+                        <label class="col-sm-3 form-control-label" translate>label.substitutes</label>
 
                         <div class="col-sm-6">
 
                             <select class="form-control" name="substitue" ng-model="sch._substitute" style="padding-top: 6px; padding-bottom: 6px; border-bottom: none"
                                     ng-change="error.scheduleRequired=false"
                                     ng-options="schedule.path as schedule.path for schedule in _schedules">
-                                <option value="" translate>label.selectASchedule</option>
                             </select>
                             <div style="position:absolute;top:0;left:12px;width:92%;">
                                 <input name="substitue" class="form-control" ng-model="sch._substitute"  type="text">
@@ -717,9 +716,14 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-sm-3 form-control-label" translate>label.fromHotFolder</label>
-
-                    <div class="col-sm-6">
+                    <label class="col-sm-3 form-control-label" translate>label.includeFiles</label>
+                    <div class="col-sm-2">
+                        <select class="form-control" ng-model="fileObj.holidayFile" style="padding-top: 6px ">
+                            <option value="live_file" translate>label.liveFile</option>
+                            <option value="file" translate>label.file</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-5 p-l-0">
                         <input type="text" class="form-control" ng-model="liveFile">
                     </div>
                     <div class="col-sm-1">
@@ -729,7 +733,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-offset-3 col-sm-6">
+                    <div class="col-sm-offset-3 col-sm-7">
                         <table class="table table-bordered" style="min-height: 100px;">
                             <tbody>
                             <tr ng-repeat="file in calendarFiles track by $index">

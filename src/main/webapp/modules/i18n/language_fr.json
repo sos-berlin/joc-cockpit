@@ -1035,5 +1035,9 @@
   "message.deletePermission": "La Permission est supprimé de la liste des Permissions.",
   "message.noFolderFound": "Aucun dossier trouvé",
   "message.noInformationAvailable": "Aucune information disponible",
-  "label.selectFolder": "Sélectionner un Dossier"
+  "label.selectFolder":"Sélectionner un Dossier",
+  "label.includeFiles": "Include Files",
+  "label.liveFile":"Live File",
+  "label.file":"File",
+  "label.substitutes":"Substitutes"
 }

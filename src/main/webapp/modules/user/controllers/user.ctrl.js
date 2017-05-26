@@ -654,8 +654,8 @@
         };
     }
 
-    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope'];
-    function UsersCtrl($scope, UserService, $uibModal, $rootScope) {
+    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope','$location'];
+    function UsersCtrl($scope, UserService, $uibModal, $rootScope,$location) {
         var vm = $scope;
         vm.usr = {};
         vm.usr.currentPage = 1;
@@ -760,6 +760,11 @@
                 });
                 saveInfo();
                 vm.user = {};
+                if(vm.selectedUser && vm.selectedUser == user.user) {
+                    vm.selectedUser = '';
+                    selectedMasters = [];
+                    selectedRoles = [];
+                }
             }, function () {
                 vm.user = {};
             });
@@ -776,6 +781,11 @@
                 vm.user = {};
                 vm.users.splice(vm.users.indexOf(user), 1);
                 saveInfo();
+                if(vm.selectedUser && vm.selectedUser == user.user) {
+                    vm.selectedUser = '';
+                    selectedMasters = [];
+                    selectedRoles = [];
+                }
             }, function () {
                 vm.user = {};
             });
@@ -799,7 +809,6 @@
                     }
                 });
                 saveInfo();
-                vm.role = {};
             }, function () {
                 vm.role = {};
             });
@@ -825,7 +834,6 @@
                         });
                     }
                 });
-
                 saveInfo();
                 vm.role = {};
             }, function () {
@@ -923,7 +931,56 @@
             });
         };
 
+        var selectedMasters =[];
+        var selectedRoles = [];
+        vm.selectUser = function(user){
+            vm.selectedUser =  user;
+            selectedMasters =[];
+            selectedRoles = [];
+            if(user)
+            for(var i =0; i<vm.users.length;i++){
+                if(vm.users[i].user == vm.selectedUser ){
+                    selectedRoles = vm.users[i].roles;
+                    angular.forEach(vm.masters, function(master){
 
+                        var flag = true;
+                        for(var j =0; j<vm.users[i].roles.length;j++){
+                            for(var x =0; x<master.roles.length;x++){
+                                if(master.roles[x].role == vm.users[i].roles[j]){
+                                    selectedMasters.push(master.master);
+                                    flag = false;
+                                    break;
+                                }
+                            }
+                            if(!flag){
+                                break;
+                            }
+                        }
+                    });
+                    break;
+                }
+            }
+        };
+
+        vm.showMaster = function(user){
+            $location.path('/users/master');
+            vm.selectUser(user);
+        };
+
+        vm.getSelectedMaster = function(master){
+            if(selectedMasters.length>0)
+            return selectedMasters.indexOf(master.master)>-1;
+            else{
+                return true;
+            }
+        };
+        vm.getSelectedRole = function(role){
+            if(selectedRoles.length>0)
+            return selectedRoles.indexOf(role.role)>-1;
+            else{
+                return true;
+            }
+        };
         vm.$on('$stateChangeSuccess', function (event, toState, toParams) {
             if (toState.name == 'app.users.user') {
                 vm.state = 'user';
@@ -1064,9 +1121,7 @@
         }
 
         function setFolderList(folder) {
-
             for (var i = 0; i < folder.length; i++) {
-                console.log(folder[i].name )
                 vm.folderList.push(folder[i].path)
                 if (folder[i].folders) {
                     setFolderList(folder[i].folders);
@@ -1197,7 +1252,17 @@
             });
         });
 
-        function test(permission_node,list) {
+        function checkPermissionListRecursively(permission_node, list) {
+            if (permission_node && permission_node._parents) {
+                for (var j = 0; j < permission_node._parents.length; j++) {
+                    permission_node._parents[j].greyed = true;
+                    permission_node._parents[j].selected = false;
+                    permission_node._parents[j].excluded = list.excluded;
+                    checkPermissionListRecursively(permission_node._parents[j],list);
+                }
+            }
+        }
+        function checkPermissionList(permission_node,list) {
             if(list.length>0) {
                 if (permission_node && permission_node._parents) {
                     for (var j = 0; j < permission_node._parents.length; j++) {
@@ -1205,23 +1270,21 @@
                             if (list[i].path == (permission_node._parents[j].path + '' + permission_node._parents[j].name)) {
                                 permission_node._parents[j].greyed = false;
                                 permission_node._parents[j].selected = true;
-                                if (permission_node._parents[j]._parents)
-                                for (var x = 0; x < permission_node._parents[j]._parents.length; x++) {
-                                    permission_node._parents[j]._parents[x].selected = false;
-                                    permission_node._parents[j]._parents[x].greyed = true;
-                                }
-                                list.splice(i, 1)
+                                permission_node._parents[j].excluded = list[i].excluded;
+                                checkPermissionListRecursively(permission_node._parents[j], list[i]);
+                                list.splice(i, 1);
                                 break;
                             }
                         }
-                        test(permission_node._parents[j],list);
+                        checkPermissionList(permission_node._parents[j],list);
                     }
                 } else {
                     for (var i = 0; i < list.length; i++) {
                         if (list[i].path == (permission_node.path + '' + permission_node.name)) {
                             permission_node._parents[j].greyed = false;
                             permission_node._parents[j].selected = true;
-                            list.splice(i, 1)
+                            permission_node._parents[j].excluded = list[i].excluded;
+                            list.splice(i, 1);
                             break;
                         }
                     }
@@ -1245,18 +1308,21 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
+                    permission_node._parents[j].excluded = false;
                     unSelectedNode(permission_node._parents[j]);
                 }
             }
         }
-
+        var isTreeDraw = false;
         vm.$on('switchTree', function () {
-            drawTree(permissionNodes[0][0])
+            if(!isTreeDraw)
+            drawTree(permissionNodes[0][0]);
+            isTreeDraw=true;
         });
         var root;
-        var boxWidth = 152,
+        var boxWidth = 165,
             boxHeight = 30,
-            duration = 500; // duration of transitions in ms
+            duration = 650; // duration of transitions in ms
         var ht = 600;
         vm.calculateHeight = function () {
             var headerHt = $('.app-header').height() || 60;
@@ -1293,7 +1359,7 @@
                 .attr("transform", "translate(150,300)");
 
             var tree = d3.layout.tree()
-                .nodeSize([100, 200])
+                .nodeSize([100, 235])
                 .separation(function () {
                     return .5;
                 })
@@ -1317,7 +1383,7 @@
             root.x0 = 0;
             root.y0 = 0;
             var _pList = angular.copy(vm.rolePermissions);
-            test(root,_pList)
+            checkPermissionList(root,_pList);
             draw(root);
 
             function draw(source) {
@@ -1367,16 +1433,11 @@
                     })
                     .attr('transform', function () {
                         return 'translate(' + (source.y0 + boxWidth / 2) + ',' + source.x0 + ')';
-                    })
-                    .on("mouseover", mouseover)
-                    .on("mousemove", function (d) {
-                        mousemove(d);
-                    })
-                    .on("mouseout", mouseout);
+                    });
 
                 svg.selectAll("rect").style("fill", function (d) {
                     if (d.greyed) {
-                        return "#eff";
+                        return "#d6ffff";
                     } else
                         return d.selected ? "#99c1d6" : "#fff";
                 });
@@ -1394,7 +1455,7 @@
                 nodeEnter.append("rect")
                     .style("fill", function (d) {
                         if (d.greyed) {
-                            return "#eff";
+                            return "#d6ffff";
                         } else
                             return d.selected ? "#99c1d6" : "#fff";
                     })
@@ -1413,15 +1474,10 @@
                     .attr("text-anchor", "start")
                     .attr('class', 'name')
                     .text(function (d) {
-                        var n = (d.name).length;
-                        if (n < 16) {
-                            return d.name;
+                        if(d.excluded){
+                            d.name = '- '+d.name;
                         }
-                        else {
-                            var shortname = (d.name).substring(0, 16);
-                            shortname = shortname + "...";
-                            return shortname;
-                        }
+                        return d.name;
                     })
                     .on('click', selectPermission)
                     .style('fill-opacity', 0);
@@ -1446,7 +1502,7 @@
                     .attr("xlink:href", function (d) {
                         return d.icon;
                     })
-                    .attr("x", "76px")
+                    .attr("x", "83px")
                     .attr("y", "-12px")
                     .attr("width", "15px")
                     .attr("height", "23px");
@@ -1454,7 +1510,7 @@
 
                 // Move text to it's proper position
                 nodeUpdate.select('text')
-                    .attr("dx", -(boxWidth / 2) + 25)
+                    .attr("dx", -(boxWidth / 2) + 12)
                     .style('fill-opacity', 1);
 
                 // Remove nodes we aren't showing anymore
@@ -1510,24 +1566,24 @@
             }
 
             var _temp =[];
-            function generatePermissionList(permission){
-                  if (permission.selected)
-                      _temp.push({path:permission.path + '' + permission.name, excluded:false});
-                if(permission._parents) {
-                    for (var i = 0; i<permission._parents.length; i++) {
-
+            function generatePermissionList(permission) {
+                if (permission.selected)
+                    _temp.push({path: permission.path + '' + permission.name, excluded: false});
+                if (permission._parents) {
+                    for (var i = 0; i < permission._parents.length; i++) {
                         if (permission._parents[i]) {
                             if (permission._parents[i].selected)
-                                _temp.push({path:permission._parents[i].path + '' + permission._parents[i].name, excluded:false});
+                                _temp.push({
+                                    path: permission._parents[i].path + '' + permission._parents[i].name,
+                                    excluded: false
+                                });
                             else {
                                 generatePermissionList(permission._parents[i]);
                             }
                         }
                     }
                 }
-
             }
-
 
             function selectPermission(permission_node) {
                 if (!permission_node.greyed && permission_node.name != 'sos') {
@@ -1537,10 +1593,21 @@
                     } else {
                         unSelectedNode(permission_node);
                     }
-                    _temp =[];
+                    _temp = [];
                     generatePermissionList(permissionNodes[0][0]);
                     draw(permission_node);
                     vm.rolePermissions = _temp;
+                    angular.forEach(vm.masters, function (master, index) {
+                        if (angular.equals(master.master, vm.masterName) || (master.master == '' && vm.masterName == 'default')) {
+                            angular.forEach(master.roles, function (value) {
+                                if (angular.equals(value.role, vm.roleName)) {
+                                    value.permissions =_temp;
+                                    vm.folderArr = value.folders;
+                                }
+                            });
+                        }
+                    });
+
                     saveInfo();
                 }
             }
@@ -1571,24 +1638,6 @@
                     + "H" + d.source.y
                     + "V" + d.source.x
                     + "H" + d.source.y;
-            }
-
-            function mouseover() {
-                div.transition()
-                    .duration(300)
-                    .style("opacity", 1);
-            }
-
-            function mousemove(d) {
-                div.text(d.name)
-                    .style("left", (d3.event.pageX ) + "px")
-                    .style("top", (d3.event.pageY) + "px");
-            }
-
-            function mouseout() {
-                div.transition()
-                    .duration(300)
-                    .style("opacity", 1e-6);
             }
         }
     }
