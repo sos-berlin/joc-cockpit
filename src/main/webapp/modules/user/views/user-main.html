@@ -6,6 +6,17 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
+                    <div class="btn-group dropdown" ng-if="state == 'role'">
+                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.user' | translate}}
+                            <span class="text-primary" ng-bind="selectedUser"></span></button>
+                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                            <a class="dropdown-item" ng-class="{orange: selectedUser == user.user}"
+                               ng-click="selectUser(user.user)" ng-repeat="user in users | orderBy: 'name'">
+                                {{user.user}}
+                                <i ng-click="selectUser();$event.stopPropagation();" ng-if="selectedUser == user.user" class="fa fa-times-circle-o remove"></i>
+                            </a>
+                        </div>
+                    </div>
                     <button ng-if="state == 'user'" class="btn btn-grey btn-sm m-l-sm"  ng-click="addUser()">
                         <i class="fa fa-plus"></i>
                         {{'button.addUser'| translate}}

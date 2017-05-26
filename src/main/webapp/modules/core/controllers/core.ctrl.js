@@ -2154,16 +2154,16 @@
                     if (angular.isArray(run_time.holidays.include)) {
                         angular.forEach(run_time.holidays.include, function (file) {
                             if (file._live_file)
-                                vm.calendarFiles.push(file._live_file);
+                                vm.calendarFiles.push('live_file: '+file._live_file);
                             if (file._file)
-                                vm.calendarFiles.push(file._file);
+                                vm.calendarFiles.push('file: '+file._file);
                         });
                     } else {
                         if (run_time.holidays.include._live_file) {
-                            vm.calendarFiles.push(run_time.holidays.include._live_file);
+                            vm.calendarFiles.push('live_file: '+run_time.holidays.include._live_file);
                         }
                         if (run_time.holidays.include._file) {
-                            vm.calendarFiles.push(run_time.holidays.include._file);
+                            vm.calendarFiles.push('file: '+run_time.holidays.include._file);
                         }
                     }
                 }
@@ -3633,10 +3633,11 @@
                                     vm.holidayDates.push(new Date(value1._date));
                                 }
                                 if (value1._file) {
-                                    vm.calendarFiles.push(value1._file);
+
+                                    vm.calendarFiles.push('file: '+value1._file);
                                 }
                                 if (value1._live_file) {
-                                    vm.calendarFiles.push(value1._live_file);
+                                    vm.calendarFiles.push('live_file: '+value1._live_file);
                                 }
                             });
                         } else {
@@ -3644,10 +3645,10 @@
                                 vm.holidayDates.push(new Date(value._date));
                             }
                             if (value._file) {
-                                vm.calendarFiles.push(value._file);
+                                vm.calendarFiles.push('file: '+value._file);
                             }
                             if (value._live_file) {
-                                vm.calendarFiles.push(value._live_file);
+                                vm.calendarFiles.push('live_file: '+value._live_file);
                             }
                         }
 
@@ -7009,8 +7010,8 @@
                 vm.tempRunTime.month = tempARR;
             }
         };
-        var _tempPeriod = {};
 
+        var _tempPeriod = {};
         vm.editPeriod = function (period) {
             var runTime = angular.copy(period);
             _tempPeriod = angular.copy(period);
@@ -7024,7 +7025,6 @@
 
             }
 
-
             if (runTime.period._single_start) {
                 runTime.frequency = 'single_start';
 
@@ -7037,13 +7037,6 @@
                 runTime.frequency = 'repeat';
 
             }
-            if (runTime.period._begin) {
-
-            }
-            if (runTime.period._end) {
-
-            }
-
 
             promise3 = $timeout(function () {
                 vm.runTime = runTime;
@@ -7187,6 +7180,8 @@
 
         vm.holidayDates = [];
         vm.calendarFiles = [];
+        vm.fileObj = {};
+        vm.fileObj.holidayFile = 'live_file';
         vm.addHolidayDate = function (period) {
             if (vm.holidayDates.indexOf(period) === -1 && period)
                 vm.holidayDates.push(period);
@@ -7197,8 +7192,14 @@
         };
 
         vm.addCalendarFile = function (file) {
-            if (vm.calendarFiles.indexOf(file) === -1 && file)
-                vm.calendarFiles.push(file);
+            if (vm.calendarFiles.indexOf(vm.fileObj.holidayFile+': '+file) === -1 && file) {
+               if (vm.fileObj.holidayFile == 'live_file') {
+                    vm.calendarFiles.push('live_file: ' + file);
+                } else{
+                    vm.calendarFiles.push('file: ' + file);
+                }
+            }
+            vm.liveFile = '';
         };
 
         vm.removeCalendarFile = function (index) {
@@ -7897,25 +7898,33 @@
                 vm.run_time.date._date = moment(vm.runTime1.date._date).format('YYYY-MM-DD');
             }
 
+            vm.run_time.holidays = {};
+            vm.run_time.holidays.holiday = [];
+            vm.run_time.holidays.include = [];
             if (vm.runTime1.holidays) {
-                vm.run_time.holidays = {};
-                vm.run_time.holidays.holiday = [];
-                vm.run_time.holidays.include = [];
                 if (vm.runTime1.holidays.weekdays) {
                     vm.run_time.holidays.weekdays = vm.runTime1.holidays.weekdays;
                 }
-                if (vm.calendarFiles.length > 0) {
+            }
+
+                if (vm.calendarFiles && vm.calendarFiles.length > 0) {
                     angular.forEach(vm.calendarFiles, function (value) {
-                        vm.run_time.holidays.include.push({_live_file: value});
+                        var type = value.substr(0, value.indexOf(':'));
+                        var n = value.length;
+                        if (type == 'live_file') {
+                            vm.run_time.holidays.include.push({_live_file: value.substr(value.indexOf(':') + 1, n)});
+                        }
+                        else if (type == 'file') {
+                            vm.run_time.holidays.include.push({_file: value.substr(value.indexOf(':') + 1, n)});
+                        }
                     });
                 }
-                if (vm.holidayDates.length > 0) {
+                if (vm.holidayDates && vm.holidayDates.length > 0) {
                     angular.forEach(vm.holidayDates, function (value) {
                         vm.run_time.holidays.holiday.push({_date: moment(value).format('YYYY-MM-DD')});
                     });
                 }
 
-            }
 
             if (!isEmpty(vm.run_time.date)) {
                 if (!(vm.run_time.date && (vm.run_time.date.length > 0))) {
