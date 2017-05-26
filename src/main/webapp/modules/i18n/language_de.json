@@ -1036,8 +1036,8 @@
   "message.noFolderFound": "Keine Ordner gefunden",
   "message.noInformationAvailable": "Keine Information vefügbar",
   "label.selectFolder": "Ordner auswählenr",
-  "label.includeFiles": "Include Files",
-  "label.liveFile":"Live File",
-  "label.file":"File",
-  "label.substitutes":"Substitutes"
+  "label.includeFiles": "Einzufügende Dateien",
+  "label.liveFile": "Datei im Live Ordner",
+  "label.file": "Datei",
+  "label.substitutes": "Ersatz-Zeitpläne"
 }

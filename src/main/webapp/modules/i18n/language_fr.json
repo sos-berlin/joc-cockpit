@@ -526,7 +526,7 @@
   "label.ahHoc": "Ad hoc",
   "label.calendarViewPlannedOrders": "Visualiser le Calendrier des Ordres planifiés",
   "label.orderQueue": "File d'attente des Ordres",
-  "label.substituteSchedules": "Substituter la Programmation",
+  "label.substituteSchedules": "Substituts de Programmation",
   "label.step": "Etape",
   "label.end": "Fin",
   "label.node": "Noeud",
@@ -1035,9 +1035,9 @@
   "message.deletePermission": "La Permission est supprimé de la liste des Permissions.",
   "message.noFolderFound": "Aucun dossier trouvé",
   "message.noInformationAvailable": "Aucune information disponible",
-  "label.selectFolder":"Sélectionner un Dossier",
-  "label.includeFiles": "Include Files",
-  "label.liveFile":"Live File",
-  "label.file":"File",
-  "label.substitutes":"Substitutes"
+  "label.selectFolder": "Sélectionner un Dossier",
+  "label.includeFiles": "Fichiers à inclure,
+  "label.liveFile": "Fichier dans le Dossier Live",
+  "label.file": "Fichier",
+  "label.substitutes": "Substituts de Programmation"
 }
