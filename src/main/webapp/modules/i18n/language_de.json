@@ -1014,7 +1014,6 @@
   "button.addMaster": "Master hinzufügen",
   "button.addPermission": "Berechtigung hinzufügen",
   "button.addFolder": "Ordner hinzufügen",
-  "button.removeInstance": "Nicht verwendete Master entfernen",
   "label.permission": "Berechtigung",
   "label.addPermission": "Berechtigung hinzufügen",
   "label.editPermission": "Berechtigung ändern",
@@ -1039,5 +1038,6 @@
   "label.includeFiles": "Einzufügende Dateien",
   "label.liveFile": "Datei im Live Ordner",
   "label.file": "Datei",
-  "label.substitutes": "Ersatz-Zeitpläne"
+  "label.substitutes": "Ersatz-Zeitpläne",
+  "button.removeInstance": "Clean Master"
 }

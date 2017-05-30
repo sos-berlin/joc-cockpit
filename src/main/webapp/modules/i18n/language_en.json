@@ -1014,7 +1014,6 @@
   "button.addMaster": "Create Master",
   "button.addPermission": "Add Permission",
   "button.addFolder": "Add Folder",
-  "button.removeInstance": "Remove unused Masters",
   "label.permission": "Permission",
   "label.addPermission": "Add Permission",
   "label.editPermission": "Edit Permission",
@@ -1039,5 +1038,6 @@
   "label.includeFiles": "Include Files",
   "label.liveFile": "Live File",
   "label.file": "File",
-  "label.substitutes": "Substitutes"
+  "label.substitutes": "Substitutes",
+  "button.removeInstance": "Clean Master"
 }

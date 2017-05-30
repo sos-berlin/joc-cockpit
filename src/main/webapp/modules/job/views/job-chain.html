@@ -525,7 +525,7 @@
                                 <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)"
                                           ng-bind="jobChain.state._text  | translate"></span></td>
                                 <td ng-bind="jobChain.numOfNodes || 0"></td>
-                                <td><a class="text-hover-primary" ui-sref="app.resources.agentClusters"
+                                <td><a class="text-hover-primary" ng-click="showAgentCluster(jobChain.processClass)"
                                        ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>
                                 <td>
                                     <a class="text-hover-primary" ng-click="viewOrders(jobChain,'PENDING')"

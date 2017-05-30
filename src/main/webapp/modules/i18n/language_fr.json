@@ -1014,7 +1014,6 @@
   "button.addMaster": "Créer un Master",
   "button.addPermission": "Ajouter la Permission",
   "button.addFolder": "Ajouter un dossier",
-  "button.removeInstance": "Supprimer les Masters non-utilisés",
   "label.permission": "Permission",
   "label.addPermission": "Ajouter une Permission",
   "label.editPermission": "Editer la Permission",
@@ -1036,8 +1035,9 @@
   "message.noFolderFound": "Aucun dossier trouvé",
   "message.noInformationAvailable": "Aucune information disponible",
   "label.selectFolder": "Sélectionner un Dossier",
-  "label.includeFiles": "Fichiers à inclure,
+  "label.includeFiles": "Fichiers à inclure",
   "label.liveFile": "Fichier dans le Dossier Live",
   "label.file": "Fichier",
-  "label.substitutes": "Substituts de Programmation"
+  "label.substitutes": "Substituts de Programmation",
+  "button.removeInstance": "Clean Master"
 }

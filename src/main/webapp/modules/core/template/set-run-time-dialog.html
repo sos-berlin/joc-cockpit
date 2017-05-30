@@ -124,10 +124,11 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12" ng-if="order.at == 'later'">
-                                <select class="form-control" ng-model="_sch._schedule" ng-change="changeSchedule()" style="padding-top: 6px; padding-bottom: 6px; border-bottom: none"
+                                <select class="form-control" ng-model="_sch._schedule" ng-change="changeSchedule()" style="padding-top: 6px; padding-bottom: 1px; border-bottom: none"
                                         ng-options="schedule.path as schedule.path for schedule in schedules">
+                                    <option value="" translate>label.selectASchedule</option>
                                 </select>
-                                <div style="position:absolute;top:0;left:12px;width:92%;" ng-class="{'w-96': !editor.editXml}">
+                                <div class="input-dropdown" style="left: 12px; width: 95.33% !important;" ng-class="{'w-96': !editor.editXml}">
                                     <input class="form-control" ng-model="_sch._schedule"  type="text">
                                 </div>
                                 <div class="text-orange p-t-sm"

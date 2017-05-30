@@ -22,7 +22,7 @@
                             <div class="box-header b-b">
                                 <h3 translate>label.agentClusterStatus</h3>
                             </div>
-                            <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}">
+                            <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}" ng-hide="!isLoadedAgentCluster">
                                 <div class="col-xs-offset-1 col-xs-4"
                                      ng-class="{'col-xs-11': agentClusterData.length==0}">
                                     <div ng-class="{'hide': agentClusterData.length==0}">
@@ -40,7 +40,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                            <div class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedAgentCluster}">
+                            <div ng-hide="agentClusterData.length>0" class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedAgentCluster}">
                                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                             </div>
                         </div>
@@ -63,10 +63,10 @@
                                         on-ready="barChartReadyCallback">
                                 </nvd3>
                             </div>
-                            <div ng-if="agentStatusChart[0].values.length==0" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
+                            <div ng-if="agentStatusChart[0].values.length==0 && isLoadedRunningTask" class="text-u-c text-center" style="padding: 60px; font-size: 17px;">
                                         {{'message.noDataAvailable' | translate}}
                             </div>
-                            <div class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedRunningTask}">
+                            <div ng-hide="agentStatusChart[0].values.length>0" class="hide text-center m-t-lg p-b-lg text-primary text" ng-class="{'show': !isLoadedRunningTask}">
                                 <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                             </div>
                         </div>
@@ -95,6 +95,9 @@
                             <div id="divClusterStatusWidget" class="box-body">
                               <cluster-status-view cluster-status-data="clusterStatusData" get-supervisor-details="getSupervisor()" permission="permission"
                                                    on-refresh="getClusterMembers()" on-operation="clusterAction(item,action,host,port,id)" ></cluster-status-view>
+                            </div>
+                            <div class="hide text-center text-primary text" ng-class="{'show': !isLoadedMasterCluster}" style="padding: 140px 0 155px 0">
+                                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                             </div>
                         </div>
                     </div>
@@ -156,6 +159,9 @@
                                                 {{'message.noInformationAvailable' | translate}}
                                     </div>
                              </div>
+                            <div ng-hide="notPermissionForSnapshot" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !snapshot}">
+                                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,6 +238,9 @@
                             <div class="text-u-c text-center text m-t-md m-b">
                                 {{'message.noInformationAvailable' | translate}}
                             </div>
+                        </div>
+                        <div ng-hide="notPermissionForSummary" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !orderSummary}">
+                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
                         </div>
                     </div>
                 </div>

@@ -498,6 +498,30 @@
             $location.path('/jobs')
         };
 
+        vm.showAgentCluster = function (agentCluster) {
+            var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = agentCluster.substring(agentCluster.lastIndexOf('/') + 1, agentCluster.length);
+            $rootScope.agent_cluster_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/resources/agent_clusters/')
+        };
+
+         vm.showProcessClass = function (processClass) {
+            var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = processClass.substring(processClass.lastIndexOf('/') + 1, processClass.length);
+            $rootScope.process_class_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/resources/process_classes');
+        };
+
         vm.showOrderLink = function (order) {
             var path = order.substring(0, order.lastIndexOf('/')) || '/';
             var name = '';
@@ -561,26 +585,33 @@
 
         vm.navigateToResource = function () {
             vm.resourceFilters = CoreService.getResourceTab();
+
             if (vm.resourceFilters.state == 'agent') {
                 if (vm.permission.JobschedulerUniversalAgent.view.status) {
                     $state.go('app.resources.agentClusters');
+                    return;
                 } else {
                     vm.resourceFilters.state = 'processClass';
                 }
-            } else if (vm.resourceFilters.state == 'processClass') {
+            }
+            if (vm.resourceFilters.state == 'processClass') {
                 if (vm.permission.ProcessClass.view.status) {
                     $state.go('app.resources.processClasses');
+                    return;
                 } else {
                     vm.resourceFilters.state = 'schedules';
                 }
-            } else if (vm.resourceFilters.state == 'schedules') {
+            }
+            if (vm.resourceFilters.state == 'schedules') {
 
                 if (vm.permission.Schedule.view.status) {
                     $state.go('app.resources.schedules');
+                    return;
                 } else {
                     vm.resourceFilters.state = 'locks';
                 }
-            } else if (vm.permission.Lock.view.status) {
+            }
+            if (vm.resourceFilters.state = 'locks' && vm.permission.Lock.view.status) {
                 $state.go('app.resources.locks');
             }
         };
@@ -592,6 +623,7 @@
                 scope: vm
             });
         };
+
         vm.isIE = function() {
           return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
         }
@@ -2114,12 +2146,22 @@
 
             if (run_time._valid_from) {
                 vm.from.date = run_time._valid_from;
-                vm.from.time = run_time._valid_from;
+
+                var d = new Date(run_time._valid_from),
+                h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+                h = h>9? h : '0'+h;
+                m = m>9? m : '0'+m;
+                s = s>9? s : '0'+s;
+                vm.from.time = h +':'+ m +':'+ s;
             }
             if (run_time._valid_to) {
-
                 vm.to.date = run_time._valid_to;
-                vm.to.time = run_time._valid_to;
+                var d = new Date(run_time._valid_to);
+                h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+                h = h>9? h : '0'+h;
+                m = m>9? m : '0'+m;
+                s = s>9? s : '0'+s;
+                vm.to.time = h +':'+ m +':'+ s;
             }
             if (run_time._title) {
                 vm.sch._title = run_time._title;
@@ -7112,19 +7154,27 @@
             vm.sch._valid_from = undefined;
             if (vm.from.time && vm.from.date) {
                 var date = new Date(vm.from.date);
-                vm.from.time = new Date(vm.from.time);
-                date.setHours(vm.from.time.getHours());
-                date.setMinutes(vm.from.time.getMinutes());
-                date.setSeconds(vm.from.time.getSeconds());
+                date.setHours(vm.from.time.substring(0,2));
+                date.setMinutes(vm.from.time.substring(3,5));
+                if(vm.from.time.substring(6,8)){
+                date.setSeconds(vm.from.time.substring(6,8));
+                    }
+                else{
+                    date.setSeconds('00');
+                }
                 vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
             }
             vm.sch._valid_to = undefined;
             if (vm.to.time && vm.to.date) {
                 var date = new Date(vm.to.date);
-                vm.to.time = new Date(vm.to.time);
-                date.setHours(vm.to.time.getHours());
-                date.setMinutes(vm.to.time.getMinutes());
-                date.setSeconds(vm.to.time.getSeconds());
+                date.setHours(vm.to.time.substring(0,2));
+                date.setMinutes(vm.to.time.substring(3,5));
+                if(vm.to.time.substring(6,8)){
+                date.setSeconds(vm.from.time.substring(6,8));
+                    }
+                else{
+                    date.setSeconds('00');
+                }
                 vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
             }
 
@@ -7141,6 +7191,7 @@
             }
 
         };
+
         vm.saveScheduleDetail1 = function () {
             vm.sch._valid_from = undefined;
             vm.sch._name = vm.substituteObj.name;
@@ -7148,19 +7199,27 @@
             vm.sch._title = vm.substituteObj.title;
             if (vm.substituteObj.fromTime && vm.substituteObj.fromDate) {
                 var date = new Date(vm.substituteObj.fromDate);
-                vm.substituteObj.fromTime = new Date(vm.substituteObj.fromTime);
-                date.setHours(vm.substituteObj.fromTime.getHours());
-                date.setMinutes(vm.substituteObj.fromTime.getMinutes());
-                date.setSeconds(vm.substituteObj.fromTime.getSeconds());
+                date.setHours(vm.substituteObj.fromTime.substring(0,2));
+                date.setMinutes(vm.substituteObj.fromTime.substring(3,5));
+                if(vm.substituteObj.fromTime.substring(6,8)){
+                date.setSeconds(vm.substituteObj.fromTime.substring(6,8));
+                    }
+                else{
+                    date.setSeconds('00');
+                }
                 vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
             }
             vm.sch._valid_to = undefined;
             if (vm.substituteObj.toTime && vm.substituteObj.toDate) {
                 var date = new Date(vm.substituteObj.toDate);
-                vm.substituteObj.toTime = new Date(vm.substituteObj.toTime);
-                date.setHours(vm.substituteObj.toTime.getHours());
-                date.setMinutes(vm.substituteObj.toTime.getMinutes());
-                date.setSeconds(vm.substituteObj.toTime.getSeconds());
+                date.setHours(vm.substituteObj.toTime.substring(0,2));
+                date.setMinutes(vm.substituteObj.toTime.substring(3,5));
+                if(vm.substituteObj.toTime.substring(6,8)){
+                date.setSeconds(vm.substituteObj.toTime.substring(6,8));
+                    }
+                else{
+                    date.setSeconds('00');
+                }
                 vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
             }
 

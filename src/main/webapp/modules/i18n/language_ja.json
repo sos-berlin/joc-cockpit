@@ -1014,7 +1014,6 @@
   "button.addMaster": "マスター作成",
   "button.addPermission": "パーミッション追加b",
   "button.addFolder": "Add Folder",
-  "button.removeInstance": "Remove Old Instances",
   "label.permission": "パーミッション",
   "label.addPermission": "パーミッション追加",
   "label.editPermission": "パーミッション変更",
@@ -1038,6 +1037,7 @@
   "label.selectFolder": "フォルダー選択",
   "label.includeFiles": "含むファイル",
   "label.liveFile": "Liveファイル",
-  "label.file":"ファイル",
-  "label.substitutes": "代替"
+  "label.file": "ファイル",
+  "label.substitutes": "代替",
+  "button.removeInstance": "Clean Master"
 }

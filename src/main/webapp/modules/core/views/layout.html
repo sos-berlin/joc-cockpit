@@ -18,7 +18,7 @@
 
     </div>
     <!-- BEGIN HEADER -->
-    <div class="app-header white box-shadow bg-blue-color" >
+    <div class="app-header white box-shadow bg-blue-color" ng-class="{'backup':permission.precedence>0}">
         <div ui-include="'modules/core/views/header.html'"></div>
     </div>
     <!-- END HEADER -->
