@@ -1014,7 +1014,6 @@
   "button.addMaster": "Master hinzufügen",
   "button.addPermission": "Berechtigung hinzufügen",
   "button.addFolder": "Ordner hinzufügen",
-  "button.removeInstance": "Nicht verwendete Master entfernen",
   "label.permission": "Berechtigung",
   "label.addPermission": "Berechtigung hinzufügen",
   "label.editPermission": "Berechtigung ändern",
@@ -1022,7 +1021,7 @@
   "placeholder.user": "Konto angeben",
   "placeholder.password": "Kennwort angeben",
   "placeholder.role": "Name der Rolle angeben",
-  "placeholder.master": "ID des Master angeben",
+  "placeholder.master": "ID des Masters angeben",
   "placeholder.selectRoles": "Rollen auswählen",
   "placeholder.folderPath": "Pfad des Ordners angeben",
   "placeholder.enterOrSelectPermission": "Berechtigung angeben oder auswählen",
@@ -1035,9 +1034,10 @@
   "message.deletePermission": "Die Berechtigung wird aus der Liste der Berechtigungen entfernt.",
   "message.noFolderFound": "Keine Ordner gefunden",
   "message.noInformationAvailable": "Keine Information vefügbar",
-  "label.selectFolder": "Select a Folder",
-  "label.includeFiles": "Include Files",
-  "label.liveFile":"Live File",
-  "label.file":"File",
-  "label.substitutes":"Substitutes"
+  "label.selectFolder": "Ordner auswählenr",
+  "label.includeFiles": "Einzufügende Dateien",
+  "label.liveFile": "Datei im Live Ordner",
+  "label.file": "Datei",
+  "label.substitutes": "Ersatz-Zeitpläne",
+  "button.removeInstance": "Clean Master"
 }

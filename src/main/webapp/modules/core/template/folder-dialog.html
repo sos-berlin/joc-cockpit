@@ -11,13 +11,20 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
+
             <div class="form-group row">
                <label class="col-sm-4 form-control-label" translate>label.folders</label>
-               <div class="col-sm-6" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
-                   <select class="form-control" name="name" ng-model="folder.folder" ng-options="folder as folder for folder in folderList" required>
-                        <option value="" translate>label.selectFolder</option>
-                    </select>
+               <div class=" col-sm-6" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
+                   <input required type="text" class="form-control" name="name" placeholder="{{'placeholder.folderPath' | translate}}" ng-model="folder.folder">
                </div>
+               <div class="col-sm-1 p-l-0 p-t-sm" ng-if="newFolder"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+            </div>
+            <div class="form-group row" ng-if="folderObj.paths.length>0 && newFolder">
+                <div class="col-md-offset-4 col-sm-6" style="max-height: 140px; overflow: auto">
+                    <div ng-repeat="path in folderObj.paths track by $index">
+                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path)"></i>
+                    </div>
+                </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4" translate>label.recursive</label>
@@ -33,7 +40,7 @@
                 <div class="b-t"></div>
             </div>
             <div class="form-group m-t m-b-xs">
-                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid" translate>button.submit</button>
+                <button type="submit" class="btn btn-primary btn-sm"  ng-disabled="form.$invalid && folderObj.paths.length==0" translate>button.submit</button>
                 <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
             </div>
         </div>

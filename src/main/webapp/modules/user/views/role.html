@@ -15,15 +15,17 @@
               </div>
 
           </div>
-          <div class="row" ng-if="getSelectedRole(role)" ng-repeat="role in master.roles" ng-show="showPanel">
-              <div class="col-md-1 col-sm-2 col-xs-4"><span class="p-l-lg" ng-if="$index==0" translate>label.roles</span></div>
-              <div class="col-md-10 col-sm-9 col-xs-6 role">
+          <div class="row" ng-show="showPanel" ng-if="master.roles.length>0">
+              <div class="col-md-1 col-sm-2 col-xs-4"><span class="p-l-lg" translate>label.roles</span></div>
+              <div class="col-md-10 col-sm-9 col-xs-6 " >
+                  <div class="role" ng-repeat="role in master.roles"  ng-if="getSelectedRole(role)" >
                   <span class="fa fa-circle" style="font-size: 9px"></span>
                   <a href="#!/users/permission/{{master.master || 'default'}}/{{role.role}}" class="text-primary">
                       {{role.role}}
                   </a>
                   <i ng-click="editRole(role,master.master)" class="fa fa-pencil" ></i>
                   <i ng-click="deleteRole(role,master.master)" class="fa fa-times m-l-xs"></i>
+                  </div>
               </div>
           </div>
           <hr ng-show="showPanel">

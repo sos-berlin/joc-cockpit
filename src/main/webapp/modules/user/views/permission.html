@@ -19,7 +19,9 @@
                 <div class="row ">
                     <div class="col-md-12 role" ng-repeat="f in folderArr track by $index">
                         <span>
-                            {{f.folder}}<span ng-if="f.recursive">/*</span>
+                            {{f.folder}}
+                            <span ng-if="f.recursive && f.folder != '/'">/*</span>
+                            <span ng-if="f.recursive && f.folder == '/'">*</span>
                             <i ng-click="editFolder(f)" class="fa fa-pencil m-l-xs" ></i>
                             <i ng-click="deleteFolder(f)" class="fa fa-times m-l-xs"></i>
 
@@ -55,7 +57,6 @@
 </div>
 
 <div ng-show="view.pageView !='list'">
-    <div id="container"></div>
     <div id="mainTree" class="box m-t"></div>
 </div>
 
@@ -98,4 +99,42 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
 
+                    <tree
+                            tree-data="folderList"
+                            tree-control="filter_tree"
+                            object="object"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            icon-collapse="fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addFolderPaths()"
+                        data-dismiss="modal" translate>button.done
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal"  translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

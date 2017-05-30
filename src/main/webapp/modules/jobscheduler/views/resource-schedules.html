@@ -65,6 +65,10 @@
 
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
+                                <span translate>label.substituteBy </span>:
+                                <span ng-bind="schedule.substitutedBy || '-'"></span>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.substitute </span>:
                                 <span ng-bind="schedule.substitute.path || '-'"></span>
                             </div>
@@ -144,7 +148,12 @@
                             <i ng-show="schdeuleFilters.filter.sortBy == 'substitute' && schdeuleFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-
+                        <th ng-click="sortByS('substitutedBy')"><a><span translate>label.substituteBy</span>
+                            <i ng-show="schdeuleFilters.filter.sortBy == 'substitutedBy' && !schdeuleFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="schdeuleFilters.filter.sortBy == 'substitutedBy' && schdeuleFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
                     </tr>
                     </thead>
                     <tbody  ng-repeat="schedule in allSchedules | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse | startFrom:(schdeuleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
@@ -193,6 +202,7 @@
                         <td ng-bind="schedule.substitute.validFrom | stringToDate"></td>
                         <td ng-bind="schedule.substitute.validTo | stringToDate"></td>
                         <td ng-bind="schedule.substitute.path"></td>
+                        <td ng-bind="schedule.substitutedBy"></td>
                     </tr>
                     <tr ng-if="schedule.configurationStatus._text" style="background: transparent !important;">
                         <td></td>

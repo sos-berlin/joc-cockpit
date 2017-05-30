@@ -14,9 +14,10 @@
             <div class="form-group row">
                 <label class="col-sm-4" translate>label.master</label>
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.master.$invalid && form.master.$dirty }">
-                    <select class="form-control" name="master" ng-model="master" ng-disabled="!newRole">
+                    <select class="form-control" name="master" ng-model="mstr.name" ng-disabled="!newRole">
                         <option ng-repeat="master in masters" value="{{master.master}}">{{master.master || 'default'}}</option>
                    </select>
+                 
                 </div>
             </div>
             <div class="form-group row">

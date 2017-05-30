@@ -146,7 +146,7 @@
                             <td>
                                 <i class="cursor fa fa-caret-down noExl" ng-if="!cluster.show" ng-click="showAgents(cluster)"></i>
                                 <i class="cursor fa fa-caret-up noExl" ng-if="cluster.show" ng-click="hideAgents(cluster)"></i>
-                                {{cluster.path}}
+                                <a class="text-hover-primary" ng-bind="cluster.path" ng-click="showProcessClass(cluster.path)"></a>
                             </td>
                             <td><span class="label" ng-class="bgColorFunction(cluster.state.severity)">
                                 <span ng-if="cluster.state._text =='ALL_AGENTS_ARE_RUNNING'">{{'healthy' | translate}}</span>

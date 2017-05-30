@@ -170,11 +170,12 @@
 
                         <div class="col-sm-6">
 
-                            <select class="form-control" name="substitue" ng-model="sch._substitute" style="padding-top: 6px; padding-bottom: 6px; border-bottom: none"
+                            <select class="form-control" name="substitue" ng-model="sch._substitute" style="padding-top: 6px; padding-bottom: 1px; border-bottom: none"
                                     ng-change="error.scheduleRequired=false"
                                     ng-options="schedule.path as schedule.path for schedule in _schedules">
+
                             </select>
-                            <div style="position:absolute;top:0;left:12px;width:92%;">
+                            <div class="input-dropdown" style="width: 90.7% !important;">
                                 <input name="substitue" class="form-control" ng-model="sch._substitute"  type="text">
                             </div>
                             <div class="help-block text-danger" ng-if="error.scheduleRequired">
@@ -182,19 +183,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" ng-class="{ 'has-error' : (form.date1.$invalid && form.date1.$dirty) || form.fromTime.$invalid && form.fromTime.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                         <div class="col-sm-6">
                             <input class="form-control input-date" ng-focus="error.validDate=false" name="date1"
                                    ng-model="from.date" data-date-format="{{dataFormat}}" data-autoclose="1"
                                    placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                            <input ng-disabled="!from.date" class="form-control input-time" ng-model="from.time"
-                                   ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss"
-                                   data-minute-step="1" placeholder="HH:MM:SS" bs-timepicker data-arrow-behavior="picker" type="text">
+                            <input valid-time maxlength="8" name="fromTime" class="form-control w-sm inline m-l-sm" ng-model="from.time"
+                                   ng-focus="error.validDate=false" placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" ng-class="{'has-error': (error.validDate)}">
+                    <div class="form-group row" ng-class="{'has-error': (error.validDate) || (form.toTime.$invalid && form.toTime.$dirty)}">
                         <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                         <div class="col-sm-6">
@@ -202,9 +202,8 @@
                                    ng-model="to.date" data-date-format="{{dataFormat}}" data-autoclose="1"
                                    data-min-date="{{from.date}}" placeholder="{{dataFormat | uppercase}}"
                                    bs-datepicker type="text">
-                            <input ng-disabled="!to.date" class="form-control input-time" ng-model="to.time"
-                                   ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss"
-                                   data-minute-step="1" placeholder="HH:MM:SS" bs-timepicker data-arrow-behavior="picker" type="text">
+                            <input valid-time maxlength="8" class="form-control w-sm inline m-l-sm" ng-model="to.time" name="toTime"
+                                   ng-focus="error.validDate=false" placeholder="HH:MM:SS" type="text">
 
                             <div class="help-block text-danger" ng-if="error.validDate">
                                 <div translate>message.validDate</div>
@@ -733,7 +732,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-offset-3 col-sm-7">
+                    <div class="col-sm-offset-3 col-sm-6">
                         <table class="table table-bordered" style="min-height: 100px;">
                             <tbody>
                             <tr ng-repeat="file in calendarFiles track by $index">

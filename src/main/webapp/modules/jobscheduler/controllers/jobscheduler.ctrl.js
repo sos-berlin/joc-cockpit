@@ -10,7 +10,7 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval"];
+    ResourceCtrl.$inject = ["$scope", '$rootScope', 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval"];
     function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -151,7 +151,12 @@
                 compact: true,
                 types: ['AGENTCLUSTER']
             }).then(function (res) {
-                if(type){
+
+                if($rootScope.agent_cluster_expand_to){
+                    vm.treeAgent = res.folders;
+                    filteredTreeDataA();
+                } else{
+                    if(type){
                     vm.treeAgent = res.folders;
                         filteredTreeDataA(type);
                 }else {
@@ -164,6 +169,8 @@
                         previousTreeStateA();
                     }
                 }
+                }
+
                 vm.agentsFilters.expand_to = vm.treeAgent;
 
                 vm.isLoading = true;
@@ -251,6 +258,13 @@
                     value.expanded = true;
                     value.selected1 = true;
                 }
+                if($rootScope.agent_cluster_expand_to && $rootScope.agent_cluster_expand_to.path.indexOf(value.path)!=-1 ){
+                     value.expanded = true;
+                }
+                if($rootScope.agent_cluster_expand_to && $rootScope.agent_cluster_expand_to.path==value.path ){
+                     value.selected1 = true;
+                    $rootScope.agent_cluster_expand_to =undefined;
+                }
                 /*else if (value.expanded || value.selected1) {
                     if (data.path == '/') {
                         data.selected1 = false;
@@ -315,8 +329,11 @@
         function insertData(node, x) {
             for (var i = 0; i < node.agentClusters.length; i++) {
                 for (var j = 0; j < x.length; j++) {
-                    if (node.path == x[j].path.substring(0, x[j].path.lastIndexOf('/')) || node.path == x[j].path.substring(0, x[j].path.lastIndexOf('/') + 1)) {
-                        x[j].show = node.agentClusters[i].show;
+                   
+                    if (node.agentClusters[i].path == x[j].path) {
+                        if(node.agentClusters[i].show)
+                        x[j].show = true;
+                        break;
                     }
                 }
             }
@@ -678,12 +695,6 @@
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 checkExpandL(value);
-/*                if (value.expanded || value.selected1) {
-                    if (data.path == '/') {
-                        data.selected1 = false;
-                    }
-                }*/
-
             });
         }
 
@@ -702,7 +713,11 @@
                 types: ['PROCESSCLASS']
             }).then(function (res) {
 
-                if (vm.isEmpty(vm.processFilters.expand_to)) {
+                if($rootScope.agent_cluster_expand_to){
+                    vm.treeProcess = angular.copy(res.folders);
+                    filteredTreeDataP();
+                } else{
+                   if (vm.isEmpty(vm.processFilters.expand_to)) {
                     vm.treeProcess = angular.copy(res.folders);
                     filteredTreeDataP();
                 } else {
@@ -711,8 +726,9 @@
                     vm.treeProcess = vm.processFilters.expand_to;
                     previousTreeStateP();
                 }
-                vm.processFilters.expand_to = vm.treeProcess;
+                }
 
+                vm.processFilters.expand_to = vm.treeProcess;
                 vm.isLoading = true;
             }, function (err) {
                 vm.isLoading = true;
@@ -980,7 +996,13 @@
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
-
+                    if($rootScope.process_class_expand_to && $rootScope.process_class_expand_to.path.indexOf(value.path)!=-1 ){
+                     value.expanded = true;
+                }
+                if($rootScope.process_class_expand_to && $rootScope.process_class_expand_to.path==value.path ){
+                     value.selected1 = true;
+                    $rootScope.process_class_expand_to=undefined;
+                }
                 checkExpandP(value);
 /*                if (value.expanded || value.selected1) {
                     if (data.path == '/') {
@@ -1037,28 +1059,6 @@
             }
         };
 
-        function substitute(schedule) {
-            var schedules = {};
-            schedules.jobschedulerId = $scope.schedulerIds.selected;
-            schedules.schedule = schedule.path;
-            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
-            schedules.auditLog = {};
-            if (vm.comments.comment) {
-                schedules.auditLog.comment = vm.comments.comment;
-            }
-
-            if (vm.comments.timeSpent) {
-                schedules.auditLog.timeSpent = vm.comments.timeSpent;
-            }
-
-            if (vm.comments.ticketLink) {
-                schedules.auditLog.ticketLink = vm.comments.ticketLink;
-            }
-
-            ScheduleService.setRunTime(schedules);
-        }
-
-
         function createSchedule(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
@@ -1085,22 +1085,7 @@
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
 
-            var _xml = x2js.xml_str2json(vm.tempXML);
-
-            if (vm.sch._title)
-                _xml.schedule._title = vm.sch._title;
-            if (vm.sch._valid_from)
-                _xml.schedule._valid_from = vm.sch._valid_from;
-            if (vm.sch._valid_to)
-                _xml.schedule._valid_to = vm.sch._valid_to;
-            var xmlStr = x2js.json2xml_str(_xml);
-            xmlStr = xmlStr.replace(/,/g, ' ');
-
-            ScheduleService.setRunTime(schedules).then(function () {
-                var temp = angular.copy(schedule);
-                temp.runTime = xmlStr;
-                substitute(temp);
-            });
+            ScheduleService.setRunTime(schedules);
         }
 
         vm.substitute = function (schedule) {
@@ -1190,7 +1175,11 @@
                 schedules.auditLog.ticketLink = vm.comments.ticketLink;
             }
 
-            ScheduleService.setRunTime(schedules);
+            ScheduleService.setRunTime(schedules).then(function(){
+                for (var i = 0; i < vm.tree.length; i++) {
+                    checkExpandTreeForUpdates(vm.tree[i]);
+                }
+            })
         }
 
         vm.editSchedule = function (schedule) {
@@ -1437,16 +1426,20 @@
             ScheduleService.get(obj).then(function (res) {
                 var data1 = [];
                 if (data.schedules && data.schedules.length > 0) {
-                    angular.forEach(data.schedules, function (schedule) {
-                        for (var i = 0; i < res.schedules.length; i++) {
-                            if (schedule.path == res.schedules[i].path) {
-                                schedule = angular.merge(schedule, res.schedules[i]);
-                                data1.push(schedule);
-                                break;
+                    if(res.schedules.length>0) {
+                        angular.forEach(data.schedules, function (schedule) {
+                            for (var i = 0; i < res.schedules.length; i++) {
+                                if (schedule.path == res.schedules[i].path) {
+                                    schedule = angular.merge(schedule, res.schedules[i]);
+                                    data1.push(schedule);
+                                    res.schedules.splice(i,1);
+                                    break;
+                                }
                             }
-                        }
-                    });
-                    data.schedules = data1;
+                        });
+                        data1 = data1.concat(res.schedules);
+                        data.schedules = data1;
+                    }
                 } else {
                     data.schedules = res.schedules;
                 }
@@ -1497,16 +1490,20 @@
             ScheduleService.get(obj).then(function (res) {
                 var data1 = [];
                 if (data.schedules.length > 0) {
-                    angular.forEach(data.schedules, function (schedule) {
-                        for (var i = 0; i < res.schedules.length; i++) {
-                            if (schedule.path == res.schedules[i].path) {
-                                schedule = angular.merge(schedule, res.schedules[i]);
-                                data1.push(schedule);
-                                break;
+                    if(res.schedules.length>0) {
+                        angular.forEach(data.schedules, function (schedule) {
+                            for (var i = 0; i < res.schedules.length; i++) {
+                                if (schedule.path == res.schedules[i].path) {
+                                    schedule = angular.merge(schedule, res.schedules[i]);
+                                    data1.push(schedule);
+                                     res.schedules.splice(i,1);
+                                    break;
+                                }
                             }
-                        }
-                    });
-                    data.schedules = data1;
+                        });
+                        data1 = data1.concat(res.schedules);
+                        data.schedules = data1;
+                    }
                 } else {
                     data.schedules = res.schedules;
                 }
@@ -1575,12 +1572,12 @@
             });
         }
 
-
         vm.expandNode = function (data) {
+            vm.loading = true;
             vm.reset();
             navFullTree();
             vm.allSchedules = [];
-            vm.loading = true;
+
             vm.folderPathS = data.name || '/';
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -1596,7 +1593,6 @@
         };
 
         function startTraverseNode(data) {
-
             vm.allSchedules = [];
             function recursive(data) {
                 data.expanded = true;
@@ -1609,16 +1605,13 @@
                         vm.allSchedules.push(value);
                     }
                 });
-
                 data.selected1 = true;
                 angular.forEach(data.folders, function (a) {
                     recursive(a);
                 });
             }
-
             recursive(data);
         }
-
 
         function checkExpand(data) {
             if (data.selected1) {
@@ -1634,13 +1627,7 @@
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
-
                 checkExpand(value);
-/*                if (value.expanded || value.selected1) {
-                    if (data.path == '/') {
-                        data.selected1 = false;
-                    }
-                }*/
             });
         }
 
@@ -2084,11 +2071,20 @@
             });
         };
 
-        function substitute(schedule) {
+
+        function createSchedule(schedule) {
             var schedules = {};
             schedules.jobschedulerId = $scope.schedulerIds.selected;
-            schedules.schedule = schedule.path;
-            schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            if(vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length-1){
+                vm.substituteObj.folder = vm.substituteObj.folder+'/';
+            }
+            schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
+            var x2js = new X2JS();
+
+            var x = x2js.xml_str2json(schedule.runTime);
+            x.schedule._substitute = vm.sch._substitute;
+            schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
+
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
@@ -2103,53 +2099,6 @@
             }
 
             ScheduleService.setRunTime(schedules);
-        }
-
-        function createSchedule(schedule) {
-            var schedules = {};
-            schedules.jobschedulerId = $scope.schedulerIds.selected;
-            if(vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length-1){
-                vm.substituteObj.folder = vm.substituteObj.folder+'/';
-            }
-            schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-
-
-            schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
-            var x2js = new X2JS();
-
-            var x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = vm.sch._substitute;
-            schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
-            schedules.auditLog = {};
-            if (vm.comments.comment) {
-                schedules.auditLog.comment = vm.comments.comment;
-            }
-
-            if (vm.comments.timeSpent) {
-                schedules.auditLog.timeSpent = vm.comments.timeSpent;
-            }
-
-            if (vm.comments.ticketLink) {
-                schedules.auditLog.ticketLink = vm.comments.ticketLink;
-            }
-
-
-            var _xml = x2js.xml_str2json(vm.tempXML);
-
-            if (vm.sch._title)
-                _xml.schedule._title = vm.sch._title;
-            if (vm.sch._valid_from)
-                _xml.schedule._valid_from = vm.sch._valid_from;
-            if (vm.sch._valid_to)
-                _xml.schedule._valid_to = vm.sch._valid_to;
-            var xmlStr = x2js.json2xml_str(_xml);
-            xmlStr = xmlStr.replace(/,/g, ' ');
-
-            ScheduleService.setRunTime(schedules).then(function () {
-                var temp = angular.copy(schedule);
-                temp.runTime = xmlStr;
-                substitute(temp);
-            });
         }
 
         vm.substitute = function (schedule) {
@@ -2216,7 +2165,7 @@
             }
 
             ScheduleService.setRunTime(schedules);
-        };
+        }
 
         vm.editSchedule = function (schedule) {
             vm.comments = {};
@@ -2262,6 +2211,7 @@
     DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
     function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
         var vm = $scope;
+        vm.agentClusters={};
         if (SOSAuth.jobChain) {
             SOSAuth.setJobChain(undefined);
             SOSAuth.save();
@@ -2444,6 +2394,17 @@
                     }
                 }
                 vm.isLoadedRunningTask = true;
+
+                if (document.getElementById('agent-cluster-status')) {
+                    var a = document.getElementById('agent-cluster-status').clientHeight
+                }
+                if (document.getElementById('agent-running-task')) {
+                    var b = document.getElementById('agent-running-task').clientHeight
+                }
+                if (a && b && (a + b > 320)) {
+                    $('#master-cluster-status').css('height', (a + b - 20) + 'px');
+                }
+
             }, function () {
                 vm.processClasses = [];
                 vm.agentStatusChart = [{
@@ -2451,6 +2412,15 @@
                     "values": agentArray
                 }];
                 vm.isLoadedRunningTask = true;
+                                if (document.getElementById('agent-cluster-status')) {
+                    var a = document.getElementById('agent-cluster-status').clientHeight
+                }
+                if (document.getElementById('agent-running-task')) {
+                    var b = document.getElementById('agent-running-task').clientHeight
+                }
+                if (a && b && (a + b > 320)) {
+                    $('#master-cluster-status').css('height', (a + b - 20) + 'px');
+                }
             });
         };
 
@@ -2508,29 +2478,38 @@
         prepareClusterStatusData();
         var clusterStatusData = {};
         var interval = undefined;
-
+        vm.isLoadedMasterCluster = false;
         function prepareClusterStatusData() {
+
             clusterStatusData = {};
             getDatabase().then(function (res) {
                 clusterStatusData.database = res;
                 getClusterMembersP().then(function (res) {
                     clusterStatusData.members = res;
+            
                     vm.clusterStatusData = clusterStatusData;
+
                     interval = $timeout(function () {
+                 
                         if (document.getElementById('agent-cluster-status')) {
                             var a = document.getElementById('agent-cluster-status').clientHeight
                         }
                         if (document.getElementById('agent-running-task')) {
                             var b = document.getElementById('agent-running-task').clientHeight
                         }
-                        if (a + b > 320) {
+                        if (a && b && (a + b > 320)) {
                             $('#master-cluster-status').css('height', (a + b - 20) + 'px');
                         }
                         vm.clusterStatusData = clusterStatusData;
                         $rootScope.$broadcast('clusterStatusDataChanged');
+                         vm.isLoadedMasterCluster = true;
                     }, 100);
+                },function(){
+                     vm.isLoadedMasterCluster = true;
                 });
-            });
+            },function(){
+                     vm.isLoadedMasterCluster = true;
+                });
         }
 
         vm.getSupervisor = getSupervisorDetails;
@@ -2636,7 +2615,20 @@
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'continue') {
                     JobSchedulerService.continue(obj);
                 } else if ((objectType == 'supervisor' || objectType == 'master') && action == 'remove') {
-                    JobSchedulerService.cleanup(obj);
+                    JobSchedulerService.cleanup(obj).then(function(){
+                        JobSchedulerService.getSchedulerIds().then(function (res) {
+                            if (res) {
+                                CoreService.setDefaultTab();
+                                SOSAuth.setIds(res);
+                                SOSAuth.setPermission(permission);
+                                SOSAuth.save();
+                                if (res.selected !=vm.schedulerIds.selected)
+                                    $state.reload(vm.currentState);
+                                 $rootScope.$broadcast('reloadUser');
+
+                            }
+                        });
+                    })
                 }else if (objectType == 'cluster' && action == 'terminate') {
                     JobSchedulerService.terminateCluster(obj1);
                 } else if (objectType == 'cluster' && action == 'terminateFailsafe') {
@@ -2869,26 +2861,18 @@
               vm.totalPlanData++;
                 var time;
                 if (value.state._text == 'FAILED') {
-                    if (!value.late) {
-                        vm.error++;
-                    } else {
-                        vm.lateError++;
-                    }
+                    if (value.late)
+                    vm.lateError++;
 
                 } else if (value.state._text == 'SUCCESSFUL') {
-                    if (!value.late) {
+                    if (!value.late)
+                       vm.lateSuccess++;
                         vm.success++;
-                    } else {
-                        vm.lateSuccess++;
-                    }
                 } else if(value.state._text == 'PLANNED'){
                     if (value.late) {
                         vm.late++;
-                    } else {
-                        vm.waiting++;
                     }
-                }else{
-                   // vm.totalPlanData--;
+                        vm.waiting++;
                 }
             });
             vm.waiting = getPlanPercent(vm.waiting);
@@ -3767,9 +3751,6 @@
                 }
                 if (vm.dailyPlanFilters.filter.state == 'LATE') {
                     obj.late = true;
-                } else {
-                    if (vm.dailyPlanFilters.filter.status != 'ALL')
-                    obj.late = false;
                 }
             }
             if(!obj.dateFrom) {
@@ -4191,11 +4172,7 @@
                     }
                     if (vm.dailyPlanFilters.filter.state == 'LATE') {
                         obj.late = true;
-                    } else {
-                        if (vm.dailyPlanFilters.filter.status != 'ALL')
-                        obj.late = false;
                     }
-
                 }
             }
             if(!obj.dateFrom) {

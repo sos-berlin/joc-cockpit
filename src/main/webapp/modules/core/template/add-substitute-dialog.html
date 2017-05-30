@@ -80,18 +80,18 @@
                                 <input class="form-control" ng-model="substituteObj.name" name="scheduleName" required>
                             </div>
                         </div>
-                        <div class="form-group row" ng-class="{ 'has-error' : form.date1.$invalid && form.date1.$dirty }">
+                        <div class="form-group row" ng-class="{ 'has-error' : (form.date1.$invalid && form.date1.$dirty) || form.fromTime.$invalid && form.fromTime.$dirty }">
                             <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                             <div class="col-sm-9">
                                 <input class="form-control input-date" ng-focus="error.validDate=false" name="date1" ng-model="substituteObj.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                                <input ng-disabled="!substituteObj.fromDate" class="form-control input-time" ng-model="substituteObj.fromTime" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-minute-step="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                                <input valid-time maxlength="8" ng-focus="error.validDate=false" class="form-control w-sm inline m-l-sm" name="fromTime" ng-model="substituteObj.fromTime"  placeholder="HH:MM:SS" type="text">
                             </div>
                         </div>
-                        <div class="form-group row"  ng-class="{'has-error': (error.validDate) || (form.date2.$invalid && form.date2.$dirty)}">
+                        <div class="form-group row"  ng-class="{'has-error': (error.validDate) || (form.date2.$invalid && form.date2.$dirty) || form.toTime.$invalid && form.toTime.$dirty}">
                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
                             <div class="col-sm-9">
                                 <input class="form-control input-date" ng-focus="error.validDate=false" name="date2" ng-model="substituteObj.toDate" data-date-format="{{dataFormat}}" data-autoclose="1" data-min-date="{{substituteObj.fromDate}}" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                                <input ng-disabled="!substituteObj.toDate" class="form-control input-time" ng-model="substituteObj.toTime" ng-focus="error.validDate=false" data-length="1" data-time-format="HH:mm:ss" data-minute-step="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                                <input valid-time maxlength="8" ng-focus="error.validDate=false" class="form-control w-sm inline m-l-sm" name="toTime" ng-model="substituteObj.toTime" placeholder="HH:MM:SS" type="text">
                                 <div class="help-block text-danger" ng-if="error.validDate">
                                     <div translate>message.validDate</div>
                                 </div>
@@ -678,7 +678,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-offset-3 col-sm-7">
+                    <div class="col-sm-offset-3 col-sm-6">
                         <table class="table table-bordered" style="min-height: 100px;">
                             <tbody>
                             <tr ng-repeat="file in calendarFiles track by $index">
