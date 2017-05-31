@@ -1039,5 +1039,5 @@
   "label.liveFile": "Fichier dans le Dossier Live",
   "label.file": "Fichier",
   "label.substitutes": "Substituts de Programmation",
-  "button.removeInstance": "Clean Master"
+  "button.removeInstance": "Supprimer le Master de l'Inventaire"
 }

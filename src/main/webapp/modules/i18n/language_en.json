@@ -1039,5 +1039,5 @@
   "label.liveFile": "Live File",
   "label.file": "File",
   "label.substitutes": "Substitutes",
-  "button.removeInstance": "Clean Master"
+  "button.removeInstance": "Remove Master from Inventory"
 }
