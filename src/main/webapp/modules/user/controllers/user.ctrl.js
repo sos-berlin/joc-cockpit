@@ -654,9 +654,10 @@
         };
     }
 
-    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope','$location'];
-    function UsersCtrl($scope, UserService, $uibModal, $rootScope,$location) {
+    UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope', '$location', 'toasty', 'gettextCatalog'];
+    function UsersCtrl($scope, UserService, $uibModal, $rootScope, $location, toasty, gettextCatalog) {
         var vm = $scope;
+
         vm.usr = {};
         vm.usr.currentPage = 1;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -709,18 +710,12 @@
         };
         vm.checkRole = function () {
             vm.isUnique = true;
-            if (!vm.master) {
-                vm.master = '';
-            }
-            angular.forEach(vm.masters, function (master, index) {
-
-                if (angular.equals(master.master, vm.master)) {
-                    angular.forEach(master.roles, function (value, index1) {
-                        if (value.role != temp_role && (angular.equals(value.role, vm.role.role) || value.role == vm.role.role))
-                            vm.isUnique = false;
-                    });
+            for(var j = 0; j<vm.roles.length;j++) {
+                if (vm.roles[j] != temp_role && (angular.equals(vm.roles[j], vm.role.role) || vm.roles[j] == vm.role.role)) {
+                    vm.isUnique = false;
+                    break;
                 }
-            });
+            }
         };
         vm.addUser = function () {
             vm.user = {};
@@ -760,7 +755,7 @@
                 });
                 saveInfo();
                 vm.user = {};
-                if(vm.selectedUser && vm.selectedUser == user.user) {
+                if (vm.selectedUser && vm.selectedUser == user.user) {
                     vm.selectedUser = '';
                     selectedMasters = [];
                     selectedRoles = [];
@@ -781,7 +776,7 @@
                 vm.user = {};
                 vm.users.splice(vm.users.indexOf(user), 1);
                 saveInfo();
-                if(vm.selectedUser && vm.selectedUser == user.user) {
+                if (vm.selectedUser && vm.selectedUser == user.user) {
                     vm.selectedUser = '';
                     selectedMasters = [];
                     selectedRoles = [];
@@ -804,11 +799,13 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+                vm.roles.push(vm.role.role);
                 angular.forEach(vm.masters, function (master, index) {
                     if (angular.equals(master.master, vm.mstr.name)) {
                         vm.masters[index].roles.push(vm.role);
                     }
                 });
+
                 saveInfo();
                 vm.role = {};
             }, function () {
@@ -819,7 +816,8 @@
             vm.role = angular.copy(role);
             temp_role = role.role;
             vm.mstr = {};
-            vm.mstr.name = angular.copy(mast);
+            vm.mstr.name = mast == '' ? 'default': angular.copy(mast);
+
             vm.newRole = false;
             vm.isUnique = true;
             var modalInstance = $uibModal.open({
@@ -830,20 +828,55 @@
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.masters, function (master, index) {
-                    if (angular.equals(master.master, mast)) {
+                   // if (angular.equals(master.master, mast)) {
                         angular.forEach(master.roles, function (value, index1) {
-                            if (angular.equals(value, role))
+                            console.log(value.role+'::'+ role.role)
+                            if (value.role== role.role) {
                                 vm.masters[index].roles[index1].role = vm.role.role;
+                            }
                         });
-                    }
+                   // }
                 });
+                for (var i = 0; i < vm.users.length; i++) {
+                    for (var j = 0; j < vm.users[i].roles.length; j++) {
+                        if (vm.users[i].roles[j] == temp_role) {
+                           vm.users[i].roles.splice(i,1);
+                           vm.users[i].roles.push(vm.role.role);
+                        }
+                    }
+                }
+                for (var i = 0; i < vm.roles.length; i++) {
+                    if (vm.roles[i] == temp_role || angular.equals(vm.roles[i], temp_role)) {
+                        vm.roles.splice(i,1);
+                        vm.roles.push(vm.role.role);
+                        break;
+                    }
+                }
                 saveInfo();
                 vm.role = {};
+                temp_role= '';
             }, function () {
                 vm.role = {};
+                temp_role= '';
             });
         };
         vm.deleteRole = function (role, mast) {
+            var flag = true;
+            for (var i = 0; i < vm.users.length; i++) {
+                for (var j = 0; j < vm.users[i].roles.length; j++) {
+                    if (vm.users[i].roles[j] == role.role) {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                toasty.warning({
+                    msg: gettextCatalog.getString('message.cannotDeleteRole'),
+                    timeout: 10000
+                });
+                return;
+            }
             vm.role = angular.copy(role);
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
@@ -1132,7 +1165,7 @@
         };
 
         vm.getTreeStructure = function () {
-            ResourceService.tree({jobschedulerId: vm.schedulerIds.selected, compact: true}).then(function (res) {
+            ResourceService.tree({jobschedulerId: vm.masterName, compact: true}).then(function (res) {
                 vm.folderList = res.folders;
 
             }, function () {
@@ -1425,7 +1458,7 @@
             var headerHt = $('.app-header').height() || 60;
             var topHeaderHt = $('.top-header-bar').height() || 16;
             var subHeaderHt = 59;
-            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + 90));
+            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + 130));
         };
         vm.calculateHeight();
         $(window).resize(function () {
@@ -1483,11 +1516,53 @@
             var _pList = angular.copy(vm.rolePermissions);
             checkPermissionList(root, _pList);
             draw(root);
+            var nodes;
+
+
+            vm.expandAll = expandAll;
+
+            function expandAll() {
+                nodes.forEach(function (permission_node) {
+                    expand(permission_node);
+                });
+                draw(nodes[0]);
+            }
+
+            function expand(permission_node) {
+                if (permission_node.collapsed) {
+                    permission_node.collapsed = false;
+                    permission_node.icon = "images/minus.png";
+                }
+                if (permission_node._parents) {
+                    permission_node._parents.forEach(expand);
+                }
+
+            }
+
+            vm.collapseAll = collapseAll;
+
+            function collapseAll() {
+                nodes.forEach(function (permission_node) {
+                    collapseNode(permission_node);
+                });
+                draw(nodes[0]);
+            }
+
+            function collapseNode(permission_node) {
+                if (!permission_node.collapsed) {
+                    permission_node.collapsed = true;
+                    permission_node.icon = "images/plus.png";
+                }
+                if (permission_node._parents) {
+                    permission_node._parents.forEach(collapseNode);
+                }
+
+            }
 
 
             function draw(source) {
-                var nodes = tree.nodes(root),
-                    links = tree.links(nodes);
+                nodes = tree.nodes(root);
+                var links = tree.links(nodes);
                 // Update links
                 var link = svg.selectAll("path.link")
                     .data(links, function (d) {
@@ -1770,7 +1845,6 @@
                     + "H" + d.source.y;
             }
         }
-
 
         function updateDiagramData(nData) {
             var tree = d3.layout.tree()

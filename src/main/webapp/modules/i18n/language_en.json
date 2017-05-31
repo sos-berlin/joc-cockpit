@@ -1039,5 +1039,6 @@
   "label.liveFile": "Live File",
   "label.file": "File",
   "label.substitutes": "Substitutes",
-  "button.removeInstance": "Clean Master"
+  "button.removeInstance": "Clean Master",
+  "message.cannotDeleteRole": "Cannot delete a role which is assign to a user."
 }

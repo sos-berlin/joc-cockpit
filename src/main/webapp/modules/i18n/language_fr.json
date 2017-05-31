@@ -1039,5 +1039,6 @@
   "label.liveFile": "Fichier dans le Dossier Live",
   "label.file": "Fichier",
   "label.substitutes": "Substituts de Programmation",
-  "button.removeInstance": "Clean Master"
+  "button.removeInstance": "Clean Master",
+  "message.cannotDeleteRole": "Cannot delete a role which is assign to a user."
 }
