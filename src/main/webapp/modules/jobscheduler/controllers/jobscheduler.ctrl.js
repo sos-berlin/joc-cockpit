@@ -145,34 +145,31 @@
          * Function to initialized SCHEDULE tree
          */
         function initAgentTree(type) {
-
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
                 types: ['AGENTCLUSTER']
             }).then(function (res) {
-
                 if($rootScope.agent_cluster_expand_to){
                     vm.treeAgent = res.folders;
                     filteredTreeDataA();
-                } else{
-                    if(type){
-                    vm.treeAgent = res.folders;
-                        filteredTreeDataA(type);
-                }else {
-                    if (vm.isEmpty(vm.agentsFilters.expand_to)) {
+                } else {
+                    if (type) {
                         vm.treeAgent = res.folders;
                         filteredTreeDataA(type);
                     } else {
-                        vm.agentsFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.agentsFilters.expand_to, 'agent');
-                        vm.treeAgent = vm.agentsFilters.expand_to;
-                        previousTreeStateA();
+                        if (vm.isEmpty(vm.agentsFilters.expand_to)) {
+                            vm.treeAgent = res.folders;
+                            filteredTreeDataA(type);
+                        } else {
+                            vm.agentsFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.agentsFilters.expand_to, 'agent');
+                            vm.treeAgent = vm.agentsFilters.expand_to;
+                            previousTreeStateA();
+                        }
                     }
-                }
                 }
 
                 vm.agentsFilters.expand_to = vm.treeAgent;
-
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -329,7 +326,6 @@
         function insertData(node, x) {
             for (var i = 0; i < node.agentClusters.length; i++) {
                 for (var j = 0; j < x.length; j++) {
-                   
                     if (node.agentClusters[i].path == x[j].path) {
                         if(node.agentClusters[i].show)
                         x[j].show = true;

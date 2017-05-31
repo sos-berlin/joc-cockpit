@@ -1039,6 +1039,6 @@
   "label.liveFile": "Datei im Live Ordner",
   "label.file": "Datei",
   "label.substitutes": "Ersatz-Zeitpläne",
-  "button.removeInstance": "Clean Master",
+  "button.removeInstance": "Master aus Inventar entfernen",
   "message.cannotDeleteRole": "Cannot delete a role which is assign to a user."
 }

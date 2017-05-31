@@ -830,7 +830,6 @@
                 angular.forEach(vm.masters, function (master, index) {
                    // if (angular.equals(master.master, mast)) {
                         angular.forEach(master.roles, function (value, index1) {
-                            console.log(value.role+'::'+ role.role)
                             if (value.role== role.role) {
                                 vm.masters[index].roles[index1].role = vm.role.role;
                             }
