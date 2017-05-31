@@ -31,7 +31,7 @@
                             <th><span translate>label.validityFrom</span></th>
                             <th><span translate>label.validityTo</span></th>
                             <th><span translate>label.substitute</span></th>
-                            <th><span translate>label.substituteBy</span></th>
+                            
                         </tr>
                         </thead>
                         <tbody ng-repeat="schedule in allSchedules">
@@ -66,7 +66,7 @@
                             <td ng-bind="schedule.substitute.validFrom | stringToDate"></td>
                             <td ng-bind="schedule.substitute.validTo | stringToDate"></td>
                             <td ng-bind="schedule.substitute.path"></td>
-                            <td ng-bind="schedule.substitutedBy"></td>
+                            
 
                         </tr>
                         <tr ng-if="schedule.configurationStatus._text" style="background: transparent !important;">
@@ -90,9 +90,22 @@
                                 <div class="p-l">
                                     <div ng-repeat="job in schedule.usedByJobs"> <a class="text-hover-primary" ng-click="showJob(job.job);">{{job.job}}</a></div>
                                 </div>
-                                <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs" translate>message.noDataFound</div>
+                                <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs && !schedule.substitutedBy" translate>message.noDataFound</div>
                             </td>
                         </tr>
+                        <tr ng-if="schedule.show && schedule.substitutedBy" style="background: transparent !important;" >
+                        <td></td>
+                        <td colspan="9">
+                            <span >{{'label.substituteBy' |translate}}: </span>
+                            <div class="p-l">
+                                <div>
+                                    <a class="text-hover-primary" >{{schedule.substitutedBy}}</a>
+                                </div>
+                            </div>
+
+
+                        </td>
+                    </tr>
                         </tbody>
                     </table>
                 </div>

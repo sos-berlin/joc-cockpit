@@ -55,9 +55,17 @@
         </div>
     </div>
 </div>
-
 <div ng-show="view.pageView !='list'">
-    <div id="mainTree" class="box m-t"></div>
+    <div id="mainTree" class="box m-t">
+        <button class="btn btn-sm btn-grey show-block m-t m-l" ng-click="expandAll()">
+            <i class="fa fa fa-caret-down"></i>
+            <span translate>button.expandAll</span>
+        </button>
+        <button class="btn btn-sm btn-grey show-block m-t m-l-sm" ng-click="collapseAll()">
+            <i class="fa fa fa-caret-up"></i>
+            <span translate>button.collapseAll</span>
+        </button>
+    </div>
 </div>
 
 <div class="modal fade" id="editPermission" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
