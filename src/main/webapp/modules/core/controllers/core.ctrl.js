@@ -7124,18 +7124,26 @@
 
                     if (vm.sch._valid_from) {
                         _xml.schedule._valid_from = vm.sch._valid_from;
+                    } else {
+                        delete _xml.schedule['_valid_from'];
                     }
                     if (vm.sch._valid_to) {
                         _xml.schedule._valid_to = vm.sch._valid_to;
+                    } else {
+                        delete _xml.schedule['_valid_to'];
                     }
                     if (vm.sch._title) {
                         _xml.schedule._title = vm.sch._title;
+                    } else {
+                        delete _xml.schedule['_title'];
                     }
                     if (vm.sch._name) {
                         _xml.schedule._name = vm.sch._name;
                     } else {
                         if (vm.sch._substitute) {
                             _xml.schedule._substitute = vm.sch._substitute;
+                        } else {
+                            delete _xml.schedule['_substitute'];
                         }
                     }
 
@@ -7154,12 +7162,12 @@
             vm.sch._valid_from = undefined;
             if (vm.from.time && vm.from.date) {
                 var date = new Date(vm.from.date);
-                date.setHours(vm.from.time.substring(0,2));
-                date.setMinutes(vm.from.time.substring(3,5));
-                if(vm.from.time.substring(6,8)){
-                date.setSeconds(vm.from.time.substring(6,8));
-                    }
-                else{
+                date.setHours(vm.from.time.substring(0, 2));
+                date.setMinutes(vm.from.time.substring(3, 5));
+                if (vm.from.time.substring(6, 8)) {
+                    date.setSeconds(vm.from.time.substring(6, 8));
+                }
+                else {
                     date.setSeconds('00');
                 }
                 vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
@@ -7167,12 +7175,11 @@
             vm.sch._valid_to = undefined;
             if (vm.to.time && vm.to.date) {
                 var date = new Date(vm.to.date);
-                date.setHours(vm.to.time.substring(0,2));
-                date.setMinutes(vm.to.time.substring(3,5));
-                if(vm.to.time.substring(6,8)){
-                date.setSeconds(vm.from.time.substring(6,8));
-                    }
-                else{
+                date.setHours(vm.to.time.substring(0, 2));
+                date.setMinutes(vm.to.time.substring(3, 5));
+                if (vm.to.time.substring(6, 8)) {
+                    date.setSeconds(vm.to.time.substring(6, 8));
+                } else {
                     date.setSeconds('00');
                 }
                 vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
@@ -7183,7 +7190,7 @@
                 vm.error.scheduleRequired = !vm.sch._substitute;
                 vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
 
-                if (vm.sch._substitute && !vm.error.validDate) {
+                if (!vm.error.validDate) {
                     saveSch(param);
                 }
             } else {
