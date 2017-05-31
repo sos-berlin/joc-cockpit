@@ -14,8 +14,8 @@
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.master</label>
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.master.$invalid && form.master.$dirty }">
-                    <select class="form-control" name="master" ng-model="mstr.name" ng-required="newRole" ng-if="newRole">
-                        <option ng-repeat="master in masters" value="{{master.master}}" ng-if="master.master">{{master.master}}</option>
+                    <select class="form-control" name="master" ng-model="mstr.name" ng-if="newRole">
+                        <option ng-repeat="master in masters" value="{{master.master}}">{{master.master || 'default'}}</option>
                    </select>
                     <input type="text" class="form-control" readonly ng-model="mstr.name" ng-if="!newRole">
                 </div>

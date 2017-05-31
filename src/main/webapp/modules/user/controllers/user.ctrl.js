@@ -801,7 +801,7 @@
             modalInstance.result.then(function () {
                 vm.roles.push(vm.role.role);
                 angular.forEach(vm.masters, function (master, index) {
-                    if (angular.equals(master.master, vm.mstr.name)) {
+                    if (angular.equals(master.master, vm.mstr.name) || (master.master =='' && !vm.mstr.name)) {
                         vm.masters[index].roles.push(vm.role);
                     }
                 });
@@ -816,7 +816,7 @@
             vm.role = angular.copy(role);
             temp_role = role.role;
             vm.mstr = {};
-            vm.mstr.name = mast == '' ? 'default': angular.copy(mast);
+            vm.mstr.name = mast == '' ? 'default' : angular.copy(mast);
 
             vm.newRole = false;
             vm.isUnique = true;
@@ -828,35 +828,34 @@
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.masters, function (master, index) {
-                   // if (angular.equals(master.master, mast)) {
-                        angular.forEach(master.roles, function (value, index1) {
-                            if (value.role== role.role) {
-                                vm.masters[index].roles[index1].role = vm.role.role;
-                            }
-                        });
-                   // }
+                    angular.forEach(master.roles, function (value, index1) {
+                        if (value.role == temp_role) {
+                            vm.masters[index].roles[index1].role = angular.copy(vm.role.role);
+                        }
+                    });
                 });
                 for (var i = 0; i < vm.users.length; i++) {
                     for (var j = 0; j < vm.users[i].roles.length; j++) {
                         if (vm.users[i].roles[j] == temp_role) {
-                           vm.users[i].roles.splice(i,1);
-                           vm.users[i].roles.push(vm.role.role);
+                            vm.users[i].roles.splice(j, 1);
+                            vm.users[i].roles.push(vm.role.role);
                         }
                     }
                 }
                 for (var i = 0; i < vm.roles.length; i++) {
                     if (vm.roles[i] == temp_role || angular.equals(vm.roles[i], temp_role)) {
-                        vm.roles.splice(i,1);
+                        vm.roles.splice(i, 1);
                         vm.roles.push(vm.role.role);
                         break;
                     }
                 }
+
                 saveInfo();
                 vm.role = {};
-                temp_role= '';
+                temp_role = '';
             }, function () {
                 vm.role = {};
-                temp_role= '';
+                temp_role = '';
             });
         };
         vm.deleteRole = function (role, mast) {
@@ -1164,6 +1163,9 @@
         };
 
         vm.getTreeStructure = function () {
+            if(!vm.masterName || vm.masterName == 'default'){
+                vm.masterName = $scope.schedulerIds.selected;
+            }
             ResourceService.tree({jobschedulerId: vm.masterName, compact: true,force:true}).then(function (res) {
                 vm.folderList = res.folders;
 
