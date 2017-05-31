@@ -1164,7 +1164,7 @@
         };
 
         vm.getTreeStructure = function () {
-            ResourceService.tree({jobschedulerId: vm.masterName, compact: true}).then(function (res) {
+            ResourceService.tree({jobschedulerId: vm.masterName, compact: true,force:true}).then(function (res) {
                 vm.folderList = res.folders;
 
             }, function () {
