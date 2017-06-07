@@ -114,7 +114,6 @@
                         vm.jobChainFilterList = vm.jobChainFilterList.concat(res.configurations);
                     }
                     var data = [];
-
                     for (var i = 0; i < vm.jobChainFilterList.length; i++) {
                         var flag = true;
                         for (var j = 0; j < data.length; j++) {
@@ -735,8 +734,6 @@
                         if (vm.userPreferences.showOrders)
                             jobChains.show = true;
                         for (var i = 0; i < res.jobChains.length; i++) {
-
-
                             var flag1 = true;
                             if (jobChains.path == res.jobChains[i].path) {
                                 jobChains = angular.merge(jobChains, res.jobChains[i]);
@@ -1052,6 +1049,7 @@
             vm.reset();
         };
 
+
         function addOrder(order, paramObject, jobChain) {
             var orders = {};
             orders.jobschedulerId = $scope.schedulerIds.selected;
@@ -1095,7 +1093,18 @@
             if (vm.comments.ticketLink) {
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
-            OrderService.addOrder(orders);
+            OrderService.addOrder(orders).then(function () {
+                if(order.atTime != 'now') {
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.jobChains = [{jobChain: jobChain.path}];
+                    obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
+                    JobChainService.get(obj).then(function (res) {
+                        if (res.jobChains && res.jobChains[0])
+                            jobChain.nodes = res.jobChains[0].nodes;
+                    });
+                }
+            });
             vm.reset();
         }
 
@@ -2985,6 +2994,7 @@
                             }
                         }
                     });
+                    data= data.concat(res.jobs);
                     data1.jobs = data;
                 } else {
                     data1.jobs = res.jobs;

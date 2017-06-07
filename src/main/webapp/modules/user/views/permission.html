@@ -1,73 +1,83 @@
-
 <div class="row">
     <div class="col-md-12">
-        <span class="text-md text-primary" style="font-size: 16px">
-            <a ui-sref="app.users.master">{{masterName}}</a>
-            <i class="text-black-lt m-l-sm m-r-sm">/</i>
-            <span class="text-muted text-black-dk">{{roleName}}</span></span>
+        <div class="text-right ">
+            <div class="text-md text-primary pull-left" style="font-size: 16px">
+                <a ui-sref="app.users.master">{{masterName}}</a>
+                <i class="text-black-lt m-l-sm m-r-sm">/</i>
+                <span class="text-muted text-black-dk">{{roleName}}</span>
+            </div>
+            <button class="btn btn-sm orange hide" ng-click="undoPermission()" ng-class="{'show-block':previousPermission.length>0}">
+                <span translate>button.undo</span>
+            </button>
+            <button class="btn btn-sm btn-primary hide m-l-sm" ng-click="resetPermission()" ng-class="{'show-block':previousPermission.length>2}">
+                <span translate>button.reset</span>
+            </button>
+        </div>
     </div>
 </div>
-<div class="hide" ng-class="{'show':view.pageView =='list'}">
-    <div class="row m-t">
-        <div class="col-md-12">
-            <span class="text _600" ng-bind="'label.folder' | translate"></span>
-            <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel2" ng-click="showPanel2=true"></i>
-            <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel2" ng-click="showPanel2=false"></i>
-        </div>
-        <div class="col-sm-12 m-t-sm" ng-show="!showPanel2" >
-            <div class="box p-a m-b-0">
-                <div class="row ">
-                    <div class="col-md-12 role" ng-repeat="f in folderArr track by $index">
-                        <span>
-                            {{f.folder}}
-                            <span ng-if="f.recursive && f.folder != '/'">/*</span>
-                            <span ng-if="f.recursive && f.folder == '/'">*</span>
-                            <i ng-click="editFolder(f)" class="fa fa-pencil m-l-xs" ></i>
-                            <i ng-click="deleteFolder(f)" class="fa fa-times m-l-xs"></i>
+<div class="hide" ng-class="{'show': !loading}">
+    <div class="hide" ng-class="{'show':view.pageView =='list'}">
+        <div class="row m-t">
+            <div class="col-md-12">
+                <span class="text _600" ng-bind="'label.folder' | translate"></span>
+                <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel2" ng-click="showPanel2=true"></i>
+                <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel2" ng-click="showPanel2=false"></i>
+            </div>
+            <div class="col-sm-12 m-t-sm" ng-show="!showPanel2" >
+                <div class="box p-a m-b-0">
+                    <div class="row ">
+                        <div class="col-md-12 role" ng-repeat="f in folderArr track by $index">
+                            <span>
+                                {{f.folder}}
+                                <span ng-if="f.recursive && f.folder != '/'">/*</span>
+                                <span ng-if="f.recursive && f.folder == '/'">*</span>
+                                <i ng-click="editFolder(f)" class="fa fa-pencil m-l-xs" ></i>
+                                <i ng-click="deleteFolder(f)" class="fa fa-times m-l-xs"></i>
 
-                        </span>
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-center" ng-if="folderArr.length==0" >
+                            <span translate="">message.noFolderFound</span>
+                        </div>
                     </div>
-                    <div class="col-md-12 text-center" ng-if="folderArr.length==0" >
-                        <span translate="">message.noFolderFound</span>
+                </div>
+            </div>
+        </div>
+        <div class="row m-t-md">
+            <div class="col-md-12">
+                <span class="text _600" ng-bind="'label.permissions' | translate"></span>
+                <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel1" ng-click="showPanel1=true"></i>
+                <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel1" ng-click="showPanel1=false"></i>
+            </div>
+            <div class="col-sm-12 m-t-sm" ng-show="!showPanel1">
+                <div class="box p-a ">
+                    <div class="row ">
+                        <div class="col-md-12 role" ng-repeat="p in rolePermissions track by $index">
+                            <span>
+                                <span ng-if="p.excluded" class="_600">-</span>{{p.path}}
+                                <i ng-click="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
+                                <i ng-click="deletePermission(p)" class="fa fa-times m-l-xs" ></i>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row m-t-md">
-        <div class="col-md-12">
-            <span class="text _600" ng-bind="'label.permissions' | translate"></span>
-            <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel1" ng-click="showPanel1=true"></i>
-            <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel1" ng-click="showPanel1=false"></i>
-        </div>
-        <div class="col-sm-12 m-t-sm" ng-show="!showPanel1">
-            <div class="box p-a ">
-                <div class="row ">
-                    <div class="col-md-12 role" ng-repeat="p in rolePermissions track by $index">
-                        <span>
-                            <span ng-if="p.excluded" class="_600">-</span>{{p.path}}
-                            <i ng-click="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
-                            <i ng-click="deletePermission(p)" class="fa fa-times m-l-xs" ></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
+    <div ng-show="view.pageView !='list'">
+        <div id="mainTree" class="box m-t max-tree-panel-ht" style="overflow: auto">
+            <button class="btn btn-sm btn-grey show-block m-t m-l" ng-click="expandAll()">
+                <i class="fa fa fa-caret-down"></i>
+                <span translate>button.expandAll</span>
+            </button>
+            <button class="btn btn-sm btn-grey show-block m-t m-l-sm" ng-click="collapseAll()">
+                <i class="fa fa fa-caret-up"></i>
+                <span translate>button.collapseAll</span>
+            </button>
         </div>
     </div>
 </div>
-<div ng-show="view.pageView !='list'">
-    <div id="mainTree" class="box m-t">
-        <button class="btn btn-sm btn-grey show-block m-t m-l" ng-click="expandAll()">
-            <i class="fa fa fa-caret-down"></i>
-            <span translate>button.expandAll</span>
-        </button>
-        <button class="btn btn-sm btn-grey show-block m-t m-l-sm" ng-click="collapseAll()">
-            <i class="fa fa fa-caret-up"></i>
-            <span translate>button.collapseAll</span>
-        </button>
-    </div>
-</div>
-
+<div ng-if="loading" class="loading-img1"></div>
 <div class="modal fade" id="editPermission" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -107,6 +117,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

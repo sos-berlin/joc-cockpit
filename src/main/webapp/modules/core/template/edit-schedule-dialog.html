@@ -13,7 +13,7 @@
         </div>
         <div class="modal-body p-a" style="min-height: 390px;">
 
-            <div ng-hide="editor.hidePervious || editor.showScheduleTab || editor.showHoildayTab">
+            <div ng-hide="editor.hidePervious || editor.showHoildayTab">
                 <div class="row">
                     <div class="col-md-12 hide" ng-class="{'show': display}">
                         <div class="form-group row">
@@ -152,67 +152,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="editor.showScheduleTab">
-                <div>
-                    <div class="row m-b-sm">
-                        <label class="col-sm-12 text">{{'label.schedule' | translate}}</label>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 form-control-label" translate>label.title</label>
-
-                        <div class="col-sm-6">
-                            <input class="form-control" ng-model="sch._title">
-                        </div>
-                    </div>
-                    <div class="form-group row"
-                         ng-class="{ 'has-error' : (form.substitue.$invalid && form.substitue.$dirty) || error.scheduleRequired }">
-                        <label class="col-sm-3 form-control-label" translate>label.substitutes</label>
-
-                        <div class="col-sm-6">
-
-                            <select class="form-control" name="substitue" ng-model="sch._substitute" style="padding-top: 6px; padding-bottom: 1px; border-bottom: none"
-                                    ng-change="error.scheduleRequired=false"
-                                    ng-options="schedule.path as schedule.path for schedule in _schedules">
-
-                            </select>
-                            <div class="input-dropdown" style="width: 90.7% !important;">
-                                <input name="substitue" class="form-control" ng-model="sch._substitute"  type="text">
-                            </div>
-                            <div class="help-block text-danger" ng-if="error.scheduleRequired">
-                                <div translate>message.scheduleError</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row" ng-class="{ 'has-error' : (form.date1.$invalid && form.date1.$dirty) || form.fromTime.$invalid && form.fromTime.$dirty }">
-                        <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
-
-                        <div class="col-sm-6">
-                            <input class="form-control input-date" ng-focus="error.validDate=false" name="date1"
-                                   ng-model="from.date" data-date-format="{{dataFormat}}" data-autoclose="1"
-                                   placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                            <input valid-time maxlength="8" name="fromTime" class="form-control w-sm inline m-l-sm" ng-model="from.time"
-                                   ng-focus="error.validDate=false" placeholder="HH:MM:SS" type="text">
-                        </div>
-                    </div>
-                    <div class="form-group row" ng-class="{'has-error': (error.validDate) || (form.toTime.$invalid && form.toTime.$dirty)}">
-                        <label class="col-sm-3 form-control-label" translate>label.validTo</label>
-
-                        <div class="col-sm-6">
-                            <input class="form-control input-date" ng-focus="error.validDate=false" name="date2"
-                                   ng-model="to.date" data-date-format="{{dataFormat}}" data-autoclose="1"
-                                   data-min-date="{{from.date}}" placeholder="{{dataFormat | uppercase}}"
-                                   bs-datepicker type="text">
-                            <input valid-time maxlength="8" class="form-control w-sm inline m-l-sm" ng-model="to.time" name="toTime"
-                                   ng-focus="error.validDate=false" placeholder="HH:MM:SS" type="text">
-
-                            <div class="help-block text-danger" ng-if="error.validDate">
-                                <div translate>message.validDate</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div ng-if="!editor.showHoildayTab && !editor.showScheduleTab && editor.hidePervious">
+            <div ng-if="!editor.showHoildayTab && editor.hidePervious">
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
@@ -748,7 +688,7 @@
 
             </div>
         </div>
-        <div class="modal-footer text-left" ng-if="!editor.showHoildayTab && !editor.showScheduleTab">
+        <div class="modal-footer text-left" ng-if="!editor.showHoildayTab">
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
@@ -773,12 +713,6 @@
                 <span translate>button.save</span>
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.cancel</button>
-        </div>
-        <div class="modal-footer text-left" ng-if="editor.showScheduleTab">
-            <button type="button" class="btn btn-primary btn-sm" ng-click="saveScheduleDetail('done')" ng-disabled="form.$invalid || error.scheduleRequired || error.validDate">
-                <span translate>button.save</span>
-            </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back2()" translate>button.cancel</button>
         </div>
     </form>
 </div>

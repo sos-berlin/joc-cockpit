@@ -94,19 +94,12 @@
 
                                     <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask"
                                          ng-repeat="task in job.runningTasks">
-                                                    <span class="text-xs">
-                                                        <span translate>label.task</span>:
-                                                        <span class="text-primary">{{task.taskId}}</span> -
-                                                        <span class="text-primary" translate>label.since</span> <span
-                                                            class="text-success">(<span
-                                                            time="{{task.startedAt}}"></span>)</span>
-                                                    </span>
 
                                         <div class="btn-group dropdown"
                                              ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                             <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
                                                     class="fa fa-ellipsis-h"></i></button>
-                                            <div class="dropdown-menu dropdown-ac dropdown-more pull-left m-r-28" role="menu">
+                                            <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
                                                 <a class="dropdown-item" ng-if="permission.Job.view.taskLog"
                                                    ng-click="showLogWindow(null,task)" translate>button.viewLog</a>
                                                 <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks"
@@ -121,6 +114,12 @@
                                                    ng-click="terminateTaskWithTimeout(null,task,job.path)" translate>button.terminateWithTimeout</a>
                                             </div>
                                         </div>
+                                        <span class="text-xs">
+                                            <span translate>label.task</span>:
+                                            <span class="text-primary">{{task.taskId}}</span> -
+                                            <span class="text-primary" translate>label.since</span> <span
+                                                class="text-success">(<span time="{{task.startedAt}}"></span>)</span>
+                                        </span>
                                     </div>
                                 </td>
                                 <td ng-bind="job.path"></td>
@@ -167,14 +166,15 @@
                             <tr ng-if="job.showJobChains" style="background: transparent !important;" ng-repeat="jobChain in job.jobChains">
                                 <td></td>
                                         <td colspan="12">
-                                         <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
+
                                             <div class="btn-group dropdown">
                                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                             class="fa fa-ellipsis-h"></i></button>
-                                                    <div class="dropdown-menu dropdown-ac dropdown-more m-r-28 pull-left" role="menu">
+                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
                                                         <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
                                                     </div>
                                                 </div>
+                                             <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
                                         </td>
                                     </tr>
                         </tbody>

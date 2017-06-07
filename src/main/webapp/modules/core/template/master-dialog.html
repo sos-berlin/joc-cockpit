@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span ng-if="!copy" translate>label.addMaster</span>
-            <span ng-if="copy" translate>label.copyMaster</span>
+            <span ng-if="copy" ><span translate>label.copyMaster</span> : {{mastName}}</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>

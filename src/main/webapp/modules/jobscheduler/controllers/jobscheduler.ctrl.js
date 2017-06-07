@@ -262,11 +262,7 @@
                      value.selected1 = true;
                     $rootScope.agent_cluster_expand_to =undefined;
                 }
-                /*else if (value.expanded || value.selected1) {
-                    if (data.path == '/') {
-                        data.selected1 = false;
-                    }
-                }*/
+
                 checkExpandA(value, type);
             });
         }
@@ -285,12 +281,10 @@
 
 
          function pollCheckExpandTreeForUpdates(data) {
-
             if (data.selected1) {
                 obj1.folders.push({folder: data.path, recursive: false});
                 vm.folderPath = data.name || '/';
             }
-
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
                 if (value.expanded || value.selected1)
