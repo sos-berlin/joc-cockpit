@@ -2,16 +2,20 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span ng-if="!newRole">
+            <span ng-if="!newRole  && !copy">
                 <span translate>label.editRole</span>:
                 <span>{{:: role.role}}</span>
             </span>
-            <span ng-if="newRole" translate>label.addRole</span>
+            <span ng-if="!newUser && copy">
+                <span translate>label.copyRole</span> :
+                <span>{{:: rolName}}</span>
+            </span>
+            <span ng-if="newRole && !copy" translate>label.addRole</span>
         </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
-            <div class="form-group row">
+            <div class="form-group row" ng-if="!copy">
                 <label class="col-sm-4 form-control-label" translate>label.master</label>
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.master.$invalid && form.master.$dirty }">
                     <select class="form-control" name="master" ng-model="mstr.name" ng-if="newRole">

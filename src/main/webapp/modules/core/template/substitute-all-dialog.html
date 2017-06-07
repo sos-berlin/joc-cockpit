@@ -12,9 +12,10 @@
            </div>
         </div>
         <div class="form-group row" ng-repeat="_schedule in object.schedules">
-           <label class="col-sm-4">{{$index + 1}} {{_schedule.name}}</label>
+
            <div class=" col-sm-6">
-               {{_schedule.title}}
+               {{$index + 1}}. <span class="text-primary">{{_schedule.name}}</span>
+               <span ng-if="_schedule.title">- {{_schedule.title}}</span>
            </div>
         </div>
         <div class="row">

@@ -160,7 +160,7 @@
                                         class="primary"></i>
                                     </label>
                                 </th>
-                                <th class="noExl"><span translate>label.action</span></th>
+                                <th translate>label.action</th>
                                 <th translate>label.state</th>
                                 <th translate>label.job</th>
                                 <th translate>label.noOfOrders</th>
@@ -305,19 +305,18 @@
                                        ng-if="node.job.runningTasks && node.orders && node.orders.length>0">
                                     <thead>
                                     <tr>
-                                        <th class="noExl"><span translate>label.action</span></th>
+                                        <th class="text-xs" translate>label.action</th>
                                         <th class="text-xs" translate>label.pid</th>
                                         <th class="text-xs" translate>label.taskId</th>
                                         <th class="text-xs" translate>label.cause</th>
                                         <th class="text-xs" translate>label.order</th>
                                         <th class="text-xs" translate>label.processSteps</th>
                                         <th class="text-xs" translate>label.runningSince</th>
-                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="task in node.job.runningTasks">
-                                            <td>
+                                            <td class="text-xs">
                                             <div class="btn-group dropdown">
                                                 <button type="button" class="btn-drop more-option-h"
                                                         data-toggle="dropdown">
@@ -348,9 +347,8 @@
                                             <td class="text-xs">{{task._cause | translate}}</td>
                                             <td class="text-xs">{{task.order.orderId}}</td>
                                             <td class="text-xs">{{task.steps}}</td>
-                                            <td class="text-xs">{{task.startedAt | stringToDate}} <span
-                                                    class="text-success">(<span
-                                                    time="{{task.startedAt}}"></span>)</span></td>
+                                            <td class="text-xs">{{task.startedAt | stringToDate}}
+                                                <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
                                         </tr>
                                     </tbody>
                                     </table>
@@ -365,6 +363,7 @@
                                 <td ng-bind="node.errorNode"></td>
                             </tr>
                             <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
+                                <td></td>
                                 <td></td>
                                 <td colspan="7">
                                     <div class="text-sm text-l-c" ng-repeat="order in jobChain.fileOrderSources">

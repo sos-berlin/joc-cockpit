@@ -11,6 +11,7 @@
         .controller('ConfigurationCtrl', ConfigurationCtrl)
         .controller('DialogCtrl', DialogCtrl)
         .controller('PeriodEditorCtrl', PeriodEditorCtrl)
+        .controller('ScheduleEditorCtrl', ScheduleEditorCtrl)
         .controller('RuntimeEditorDialogCtrl', RuntimeEditorDialogCtrl)
         .controller('ResetRuntimeDialogCtrl', ResetRuntimeDialogCtrl)
         .controller('ClientLogCtrl', ClientLogCtrl);
@@ -1554,11 +1555,129 @@
 
     }
 
+    ScheduleEditorCtrl.$inject = ["$scope", "$rootScope", "gettextCatalog"];
+    function ScheduleEditorCtrl($scope, $rootScope, gettextCatalog) {
+        var vm = $scope;
+        vm.sch = {};
+        vm.error = {};
+        vm.from = {};
+        vm.to = {};
+        vm.minDate = new Date();
+        vm.minDate.setDate(vm.minDate.getDate() - 1);
+        function getDateFormat() {
+            vm.dateFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
+            if (vm.dateFormat.match('HH:mm')) {
+                vm.dateFormat = vm.dateFormat.replace('HH:mm', '');
+            }
+            else if (vm.dateFormat.match('hh:mm')) {
+                vm.dateFormat = vm.dateFormat.replace('hh:mm', '');
+            }
+
+            if (vm.dateFormat.match(':ss')) {
+                vm.dateFormat = vm.dateFormat.replace(':ss', '');
+            }
+            if (vm.dateFormat.match('A')) {
+                vm.dateFormat = vm.dateFormat.replace('A', '');
+            }
+            if (vm.dateFormat.match('|')) {
+                vm.dateFormat = vm.dateFormat.replace('|', '');
+            }
+            vm.dateFormat = vm.dateFormat.replace('YY', 'yy');
+            vm.dateFormat = vm.dateFormat.replace('YY', 'yy');
+            vm.dateFormat = vm.dateFormat.replace('D', 'd');
+            vm.dateFormat = vm.dateFormat.replace('D', 'd');
+            vm.dateFormat = vm.dateFormat.trim();
+        }
+
+        getDateFormat();
+
+        $scope.$on('schedule-editor', function (event, data1) {
+            vm.sch = data1.sch;
+            vm.error = data1.error;
+            vm._schedules = data1._schedules;
+            vm.from = data1.from;
+            vm.from.time = '00:00';
+            vm.to = data1.to;
+            vm.to.time = '00:00';
+        });
+
+        vm.cancel = function (form2) {
+            if (form2)
+                form2.$setPristine();
+            $('#schedule-editor').modal('hide');
+            $('.fade-modal').css('opacity', 1);
+        };
+        vm.save = function (form2) {
+            vm.sch._valid_from = undefined;
+            if(!vm.from.time){
+                vm.from.time = '00:00';
+            }
+            if(!vm.to.time){
+                vm.to.time = '00:00';
+            }
+            if (vm.from.time && vm.from.date) {
+                var date = new Date(vm.from.date);
+                date.setHours(vm.from.time.substring(0, 2));
+                date.setMinutes(vm.from.time.substring(3, 5));
+                if (vm.from.time.substring(6, 8)) {
+                    date.setSeconds(vm.from.time.substring(6, 8));
+                }
+                else {
+                    date.setSeconds('00');
+                }
+                vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
+            }
+            vm.sch._valid_to = undefined;
+            if (vm.to.time && vm.to.date) {
+                var date = new Date(vm.to.date);
+                date.setHours(vm.to.time.substring(0, 2));
+                date.setMinutes(vm.to.time.substring(3, 5));
+                if (vm.to.time.substring(6, 8)) {
+                    date.setSeconds(vm.to.time.substring(6, 8));
+                } else {
+                    date.setSeconds('00');
+                }
+                vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
+            }
+
+            if (vm.sch._valid_from || vm.sch._valid_to || vm.sch._substitute) {
+
+                vm.error.scheduleRequired = !vm.sch._substitute;
+                vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
+
+                if (vm.error.validDate || vm.error.scheduleRequired) {
+                    return;
+                }else{
+                    if(vm.sch._substitute){
+                        if (!vm.sch._valid_from || !vm.sch._valid_to) {
+                            vm.error.requiredDate = true;
+                            return;
+                        }
+                    }
+                }
+            }
+            $rootScope.$broadcast('save-schedule', {
+                sch: vm.sch,
+                _schedules: vm._schedules,
+                from: vm.from,
+                to: vm.to
+            });
+            if (form2) {
+                form2.$setPristine();
+                form2.$setUntouched();
+            }
+            $('#schedule-editor').modal('hide');
+            $('.fade-modal').css('opacity', 1);
+
+        };
+    }
+
     RuntimeEditorDialogCtrl.$inject = ["$scope", "$rootScope", "$uibModalInstance", "toasty", "$timeout", 'gettextCatalog', '$window'];
     function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window) {
         var vm = $scope;
         var dom_parser = new DOMParser();
-
+        vm.minDate = new Date();
+        vm.minDate.setDate(vm.minDate.getDate() - 1);
         vm.logError = false;
         if (vm.userPreferences.auditLog) {
             vm.display = true;
@@ -1743,9 +1862,7 @@
             return str;
         }
 
-
         function getSpecificDay(day) {
-
             if (!day) {
                 return;
             }
@@ -1811,7 +1928,6 @@
             return true;
         }
 
-
         var selectedMonths = [];
         vm.selectMonthDays = function (value) {
             if (selectedMonths.indexOf(value) == -1) {
@@ -1835,7 +1951,6 @@
         };
 
         var watcher1 = vm.$watchCollection('runTime', function (newNames, oldValues) {
-
             if (newNames) {
                 if ((newNames.tab != oldValues.tab)) {
                     isDelete = false;
@@ -1910,7 +2025,6 @@
                 vm.runTime.days.sort();
             }
         });
-
         var watcher3 = vm.$watchCollection('runTime.months', function (newNames) {
             if (newNames) {
                 isDelete = false;
@@ -1922,7 +2036,6 @@
         function compareNumbers(a, b) {
             return a - b;
         }
-
         vm.checkAllWeek = function () {
             if (vm.runTime.all) {
                 vm.runTime.days = ["1", "2", "3", "4", "5", "6", "7"]
@@ -1986,7 +2099,6 @@
         };
 
         function frequencyToString(period) {
-
             var str;
             if (period.months && angular.isArray(period.months)) {
                 str = getMonths(period.months);
@@ -3794,6 +3906,13 @@
                     vm.runTime.period = {};
                 }
             }
+        });
+
+        $rootScope.$on('save-schedule', function (event, data1) {
+            vm.sch = data1.sch;
+            vm._schedules = data1._schedules;
+            console.log(JSON.stringify(vm.sch))
+             saveSch();
         });
 
         function editRunTime(data) {
@@ -7101,108 +7220,76 @@
             vm.editor.showHoildayTab = true;
         };
         vm.showScheduleTab = function () {
-            vm.editor.showScheduleTab = true;
+            $rootScope.$broadcast('schedule-editor', {
+                sch: vm.sch,
+                error: vm.error,
+                _schedules :vm._schedules,
+                from :vm.from,
+                to :vm.to
+            });
+            $('#schedule-editor').modal('show');
+            $('.fade-modal').css('opacity', '0.85');
         };
         vm.back1 = function () {
             vm.editor.showHoildayTab = false;
             getXml2Json(vm.xml);
         };
-        vm.back2 = function () {
-            vm.editor.showScheduleTab = false;
-            getXml2Json(vm.xml);
-        };
+
         vm.from = {};
         vm.to = {};
         vm.error = {};
 
-        function saveSch(param) {
-            if (param == 'done') {
-                try {
+        function saveSch() {
+            try {
 
-                    var _xml = x2js.xml_str2json(vm.xml);
-                    if (typeof _xml.schedule !== 'object') _xml.schedule = {};
+                var _xml = x2js.xml_str2json(vm.xml);
+                if (typeof _xml.schedule !== 'object') _xml.schedule = {};
 
-                    if (vm.sch._valid_from) {
-                        _xml.schedule._valid_from = vm.sch._valid_from;
-                    } else {
-                        delete _xml.schedule['_valid_from'];
-                    }
-                    if (vm.sch._valid_to) {
-                        _xml.schedule._valid_to = vm.sch._valid_to;
-                    } else {
-                        delete _xml.schedule['_valid_to'];
-                    }
-                    if (vm.sch._title) {
-                        _xml.schedule._title = vm.sch._title;
-                    } else {
-                        delete _xml.schedule['_title'];
-                    }
-                    if (vm.sch._name) {
-                        _xml.schedule._name = vm.sch._name;
-                    } else {
-                        if (vm.sch._substitute) {
-                            _xml.schedule._substitute = vm.sch._substitute;
-                        } else {
-                            delete _xml.schedule['_substitute'];
-                        }
-                    }
-
-                    var xmlStr = x2js.json2xml_str(_xml);
-                    xmlStr = xmlStr.replace(/,/g, ' ');
-
-                    vm.editor.showScheduleTab = false;
-                    getXml2Json(xmlStr);
-                } catch (e) {
-                    console.log(e);
+                if (vm.sch._valid_from) {
+                    _xml.schedule._valid_from = vm.sch._valid_from;
+                } else {
+                    delete _xml.schedule['_valid_from'];
                 }
+                if (vm.sch._valid_to) {
+                    _xml.schedule._valid_to = vm.sch._valid_to;
+                } else {
+                    delete _xml.schedule['_valid_to'];
+                }
+                if (vm.sch._title) {
+                    _xml.schedule._title = vm.sch._title;
+                } else {
+                    delete _xml.schedule['_title'];
+                }
+                if (vm.sch._name) {
+                    _xml.schedule._name = vm.sch._name;
+                } else {
+                    if (vm.sch._substitute) {
+                        _xml.schedule._substitute = vm.sch._substitute;
+                    } else {
+                        delete _xml.schedule['_substitute'];
+                    }
+                }
+
+                var xmlStr = x2js.json2xml_str(_xml);
+                xmlStr = xmlStr.replace(/,/g, ' ');
+
+                getXml2Json(xmlStr);
+            } catch (e) {
+                console.log(e);
             }
         }
 
+        vm.substituteObj.fromTime = '00:00';
+        vm.substituteObj.toTime = '00:00';
         vm.saveScheduleDetail = function (param) {
             vm.sch._valid_from = undefined;
-            if (vm.from.time && vm.from.date) {
-                var date = new Date(vm.from.date);
-                date.setHours(vm.from.time.substring(0, 2));
-                date.setMinutes(vm.from.time.substring(3, 5));
-                if (vm.from.time.substring(6, 8)) {
-                    date.setSeconds(vm.from.time.substring(6, 8));
-                }
-                else {
-                    date.setSeconds('00');
-                }
-                vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
-            }
-            vm.sch._valid_to = undefined;
-            if (vm.to.time && vm.to.date) {
-                var date = new Date(vm.to.date);
-                date.setHours(vm.to.time.substring(0, 2));
-                date.setMinutes(vm.to.time.substring(3, 5));
-                if (vm.to.time.substring(6, 8)) {
-                    date.setSeconds(vm.to.time.substring(6, 8));
-                } else {
-                    date.setSeconds('00');
-                }
-                vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
-            }
-
-            if (vm.sch._valid_from || vm.sch._valid_to || vm.sch._substitute) {
-
-                vm.error.scheduleRequired = !vm.sch._substitute;
-                vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
-
-                if (!vm.error.validDate) {
-                    saveSch(param);
-                }
-            } else {
-                saveSch(param);
-            }
-
-        };
-
-        vm.saveScheduleDetail1 = function () {
-            vm.sch._valid_from = undefined;
             vm.sch._name = vm.substituteObj.name;
-
+            if(!vm.substituteObj.fromTime){
+                vm.substituteObj.fromTime = '00:00';
+            }
+            if(!vm.substituteObj.toTime){
+                vm.substituteObj.toTime = '00:00';
+            }
             vm.sch._title = vm.substituteObj.title;
             if (vm.substituteObj.fromTime && vm.substituteObj.fromDate) {
                 var date = new Date(vm.substituteObj.fromDate);
@@ -7230,18 +7317,19 @@
                 vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
             }
 
-            if (vm.sch._valid_from || vm.sch._valid_to || vm.sch._name) {
-
-                vm.error.scheduleRequired = !vm.sch._name;
+            if (vm.sch._valid_from && vm.sch._valid_to && vm.sch._name) {
                 vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
-
-                if (vm.sch._name && !vm.error.validDate) {
-                    saveSch();
+                if (!vm.error.validDate) {
+                    if(!vm.substituteObj.showText && !param)
+                        vm.createNewRunTime();
+                    else{
+                      saveSch();
+                    }
                 }
-            } else {
-                saveSch();
+            }else{
+                if(!vm.substituteObj.showText && !param)
+                vm.error.validDate = true;
             }
-
         };
 
         vm.holidayDates = [];

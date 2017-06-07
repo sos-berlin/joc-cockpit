@@ -2239,7 +2239,10 @@
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
             orders.orders.push(obj);
-            OrderService.addOrder(orders);
+            OrderService.addOrder(orders).then(function(){
+                if(order.atTime != 'now')
+                 volatileInfo();
+            });
             vm.object.orders = [];
 
         }

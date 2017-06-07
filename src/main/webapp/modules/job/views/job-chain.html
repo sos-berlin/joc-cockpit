@@ -1032,27 +1032,6 @@
 
                                                 <div class="p-l-sm ">
                                                     <div ng-repeat="order in node.orders | limitTo : limitNum | orderBy:'orderId'">
-                                                        <span>
-                                                            <span class="text-sm">
-                                                                <span>{{'label.order'| translate}}:&nbsp;</span><a
-                                                                    href="" class="text-hover-primary"
-                                                                    ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
-                                                                <i class="text-muted text-xs" ng-if="order.title">-<span  ng-bind-html="order.title | linky:'_blank'"></span></i> - <span class="label"
-                                                                                            ng-class="bgColorFunction(order.processingState.severity)"
-                                                                                            ng-bind="order.processingState._text | translate"></span>
-                                                                <span class="hide text-success text-xs"
-                                                                      ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}}:<i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i> {{order.nextStartTime | stringToDate}}
-                                                                (<span time="{{order.nextStartTime}}"></span>)</span>
-                                                                <span class="hide text-success text-xs"
-                                                                      ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
-                                                                      translate>label.nextStartNever</span>
-                                                                <span class="hide text-success text-xs"
-                                                                      ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span
-                                                                        time="{{order.startedAt}}"></span>)</span>
-                                                            </span>
-
-                                                        </span>
-
                                                         <div class="btn-group dropdown ">
                                                             <button type="button" class="btn-drop more-option-h"
                                                                     data-toggle="dropdown"><i
@@ -1113,6 +1092,28 @@
                                                                    translate>button.copyLinkToObject</a>
                                                             </div>
                                                         </div>
+                                                        <span>
+                                                            <span class="text-sm">
+                                                                <span>{{'label.order'| translate}}:&nbsp;</span><a
+                                                                    href="" class="text-hover-primary"
+                                                                    ng-click="viewOrders(jobChain)">{{order.orderId}}</a>
+                                                                <i class="text-muted text-xs" ng-if="order.title">-<span  ng-bind-html="order.title | linky:'_blank'"></span></i> - <span class="label"
+                                                                                            ng-class="bgColorFunction(order.processingState.severity)"
+                                                                                            ng-bind="order.processingState._text | translate"></span>
+                                                                <span class="hide text-success text-xs"
+                                                                      ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">{{'label.nextStart' | translate}}:<i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i> {{order.nextStartTime | stringToDate}}
+                                                                (<span time="{{order.nextStartTime}}"></span>)</span>
+                                                                <span class="hide text-success text-xs"
+                                                                      ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
+                                                                      translate>label.nextStartNever</span>
+                                                                <span class="hide text-success text-xs"
+                                                                      ng-class="{'show-inline':order.startedAt}">{{'label.runningSince' | translate}} {{order.startedAt | stringToDate}}(<span
+                                                                        time="{{order.startedAt}}"></span>)</span>
+                                                            </span>
+
+                                                        </span>
+
+
                                                         <div class="text-sm p-l-sm" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                     </div>
                                                     <i class="cursor text-xs"

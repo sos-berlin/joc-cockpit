@@ -665,7 +665,7 @@
         vm.editor = {};
         vm.editor.edit = false;
         vm.view = {};
-        vm.view.pageView = 'list';
+        vm.view.pageView = 'tree';
 
         function get() {
             UserService.securityConfigurationRead({}).then(function (res) {
@@ -733,6 +733,28 @@
                 vm.user = {};
             }, function () {
                 vm.user = {};
+            });
+        };
+        vm.copyUser = function (user) {
+            vm.user = angular.copy(user);
+            vm.userName = user.user;
+            vm.user.user = '';
+            vm.copy = true;
+            vm.isUnique = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/user-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm.users.push(vm.user);
+                saveInfo();
+                vm.user = {};
+                vm.copy = false;
+            }, function () {
+                vm.user = {};
+                vm.copy = false;
             });
         };
 
@@ -858,6 +880,32 @@
                 temp_role = '';
             });
         };
+        vm.copyRole = function (role,mast) {
+            vm.role = angular.copy(role);
+            vm.role.role = '';
+            vm.rolName = role.role;
+            vm.isUnique = true;
+            vm.copy = true;
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/role-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                 angular.forEach(vm.masters, function (master, index) {
+                   if(angular.equals(master,mast)){
+                       vm.masters[index].roles.push(vm.role);
+                   }
+                });
+               saveInfo();
+                vm.role = {};
+                vm.copy = false;
+            }, function () {
+                vm.role = {};
+                vm.copy = false;
+            });
+        };
         vm.deleteRole = function (role, mast) {
             var flag = true;
             for (var i = 0; i < vm.users.length; i++) {
@@ -927,6 +975,7 @@
         };
         vm.copyMaster = function (mast) {
             vm.master = {};
+            vm.mastName = mast.master;
             vm.isUnique = true;
             vm.copy = true;
             var modalInstance = $uibModal.open({
@@ -1024,14 +1073,10 @@
                 vm.state = 'permission';
                 vm.roleName = toParams.role;
                 vm.masterName = toParams.master;
-                vm.view.pageView = 'list';
+                vm.view.pageView = 'tree';
             }
         });
 
-
-        vm.switchTree = function () {
-            $rootScope.$broadcast('switchTree');
-        };
         vm.addFolder = function () {
             $rootScope.$broadcast('addFolder');
         };
@@ -1040,9 +1085,10 @@
         };
     }
 
-    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService'];
-    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService) {
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService','$timeout'];
+    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout) {
         var vm = $scope;
+        vm.loading = true;
 
         function getPermissions() {
             UserService.permissions({}).then(function (res) {
@@ -1054,6 +1100,10 @@
                 }
                 loadPermission();
                 preparePermissionJSON();
+                switchTree();
+                vm.loading = false;
+            },function(){
+                vm.loading = false;
             });
         }
 
@@ -1096,6 +1146,8 @@
         }
 
         vm.permissionArr = [];
+
+
         function preparePermissionJSON() {
 
             vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
@@ -1138,6 +1190,7 @@
                 else {
                     recursiveUpdate1(permissionNodes[0][index], arr);
                 }
+
             }
         }
 
@@ -1149,6 +1202,7 @@
                         if (angular.equals(value.role, vm.roleName)) {
                             vm.rolePermissions = value.permissions;
                             vm.folderArr = value.folders;
+                            vm.originalPermission = angular.copy(vm.rolePermissions);
                         }
                     });
                 }
@@ -1194,7 +1248,6 @@
                         vm.folder.folder = '/*';
                     }
                     vm.folderArr.push(vm.folder);
-
                 }
 
                 if (vm.folderObj.paths && vm.folderObj.paths.length > 0) {
@@ -1304,14 +1357,14 @@
             }
         }
 
-        function unselectPermissionObj(permissionNodes, permission) {
+        function unSelectPermissionObj(permissionNodes, permission) {
             if (permissionNodes._parents) {
                 for (var i = 0; i < permissionNodes._parents.length; i++) {
                     if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                         permissionNodes._parents[i].excluded = !permissionNodes._parents[i].excluded;
                         break;
                     }
-                    unselectPermissionObj(permissionNodes._parents[i], permission);
+                    unSelectPermissionObj(permissionNodes._parents[i], permission);
                 }
             } else {
                 if ((permissionNodes.path + permissionNodes.name) == permission) {
@@ -1343,7 +1396,7 @@
             vm.permission = angular.copy(p);
         };
 
-        vm.savePermission = function (p) {
+        vm.savePermission = function () {
             $('#editPermission').modal('hide');
             var flag = true;
             for (var i = 0; i < vm.rolePermissions.length; i++) {
@@ -1357,7 +1410,7 @@
             }
             if (flag)
                 saveInfo();
-            unselectPermissionObj(permissionNodes[0][0], vm.permission.path);
+            unSelectPermissionObj(permissionNodes[0][0], vm.permission.path);
             updateDiagramData(permissionNodes[0][0]);
         };
 
@@ -1379,6 +1432,40 @@
                 vm.permission = {};
             });
         });
+
+         vm.previousPermission = [];
+         vm.originalPermission = [];
+
+        function updatePermissionList(){
+            unSelectedNode(permissionNodes[0][0]);
+            //console.log(permissionNodes[0][0])
+            checkPermissionList(permissionNodes[0][0], angular.copy(vm.rolePermissions));
+            //console.log(permissionNodes[0][0])
+            updateDiagramData(permissionNodes[0][0]);
+            for(var i=0; i<vm.masters.length;i++) {
+                if (angular.equals(vm.masters[i].master, vm.masterName) || (vm.masters[i].master == '' && vm.masterName == 'default')) {
+                    for(var j=0; j< vm.masters[i].roles.length;j++) {
+                        if (angular.equals(vm.masters[i].roles[j].role, vm.roleName)) {
+                            vm.masters[i].roles[j].permissions = angular.copy(vm.rolePermissions);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            saveInfo();
+        }
+        vm.undoPermission = function() {
+            vm.rolePermissions = vm.previousPermission[vm.previousPermission.length - 1];
+            vm.previousPermission.splice(vm.previousPermission.length - 1, 1);
+            updatePermissionList();
+        };
+
+        vm.resetPermission = function(){
+            vm.rolePermissions = angular.copy(vm.originalPermission);
+            vm.previousPermission = [];
+            updatePermissionList();
+        };
 
         function checkPermissionListRecursively(permission_node, list) {
             if (permission_node && permission_node._parents) {
@@ -1419,7 +1506,6 @@
                     }
                 }
             }
-
         }
 
         function selectedNode(permission_node) {
@@ -1443,50 +1529,40 @@
         }
 
         var svg;
-        vm.$on('switchTree', function () {
+        function switchTree () {
             if (!svg) {
                 drawTree(permissionNodes[0][0]);
             }
-
-        });
-
+        }
         var root;
         var boxWidth = 180,
             boxHeight = 30,
-            duration = 650; // duration of transitions in ms
-        var ht = 600;
-        vm.calculateHeight = function () {
+            duration = 700; // duration of transitions in ms
+        var ht = 700;
+        var width = window.innerWidth -42;
+
+        function calculateHeight() {
             var headerHt = $('.app-header').height() || 60;
             var topHeaderHt = $('.top-header-bar').height() || 16;
             var subHeaderHt = 59;
-            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + 130));
-        };
-        vm.calculateHeight();
-        $(window).resize(function () {
-            vm.calculateHeight();
-            $('svg').attr("height", ht);
-        });
+            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + 150));
+            $('.max-tree-panel-ht').css('height', ht + 66 + 'px');
+        }
+        calculateHeight();
 
+        $(window).resize(function () {
+            var headerHt = $('.app-header').height() || 60;
+            var topHeaderHt = $('.top-header-bar').height() || 16;
+            var subHeaderHt = 59;
+            $('.max-tree-panel-ht').css('height', ht + 66 + 'px');
+        });
+        var t1 = '';
 
         function drawTree(json) {
 
-            var zoom = d3.behavior.zoom()
-                .scaleExtent([.1, 1])
-                .on('zoom', function () {
-                    svg.attr("transform", "translate(" + d3.event.translate + ") scale(1)");
-                })
-                // Offset so that first pan and zoom does not jump back to the origin
-                .translate([150, 300]);
-
-            var div = d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 1e-6);
-
-
             svg = d3.select("#mainTree").append("svg")
-                .attr('width', 1800)
+                .attr('width', width)
                 .attr('height', ht)
-                .call(zoom)
                 .append('g')
                 .attr("transform", "translate(150,300)");
 
@@ -1519,25 +1595,26 @@
             draw(root);
             var nodes;
 
-
             vm.expandAll = expandAll;
 
             function expandAll() {
                 nodes.forEach(function (permission_node) {
                     expand(permission_node);
                 });
+                $('svg').attr('height', 7150);
+                $('svg').attr('width', 2010);
                 draw(nodes[0]);
             }
 
             function expand(permission_node) {
                 if (permission_node.collapsed) {
                     permission_node.collapsed = false;
-                    permission_node.icon = "images/minus.png";
+                    if (permission_node.icon)
+                        permission_node.icon = "images/minus.png";
                 }
                 if (permission_node._parents) {
                     permission_node._parents.forEach(expand);
                 }
-
             }
 
             vm.collapseAll = collapseAll;
@@ -1546,24 +1623,27 @@
                 nodes.forEach(function (permission_node) {
                     collapseNode(permission_node);
                 });
+                $('svg').attr('height', ht);
+                $('svg g').attr('transform', "translate(150,300)");
+                $('svg').attr('width', width);
                 draw(nodes[0]);
             }
 
             function collapseNode(permission_node) {
                 if (!permission_node.collapsed) {
                     permission_node.collapsed = true;
-                    permission_node.icon = "images/plus.png";
+                    if (permission_node.icon)
+                        permission_node.icon = "images/plus.png";
                 }
                 if (permission_node._parents) {
                     permission_node._parents.forEach(collapseNode);
                 }
-
             }
-
 
             function draw(source) {
                 nodes = tree.nodes(root);
                 var links = tree.links(nodes);
+
                 // Update links
                 var link = svg.selectAll("path.link")
                     .data(links, function (d) {
@@ -1724,6 +1804,31 @@
                     permission_node.x0 = permission_node.x;
                     permission_node.y0 = permission_node.y;
                 });
+                t1 = $timeout(function () {
+                    checkForTop();
+                }, 751);
+            }
+
+            function updateSize(permission_node) {
+                if (permission_node.name != 'sos' && permission_node.name != 'products') {
+                    var ht1 = $('svg').attr('height');
+                    if (!permission_node.collapsed) {
+                        ht1 = parseInt(ht1) + (permission_node._parents.length * 30);
+                    } else {
+                        ht1 = parseInt(ht1) - (permission_node._parents.length * 30);
+                    }
+                    if (ht < ht1)
+                        $('svg').attr('height', ht1);
+
+                }else{
+                    $('svg').attr('height', ht);
+
+                }
+                if(permission_node.depth>4){
+                     $('svg').attr('width', 2010);
+                }else{
+                     $('svg').attr('width', width);
+                }
             }
 
             /**
@@ -1732,28 +1837,58 @@
             function togglePermission(permission_node) {
                 if (permission_node.icon)
                     permission_node.icon = "images/minus.png";
-                //var ht1 = $('svg').attr('height');
-                //var xVal = 0;
                 if (permission_node.collapsed) {
                     permission_node.collapsed = false;
-                    //ht1 = parseInt(ht1) + (permission_node._parents.length * 30)
                 } else {
-                    //ht1 = parseInt(ht1) - (permission_node._parents.length * 30);
                     collapse(permission_node);
                 }
-                /*                if(ht<ht1)
-                 $('svg').attr('height',ht1);*/
                 draw(permission_node);
+
+                updateSize(permission_node);
+            }
+
+            function checkForTop() {
+                var diff = 0;
+                svg.selectAll('g.permission_node')[0].
+                    forEach(function (node) {
+                        var tr = d3.transform(node.getAttribute('transform'));
+                        if (tr.translate[1] < -285) {
+                            if (diff < -(285 + tr.translate[1])) {
+                                diff = -(285 + tr.translate[1]);
+                            }
+
+                        }
+                    });
+
+                if (diff > 0) {
+                    svg.selectAll('g.permission_node')[0].
+                        forEach(function (node2) {
+                            var tr2 = d3.transform(node2.getAttribute('transform'));
+                            node2.setAttribute("transform", 'translate(' + tr2.translate[0] + ',' + (tr2.translate[1] + diff) + ')');
+                        });
+
+                    svg.selectAll("path.link")
+                        .attr("d", function (d) {
+                            var sourceX = d.source.x,
+                                sourceY = d.source.y + (boxWidth / 2),
+                                targetX = d.target.x,
+                                targetY = d.target.y - (boxWidth / 2);
+
+                            return "M" + sourceY + "," + (sourceX + diff)
+                                + "H" + (sourceY + (targetY - sourceY) / 2)
+                                + "V" + (targetX + diff)
+                                + "H" + targetY;
+
+                        })
+                }
             }
 
             var _temp = [];
 
             function generatePermissionList(permission) {
-
                 if (permission._parents) {
                     for (var i = 0; i < permission._parents.length; i++) {
                         if (permission._parents[i]) {
-
                             if (permission._parents[i].selected || permission._parents[i].excluded) {
                                 var obj = {
                                     path: permission._parents[i].path + '' + permission._parents[i].name,
@@ -1770,6 +1905,7 @@
             }
 
             function selectPermission(permission_node) {
+                var _previousPermissionObj = angular.copy(vm.rolePermissions);
 
                 if (!permission_node.greyed && permission_node.name != 'sos') {
                     permission_node.selected = !permission_node.selected;
@@ -1796,6 +1932,10 @@
                     });
 
                     saveInfo();
+                    if (vm.previousPermission.length === 3) {
+                        vm.previousPermission.splice(0, 1);
+                    }
+                    vm.previousPermission.push(_previousPermissionObj);
                 }
             }
 
@@ -1862,8 +2002,6 @@
         }
 
         function toggleRectangleColour() {
-
-
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
@@ -1886,6 +2024,8 @@
 
         $scope.$on('$destroy', function () {
             watcher1();
+            if (t1)
+                $timeout.cancel(t1);
         });
     }
 })();

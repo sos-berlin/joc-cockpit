@@ -488,11 +488,7 @@
                                         <span class="text-dark text-hover-primary" ng-click="showTaskFuc(job)" ng-class="{'text-u-l':(job.isOrderJob != undefined && job.isOrderJob!=true), 'crimson':job.configurationStatus.severity==2}" ng-bind="job.name"></span>
                                         <span ng-if="job.title">-</span><i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
                                         <div class="p-l-sm tableexport-ignore" ng-if="job.runningTasks && showTask" ng-repeat="task in job.runningTasks">
-                                            <span class="text-xs">
-                                                <span translate>label.task</span>:
-                                                <span class="text-primary">{{task.taskId}}</span> -
-                                                <span class="text-primary" translate>label.since</span> <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span>
-                                            </span>
+
                                             <div class="btn-group dropdown" ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
                                                 <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                                         class="fa fa-ellipsis-h"></i></button>
@@ -504,6 +500,11 @@
                                                     <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTaskWithTimeout(null,task,job.path)" translate>button.terminateWithTimeout</a>
                                                 </div>
                                             </div>
+                                            <span class="text-xs">
+                                                <span translate>label.task</span>:
+                                                <span class="text-primary">{{task.taskId}}</span> -
+                                                <span class="text-primary" translate>label.since</span> <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span>
+                                            </span>
                                         </div>
                                         </td>
                                         <td ng-bind="job.path"></td>
@@ -547,15 +548,16 @@
                                 </tr>
                                 <tr ng-if="job.showJobChains" style="background: transparent !important;" ng-repeat="jobChain in job.jobChains">
                                     <td></td>
-                                    <td colspan="13">
-                                     <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
+                                    <td></td>
+                                    <td colspan="12">
                                         <div class="btn-group dropdown">
-                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                                        class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                                    <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
-                                                </div>
+                                            <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                    class="fa fa-ellipsis-h"></i></button>
+                                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
                                             </div>
+                                        </div>
+                                        <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
                                     </td>
                                 </tr>
                             </tbody>

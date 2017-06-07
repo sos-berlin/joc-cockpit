@@ -16,6 +16,7 @@
                       <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>
                       <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                           <a class="dropdown-item" ng-click="editUser(user)" translate>button.edit</a>
+                          <a class="dropdown-item" ng-click="copyUser(user)" translate>button.copy</a>
                           <a class="dropdown-item" ng-class="{'disable-link' :username==user.user}" ng-click="deleteUser(user)" translate="">button.delete</a>
                       </div>
                   </div>
