@@ -830,6 +830,8 @@
 
                 saveInfo();
                 vm.role = {};
+                if(vm.selectedUser)
+                vm.selectUser();
             }, function () {
                 vm.role = {};
             });
@@ -901,6 +903,8 @@
                saveInfo();
                 vm.role = {};
                 vm.copy = false;
+                if(vm.selectedUser)
+                vm.selectUser();
             }, function () {
                 vm.role = {};
                 vm.copy = false;
@@ -969,6 +973,8 @@
                 vm.masters.push(vm.master);
                 saveInfo();
                 vm.master = {};
+                if(vm.selectedUser)
+                vm.selectUser(vm.selectedUser);
             }, function () {
                 vm.master = {};
             });
@@ -989,6 +995,8 @@
                 vm.masters.push(vm.master);
                 saveInfo();
                 vm.master = {};
+                if(vm.selectedUser)
+                vm.selectUser(vm.selectedUser);
             }, function () {
                 vm.master = {};
             });
@@ -1022,8 +1030,8 @@
             selectedRoles = [];
             if (user)
                 for (var i = 0; i < vm.users.length; i++) {
-                    if (vm.users[i].user == vm.selectedUser) {
-                        selectedRoles = vm.users[i].roles;
+                    if (vm.users[i].user == vm.selectedUser && vm.users[i].roles) {
+                        selectedRoles = vm.users[i].roles || [];
                         angular.forEach(vm.masters, function (master) {
 
                             var flag = true;
@@ -1051,14 +1059,14 @@
         };
 
         vm.getSelectedMaster = function (master) {
-            if (selectedMasters.length > 0)
+            if (selectedMasters && selectedMasters.length > 0)
                 return selectedMasters.indexOf(master.master) > -1;
             else {
                 return true;
             }
         };
         vm.getSelectedRole = function (role) {
-            if (selectedRoles.length > 0)
+            if (selectedRoles && selectedRoles.length > 0)
                 return selectedRoles.indexOf(role.role) > -1;
             else {
                 return true;
@@ -1415,6 +1423,21 @@
         };
 
         vm.$on('addPermission', function () {
+            vm.permissionArrObject = []
+            angular.forEach(vm.permissionArr, function(permission){
+                var flag = true;
+                for(var i=0; i< vm.rolePermissions.length;i++) {
+                    if (permission.indexOf(vm.rolePermissions[i].path) >-1) {
+                       flag = false;
+                        break;
+                    }
+                }
+                if(flag){
+                    vm.permissionArrObject.push(permission);
+                }
+            });
+
+           
             vm.permission = {};
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/permission-dialog.html',
@@ -1455,9 +1478,13 @@
             }
             saveInfo();
         }
+        vm.isReset =  true;
         vm.undoPermission = function() {
             vm.rolePermissions = vm.previousPermission[vm.previousPermission.length - 1];
             vm.previousPermission.splice(vm.previousPermission.length - 1, 1);
+            if(angular.equals(vm.originalPermission,vm.rolePermissions)){
+                vm.isReset =  false;
+            }
             updatePermissionList();
         };
 
@@ -1932,9 +1959,10 @@
                     });
 
                     saveInfo();
-                    if (vm.previousPermission.length === 3) {
+                    if (vm.previousPermission.length === 10) {
                         vm.previousPermission.splice(0, 1);
                     }
+                    vm.isReset =  true;
                     vm.previousPermission.push(_previousPermissionObj);
                 }
             }

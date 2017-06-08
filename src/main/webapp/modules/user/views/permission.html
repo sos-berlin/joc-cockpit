@@ -9,7 +9,7 @@
             <button class="btn btn-sm orange hide" ng-click="undoPermission()" ng-class="{'show-block':previousPermission.length>0}">
                 <span translate>button.undo</span>
             </button>
-            <button class="btn btn-sm btn-primary hide m-l-sm" ng-click="resetPermission()" ng-class="{'show-block':previousPermission.length>2}">
+            <button class="btn btn-sm btn-primary hide m-l-sm" ng-click="resetPermission()" ng-class="{'show-block':previousPermission.length>0 && isReset}">
                 <span translate>button.reset</span>
             </button>
         </div>
@@ -58,6 +58,9 @@
                                 <i ng-click="editPermission(p)" class="fa fa-pencil m-l-xs"></i>
                                 <i ng-click="deletePermission(p)" class="fa fa-times m-l-xs" ></i>
                             </span>
+                        </div>
+                        <div class="col-md-12 text-center" ng-if="rolePermissions.length==0" >
+                            <span translate="">message.noPermissionFound</span>
                         </div>
                     </div>
                 </div>
