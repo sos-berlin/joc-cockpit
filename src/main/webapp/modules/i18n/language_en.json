@@ -1044,5 +1044,6 @@
   "message.substituteError": "The attributes substitute, valid_from and valid_to must be empty or filled simultaneously.",
   "label.copyUser":"Copy User",
   "label.copyRole":"Copy Role",
-  "button.undo":"Undo"
+  "button.undo":"Undo",
+  "message.noPermissionFound" : "No permission found"
 }
