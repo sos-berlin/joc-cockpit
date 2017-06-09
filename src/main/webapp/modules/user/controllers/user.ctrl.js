@@ -1423,7 +1423,7 @@
         };
 
         vm.$on('addPermission', function () {
-            vm.permissionArrObject = []
+            vm.permissionArrObject = [];
             angular.forEach(vm.permissionArr, function(permission){
                 var flag = true;
                 for(var i=0; i< vm.rolePermissions.length;i++) {
@@ -1478,7 +1478,7 @@
             }
             saveInfo();
         }
-        vm.isReset =  true;
+        vm.isReset =  false;
         vm.undoPermission = function() {
             vm.rolePermissions = vm.previousPermission[vm.previousPermission.length - 1];
             vm.previousPermission.splice(vm.previousPermission.length - 1, 1);
@@ -1492,6 +1492,7 @@
             vm.rolePermissions = angular.copy(vm.originalPermission);
             vm.previousPermission = [];
             updatePermissionList();
+            vm.isReset =  false;
         };
 
         function checkPermissionListRecursively(permission_node, list) {
