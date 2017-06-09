@@ -14,6 +14,7 @@
                           DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService) {
 
         var vm = $scope;
+
         vm.jobChainFilters = CoreService.getJobChainTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
@@ -1094,16 +1095,14 @@
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
             OrderService.addOrder(orders).then(function () {
-                if(order.atTime != 'now') {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.jobChains = [{jobChain: jobChain.path}];
-                    obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
-                    JobChainService.get(obj).then(function (res) {
-                        if (res.jobChains && res.jobChains[0])
-                            jobChain.nodes = res.jobChains[0].nodes;
-                    });
-                }
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.jobChains = [{jobChain: jobChain.path}];
+                obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
+                JobChainService.get(obj).then(function (res) {
+                    if (res.jobChains && res.jobChains[0])
+                        jobChain.nodes = res.jobChains[0].nodes;
+                });
             });
             vm.reset();
         }

@@ -211,7 +211,11 @@
         var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
         $('body').append($fakeFrame);
         $fakeFrame.remove();
-    }, 3000);
+    }, 4000);
+    $(window).on('popstate', function() {
+    		$('body').removeClass('modal-open');
+			$('.modal-backdrop').remove();
+	    });
 </script>
 </body>
 </html>

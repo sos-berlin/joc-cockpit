@@ -9,7 +9,7 @@
             <button class="btn btn-sm orange hide" ng-click="undoPermission()" ng-class="{'show-block':previousPermission.length>0}">
                 <span translate>button.undo</span>
             </button>
-            <button class="btn btn-sm btn-primary hide m-l-sm" ng-click="resetPermission()" ng-class="{'show-block':previousPermission.length>0 && isReset}">
+            <button class="btn btn-sm btn-primary hide m-l-sm" ng-click="resetPermission()" ng-class="{'show-block':isReset}">
                 <span translate>button.reset</span>
             </button>
         </div>

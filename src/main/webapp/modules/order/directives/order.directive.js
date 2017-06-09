@@ -16,7 +16,7 @@
             scope: {
                 status: '='
             },
-            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog', function (OrderService, $scope, CoreService, SOSAuth, gettextCatalog) {
+            controller: ['OrderService', '$scope', 'CoreService', 'SOSAuth', 'gettextCatalog','$location', function (OrderService, $scope, CoreService, SOSAuth, gettextCatalog,$location) {
                 var vm = $scope;
                 var ordersData = [];
 
@@ -58,6 +58,9 @@
                         var filter = {};
                         vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
                         filter.jobschedulerId = vm.schedulerIds.selected;
+                        if($location.search().path){
+                            filter.jobChains = [{jobChain : $location.search().path}];
+                        }
                         OrderService.getSnapshot(filter).then(function (res) {
                             vm.snapshot = res.orders;
                             preparePieData(vm.snapshot);
@@ -66,7 +69,7 @@
                 }
 
                 function loadSnapshot() {
-                    if (!SOSAuth.jobChain) {
+                    if ($location.search().path) {
                         getSnapshot();
                     }
                 }
@@ -154,7 +157,7 @@
                         pie: {
                             dispatch: {
                                 elementClick: function (e) {
-                                    var res = e.data.key.toUpperCase()
+                                    var res = e.data.key.toUpperCase();
                                     vm.status = res;
 
                                     $rootScope.$broadcast('orderState', res);
@@ -374,7 +377,6 @@
                         top = top + rectH + 50;
                     }
 
-                    // console.log(scope.jobChainData)
                     scope.startId = "start";
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
                         if (!item) {
@@ -867,7 +869,6 @@
 
                     vm.isOrderRunning = function (index) {
                         var running = false;
-                       //console.log("Data "+vm.jobChainData.nodes.length+" index "+index);
                         var item = vm.jobChainData.nodes[index];
                         if(!item){
                             return;
@@ -1243,7 +1244,7 @@
                                         return node.locks[0].path + extra;
                                     }
 
-                    }
+                    };
 
 
 
@@ -1387,29 +1388,7 @@
                                 var node = document.getElementById(name);
 
                                 if (node) {
-                                    if (index > vm.limitNum) {
-                                        return;
-                                    }
-                                    if (index == vm.limitNum && numOfOrders > orders.length) {
-
-                                        var container = document.getElementById('lbl-order-' + order.state);
-                                        var label = document.createElement('div');
-                                        label.innerHTML = '<i id="more" ng-click="showOrderPanelFun(\'' + order.jobChain + '\')" class="hide" ng-class="{\'show cursor text-xs\':showOrderPanel != \'' + name + '\' && \'' + orders.length + '\'> limitNum}"><span >' + gettextCatalog.getString("label.showMoreOrders") + '</span><br></i>';
-                                        var top = container.offsetTop;
-                                        container.appendChild(label);
-
-                                        if (index <= 5) {
-                                            container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
-                                        }
-                                        if (index == 5) {
-                                            container.style['max-height'] = container.clientHeight + container.firstChild.clientHeight + 'px';
-                                        }
-                                        $compile(label)(vm);
-                                        return;
-                                    }
                                     var container = document.getElementById('lbl-order-' + order.state);
-
-
                                     if (container && container.childNodes.length > 0) {
                                         var label = document.createElement('div');
                                         label.innerHTML = getOrderMenu(order, name);
@@ -1441,9 +1420,22 @@
                                         label.style['overflow'] = 'auto';
                                     }
 
+                                    if (index == (vm.limitNum - 1) && numOfOrders > orders.length) {
+                                        console.log("number of orders " + numOfOrders + " index " + index + " limitnum " + vm.limitNum);
+                                        var container = document.getElementById('lbl-order-' + order.state);
+                                        var label = document.createElement('div');
+                                        label.innerHTML = '<i id="more" class="text-sm cursor text-hover-primary" ng-click="showOrderPanelFun(\'' + order.jobChain + '\')" ><span >' + gettextCatalog.getString("label.showMoreOrders") + '</span><br></i>';
+                                        var top = container.offsetTop;
+                                        container.appendChild(label);
 
+                                        if (index == 5) {
+                                            container.style['max-height'] = container.clientHeight + container.firstChild.clientHeight + 'px';
+                                            container.style['top'] = container.offsetTop - container.firstChild.clientHeight + 'px';
+                                        }
+                                        $compile(label)(vm);
+                                        return;
+                                    }
                                 }
-
 
                                 function getOrderMenu(order, nodeName) {
                                     var diff = 0;
@@ -1473,7 +1465,7 @@
                                         + '<div class="btn-group dropdown "><button type="button"  class="btn-drop more-option-h dropdown1" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                         + '<div class="dropdown-menu dropdown-ac " role="menu" style="position: fixed;z-index: 9999;">'
                                         + '<a class="hide" id="log-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.orderLog && \'' + order._type + '\'!==\'AD_HOC\' && \'' + order.historyId + '\'!==\'undefined\'}">' + gettextCatalog.getString("button.viewLog") + '</a>'
-                                        + '<a class="hide" id="configuration-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.configuration && \'' + order.historyId + '\'}">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
+                                        + '<a class="hide" id="configuration-' + order.orderId + '" ng-class="{\'show dropdown-item\':permission.Order.view.configuration && \'' + order._type + '\'==\'PERMANENT\'}">' + gettextCatalog.getString("button.showConfiguration") + '</a>'
                                         + '<a class="hide" id="ordernow-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.execute.start}">' + gettextCatalog.getString("button.startOrderNow") + '</a>'
                                         + '<a class="hide" id="orderat-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.execute.start}">' + gettextCatalog.getString("button.startOrderat") + '</a>'
                                         + '<a class="hide" id="orderstate-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\' ||\'' + order.processingState._text + '\'== \'PENDING\'))&& permission.Order.change.state}">' + gettextCatalog.getString("button.setOrderState") + '</a>'
@@ -1485,8 +1477,8 @@
                                         + '<a class="hide" id="resumeodrfrmstate-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\'))&& permission.Order.execute.resume}">' + gettextCatalog.getString("button.resumeOrderFromState") + '</a>'
                                         + '<a class="hide" id="orderreset-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& permission.Order.execute.reset}">' + gettextCatalog.getString("button.resetOrder") + '</a>'
                                         + '<a class="hide" id="orderremove-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.execute.removeSetback}">' + gettextCatalog.getString("button.removeOrder") + '</a>'
-                                        + '<a class="hide" id="calendar-' + order.orderId + '" ng-class="{\'show dropdown-item \':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& ' + order._type + '!==\'AD_HOC\' && permission.DailyPlan.view.status}">' + gettextCatalog.getString("button.showCalendar") + '</a>'
-                                        + '<a class="hide" id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \': permission.Order.delete.permanent && (\'' + order._type + '\'==\'AD_HOC\' || \'' + order._type + '\'==\'FILE_ORDER\') }">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
+                                        + '<a class="hide" id="calendar-' + order.orderId + '" ng-class="{\'show dropdown-item \':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'!== \'BLACKLIST\'))&& ' + order._type + '==\'PERMANENT\' && permission.DailyPlan.view.status}">' + gettextCatalog.getString("button.showCalendar") + '</a>'
+                                        + '<a class="hide" id="orderdelete-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color \': permission.Order.delete.permanent && (\'' + order._type + '\'!==\'PERMANENT\')}">' + gettextCatalog.getString("button.deleteOrder") + '</a>'
                                         + '<a class="dropdown-item" ng-click="copyLinkToObject({type:\'order\',path:\'' + order.path + '\'})" id="copyLinkToObject-' + order.orderId + '" >' + gettextCatalog.getString("button.copyLinkToObject") + '</a>'
                                         + '</div></div>';
                                     return menu;

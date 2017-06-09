@@ -780,7 +780,7 @@
                                                                                            translate>button.viewLog</a>
                                                                                         <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                                                            class="hide dropdown-item"
-                                                                                           ng-class="{show:permission.Order.view.configuration, 'disable-link':order._type=='AD_HOC'}"
+                                                                                           ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                                                            translate>button.showConfiguration</a>
                                                                                         <a href class="dropdown-item"
                                                                                            ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
@@ -829,12 +829,12 @@
                                                                                            ng-click="removeOrder(order)"
                                                                                            translate>button.removeOrder</a>
                                                                                         <a href class="dropdown-item"
-                                                                                           ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                                                                           ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                                                            ng-click="viewCalendar(order)"
                                                                                            translate>button.showCalendar</a>
                                                                                         <a href
                                                                                            class="dropdown-item bg-hover-color"
-                                                                                           ng-if="(order._type =='AD_HOC' || order._type == 'FILE_ORDER') && permission.Order.delete.permanent"
+                                                                                           ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                                                                            ng-click="deleteOrder(order,jobChain)"
                                                                                            translate>button.deleteOrder</a>
                                                                                         <a class="dropdown-item"
@@ -844,7 +844,7 @@
                                                                                 </div>
                                                                                 <div class="text-sm p-l-sm" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                                             </div>
-                                                                            <i class="cursor text-xs"
+                                                                            <i class="cursor text-xs text-hover-primary"
                                                                                ng-if="nestedNode.numOfOrders>limitNum"
                                                                                ng-click="showOrderPanelFuc(jobChain.path)"><span
                                                                                     translate>label.showMoreOrders</span><br></i>
@@ -1045,7 +1045,7 @@
                                                                    translate>button.viewLog</a>
                                                                 <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
                                                                    class="hide dropdown-item"
-                                                                   ng-class="{show:permission.Order.view.configuration, 'disable-link':order._type=='AD_HOC'}"
+                                                                   ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}"
                                                                    translate>button.showConfiguration</a>
                                                                 <a href class="dropdown-item"
                                                                    ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
@@ -1082,10 +1082,10 @@
                                                                    ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
                                                                    ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                                 <a href class="dropdown-item"
-                                                                   ng-if="order._type !='AD_HOC' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                                                   ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                                    ng-click="viewCalendar(order)" translate>button.showCalendar</a>
                                                                 <a href class="dropdown-item bg-hover-color"
-                                                                   ng-if="(order._type =='AD_HOC' || order._type == 'FILE_ORDER') && permission.Order.delete.permanent"
+                                                                   ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                                                    ng-click="deleteOrder(order,jobChain)" translate>button.deleteOrder</a>
                                                                 <a class="dropdown-item"
                                                                    ng-click="copyLinkToObject('order',order.path)"
@@ -1116,7 +1116,7 @@
 
                                                         <div class="text-sm p-l-sm" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                     </div>
-                                                    <i class="cursor text-xs"
+                                                    <i class="cursor text-xs text-hover-primary"
                                                        ng-if="node.numOfOrders>limitNum"
                                                        ng-click="showOrderPanelFuc(jobChain.path)"><span translate>label.showMoreOrders</span><br></i>
 
