@@ -1040,10 +1040,10 @@
   "label.file": "Fichier",
   "label.substitutes": "Substituts de Programmation",
   "button.removeInstance": "Supprimer le Master de l'Inventaire",
-  "message.cannotDeleteRole": "Cannot delete a role which is assign to a user.",
-  "message.substituteError": "The attributes substitute, valid_from and valid_to must be empty or filled simultaneously.",
-  "label.copyUser": "Copy User",
-  "label.copyRole": "Copy Role",
-  "button.undo": "Undo",
-  "message.noPermissionFound" : "No permission found"
+  "message.cannotDeleteRole": "Impossible de supprimer un Rôle qui est attribué un compte.",
+  "message.substituteError": "Les attributs substitute, valid_from et valid_to doivent être remplis ou laissés vides.",
+  "label.copyUser": "Copie le Compte",
+  "label.copyRole": "Copier le Rôle",
+  "button.undo": "Annuler",
+  "message.noPermissionFound" : "Aucune permission trouvé"
 }
