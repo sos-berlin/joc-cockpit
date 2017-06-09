@@ -1517,13 +1517,19 @@
             if (vm.comments.ticketLink) {
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
-            orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
 
-            if (orders.params) {
-                orders.params.concat(paramObject.params);
+            if (order.params) {
+                order.params.concat(paramObject.params);
             } else {
-                orders.params = paramObject.params;
+                order.params = paramObject.params;
             }
+
+            if(order.params && order.params.length>0){
+               orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+            }else{
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            }
+            delete orders['params'];
             OrderService.resumeOrder(orders);
         }
 
@@ -1815,6 +1821,14 @@
             }
 
             if (action == 'resume order with param') {
+                var orders = {};
+                orders.orders = [];
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+                OrderService.get(orders).then(function (res) {
+                    order = angular.merge(order, res.orders[0]);
+                });
+
                 vm.order = order;
                 vm.paramObject = {};
                 vm.paramObject.params = [];
@@ -5439,18 +5453,34 @@
             if (vm.comments.ticketLink) {
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
-            orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
 
-            if (orders.params) {
-                orders.params.concat(paramObject.params);
+            if (order.params) {
+                order.params.concat(paramObject.params);
             } else {
-                orders.params = paramObject.params;
+                order.params = paramObject.params;
             }
+
+            if(order.params && order.params.length>0){
+               orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+            }else{
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            }
+            delete orders['params'];
+
             OrderService.resumeOrder(orders);
             vm.reset();
         }
 
         vm.resumeOrderWithParam = function (order) {
+
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+            OrderService.get(orders).then(function (res) {
+                order = angular.merge(order, res.orders[0]);
+            });
+
             vm.order = order;
             vm.paramObject = {};
             vm.paramObject.params = [];
