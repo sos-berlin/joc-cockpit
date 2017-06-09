@@ -1423,21 +1423,6 @@
         };
 
         vm.$on('addPermission', function () {
-            vm.permissionArrObject = [];
-            angular.forEach(vm.permissionArr, function(permission){
-                var flag = true;
-                for(var i=0; i< vm.rolePermissions.length;i++) {
-                    if (permission.indexOf(vm.rolePermissions[i].path) >-1) {
-                       flag = false;
-                        break;
-                    }
-                }
-                if(flag){
-                    vm.permissionArrObject.push(permission);
-                }
-            });
-
-           
             vm.permission = {};
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/permission-dialog.html',
