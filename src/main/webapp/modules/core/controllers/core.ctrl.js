@@ -3911,7 +3911,6 @@
         $rootScope.$on('save-schedule', function (event, data1) {
             vm.sch = data1.sch;
             vm._schedules = data1._schedules;
-            console.log(JSON.stringify(vm.sch))
              saveSch();
         });
 
@@ -7238,7 +7237,6 @@
         vm.from = {};
         vm.to = {};
         vm.error = {};
-
         function saveSch() {
             try {
 
@@ -7278,9 +7276,10 @@
                 console.log(e);
             }
         }
-
-        vm.substituteObj.fromTime = '00:00';
-        vm.substituteObj.toTime = '00:00';
+        if(vm.substituteObj) {
+            vm.substituteObj.fromTime = '00:00';
+            vm.substituteObj.toTime = '00:00';
+        }
         vm.saveScheduleDetail = function (param) {
             vm.sch._valid_from = undefined;
             vm.sch._name = vm.substituteObj.name;
@@ -8312,6 +8311,7 @@
 
             getXml2Json(vm.xml);
         }
+
         loadXml();
 
         $scope.$on('$destroy', function () {
