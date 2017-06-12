@@ -24,12 +24,12 @@
 
                         <div class="col-sm-9">
 
-                            <select class="form-control" name="substitue" ng-model="sch._substitute" style="padding-top: 5px; padding-bottom: 6px; border-bottom: none"
+                            <select class="form-control" name="substitue" ng-model="sch._substitute" style="border: none"
                                     ng-change="error.scheduleRequired=false"
                                     ng-options="schedule.path as schedule.path for schedule in _schedules">
 
                             </select>
-                            <div class="input-dropdown" style="width: 91.3% !important;">
+                            <div class="input-dropdown">
                                 <input name="substitue" class="form-control" ng-model="sch._substitute"  type="text">
                             </div>
                             <div class="help-block text-danger" ng-if="error.scheduleRequired">

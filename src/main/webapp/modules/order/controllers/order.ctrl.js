@@ -165,8 +165,8 @@
 
     }
 
-    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location", "CoreService", "$uibModal", "AuditLogService"];
-    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location, CoreService, $uibModal, AuditLogService) {
+    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location", "CoreService", "$uibModal", "AuditLogService","ScheduleService"];
+    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location, CoreService, $uibModal, AuditLogService,ScheduleService) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -1719,6 +1719,7 @@
             }
 
             if (action == 'set run time') {
+                vm.order = order;
                 OrderService.getRunTime({
                     jobschedulerId: $scope.schedulerIds.selected,
                     jobChain: order.jobChain,
@@ -1747,7 +1748,15 @@
                     });
                 });
 
-                vm.order = order;
+
+                ScheduleService.getSchedulesP({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    compact: true
+                }).then(function (res) {
+                    vm.schedules = res.schedules;
+                });
+
+                vm.zones = moment.tz.names();
             }
             if (action == 'reset run time') {
                 vm.resetRunTime(order);

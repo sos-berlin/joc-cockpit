@@ -1253,7 +1253,7 @@
             modalInstance.result.then(function () {
                 if (vm.folder.folder) {
                     if (vm.folder.folder == '/' && vm.folder.recursive) {
-                        vm.folder.folder = '/*';
+                        vm.folder.folder = '';
                     }
                     vm.folderArr.push(vm.folder);
                 }
@@ -1276,7 +1276,7 @@
         });
         vm.editFolder = function (folder) {
             vm.folder = angular.copy(folder);
-
+            vm.folder.folder = vm.folder.folder == "" ? '/' : vm.folder.folder;
             vm.newFolder = false;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/folder-dialog.html',
@@ -1286,7 +1286,7 @@
             });
             modalInstance.result.then(function () {
                 if (vm.folder.folder == '/' && vm.folder.recursive) {
-                    vm.folder.folder = '/*';
+                    vm.folder.folder = '';
                 }
                 angular.forEach(vm.folderArr, function (fold, index) {
                     if (angular.equals(folder, fold))
@@ -1300,6 +1300,7 @@
         };
         vm.deleteFolder = function (folder) {
             vm.folder = angular.copy(folder);
+            vm.folder.folder = vm.folder.folder == "" ? '/' : vm.folder.folder;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
                 controller: 'DialogCtrl',
