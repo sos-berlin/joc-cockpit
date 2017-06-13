@@ -1,5 +1,5 @@
 <div class="box p-a ">
-      <div  class="box-body p-b-0" ng-repeat="master in masters track by $index" ng-if="getSelectedMaster(master)" ng-init="showPanel= (masterName == master.master || (masterName =='default' && master.master==''))">
+      <div ng-hide="showMsg" class="box-body p-b-0" ng-repeat="master in masters track by $index" ng-if="getSelectedMaster(master)" ng-init="showPanel= (masterName == master.master || (masterName =='default' && master.master==''))">
           <div class="row">
               <div class="col-sm-12">
                   <div class="btn-group dropdown pull-left m-r-sm">
@@ -31,4 +31,11 @@
           </div>
           <hr ng-show="showPanel">
       </div>
+    <div class="box-body p-b-0 hide" ng-class="{show : showMsg}">
+        <div class="row">
+            <div class="col-md-12 text-center" >
+                <span translate="">message.noRoleAssign</span>
+            </div>
+        </div>
+    </div>
 </div>

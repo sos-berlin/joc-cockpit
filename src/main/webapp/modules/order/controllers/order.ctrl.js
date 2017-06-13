@@ -1216,38 +1216,42 @@
         };
 
         var watcher1 = vm.$watchCollection('object1.nodes', function (newNames) {
-
             if (newNames && newNames.length > 0) {
                 vm.allCheck1.checkbox = newNames.length == vm.jobChain.nodes.length;
 
                 vm.isStoppedJob = false;
-                vm.isStoppedJobChain = false;
                 vm.isStoppedNode = false;
                 vm.isSkippedNode = false;
                 vm.isActiveNode = false;
                 vm.isPendingJob = false;
+                vm.isStoppedJobChain = false;
+                vm.isJob = false;
+                vm.isJobChain = false;
 
                 angular.forEach(newNames, function (value) {
-                    if (value.state && value.state._text == 'STOPPED') {
+                    if (value.job) {
+                        vm.isJob = true;
+                    }
+                    if (value.jobChain) {
+                        vm.isJobChain = true;
+                    }
+                    if (value.job && value.state && value.state._text == 'STOPPED') {
                         vm.isStoppedNode = true;
                     }
-                    if (value.state && value.state._text == 'SKIPPED') {
+                    if (value.job && value.state && value.state._text == 'SKIPPED') {
                         vm.isSkippedNode = true;
                     }
-                    if (value.state && value.state._text == 'ACTIVE') {
+                    if (value.job && value.state && value.state._text == 'ACTIVE') {
                         vm.isActiveNode = true;
                     }
-                    if (value.job) {
-                        if (value.job.state && value.job.state._text == 'STOPPED') {
-                            vm.isStoppedJob = true;
-                        }
-                        if (value.job.state && value.job.state._text == 'PENDING') {
-                            vm.isPendingJob = true;
-                        }
-                    } else if (value.jobChain) {
-                        if (value.jobChain.state && value.jobChain.state._text == 'STOPPED') {
-                            vm.isStoppedJobChain = true;
-                        }
+                    if (value.job && value.job.state && value.job.state._text == 'STOPPED') {
+                        vm.isStoppedJob = true;
+                    }
+                    if (value.jobChain && value.jobChain.state && value.jobChain.state._text == 'STOPPED') {
+                        vm.isStoppedJobChain = true;
+                    }
+                    if (value.job && value.job.state && value.job.state._text == 'PENDING') {
+                        vm.isPendingJob = true;
                     }
                 });
 
@@ -1455,16 +1459,18 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.auditLog = {};
-            if (vm.comments.comment) {
-                orders.auditLog.comment = vm.comments.comment;
-            }
-            if (vm.comments.timeSpent) {
-                orders.auditLog.timeSpent = vm.comments.timeSpent;
-            }
+            if(vm.comments) {
+                orders.auditLog = {};
+                if (vm.comments.comment) {
+                    orders.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent) {
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+                }
 
-            if (vm.comments.ticketLink) {
-                orders.auditLog.ticketLink = vm.comments.ticketLink;
+                if (vm.comments.ticketLink) {
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+                }
             }
 
             orders.orders.push({
@@ -1481,16 +1487,18 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.auditLog = {};
-            if (vm.comments.comment) {
-                orders.auditLog.comment = vm.comments.comment;
-            }
-            if (vm.comments.timeSpent) {
-                orders.auditLog.timeSpent = vm.comments.timeSpent;
-            }
+            if(vm.comments) {
+                orders.auditLog = {};
+                if (vm.comments.comment) {
+                    orders.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent) {
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+                }
 
-            if (vm.comments.ticketLink) {
-                orders.auditLog.ticketLink = vm.comments.ticketLink;
+                if (vm.comments.ticketLink) {
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+                }
             }
             orders.orders.push({
                 orderId: order.orderId,
@@ -1506,16 +1514,18 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.auditLog = {};
-            if (vm.comments.comment) {
-                orders.auditLog.comment = vm.comments.comment;
-            }
-            if (vm.comments.timeSpent) {
-                orders.auditLog.timeSpent = vm.comments.timeSpent;
-            }
+            if(vm.comments) {
+                orders.auditLog = {};
+                if (vm.comments.comment) {
+                    orders.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent) {
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+                }
 
-            if (vm.comments.ticketLink) {
-                orders.auditLog.ticketLink = vm.comments.ticketLink;
+                if (vm.comments.ticketLink) {
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+                }
             }
 
             if (order.params) {
@@ -1537,16 +1547,18 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.auditLog = {};
-            if (vm.comments.comment) {
-                orders.auditLog.comment = vm.comments.comment;
-            }
-            if (vm.comments.timeSpent) {
-                orders.auditLog.timeSpent = vm.comments.timeSpent;
-            }
+            if(vm.comments) {
+                orders.auditLog = {};
+                if (vm.comments.comment) {
+                    orders.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent) {
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+                }
 
-            if (vm.comments.ticketLink) {
-                orders.auditLog.ticketLink = vm.comments.ticketLink;
+                if (vm.comments.ticketLink) {
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+                }
             }
             orders.orders.push({
                 orderId: order.orderId,
@@ -5396,6 +5408,13 @@
         };
 
         vm.resumeOrderNextstate = function (order) {
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = order.path;
+                vm.comments.operation = 'Resume';
+                vm.comments.type = 'Order';
+            }
             vm.order = angular.copy(order);
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/resume-order-state-dialog.html',
@@ -5424,16 +5443,18 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.auditLog = {};
-            if (vm.comments.comment) {
-                orders.auditLog.comment = vm.comments.comment;
-            }
-            if (vm.comments.timeSpent) {
-                orders.auditLog.timeSpent = vm.comments.timeSpent;
-            }
+            if(vm.comments) {
+                 orders.auditLog = {};
+                if (vm.comments.comment) {
+                    orders.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent) {
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+                }
 
-            if (vm.comments.ticketLink) {
-                orders.auditLog.ticketLink = vm.comments.ticketLink;
+                if (vm.comments.ticketLink) {
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+                }
             }
             orders.orders.push({
                 orderId: order.orderId,

@@ -29,7 +29,7 @@
                         <i class="fa fa-plus"></i>
                         {{'button.addRole'| translate}}
                     </button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="view.pageView=='tree'" ng-click="addFolder()" translate="">button.addFolder</button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addFolder()" translate="">button.addFolder</button>
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="view.pageView=='tree'" ng-click="addPermission();"  translate="">button.addPermission</button>
                     <div class="btn-group m-l-sm" ng-if="state == 'permission'">
                         <button class="btn btn-grey btn-sm" ng-model="view.pageView" uib-btn-radio="'tree'"

@@ -8,17 +8,17 @@
         } catch (n) {
             console.log(n)
         }
-        return e.sessionStorage.$SOS$VIEW ? o = e.sessionStorage.$SOS$VIEW : e.sessionStorage.$SOS$VIEW = "grid", "true" == e.sessionStorage.$SOS$SIDEVIEW || 1 == e.sessionStorage.$SOS$SIDEVIEW ? s = e.sessionStorage.$SOS$SIDEVIEW : e.sessionStorage.$SOS$SIDEVIEW = !1, {
+        return e.localStorage.$SOS$VIEW ? o = e.localStorage.$SOS$VIEW : e.localStorage.$SOS$VIEW = "grid", "true" == e.localStorage.$SOS$SIDEVIEW || 1 == e.localStorage.$SOS$SIDEVIEW ? s = e.localStorage.$SOS$SIDEVIEW : e.localStorage.$SOS$SIDEVIEW = !1, {
             getParams: function (e) {
                 e = e.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var r = new RegExp("[\\?&]" + e + "=([^&#]*)"), t = r.exec(location.search);
                 return null === t ? "" : decodeURIComponent(t[1].replace(/\+/g, " "))
             }, setView: function (r) {
-                e.sessionStorage.$SOS$VIEW = r, o = r
+                e.localStorage.$SOS$VIEW = r, o = r
             }, getView: function () {
                 return o
             }, setSideView: function (r) {
-                e.sessionStorage.$SOS$SIDEVIEW = r, s = r
+                e.localStorage.$SOS$SIDEVIEW = r, s = r
             }, getSideView: function () {
                 return !s
             }, setDefaultTab: function () {
