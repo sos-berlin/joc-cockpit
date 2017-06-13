@@ -1045,5 +1045,6 @@
   "label.copyUser": "ユーザーコピー",
   "label.copyRole": "ロールコピー",
   "button.undo": "元に戻す",
-  "message.noPermissionFound" : "パーミッションがありません"
+  "message.noPermissionFound": "パーミッションがありません",
+  "message.noRoleAssign": "No role assigned to selected user"
 }

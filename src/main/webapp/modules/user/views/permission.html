@@ -17,7 +17,7 @@
 </div>
 
 <div class="hide" ng-class="{'show': !loading}">
-    <div class="hide" ng-class="{'show':view.pageView =='list'}">
+    <div>
         <div class="row m-t">
             <div class="col-md-12">
                 <span class="text _600" ng-bind="'label.folder' | translate"></span>
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="row m-t-md">
+        <div class="row m-t-md hide" ng-class="{'show':view.pageView =='list'}">
             <div class="col-md-12">
                 <span class="text _600" ng-bind="'label.permissions' | translate"></span>
                 <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel1" ng-click="showPanel1=true"></i>
@@ -69,7 +69,12 @@
         </div>
     </div>
     <div ng-show="view.pageView !='list'">
-        <div id="mainTree" class="box m-t max-tree-panel-ht" style="overflow: auto">
+        <div class="row col-md-12 m-t">
+            <span class="text _600" ng-bind="'label.permissions' | translate"></span>
+            <i class="cursor fa fa-caret-down m-l-xs" ng-hide="showPanel1" ng-click="showPanel1=true"></i>
+            <i class="cursor fa fa-caret-up m-l-xs" ng-show="showPanel1" ng-click="showPanel1=false"></i>
+        </div>
+        <div id="mainTree" class="box m-t-sm col-md-12" style="overflow: auto" ng-hide="showPanel1">
             <button class="btn btn-sm btn-grey show-block m-t m-l" ng-click="expandAll()">
                 <i class="fa fa fa-caret-down"></i>
                 <span translate>button.expandAll</span>

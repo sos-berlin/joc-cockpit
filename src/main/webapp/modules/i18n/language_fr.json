@@ -1045,5 +1045,6 @@
   "label.copyUser": "Copie le Compte",
   "label.copyRole": "Copier le Rôle",
   "button.undo": "Annuler",
-  "message.noPermissionFound" : "Aucune permission trouvé"
+  "message.noPermissionFound": "Aucune permission trouvé",
+  "message.noRoleAssign": "No role assigned to selected user"
 }

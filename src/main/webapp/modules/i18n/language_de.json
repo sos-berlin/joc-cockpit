@@ -1045,5 +1045,6 @@
   "label.copyUser": "Konto kopieren",
   "label.copyRole": "Rolle kopieren",
   "button.undo": "Rückgängig machen",
-  "message.noPermissionFound" : "Keine Berechtigung gefunden"
+  "message.noPermissionFound": "Keine Berechtigung gefunden",
+  "message.noRoleAssign": "No role assigned to selected user"
 }

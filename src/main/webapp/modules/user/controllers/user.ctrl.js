@@ -1028,6 +1028,7 @@
             vm.selectedUser = user;
             selectedMasters = [];
             selectedRoles = [];
+            vm.showMsg = false;
             if (user)
                 for (var i = 0; i < vm.users.length; i++) {
                     if (vm.users[i].user == vm.selectedUser && vm.users[i].roles) {
@@ -1051,7 +1052,12 @@
                         break;
                     }
                 }
+            if(selectedMasters.length==0){
+                vm.showMsg = true;
+            }
         };
+
+
 
         vm.showMaster = function (user) {
             $location.path('/users/master');
