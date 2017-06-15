@@ -135,10 +135,75 @@
         return {
             restrict: "E",
             templateUrl: "modules/core/template/toggle-view.html",
-            controller: ["CoreService", "$scope", "$rootScope", function (e, t, i) {
-                var n = t;
-                n.pageView = e.getView(), n.setView = function () {
-                   e.setView(t.pageView)
+            controller: ["$window", "$scope", "$location", function (e, t, l) {
+                var views = {
+                    dailyPlan: 'grid',
+                    jobChain: 'grid',
+                    job: 'grid',
+                    order: 'grid',
+                    agent: 'grid',
+                    lock: 'grid',
+                    processClass: 'grid',
+                    schedule: 'grid',
+                    jobChainOrder: 'grid',
+                    orderOverView: 'grid',
+                    permission: 'grid'
+                };
+                if (!e.localStorage.views) {
+                    e.localStorage.views = JSON.stringify(views);
+                } else {
+                    views = JSON.parse(e.localStorage.views);
+                }
+                if (l.path() == '/daily_plan') {
+                    t.pageView = views.dailyPlan;
+                } else if (l.path() == '/job_chains') {
+                    t.pageView = views.jobChain;
+                } else if (l.path() == '/jobs') {
+                    t.pageView = views.job;
+                } else if (l.path() == '/orders') {
+                    t.pageView = views.order;
+                } else if (l.path().match('/resources/agent_clusters')) {
+                    t.pageView = views.agent;
+                } else if (l.path() == '/resources/locks') {
+                    t.pageView = views.lock;
+                } else if (l.path() == '/resources/process_classes') {
+                    t.pageView = views.processClass;
+                } else if (l.path() == '/resources/schedules') {
+                    t.pageView = views.schedule;
+                } else if (l.path().match('/job_chain_detail/')) {
+                    t.pageView = views.jobChainOrder;
+                } else if (l.path().match('/orders_overview')) {
+                    t.pageView = views.orderOverView;
+                } else if (l.path().match('/users/')) {
+                    t.pageView = views.permission;
+                }else{
+                    t.pageView = 'grid';
+                }
+                t.setView = function () {
+                    if (l.path() == '/daily_plan') {
+                        views.dailyPlan = t.pageView;
+                    } else if (l.path() == '/job_chains') {
+                        views.jobChain = t.pageView;
+                    } else if (l.path() == '/jobs') {
+                        views.job = t.pageView;
+                    } else if (l.path() == '/orders') {
+                        views.order = t.pageView;
+                    } else if (l.path().match('/resources/agent_clusters')) {
+                        views.agent = t.pageView;
+                    } else if (l.path() == '/resources/locks') {
+                        views.lock = t.pageView;
+                    } else if (l.path() == '/resources/process_classes') {
+                        views.processClass = t.pageView;
+                    } else if (l.path() == '/resources/schedules') {
+                        views.schedule = t.pageView;
+                    } else if (l.path().match('/job_chain_detail/')) {
+                        views.jobChainOrder = t.pageView;
+                    } else if (l.path().match('/orders_overview')) {
+                        views.orderOverView = t.pageView;
+                    } else if (l.path().match('/users/')) {
+                        views.permission =t.pageView;
+                    }
+                    e.localStorage.views = JSON.stringify(views);
                 }
             }]
         }

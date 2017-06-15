@@ -665,7 +665,6 @@
         vm.editor = {};
         vm.editor.edit = false;
         vm.view = {};
-        vm.view.pageView = 'tree';
 
         function get() {
             UserService.securityConfigurationRead({}).then(function (res) {
@@ -823,15 +822,22 @@
             modalInstance.result.then(function () {
                 vm.roles.push(vm.role.role);
                 angular.forEach(vm.masters, function (master, index) {
-                    if (angular.equals(master.master, vm.mstr.name) || (master.master =='' && !vm.mstr.name)) {
+                    if (angular.equals(master.master, vm.mstr.name) || (master.master == '' && !vm.mstr.name)) {
                         vm.masters[index].roles.push(vm.role);
                     }
                 });
-
+                if (vm.selectedUser) {
+                    for (var i = 0; i < vm.users.length; i++) {
+                        if(vm.users[i].user == vm.selectedUser) {
+                            vm.users[i].roles.push(vm.role.role);
+                            break;
+                        }
+                    }
+                    vm.selectUser(vm.selectedUser);
+                }
                 saveInfo();
                 vm.role = {};
-                if(vm.selectedUser)
-                vm.selectUser();
+
             }, function () {
                 vm.role = {};
             });
@@ -1029,7 +1035,7 @@
             selectedMasters = [];
             selectedRoles = [];
             vm.showMsg = false;
-            if (user)
+            if (user) {
                 for (var i = 0; i < vm.users.length; i++) {
                     if (vm.users[i].user == vm.selectedUser && vm.users[i].roles) {
                         selectedRoles = vm.users[i].roles || [];
@@ -1052,8 +1058,9 @@
                         break;
                     }
                 }
-            if(selectedMasters.length==0){
-                vm.showMsg = true;
+                if (selectedMasters.length == 0) {
+                    vm.showMsg = true;
+                }
             }
         };
 
@@ -1087,7 +1094,6 @@
                 vm.state = 'permission';
                 vm.roleName = toParams.role;
                 vm.masterName = toParams.master;
-                vm.view.pageView = 'tree';
             }
         });
 
@@ -1131,7 +1137,6 @@
             obj.users = vm.users;
             obj.masters = vm.masters;
             UserService.securityConfigurationWrite(obj);
-
         }
 
         var permissionNodes = [];
@@ -1160,8 +1165,6 @@
         }
 
         vm.permissionArr = [];
-
-
         function preparePermissionJSON() {
 
             vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
@@ -1258,9 +1261,6 @@
             });
             modalInstance.result.then(function () {
                 if (vm.folder.folder) {
-                    if (vm.folder.folder == '/' && vm.folder.recursive) {
-                        vm.folder.folder = '';
-                    }
                     vm.folderArr.push(vm.folder);
                 }
 
@@ -1291,9 +1291,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                if (vm.folder.folder == '/' && vm.folder.recursive) {
-                    vm.folder.folder = '';
-                }
                 angular.forEach(vm.folderArr, function (fold, index) {
                     if (angular.equals(folder, fold))
                         vm.folderArr[index] = vm.folder;
@@ -1493,6 +1490,9 @@
                     permission_node._parents[j].greyed = true;
                     permission_node._parents[j].selected = false;
                     permission_node._parents[j].excluded = list.excluded;
+                    if(permission_node._parents[j].excluded){
+                        permission_node._parents[j].greyedBtn = true;
+                    }
                     checkPermissionListRecursively(permission_node._parents[j], list);
                 }
             }
@@ -1507,6 +1507,7 @@
                                 permission_node._parents[j].greyed = false;
                                 permission_node._parents[j].selected = true;
                                 permission_node._parents[j].excluded = list[i].excluded;
+
                                 checkPermissionListRecursively(permission_node._parents[j], list[i]);
                                 list.splice(i, 1);
                                 break;
@@ -1544,6 +1545,26 @@
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
                     unSelectedNode(permission_node._parents[j]);
+                }
+            }
+        }
+
+        function selectedExcludeNode(permission_node) {
+            if (permission_node && permission_node._parents) {
+                for (var j = 0; j < permission_node._parents.length; j++) {
+                    permission_node._parents[j].greyedBtn = true;
+                    permission_node._parents[j].excluded = true;
+                    selectedExcludeNode(permission_node._parents[j]);
+                }
+            }
+        }
+
+        function unSelectedExcludeNode(permission_node) {
+            if (permission_node && permission_node._parents) {
+                for (var j = 0; j < permission_node._parents.length; j++) {
+                    permission_node._parents[j].greyedBtn = false;
+                    permission_node._parents[j].excluded = false;
+                    unSelectedExcludeNode(permission_node._parents[j]);
                 }
             }
         }
@@ -1748,6 +1769,12 @@
                     .attr("y", "-10")
                     .attr("width", "10px")
                     .attr("height", "20px")
+                    .style("cursor", function (d) {
+                        if (d.name == 'sos') {
+                            return "default";
+                        }
+                        return d.greyedBtn ? "default" : "pointer";
+                    })
                     .on('click', toggleExclude);
 
 
@@ -1842,7 +1869,6 @@
 
                 }else{
                     $('svg').attr('height', ht);
-
                 }
                 if(permission_node.depth>4){
                      $('svg').attr('width', 2010);
@@ -1863,7 +1889,6 @@
                     collapse(permission_node);
                 }
                 draw(permission_node);
-
                 updateSize(permission_node);
             }
 
@@ -1909,7 +1934,7 @@
                 if (permission._parents) {
                     for (var i = 0; i < permission._parents.length; i++) {
                         if (permission._parents[i]) {
-                            if (permission._parents[i].selected || permission._parents[i].excluded) {
+                            if (permission._parents[i].selected || (permission._parents[i].excluded && !permission._parents[i].greyedBtn)) {
                                 var obj = {
                                     path: permission._parents[i].path + '' + permission._parents[i].name,
                                     excluded: permission._parents[i].excluded ? true : false
@@ -1961,22 +1986,30 @@
             }
 
             function toggleExclude(permission_node) {
-                permission_node.excluded = !permission_node.excluded;
-                _temp = [];
-                generatePermissionList(permissionNodes[0][0]);
-                toggleRectangleColour();
-                vm.rolePermissions = _temp;
-                angular.forEach(vm.masters, function (master, index) {
-                    if (angular.equals(master.master, vm.masterName) || (master.master == '' && vm.masterName == 'default')) {
-                        angular.forEach(master.roles, function (value) {
-                            if (angular.equals(value.role, vm.roleName)) {
-                                value.permissions = _temp;
-                                vm.folderArr = value.folders;
-                            }
-                        });
+                if (!permission_node.greyedBtn && permission_node.name != 'sos') {
+                    permission_node.excluded = !permission_node.excluded;
+
+                    if (permission_node.excluded) {
+                        selectedExcludeNode(permission_node);
+                    } else {
+                        unSelectedExcludeNode(permission_node);
                     }
-                });
-                saveInfo();
+                    _temp = [];
+                    generatePermissionList(permissionNodes[0][0]);
+                    toggleRectangleColour();
+                    vm.rolePermissions = _temp;
+                    angular.forEach(vm.masters, function (master, index) {
+                        if (angular.equals(master.master, vm.masterName) || (master.master == '' && vm.masterName == 'default')) {
+                            angular.forEach(master.roles, function (value) {
+                                if (angular.equals(value.role, vm.roleName)) {
+                                    value.permissions = _temp;
+                                    vm.folderArr = value.folders;
+                                }
+                            });
+                        }
+                    });
+                    saveInfo();
+                }
             }
 
             function collapse(permission_node) {
@@ -2040,6 +2073,12 @@
                     .attr("xlink:href", function (d) {
                         return d.excluded ? 'images/permission-minus.png' : 'images/permission-plus.png';
                     })
+                    .style("cursor", function (d) {
+                        if (d.name == 'sos') {
+                            return "default";
+                        }
+                        return d.greyedBtn ? "default" : "pointer";
+                    });
             }
         }
 
