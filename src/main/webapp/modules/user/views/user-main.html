@@ -31,13 +31,8 @@
                     </button>
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addFolder()" translate="">button.addFolder</button>
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="view.pageView=='tree'" ng-click="addPermission();"  translate="">button.addPermission</button>
-                    <div class="btn-group m-l-sm" ng-if="state == 'permission'">
-                        <button class="btn btn-grey btn-sm" ng-model="view.pageView" uib-btn-radio="'tree'"
-                                ng-class="{'btn-primary': view.pageView=='tree'}"><i class="fa fa-sitemap"></i>
-                        </button>
-                        <button class="btn btn-grey btn-sm" ng-model="view.pageView"
-                                uib-btn-radio="'list'" ng-class="{'btn-primary': view.pageView=='list'}"><i class="fa fa-bars"></i>
-                        </button>
+                    <div class="hide" ng-class="{'show-block':state == 'permission'}">
+                        <toggle-view></toggle-view>
                     </div>
                 </div>
             </div>

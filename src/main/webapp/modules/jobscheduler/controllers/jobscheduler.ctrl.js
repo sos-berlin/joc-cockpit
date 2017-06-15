@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", '$rootScope', 'JobSchedulerService', "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval","$window"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -1844,22 +1844,29 @@
         /** -----------------End Schedules------------------- */
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
+            var views ={};
+            if($window.localStorage.views)
+             views = JSON.parse($window.localStorage.views);
 
             if (toState.name == 'app.resources.agentClusters') {
                 vm.resourceFilters.state = 'agent';
+                vm.pageView = views.agent;
                 if (toParams.type && toParams.type !='all')
                     vm.agentsFilters.filter.state = toParams.type == 'healthy' ? '0' : toParams.type == 'unhealthy' ? '1' : '2';
                 vm.treeAgent = [];
                 initAgentTree(toParams.type);
             } else if (toState.name == 'app.resources.locks') {
+                 vm.pageView = views.lock;
                 vm.resourceFilters.state = 'lock';
                 vm.treeLock = [];
                 initLockTree();
             } else if (toState.name == 'app.resources.processClasses') {
+                vm.pageView = views.processClass;
                 vm.resourceFilters.state = 'processClass';
                 vm.treeProcess = [];
                 initProccessTree();
             } else {
+                vm.pageView = views.schedule;
                 vm.resourceFilters.state = 'schedules';
                 vm.tree = [];
                 initTree();

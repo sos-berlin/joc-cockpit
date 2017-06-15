@@ -58,8 +58,8 @@
                         var filter = {};
                         vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
                         filter.jobschedulerId = vm.schedulerIds.selected;
-                        if($location.search().path){
-                            filter.jobChains = [{jobChain : $location.search().path}];
+                        if ($location.search().path) {
+                            filter.jobChains = [{jobChain: $location.search().path}];
                         }
                         OrderService.getSnapshot(filter).then(function (res) {
                             vm.snapshot = res.orders;
@@ -67,14 +67,7 @@
                         });
                     }
                 }
-
-                function loadSnapshot() {
-                    if ($location.search().path) {
-                        getSnapshot();
-                    }
-                }
-
-                loadSnapshot();
+                getSnapshot();
 
                 vm.width = 260;
                 vm.height = 260;
@@ -101,7 +94,7 @@
                 };
 
                 vm.$on('reloadSnapshot', function () {
-                    loadSnapshot();
+                    getSnapshot();
                 });
 
                 vm.setFilter = function (label) {
