@@ -32,12 +32,12 @@
                             <div class="input-dropdown">
                                 <input name="substitue" class="form-control" ng-model="sch._substitute"  type="text">
                             </div>
-                            <div class="help-block text-danger" ng-if="error.scheduleRequired">
+                            <div class="help-block text-danger" ng-if="error.scheduleRequired" style="margin-top: -24px !important;">
                                 <div translate>message.scheduleError</div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row" ng-class="{ 'has-error' : (form2.date1.$invalid && form2.date1.$dirty) || form2.fromTime.$invalid && form2.fromTime.$dirty }">
+                    <div class="form-group row" ng-class="{ 'has-error' : (form2.date1.$invalid && form2.date1.$dirty) || form2.fromTime.$invalid && form2.fromTime.$dirty }" style="margin-top: -24px !important;">
                         <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
 
                         <div class="col-sm-9">

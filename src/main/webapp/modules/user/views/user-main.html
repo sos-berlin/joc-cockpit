@@ -30,7 +30,7 @@
                         {{'button.addRole'| translate}}
                     </button>
                     <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-click="addFolder()" translate="">button.addFolder</button>
-                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="view.pageView=='tree'" ng-click="addPermission();"  translate="">button.addPermission</button>
+                    <button type="button" class="btn btn-sm btn-grey m-l-sm" ng-if="state == 'permission'" ng-hide="pageView=='grid'" ng-click="addPermission();"  translate="">button.addPermission</button>
                     <div class="hide" ng-class="{'show-block':state == 'permission'}">
                         <toggle-view></toggle-view>
                     </div>

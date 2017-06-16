@@ -1338,7 +1338,11 @@
                 for (var i = 0; i < permissionNodes._parents.length; i++) {
                     if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                         permissionNodes._parents[i].selected = false;
-                        unSelectedNode(permissionNodes._parents[i]);
+                        unSelectedNode(permissionNodes._parents[i], permissionNodes._parents[i].excluded);
+                        if (permissionNodes._parents[i].excluded) {
+                            permissionNodes._parents[i].greyedBtn = false;
+                            permissionNodes._parents[i].excluded = false;
+                        }
                         break;
                     }
                     findPermissionObj(permissionNodes._parents[i], permission);
@@ -1346,41 +1350,66 @@
             } else {
                 if ((permissionNodes.path + permissionNodes.name) == permission) {
                     permissionNodes.selected = false;
+                    if(permissionNodes.excluded){
+                        permissionNodes.greyedBtn = false;
+                        permissionNodes.excluded = false;
+                    }
                 }
             }
         }
-
+        function updateChildExclude(permissionNodes, excluded) {
+            if (permissionNodes._parents) {
+                for (var i = 0; i < permissionNodes._parents.length; i++) {
+                    permissionNodes._parents[i].excluded = excluded;
+                    permissionNodes._parents[i].greyedBtn = excluded;
+                    updateChildExclude(permissionNodes._parents[i], excluded);
+                }
+            } else {
+                permissionNodes.excluded = excluded;
+                permissionNodes.greyedBtn = excluded;
+            }
+        }
         function selectPermissionObj(permissionNodes, permission, excluded) {
             if (permissionNodes._parents) {
                 for (var i = 0; i < permissionNodes._parents.length; i++) {
                     if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                         permissionNodes._parents[i].selected = true;
                         permissionNodes._parents[i].excluded = excluded;
-                        selectedNode(permissionNodes._parents[i]);
+                        if(permissionNodes._parents[i].excluded)
+                        permissionNodes._parents[i].greyedBtn = false;
+                        selectedNode(permissionNodes._parents[i], excluded);
                         break;
                     }
-                    selectPermissionObj(permissionNodes._parents[i], permission);
+                    selectPermissionObj(permissionNodes._parents[i], permission, excluded);
                 }
             } else {
                 if ((permissionNodes.path + permissionNodes.name) == permission) {
                     permissionNodes.selected = true;
                     permissionNodes.excluded = excluded;
+                    permissionNodes.greyedBtn = false;
                 }
             }
         }
 
-        function unSelectPermissionObj(permissionNodes, permission) {
+        function unSelectPermissionObj(permissionNodes, permission, excluded) {
             if (permissionNodes._parents) {
                 for (var i = 0; i < permissionNodes._parents.length; i++) {
                     if ((permissionNodes._parents[i].path + permissionNodes._parents[i].name) == permission) {
                         permissionNodes._parents[i].excluded = !permissionNodes._parents[i].excluded;
+                        if(permissionNodes._parents[i].excluded){
+                            permissionNodes._parents[i].greyedBtn = false;
+                        }
+                        updateChildExclude(permissionNodes._parents[i],excluded );
                         break;
                     }
-                    unSelectPermissionObj(permissionNodes._parents[i], permission);
+                    unSelectPermissionObj(permissionNodes._parents[i], permission,excluded);
                 }
             } else {
                 if ((permissionNodes.path + permissionNodes.name) == permission) {
                     permissionNodes.excluded = !permissionNodes.excluded;
+                    if(permissionNodes.excluded){
+                        permissionNodes.greyedBtn = false;
+                    }
                 }
             }
         }
@@ -1422,11 +1451,12 @@
             }
             if (flag)
                 saveInfo();
-            unSelectPermissionObj(permissionNodes[0][0], vm.permission.path);
+            unSelectPermissionObj(permissionNodes[0][0], vm.permission.path,vm.permission.excluded);
             updateDiagramData(permissionNodes[0][0]);
         };
 
         vm.$on('addPermission', function () {
+            
             vm.permission = {};
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/permission-dialog.html',
@@ -1450,9 +1480,9 @@
 
         function updatePermissionList(){
             unSelectedNode(permissionNodes[0][0]);
-            //console.log(permissionNodes[0][0])
+
             checkPermissionList(permissionNodes[0][0], angular.copy(vm.rolePermissions));
-            //console.log(permissionNodes[0][0])
+
             updateDiagramData(permissionNodes[0][0]);
             for(var i=0; i<vm.masters.length;i++) {
                 if (angular.equals(vm.masters[i].master, vm.masterName) || (vm.masters[i].master == '' && vm.masterName == 'default')) {
@@ -1529,22 +1559,30 @@
             }
         }
 
-        function selectedNode(permission_node) {
+        function selectedNode(permission_node, flag) {
             if (permission_node && permission_node._parents) {
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = true;
                     permission_node._parents[j].selected = false;
-                    selectedNode(permission_node._parents[j]);
+                    if(flag){
+                        permission_node._parents[j].greyedBtn = true;
+                        permission_node._parents[j].excluded = true;
+                    }
+                    selectedNode(permission_node._parents[j],flag);
                 }
             }
         }
 
-        function unSelectedNode(permission_node) {
+        function unSelectedNode(permission_node, flag) {
             if (permission_node && permission_node._parents) {
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
-                    unSelectedNode(permission_node._parents[j]);
+                    if(flag){
+                        permission_node._parents[j].greyedBtn = false;
+                        permission_node._parents[j].excluded = false;
+                    }
+                    unSelectedNode(permission_node._parents[j],flag);
                 }
             }
         }
@@ -1745,7 +1783,7 @@
 
                 nodeEnter.append("rect")
                     .style("fill", function (d) {
-                        return d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" : "#fff";
+                        return d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" :  d.greyedBtn ? '#eee' : "#fff";
                     })
                     .on('click', selectPermission)
                     .attr({
@@ -2059,7 +2097,7 @@
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
-                        return d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" : "#fff";
+                        return d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" : d.greyedBtn ? '#eee' : "#fff";
                     });
                 svg.selectAll('g.permission_node')
                     .style("cursor", function (d) {
