@@ -227,6 +227,24 @@
             UserService.saveConfiguration(configObj);
         };
 
+        vm.changeView =  function() {
+
+            var views = {
+                dailyPlan: vm.preferences.pageView,
+                jobChain: vm.preferences.pageView,
+                job: vm.preferences.pageView,
+                order: vm.preferences.pageView,
+                agent: vm.preferences.pageView,
+                lock: vm.preferences.pageView,
+                processClass: vm.preferences.pageView,
+                schedule: vm.preferences.pageView,
+                jobChainOrder: vm.preferences.pageView,
+                orderOverView: vm.preferences.pageView,
+                permission: vm.preferences.pageView
+            };
+            $window.localStorage.views = JSON.stringify(views);
+        };
+
         $scope.tasks = [
             {value: 'TaskStarted', label: "label.taskStarted"},
             {value: 'TaskEnded', label: "label.taskEnded"},
@@ -809,6 +827,7 @@
         vm.addRole = function () {
             vm.role = {};
             vm.role.permissions = [];
+            vm.role.permissions.push({path: 'sos:products:joc_cockpit:jobscheduler_master:view:status', excluded:false});
             vm.role.folders = [];
             vm.newRole = true;
             vm.isUnique = true;
@@ -1105,8 +1124,8 @@
         };
     }
 
-    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService','$timeout'];
-    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout) {
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService','$timeout','toasty','gettextCatalog'];
+    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout,toasty, gettextCatalog) {
         var vm = $scope;
         vm.loading = true;
 
@@ -1120,6 +1139,7 @@
                 }
                 loadPermission();
                 preparePermissionJSON();
+                preparePermissionOptions();
                 switchTree();
                 vm.loading = false;
             },function(){
@@ -1209,6 +1229,25 @@
                 }
 
             }
+        }
+
+
+
+        function preparePermissionOptions() {
+              console.log("Prepare permission options");
+            var temp = vm.permissions.SOSPermissionListCommands.SOSPermission;
+            temp = temp.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
+            vm.permissionOptions=[];
+
+            angular.forEach(temp,function(option,index){
+                if(index>0&&(option.split(':')[2]!=temp[index-1].split(':')[2]|| option.split(':')[3]!=temp[index-1].split(':')[3])){
+                       vm.permissionOptions.push('---------------------------------------------------------------------------------');
+                   }
+
+                vm.permissionOptions.push(option);
+
+            })
+
         }
 
 
@@ -1302,6 +1341,21 @@
             });
         };
         vm.deleteFolder = function (folder) {
+
+            var flag = true;
+
+            if(vm.folderArr.length==1 && vm.rolePermissions.length==0){
+                flag = false;
+            }
+            if (!flag) {
+                toasty.warning({
+                    msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
+                    timeout: 10000
+                });
+                return;
+            }
+
+
             vm.folder = angular.copy(folder);
             vm.folder.folder = vm.folder.folder == "" ? '/' : vm.folder.folder;
             var modalInstance = $uibModal.open({
@@ -1415,6 +1469,18 @@
         }
 
         vm.deletePermission = function (permission) {
+            var flag = true;
+            if(vm.folderArr.length==0 && vm.rolePermissions.length==1){
+                flag = false;
+            }
+            if (!flag) {
+                toasty.warning({
+                    msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
+                    timeout: 10000
+                });
+                return;
+            }
+
             vm.permission = angular.copy(permission);
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
@@ -1618,7 +1684,7 @@
             boxHeight = 30,
             duration = 700; // duration of transitions in ms
         var ht = 700;
-        var width = window.innerWidth -42;
+        var width = window.innerWidth -100;
 
         function calculateHeight() {
             var headerHt = $('.app-header').height() || 60;
@@ -1783,7 +1849,7 @@
 
                 nodeEnter.append("rect")
                     .style("fill", function (d) {
-                        return d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" :  d.greyedBtn ? '#eee' : "#fff";
+                        return d.selected ? "#7fbfff" : d.excluded ? '#eee' :d.greyed ? "#cce5ff" : "#fff";
                     })
                     .on('click', selectPermission)
                     .attr({
@@ -1908,7 +1974,7 @@
                 }else{
                     $('svg').attr('height', ht);
                 }
-                if(permission_node.depth>4){
+                if(permission_node.depth>3){
                      $('svg').attr('width', 2010);
                 }else{
                      $('svg').attr('width', width);
@@ -2097,7 +2163,7 @@
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
-                        return d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" : d.greyedBtn ? '#eee' : "#fff";
+                        return d.selected ? "#7fbfff" : d.excluded ? '#eee' : d.greyed ? "#cce5ff" : "#fff";
                     });
                 svg.selectAll('g.permission_node')
                     .style("cursor", function (d) {

@@ -1046,5 +1046,9 @@
   "label.copyRole": "Copy Role",
   "button.undo": "Undo",
   "message.noPermissionFound" : "No permission found",
-  "message.noRoleAssign" : "No role assigned to selected user"
+  "message.noRoleAssign" : "No role assigned to selected user",
+  "label.asCard": "As Card",
+  "label.asList": "As List",
+  "label.showView": "Show View",
+  "message.cannotDeleteLastFolderOrPermission": "You cannot delete the last permission or folder for this role."
 }

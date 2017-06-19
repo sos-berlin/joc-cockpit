@@ -213,6 +213,7 @@
                 preferences.maxEntryPerPage = '1000';
                 preferences.entryPerPage = '10';
                 preferences.isNewWindow = 'newWindow';
+                preferences.pageView = 'grid';
                 preferences.theme = 'light';
                 preferences.showTasks = true;
                 preferences.showOrders = false;

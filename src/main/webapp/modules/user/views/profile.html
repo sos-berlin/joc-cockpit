@@ -255,11 +255,11 @@
                        <div class="col-sm-3 text-dark" translate>label.showLogs</div>
                        <div class="col-sm-6">
                            <label class="md-check w">
-                               <input type="radio" name="radio" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
+                               <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="newWindow" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newWindow</span>
                            </label>
                            <label class="md-check w">
-                               <input type="radio" name="radio" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
+                               <input type="radio" name="log" ng-model="upc.preferences.isNewWindow" value="newTab" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i> <span translate>label.newTab</span>
                            </label>
                        </div>
@@ -288,6 +288,19 @@
                            <label class="md-check">
                                <input type="checkbox" ng-disabled="upc.forceLoging" ng-model="upc.preferences.auditLog" ng-change="upc.changeConfiguration()">
                                <i class="primary"></i>
+                           </label>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.showView</div>
+                       <div class="col-sm-6">
+                           <label class="md-check w">
+                               <input type="radio" name="view" ng-model="upc.preferences.pageView" value="grid" ng-change="upc.changeConfiguration();upc.changeView()">
+                               <i class="primary"></i> <span translate>label.asCard</span>
+                           </label>
+                           <label class="md-check w">
+                               <input type="radio" name="view" ng-model="upc.preferences.pageView" value="list" ng-change="upc.changeConfiguration();upc.changeView()">
+                               <i class="primary"></i> <span translate>label.asList</span>
                            </label>
                        </div>
                    </div>
@@ -328,7 +341,7 @@
                                 <input type="checkbox" ng-model="selectAllPositiveOrderModel" ng-change="upc.selectAllPositiveOrderFunction(selectAllPositiveOrderModel)"/> <i class="primary"></i>
                                 <span translate>label.selectAll</span>
                             </span>
-                            <span class="md-check w-md" ng-repeat="positiveOrder in positiveOrders" >
+                            <span class="md-check w-md" ng-repeat="positiveOrder in positiveOrders" ng-class="{'m-t-sm' : $index == positiveOrders.length-1}">
                                 <input type="checkbox" checklist-model="eventFilter" checklist-value="positiveOrder.value" ng-change="upc.selectPositiveOrderFunction(checked)"/> <i class="primary"></i>  <span>{{positiveOrder.label  | translate}}</span>
                             </span>
                         </div>
