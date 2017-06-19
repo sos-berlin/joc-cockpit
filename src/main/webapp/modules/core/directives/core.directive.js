@@ -136,18 +136,24 @@
             restrict: "E",
             templateUrl: "modules/core/template/toggle-view.html",
             controller: ["$window", "$scope", "$location", function (e, t, l) {
+                var view = 'grid';
+                if(e.sessionStorage.preferences) {
+                   if(JSON.parse(e.sessionStorage.preferences).pageView){
+                       view = JSON.parse(e.sessionStorage.preferences).pageView;
+                   }
+                }
                 var views = {
-                    dailyPlan: 'grid',
-                    jobChain: 'grid',
-                    job: 'grid',
-                    order: 'grid',
-                    agent: 'grid',
-                    lock: 'grid',
-                    processClass: 'grid',
-                    schedule: 'grid',
-                    jobChainOrder: 'grid',
-                    orderOverView: 'grid',
-                    permission: 'grid'
+                    dailyPlan: view,
+                    jobChain: view,
+                    job: view,
+                    order: view,
+                    agent: view,
+                    lock: view,
+                    processClass: view,
+                    schedule: view,
+                    jobChainOrder: view,
+                    orderOverView: view,
+                    permission: view
                 };
                 if (!e.localStorage.views) {
                     e.localStorage.views = JSON.stringify(views);
@@ -177,7 +183,7 @@
                 } else if (l.path().match('/users/')) {
                     t.pageView = views.permission;
                 }else{
-                    t.pageView = 'grid';
+                    t.pageView = view;
                 }
                 t.setView = function () {
                     if (l.path() == '/daily_plan') {
