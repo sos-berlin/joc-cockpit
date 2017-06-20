@@ -546,6 +546,12 @@
                                      {{job.configurationStatus._text | translate}} :<span ng-class="colorFunction(job.configurationStatus.severity)">{{job.configurationStatus.message}}</span>
                                     </td>
                                 </tr>
+                                <tr ng-if="job.error.code" style="background: transparent !important;">
+                                    <td></td>
+                                    <td colspan="13">
+                                     {{job.error.code}} :<span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
+                                    </td>
+                                </tr>
                                 <tr ng-if="job.showJobChains" style="background: transparent !important;" ng-repeat="jobChain in job.jobChains">
                                     <td></td>
                                     <td></td>

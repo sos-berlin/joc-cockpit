@@ -1184,6 +1184,9 @@
                                                 <span class="label" ng-if="node.job.configurationStatus"
                                                       ng-class="colorFunction(node.job.configurationStatus.severity)"
                                                       ng-bind="node.job.configurationStatus.message | translate"></span>
+                                                <span class="label" ng-if="node.job.error"
+                                                      ng-class="colorFunction(node.job.state.severity)"
+                                                      ng-bind="node.job.error.message | translate"></span>
                                             </td>
                                             <td><span class="label" ng-class="bgColorFunction(node.state.severity)"
                                                       ng-bind="node.state._text | translate"></span></td>

@@ -1128,6 +1128,7 @@
     function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout,toasty, gettextCatalog) {
         var vm = $scope;
         vm.loading = true;
+        vm.isDuplicate=false;
 
         function getPermissions() {
             UserService.permissions({}).then(function (res) {
@@ -1522,7 +1523,7 @@
         };
 
         vm.$on('addPermission', function () {
-            
+            vm.isCovered=false;
             vm.permission = {};
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/permission-dialog.html',
@@ -1540,6 +1541,17 @@
                 vm.permission = {};
             });
         });
+
+        vm.checkCovered=function checkCovered(){
+            vm.isCovered = false;
+                angular.forEach(vm.rolePermissions,function(permission,index){
+                    if(permission.path.indexOf(vm.permission.path)!=-1){
+                        vm.isCovered = true;
+                    }
+                });
+            console.log("isCovered "+vm.isCovered);
+        }
+
 
          vm.previousPermission = [];
          vm.originalPermission = [];
@@ -2001,9 +2013,9 @@
                 svg.selectAll('g.permission_node')[0].
                     forEach(function (node) {
                         var tr = d3.transform(node.getAttribute('transform'));
-                        if (tr.translate[1] < -285) {
-                            if (diff < -(285 + tr.translate[1])) {
-                                diff = -(285 + tr.translate[1]);
+                        if (tr.translate[1] < -280) {
+                            if (diff < -(280 + tr.translate[1])) {
+                                diff = -(280 + tr.translate[1]);
                             }
 
                         }
