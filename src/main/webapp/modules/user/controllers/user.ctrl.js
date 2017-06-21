@@ -1969,6 +1969,7 @@
                 });
                 t1 = $timeout(function () {
                     checkForTop();
+                    checkWindowSize();
                 }, 751);
             }
 
@@ -1986,11 +1987,31 @@
                 }else{
                     $('svg').attr('height', ht);
                 }
-                if(permission_node.depth>3){
+
+                if(permission_node.depth>3 ){
+                    console.log("Setting up new width for svg");
                      $('svg').attr('width', 2010);
                 }else{
+
                      $('svg').attr('width', width);
                 }
+            }
+
+            function checkWindowSize(){
+                 if($('#mainTree').width()<(lastNode.x+284)){
+                    console.log("Setting up new width for svg");
+                     $('svg').attr('width', 2010);
+                     scrollToLast(lastNode.x,lastNode.y)
+                }
+
+
+           }
+
+            function scrollToLast(x,y){
+                $('#mainTree').animate({
+                scrollTop: $("g.permission_node[transform='translate("+x+","+y+")']").offset().top+5,
+                scrollLeft: $("g.permission_node[transform='translate("+x+","+y+")']").offset().left-30
+                 }, 500);
             }
 
             /**
@@ -2008,6 +2029,7 @@
                 updateSize(permission_node);
             }
 
+            var lastNode ={};
             function checkForTop() {
                 var diff = 0;
                 svg.selectAll('g.permission_node')[0].
@@ -2019,8 +2041,13 @@
                             }
 
                         }
+                        if(!lastNode.x ||(lastNode.x<=tr.translate[0])){
+                            lastNode.x=tr.translate[0];
+                            lastNode.y=tr.translate[1];
+                        }
                     });
-
+                console.log("Greatest "+JSON.stringify(lastNode));
+                checkWindowSize();
                 if (diff > 0) {
                     svg.selectAll('g.permission_node')[0].
                         forEach(function (node2) {
