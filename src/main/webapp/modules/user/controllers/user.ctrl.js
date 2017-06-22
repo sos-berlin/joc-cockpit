@@ -1549,7 +1549,6 @@
                         vm.isCovered = true;
                     }
                 });
-            console.log("isCovered "+vm.isCovered);
         }
 
 
@@ -2093,6 +2092,16 @@
             }
 
             function selectPermission(permission_node) {
+
+                 if(vm.folderArr.length==0 && vm.rolePermissions.length==1){
+                toasty.warning({
+                    msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
+                    timeout: 10000
+                });
+                     return;
+            }
+
+
                 var _previousPermissionObj = angular.copy(vm.rolePermissions);
 
                 if (!permission_node.greyed && permission_node.name != 'sos') {

@@ -225,9 +225,10 @@
                         <td colspan="9">
                             <span >{{'label.substituteBy' |translate}}: </span>
                             <div class="p-l">
-                                <div>
-                                    <a class="text-hover-primary" >{{schedule.substitutedBy}}</a>
+                                <div ng-repeat="substitutedBy in schedule.substitutedBy">
+                                    <a class="text-hover-primary" >{{substitutedBy}}</a>
                                 </div>
+
                             </div>
 
 
