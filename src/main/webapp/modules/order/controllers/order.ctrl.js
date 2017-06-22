@@ -5858,6 +5858,7 @@
             }
         }
 
+
         function checkSharedTaskFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
                 var obj = {};
@@ -6156,6 +6157,7 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             TaskService.histories(filter).then(function (res) {
                 vm.jobHistorys = res.history;
+                setDuration(vm.jobHistorys);
                 vm.isLoading = true;
                 isLoaded = true;
             }, function () {
@@ -6190,6 +6192,7 @@
             filter.limit = parseInt(vm.userPreferences.maxRecords);
             OrderService.histories(filter).then(function (res) {
                 vm.historys = res.history;
+                setDuration(vm.historys);
                 vm.isLoading = true;
                 isLoaded = true;
             }, function () {
@@ -6284,6 +6287,7 @@
                 }
                 TaskService.histories(filter).then(function (res) {
                     vm.jobHistorys = res.history;
+                    setDuration(vm.jobHistorys);
                     vm.loading = false;
                     isLoaded = true;
                 }, function () {
@@ -6380,6 +6384,7 @@
                 }
                 OrderService.histories(filter).then(function (res) {
                     vm.historys = res.history;
+                    setDuration(vm.historys);
                     vm.loading = false;
                     isLoaded = true;
                 }, function () {
@@ -7606,6 +7611,7 @@
                         } else {
                             OrderService.histories(filter).then(function (res) {
                                 vm.historys = res.history;
+                                setDuration(vm.historys);
                                 isLoaded = true;
                             }, function () {
                                 isLoaded = true;
@@ -7632,6 +7638,7 @@
                         } else {
                             TaskService.histories(filter).then(function (res) {
                                 vm.jobHistorys = res.history;
+                                setDuration(vm.jobHistorys);
                                 isLoaded = true;
                             }, function () {
                                 isLoaded = true;
@@ -7643,6 +7650,13 @@
             }
         });
 
+        function setDuration(histories){
+            angular.forEach(histories,function(history,index){
+                if(history.startTime && history.endTime){
+                   histories[index].duration = new Date(history.endTime).getTime()-new Date(history.startTime).getTime();
+                }
+            })
+        }
         $scope.$on('$destroy', function () {
             watcher6();
             watcher7();

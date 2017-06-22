@@ -21,7 +21,7 @@
 
                     <div class="input-dropdown">
                         <input class="form-control" name="permissionPath" required
-                               ng-model="permission.path" type="text" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}">
+                               ng-model="permission.path" type="text" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}" ng-change="checkCovered()">
                     </div>
                      <div class="help-block text-danger" ng-if="isCovered" style="margin-top: -25px">
                        <div translate>message.permissionIsAlreadyCovered</div>
