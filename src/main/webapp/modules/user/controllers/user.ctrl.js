@@ -1701,16 +1701,22 @@
             var headerHt = $('.app-header').height() || 60;
             var topHeaderHt = $('.top-header-bar').height() || 16;
             var subHeaderHt = 59;
-            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + 150));
-            $('.max-tree-panel-ht').css('height', ht + 66 + 'px');
+            var folderDivHt = $('.folder').height() ;
+            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + folderDivHt+250));
+            //$('.max-tree-panel-ht').css('height', ht + 66 + 'px');
+            $('#mainTree').css('height', ht  + 'px');
         }
         calculateHeight();
 
         $(window).resize(function () {
-            var headerHt = $('.app-header').height() || 60;
+           
+             var headerHt = $('.app-header').height() || 60;
             var topHeaderHt = $('.top-header-bar').height() || 16;
             var subHeaderHt = 59;
-            $('.max-tree-panel-ht').css('height', ht + 66 + 'px');
+            var folderDivHt = $('.folder').height() ;
+            ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + folderDivHt+250));
+            //$('.max-tree-panel-ht').css('height', ht + 66 + 'px');
+            $('#mainTree').css('height', ht  + 'px');
         });
         var t1 = '';
 
@@ -1718,9 +1724,9 @@
 
             svg = d3.select("#mainTree").append("svg")
                 .attr('width', width)
-                .attr('height', ht)
+                .attr('height', ht-20)
                 .append('g')
-                .attr("transform", "translate(150,300)");
+                .attr("transform", "translate(150,200)");
 
             var tree = d3.layout.tree()
                 .nodeSize([100, 250])
@@ -1757,8 +1763,7 @@
                 nodes.forEach(function (permission_node) {
                     expand(permission_node);
                 });
-                $('svg').attr('height', 7150);
-                $('svg').attr('width', 2010);
+                
                 draw(nodes[0]);
             }
 
@@ -1968,7 +1973,6 @@
                 });
                 t1 = $timeout(function () {
                     checkForTop();
-                    checkWindowSize();
                 }, 751);
             }
 
@@ -1997,20 +2001,28 @@
             }
 
             function checkWindowSize(){
-                 if($('#mainTree').width()<(lastNode.x+284)){
-                    console.log("Setting up new width for svg");
-                     $('svg').attr('width', 2010);
-                     scrollToLast(lastNode.x,lastNode.y)
+                console.log("Sizes "+JSON.stringify(endNodes)+" svg size wight01 "+$('svg').attr('width')+" height "+$('svg').attr('height'));
+                $('svg').attr('width', (endNodes.rightMost.x - endNodes.leftMost.x)+350);
+                $('svg').attr('height', (endNodes.lowerMost.y-endNodes.topMost.y+300));
+                 if($('#mainTree').width()<(endNodes.rightMost.x+284)){
+                    console.log("Scrolling to last node ");
+                     //$('svg').attr('width', 2010);
+                     scrollToLast(endNodes.rightMost.x,endNodes.rightMost.y)
                 }
 
 
            }
 
             function scrollToLast(x,y){
-                $('#mainTree').animate({
+              
+                if($("g.permission_node[transform='translate("+x+","+y+")']").offset()){
+                    console.log("Found ");
+                      $('#mainTree').animate({
                 scrollTop: $("g.permission_node[transform='translate("+x+","+y+")']").offset().top+5,
-                scrollLeft: $("g.permission_node[transform='translate("+x+","+y+")']").offset().left-30
+                scrollLeft: $("g.permission_node[transform='translate("+x+","+y+")']").offset().left+20
                  }, 500);
+                }
+
             }
 
             /**
@@ -2025,27 +2037,42 @@
                     collapse(permission_node);
                 }
                 draw(permission_node);
-                updateSize(permission_node);
+                //updateSize(permission_node);
             }
 
-            var lastNode ={};
+
+            var endNodes ={leftMost:{},rightMost:{},topMost:{},lowerMost:{}};
             function checkForTop() {
+                 endNodes ={leftMost:{},rightMost:{},topMost:{},lowerMost:{}};
                 var diff = 0;
                 svg.selectAll('g.permission_node')[0].
                     forEach(function (node) {
                         var tr = d3.transform(node.getAttribute('transform'));
-                        if (tr.translate[1] < -280) {
-                            if (diff < -(280 + tr.translate[1])) {
-                                diff = -(280 + tr.translate[1]);
+                        if (tr.translate[1] < -160) {
+                            if (diff < -(160 + tr.translate[1])) {
+                                diff = -(160 + tr.translate[1]);
                             }
 
                         }
-                        if(!lastNode.x ||(lastNode.x<=tr.translate[0])){
-                            lastNode.x=tr.translate[0];
-                            lastNode.y=tr.translate[1];
+
+                        if(!endNodes.rightMost.x ||(endNodes.rightMost.x<=tr.translate[0])){
+                            endNodes.rightMost.x=tr.translate[0];
+                            endNodes.rightMost.y=tr.translate[1];
+                        }
+                        if(typeof endNodes.leftMost.x =='undefined' ||(endNodes.leftMost.x>tr.translate[0])){
+                            endNodes.leftMost.x=tr.translate[0];
+                            endNodes.leftMost.y=tr.translate[1];
+                        }
+                        if(!endNodes.topMost.y ||(endNodes.topMost.y>=tr.translate[1])){
+                            endNodes.topMost.x=tr.translate[0];
+                            endNodes.topMost.y=tr.translate[1];
+                        }
+                        if(!endNodes.lowerMost.y ||(endNodes.lowerMost.y<=tr.translate[1])){
+                            endNodes.lowerMost.x=tr.translate[0];
+                            endNodes.lowerMost.y=tr.translate[1];
                         }
                     });
-                console.log("Greatest "+JSON.stringify(lastNode));
+                
                 checkWindowSize();
                 if (diff > 0) {
                     svg.selectAll('g.permission_node')[0].
@@ -2092,8 +2119,7 @@
             }
 
             function selectPermission(permission_node) {
-
-                 if(vm.folderArr.length==0 && vm.rolePermissions.length==1){
+                 if(permission_node.selected && vm.folderArr.length==0 && vm.rolePermissions.length==1){
                 toasty.warning({
                     msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
                     timeout: 10000
