@@ -913,7 +913,7 @@
                             if (res.events[i].jobschedulerId == vm.schedulerIds.selected) {
                                 vm.events = [];
                                 vm.events.push(res.events[i]);
-                                if (vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
+                                if (vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType && vm.selectedJobScheduler.clusterType._type != 'STANDALONE') {
                                     $rootScope.$broadcast('event-started', {
                                         events: vm.events,
                                         otherEvents: res.events
@@ -931,6 +931,7 @@
                                 break;
                             }
                         }
+
                         for (var i = 0; i < res.events.length; i++) {
                             if (res.events[i].jobschedulerId != vm.schedulerIds.selected) {
                                 vm.eventsRequest.push({
