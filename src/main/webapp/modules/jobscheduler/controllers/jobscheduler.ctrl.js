@@ -1734,7 +1734,7 @@
                     if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'processClass') {
                         angular.forEach(vm.allProcessClasses, function (value2, index) {
                             if (event.path != undefined) {
-                                if (value2.path == event.path) {
+                
                                     var obj = {};
                                     obj.jobschedulerId = $scope.schedulerIds.selected;
                                     obj.folders = [{folder: value2.path, recursive: false}];
@@ -1743,7 +1743,7 @@
                                             vm.allProcessClasses[index] = angular.merge(vm.allProcessClasses[index], res.processClasses[0]);
                                         }
                                     });
-                                }
+                                
                             }
                         });
                     } else if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'lock') {

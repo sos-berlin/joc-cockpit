@@ -1545,7 +1545,7 @@
         vm.checkCovered=function checkCovered(){
             vm.isCovered = false;
                 angular.forEach(vm.rolePermissions,function(permission,index){
-                    if(vm.permission.path.indexOf(permission.path)!=-1){
+                    if(vm.permission.path.indexOf(permission.path)!=-1&&((vm.permission.excluded && permission.excluded)||(!vm.permission.excluded && !permission.excluded))){
                         vm.isCovered = true;
                     }
                 });

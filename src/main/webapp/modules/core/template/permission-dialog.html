@@ -33,7 +33,7 @@
                 <label class="col-sm-4" translate>label.excluded</label>
                 <div class=" col-sm-6">
                     <label class="md-check">
-                        <input type="checkbox" ng-model="permission.excluded">
+                        <input type="checkbox" ng-model="permission.excluded" ng-change="checkCovered()">
                         <i class="primary"></i><span class="m-l-xs" translate> </span>
                     </label>
                 </div>
