@@ -89,7 +89,7 @@
 
                     </div>
                     <div class="hide" ng-class="{'show-block':object.jobs.length>0}">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.start" translate>button.startTask</button>
+                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="startAll()" ng-disabled="isStart" ng-if="permission.Job.execute.start" translate>button.startTask</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="isStopped" ng-if="permission.Job.execute.stop" ng-click="stopAll();" translate>button.stop</button>
                         <button class="btn btn-grey btn-sm m-l-sm" ng-disabled="isUnstopped" ng-if="permission.Job.execute.unstop" ng-click="unStopAll()" translate>button.unstop</button>
                         <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-disabled="!isTasks" ng-if="permission.Job.execute.kill" ng-click="killAllTask()" translate>button.killAllTasksImmediately</button>

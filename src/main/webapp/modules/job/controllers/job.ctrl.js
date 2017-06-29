@@ -5048,7 +5048,6 @@
                                             JobService.get(obj).then(function (res) {
                                                 delete mapObj[path[0]];
                                                 if (res.jobs && res.jobs.length > 0 && res.jobs[0].path == vm.allJobs[index].path) {
-
                                                     res.jobs[0].title = vm.allJobs[index].title;
                                                     res.jobs[0].path1 = vm.allJobs[index].path1;
                                                     res.jobs[0].isOrderJob = vm.allJobs[index].isOrderJob;
@@ -5058,7 +5057,7 @@
                                                     res.jobs[0].usedInJobChains = vm.allJobs[index].usedInJobChains;
                                                     res.jobs[0].jobChains = vm.allJobs[index].jobChains;
                                                     res.jobs[0].showJobChains = vm.allJobs[index].showJobChains;
-                                                    vm.allJobs[index] = res.jobs[0];
+                                                    vm.allJobs[index] = angular.merge(vm.allJobs[index],res.jobs[0]);
                                                     if (vm.showTaskPanel && (vm.showTaskPanel.path == vm.allJobs[index].path)) {
                                                         vm.showTaskPanel = vm.allJobs[index];
                                                     }
