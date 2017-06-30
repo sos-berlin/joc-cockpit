@@ -226,7 +226,8 @@
                             <span >{{'label.substituteBy' |translate}}: </span>
                             <div class="p-l">
                                 <div ng-repeat="substitutedBy in schedule.substitutedBy">
-                                    <a class="text-hover-primary" >{{substitutedBy}}</a>
+                                    <a class="text-hover-primary" >{{substitutedBy.path}}</a><span class="text-primary" ng-if="substitutedBy.validFrom"> - {{substitutedBy.validFrom|stringToDate }}</span>
+                                    <span class="text-primary" ng-if="substitutedBy.validTo"> - {{substitutedBy.validTo|stringToDate }}</span>
                                 </div>
 
                             </div>
