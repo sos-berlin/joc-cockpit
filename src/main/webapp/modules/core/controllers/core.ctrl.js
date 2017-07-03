@@ -17,8 +17,8 @@
         .controller('ClientLogCtrl', ClientLogCtrl);
 
 
-    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService','$timeout', '$resource','gettextCatalog'];
-    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService,$timeout, $resource,gettextCatalog) {
+    AppCtrl.$inject = ['$scope', '$rootScope', '$window', 'SOSAuth', '$uibModal', '$location', 'toasty', 'clipboard', 'CoreService', '$state', 'UserService','$timeout', '$resource','gettextCatalog','TaskService'];
+    function AppCtrl($scope, $rootScope, $window, SOSAuth, $uibModal, $location, toasty, clipboard, CoreService, $state, UserService,$timeout, $resource,gettextCatalog,TaskService) {
         var vm = $scope;
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
@@ -404,6 +404,7 @@
             if (!order && !task) {
                 return;
             }
+
             refreshParent();
             if ((task && !vm.permission.Job.view.taskLog) || (order && !vm.permission.Order.view.orderLog)) {
                 toasty.warning({
@@ -412,6 +413,7 @@
                 });
                 return;
             }
+
             var url = null;
             if (vm.userPreferences.isNewWindow == 'newWindow') {
 
@@ -452,6 +454,129 @@
                 }
                 $window.open(url, '_blank');
             }
+        };
+
+         vm.end = function (task, path) {
+             console.log("end in core controller");
+            var jobs = {};
+            jobs.jobs = [];
+            var taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'End Task';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                    TaskService.end(jobs);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                TaskService.end(jobs);
+                vm.reset();
+            }
+
+        };
+
+        vm.killTask = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            var taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'Kill Task';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                    TaskService.kill(jobs);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                TaskService.kill(jobs);
+                vm.reset();
+            }
+
+        };
+        vm.terminateTask = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            var taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'Terminate Task';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                    TaskService.terminate(jobs);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                TaskService.terminate(jobs);
+                vm.reset();
+            }
+
         };
 
         function calWindowSize() {

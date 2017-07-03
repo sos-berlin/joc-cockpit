@@ -1051,5 +1051,7 @@
   "label.asList": "As List",
   "label.showView": "Show View",
   "message.cannotDeleteLastFolderOrPermission": "You cannot delete the last permission or folder for this role.",
-  "message.permissionIsAlreadyCovered":"Permission is already covered"
+  "message.permissionIsAlreadyCovered":"Permission is already covered",
+  "label.move":"Move",
+  "label.remove":"Remove"
 }
