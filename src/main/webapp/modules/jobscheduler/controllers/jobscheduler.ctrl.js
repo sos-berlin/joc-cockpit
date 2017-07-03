@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval","$window"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval","$window","TaskService"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window,TaskService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -725,6 +725,64 @@
             });
         }
 
+        vm.showRunningProcesses = function(processClass){
+            processClass.show=true;
+        }
+
+        vm.hideRunningProcesses = function(processClass){
+            processClass.show=false;
+        }
+
+        function terminateTaskWithTimeout(task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            var taskIds = [];
+                taskIds.push({taskId: task.taskId});
+                jobs.jobs.push({job: path, taskIds: taskIds});
+
+            jobs.auditLog = {};
+            if (vm.comments.comment) {
+                jobs.auditLog.comment = vm.comments.comment;
+            }
+            if (vm.comments.timeSpent) {
+                jobs.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                jobs.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            jobs.timeout = vm.timeout;
+            TaskService.terminateWith(jobs);
+
+        }
+
+
+        vm.terminateTaskWithTimeout = function (task, path) {
+           if (task && path) {
+                vm.task = task;
+                vm.path = path;
+            }
+
+            vm.timeout = 10;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/terminate-task-timeout-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                terminateTaskWithTimeout(task, path);
+                vm.reset();
+            }, function () {
+                vm.reset();
+            });
+
+        };
+
         function filteredTreeDataP() {
             angular.forEach(vm.treeProcess, function (value) {
                 value.expanded = true;
@@ -775,7 +833,7 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [{folder: data.path, recursive: false}];
-            ResourceService.getProcessClassP(obj).then(function (result) {
+                ResourceService.getProcessClassP(obj).then(function (result) {
                 data.processClasses = result.processClasses;
                 volatileFolderDataP(data, obj);
 
@@ -1630,6 +1688,10 @@
                 angular.forEach(vm.allAgentClusters, function (value, index) {
                     value.show = true;
                 });
+            }else if (vm.resourceFilters.state == 'processClass'){
+                angular.forEach(vm.allProcessClasses, function (value, index) {
+                    value.show = true;
+                });
             }
         };
 
@@ -1640,6 +1702,10 @@
                 });
             }else if (vm.resourceFilters.state == 'agent'){
                 angular.forEach(vm.allAgentClusters, function (value, index) {
+                    value.show = false;
+                });
+            }else if (vm.resourceFilters.state == 'processClass'){
+                angular.forEach(vm.allProcessClasses, function (value, index) {
                     value.show = false;
                 });
             }
@@ -1671,7 +1737,8 @@
                                 vm.allLocks = [];
                                 navFullTreeForUpdateLock(path.substring(0, path.lastIndexOf('/')));
                             }
-                        } else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
+                        }
+                        else if (vm.resourceFilters.state == 'processClass' && event.objectType == 'PROCESSCLASS') {
                             ResourceService.tree({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 compact: true,
@@ -1732,20 +1799,27 @@
                         }
                     }
                     if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'processClass') {
-                        angular.forEach(vm.allProcessClasses, function (value2, index) {
-                            if (event.path != undefined) {
-                
-                                    var obj = {};
+                        console.log("Event ");
+                        if(vm.allProcessClasses && vm.allProcessClasses.length>0){
+                            var obj = {};
                                     obj.jobschedulerId = $scope.schedulerIds.selected;
-                                    obj.folders = [{folder: value2.path, recursive: false}];
-                                    ResourceService.getProcessClass(obj).then(function (res) {
+                                    obj.folders = [{folder: vm.allProcessClasses[0].path.substring(0,vm.allProcessClasses[0].path.lastIndexOf('/')), recursive: false}];
+                             ResourceService.getProcessClass(obj).then(function (res) {
                                         if (res.processClasses) {
-                                            vm.allProcessClasses[index] = angular.merge(vm.allProcessClasses[index], res.processClasses[0]);
-                                        }
+                                           angular.forEach(res.processClasses, function (value1, index1) {
+
+                                               angular.forEach(vm.allProcessClasses, function (value2, index2) {
+                                                   value2.processes=[];
+                                                   if(value1.path==value2.path){
+                                                      vm.allProcessClasses[index2] = angular.merge(vm.allProcessClasses[index2], value1);
+                                                   }
+                                           })
+
+                                           })
+                                           }
                                     });
-                                
-                            }
-                        });
+                        }
+
                     } else if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'lock') {
                         angular.forEach(vm.allLocks, function (value2, index) {
                             if (event.path != undefined) {

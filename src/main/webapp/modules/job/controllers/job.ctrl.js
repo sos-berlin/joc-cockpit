@@ -2478,14 +2478,13 @@
                                         vm.allJobChains[index] = angular.merge(vm.allJobChains[index],res.jobChains[i]);
                                         vm.allJobChains[index].nestedJobChains = res.nestedJobChains;
                                         if (vm.userPreferences.showTasks && vm.allJobChains[index].show)
-                                            angular.forEach(vm.allJobChains[index].nodes, function (val, index) {
+                                            angular.forEach(vm.allJobChains[index].nodes, function (val, index2) {
                                                 if (val.job && val.job.state && val.job.state._text == 'RUNNING') {
-
                                                     JobService.get({
                                                         jobschedulerId: vm.schedulerIds.selected,
                                                         jobs: [{job: val.job.path}]
                                                     }).then(function (res1) {
-                                                        vm.allJobChains[index].nodes[index].job = angular.merge(vm.allJobChains[index].nodes[index].job, res1.jobs[0]);
+                                                        vm.allJobChains[index].nodes[index2].job = angular.merge(vm.allJobChains[index].nodes[index2].job, res1.jobs[0]);
                                                     });
                                                 }
                                             });
@@ -4510,126 +4509,10 @@
         };
 
 
-        vm.end = function (task, path) {
-            var jobs = {};
-            jobs.jobs = [];
-            var taskIds = [];
-            jobs.jobschedulerId = vm.schedulerIds.selected;
-            taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path, taskIds: taskIds});
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = path;
-                vm.comments.operation = 'End Task';
-                vm.comments.type = 'Job';
 
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/comment-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    jobs.auditLog = {};
-                    if (vm.comments.comment)
-                        jobs.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
-                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
 
-                    if (vm.comments.ticketLink)
-                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    TaskService.end(jobs);
-                    vm.reset();
-                }, function () {
-                    vm.reset();
-                });
-            } else {
-                TaskService.end(jobs);
-                vm.reset();
-            }
 
-        };
-        vm.killTask = function (task, path) {
-            var jobs = {};
-            jobs.jobs = [];
-            var taskIds = [];
-            jobs.jobschedulerId = vm.schedulerIds.selected;
-            taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path, taskIds: taskIds});
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = path;
-                vm.comments.operation = 'Kill Task';
-                vm.comments.type = 'Job';
 
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/comment-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    jobs.auditLog = {};
-                    if (vm.comments.comment)
-                        jobs.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
-                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                    if (vm.comments.ticketLink)
-                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    TaskService.kill(jobs);
-                    vm.reset();
-                }, function () {
-                    vm.reset();
-                });
-            } else {
-                TaskService.kill(jobs);
-                vm.reset();
-            }
-
-        };
-        vm.terminateTask = function (task, path) {
-            var jobs = {};
-            jobs.jobs = [];
-            var taskIds = [];
-            jobs.jobschedulerId = vm.schedulerIds.selected;
-            taskIds.push({taskId: task.taskId});
-            jobs.jobs.push({job: path, taskIds: taskIds});
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = path;
-                vm.comments.operation = 'Terminate Task';
-                vm.comments.type = 'Job';
-
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/comment-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    jobs.auditLog = {};
-                    if (vm.comments.comment)
-                        jobs.auditLog.comment = vm.comments.comment;
-                    if (vm.comments.timeSpent)
-                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                    if (vm.comments.ticketLink)
-                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    TaskService.terminate(jobs);
-                    vm.reset();
-                }, function () {
-                    vm.reset();
-                });
-            } else {
-                TaskService.terminate(jobs);
-                vm.reset();
-            }
-
-        };
         function terminateTaskWithTimeout(job, task, path) {
 
             var jobs = {};

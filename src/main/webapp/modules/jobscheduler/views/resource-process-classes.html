@@ -22,6 +22,7 @@
     </div>
 </div>
 <div id="rightPanel1">
+
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
         <div class="hide row" ng-class="{'show': pageView=='grid'}">
             <div ng-repeat="(key, value) in allProcessClasses  | groupBy: 'path1'">
@@ -90,8 +91,8 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr ng-repeat="processClass in allProcessClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tbody ng-repeat="processClass in allProcessClasses | orderBy: processFilters.filter.sortBy:processFilters.reverse | startFrom:(processFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tr >
                         <td>
                              <div class="btn-group dropdown">
                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
@@ -107,7 +108,11 @@
                                  </div>
                              </div>
                          </td>
-                        <td ng-class="{'text-success': processClass.numOfProcesses>0 }" ng-bind="processClass.name"></td>
+                        <td >
+                            <i class="cursor fa fa-caret-down noExl" ng-if="!processClass.show" ng-click="showRunningProcesses(processClass)"></i>
+                                <i class="cursor fa fa-caret-up noExl" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
+                                <a class="text-hover-primary" ng-class="{'text-success': processClass.numOfProcesses>0 }"  ng-bind="processClass.name" ></a>
+                        </td>
                         <td ng-bind="processClass.path"></td>
                         <td ng-bind="processClass.maxProcesses"></td>
                         <td>
@@ -115,6 +120,49 @@
                             <span ng-if="!processClass.numOfProcesses" ng-bind="processClass.numOfProcesses || 0"></span>
                         </td>
                     </tr>
+                    <tr ng-if="processClass.show && processClass.processes.length>0">
+
+
+                            <td></td>
+                            <td colspan="9" style="padding: 1px !important;">
+                                <table class="table m-a-0">
+                                    <thead>
+                                    <tr>
+                                        <th translate>label.action</th>
+                                        <th translate>label.agent</th>
+                                        <th translate>label.job</th>
+                                        <th translate>label.pid</th>
+                                        <th translate>label.taskId</th>
+                                        <th translate>label.runningSince</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody ng-repeat="process in processClass.processes">
+                                    <tr>
+                                        <td>
+                             <div class="btn-group dropdown">
+                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                     <i class="fa fa-ellipsis-h"></i></button>
+                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                     <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,process,process.job)" translate>button.viewLog</a>
+                                                    <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks" ng-click="end(process,process.job)" translate>button.end</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="permission.Job.execute.kill" ng-click="killTask(process,process.job)" translate>button.killImmediately</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTask(process,process.job)" translate>button.terminate</a>
+                                                    <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTaskWithTimeout(process,process.job)" translate>button.terminateWithTimeout</a>
+
+                                 </div>
+                             </div>
+                         </td>
+                                        <td>{{process.agent}}</td>
+                                        <td>{{process.job }}</td>
+                                        <td>{{process.pid}}</td>
+                                        <td>{{process.taskId}}</td>
+                                        <td>{{process.runningSince |stringToDate}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                  <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allProcessClasses.length > 10}" ng-if="allProcessClasses.length >0"><span translate>label.total</span> {{allProcessClasses.length}}

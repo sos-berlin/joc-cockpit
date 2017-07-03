@@ -206,7 +206,8 @@
                     </li>
                  </ul>
             </div>
-            <div class="col-md-4 text-right" ng-if="pageView!='grid' && ((resourceFilters.state == 'agent' && allAgentClusters && allAgentClusters.length>0) || (resourceFilters.state == 'schedules' && allSchedules && allSchedules.length>0))">
+            <div class="col-md-4 text-right" ng-if="pageView!='grid' && ((resourceFilters.state == 'agent' && allAgentClusters && allAgentClusters.length>0) || (resourceFilters.state == 'schedules' && allSchedules && allSchedules.length>0) ||
+            (resourceFilters.state == 'processClass' && allProcessClasses && allProcessClasses.length>0))">
                 <button class="btn btn-sm btn-grey" ng-click="expandDetails()" >
                     <i class="fa fa fa-caret-down"></i>
                     <span translate>button.expandDetails</span>

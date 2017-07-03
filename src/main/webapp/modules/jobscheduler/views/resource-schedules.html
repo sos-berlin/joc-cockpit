@@ -63,7 +63,7 @@
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.substituteBy </span>:
-                                <span ng-bind="schedule.substitutedBy || '-'"></span>
+                                <span ng-bind="schedule.substitutedBy.length || '-'"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.substitute </span>:
@@ -220,17 +220,29 @@
                             <div ng-if="!schedule.usedByOrders && !schedule.usedByJobs && !schedule.substitutedBy" translate>message.noDataFound</div>
                         </td>
                     </tr>
-                    <tr ng-if="schedule.show && schedule.substitutedBy" style="background: transparent !important;" >
-                        <td></td>
-                        <td colspan="9">
-                            <span >{{'label.substituteBy' |translate}}: </span>
-                            <div class="p-l">
-                                <div ng-repeat="substitutedBy in schedule.substitutedBy">
-                                    <a class="text-hover-primary" >{{substitutedBy.path}}</a><span class="text-primary" ng-if="substitutedBy.validFrom"> - {{substitutedBy.validFrom|stringToDate }}</span>
-                                    <span class="text-primary" ng-if="substitutedBy.validTo"> - {{substitutedBy.validTo|stringToDate }}</span>
-                                </div>
 
-                            </div>
+                    <tr ng-if="schedule.show && schedule.substitutedBy">
+                        <td></td>
+                                <td colspan="9" style="padding: 1px !important;">
+
+                                    <table class="table m-a-0">
+                                        <thead>
+                                        <tr>
+                                            <th translate>label.substituteBy</th>
+                                            <th translate>label.validFrom</th>
+                                            <th translate>label.validTo</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody ng-repeat="substitutedBy in schedule.substitutedBy">
+                                        <tr>
+                                            <td><i class="fa fa-{{agent.os.name | lowercase}}"></i> {{substitutedBy.path}}</td>
+                                            <td>{{substitutedBy.validFrom | stringToDate}}</td>
+                                            <td>{{substitutedBy.validTo | stringToDate}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
 
 
                         </td>
