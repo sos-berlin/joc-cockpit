@@ -22,6 +22,7 @@
              $http.post('./api/order/log', orders, {
                  headers: {
                      'access_token': token,
+'X-Access-Token': token,
                      'Content-Type': 'application/json'
                  }
              }).then(function (res) {
@@ -38,6 +39,7 @@
             $http.post('./api/task/log',tasks,{
                  headers: {
                      'access_token': token,
+                     'X-Access-Token': token,
                      'Content-Type': 'application/json'
                  }
              }).then(function (res) {

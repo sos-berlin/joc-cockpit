@@ -1241,7 +1241,6 @@
 
 
         function preparePermissionOptions() {
-              console.log("Prepare permission options");
             var temp = vm.permissions.SOSPermissionListCommands.SOSPermission;
             temp = temp.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
             vm.permissionOptions = [];
@@ -1565,7 +1564,6 @@
             });
         });
 
-
         vm.checkCovered = function checkCovered() {
             vm.form.permissionPath.$touched = true;
             vm.isCovered = false;
@@ -1573,11 +1571,10 @@
                 if (vm.permission.path.indexOf(permission1.path) != -1 &&
                     ((vm.permission.path.length > permission1.path.length && vm.permission.path.substring(permission1.path.length, permission1.path.length + 1) == ':') || vm.permission.path.length == permission1.path.length) &&
                     ((vm.permission.excluded && permission1.excluded) || (!vm.permission.excluded && !permission1.excluded))) {
-                    console.log(vm.permission.path.indexOf(permission1.path) != -1 && ((vm.permission.excluded && permission1.excluded) || (!vm.permission.excluded && !permission1.excluded)));
                     vm.isCovered = true;
                 }
             });
-        }
+        };
 
 
         vm.previousPermission = [];
@@ -1585,9 +1582,7 @@
 
         function updatePermissionList() {
             unSelectedNode(permissionNodes[0][0]);
-
             checkPermissionList(permissionNodes[0][0], angular.copy(vm.rolePermissions));
-
             updateDiagramData(permissionNodes[0][0]);
             for (var i = 0; i < vm.masters.length; i++) {
                 if (angular.equals(vm.masters[i].master, vm.masterName) || (vm.masters[i].master == '' && vm.masterName == 'default')) {
@@ -1722,7 +1717,6 @@
 
         function switchTree() {
             if (!svg) {
-               // console.log("node data "+JSON.stringify(permissionNodes[0][0]));
                 drawTree(permissionNodes[0][0]);
             }
         }
@@ -1764,7 +1758,7 @@
                 .attr('width', width)
                 .attr('height', ht - 20)
                 .append('g')
-                .attr("transform", "translate(150,200)");
+                .attr("transform", "translate(150,250)");
 
             var tree = d3.layout.tree()
                 .nodeSize([100, 250])
@@ -1801,8 +1795,9 @@
                 nodes.forEach(function (permission_node) {
                     expand(permission_node);
                 });
-
                 draw(nodes[0]);
+                $('svg').attr('height', 7150);
+                $('svg').attr('width', 2010);
             }
 
             function expand(permission_node) {
@@ -1822,10 +1817,11 @@
                 nodes.forEach(function (permission_node) {
                     collapseNode(permission_node);
                 });
-                $('svg').attr('height', ht);
-                $('svg g').attr('transform', "translate(150,300)");
-                $('svg').attr('width', width);
                 draw(nodes[0]);
+                $('svg').attr('height', ht);
+                $('svg g').attr('transform', "translate(150,250)");
+                $('svg').attr('width', width);
+
             }
 
             function collapseNode(permission_node) {
@@ -2011,56 +2007,25 @@
                 });
                 t1 = $timeout(function () {
                     checkForTop();
-                }, 751);
+                }, 780);
             }
 
-            function updateSize(permission_node) {
-                if (permission_node.name != 'sos' && permission_node.name != 'products') {
-                    var ht1 = $('svg').attr('height');
-                    if (!permission_node.collapsed) {
-                        ht1 = parseInt(ht1) + (permission_node._parents.length * 30);
-                    } else {
-                        ht1 = parseInt(ht1) - (permission_node._parents.length * 30);
-                    }
-                    if (ht < ht1)
-                        $('svg').attr('height', ht1);
-
-                } else {
-                    $('svg').attr('height', ht);
-                }
-
-                if (permission_node.depth > 3) {
-                    console.log("Setting up new width for svg");
-                    $('svg').attr('width', 2010);
-                } else {
-
-                    $('svg').attr('width', width);
-                }
-            }
 
             function checkWindowSize() {
-                console.log("Sizes " + JSON.stringify(endNodes) + " svg size wight01 " + $('svg').attr('width') + " height " + $('svg').attr('height'));
                 $('svg').attr('width', (endNodes.rightMost.x - endNodes.leftMost.x) + 350);
                 $('svg').attr('height', (endNodes.lowerMost.y - endNodes.topMost.y + 300));
                 if ($('#mainTree').width() < (endNodes.rightMost.x + 284)) {
-                    console.log("Scrolling to last node ");
-                    //$('svg').attr('width', 2010);
                     scrollToLast(endNodes.rightMost.x, endNodes.rightMost.y)
                 }
-
-
             }
 
             function scrollToLast(x, y) {
-
                 if ($("g.permission_node[transform='translate(" + x + "," + y + ")']").offset()) {
-                    console.log("Found ");
                     $('#mainTree').animate({
                         scrollTop: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().top + 5,
                         scrollLeft: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().left + 20
                     }, 500);
                 }
-
             }
 
             /**
@@ -2075,7 +2040,6 @@
                     collapse(permission_node);
                 }
                 draw(permission_node);
-                //updateSize(permission_node);
             }
 
 
@@ -2091,7 +2055,6 @@
                             if (diff < -(160 + tr.translate[1])) {
                                 diff = -(160 + tr.translate[1]);
                             }
-
                         }
 
                         if (!endNodes.rightMost.x || (endNodes.rightMost.x <= tr.translate[0])) {
@@ -2157,15 +2120,7 @@
                 }
             }
 
-            function selectPermission(permission_node) {
-                if (permission_node.selected && vm.folderArr.length == 0 && vm.rolePermissions.length == 1) {
-                    toasty.warning({
-                        msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
-                        timeout: 10000
-                    });
-                    return;
-                }
-
+            function selectPermission(permission_node) {             
 
                 var _previousPermissionObj = angular.copy(vm.rolePermissions);
 
