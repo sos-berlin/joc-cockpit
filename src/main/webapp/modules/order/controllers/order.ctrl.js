@@ -1226,7 +1226,7 @@
                         width: 500
                     }]
                 };
-                pdfMake.createPdf(docDefinition).download("Score_Details.pdf");
+                pdfMake.createPdf(docDefinition).download(vm.jobChain.name);
 
 
             }
