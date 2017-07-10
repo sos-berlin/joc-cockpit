@@ -1207,6 +1207,39 @@
             }
         });
 
+        vm.exportToPdf=function(){
+            console.log("exporting to pdf");
+
+
+                vm.fitToScreen=true;
+            setHeight();
+             vm.fitToScreen=false;
+            console.log("exporting to pdf 01");
+            html2canvas($('#exportId'),{
+            onrendered: function (canvas) {
+                console.log("exporting to pdf 02");
+                var data = canvas.toDataURL('image/png');
+
+                var docDefinition = {
+                    content: [{
+                        image: data,
+                        width: 500
+                    }]
+                };
+                pdfMake.createPdf(docDefinition).download("Score_Details.pdf");
+
+
+            }
+        });
+
+             setHeight();
+
+
+
+
+
+        }
+
         vm.isLoading = true;
         /**--------------- Checkbox functions -------------*/
 
@@ -2736,6 +2769,9 @@
         vm.reset = function () {
             vm.object = {};
         };
+        $rootScope.$on('event-order', function (event, values) {
+            $rootScope.order_expand_to = values;
+        });
 
         vm.savedOrderFilter = JSON.parse(SavedFilter.orderFilters) || {};
         vm.orderFilterList = [];

@@ -1053,5 +1053,6 @@
   "message.cannotDeleteLastFolderOrPermission": "You cannot delete the last permission or folder for this role.",
   "message.permissionIsAlreadyCovered": "Permission is already active",
   "label.move": "Move",
-  "label.remove": "Remove"
+  "label.remove": "Remove",
+  "tooltip.exportInPDF":"export in pdf"
 }

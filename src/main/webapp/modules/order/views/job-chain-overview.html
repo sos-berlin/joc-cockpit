@@ -135,6 +135,10 @@
                                         <rzslider rz-slider-model="slider.value"
                                                   rz-slider-options="slider.options"></rzslider>
                                     </div>
+                                     <div class="m-r m-l inline">
+                                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInPDF' | translate}}"  id="exportToExcelBtn" ng-click="exportToPdf()"><i>.</i></button>
+
+                                         </div>
                                 </div>
                                 <div class="btn-group m-l">
                                     <button class="btn btn-grey btn-sm" ng-model="orderFilters.pageView"
@@ -153,9 +157,13 @@
                     </div>
                 </div>
             </div>
+
             <div class="hide" ng-class={show:orderFilters.pageView=='grid'} resizable r-directions="['bottom']"
-                 r-height="500" style="overflow: auto;width: 100%">
+                 r-height="500" style="overflow: auto;width: 100%"  id="exportId">
                 <div class="flow-diagram" id="flowDiagramContainer">
+
+
+
                     <flow-diagram job-chain="jobChain"
                                   on-add="onAdd($item)"
                                   on-remove="onRemove($item)"
@@ -175,6 +183,7 @@
                     </flow-diagram>
                 </div>
             </div>
+
             <div class="hide m-t" ng-class="{'show': orderFilters.pageView=='list'}" ng-controller="OrderFunctionCtrl">
                 <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
 

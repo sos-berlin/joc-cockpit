@@ -1053,5 +1053,6 @@
   "message.cannotDeleteLastFolderOrPermission": "Sie können die einzige Berechtigung oder den einzigen Ordner für diese Rolle nicht entfernen.",
   "message.permissionIsAlreadyCovered": "Berechtigung bereits vorhanden",
   "label.move": "Verschieben",
-  "label.remove": "Entfernen"
+  "label.remove": "Entfernen",
+"tooltip.exportInPDF":"export in pdf"
 }

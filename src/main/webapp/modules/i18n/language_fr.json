@@ -1053,5 +1053,6 @@
   "message.cannotDeleteLastFolderOrPermission": "Vous ne pouvez pas supprimer la seule permission ou le seul dossier pour ce rôle.",
   "message.permissionIsAlreadyCovered": "Permission déjà active",
   "label.move": "Déplacer",
-  "label.remove": "Supprimer"
+  "label.remove": "Supprimer",
+  "tooltip.exportInPDF":"export in pdf"
 }
