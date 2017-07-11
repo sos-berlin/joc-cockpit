@@ -538,8 +538,8 @@
                         '<i class="fa fa-play" ></i> <span translate >button.stopJobChain</span></a>' +
                             '<a title="{{\'button.unstopJobChain\' | translate}}" href ng-click="unstopJobChain(\'' + index + '\')" class="hide pull-left w-half"  ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].jobChain && jobChainData.nodes[\'' + index + '\'].jobChain.state._text==\'STOPPED\'}">' +
                         '<i class="fa fa-play" ></i> <span translate>button.unstopJobChain</span></a>' +
-                        '<a title="{{\'button.skipNode\' | translate}}" href class="hide pull-right text-right w-half text-hover-color" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.execute.skipJobChainNode"><i class="fa fa-step-forward"></i>  <span translate>button.skipNode</span> </a>' +
-                        '<a title="{{\'button.unskipNode\' | translate}}" href class="hide pull-right text-right w-half" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}"><i class="fa fa-play" ng-if="permission.JobChain.execute.processJobChainNode"></i>  <span translate>button.unskipNode</span> </a>' +
+                        '<a title="{{\'button.skipNode\' | translate}}" href class="hide pull-right text-right w-half text-hover-color p-r-xs" ng-click="skipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text!==\'SKIPPED\'}" ng-if="permission.JobChain.execute.skipJobChainNode"><i class="fa fa-step-forward"></i>  <span translate>button.skipNode</span> </a>' +
+                        '<a title="{{\'button.unskipNode\' | translate}}" href class="hide pull-right text-right w-half  p-r-xs" ng-click="unskipNode(\'' + index + '\')" ng-class="{\'show-inline\':jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].job && jobChainData.nodes[\'' + index + '\'].state._text==\'SKIPPED\'}"><i class="fa fa-play" ng-if="permission.JobChain.execute.processJobChainNode"></i>  <span translate>button.unskipNode</span> </a>' +
                         '</div></div>';
                         if (scope.errorNodes.indexOf(item.errorNode) == -1) {
                             scope.errorNodes.push(item.errorNode);
@@ -1386,6 +1386,7 @@
                                     var container = document.getElementById('lbl-order-' + order.state);
                                     if (container && container.childNodes.length > 0) {
                                         var label = document.createElement('div');
+                                        label.setAttribute('class', 'order-cls');
                                         label.innerHTML = getOrderMenu(order, name);
                                         var top = container.offsetTop;
                                         container.appendChild(label);
@@ -1401,12 +1402,13 @@
                                     } else {
                                         var label = document.createElement('div');
                                         label.setAttribute('id', 'lbl-order-' + order.state);
+                                        label.setAttribute('class', 'orders-block-cls');
                                         label.style['position'] = 'absolute';
                                         label.style['width'] = node.clientWidth + 'px';
                                         label.style['margin-bottom'] = '5px';
                                         label.style['left'] = node.offsetLeft + 'px';
                                         label.style['white-space'] = 'nowrap';
-                                        label.innerHTML = '<div id="orderBlock-' + name + '">' + getOrderMenu(order, name) + '</div>';
+                                        label.innerHTML = '<div class="order-cls" id="orderBlock-' + name + '">' + getOrderMenu(order, name) + '</div>';
                                         mainContainer.appendChild(label);
                                         $compile(label)(vm);
                                         label.style['top'] = node.offsetTop - label.clientHeight - 5 + 'px';
