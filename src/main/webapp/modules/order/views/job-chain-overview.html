@@ -135,8 +135,12 @@
                                         <rzslider rz-slider-model="slider.value"
                                                   rz-slider-options="slider.options"></rzslider>
                                     </div>
-                                     <div class="m-r m-l inline">
-                                         <button class="btn btn-grey btn-sm m-l-sm" uib-tooltip="{{'tooltip.exportInPDF' | translate}}"  id="exportToExcelBtn" ng-click="exportToPdf()"><i>.</i></button>
+                                     <div class=" m-l inline">
+                                         <button class="btn btn-grey btn-sm " uib-tooltip="{{'tooltip.exportInPDF' | translate}}"  id="exportToPDFBtn" ng-click="exportDiagram('pdf')"><i>.</i></button>
+
+                                         </div>
+                                    <div class=" m-l inline">
+                                         <button class="btn btn-grey btn-sm " uib-tooltip="{{'tooltip.exportInPNG' | translate}}"  id="exportToPNGBtn" ng-click="exportDiagram('png')"><i>.</i></button>
 
                                          </div>
                                 </div>
