@@ -1054,5 +1054,8 @@
   "message.permissionIsAlreadyCovered": "Permission is already active",
   "label.move": "Move",
   "label.remove": "Remove",
-  "tooltip.exportInPDF": "Export to PDF"
+  "tooltip.exportInPDF": "Export to PDF",
+  "button.expandSelected": "Expand active",
+  "button.collapseUnselected": "Collapse inactive",
+   "tooltip.exportInPNG": "export in png"
 }
