@@ -165,8 +165,10 @@
 
     }
 
-    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location", "CoreService", "$uibModal", "AuditLogService", "ScheduleService","FileSaver"];
-    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location, CoreService, $uibModal, AuditLogService, ScheduleService,FileSaver) {
+    JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
+        "CoreService", "$uibModal", "AuditLogService", "ScheduleService","FileSaver","$filter"];
+    function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
+                                  CoreService, $uibModal, AuditLogService, ScheduleService,FileSaver,$filter) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -1196,7 +1198,6 @@
         };
 
         $scope.$on("slideEnded", function () {
-            console.log("zoom");
             $("#zoomCn").css("zoom", vm.slider.value / 100);
             $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
             $("#zoomCn").css("transform-origin", "0 0");
@@ -1242,18 +1243,20 @@
                 setHeight();
             }
 
-            html2canvas($('#exportId'), {
-                width: (maxLeft + 100), height: (maxTop + 400),background:'#ffffff',
+            html2canvas($('#exportId'), {useCORS:true,
+                width: (maxLeft + 100), height: (maxTop + 400),background:type=='png'?'#ffffff':null,
                 onrendered: function (canvas) {
+                     console.log("exporting 03");
                     var data = canvas.toDataURL('image/png');
-                    console.log("data "+data);
-
                     if(type=='pdf'){
                         var docDefinition = {
+                            headerRows:1,
+                            header: {text:'Job Chain: '+vm.jobChain.path+', JobScheduler ID: '+$scope.schedulerIds.selected, margin:[10,10,10,10],fontSize:5},
                         content: [{
+
                             image: data,
                             width: 500
-                        }]
+                        },{text:$filter('date')(new Date(),'dd-MMM-yyyy HH:mm'),fontSize:5,alignment:'right'}]
                     };
                        pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
                     }else{
@@ -1613,9 +1616,9 @@
                 order.params = paramObject.params;
             }
 
-            if (order.params && order.params.length > 0) {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
-            } else {
+            if(order.params && order.params.length>0){
+               orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+            }else{
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             }
             delete orders['params'];
@@ -1626,7 +1629,7 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            if (vm.comments) {
+            if(vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
                     orders.auditLog.comment = vm.comments.comment;
@@ -2357,8 +2360,8 @@
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
             orders.orders.push(obj);
-            OrderService.addOrder(orders).then(function () {
-                volatileInfo();
+            OrderService.addOrder(orders).then(function(){
+                 volatileInfo();
             });
             vm.object.orders = [];
 
@@ -3087,13 +3090,13 @@
             }
             obj.folders = [{folder: data.path, recursive: false}];
             OrderService.getOrdersP(obj).then(function (result) {
-                if (data.orders && data.orders.length > 0) {
+                  if (data.orders && data.orders.length > 0) {
                     angular.forEach(result.orders, function (newValue, index) {
-                        for (var i = 0; i < data.orders.length; i++) {
+                        for(var i=0; i<data.orders.length;i++) {
                             if (result.orders[index].path == data.orders[i].path) {
                                 result.orders[index].path1 = data.orders[i].path1;
                                 result.orders[index].show = data.orders[i].show;
-                                data.orders.splice(i, 1);
+                                data.orders.splice(i,1);
                                 break;
                             }
                         }
@@ -3117,9 +3120,9 @@
             }
             obj.folders = [{folder: data.path, recursive: false}];
             OrderService.getOrdersP(obj).then(function (result) {
-                if (data.orders && data.orders.length > 0) {
+                  if (data.orders && data.orders.length > 0) {
                     angular.forEach(result.orders, function (newValue, index) {
-                        for (var i = 0; i < data.orders.length; i++) {
+                        for(var i=0; i<data.orders.length;i++) {
                             if (result.orders[index].path == data.orders[i].path) {
                                 result.orders[index].path1 = data.orders[i].path1;
                                 result.orders[index].show = data.orders[i].show;
@@ -4080,6 +4083,7 @@
         };
 
         vm.changeFilter = function (filter) {
+            vm.orderFilters.expand_to ={};
             vm.cancel();
             if (filter) {
                 vm.savedOrderFilter.selected = filter.id;
@@ -5066,7 +5070,7 @@
 
         $scope.$on('exportData', function () {
             $('#exportToExcelBtn').attr("disabled", true);
-            if (!vm.isIE()) {
+           if (!vm.isIE()) {
                 $('#orderTableId').table2excel({
                     exclude: ".tableexport-ignore",
                     filename: "jobscheduler-orders",
@@ -5075,7 +5079,7 @@
                     exclude_links: false,
                     exclude_inputs: false
                 });
-            } else {
+            }else {
                 var ExportButtons = document.getElementById('orderTableId');
 
                 var instance = new TableExport(ExportButtons, {
@@ -5314,7 +5318,6 @@
             });
             vm.reset();
         }
-
         function loadRuntime(order) {
             vm.order = order;
             vm.comments = {};
@@ -5349,7 +5352,6 @@
 
             });
         }
-
         vm.setRunTime = function (order) {
             loadRuntime(order);
 
@@ -5387,7 +5389,6 @@
             });
 
         }
-
         vm.resetRunTime = function (order) {
             vm.order = order;
             vm.comments = {};
@@ -5530,8 +5531,8 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            if (vm.comments) {
-                orders.auditLog = {};
+            if(vm.comments) {
+                 orders.auditLog = {};
                 if (vm.comments.comment) {
                     orders.auditLog.comment = vm.comments.comment;
                 }
@@ -5577,9 +5578,9 @@
                 order.params = paramObject.params;
             }
 
-            if (order.params && order.params.length > 0) {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
-            } else {
+            if(order.params && order.params.length>0){
+               orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+            }else{
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             }
             delete orders['params'];
@@ -7737,14 +7738,13 @@
             }
         });
 
-        function setDuration(histories) {
-            angular.forEach(histories, function (history, index) {
-                if (history.startTime && history.endTime) {
-                    histories[index].duration = new Date(history.endTime).getTime() - new Date(history.startTime).getTime();
+        function setDuration(histories){
+            angular.forEach(histories,function(history,index){
+                if(history.startTime && history.endTime){
+                   histories[index].duration = new Date(history.endTime).getTime()-new Date(history.startTime).getTime();
                 }
             })
         }
-
         $scope.$on('$destroy', function () {
             watcher6();
             watcher7();
@@ -7766,7 +7766,7 @@
             return "log_" + logStatus.toLowerCase();
         };
         vm.downloadLog = function () {
-            var code = String(vm.logs).replace(/<[^>]+>/gm, '');
+             var code = String(vm.logs).replace(/<[^>]+>/gm, '');
             var data = new Blob([code], {type: 'text/plain;charset=utf-8'});
             FileSaver.saveAs(data, 'history.log');
         };

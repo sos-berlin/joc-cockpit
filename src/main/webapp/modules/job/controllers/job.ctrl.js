@@ -2146,7 +2146,7 @@
         };
 
         vm.changeFilter = function (filter) {
-
+            vm.jobChainFilters.expand_to={};
             vm.cancel();
             if (filter) {
                 vm.savedJobChainFilter.selected = filter.id;
@@ -3949,6 +3949,7 @@
 
 
         vm.changeFilter = function (filter) {
+            vm.jobFilters.expand_to={};
             vm.cancel();
             if (filter) {
                 vm.savedJobFilter.selected = filter.id;

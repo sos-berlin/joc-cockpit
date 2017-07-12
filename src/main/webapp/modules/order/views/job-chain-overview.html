@@ -135,16 +135,20 @@
                                         <rzslider rz-slider-model="slider.value"
                                                   rz-slider-options="slider.options"></rzslider>
                                     </div>
-                                     <div class=" m-l inline">
-                                         <button class="btn btn-grey btn-sm " uib-tooltip="{{'tooltip.exportInPDF' | translate}}"  id="exportToPDFBtn" ng-click="exportDiagram('pdf')"><i>.</i></button>
-
-                                         </div>
-                                    <div class=" m-l inline">
-                                         <button class="btn btn-grey btn-sm " uib-tooltip="{{'tooltip.exportInPNG' | translate}}"  id="exportToPNGBtn" ng-click="exportDiagram('png')"><i>.</i></button>
-
-                                         </div>
+                                    <div class="btn-group dropdown">
+                                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
+                                                uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
+                                            <img src="images/export.png" height="12px">
+                                            {{'label.export'
+                                            | translate}}
+                                            <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
+                                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                            <a class="dropdown-item" ng-click="exportDiagram('pdf')" translate>label.pdf</a>
+                                            <a class="dropdown-item" ng-click="exportDiagram('png')" translate>label.png</a>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="btn-group m-l">
+                                <div class="btn-group m-l-sm">
                                     <button class="btn btn-grey btn-sm" ng-model="orderFilters.pageView"
                                             uib-btn-radio="'grid'"
                                             ng-class="{'btn-primary': orderFilters.pageView=='grid'}"><i
