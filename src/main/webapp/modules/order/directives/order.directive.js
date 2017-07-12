@@ -1451,8 +1451,12 @@
                                         if (order.nextStartTime) {
                                             time = order.nextStartTime;
                                         }
-
                                     }
+
+                                    if(!order.processingState){
+                                        order.processingState = {};
+                                    }
+
 
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
 
@@ -1482,8 +1486,7 @@
                                 }
 
                                 var orderLog = document.getElementById('log-' + order.orderId);
-                                orderLog.addEventListener('click', function () {
-                                    vm.onOrderAction({
+                                orderLog.addEventListener('click', function () { vm.onOrderAction({
                                         order: order,
                                         action: 'view log'
                                     });

@@ -1229,7 +1229,6 @@
                 }
                 if (flag){
                     permissionNodes.push(arr);
-                //console.log("permission node "+JSON.stringify(permissionNodes));
                 }
                 else {
                     recursiveUpdate1(permissionNodes[0][index], arr);
@@ -1237,7 +1236,6 @@
 
             }
         }
-
 
 
         function preparePermissionOptions() {
@@ -1477,18 +1475,6 @@
         }
 
         vm.deletePermission = function (permission) {
-            //var flag = true;
-            //if(vm.folderArr.length==0 && vm.rolePermissions.length==1){
-            //    flag = false;
-            //}
-            //if (!flag) {
-            //    toasty.warning({
-            //        msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
-            //        timeout: 10000
-            //    });
-            //    return;
-            //}
-
             vm.permission = angular.copy(permission);
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/confirm-dialog.html',
@@ -1511,7 +1497,6 @@
             $('#editPermission').modal('show');
             vm.permissionToEdit = angular.copy(p);
             vm.permission = angular.copy(p);
-
         };
 
         vm.savePermission = function () {
@@ -1525,12 +1510,11 @@
                     break;
                 }
             }
-
             if (!exists) {
                 for (var i = 0; i < vm.rolePermissions.length; i++) {
                     if (vm.rolePermissions[i].path == vm.permissionToEdit.path) {
                         vm.rolePermissions.splice(i, 1);
-                        vm.rolePermissions.splice(i, 0,vm.permission);
+                        vm.rolePermissions.splice(i, 0, vm.permission);
                         break;
                     }
                 }
@@ -1539,9 +1523,7 @@
             selectPermissionObj(permissionNodes[0][0], vm.permission.path, vm.permission.excluded);
             updateDiagramData(permissionNodes[0][0]);
 
-
             //unSelectPermissionObj(permissionNodes[0][0], vm.permission.path,vm.permission.excluded);
-
         };
 
         vm.$on('addPermission', function () {
@@ -1576,12 +1558,11 @@
             });
         };
 
-
         vm.previousPermission = [];
         vm.originalPermission = [];
 
         function updatePermissionList() {
-            unSelectedNode(permissionNodes[0][0]);
+            unSelectedNode(permissionNodes[0][0], true);
             checkPermissionList(permissionNodes[0][0], angular.copy(vm.rolePermissions));
             updateDiagramData(permissionNodes[0][0]);
             for (var i = 0; i < vm.masters.length; i++) {
@@ -1634,13 +1615,15 @@
                 if (permission_node && permission_node._parents) {
                     for (var j = 0; j < permission_node._parents.length; j++) {
                         for (var i = 0; i < list.length; i++) {
+                            if (list[i].path.match(permission_node._parents[j].path + permission_node._parents[j].name)) {
+                                permission_node._parents[j].isSelected = !(permission_node._parents[j].path + "" + permission_node._parents[j].name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node._parents[j].path + "" + permission_node._parents[j].name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
+                            }
                             if (list[i].path == (permission_node._parents[j].path + '' + permission_node._parents[j].name)) {
                                 permission_node._parents[j].greyed = false;
                                 permission_node._parents[j].selected = !list[i].excluded;
                                 permission_node._parents[j].excluded = list[i].excluded;
-                                if(!permission_node.excluded){
-                                    permission_node._parents[j].excludedParent=list[i].excluded;
-
+                                if (!permission_node.excluded) {
+                                    permission_node._parents[j].excludedParent = list[i].excluded;
                                 }
                                 checkPermissionListRecursively(permission_node._parents[j], list[i]);
                                 list.splice(i, 1);
@@ -1651,9 +1634,12 @@
                     }
                 } else {
                     for (var i = 0; i < list.length; i++) {
+                        if (list[i].path.match(permission_node.path + permission_node.name)) {
+                            permission_node.isSelected = !(permission_node.path + "" + permission_node.name == 'sos:products:joc_cockpit:event' && list[i].path == 'sos:products:joc_cockpit:event_action' || (permission_node.path + "" + permission_node.name == 'sos:products:joc_cockpit:event_action' && list[i].path == 'sos:products:joc_cockpit:event'));
+                        }
                         if (list[i].path == (permission_node.path + '' + permission_node.name)) {
                             permission_node.greyed = false;
-                            permission_node.selected = true;
+                            permission_node.selected = !list[i].excluded;
                             permission_node.excluded = list[i].excluded;
                             list.splice(i, 1);
                             break;
@@ -1668,6 +1654,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = true;
                     permission_node._parents[j].selected = false;
+                    permission_node._parents[j].isSelected = false;
                     if (flag) {
                         permission_node._parents[j].greyedBtn = true;
                         permission_node._parents[j].excluded = true;
@@ -1682,6 +1669,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
+                    permission_node._parents[j].isSelected = false;
                     if (flag) {
                         permission_node._parents[j].greyedBtn = false;
                         permission_node._parents[j].excluded = false;
@@ -1696,7 +1684,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyedBtn = true;
                     permission_node._parents[j].excluded = true;
-                    permission_node._parents[j].excludedParent=false;
+                    permission_node._parents[j].excludedParent = false;
                     selectedExcludeNode(permission_node._parents[j]);
                 }
             }
@@ -1707,7 +1695,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyedBtn = false;
                     permission_node._parents[j].excluded = false;
-                    permission_node._parents[j].excludedParent=false;
+                    permission_node._parents[j].excludedParent = false;
                     unSelectedExcludeNode(permission_node._parents[j]);
                 }
             }
@@ -1718,6 +1706,7 @@
         function switchTree() {
             if (!svg) {
                 drawTree(permissionNodes[0][0]);
+
             }
         }
 
@@ -1734,22 +1723,20 @@
             var subHeaderHt = 59;
             var folderDivHt = $('.folder').height();
             ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + folderDivHt + 250));
-            //$('.max-tree-panel-ht').css('height', ht + 66 + 'px');
-            $('#mainTree').css('height', ht + 'px');
+            $('#mainTree').css('height', ht+80 + 'px');
         }
 
         calculateHeight();
 
         $(window).resize(function () {
-
             var headerHt = $('.app-header').height() || 60;
             var topHeaderHt = $('.top-header-bar').height() || 16;
             var subHeaderHt = 59;
             var folderDivHt = $('.folder').height();
             ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + folderDivHt + 250));
-            //$('.max-tree-panel-ht').css('height', ht + 66 + 'px');
-            $('#mainTree').css('height', ht + 'px');
+            $('#mainTree').css('height', ht+80 + 'px');
         });
+
         var t1 = '';
 
         function drawTree(json) {
@@ -1793,11 +1780,12 @@
 
             function expandAll() {
                 nodes.forEach(function (permission_node) {
-                    expand(permission_node);
+                    if (permission_node.name == 'sos')
+                        expand(permission_node);
                 });
-                draw(nodes[0]);
                 $('svg').attr('height', 7150);
                 $('svg').attr('width', 2010);
+                draw(nodes[0]);
             }
 
             function expand(permission_node) {
@@ -1815,13 +1803,13 @@
 
             function collapseAll() {
                 nodes.forEach(function (permission_node) {
-                    collapseNode(permission_node);
+                    if (permission_node.name == 'sos')
+                        collapseNode(permission_node);
                 });
-                draw(nodes[0]);
+                $('svg').attr('width', width);
                 $('svg').attr('height', ht);
                 $('svg g').attr('transform', "translate(150,250)");
-                $('svg').attr('width', width);
-
+                draw(nodes[0]);
             }
 
             function collapseNode(permission_node) {
@@ -1835,6 +1823,41 @@
                 }
             }
 
+            function expandSelected(permissionNodes) {
+                if (permissionNodes.isSelected || permissionNodes.name == 'sos') {
+                    permissionNodes.collapsed = false;
+                    if (permissionNodes.icon)
+                        permissionNodes.icon = "images/minus.png";
+                }
+                if (permissionNodes._parents)
+                    permissionNodes._parents.forEach(expandSelected);
+            }
+
+            vm.expandSelected = function () {
+                nodes.forEach(function (permissionNodes) {
+                    if (permissionNodes.name == 'sos')
+                        expandSelected(permissionNodes);
+                });
+                draw(nodes[0]);
+            };
+
+            function collapseUnselected(permissionNodes) {
+                if (!permissionNodes.isSelected && permissionNodes.name != 'sos') {
+                    permissionNodes.collapsed = true;
+                    if (permissionNodes.icon)
+                        permissionNodes.icon = "images/plus.png";
+                }
+                if (permissionNodes._parents)
+                    permissionNodes._parents.forEach(collapseUnselected);
+            }
+
+            vm.collapseUnselected = function () {
+                nodes.forEach(function (permissionNodes) {
+                    if (permissionNodes.name == 'sos')
+                        collapseUnselected(permissionNodes);
+                });
+                draw(nodes[0]);
+            };
             function draw(source) {
                 nodes = tree.nodes(root);
                 var links = tree.links(nodes);
@@ -1899,7 +1922,7 @@
 
                 nodeEnter.append("rect")
                     .style("fill", function (d) {
-                        return d.selected ? "#7fbfff" : d.excluded ? d.excludedParent?'#9E9E9E':'#eee' : d.greyed ? "#cce5ff" : "#fff";
+                        return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? "#7fbfff" :  d.greyed ? "#cce5ff" : "#fff";
                     })
                     .on('click', selectPermission)
                     .attr({
@@ -2007,7 +2030,7 @@
                 });
                 t1 = $timeout(function () {
                     checkForTop();
-                }, 780);
+                }, 850);
             }
 
 
@@ -2056,7 +2079,6 @@
                                 diff = -(160 + tr.translate[1]);
                             }
                         }
-
                         if (!endNodes.rightMost.x || (endNodes.rightMost.x <= tr.translate[0])) {
                             endNodes.rightMost.x = tr.translate[0];
                             endNodes.rightMost.y = tr.translate[1];
@@ -2120,7 +2142,7 @@
                 }
             }
 
-            function selectPermission(permission_node) {             
+            function selectPermission(permission_node) {
 
                 var _previousPermissionObj = angular.copy(vm.rolePermissions);
 
@@ -2128,8 +2150,10 @@
                     permission_node.selected = !permission_node.selected;
 
                     if (permission_node.selected) {
+                        permission_node.isSelected = true;
                         selectedNode(permission_node);
                     } else {
+                        permission_node.isSelected = false;
                         unSelectedNode(permission_node);
                     }
 
@@ -2158,9 +2182,10 @@
             }
 
             function toggleExclude(permission_node) {
+                var _previousPermissionObj = angular.copy(vm.rolePermissions);
                 if (!permission_node.greyedBtn && permission_node.name != 'sos') {
                     permission_node.excluded = !permission_node.excluded;
-                    permission_node.excludedParent=!permission_node.excludedParent;
+                    permission_node.excludedParent = !permission_node.excludedParent;
 
                     if (permission_node.excluded) {
                         selectedExcludeNode(permission_node);
@@ -2182,6 +2207,11 @@
                         }
                     });
                     saveInfo();
+                    if (vm.previousPermission.length === 10) {
+                        vm.previousPermission.splice(0, 1);
+                    }
+                    vm.isReset = true;
+                    vm.previousPermission.push(_previousPermissionObj);
                 }
             }
 
@@ -2232,7 +2262,7 @@
             if (svg) {
                 svg.selectAll('rect')
                     .style("fill", function (d) {
-                        return d.selected ? "#7fbfff" : d.excluded ? d.excludedParent?'#9E9E9E':'#eee' : d.greyed ? "#cce5ff" : "#fff";
+                        return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" : "#fff";
                     });
                 svg.selectAll('g.permission_node')
                     .style("cursor", function (d) {
