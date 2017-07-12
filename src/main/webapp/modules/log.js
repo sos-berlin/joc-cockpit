@@ -77,5 +77,5 @@
         }else{
             $scope.error = 'Missing Ids in URL';
         }
-    });
+    }]);
 })();
