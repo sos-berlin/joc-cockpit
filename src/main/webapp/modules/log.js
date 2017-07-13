@@ -25,7 +25,7 @@
 
         var id = getCookie('$SOS$scheduleId');
         var token = getCookie('$SOS$accessTokenId');
-
+        $scope.loading = true;
         $scope.shareData = $location.search();
         if ($scope.shareData && $scope.shareData.orderId) {
             var orders = {};
@@ -42,14 +42,18 @@
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
-                if (res.data.log)
+                if (res.data && res.data.log)
                     $scope.logs = $sce.trustAsHtml(res.data.log.html);
+                else
+                    $scope.noData = 'No logs found';
+                $scope.loading = false;
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
                 } else {
                     $scope.error = JSON.stringify(err.data);
                 }
+                 $scope.loading = false;
             });
         }
         else if ($scope.shareData && $scope.shareData.taskId) {
@@ -65,17 +69,22 @@
                     'Content-Type': 'application/json'
                 }
             }).then(function (res) {
-                if (res.data.log)
+                if (res.data && res.data.log)
                     $scope.logs = $sce.trustAsHtml(res.data.log.html);
+                else
+                    $scope.noData = 'No logs found';
+                 $scope.loading = false;
             }, function (err) {
                 if (err.data && err.data.error) {
                     $scope.error = JSON.stringify(err.data.error);
                 } else {
                     $scope.error = JSON.stringify(err.data);
                 }
+                 $scope.loading = false;
             });
         }else{
-            $scope.error = 'Missing Ids in URL';
+            $scope.loading = false;
+            $scope.error = 'Internal error!! Please close the window and reopen.';
         }
     }]);
 })();

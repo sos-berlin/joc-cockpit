@@ -859,12 +859,12 @@
                 return renderWindow(container.contentWindow.document.documentElement, container, options, width, height);
             });
         }
-
         var node = ((nodeList === undefined) ? [document.documentElement] : ((nodeList.length) ? nodeList : [nodeList]))[0];
         node.setAttribute(html2canvasNodeAttribute + index, index);
         return renderDocument(node.ownerDocument, options, options.width != undefined ? options.width : node.ownerDocument.defaultView.innerWidth, options.height != undefined ? options.height : node.ownerDocument.defaultView.innerHeight, index).then(function (canvas) {
             if (typeof(options.onrendered) === "function") {
                 log("options.onrendered is deprecated, html2canvas returns a Promise containing the canvas");
+
                 options.onrendered(canvas);
             }
             return canvas;
@@ -937,6 +937,7 @@
     }
 
     function crop(canvas, bounds) {
+
         var croppedCanvas = document.createElement("canvas");
         var x1 = Math.min(canvas.width - 1, Math.max(0, bounds.left));
         var x2 = Math.min(canvas.width, Math.max(1, bounds.left + bounds.width));
@@ -1004,7 +1005,6 @@
         container.height = height;
         container.scrolling = "no"; // ios won't scroll without it
         containerDocument.body.appendChild(container);
-
         return new Promise(function (resolve) {
             var documentClone = container.contentWindow.document;
 
@@ -1014,8 +1014,11 @@
             /* Chrome doesn't detect relative background-images assigned in inline <style> sheets when fetched through getComputedStyle
              if window url is about:blank, we can assign the url to current by writing onto the document
              */
+            var onLoadFired = false;
             container.contentWindow.onload = container.onload = function () {
+                onLoadFired = true;
                 var interval = setInterval(function () {
+                    console.log("iframe loaded");
                     if (documentClone.body.childNodes.length > 0) {
                         cloneCanvasContents(ownerDocument, documentClone);
                         clearInterval(interval);
@@ -1026,6 +1029,24 @@
                     }
                 }, 50);
             };
+
+            var interval = setInterval(function () {
+                if (onLoadFired) {
+                    clearInterval(interval);
+                } else {
+                    console.log("frame loaded..");
+                    if (documentClone.body.childNodes.length > 0) {
+                        cloneCanvasContents(ownerDocument, documentClone);
+                        clearInterval(interval);
+                        if (options.type === "view") {
+                            container.contentWindow.scrollTo(x, y);
+                        }
+                        resolve(container);
+                    }
+                }
+
+            }, 5000);
+
 
             documentClone.open();
             documentClone.write("<!DOCTYPE html><html></html>");

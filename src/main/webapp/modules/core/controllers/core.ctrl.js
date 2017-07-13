@@ -431,8 +431,10 @@
                         } else {
                             return;
                         }
-                        document.cookie = "$SOS$scheduleId=" +vm.schedulerIds.selected+ ";path=/";
-                        document.cookie = "$SOS$accessTokenId=" +SOSAuth.accessTokenId+ ";path=/";
+                        var date = new Date();
+                        date.setHours(date.getHours()+1);
+                        document.cookie = "$SOS$scheduleId=" +vm.schedulerIds.selected+ ";expires="+date.toUTCString()+";path=/";
+                        document.cookie = "$SOS$accessTokenId=" +SOSAuth.accessTokenId+ ";expires="+date.toUTCString()+";path=/";
                         newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
 
                         t1 = $timeout(function () {

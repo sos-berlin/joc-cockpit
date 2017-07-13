@@ -28,7 +28,6 @@
             'gantt.tooltips',
             'gantt.table',
             'ngFileSaver',
-        
             'angular-clipboard',
             'ngclipboard',
             'ui.select'
