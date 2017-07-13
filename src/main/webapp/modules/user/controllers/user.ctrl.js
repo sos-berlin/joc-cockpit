@@ -1124,8 +1124,8 @@
         };
     }
 
-    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService', '$timeout', 'toasty', 'gettextCatalog'];
-    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout, toasty, gettextCatalog) {
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService','$timeout','toasty','gettextCatalog'];
+    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout,toasty, gettextCatalog) {
         var vm = $scope;
         vm.loading = true;
         vm.isDuplicate = false;
@@ -1181,15 +1181,14 @@
                     }
                 }
             }
-            if (flag){
-               permission._parents.push(arr[0]);
+            if (flag) {
+                permission._parents.push(arr[0]);
             }
 
         }
 
         vm.permissionArr = [];
         function preparePermissionJSON() {
-
             vm.permissionArr = vm.permissions.SOSPermissionListCommands.SOSPermission;
             vm.permissionArr = vm.permissionArr.concat(vm.permissions.SOSPermissionListJoc.SOSPermission);
             for (var i = 0; i < vm.permissionArr.length; i++) {
@@ -1210,7 +1209,7 @@
                     }
                     if (permissionNodes[0] && permissionNodes[0][j]) {
                         if (permissionNodes[0][j].name == nodes[j]) {
-                            flag = false ;
+                            flag = false;
                             index = j;
                         } else {
                             if (arr.length == 0) {
@@ -1605,6 +1604,10 @@
                     if (permission_node._parents[j].excluded) {
                         permission_node._parents[j].greyedBtn = true;
                     }
+            if(permission_node.isSelected){
+                       permission_node._parents[j].isSelected = true;
+                    }
+
                     checkPermissionListRecursively(permission_node._parents[j], list);
                 }
             }
@@ -1654,7 +1657,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = true;
                     permission_node._parents[j].selected = false;
-                    permission_node._parents[j].isSelected = false;
+                    permission_node._parents[j].isSelected = permission_node.isSelected;
                     if (flag) {
                         permission_node._parents[j].greyedBtn = true;
                         permission_node._parents[j].excluded = true;
@@ -1669,7 +1672,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
-                    permission_node._parents[j].isSelected = false;
+                    permission_node._parents[j].isSelected = permission_node.isSelected;;
                     if (flag) {
                         permission_node._parents[j].greyedBtn = false;
                         permission_node._parents[j].excluded = false;
@@ -2043,7 +2046,7 @@
             }
 
             function scrollToLast(x, y) {
-                if ($("g.permission_node[transform='translate(" + x + "," + y + ")']").offset()) {
+                if ($("g.permission_node[transform='translate(" + x + "," + y + ")']") && $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset()) {
                     $('#mainTree').animate({
                         scrollTop: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().top + 5,
                         scrollLeft: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().left + 20
@@ -2142,6 +2145,13 @@
                 }
             }
 
+            function setParentSelected(permission_node){
+                permission_node.parent.isSelected =  true;
+                if(permission_node.parent && permission_node.parent.parent){
+                    setParentSelected(permission_node.parent);
+                }
+            }
+
             function selectPermission(permission_node) {
 
                 var _previousPermissionObj = angular.copy(vm.rolePermissions);
@@ -2151,6 +2161,9 @@
 
                     if (permission_node.selected) {
                         permission_node.isSelected = true;
+                        if(permission_node.parent && !permission_node.parent.isSelected){
+                            setParentSelected(permission_node);
+                        }
                         selectedNode(permission_node);
                     } else {
                         permission_node.isSelected = false;

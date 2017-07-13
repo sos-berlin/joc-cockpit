@@ -15,6 +15,12 @@
             font-family: Lucida Console, monospace;
             font-size: 12px;
         }
+        .no_data {
+            color: #007da6;
+            text-align: center;
+            font-family: Lucida Console, monospace;
+            font-size: 14px;
+        }
         .log_error, .log_stderr {
             color: red !important
         }
@@ -43,21 +49,40 @@
             padding-left: 8px !important
         }
 
+        .loading-img {
+            position: fixed;
+            overflow: hidden !important;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1020;
+            background: url(images/loader.gif) 50% 50% no-repeat;
+            background-size: 50px
+        }
     </style>
 </head>
 <body ng-controller="LogCtrl">
 
-
+<div ng-if="loading" class="loading-img">
+</div>
 <pre class="p-l-sm log">
     <span ng-bind-html="logs"></span>
-    <span ng-bind="error"></span>
+    <span class="log_error" ng-bind="error"></span>
 </pre>
+<div class="no_data">
+    <span ng-bind="noData">
 
+    </span>
+</div>
 <!-- Angular -->
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="modules/log.js"></script>
 </body>
 </html>
+
 
 
 

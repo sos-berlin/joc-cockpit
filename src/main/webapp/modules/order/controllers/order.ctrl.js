@@ -1209,23 +1209,42 @@
             }
         });
 
+        function setCanvasBackground(canvas,background){
+            var w = canvas.width;
+	        var h = canvas.height;
+	    var context = canvas.getContext("2d");
+		context.globalCompositeOperation = "destination-over";
+		context.fillStyle = getBackground();
+		context.fillRect(0,0,w,h);
+        }
+
+        function getBackground(){
+            return $(".box").css("background-color");
+        }
+
+        function getBoundingNodes(){
+            var obj = {maxTop:0,maxLeft:0};
+            angular.forEach(vm.coords, function (coord) {
+                if (coord.left && coord.left > obj.maxLeft) {
+                    obj.maxLeft = coord.left;
+                }
+                if (coord.top && coord.top > obj.maxTop) {
+                    obj.maxTop = coord.top;
+                }
+            });
+            return obj;
+        }
+
 
 
         vm.exportDiagram = function (type) {
+
             vm.loading = true;
-            var maxLeft = 0, maxTop = 0;
-            angular.forEach(vm.coords, function (coord) {
-                if (coord.left && coord.left > maxLeft) {
-                    maxLeft = coord.left;
-                }
-                if (coord.top && coord.top > maxTop) {
-                    maxTop = coord.top;
-                }
-            });
+            var bound = getBoundingNodes();
 
             var oHeight = $('#exportId').height();
             $(".block-ellipsis").css("overflow", "auto")
-            $('#exportId').height(maxTop + 400);
+            $('#exportId').height(bound.maxTop + 400);
             if (vm.slider && vm.slider.value != 100) {
                 $("#zoomCn").css("zoom", 1);
                 $("#zoomCn").css("transform", "Scale(1)");
@@ -1243,27 +1262,27 @@
                 setHeight();
             }
 
+
             html2canvas($('#exportId'), {useCORS:true,
-                width: (maxLeft + 100), height: (maxTop + 400),background:type=='png'?'#ffffff':null,
+                width: (bound.maxLeft + 100), height: (bound.maxTop + 600),background:getBackground(),
+
                 onrendered: function (canvas) {
-                     console.log("exporting 03");
                     var data = canvas.toDataURL('image/png');
+                    var exportDate = $filter('date')(new Date(),'dd-MMM-yyyy HH:mm');
                     if(type=='pdf'){
                         var docDefinition = {
-                            headerRows:1,
-                            header: {text:'Job Chain: '+vm.jobChain.path+', JobScheduler ID: '+$scope.schedulerIds.selected, margin:[10,10,10,10],fontSize:5},
+                            header: {text:'Job chain: '+vm.jobChain.path+', JobScheduler id: '+$scope.schedulerIds.selected+", Export date: "+exportDate, margin:[10,10,10,10],fontSize:10},
                         content: [{
-
                             image: data,
                             width: 500
-                        },{text:$filter('date')(new Date(),'dd-MMM-yyyy HH:mm'),fontSize:5,alignment:'right'}]
+                        }]
                     };
                        pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
                     }else{
+                    setCanvasBackground(canvas,getBackground());
                         canvas.toBlob(function(blob){
                             FileSaver.saveAs(blob, vm.jobChain.name+'.png');
                         })
-
                     }
 
                     if (els && els.length > 0) {
@@ -1284,7 +1303,10 @@
                     }
                     vm.loading = false;
                 }
-            });
+               })
+
+
+
 
 
         }
@@ -7828,3 +7850,4 @@
 
     }
 })();
+
