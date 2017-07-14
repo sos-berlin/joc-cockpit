@@ -81,6 +81,7 @@
 
         vm.login = function () {
             $window.sessionStorage.errorMsg = '';
+            $rootScope.error = '';
             if (vm.user.username && vm.user.password) {
                 $('#loginBtn').text(gettextCatalog.getString("button.processing") + '...');
                 $('#loginBtn').attr("disabled", true);
@@ -1598,16 +1599,15 @@
         function checkPermissionListRecursively(permission_node, list) {
             if (permission_node && permission_node._parents) {
                 for (var j = 0; j < permission_node._parents.length; j++) {
-                    permission_node._parents[j].greyed = true;
+                    permission_node._parents[j].greyed = !list.excluded;
                     permission_node._parents[j].selected = false;
                     permission_node._parents[j].excluded = list.excluded;
                     if (permission_node._parents[j].excluded) {
                         permission_node._parents[j].greyedBtn = true;
                     }
-            if(permission_node.isSelected){
+                    if(permission_node.isSelected){
                        permission_node._parents[j].isSelected = true;
                     }
-
                     checkPermissionListRecursively(permission_node._parents[j], list);
                 }
             }
@@ -1672,7 +1672,7 @@
                 for (var j = 0; j < permission_node._parents.length; j++) {
                     permission_node._parents[j].greyed = false;
                     permission_node._parents[j].selected = false;
-                    permission_node._parents[j].isSelected = permission_node.isSelected;;
+                    permission_node._parents[j].isSelected = permission_node.isSelected;
                     if (flag) {
                         permission_node._parents[j].greyedBtn = false;
                         permission_node._parents[j].excluded = false;
@@ -1688,6 +1688,7 @@
                     permission_node._parents[j].greyedBtn = true;
                     permission_node._parents[j].excluded = true;
                     permission_node._parents[j].excludedParent = false;
+                    permission_node._parents[j].isSelected = permission_node.isSelected;
                     selectedExcludeNode(permission_node._parents[j]);
                 }
             }
@@ -1699,6 +1700,7 @@
                     permission_node._parents[j].greyedBtn = false;
                     permission_node._parents[j].excluded = false;
                     permission_node._parents[j].excludedParent = false;
+                    permission_node._parents[j].isSelected = permission_node.isSelected;
                     unSelectedExcludeNode(permission_node._parents[j]);
                 }
             }
@@ -1741,9 +1743,7 @@
         });
 
         var t1 = '';
-
         function drawTree(json) {
-
             svg = d3.select("#mainTree").append("svg")
                 .attr('width', width)
                 .attr('height', ht - 20)
@@ -2201,10 +2201,18 @@
                     permission_node.excludedParent = !permission_node.excludedParent;
 
                     if (permission_node.excluded) {
+                        permission_node.isSelected = true;
+                        if(permission_node.parent && !permission_node.parent.isSelected){
+                            setParentSelected(permission_node);
+                        }
                         selectedExcludeNode(permission_node);
                     } else {
+                        if(!permission_node.selected){
+                            permission_node.isSelected = false;
+                        }
                         unSelectedExcludeNode(permission_node);
                     }
+
                     _temp = [];
                     generatePermissionList(permissionNodes[0][0]);
                     toggleRectangleColour();

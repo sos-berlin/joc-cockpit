@@ -1243,8 +1243,10 @@
             var bound = getBoundingNodes();
 
             var oHeight = $('#exportId').height();
+            var oWidth = $('#exportId').width();
             $(".block-ellipsis").css("overflow", "auto")
-            $('#exportId').height(bound.maxTop + 400);
+            $('#exportId').height(bound.maxTop + 600);
+            $('#exportId').width(bound.maxLeft + 100);
             if (vm.slider && vm.slider.value != 100) {
                 $("#zoomCn").css("zoom", 1);
                 $("#zoomCn").css("transform", "Scale(1)");
@@ -1268,29 +1270,27 @@
 
                 onrendered: function (canvas) {
                     var data = canvas.toDataURL('image/png');
-                    var exportDate = $filter('date')(new Date(),'dd-MMM-yyyy HH:mm');
                     if(type=='pdf'){
                         var docDefinition = {
-                            header: {text:'Job chain: '+vm.jobChain.path+', JobScheduler id: '+$scope.schedulerIds.selected+", Export date: "+exportDate, margin:[10,10,10,10],fontSize:10},
                         content: [{
-                            image: data,
-                            width: 500
+                            image: data
                         }]
                     };
-                       pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
+
+                        pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
                     }else{
                     setCanvasBackground(canvas,getBackground());
                         canvas.toBlob(function(blob){
                             FileSaver.saveAs(blob, vm.jobChain.name+'.png');
                         })
                     }
-
                     if (els && els.length > 0) {
                         $.each(els, function (i, e) {
                             $(this).show();
                         })
                     }
                     $('#exportId').height(oHeight);
+                    $('#exportId').width(oWidth);
                     $(".block-ellipsis").css("overflow", "hidden");
                     if (vm.slider && vm.slider.value != 100) {
                         $("#zoomCn").css("zoom", vm.slider.value / 100);
@@ -3734,7 +3734,6 @@
             configObj.objectType = "ORDER";
             configObj.id = 0;
             configObj.name = vm.orderFilter1.name;
-            // configObj.shared = vm.orderFilter1.shared;
 
             configObj.configurationItem = JSON.stringify(vm.orderFilter1);
             UserService.saveConfiguration(configObj).then(function (res) {
@@ -4017,7 +4016,7 @@
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
                     vm.orderFilterList.push(configObj);
-                })
+                });
                 vm.object.paths = [];
             }, function () {
                 vm.object.paths = [];
@@ -6901,7 +6900,6 @@
                 obj.state = vm.jobSearch.states;
                 obj.name = vm.jobSearch.name;
             }
-            //configObj.shared = vm.historyFilter.shared;
             configObj.id = 0;
 
             if (vm.historyFilters.type == 'jobChain') {
@@ -7534,7 +7532,6 @@
                     else if (vm.jobSearch && vm.historyFilters.type == 'job')
                         vm.jobSearch.paths.splice(object, 1);
                 }
-                vm.object.paths.splice(object, 1);
             }
         };
 

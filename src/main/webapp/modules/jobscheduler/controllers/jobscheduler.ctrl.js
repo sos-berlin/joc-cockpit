@@ -3081,8 +3081,8 @@
         });
     }
 
-    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettext', 'orderByFilter', '$uibModal', 'SavedFilter', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService'];
-    function DailyPlanCtrl($scope, $timeout, gettext, orderBy, $uibModal, SavedFilter, DailyPlanService, $stateParams, CoreService, UserService) {
+    DailyPlanCtrl.$inject = ['$scope', '$timeout', 'gettext', 'orderByFilter', '$uibModal', 'SavedFilter', 'DailyPlanService', '$stateParams', 'CoreService', 'UserService', 'ResourceService'];
+    function DailyPlanCtrl($scope, $timeout, gettext, orderBy, $uibModal, SavedFilter, DailyPlanService, $stateParams, CoreService, UserService, ResourceService) {
         var vm = $scope;
         vm.todayDate = new Date();
         vm.dailyPlanFilters = CoreService.getDailyPlanTab();
@@ -3090,6 +3090,13 @@
 
         vm.selectedFiltered;
         var promise1;
+        vm.object = {};
+        vm.filter_tree = {};
+        vm.filterTree1 = [];
+        vm.object.paths = [];
+        vm.expanding_property = {
+            field: "name"
+        };
 
         vm.savedDailyPlanFilter = JSON.parse(SavedFilter.dailyPlanFilters) || {};
         vm.dailyPlanFilterList = [];
@@ -3123,7 +3130,7 @@
         else {
             vm.savedDailyPlanFilter.selected = undefined;
         }
-         vm.temp_filter ={};
+        vm.temp_filter = {};
 
         function checkSharedFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
@@ -3230,17 +3237,18 @@
             vm.dailyPlanFilters.filter.to = to;
 
         }
+
         setDateRange();
         var late = true;
-            if(vm.dailyPlanFilters.filter.state=='LATE'){
-                late = false;
-            }
-        vm.changeLate = function(){
+        if (vm.dailyPlanFilters.filter.state == 'LATE') {
+            late = false;
+        }
+        vm.changeLate = function () {
             late = !late;
-            if(late){
+            if (late) {
                 vm.dailyPlanFilters.filter.state = '';
-            }else{
-                if(vm.dailyPlanFilters.filter.status == 'ALL'){
+            } else {
+                if (vm.dailyPlanFilters.filter.status == 'ALL') {
                     vm.dailyPlanFilters.filter.status = '';
                 }
             }
@@ -3354,6 +3362,7 @@
             }
             return 40 * zoom;
         };
+
         var hitSearch = false;
         vm.search = function () {
             hitSearch = true;
@@ -3361,14 +3370,14 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj = applySearchFilter(obj);
-            if(!obj.dateFrom) {
-               obj.dateFrom = new Date();
-               obj.dateFrom.setHours(0);
-               obj.dateFrom.setMinutes(0);
-               obj.dateFrom.setSeconds(0);
-               obj.dateFrom.setMilliseconds(0);
-           }
-            if(!obj.dateTo) {
+            if (!obj.dateFrom) {
+                obj.dateFrom = new Date();
+                obj.dateFrom.setHours(0);
+                obj.dateFrom.setMinutes(0);
+                obj.dateFrom.setSeconds(0);
+                obj.dateFrom.setMilliseconds(0);
+            }
+            if (!obj.dateTo) {
                 obj.dateTo = new Date();
                 obj.dateTo.setDate(toDate.getDate() + 1);
                 obj.dateTo.setHours(0);
@@ -3389,33 +3398,34 @@
                 vm.showSpinner = false;
             })
         };
-         vm.advancedSearch = function () {
-             vm.isUnique = true;
-             vm.showSearchPanel = true;
-             vm.searchDailyPlanFilter = {};
-             vm.searchDailyPlanFilter.radio = 'current';
-             vm.searchDailyPlanFilter.from1 = 'today';
-             vm.searchDailyPlanFilter.to1 = 'today';
-             vm.searchDailyPlanFilter.from = new Date();
-             vm.searchDailyPlanFilter.from.setHours(0);
-             vm.searchDailyPlanFilter.from.setMinutes(0);
-             vm.searchDailyPlanFilter.from.setSeconds(0);
-             vm.searchDailyPlanFilter.from.setMilliseconds(0);
-             vm.searchDailyPlanFilter.fromTime = angular.copy(vm.searchDailyPlanFilter.from);
-             vm.searchDailyPlanFilter.to = new Date();
-             vm.searchDailyPlanFilter.to.setDate(vm.searchDailyPlanFilter.to.getDate() + 1);
-             vm.searchDailyPlanFilter.to.setHours(0);
-             vm.searchDailyPlanFilter.to.setMinutes(0);
-             vm.searchDailyPlanFilter.to.setSeconds(0);
-             vm.searchDailyPlanFilter.to.setMilliseconds(0);
-             vm.searchDailyPlanFilter.toTime = angular.copy(vm.searchDailyPlanFilter.to);
-         };
+        vm.advancedSearch = function () {
+            vm.isUnique = true;
+            vm.showSearchPanel = true;
+            vm.searchDailyPlanFilter = {};
+            vm.searchDailyPlanFilter.radio = 'current';
+            vm.searchDailyPlanFilter.from1 = 'today';
+            vm.searchDailyPlanFilter.to1 = 'today';
+            vm.searchDailyPlanFilter.from = new Date();
+            vm.searchDailyPlanFilter.from.setHours(0);
+            vm.searchDailyPlanFilter.from.setMinutes(0);
+            vm.searchDailyPlanFilter.from.setSeconds(0);
+            vm.searchDailyPlanFilter.from.setMilliseconds(0);
+            vm.searchDailyPlanFilter.fromTime = angular.copy(vm.searchDailyPlanFilter.from);
+            vm.searchDailyPlanFilter.to = new Date();
+            vm.searchDailyPlanFilter.to.setDate(vm.searchDailyPlanFilter.to.getDate() + 1);
+            vm.searchDailyPlanFilter.to.setHours(0);
+            vm.searchDailyPlanFilter.to.setMinutes(0);
+            vm.searchDailyPlanFilter.to.setSeconds(0);
+            vm.searchDailyPlanFilter.to.setMilliseconds(0);
+            vm.searchDailyPlanFilter.toTime = angular.copy(vm.searchDailyPlanFilter.to);
+            vm.dailyPlanFilter = undefined;
+        };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
             hitSearch = false;
             vm.searchDailyPlanFilter = undefined;
-            if(form)
-            form.$setPristine();
+            if (form)
+                form.$setPristine();
         };
 
         function applySearchFilter(obj) {
@@ -3443,7 +3453,12 @@
                     obj.late = true;
                 }
             }
-
+            if (vm.searchDailyPlanFilter.paths && vm.searchDailyPlanFilter.paths.length > 0) {
+                obj.folders = [];
+                for (var i = 0; i < vm.searchDailyPlanFilter.paths.length; i++) {
+                    obj.folders.push({folder: vm.searchDailyPlanFilter.paths[i], recursive: true});
+                }
+            }
             var fromDate;
             var toDate;
 
@@ -3487,7 +3502,7 @@
                         fromDate.setSeconds(fromDate.getSeconds() - seconds);
                     } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
                         fromDate = vm.searchDailyPlanFilter.from1;
-                         obj.timeZone = vm.userPreferences.zone;
+                        obj.timeZone = vm.userPreferences.zone;
                     } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
                         fromDate = new Date();
                         fromDate.setHours(0);
@@ -3505,7 +3520,7 @@
                         toDate.setSeconds(toDate.getSeconds() + seconds);
                     } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
                         toDate = vm.searchDailyPlanFilter.to1;
-                         obj.timeZone = vm.userPreferences.zone;
+                        obj.timeZone = vm.userPreferences.zone;
                     } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
                         toDate = new Date();
                         toDate.setDate(toDate.getDate() + 1);
@@ -3543,7 +3558,7 @@
         function applySavedFilter(obj) {
             if (vm.selectedFiltered.regex)
                 obj.regex = vm.selectedFiltered.regex;
-           if (vm.selectedFiltered.jobChain)
+            if (vm.selectedFiltered.jobChain)
                 obj.jobChain = vm.selectedFiltered.jobChain;
             if (vm.selectedFiltered.orderId)
                 obj.orderId = vm.selectedFiltered.orderId;
@@ -3565,19 +3580,24 @@
                 }
 
             }
-
+            if (vm.selectedFiltered.paths && vm.selectedFiltered.paths.length > 0) {
+                obj.folders = [];
+                for (var i = 0; i < vm.selectedFiltered.paths.length; i++) {
+                    obj.folders.push({folder: vm.selectedFiltered.paths[i], recursive: true});
+                }
+            }
             var fromDate;
             var toDate;
 
-             if (vm.selectedFiltered.from) {
-                 if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.selectedFiltered.from)) {
+            if (vm.selectedFiltered.from) {
+                if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.selectedFiltered.from)) {
                     fromDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.from)[2]);
                     fromDate.setSeconds(fromDate.getSeconds() - seconds);
                 } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.selectedFiltered.from)) {
                     fromDate = vm.selectedFiltered.from;
-                      obj.timeZone = vm.userPreferences.zone;
-                }else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.from)) {
+                    obj.timeZone = vm.userPreferences.zone;
+                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.from)) {
                     fromDate = new Date();
                     fromDate.setHours(0);
                     fromDate.setMinutes(0);
@@ -3587,7 +3607,7 @@
                     fromDate = new Date();
                 }
             }
-            
+
             if (vm.selectedFiltered.to) {
                 if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.selectedFiltered.to)) {
                     toDate = new Date();
@@ -3595,9 +3615,9 @@
                     toDate.setSeconds(toDate.getSeconds() + seconds);
                 } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.selectedFiltered.to)) {
                     toDate = vm.selectedFiltered.to;
-                     obj.timeZone = vm.userPreferences.zone;
+                    obj.timeZone = vm.userPreferences.zone;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.to)) {
-                        toDate = new Date();
+                    toDate = new Date();
                     toDate.setDate(toDate.getDate() + 1);
                     toDate.setHours(0);
                     toDate.setMinutes(0);
@@ -3664,7 +3684,7 @@
                         groupJobChain.push({job: data2[i].job});
                 }
             }
-            var theme = window.localStorage.$SOS$THEME ;
+            var theme = window.localStorage.$SOS$THEME;
             for (var index = 0; index < groupJobChain.length; index++) {
                 var i = 0;
                 orders[index] = {};
@@ -3686,9 +3706,9 @@
                         }
                         else if (data2[index1].late) {
                             orders[index].tasks[i].color = "#ffc300";
-                        }else{
-                            if(theme != 'light' && theme != 'lighter')
-                             orders[index].tasks[i].color = "#fafafa";
+                        } else {
+                            if (theme != 'light' && theme != 'lighter')
+                                orders[index].tasks[i].color = "#fafafa";
                         }
                         orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
 
@@ -3736,9 +3756,9 @@
                         }
                         else if (data2[index1].late) {
                             orders[index].tasks[i].color = "#ffc300";
-                        }else{
-                            if(theme != 'light' && theme != 'lighter')
-                             orders[index].tasks[i].color = "#fafafa";
+                        } else {
+                            if (theme != 'light' && theme != 'lighter')
+                                orders[index].tasks[i].color = "#fafafa";
                         }
                         orders[index].tasks[i].from = new Date(data2[index1].plannedStartTime);
 
@@ -3824,14 +3844,14 @@
                     obj.late = true;
                 }
             }
-            if(!obj.dateFrom) {
-               obj.dateFrom = new Date();
-               obj.dateFrom.setHours(0);
-               obj.dateFrom.setMinutes(0);
-               obj.dateFrom.setSeconds(0);
-               obj.dateFrom.setMilliseconds(0);
-           }
-            if(!obj.dateTo) {
+            if (!obj.dateFrom) {
+                obj.dateFrom = new Date();
+                obj.dateFrom.setHours(0);
+                obj.dateFrom.setMinutes(0);
+                obj.dateFrom.setSeconds(0);
+                obj.dateFrom.setMilliseconds(0);
+            }
+            if (!obj.dateTo) {
                 obj.dateTo = new Date();
                 obj.dateTo.setDate(toDate.getDate() + 1);
                 obj.dateTo.setHours(0);
@@ -3866,34 +3886,35 @@
         };
 
         function isCustomizationSelected(flag) {
-            if(flag) {
+            if (flag) {
                 vm.temp_filter.status = angular.copy(vm.dailyPlanFilters.filter.status);
                 vm.temp_filter.range = angular.copy(vm.dailyPlanFilters.filter.range);
                 vm.dailyPlanFilters.filter.status = '';
                 vm.dailyPlanFilters.filter.range = '';
-            }else{
-                if(vm.temp_filter.status) {
+            } else {
+                if (vm.temp_filter.status) {
                     vm.dailyPlanFilters.filter.status = angular.copy(vm.temp_filter.status);
                     vm.dailyPlanFilters.filter.range = angular.copy(vm.temp_filter.range);
-                }else{
-                     vm.dailyPlanFilters.filter.status = 'ALL';
+                } else {
+                    vm.dailyPlanFilters.filter.status = 'ALL';
                     vm.dailyPlanFilters.filter.range = 'today';
                 }
             }
         }
-        vm.saveAsFilter = function(form) {
+
+        vm.saveAsFilter = function (form) {
             var configObj = {};
             configObj.jobschedulerId = vm.schedulerIds.selected;
             configObj.account = vm.permission.user;
             configObj.configurationType = "CUSTOMIZATION";
             configObj.objectType = "DAILYPLAN";
             configObj.name = vm.searchDailyPlanFilter.name;
-            //configObj.shared = vm.searchDailyPlanFilter.shared;
             configObj.id = 0;
             var fromDate;
             var toDate;
             var obj = {};
             obj.regex = vm.searchDailyPlanFilter.regex;
+            obj.paths = vm.searchDailyPlanFilter.paths;
             obj.jobChain = vm.searchDailyPlanFilter.jobChain;
             obj.orderId = vm.searchDailyPlanFilter.orderId;
             obj.job = vm.searchDailyPlanFilter.job;
@@ -3928,7 +3949,7 @@
                 }
 
             }
-             if (fromDate) {
+            if (fromDate) {
                 obj.from = fromDate;
             } else {
                 obj.from = '0d';
@@ -3969,11 +3990,11 @@
                 configObj.name = vm.dailyPlanFilter.name;
                 configObj.shared = vm.dailyPlanFilter.shared;
                 configObj.id = 0;
-                if(!vm.dailyPlanFilter.from){
-                    vm.dailyPlanFilter.from ='0d';
+                if (!vm.dailyPlanFilter.from) {
+                    vm.dailyPlanFilter.from = '0d';
                 }
-                if(!vm.dailyPlanFilter.to){
-                    vm.dailyPlanFilter.to ='0d';
+                if (!vm.dailyPlanFilter.to) {
+                    vm.dailyPlanFilter.to = '0d';
                 }
                 configObj.configurationItem = JSON.stringify(vm.dailyPlanFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
@@ -3989,9 +4010,10 @@
                         SavedFilter.setDailyPlan(vm.savedDailyPlanFilter);
                         SavedFilter.save();
                     }
-                })
+                });
+                vm.object.paths = [];
             }, function () {
-
+                vm.object.paths = [];
             });
         };
 
@@ -4006,7 +4028,7 @@
                 scope: vm
             });
         };
-        var temp_name ='';
+        var temp_name = '';
         vm.editFilter = function (filter) {
             vm.cancel();
             vm.action = 'edit';
@@ -4016,6 +4038,8 @@
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.dailyPlanFilter.shared = filter.shared;
+                vm.paths = vm.dailyPlanFilter.paths;
+                vm.object.paths = vm.paths;
             });
 
             var modalInstance = $uibModal.open({
@@ -4042,17 +4066,19 @@
                 configObj.id = filter.id;
                 configObj.shared = vm.dailyPlanFilter.shared;
 
-                if(!vm.dailyPlanFilter.from){
-                    vm.dailyPlanFilter.from ='0d';
+                if (!vm.dailyPlanFilter.from) {
+                    vm.dailyPlanFilter.from = '0d';
                 }
-                if(!vm.dailyPlanFilter.to){
-                    vm.dailyPlanFilter.to ='0d';
+                if (!vm.dailyPlanFilter.to) {
+                    vm.dailyPlanFilter.to = '0d';
                 }
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.dailyPlanFilter.name;
-                temp_name ='';
+                temp_name = '';
+                vm.object.paths = [];
             }, function () {
-                temp_name ='';
+                temp_name = '';
+                vm.object.paths = [];
             });
         };
 
@@ -4063,6 +4089,8 @@
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                 vm.dailyPlanFilter = JSON.parse(conf.configuration.configurationItem);
                 vm.dailyPlanFilter.shared = filter.shared;
+                vm.paths = vm.dailyPlanFilter.paths;
+                vm.object.paths = vm.paths;
                 vm.dailyPlanFilter.name = vm.checkCopyName(vm.dailyPlanFilterList, filter.name);
             });
 
@@ -4087,10 +4115,11 @@
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
                     vm.dailyPlanFilterList.push(configObj);
-                })
+                });
+                vm.object.paths = [];
 
             }, function () {
-
+                vm.object.paths = [];
             });
         };
 
@@ -4166,13 +4195,13 @@
         };
         vm.checkFilterName = function () {
             vm.isUnique = true;
-            if(vm.searchDailyPlanFilter && vm.searchDailyPlanFilter.name) {
+            if (vm.searchDailyPlanFilter && vm.searchDailyPlanFilter.name) {
                 angular.forEach(vm.dailyPlanFilterList, function (value) {
                     if (vm.searchDailyPlanFilter.name == value.name && vm.permission.user == value.account) {
                         vm.isUnique = false;
                     }
                 });
-            }else if(vm.dailyPlanFilter){
+            } else if (vm.dailyPlanFilter) {
                 angular.forEach(vm.dailyPlanFilterList, function (value) {
                     if (vm.dailyPlanFilter.name == value.name && vm.permission.user == value.account && vm.dailyPlanFilter.name != temp_name) {
                         vm.isUnique = false;
@@ -4205,7 +4234,53 @@
             SavedFilter.save();
 
         };
+        vm.getTreeStructure = function () {
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ['DAILYPLAN']
+            }).then(function (res) {
+                vm.filterTree1 = res.folders;
 
+            }, function () {
+                $('#treeModal').modal('hide');
+            });
+
+            $('#treeModal').modal('show');
+        };
+
+        vm.treeExpand = function (data) {
+            angular.forEach(vm.object.paths, function (value) {
+                if (data.path == value) {
+                    if (data.folders.length > 0) {
+                        data.folders = orderBy(data.folders, 'name');
+                        angular.forEach(data.folders, function (res) {
+                            vm.object.paths.push(res.path);
+                        });
+                    }
+                }
+            });
+        };
+
+        var watcher1 = $scope.$watchCollection('object.paths', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.paths = newNames;
+            }
+        });
+
+        vm.addFolderPaths = function () {
+            if (vm.dailyPlanFilter) {
+                vm.dailyPlanFilter.paths = vm.paths;
+            }else {
+                vm.searchDailyPlanFilter.paths = vm.paths;
+            }
+        };
+        vm.remove = function (object) {
+            if (vm.dailyPlanFilter)
+                vm.dailyPlanFilter.paths.splice(object, 1);
+            else
+                vm.searchDailyPlanFilter.paths.splice(object, 1);
+        };
 
         var isLoaded = true;
         vm.$on('event-started', function () {
@@ -4246,14 +4321,14 @@
                     }
                 }
             }
-            if(!obj.dateFrom) {
-               obj.dateFrom = new Date();
-               obj.dateFrom.setHours(0);
-               obj.dateFrom.setMinutes(0);
-               obj.dateFrom.setSeconds(0);
-               obj.dateFrom.setMilliseconds(0);
-           }
-            if(!obj.dateTo) {
+            if (!obj.dateFrom) {
+                obj.dateFrom = new Date();
+                obj.dateFrom.setHours(0);
+                obj.dateFrom.setMinutes(0);
+                obj.dateFrom.setSeconds(0);
+                obj.dateFrom.setMilliseconds(0);
+            }
+            if (!obj.dateTo) {
                 obj.dateTo = new Date();
                 obj.dateTo.setDate(toDate.getDate() + 1);
                 obj.dateTo.setHours(0);
@@ -4272,6 +4347,7 @@
 
 
         vm.$on('$destroy', function () {
+            watcher1();
             if (promise1)
                 $timeout.cancel(promise1);
         });

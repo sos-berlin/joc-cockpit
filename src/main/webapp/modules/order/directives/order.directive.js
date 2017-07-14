@@ -1418,7 +1418,6 @@
                                     }
 
                                     if (index == (vm.limitNum - 1) && numOfOrders > orders.length) {
-                                        console.log("number of orders " + numOfOrders + " index " + index + " limitnum " + vm.limitNum);
                                         var container = document.getElementById('lbl-order-' + order.state);
                                         var label = document.createElement('div');
                                         label.innerHTML = '<i id="more" class="text-sm cursor text-hover-primary" ng-click="showOrderPanelFun(\'' + order.jobChain + '\')" ><span >' + gettextCatalog.getString("label.showMoreOrders") + '</span><br></i>';
