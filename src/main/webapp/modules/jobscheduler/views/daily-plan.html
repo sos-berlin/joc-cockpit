@@ -227,15 +227,24 @@
                            </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regularExpression</label>
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
 
                             <div class="col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
                                 <input valid-regex type="text" class="form-control" name="regex"
-                                       placeholder="{{'placeholder.regularExpression' | translate}}"
+                                       placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
                                        ng-model="searchDailyPlanFilter.regex">
 
                                 <div class="help-block text-danger" ng-messages="form.regex.$error">
                                     <div ng-message="invalid" translate>message.invalid</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+                        </div>
+                        <div class="form-group row" ng-if="searchDailyPlanFilter.paths.length>0">
+                             <label class="col-md-2 col-sm-4" translate>label.folders</label>
+                            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                                <div ng-repeat="path in searchDailyPlanFilter.paths track by $index">
+                                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
                                 </div>
                             </div>
                         </div>
@@ -496,3 +505,42 @@
     </div>
 </div>
 <div ng-if="showSpinner && isLoading" class="loading-img1"></div>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 550px;max-height: 550px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree"
+                            object="object"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            icon-collapse="fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeExpand(branch)"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addFolderPaths()"
+                        data-dismiss="modal" translate>button.done
+                </button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

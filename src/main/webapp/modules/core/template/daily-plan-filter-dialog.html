@@ -26,15 +26,24 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.regularExpression</label>
+                <label class="col-sm-4 form-control-label" translate>label.regex</label>
 
                 <div class="col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
                     <input valid-regex type="text" class="form-control" name="regex"
-                           placeholder="{{'placeholder.regularExpression' | translate}}"
+                           placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
                            ng-model="dailyPlanFilter.regex">
 
                     <div class="help-block text-danger" ng-messages="form.regex.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+                <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
+            </div>
+            <div class="form-group row" ng-if="dailyPlanFilter.paths.length>0">
+                 <label class="col-sm-4" translate>label.folders</label>
+                <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                    <div ng-repeat="path in dailyPlanFilter.paths track by $index">
+                            <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
                     </div>
                 </div>
             </div>
@@ -97,7 +106,7 @@
                                    data-checklist-value="'SUCCESSFUL'">
                             <i class="primary"></i><span translate>label.successful</span>
                         </label>
-                    <label class="md-check w m-t">
+                    <label class="md-check w m-t-sm">
                             <input type="checkbox" data-checklist-model="dailyPlanFilter.state"
                                    data-checklist-value="'FAILED'">
                             <i class="primary"></i><span translate>label.failed</span>

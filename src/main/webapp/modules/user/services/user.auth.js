@@ -18,6 +18,7 @@
                                 if (config.url.match('security/permission')) {
                                     config.headers = {
                                         'access_token': SOSAuth.accessTokenId,
+                                        'X-Access-Token': SOSAuth.accessTokenId,
                                         'Content-Type': 'application/json',
                                         'Accept': 'application/json'
                                     }

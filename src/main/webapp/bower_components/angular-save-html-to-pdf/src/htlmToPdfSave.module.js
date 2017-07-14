@@ -1,5 +1,0 @@
-
-angular.module('htmlToPdfSave' , []) ;
-
-
-
