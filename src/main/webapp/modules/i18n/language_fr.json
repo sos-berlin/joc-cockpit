@@ -1027,8 +1027,8 @@
   "tooltip.viewObject": "Visualiser l'Objet",
   "unhealthy": "défaillant",
   "unreachable": "non accessibles",
-  "button.collapseUnselected": "Collapse inactive",
-  "button.expandSelected": "Expand active",
+  "button.collapseUnselected": "Déplier les entrées inactives",
+  "button.expandSelected": "Développer les entrées actives",
   "label.export": "Exporter",
   "label.pdf": "PDF",
   "label.png": "PNG"
