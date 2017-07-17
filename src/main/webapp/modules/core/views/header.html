@@ -160,7 +160,7 @@
               </span>
             </a>
             <div class="dropdown-menu pull-right dropdown-ac">
-                <a class="dropdown-item" ui-sref="app.profile">
+                <a class="dropdown-item" ng-class="{'disable-link':!schedulerIds.selected}" ui-sref="app.profile">
                     <s class="fa fa-user"></s>
                     {{'button.profile' | translate}}
                 </a>
@@ -184,7 +184,7 @@
     <div class="collapse navbar-toggleable-custom" id="navbar1">
         <!-- link -->
         <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
-            <li class="nav-item">
+            <li class="nav-item" ng-class="{'disable-link':!schedulerIds.selected}">
                 <a class="nav-link" ui-sref="app.dashboard" ui-sref-active="active">
                     <span class="nav-text" id="dashboard_id">
                          <i class="fa fa-dashboard text-white dashboard-icon" ></i>

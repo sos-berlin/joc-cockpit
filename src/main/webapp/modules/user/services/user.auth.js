@@ -45,29 +45,31 @@
                         return config;
                     },
                     responseError: function (rejection) {
-                        if ($location.path() != '/login' && (rejection.status == 440 || rejection.status == 401)) {
-                            toasty.error({
-                                title: 'message.sessionTimeout',
-                                msg: 'message.sessionExpired',
-                                timeout: 10000
-                            });
-                            $window.localStorage.$SOS$URL = $location.path();
-                            $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
-                            SOSAuth.clearUser();
-                            SOSAuth.clearStorage();
-                            $location.path('/login');
-                        } else {
-                            if (rejection.data && rejection.data.error && rejection.status != 434)
+                        if($location.path() != '/login') {
+                            if ((rejection.status == 440 || rejection.status == 401)) {
                                 toasty.error({
-                                    title: rejection.data.error.code || rejection.status,
-                                    msg: rejection.data.error.message || 'API expection',
+                                    title: 'message.sessionTimeout',
+                                    msg: 'message.sessionExpired',
                                     timeout: 10000
                                 });
-                            if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)
-                                toasty.error({
-                                    msg: rejection.data.errors[0].message || 'API expection',
-                                    timeout: 10000
-                                });
+                                $window.localStorage.$SOS$URL = $location.path();
+                                $window.localStorage.$SOS$URLPARAMS = JSON.stringify($location.search());
+                                SOSAuth.clearUser();
+                                SOSAuth.clearStorage();
+                                $location.path('/login');
+                            } else {
+                                if (rejection.data && rejection.data.error && rejection.status != 434)
+                                    toasty.error({
+                                        title: rejection.data.error.code || rejection.status,
+                                        msg: rejection.data.error.message || 'API expection',
+                                        timeout: 10000
+                                    });
+                                if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)
+                                    toasty.error({
+                                        msg: rejection.data.errors[0].message || 'API expection',
+                                        timeout: 10000
+                                    });
+                            }
                         }
 
                         if ($rootScope.clientLogFilter.isEnable) {

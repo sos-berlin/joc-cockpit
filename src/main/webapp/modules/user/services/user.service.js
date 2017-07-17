@@ -180,5 +180,90 @@
         }
     }
 
-    angular.module("app").service("SOSAuth", e).service("Base64", n).service("UserService", t).service("AuditLogService", o), e.$inject = ["$window"], t.$inject = ["$resource", "$q", "$http", "Base64"], o.$inject = ["$resource", "$q"]
+    function authorizationService(UserService, $q, $rootScope, $location,SOSAuth) {
+        return {
+
+            permissionModel: {
+                permission: {}
+            },
+
+            permissionCheck: function (routePath) {
+                // we will return a promise .
+                var deferred = $q.defer();
+
+                var parentPointer = this;
+                if (SOSAuth.permission) {
+                    this.permissionModel.permission = JSON.parse(SOSAuth.permission);
+                    this.getPermission(this.permissionModel, routePath, deferred);
+                } else {
+                    var schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+                    UserService.getPermissions(schedulerIds.selected).$promise.then(function (response) {
+                        parentPointer.permissionModel.permission = response;
+                        parentPointer.getPermission(parentPointer.permissionModel, routePath, deferred);
+                    });
+                }
+                return deferred.promise;
+            },
+
+            getPermission: function (permissionModel, routePath, deferred) {
+                var ifPermissionPassed = false;
+                    switch (routePath) {
+                        case 'DailyPlan':
+                            if (permissionModel.permission.DailyPlan.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'JobChain':
+                            if (permissionModel.permission.JobChain.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'Job':
+                            if (permissionModel.permission.Job.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'Order':
+                            if (permissionModel.permission.Order.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'History':
+                            if (permissionModel.permission.History.view) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'Resource':
+                            if (permissionModel.permission.JobschedulerUniversalAgent.view.status || permissionModel.permission.ProcessClass.view.status || permissionModel.permission.Schedule.view.status || permissionModel.permission.Lock.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'AuditLog':
+                            if (permissionModel.permission.AuditLog.view.status) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        case 'ManageAccount':
+                            if (permissionModel.permission.JobschedulerMaster.administration.editPermissions) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
+                        default:
+                            ifPermissionPassed = false;
+                    }
+                if (!ifPermissionPassed) {
+                    if(SOSAuth.scheduleIds && JSON.parse(SOSAuth.scheduleIds))
+                        $location.path('/');
+                    else
+                        $location.path('/error');
+                    $rootScope.$on('$locationChangeSuccess', function () {
+                        deferred.resolve();
+                    });
+                } else {
+                    deferred.resolve();
+                }
+            }
+        };
+    }
+    angular.module("app").service("SOSAuth", e).service("Base64", n).service("UserService", t).service("AuditLogService", o).factory('authorizationService',authorizationService), e.$inject = ["$window"], t.$inject = ["$resource", "$q", "$http", "Base64"], o.$inject = ["$resource", "$q"],authorizationService.$inject = ["UserService", "$q", "$rootScope", "$location","SOSAuth"];
 }();
