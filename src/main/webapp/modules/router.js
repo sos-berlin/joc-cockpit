@@ -19,7 +19,12 @@
                 } catch (c) {
                     console.log(c)
                 }
-                s.resolve()
+
+                var schedulerIds = JSON.parse(l.scheduleIds);
+                if(!(schedulerIds && schedulerIds.selected))
+                    s.reject("error");
+                else
+                    s.resolve()
             } else t.localStorage.$SOS$URL = r.path(), t.localStorage.$SOS$URLPARAMS = JSON.stringify(r.search()), s.reject("login");
             return s.promise
         };
@@ -49,6 +54,14 @@
             templateUrl: "modules/core/views/error.html",
             controller: "HeaderCtrl",
             title: "Error",
+            resolve: {
+                permission: function(SOSAuth) {
+                     var schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+                    if(schedulerIds && schedulerIds.selected){
+                        $location.path('/');
+                    }
+                }
+            },
             ncyBreadcrumb: {skip: !0}
         }).state("client-logs", {
             url: "/client-logs",
@@ -75,31 +88,61 @@
             params: {filter: null, day: null},
             templateUrl: "modules/jobscheduler/views/daily-plan.html",
             controller: "DailyPlanCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('DailyPlan');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.dailyPlan' | translate}}"}
         }).state("app.jobs", {
             url: "/jobs",
             templateUrl: "modules/job/views/job.html",
             controller: "JobCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Job');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobs' | translate}}"}
         }).state("app.job", {
             url: "/job",
             templateUrl: "modules/job/views/job-info.html",
             controller: "JobCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Job');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobs' | translate}}", parent: "app.jobs"}
         }).state("app.jobChains", {
             url: "/job_chains",
             templateUrl: "modules/job/views/job-chain.html",
             controller: "JobChainCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('JobChain');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobChains' | translate}}"}
         }).state("app.jobChain", {
             url: "/job_chain",
             templateUrl: "modules/job/views/job-chain-info.html",
             controller: "JobChainCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('JobChain');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobChains' | translate}}", parent: "app.jobChains"}
         }).state("app.jobChainDetails", {
             url: "/job_chain_detail",
             templateUrl: "modules/order/views/job-chain-details.html",
             controller: "JobChainDetailsCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('JobChain');
+                }
+            },
             ncyBreadcrumb: {label: "{{jobChain.name}}", parent: "app.jobChains"}
         }).state("app.jobChainDetails.orders", {
             url: "/orders",
@@ -115,16 +158,31 @@
             url: "/orders",
             templateUrl: "modules/order/views/order.html",
             controller: "OrderCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Order');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.orders' | translate}}"}
         }).state("app.order", {
             url: "/order",
             templateUrl: "modules/order/views/order-info.html",
             controller: "OrderCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Order');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.order' | translate}}", parent: "app.orders"}
         }).state("app.ordersOverview", {
             url: "/orders_overview/:name",
             templateUrl: "modules/order/views/orders-overview.html",
             controller: "OrderOverviewCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Order');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.ordersOverview' | translate}}", parent: "app.dashboard"}
         }).state("app.orderLog", {
             url: "/order/log",
@@ -140,6 +198,11 @@
             url: "/resources",
             templateUrl: "modules/jobscheduler/views/resource.html",
             controller: "ResourceCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Resource');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.resources' | translate}}"}
         }).state("app.resources.agentClusters", {
             url: "/agent_clusters/:type",
@@ -181,21 +244,44 @@
             url: "/history",
             templateUrl: "modules/order/views/history.html",
             controller: "HistoryCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('History');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.history' | translate}}"}
         }).state("app.auditLog", {
             url: "/audit_log",
             templateUrl: "modules/user/views/audit-log.html",
             controller: "AuditLogCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('AuditLog');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.auditLog' | translate}}"}
         }).state("app.profile", {
             url: "/user/profile",
             templateUrl: "modules/user/views/profile.html",
             controller: "UserProfileCtrl as upc",
+            resolve: {
+                permission: function(SOSAuth) {
+                     var schedulerIds = JSON.parse(SOSAuth.scheduleIds);
+                    if(!(schedulerIds && schedulerIds.selected)){
+                        $location.path('/');
+                    }
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.userProfile' | translate}}"}
         }).state("app.users", {
             url: "/users",
             templateUrl: "modules/user/views/user-main.html",
             controller: "UsersCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('ManageAccount');
+                }
+            },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.manageUser' | translate}}"}
         }).state("app.users.user", {
             url: "/all",

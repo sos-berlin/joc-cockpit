@@ -2038,8 +2038,14 @@
 
 
             function checkWindowSize() {
-                $('svg').attr('width', (endNodes.rightMost.x - endNodes.leftMost.x) + 350);
+                $('svg').attr('width', (endNodes.rightMost.x - endNodes.leftMost.x) + 520);
+                if( $('svg').attr('width')>2100){
+                    $('svg').attr('width',2100)
+                }
                 $('svg').attr('height', (endNodes.lowerMost.y - endNodes.topMost.y + 300));
+                if($('svg').attr('height')<ht){
+                    $('svg').attr('height', ht);
+                }
                 if ($('#mainTree').width() < (endNodes.rightMost.x + 284)) {
                     scrollToLast(endNodes.rightMost.x, endNodes.rightMost.y)
                 }
@@ -2048,9 +2054,8 @@
             function scrollToLast(x, y) {
                 if ($("g.permission_node[transform='translate(" + x + "," + y + ")']") && $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset()) {
                     $('#mainTree').animate({
-                        scrollTop: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().top + 5,
-                        scrollLeft: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().left + 20
-                    }, 500);
+                        scrollLeft: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().left
+                    }, 0);
                 }
             }
 

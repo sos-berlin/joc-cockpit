@@ -40,6 +40,7 @@
 <html lang="en" ng-app="app" ng-strict-di>
 <!--<![endif]-->
 <head>
+
     <meta charset="utf-8"/>
     <title>JobScheduler</title>
     <meta charset="utf-8"/>
@@ -71,6 +72,8 @@
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
 
     <link rel="stylesheet" href="css/light-style.css" type="text/css" id="style-color"/>
+    <script src="bower_components/es6-promise/dist/es6-promise.auto.js"></script>
+    <script src="js/canvas-toBlob.js"></script>
 
     <script>
         function themeInit() {
@@ -175,11 +178,8 @@
 <!-- runtime editor js files-->
 <script type="text/javascript" src="js/xml2json.min.js"></script>
 <script type="text/javascript" src="js/vkbeautify.js"></script>
-    <script type="text/javascript" src="js/html2canvas.js"></script>
-    <script type="text/javascript" src="js/pdfmake.min.js"></script>
-    <script type="text/javascript" src="js/vfs_fonts.js"></script>
-
-
+<script type="text/javascript" src="js/html2canvas.js"></script>
+<script type="text/javascript" src="js/pdfmake.min.js"></script>
 <!-- app -->
 <script src="modules/app.js"></script>
 <script src="modules/router.js"></script>
@@ -190,26 +190,21 @@
 <script src="modules/core/directives/tree.directive.js"></script>
 <script src="modules/core/services/core.service.js"></script>
 <script src="modules/core/filters/core.filter.js"></script>
-
 <!-- user module-->
 <script src="modules/user/controllers/user.ctrl.js"></script>
 <script src="modules/user/services/user.service.js"></script>
 <script src="modules/user/services/user.auth.js"></script>
-
 <!-- job module-->
 <script src="modules/job/controllers/job.ctrl.js"></script>
 <script src="modules/job/services/job.service.js"></script>
-
 <!-- jobscheduler module-->
 <script src="modules/jobscheduler/controllers/jobscheduler.ctrl.js"></script>
 <script src="modules/jobscheduler/services/jobscheduler.service.js"></script>
 <script src="modules/jobscheduler/directives/dashboard.directive.js"></script>
-
 <!-- order module-->
 <script src="modules/order/controllers/order.ctrl.js"></script>
 <script src="modules/order/services/order.service.js"></script>
 <script src="modules/order/directives/order.directive.js"></script>
-
 <!-- endbuild -->
 <script>
     window.setTimeout(function () {
@@ -217,10 +212,10 @@
         $('body').append($fakeFrame);
         $fakeFrame.remove();
     }, 4000);
-    $(window).on('popstate', function() {
-    		$('body').removeClass('modal-open');
-			$('.modal-backdrop').remove();
-	    });
+    $(window).on('popstate', function () {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
 </script>
 </body>
 </html>
