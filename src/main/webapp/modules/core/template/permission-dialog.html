@@ -18,11 +18,11 @@
                         <option value="{{p}}" ng-repeat="p in permissionOptions track by $index" ng-disabled="p.indexOf('-----')!=-1">{{p}}</option>
                     </select>
 
-                    <div class="input-dropdown">
+                    <div class="input-dropdown" style="margin-bottom: -15px">
                         <input class="form-control" name="permissionPath" required
                                ng-model="permission.path" type="text" placeholder="{{'placeholder.enterOrSelectPermission' | translate}}" ng-change="checkCovered()">
                     </div>
-                    <div class="help-block text-danger" ng-class="{'m-b-sm':isCovered}" ng-if="isCovered" style="margin-top: -25px">
+                    <div class="help-block text-danger" ng-class="{'m-b-sm':isCovered}" ng-if="isCovered" style="margin-top: -25px;margin-bottom: 8px">
                        <div translate>message.permissionIsAlreadyCovered</div>
                    </div>
 
