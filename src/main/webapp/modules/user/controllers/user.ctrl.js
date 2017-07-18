@@ -1550,7 +1550,7 @@
             vm.form.permissionPath.$touched = true;
             vm.isCovered = false;
             angular.forEach(vm.rolePermissions, function (permission1, index) {
-                if (vm.permission.path.indexOf(permission1.path) != -1 &&
+                if (vm.permission.path && vm.permission.path.indexOf(permission1.path) != -1 &&
                     ((vm.permission.path.length > permission1.path.length && vm.permission.path.substring(permission1.path.length, permission1.path.length + 1) == ':') || vm.permission.path.length == permission1.path.length) &&
                     ((vm.permission.excluded && permission1.excluded) || (!vm.permission.excluded && !permission1.excluded))) {
                     vm.isCovered = true;

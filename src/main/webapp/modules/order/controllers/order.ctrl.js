@@ -5380,7 +5380,11 @@
                 jobschedulerId: $scope.schedulerIds.selected,
                 compact: true
             }).then(function (res) {
-                vm.schedules = res.schedules;
+                vm.schedules = [];
+                angular.forEach(res.schedules, function(value){
+                    if(value && !value.substitute)
+                    vm.schedules.push(value)
+                });
             });
 
             vm.zones = moment.tz.names();
@@ -7632,7 +7636,7 @@
             configObj.id = vm.ignoreListConfigId;
             UserService.saveConfiguration(configObj).then(function (res) {
                 vm.ignoreListConfigId = res.id;
-            })
+            });
             if ((vm.savedIgnoreList.isEnable == 'true' || vm.savedIgnoreList.isEnable == true)) {
                 if ((jobChainSearch && vm.historyFilters.type == 'jobChain')) {
                     vm.search(true);
@@ -7647,7 +7651,7 @@
             configObj.id = vm.ignoreListConfigId;
             UserService.saveConfiguration(configObj).then(function (res) {
                 vm.ignoreListConfigId = res.id;
-            })
+            });
             if ((vm.savedIgnoreList.isEnable == 'true' || vm.savedIgnoreList.isEnable == true)) {
                 if ((jobSearch && vm.historyFilters.type != 'jobChain')) {
                     vm.search(true);
@@ -7688,7 +7692,7 @@
             configObj.configurationItem = JSON.stringify(vm.savedIgnoreList);
             UserService.saveConfiguration(configObj).then(function (res) {
                 vm.ignoreListConfigId = res.id;
-            })
+            });
             if ((jobSearch && vm.historyFilters.type != 'jobChain') || (jobChainSearch && vm.historyFilters.type == 'jobChain')) {
                 vm.search(true);
             } else

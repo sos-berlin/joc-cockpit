@@ -138,10 +138,9 @@
                                     <div class="btn-group dropdown">
                                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
                                                 uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
-                                            <img src="images/export.png" height="12px">
-                                            {{'label.export'
-                                            | translate}}
-                                            <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
+                                            <i class="fa fa-download"></i>
+                                            <span translate>label.export</span>
+                                        </button>
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                             <a class="dropdown-item" ng-click="exportDiagram('pdf')" translate>label.pdf</a>
                                             <a class="dropdown-item" ng-click="exportDiagram('png')" translate>label.png</a>

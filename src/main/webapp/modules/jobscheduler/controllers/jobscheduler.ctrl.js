@@ -1261,7 +1261,11 @@
             });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
-                vm._schedules = result.schedules;
+                vm._schedules = [];
+                angular.forEach(result.schedules, function(value){
+                    if(value && !value.substitute)
+                    vm._schedules.push(value)
+                });
             });
             vm.zones = moment.tz.names();
         };
@@ -1799,7 +1803,7 @@
                         }
                     }
                     if (event.eventType == "JobStateChanged" && vm.resourceFilters.state == 'processClass') {
-                        console.log("Event ");
+                        
                         if(vm.allProcessClasses && vm.allProcessClasses.length>0){
                             var obj = {};
                                     obj.jobschedulerId = $scope.schedulerIds.selected;
@@ -2271,7 +2275,11 @@
             });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
-                vm._schedules = result.schedules;
+                vm._schedules = [];
+                angular.forEach(result.schedules, function(value){
+                    if(value && !value.substitute)
+                    vm._schedules.push(value)
+                });
             });
             vm.zones = moment.tz.names();
         };
@@ -3388,6 +3396,8 @@
             vm.showSpinner = true;
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
+                if (vm.pageView == 'grid')
+                vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 vm.isLoading = true;
                 isLoaded = true;
@@ -3655,7 +3665,7 @@
             var maxEndTime;
             var orders = [];
             $scope.ordersNoDuplicate = [];
-            data2 = orderBy(data2, 'plannedStartTime', false);
+            //data2 = orderBy(data2, 'plannedStartTime', false);
 
             var groupJobChain = [];
             for (var i = 0; i < data2.length; i++) {
@@ -3862,7 +3872,8 @@
             vm.showSpinner = true;
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
-
+                if (vm.pageView == 'grid')
+                vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 vm.isLoading = true;
                 isLoaded = true;
@@ -3880,6 +3891,7 @@
             vm.dailyPlanFilters.reverse = !vm.dailyPlanFilters.reverse;
             vm.dailyPlanFilters.filter.sortBy = propertyName;
             if (vm.pageView == 'grid') {
+
                 vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
             }
@@ -4339,6 +4351,8 @@
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 isLoaded = true;
+                if (vm.pageView == 'grid')
+                vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans);
             }, function () {
                 isLoaded = true;

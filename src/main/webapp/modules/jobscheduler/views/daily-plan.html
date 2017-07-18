@@ -71,8 +71,8 @@
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">
                                 <span translate>label.sortBy</span>
                                 <span class="text-primary">
-                                <span ng-show="dailyPlanFilters.filter.sortBy =='processedPlan'">
-                                    {{'label.name' | translate}}
+                                <span ng-show="dailyPlanFilters.filter.sortBy =='processedPlanned'">
+                                    {{'label.path' | translate}}
                                     <i ng-show="!dailyPlanFilters.reverse" class="fa fa-caret-up"></i>
                                     <i ng-show="dailyPlanFilters.reverse" class="fa fa-caret-down"></i>
                                 </span>
@@ -95,7 +95,7 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-click="sortBy('processedPlan')" translate>label.name</a>
+                                <a class="dropdown-item" ng-click="sortBy('processedPlanned')" translate>label.path</a>
                                 <a class="dropdown-item" ng-click="sortBy('orderId')" translate>label.orderId</a>
                                 <a class="dropdown-item" ng-click="sortBy('plannedStartTime')" translate>label.plannedStart</a>
                                 <a class="dropdown-item" ng-click="sortBy('state._text')" translate>label.status</a>
@@ -362,10 +362,10 @@
                         <table class="table table-hover table-bordered " id="dailyPlanTableId">
                             <thead>
                             <tr>
-                                <th ng-click="sortBy('processedPlan')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
-                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'processedPlan' && !dailyPlanFilters.reverse"
+                                <th ng-click="sortBy('processedPlanned')"><a><span translate>label.jobChain</span><span>/</span><span translate>label.job</span>
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'processedPlanned' && !dailyPlanFilters.reverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'processedPlan' && dailyPlanFilters.reverse"
+                                    <i ng-show="dailyPlanFilters.filter.sortBy == 'processedPlanned' && dailyPlanFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
