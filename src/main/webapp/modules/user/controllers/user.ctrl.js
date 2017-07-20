@@ -2053,15 +2053,17 @@
             }
 
             function scrollToLast() {
+                console.log("scroll to "+endNodes2.rightMost.x+" and "+endNodes2.rightMost.y);
                 if ($('#mainTree').width() < (endNodes2.rightMost.x + 284)) {
-                   if ($("g.permission_node[transform='translate(" + endNodes2.rightMost.x + "," + endNodes2.rightMost.y + ")']") && $("g.permission_node[transform='translate(" + endNodes2.rightMost.x + "," + endNodes2.rightMost.y + ")']").offset()) {
-                    $('#mainTree').animate({
-                        scrollLeft: $("g.permission_node[transform='translate(" + endNodes2.rightMost.x + "," + endNodes2.rightMost.y + ")']").offset().left
+                    console.log("width matched 01");
+                       $('#mainTree').animate({
+                           scrollTop:endNodes2.rightMost.y,
+                        scrollLeft: endNodes2.rightMost.x
                     }, 0);
-                }
                 }
 
             }
+            
 var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
             function calculateTopMost(permission_node) {
                 endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
