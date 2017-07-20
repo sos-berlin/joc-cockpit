@@ -236,7 +236,7 @@
                                              ng-messages="form.filterName.$error">
                                             <div ng-message="maxlength" translate>message.tooLongError</div>
                                         </div>
-                                        <div class="help-block text-danger" ng-if="!isUnique">
+                                        <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
                                             <div translate>message.uniqueError</div>
                                         </div>
                                     </div>
@@ -251,9 +251,9 @@
                                                data-autoclose="1"
                                                placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text"
                                                ng-disabled="orderFilter1.planned">
-                                        <input ng-disabled="!orderFilter1.fromDate" class="form-control input-time"
-                                               ng-model="orderFilter1.fromTime" data-time-format="HH:mm:ss"
-                                               placeholder="HH:MM:SS" bs-timepicker data-length="1" data-minute-step="1"
+                                        <input valid-time maxlength="8" ng-disabled="!orderFilter1.fromDate" class="form-control input-time"
+                                               ng-model="orderFilter1.fromTime"
+                                               placeholder="HH:MM:SS"
                                                type="text" style="width: 175px;background-position: 150px">
                                         <a class="text-sm text-primary"
                                            ng-show="orderFilter1.fromDate || orderFilter1.fromTime"
@@ -271,9 +271,9 @@
                                                data-min-date="{{orderFilter1.fromDate}}"
                                                placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text"
                                                ng-disabled="orderFilter1.planned">
-                                        <input ng-disabled="!orderFilter1.toDate" class="form-control input-time"
-                                               ng-model="orderFilter1.toTime" data-time-format="HH:mm:ss"
-                                               placeholder="HH:MM:SS" bs-timepicker data-length="1" data-minute-step="1"
+                                        <input valid-time maxlength="8" ng-disabled="!orderFilter1.toDate" class="form-control input-time"
+                                               ng-model="orderFilter1.toTime"
+                                               placeholder="HH:MM:SS"
                                                type="text" style="width: 175px;background-position: 150px">
                                         <a class="text-sm text-primary"
                                            ng-show="orderFilter1.toDate || orderFilter1.toTime"

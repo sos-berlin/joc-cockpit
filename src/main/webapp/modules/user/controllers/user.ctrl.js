@@ -41,7 +41,6 @@
                 $rootScope.error = $window.sessionStorage.errorMsg;
                 $location.path('/error');
             });
-
         }
 
         function getComments() {
@@ -65,7 +64,6 @@
                 SOSAuth.setPermission(permission);
                 SOSAuth.save();
                 if ($window.localStorage.$SOS$URL && $window.localStorage.$SOS$URL != 'null') {
-
                     $location.path($window.localStorage.$SOS$URL).search(JSON.parse($window.localStorage.$SOS$URLPARAMS));
                     $window.localStorage.setItem('$SOS$URL', '');
                     $window.localStorage.setItem('$SOS$URLPARAMS', {});
@@ -525,20 +523,8 @@
             if (vm.adtLog.filter.date == 'all') {
 
             } else if (vm.adtLog.filter.date == 'today') {
-                var from = new Date();
-                var to = new Date();
-                from.setHours(0);
-                from.setMinutes(0);
-                from.setSeconds(0);
-                from.setMilliseconds(0);
-                to.setDate(to.getDate() + 1);
-                to.setHours(0);
-                to.setMinutes(0);
-                to.setSeconds(0);
-                to.setMilliseconds(0);
-
-                filter.dateFrom = from;
-                filter.dateTo = to;
+                 filter.dateFrom = '0d';
+                filter.dateTo = '0d';
             } else {
                 filter.dateFrom = vm.adtLog.filter.date;
             }
@@ -595,33 +581,32 @@
             if (vm.auditSearch.from) {
                 var fromDate = new Date(vm.auditSearch.from);
                 if (vm.auditSearch.fromTime) {
-
-                    fromDate.setHours(vm.auditSearch.fromTime.getHours());
-                    fromDate.setMinutes(vm.auditSearch.fromTime.getMinutes());
-                    fromDate.setSeconds(vm.auditSearch.fromTime.getSeconds());
-                    fromDate.setMilliseconds(0);
+                    fromDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
+                    fromDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
+                    fromDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
                 } else {
                     fromDate.setHours(0);
                     fromDate.setMinutes(0);
                     fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
                 }
+                    fromDate.setMilliseconds(0);
+
                 filter.dateFrom = fromDate;
             }
             if (vm.auditSearch.to) {
                 var toDate = new Date(vm.auditSearch.to);
                 if (vm.auditSearch.toTime) {
+                    toDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
+                    toDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
+                    toDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
 
-                    toDate.setHours(vm.auditSearch.toTime.getHours());
-                    toDate.setMinutes(vm.auditSearch.toTime.getMinutes());
-                    toDate.setSeconds(vm.auditSearch.toTime.getSeconds());
-                    toDate.setMilliseconds(0);
                 } else {
                     toDate.setHours(0);
                     toDate.setMinutes(0);
                     toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
                 }
+                    toDate.setMilliseconds(0);
+
                 filter.dateTo = toDate;
 
 
@@ -638,7 +623,15 @@
             });
 
         };
-
+        vm.advancedSearch = function () {
+            vm.showSearchPanel = true;
+            vm.auditSearch = {};
+            vm.auditSearch.from = new Date();
+            vm.auditSearch.from.setDate(vm.auditSearch.from.getDate() - 1);
+            vm.auditSearch.fromTime = '00:00';
+            vm.auditSearch.to = new Date();
+            vm.auditSearch.toTime = '00:00';
+        };
         vm.cancel = function () {
             if (!vm.adtLog.filter.date) {
                 vm.adtLog.filter.date = 'today';
@@ -728,7 +721,7 @@
         };
         vm.checkRole = function () {
             vm.isUnique = true;
-            for (var j = 0; j < vm.roles.length; j++) {
+            for(var j = 0; j<vm.roles.length;j++) {
                 if (vm.roles[j] != temp_role && (angular.equals(vm.roles[j], vm.role.role) || vm.roles[j] == vm.role.role)) {
                     vm.isUnique = false;
                     break;
@@ -848,7 +841,7 @@
                 });
                 if (vm.selectedUser) {
                     for (var i = 0; i < vm.users.length; i++) {
-                        if (vm.users[i].user == vm.selectedUser) {
+                        if(vm.users[i].user == vm.selectedUser) {
                             vm.users[i].roles.push(vm.role.role);
                             break;
                         }
@@ -908,7 +901,7 @@
                 temp_role = '';
             });
         };
-        vm.copyRole = function (role, mast) {
+        vm.copyRole = function (role,mast) {
             vm.role = angular.copy(role);
             vm.role.role = '';
             vm.rolName = role.role;
@@ -921,16 +914,16 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                angular.forEach(vm.masters, function (master, index) {
-                    if (angular.equals(master, mast)) {
-                        vm.masters[index].roles.push(vm.role);
-                    }
+                 angular.forEach(vm.masters, function (master, index) {
+                   if(angular.equals(master,mast)){
+                       vm.masters[index].roles.push(vm.role);
+                   }
                 });
-                saveInfo();
+               saveInfo();
                 vm.role = {};
                 vm.copy = false;
-                if (vm.selectedUser)
-                    vm.selectUser();
+                if(vm.selectedUser)
+                vm.selectUser();
             }, function () {
                 vm.role = {};
                 vm.copy = false;
@@ -1227,7 +1220,7 @@
                         }
                     }
                 }
-                if (flag){
+                if (flag) {
                     permissionNodes.push(arr);
                 }
                 else {
@@ -1746,14 +1739,14 @@
         function drawTree(json) {
             svg = d3.select("#mainTree").append("svg")
                 .attr('width', width)
-                .attr('height', ht - 20)
+                .attr('height', ht-10 )
                 .append('g')
                 .attr("transform", "translate(150,250)");
 
             var tree = d3.layout.tree()
                 .nodeSize([100, 250])
                 .separation(function () {
-                    return .5;
+                    return 0.5;
                 })
 
                 .children(function (permission_node) {
@@ -1776,7 +1769,7 @@
             root.y0 = 0;
             var _pList = angular.copy(vm.rolePermissions);
             checkPermissionList(root, _pList);
-            draw(root);
+            draw(root,0);
             var nodes;
 
             vm.expandAll = expandAll;
@@ -1788,7 +1781,7 @@
                 });
                 $('svg').attr('height', 7150);
                 $('svg').attr('width', 2010);
-                draw(nodes[0]);
+                draw(nodes[0],calculateTopMost());
             }
 
             function expand(permission_node) {
@@ -1812,7 +1805,7 @@
                 $('svg').attr('width', width);
                 $('svg').attr('height', ht);
                 $('svg g').attr('transform', "translate(150,250)");
-                draw(nodes[0]);
+                draw(nodes[0],0);
             }
 
             function collapseNode(permission_node) {
@@ -1841,7 +1834,7 @@
                     if (permissionNodes.name == 'sos')
                         expandSelected(permissionNodes);
                 });
-                draw(nodes[0]);
+                draw(nodes[0],calculateTopMost());
             };
 
             function collapseUnselected(permissionNodes) {
@@ -1859,10 +1852,17 @@
                     if (permissionNodes.name == 'sos')
                         collapseUnselected(permissionNodes);
                 });
-                draw(nodes[0]);
+                draw(nodes[0],calculateTopMost());
             };
-            function draw(source) {
+            function draw(source,diff) {
+              
                 nodes = tree.nodes(root);
+                nodes.forEach(function(d){
+                     if(diff>0){
+                           d.x= d.x+diff;
+                     }
+                })
+
                 var links = tree.links(nodes);
 
                 // Update links
@@ -2031,32 +2031,70 @@
                     permission_node.x0 = permission_node.x;
                     permission_node.y0 = permission_node.y;
                 });
-                t1 = $timeout(function () {
-                    checkForTop();
-                }, 850);
+
+                var t1=$timeout(function(){
+                    scrollToLast();
+                    $timeout.cancel(t1);
+                },850)
+
             }
 
 
             function checkWindowSize() {
-                $('svg').attr('width', (endNodes.rightMost.x - endNodes.leftMost.x) + 520);
-                if( $('svg').attr('width')>2100){
-                    $('svg').attr('width',2100)
+                $('svg').attr('width', (endNodes2.rightMost.x - endNodes2.leftMost.x) + 520);
+                if ($('svg').attr('width') > 2100) {
+                    $('svg').attr('width', 2100)
                 }
-                $('svg').attr('height', (endNodes.lowerMost.y - endNodes.topMost.y + 300));
-                if($('svg').attr('height')<ht){
+                $('svg').attr('height', (endNodes2.lowerMost.y - endNodes2.topMost.y + 300));
+                if ($('svg').attr('height') < ht) {
                     $('svg').attr('height', ht);
                 }
-                if ($('#mainTree').width() < (endNodes.rightMost.x + 284)) {
-                    scrollToLast(endNodes.rightMost.x, endNodes.rightMost.y)
-                }
+
             }
 
-            function scrollToLast(x, y) {
-                if ($("g.permission_node[transform='translate(" + x + "," + y + ")']") && $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset()) {
+            function scrollToLast() {
+                if ($('#mainTree').width() < (endNodes2.rightMost.x + 284)) {
+                   if ($("g.permission_node[transform='translate(" + endNodes2.rightMost.x + "," + endNodes2.rightMost.y + ")']") && $("g.permission_node[transform='translate(" + endNodes2.rightMost.x + "," + endNodes2.rightMost.y + ")']").offset()) {
                     $('#mainTree').animate({
-                        scrollLeft: $("g.permission_node[transform='translate(" + x + "," + y + ")']").offset().left
+                        scrollLeft: $("g.permission_node[transform='translate(" + endNodes2.rightMost.x + "," + endNodes2.rightMost.y + ")']").offset().left
                     }, 0);
                 }
+                }
+
+            }
+var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
+            function calculateTopMost(permission_node) {
+                endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
+                var topMost=0;
+                 nodes = tree.nodes(root);
+               nodes.forEach(function(node){
+                   if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
+                            endNodes2.rightMost.x = node.y;
+                            endNodes2.rightMost.y = node.x;
+                        }
+                        if (typeof endNodes2.leftMost.x == 'undefined' || (endNodes2.leftMost.x > node.y)) {
+                            endNodes2.leftMost.x = node.y;
+                            endNodes2.leftMost.y = node.x;
+                        }
+                        if (!endNodes2.topMost.y || (endNodes2.topMost.y >= node.x)) {
+                            endNodes2.topMost.x = node.y;
+                            endNodes2.topMost.y = node.x;
+                        }
+                        if (!endNodes2.lowerMost.y || (endNodes2.lowerMost.y <= node.x)) {
+                            endNodes2.lowerMost.x = node.y;
+                            endNodes2.lowerMost.y = node.x;
+                        }
+
+               })
+               
+                var diff =0;
+                if (endNodes2.topMost.y < -225) {
+                    diff = (-endNodes2.topMost.y - 225);
+                }
+                checkWindowSize();
+                return diff;
+
+
             }
 
             /**
@@ -2070,64 +2108,11 @@
                 } else {
                     collapse(permission_node);
                 }
-                draw(permission_node);
+
+                draw(permission_node,calculateTopMost());
             }
 
 
-            var endNodes = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
-
-            function checkForTop() {
-                endNodes = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
-                var diff = 0;
-                svg.selectAll('g.permission_node')[0].
-                    forEach(function (node) {
-                        var tr = d3.transform(node.getAttribute('transform'));
-                        if (tr.translate[1] < -160) {
-                            if (diff < -(160 + tr.translate[1])) {
-                                diff = -(160 + tr.translate[1]);
-                            }
-                        }
-                        if (!endNodes.rightMost.x || (endNodes.rightMost.x <= tr.translate[0])) {
-                            endNodes.rightMost.x = tr.translate[0];
-                            endNodes.rightMost.y = tr.translate[1];
-                        }
-                        if (typeof endNodes.leftMost.x == 'undefined' || (endNodes.leftMost.x > tr.translate[0])) {
-                            endNodes.leftMost.x = tr.translate[0];
-                            endNodes.leftMost.y = tr.translate[1];
-                        }
-                        if (!endNodes.topMost.y || (endNodes.topMost.y >= tr.translate[1])) {
-                            endNodes.topMost.x = tr.translate[0];
-                            endNodes.topMost.y = tr.translate[1];
-                        }
-                        if (!endNodes.lowerMost.y || (endNodes.lowerMost.y <= tr.translate[1])) {
-                            endNodes.lowerMost.x = tr.translate[0];
-                            endNodes.lowerMost.y = tr.translate[1];
-                        }
-                    });
-
-                checkWindowSize();
-                if (diff > 0) {
-                    svg.selectAll('g.permission_node')[0].
-                        forEach(function (node2) {
-                            var tr2 = d3.transform(node2.getAttribute('transform'));
-                            node2.setAttribute("transform", 'translate(' + tr2.translate[0] + ',' + (tr2.translate[1] + diff) + ')');
-                        });
-
-                    svg.selectAll("path.link")
-                        .attr("d", function (d) {
-                            var sourceX = d.source.x,
-                                sourceY = d.source.y + (boxWidth / 2),
-                                targetX = d.target.x,
-                                targetY = d.target.y - (boxWidth / 2);
-
-                            return "M" + sourceY + "," + (sourceX + diff)
-                                + "H" + (sourceY + (targetY - sourceY) / 2)
-                                + "V" + (targetX + diff)
-                                + "H" + targetY;
-
-                        })
-                }
-            }
 
             var _temp = [];
 

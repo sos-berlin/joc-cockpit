@@ -178,7 +178,7 @@
                                     <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
                                         <div ng-message="maxlength" translate>message.tooLongError</div>
                                    </div>
-                                   <div class="help-block text-danger" ng-if="!isUnique">
+                                   <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
                                       <div translate>message.uniqueError</div>
                                    </div>
                                </div>

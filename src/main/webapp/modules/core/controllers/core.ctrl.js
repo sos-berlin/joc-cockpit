@@ -1523,11 +1523,9 @@
             vm.paramObject.params.splice(index, 1);
         };
 
-        vm.viewChangeClicked = function (nextView) {
-            if (nextView === 'month') {
-                return false;
-            }
-        };
+         vm.$watch('calendarView', function (newNames, oldValues) {
+             console.log(newNames)
+         });
 
     }
 

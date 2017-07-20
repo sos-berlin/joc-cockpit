@@ -1031,5 +1031,6 @@
   "button.expandSelected": "Expand active",
   "label.export": "Export",
   "label.pdf": "PDF",
-  "label.png": "PNG"
+  "label.png": "PNG",
+  "label.calendarViewForPlannedJob": "Calendar View for planned job"
 }

@@ -159,7 +159,7 @@
                                      ng-messages="form.filterName.$error">
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                 </div>
-                                <div class="help-block text-danger" ng-if="!isUnique">
+                                <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
                                     <div translate>message.uniqueError</div>
                                 </div>
                             </div>
@@ -173,11 +173,9 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1"
                                        placeholder="{{dataFormat | uppercase}}" bs-datepicker
                                        type="text">
-                                <input ng-disabled="!jobFilter.fromDate" class="form-control input-time"
+                                <input valid-time maxlength="8" ng-disabled="!jobFilter.fromDate" class="form-control input-time"
                                        ng-model="jobFilter.fromTime"
-                                       data-time-format="HH:mm:ss"
-                                       data-length="1" data-minute-step="1"
-                                       placeholder="HH:MM:SS" bs-timepicker
+                                       placeholder="HH:MM:SS"
                                        type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobFilter.fromDate || jobFilter.fromTime" ng-click="jobFilter.fromDate='';jobFilter.fromTime=''; " translate>button.clear</a>
                             </div>
@@ -191,11 +189,9 @@
                                        data-date-format="{{dataFormat}}" data-autoclose="1"
                                        data-min-date="{{jobFilter.fromDate}}"
                                        placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                                <input ng-disabled="!jobFilter.toDate" class="form-control input-time"
+                                <input valid-time maxlength="8" ng-disabled="!jobFilter.toDate" class="form-control input-time"
                                        ng-model="jobFilter.toTime"
-                                       data-time-format="HH:mm:ss"
-                                       data-length="1" data-minute-step="1"
-                                       placeholder="HH:MM:SS" bs-timepicker
+                                       placeholder="HH:MM:SS"
                                        type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobFilter.toDate || jobFilter.toTime" ng-click="jobFilter.toDate='';jobFilter.toTime=''; " translate>button.clear</a>
                             </div>

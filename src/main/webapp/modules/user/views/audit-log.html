@@ -62,7 +62,7 @@
                 <span class="text" ng-bind="'label.auditLog' | translate"></span>
             </div>
             <div class="col-md-6 col-sm-8">
-                <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="showSearchPanel=true" ng-show="!showSearchPanel">
+                <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </div>
                 <div class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()" ng-if="showSearchPanel">
@@ -82,8 +82,8 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="auditSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!auditSearch.from" class="form-control input-time m-l" ng-model="auditSearch.fromTime" data-time-format="HH:mm:ss"
-                                       data-length="1" data-autoclose="1" placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input valid-time maxlength="8" ng-disabled="!auditSearch.from" class="form-control input-time m-l" ng-model="auditSearch.fromTime"
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -92,8 +92,8 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="auditSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{auditSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!auditSearch.to" class="form-control input-time m-l" ng-model="auditSearch.toTime" data-time-format="HH:mm:ss" data-length="1"
-                                       data-autoclose="1" placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input valid-time maxlength="8" ng-disabled="!auditSearch.to" class="form-control input-time m-l" ng-model="auditSearch.toTime"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
                         <div class="form-group row">

@@ -162,7 +162,7 @@
                                      ng-messages="form.filterName.$error">
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                 </div>
-                                <div class="help-block text-danger" ng-if="!isUnique">
+                                <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
                                     <div translate>message.uniqueError</div>
                                 </div>
                             </div>
@@ -188,8 +188,8 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="searchDailyPlanFilter.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!searchDailyPlanFilter.from" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.fromTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input valid-time maxlength="8" ng-disabled="!searchDailyPlanFilter.from" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.fromTime"
+                                       placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.from || searchDailyPlanFilter.fromTime" ng-click="searchDailyPlanFilter.from='';searchDailyPlanFilter.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
@@ -199,8 +199,8 @@
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
                                        ng-model="searchDailyPlanFilter.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{searchDailyPlanFilter.from}}"
                                        bs-datepicker type="text">
-                                <input ng-disabled="!searchDailyPlanFilter.to" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.toTime" data-time-format="HH:mm:ss"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" data-length="1" data-minute-step="1" bs-timepicker type="text" style="width: 175px;background-position: 150px">
+                                <input valid-time maxlength="8" ng-disabled="!searchDailyPlanFilter.to" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.toTime"
+                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                                  <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.to || searchDailyPlanFilter.toTime" ng-click="searchDailyPlanFilter.to='';searchDailyPlanFilter.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>

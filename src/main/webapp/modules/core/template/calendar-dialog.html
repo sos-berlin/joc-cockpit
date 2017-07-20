@@ -1,17 +1,20 @@
 <div>
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
-        <h4 class="modal-title">{{_jobChain.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedOrders</span>
-        <span ng-if="maxPlannedTime">{{'label.maxAvailablePlanedDate' |translate}} : </span><span class="text-muted text" >{{maxPlannedTime|stringToDate}}</span></h4>
+        <h4 class="modal-title">
+            <span ng-if="_jobChain.name">{{_jobChain.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedOrders</span></span>
+            <span ng-if="_job.name">{{_job.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedJob</span></span>
+            <span ng-if="maxPlannedTime" class="text-muted font14">({{'label.maxAvailablePlanedDate' | translate}} : {{maxPlannedTime|stringToDate}})</span>
+        </h4>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" ng-class="{'min-ht-500':planItems.length>0}">
 
         <div class="text-md text-center">
-            <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView">
+            <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="getPlan(calendarView,viewDate)">
                 <i class="fa fa-angle-left fa-lg"></i>
             </a>
             {{ calendarTitle }}
-            <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView">
+            <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="getPlan(calendarView,viewDate)">
                 <i class="fa fa-angle-right fa-lg"></i>
             </a>
         </div>
@@ -20,7 +23,7 @@
                 <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
                     <li class="nav-item">
                         <a class="nav-link" ng-class="{'active' : calendarView=='month'}" ng-model="calendarView"
-                           uib-btn-radio="'month'">
+                           uib-btn-radio="'month'" ng-click="getPlan(calendarView,viewDate)">
                             <span class="nav-text text-dark p-b-sm">
                                 <span class="" translate>label.monthly</span>
                             </span>
@@ -31,7 +34,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" ng-class="{'active' : calendarView=='year'}" ng-model="calendarView"
-                           uib-btn-radio="'year'">
+                           uib-btn-radio="'year'" ng-click="getPlan(calendarView,viewDate)">
                             <span class="nav-text text-dark p-b-sm"><span class="" translate>label.yearly</span></span>
                         </a>
                     </li>

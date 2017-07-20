@@ -1244,7 +1244,7 @@
 
             var oHeight = $('#exportId').height();
             var oWidth = $('#exportId').width();
-            $(".block-ellipsis").css("overflow", "auto")
+            $(".block-ellipsis").css("overflow", "auto");
             $('#exportId').height(bound.maxTop + 600);
             $('#exportId').width(bound.maxLeft + 100);
             if (vm.slider && vm.slider.value != 100) {
@@ -1252,7 +1252,7 @@
                 $("#zoomCn").css("transform", "Scale(1)");
                 $("#zoomCn").css("transform-origin", "0 0");
             }
-            var els = $(".orders-block-cls .order-cls").splice(5)
+            var els = $(".orders-block-cls .order-cls").splice(5);
             if (els && els.length > 0) {
                 $.each(els, function (i, e) {
                     $(this).hide();
@@ -1265,23 +1265,29 @@
             }
 
 
-            html2canvas($('#exportId'), {useCORS:true,
-                width: (bound.maxLeft + 100), height: (bound.maxTop + 600),background:getBackground(),
+            html2canvas($('#exportId'), {
+                useCORS: true,
+                width: (bound.maxLeft + 100),
+                height: (bound.maxTop + 600),
+                background: getBackground(),
 
                 onrendered: function (canvas) {
+
                     var data = canvas.toDataURL('image/png');
-                    if(type=='pdf'){
+
+                    if (type == 'pdf') {
                         var docDefinition = {
-                        content: [{
-                            image: data
-                        }]
-                    };
+                            content: [{
+                                image: data,
+                                width: 500
+                            }]
+                        };
 
                         pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
-                    }else{
-                    setCanvasBackground(canvas,getBackground());
-                        canvas.toBlob(function(blob){
-                            FileSaver.saveAs(blob, vm.jobChain.name+'.png');
+                    } else {
+                        setCanvasBackground(canvas, getBackground());
+                        canvas.toBlob(function (blob) {
+                            FileSaver.saveAs(blob, vm.jobChain.name + '.png');
                         })
                     }
                     if (els && els.length > 0) {
@@ -1303,12 +1309,7 @@
                     }
                     vm.loading = false;
                 }
-               })
-
-
-
-
-
+            });
         }
 
         vm.isLoading = true;
@@ -1869,7 +1870,11 @@
                     jobschedulerId: $scope.schedulerIds.selected,
                     compact: true
                 }).then(function (res) {
-                    vm.schedules = res.schedules;
+                    vm.schedules = [];
+                    angular.forEach(res.schedules, function (value) {
+                        if (value && !value.substitute)
+                            vm.schedules.push(value)
+                    });
                 });
 
                 vm.zones = moment.tz.names();
@@ -2148,6 +2153,8 @@
         vm.reset = function () {
             vm.object = {};
         };
+        var firstDay;
+        var lastDay;
         function volatileInfo(draw) {
             JobChainService.getJobChain({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -2295,17 +2302,68 @@
         };
 
 
-        vm.viewCalendar = function (nestedJobChain) {
-            vm.maxPlannedTime = undefined;
-            vm.isCaledarLoading = true;
-            vm._jobChain = nestedJobChain ? nestedJobChain : vm.jobChain;
+
+        vm.getPlan = function(calendarView,viewDate){
+            var firstDay2 = new Date(new Date(viewDate).getFullYear(),0, 1,0,0,0);
+             var lastDay2 = new Date(new Date(viewDate).getFullYear(),11, 31,23,59,0);
+            if(calendarView=='month'){
+                firstDay2 = new Date(new Date(viewDate).getFullYear(),new Date(viewDate).getMonth(), 1,0,0,0);
+                lastDay2 = new Date(new Date(viewDate).getFullYear(),new Date(viewDate).getMonth()+1, 0,23,59,0);
+            }
+
+             if(new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)){
+                return;
+            }
+                 firstDay=firstDay2;
+                 lastDay = lastDay2;
+
             vm.planItems = [];
+            vm.isCaledarLoading = true;
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                jobChain: vm._jobChain.path
+               jobChain: vm.selectedChain.path,
+                        dateFrom:firstDay,
+                        dateTo:lastDay
             }).then(function (res) {
-                vm.planItemData = res.planItems;
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function (err) {
+                vm.isCaledarLoading = false;
+            });
+
+        }
+
+
+
+
+
+        vm.viewCalendar = function (nestedJobChain) {
+            vm.maxPlannedTime = undefined;
+            vm.isCaledarLoading = true;
+            vm.selectedChain=nestedJobChain;
+            vm._jobChain = nestedJobChain ? nestedJobChain : vm.jobChain;
+            vm.planItems = [];
+            firstDay = new Date(new Date().getFullYear(),new Date().getMonth(), 1,0,0,0);
+            lastDay = new Date(new Date().getFullYear(),new Date().getMonth()+1, 0,23,59,0);
+            DailyPlanService.getPlans({
+                jobschedulerId: $scope.schedulerIds.selected,
+                states: ['PLANNED'],
+                jobChain: vm._jobChain.path,
+                        dateFrom:firstDay,
+                        dateTo:lastDay
+            }).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function (err) {
+                vm.isCaledarLoading = false;
+            });
+            openCalendar();
+            vm.object.jobChains = [];
+        };
+
+ function populatePlanItems(res){
+            vm.planItemData = res.planItems;
                 vm.planItemData.forEach(function (data) {
                     var planData = {
                         plannedStartTime: data.plannedStartTime,
@@ -2317,14 +2375,7 @@
                         vm.maxPlannedTime = new Date(data.plannedStartTime);
                     }
                 });
-                vm.isCaledarLoading = false;
-            }, function (err) {
-                vm.isCaledarLoading = false;
-            });
-            openCalendar();
-            vm.object.jobChains = [];
-        };
-
+        }
 
         vm.showCalendar = vm.viewCalendar;
 
@@ -2828,6 +2879,7 @@
         vm.allOrders = [];
 
         vm.my_tree = {};
+        vm.isUnique = true;
 
         vm.object = {};
         vm.filter_tree = {};
@@ -3450,17 +3502,8 @@
                 } else if (/^\s*\d+[d,h]\s*$/i.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
-                    fromDate = new Date();
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
-                    toDate = new Date();
-                    toDate.setDate(toDate.getDate() + 1);
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
+                    fromDate = '0d';
+                    toDate = '0d';
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
@@ -3691,31 +3734,30 @@
             if (vm.orderFilter1.fromDate) {
                 fromDate = new Date(vm.orderFilter1.fromDate);
                 if (vm.orderFilter1.fromTime) {
-                    vm.orderFilter1.fromTime = new Date(vm.orderFilter1.fromTime);
-                    fromDate.setHours(vm.orderFilter1.fromTime.getHours());
-                    fromDate.setMinutes(vm.orderFilter1.fromTime.getMinutes());
-                    fromDate.setSeconds(vm.orderFilter1.fromTime.getSeconds());
+                    fromDate.setHours(moment(vm.orderFilter1.fromTime, 'HH:mm:ss').hours());
+                    fromDate.setMinutes(moment(vm.orderFilter1.fromTime, 'HH:mm:ss').minutes());
+                    fromDate.setSeconds(moment(vm.orderFilter1.fromTime, 'HH:mm:ss').seconds());
                 } else {
                     fromDate.setHours(0);
                     fromDate.setMinutes(0);
                     fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
                 }
+                 fromDate.setMilliseconds(0);
 
             }
             if (vm.orderFilter1.toDate) {
                 toDate = new Date(vm.orderFilter1.toDate);
                 if (vm.orderFilter1.toTime) {
-                    vm.orderFilter1.toTime = new Date(vm.orderFilter1.toTime);
-                    toDate.setHours(vm.orderFilter1.toTime.getHours());
-                    toDate.setMinutes(vm.orderFilter1.toTime.getMinutes());
-                    toDate.setSeconds(vm.orderFilter1.toTime.getSeconds());
+                    toDate.setHours(moment(vm.orderFilter1.toTime, 'HH:mm:ss').hours());
+                    toDate.setMinutes(moment(vm.orderFilter1.toTime, 'HH:mm:ss').minutes());
+                    toDate.setSeconds(moment(vm.orderFilter1.toTime, 'HH:mm:ss').seconds());
                 } else {
                     toDate.setHours(0);
                     toDate.setMinutes(0);
                     toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
                 }
+                    toDate.setMilliseconds(0);
+
             }
 
             if (fromDate && toDate) {
@@ -3749,18 +3791,10 @@
             vm.showSearchPanel = true;
             vm.orderFilter1 = {};
             vm.orderFilter1.fromDate = new Date();
-            vm.orderFilter1.fromDate.setHours(0);
-            vm.orderFilter1.fromDate.setMinutes(0);
-            vm.orderFilter1.fromDate.setSeconds(0);
-            vm.orderFilter1.fromDate.setMilliseconds(0);
-            vm.orderFilter1.fromTime = angular.copy(vm.orderFilter1.fromDate);
+            vm.orderFilter1.fromTime = '00:00';
             vm.orderFilter1.toDate = new Date();
             vm.orderFilter1.toDate.setDate(vm.orderFilter1.toDate.getDate() + 1);
-            vm.orderFilter1.toDate.setHours(0);
-            vm.orderFilter1.toDate.setMinutes(0);
-            vm.orderFilter1.toDate.setSeconds(0);
-            vm.orderFilter1.toDate.setMilliseconds(0);
-            vm.orderFilter1.toTime = angular.copy(vm.orderFilter1.toDate);
+            vm.orderFilter1.toTime = '00:00';
         };
         vm.cancel = function (form) {
             vm.showSearchPanel = false;
@@ -4167,7 +4201,12 @@
             vm.orderFilter1.paths = vm.paths;
         };
         vm.remove = function (object) {
-            vm.orderFilter1.paths.splice(object, 1);
+            for (var i = 0; i < vm.orderFilter1.paths.length; i++) {
+                if (angular.equals(vm.orderFilter1.paths[i], object)) {
+                    vm.orderFilter1.paths.splice(i, 1);
+                    break;
+                }
+            }
         };
 
 
@@ -5039,6 +5078,8 @@
         vm.allCheck = {
             checkbox: false
         };
+        var firstDay;
+        var lastDay;
 
         var watcher1 = vm.$watchCollection('object.orders', function (newNames) {
             if (newNames && newNames.length > 0) {
@@ -5375,7 +5416,6 @@
         }
         vm.setRunTime = function (order) {
             loadRuntime(order);
-
             ScheduleService.getSchedulesP({
                 jobschedulerId: $scope.schedulerIds.selected,
                 compact: true
@@ -5792,18 +5832,67 @@
         };
 
 
+
+        vm.getPlan = function(calendarView,viewDate){
+            var firstDay2 = new Date(new Date(viewDate).getFullYear(),0, 1,0,0,0);
+             var lastDay2 = new Date(new Date(viewDate).getFullYear(),11, 31,23,59,0);
+            if(calendarView=='month'){
+                firstDay2 = new Date(new Date(viewDate).getFullYear(),new Date(viewDate).getMonth(), 1,0,0,0);
+                lastDay2 = new Date(new Date(viewDate).getFullYear(),new Date(viewDate).getMonth()+1, 0,23,59,0);
+            }
+
+             if(new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)){
+                return;
+            }
+                 firstDay=firstDay2;
+                 lastDay = lastDay2;
+
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            DailyPlanService.getPlans({
+                jobschedulerId: $scope.schedulerIds.selected,
+                states: ['PLANNED'],
+                orderId: vm.selectedOrder.orderId,
+                        dateFrom:firstDay,
+                        dateTo:lastDay
+            }).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function (err) {
+                vm.isCaledarLoading = false;
+            });
+
+        }
+
+
         vm.viewCalendar = function (order) {
             vm.maxPlannedTime = undefined;
+            vm.selectedOrder=order;
             vm.isCaledarLoading = true;
             vm._jobChain = order;
             vm._jobChain.name = order.orderId;
             vm.planItems = [];
+             firstDay = new Date(new Date().getFullYear(),new Date().getMonth(), 1,0,0,0);
+            lastDay = new Date(new Date().getFullYear(),new Date().getMonth()+1, 0,23,59,0);
+
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                orderId: order.orderId
+                orderId: order.orderId,
+                        dateFrom:firstDay,
+                        dateTo:lastDay
             }).then(function (res) {
-                vm.planItemData = res.planItems;
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function (err) {
+                vm.isCaledarLoading = false;
+            });
+            openCalendar();
+            vm.reset();
+        };
+
+        function populatePlanItems(res){
+            vm.planItemData = res.planItems;
                 vm.planItemData.forEach(function (data) {
                     var planData = {
                         plannedStartTime: data.plannedStartTime,
@@ -5815,13 +5904,7 @@
                         vm.maxPlannedTime = new Date(data.plannedStartTime);
                     }
                 });
-                vm.isCaledarLoading = false;
-            }, function (err) {
-                vm.isCaledarLoading = false;
-            });
-            openCalendar();
-            vm.reset();
-        };
+        }
 
         function openCalendar() {
             var modalInstance = $uibModal.open({
@@ -5890,6 +5973,7 @@
                          JobService, orderBy, CoreService, UserService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
+        vm.isUnique = true;
 
         vm.historyFilters = CoreService.getHistoryTab();
         vm.order = vm.historyFilters.order;
@@ -6350,33 +6434,29 @@
                 if (vm.jobSearch.from) {
                     var fromDate = new Date(vm.jobSearch.from);
                     if (vm.jobSearch.fromTime) {
-
-                        fromDate.setHours(vm.jobSearch.fromTime.getHours());
-                        fromDate.setMinutes(vm.jobSearch.fromTime.getMinutes());
-                        fromDate.setSeconds(vm.jobSearch.fromTime.getSeconds());
-                        fromDate.setMilliseconds(0);
+                        fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
+                        fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
+                        fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
                     } else {
                         fromDate.setHours(0);
                         fromDate.setMinutes(0);
                         fromDate.setSeconds(0);
-                        fromDate.setMilliseconds(0);
                     }
+                    fromDate.setMilliseconds(0);
                     filter.dateFrom = fromDate;
                 }
                 if (vm.jobSearch.to) {
                     var toDate = new Date(vm.jobSearch.to);
                     if (vm.jobSearch.toTime) {
-
-                        toDate.setHours(vm.jobSearch.toTime.getHours());
-                        toDate.setMinutes(vm.jobSearch.toTime.getMinutes());
-                        toDate.setSeconds(vm.jobSearch.toTime.getSeconds());
-                        toDate.setMilliseconds(0);
+                        toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
+                        toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
+                        toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
                     } else {
                         toDate.setHours(0);
                         toDate.setMinutes(0);
                         toDate.setSeconds(0);
-                        toDate.setMilliseconds(0);
                     }
+                    toDate.setMilliseconds(0);
                     filter.dateTo = toDate;
                 }
 
@@ -6430,33 +6510,31 @@
                 if (vm.jobChainSearch.from) {
                     var fromDate = new Date(vm.jobChainSearch.from);
                     if (vm.jobChainSearch.fromTime) {
-
-                        fromDate.setHours(vm.jobChainSearch.fromTime.getHours());
-                        fromDate.setMinutes(vm.jobChainSearch.fromTime.getMinutes());
-                        fromDate.setSeconds(vm.jobChainSearch.fromTime.getSeconds());
-                        fromDate.setMilliseconds(0);
+                        fromDate.setHours(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').hours());
+                        fromDate.setMinutes(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').minutes());
+                        fromDate.setSeconds(moment(vm.jobChainSearch.fromTime, 'HH:mm:ss').seconds());
                     } else {
                         fromDate.setHours(0);
                         fromDate.setMinutes(0);
                         fromDate.setSeconds(0);
-                        fromDate.setMilliseconds(0);
                     }
+                    fromDate.setMilliseconds(0);
                     filter.dateFrom = fromDate;
                 }
                 if (vm.jobChainSearch.to) {
                     var toDate = new Date(vm.jobChainSearch.to);
                     if (vm.jobChainSearch.toTime) {
+                        toDate.setHours(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').hours());
+                        toDate.setMinutes(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').minutes());
+                        toDate.setSeconds(moment(vm.jobChainSearch.toTime, 'HH:mm:ss').seconds());
 
-                        toDate.setHours(vm.jobChainSearch.toTime.getHours());
-                        toDate.setMinutes(vm.jobChainSearch.toTime.getMinutes());
-                        toDate.setSeconds(vm.jobChainSearch.toTime.getSeconds());
-                        toDate.setMilliseconds(0);
                     } else {
                         toDate.setHours(0);
                         toDate.setMinutes(0);
                         toDate.setSeconds(0);
-                        toDate.setMilliseconds(0);
                     }
+                    toDate.setMilliseconds(0);
+
                     filter.dateTo = toDate;
                 }
 
@@ -6517,34 +6595,15 @@
 
             vm.jobChainSearch.from = new Date();
             vm.jobChainSearch.from.setDate(vm.jobChainSearch.from.getDate() - 1);
-            vm.jobChainSearch.from.setHours(0);
-            vm.jobChainSearch.from.setMinutes(0);
-            vm.jobChainSearch.from.setSeconds(0);
-            vm.jobChainSearch.from.setMilliseconds(0);
-            vm.jobChainSearch.fromTime = angular.copy(vm.jobChainSearch.from);
+            vm.jobChainSearch.fromTime = '00:00';
             vm.jobChainSearch.to = new Date();
-
-            vm.jobChainSearch.to.setHours(0);
-            vm.jobChainSearch.to.setMinutes(0);
-            vm.jobChainSearch.to.setSeconds(0);
-            vm.jobChainSearch.to.setMilliseconds(0);
-            vm.jobChainSearch.toTime = angular.copy(vm.jobChainSearch.to);
-
+            vm.jobChainSearch.toTime = '00:00';
 
             vm.jobSearch.from = new Date();
             vm.jobSearch.from.setDate(vm.jobSearch.from.getDate() - 1);
-            vm.jobSearch.from.setHours(0);
-            vm.jobSearch.from.setMinutes(0);
-            vm.jobSearch.from.setSeconds(0);
-            vm.jobSearch.from.setMilliseconds(0);
-            vm.jobSearch.fromTime = angular.copy(vm.jobSearch.from);
+            vm.jobSearch.fromTime = '00:00';
             vm.jobSearch.to = new Date();
-
-            vm.jobSearch.to.setHours(0);
-            vm.jobSearch.to.setMinutes(0);
-            vm.jobSearch.to.setSeconds(0);
-            vm.jobSearch.to.setMilliseconds(0);
-            vm.jobSearch.toTime = angular.copy(vm.jobSearch.to);
+            vm.jobSearch.toTime = '00:00';
 
         };
         vm.cancel = function (form) {
@@ -6646,17 +6705,8 @@
                     var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.selectedFiltered1.planned)[2]);
                     fromDate.setSeconds(toDate.getSeconds() - seconds);
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    fromDate = new Date();
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
-                    toDate = new Date();
-                    toDate.setDate(toDate.getDate() + 1);
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
+                    fromDate = '0d';
+                    toDate = '0d';
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered1.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
@@ -6736,17 +6786,8 @@
                     var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.selectedFiltered2.planned)[2]);
                     fromDate.setSeconds(toDate.getSeconds() - seconds);
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    fromDate = new Date();
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                    fromDate.setMilliseconds(0);
-                    toDate = new Date();
-                    toDate.setDate(toDate.getDate() + 1);
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                    toDate.setMilliseconds(0);
+                    fromDate = '0d';
+                    toDate = '0d';
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered2.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
@@ -7508,35 +7549,83 @@
         vm.remove = function (object, type) {
             if (type == 'jobChain') {
                 if (vm.historyFilter && vm.historyFilter.jobChains) {
-                    vm.historyFilter.jobChains.splice(object, 1);
+                    for (var i = 0; i < vm.historyFilter.jobChains.length; i++) {
+                        if (angular.equals(vm.historyFilter.jobChains[i], object)) {
+                            vm.historyFilter.jobChains.splice(i, 1);
+                            break;
+                        }
+                    }
+
                 } else {
-                    vm.jobChainSearch.jobChains.splice(object, 1);
+                    for (var i = 0; i < vm.jobChainSearch.jobChains.length; i++) {
+                        if (angular.equals(vm.jobChainSearch.jobChains[i], object)) {
+                            vm.jobChainSearch.jobChains.splice(i, 1);
+                            break;
+                        }
+                    }
+
                 }
-                vm.object.jobChains.splice(object, 1);
             } else if (type == 'job') {
                 if (vm.historyFilter && vm.historyFilter.jobs) {
-                    vm.historyFilter.jobs.splice(object, 1);
+                    for (var i = 0; i < vm.historyFilter.jobs.length; i++) {
+                        if (angular.equals(vm.historyFilter.jobs[i], object)) {
+                            vm.historyFilter.jobs.splice(i, 1);
+                            break;
+                        }
+                    }
                 } else {
-                    vm.jobSearch.jobs.splice(object, 1);
+                    for (var i = 0; i < vm.jobSearch.jobs.length; i++) {
+                        if (angular.equals(vm.jobSearch.jobs[i], object)) {
+                            vm.jobSearch.jobs.splice(i, 1);
+                            break;
+                        }
+                    }
                 }
-                vm.object.jobs.splice(object, 1);
+
             } else if (type == 'order') {
                 if (vm.historyFilter && vm.historyFilter.orders) {
-                    vm.historyFilter.orders.splice(object, 1);
+                    for (var i = 0; i < vm.historyFilter.orders.length; i++) {
+                        if (angular.equals(vm.historyFilter.orders[i], object)) {
+                            vm.historyFilter.orders.splice(i, 1);
+                            vm.object.orders.splice(i, 1);
+                            break;
+                        }
+                    }
                 } else {
-                    vm.jobChainSearch.orders.splice(object, 1);
+                    for (var i = 0; i < vm.jobChainSearch.orders.length; i++) {
+                        if (angular.equals(vm.jobChainSearch.orders[i], object)) {
+                            vm.jobChainSearch.orders.splice(i, 1);
+                            vm.object.orders.splice(i, 1);
+                            break;
+                        }
+                    }
                 }
-                vm.object.orders.splice(object, 1);
+
             } else {
                 if (vm.historyFilter && vm.historyFilter.paths) {
-                    vm.historyFilter.paths.splice(object, 1);
-                } else {
-                    if (vm.jobChainSearch && vm.historyFilters.type == 'jobChain')
-                        vm.jobChainSearch.paths.splice(object, 1);
-                    else if (vm.jobSearch && vm.historyFilters.type == 'job')
-                        vm.jobSearch.paths.splice(object, 1);
+                    for (var i = 0; i < vm.historyFilter.paths.length; i++) {
+                        if (angular.equals(vm.historyFilter.paths[i], object)) {
+                            vm.historyFilter.paths.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else if (vm.jobChainSearch && vm.historyFilters.type == 'jobChain') {
+                    for (var i = 0; i < vm.jobChainSearch.paths.length; i++) {
+                        if (angular.equals(vm.jobChainSearch.paths[i], object)) {
+                            vm.jobChainSearch.paths.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else if (vm.jobSearch && vm.historyFilters.type == 'job') {
+                    for (var i = 0; i < vm.jobSearch.paths.length; i++) {
+                        if (angular.equals(vm.jobSearch.paths[i], object)) {
+                            vm.jobSearch.paths.splice(i, 1);
+                            break;
+                        }
+                    }
                 }
             }
+
         };
 
         /**--------------- ignore list functions -------------*/
@@ -7851,4 +7940,3 @@
 
     }
 })();
-

@@ -1031,5 +1031,6 @@
   "message.permissionIsAlreadyCovered": "Permission is already covered",
   "label.export": "Export",
   "label.pdf": "PDF",
-  "label.png": "PNG"
+  "label.png": "PNG",
+  "label.calendarViewForPlannedJob": "Calendar View for planned job"
 }
