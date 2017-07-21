@@ -538,6 +538,10 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords);
             obj = setDateRange(obj);
+            obj.timeZone = vm.userPreferences.zone;
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj['timeZone']
+            }
             AuditLogService.getLogs(obj).then(function (result) {
                 vm.auditLogs = result.auditLog;
                 vm.isLoading = true;
@@ -589,7 +593,7 @@
                     fromDate.setMinutes(0);
                     fromDate.setSeconds(0);
                 }
-                    fromDate.setMilliseconds(0);
+                fromDate.setMilliseconds(0);
 
                 filter.dateFrom = fromDate;
             }
@@ -605,7 +609,7 @@
                     toDate.setMinutes(0);
                     toDate.setSeconds(0);
                 }
-                    toDate.setMilliseconds(0);
+                toDate.setMilliseconds(0);
 
                 filter.dateTo = toDate;
 
@@ -614,6 +618,11 @@
             if (vm.auditSearch.account) {
                 filter.account = vm.auditSearch.account;
             }
+            filter.timeZone = vm.userPreferences.zone;
+            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                delete filter['timeZone']
+            }
+
             AuditLogService.getLogs(filter).then(function (result) {
                 vm.auditLogs = result.auditLog;
                 vm.loading = false;
@@ -721,7 +730,7 @@
         };
         vm.checkRole = function () {
             vm.isUnique = true;
-            for(var j = 0; j<vm.roles.length;j++) {
+            for (var j = 0; j < vm.roles.length; j++) {
                 if (vm.roles[j] != temp_role && (angular.equals(vm.roles[j], vm.role.role) || vm.roles[j] == vm.role.role)) {
                     vm.isUnique = false;
                     break;
@@ -841,7 +850,7 @@
                 });
                 if (vm.selectedUser) {
                     for (var i = 0; i < vm.users.length; i++) {
-                        if(vm.users[i].user == vm.selectedUser) {
+                        if (vm.users[i].user == vm.selectedUser) {
                             vm.users[i].roles.push(vm.role.role);
                             break;
                         }
@@ -901,7 +910,7 @@
                 temp_role = '';
             });
         };
-        vm.copyRole = function (role,mast) {
+        vm.copyRole = function (role, mast) {
             vm.role = angular.copy(role);
             vm.role.role = '';
             vm.rolName = role.role;
@@ -914,16 +923,16 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                 angular.forEach(vm.masters, function (master, index) {
-                   if(angular.equals(master,mast)){
-                       vm.masters[index].roles.push(vm.role);
-                   }
+                angular.forEach(vm.masters, function (master, index) {
+                    if (angular.equals(master, mast)) {
+                        vm.masters[index].roles.push(vm.role);
+                    }
                 });
-               saveInfo();
+                saveInfo();
                 vm.role = {};
                 vm.copy = false;
-                if(vm.selectedUser)
-                vm.selectUser();
+                if (vm.selectedUser)
+                    vm.selectUser();
             }, function () {
                 vm.role = {};
                 vm.copy = false;
@@ -1078,7 +1087,6 @@
         };
 
 
-
         vm.showMaster = function (user) {
             $location.path('/users/master');
             vm.selectUser(user);
@@ -1118,8 +1126,8 @@
         };
     }
 
-    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService','$timeout','toasty','gettextCatalog'];
-    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout,toasty, gettextCatalog) {
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService', '$timeout', 'toasty', 'gettextCatalog'];
+    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout, toasty, gettextCatalog) {
         var vm = $scope;
         vm.loading = true;
         vm.isDuplicate = false;
@@ -1598,8 +1606,8 @@
                     if (permission_node._parents[j].excluded) {
                         permission_node._parents[j].greyedBtn = true;
                     }
-                    if(permission_node.isSelected){
-                       permission_node._parents[j].isSelected = true;
+                    if (permission_node.isSelected) {
+                        permission_node._parents[j].isSelected = true;
                     }
                     checkPermissionListRecursively(permission_node._parents[j], list);
                 }
@@ -1721,7 +1729,7 @@
             var subHeaderHt = 59;
             var folderDivHt = $('.folder').height();
             ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + folderDivHt + 250));
-            $('#mainTree').css('height', ht+80 + 'px');
+            $('#mainTree').css('height', ht + 80 + 'px');
         }
 
         calculateHeight();
@@ -1732,14 +1740,15 @@
             var subHeaderHt = 59;
             var folderDivHt = $('.folder').height();
             ht = (window.innerHeight - (headerHt + topHeaderHt + subHeaderHt + folderDivHt + 250));
-            $('#mainTree').css('height', ht+80 + 'px');
+            $('#mainTree').css('height', ht + 80 + 'px');
         });
 
         var t1 = '';
+
         function drawTree(json) {
             svg = d3.select("#mainTree").append("svg")
                 .attr('width', width)
-                .attr('height', ht-10 )
+                .attr('height', ht - 10)
                 .append('g')
                 .attr("transform", "translate(150,250)");
 
@@ -1769,7 +1778,7 @@
             root.y0 = 0;
             var _pList = angular.copy(vm.rolePermissions);
             checkPermissionList(root, _pList);
-            draw(root,0);
+            draw(root, 0);
             var nodes;
 
             vm.expandAll = expandAll;
@@ -1781,7 +1790,7 @@
                 });
                 $('svg').attr('height', 7150);
                 $('svg').attr('width', 2010);
-                draw(nodes[0],calculateTopMost());
+                draw(nodes[0], calculateTopMost());
             }
 
             function expand(permission_node) {
@@ -1805,7 +1814,7 @@
                 $('svg').attr('width', width);
                 $('svg').attr('height', ht);
                 $('svg g').attr('transform', "translate(150,250)");
-                draw(nodes[0],0);
+                draw(nodes[0], 0);
             }
 
             function collapseNode(permission_node) {
@@ -1834,7 +1843,7 @@
                     if (permissionNodes.name == 'sos')
                         expandSelected(permissionNodes);
                 });
-                draw(nodes[0],calculateTopMost());
+                draw(nodes[0], calculateTopMost());
             };
 
             function collapseUnselected(permissionNodes) {
@@ -1852,15 +1861,15 @@
                     if (permissionNodes.name == 'sos')
                         collapseUnselected(permissionNodes);
                 });
-                draw(nodes[0],calculateTopMost());
+                draw(nodes[0], calculateTopMost());
             };
-            function draw(source,diff) {
-              
+            function draw(source, diff) {
+
                 nodes = tree.nodes(root);
-                nodes.forEach(function(d){
-                     if(diff>0){
-                           d.x= d.x+diff;
-                     }
+                nodes.forEach(function (d) {
+                    if (diff > 0) {
+                        d.x = d.x + diff;
+                    }
                 })
 
                 var links = tree.links(nodes);
@@ -1925,7 +1934,7 @@
 
                 nodeEnter.append("rect")
                     .style("fill", function (d) {
-                        return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? "#7fbfff" :  d.greyed ? "#cce5ff" : "#fff";
+                        return d.excluded ? d.excludedParent ? '#9E9E9E' : '#eee' : d.selected ? "#7fbfff" : d.greyed ? "#cce5ff" : "#fff";
                     })
                     .on('click', selectPermission)
                     .attr({
@@ -2032,10 +2041,10 @@
                     permission_node.y0 = permission_node.y;
                 });
 
-                var t1=$timeout(function(){
+                var t1 = $timeout(function () {
                     scrollToLast();
                     $timeout.cancel(t1);
-                },850)
+                }, 850)
 
             }
 
@@ -2053,44 +2062,43 @@
             }
 
             function scrollToLast() {
-                console.log("scroll to "+endNodes2.rightMost.x+" and "+endNodes2.rightMost.y);
+               
                 if ($('#mainTree').width() < (endNodes2.rightMost.x + 284)) {
-                    console.log("width matched 01");
-                       $('#mainTree').animate({
-                           scrollTop:endNodes2.rightMost.y,
+                    $('#mainTree').animate({
+                        scrollTop: endNodes2.rightMost.y,
                         scrollLeft: endNodes2.rightMost.x
                     }, 0);
                 }
 
             }
-            
-            
-var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
+
+            var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
+
             function calculateTopMost(permission_node) {
                 endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
-                var topMost=0;
-                 nodes = tree.nodes(root);
-               nodes.forEach(function(node){
-                   if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
-                            endNodes2.rightMost.x = node.y;
-                            endNodes2.rightMost.y = node.x;
-                        }
-                        if (typeof endNodes2.leftMost.x == 'undefined' || (endNodes2.leftMost.x > node.y)) {
-                            endNodes2.leftMost.x = node.y;
-                            endNodes2.leftMost.y = node.x;
-                        }
-                        if (!endNodes2.topMost.y || (endNodes2.topMost.y >= node.x)) {
-                            endNodes2.topMost.x = node.y;
-                            endNodes2.topMost.y = node.x;
-                        }
-                        if (!endNodes2.lowerMost.y || (endNodes2.lowerMost.y <= node.x)) {
-                            endNodes2.lowerMost.x = node.y;
-                            endNodes2.lowerMost.y = node.x;
-                        }
+                var topMost = 0;
+                nodes = tree.nodes(root);
+                nodes.forEach(function (node) {
+                    if (!endNodes2.rightMost.x || (endNodes2.rightMost.x <= node.y)) {
+                        endNodes2.rightMost.x = node.y;
+                        endNodes2.rightMost.y = node.x;
+                    }
+                    if (typeof endNodes2.leftMost.x == 'undefined' || (endNodes2.leftMost.x > node.y)) {
+                        endNodes2.leftMost.x = node.y;
+                        endNodes2.leftMost.y = node.x;
+                    }
+                    if (!endNodes2.topMost.y || (endNodes2.topMost.y >= node.x)) {
+                        endNodes2.topMost.x = node.y;
+                        endNodes2.topMost.y = node.x;
+                    }
+                    if (!endNodes2.lowerMost.y || (endNodes2.lowerMost.y <= node.x)) {
+                        endNodes2.lowerMost.x = node.y;
+                        endNodes2.lowerMost.y = node.x;
+                    }
 
-               })
-               
-                var diff =0;
+                })
+
+                var diff = 0;
                 if (endNodes2.topMost.y < -225) {
                     diff = (-endNodes2.topMost.y - 225);
                 }
@@ -2112,9 +2120,8 @@ var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
                     collapse(permission_node);
                 }
 
-                draw(permission_node,calculateTopMost());
+                draw(permission_node, calculateTopMost());
             }
-
 
 
             var _temp = [];
@@ -2138,9 +2145,9 @@ var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
                 }
             }
 
-            function setParentSelected(permission_node){
-                permission_node.parent.isSelected =  true;
-                if(permission_node.parent && permission_node.parent.parent){
+            function setParentSelected(permission_node) {
+                permission_node.parent.isSelected = true;
+                if (permission_node.parent && permission_node.parent.parent) {
                     setParentSelected(permission_node.parent);
                 }
             }
@@ -2154,7 +2161,7 @@ var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
 
                     if (permission_node.selected) {
                         permission_node.isSelected = true;
-                        if(permission_node.parent && !permission_node.parent.isSelected){
+                        if (permission_node.parent && !permission_node.parent.isSelected) {
                             setParentSelected(permission_node);
                         }
                         selectedNode(permission_node);
@@ -2195,12 +2202,12 @@ var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
 
                     if (permission_node.excluded) {
                         permission_node.isSelected = true;
-                        if(permission_node.parent && !permission_node.parent.isSelected){
+                        if (permission_node.parent && !permission_node.parent.isSelected) {
                             setParentSelected(permission_node);
                         }
                         selectedExcludeNode(permission_node);
                     } else {
-                        if(!permission_node.selected){
+                        if (!permission_node.selected) {
                             permission_node.isSelected = false;
                         }
                         unSelectedExcludeNode(permission_node);
@@ -2305,4 +2312,5 @@ var endNodes2 = {leftMost: {}, rightMost: {}, topMost: {}, lowerMost: {}};
                 $timeout.cancel(t1);
         });
     }
-})();
+})
+();

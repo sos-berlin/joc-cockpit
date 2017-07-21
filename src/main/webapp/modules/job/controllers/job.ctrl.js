@@ -31,7 +31,7 @@
 
         var modalInstance;
         vm.selectedFiltered;
-        vm.maxPlannedTime;
+
         var firstDay;
         var lastDay;
 
@@ -986,8 +986,6 @@
 
         }
 
-
-
         vm.showCalendar = function (jobChain) {
             vm.selectedChain=jobChain;
             vm.maxPlannedTime = undefined;
@@ -1020,8 +1018,9 @@
                         orderId: data.orderId
                     };
                     vm.planItems.push(planData);
-                    if (!vm.maxPlannedTime || new Date(data.plannedStartTime) > vm.maxPlannedTime) {
-                        vm.maxPlannedTime = new Date(data.plannedStartTime);
+                    if(res.created){
+                        var date = new Date();
+                        vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
                     }
                 });
         }
@@ -3345,7 +3344,10 @@
                 obj.dateFrom = fromDate;
                 obj.dateTo = toDate;
             }
-
+            obj.timeZone = vm.userPreferences.zone;
+            if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
+                delete obj['timeZone']
+            }
             return obj;
         }
 
@@ -4923,8 +4925,9 @@
                         expectedEndTime: data.expectedEndTime
                     };
                     vm.planItems.push(planData);
-                    if (!vm.maxPlannedTime || new Date(data.plannedStartTime) > vm.maxPlannedTime) {
-                        vm.maxPlannedTime = new Date(data.plannedStartTime);
+                    if(res.created){
+                        var date = new Date();
+                        vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
                     }
                 });
         }

@@ -137,6 +137,7 @@
     <div class="padding p-b-0">
         <div class="row m-b-sm m-t-xs">
             <div class="col-lg-12">
+                <span ng-if="maxPlannedTime" class="text">{{'label.maxAvailablePlanedDate' | translate}} : <span class="text-muted">{{maxPlannedTime|stringToDate}}</span></span>
                 <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                     <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
                 </button>
