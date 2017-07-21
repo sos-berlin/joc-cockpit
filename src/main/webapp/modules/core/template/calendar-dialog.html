@@ -44,19 +44,15 @@
 
         <div class="text-center m-t-lg" ng-show="isCaledarLoading" style="height: 150px" > <div class="loading-img1 m-t-lg"></div></div>
         <div class="hide calendar-body" ng-class="{show:!isCaledarLoading && planItems.length>0}">
-
             <mwl-calendar
                     events="events"
                     plan-items="planItems"
                     view="calendarView"
                     view-date="viewDate"
                     view-title="calendarTitle"
-                    cell-is-open="true"
-                    on-view-change-click="vm.viewChangeClicked(calendarNextView)">
+                    cell-is-open="true">
             </mwl-calendar>
         </div>
-        <div ng-if="!isCaledarLoading && planItems.length==0" class="text-center m-t m-b h6 text-uppercase" translate>
-                                        message.noDataFound
-                                    </div>
+        <div ng-if="!isCaledarLoading && planItems.length==0" class="text-center m-t m-b h6 text-uppercase" translate>message.noDataFound</div>
     </div>
 </div>

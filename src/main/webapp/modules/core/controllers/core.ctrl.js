@@ -1522,11 +1522,6 @@
         vm.removeParams = function (index) {
             vm.paramObject.params.splice(index, 1);
         };
-
-         vm.$watch('calendarView', function (newNames, oldValues) {
-             console.log(newNames)
-         });
-
     }
 
     PeriodEditorCtrl.$inject = ["$scope", "$rootScope", "gettextCatalog"];
