@@ -166,9 +166,9 @@
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
-        "CoreService", "$uibModal", "AuditLogService", "ScheduleService","FileSaver","$filter"];
+        "CoreService", "$uibModal", "AuditLogService", "ScheduleService", "FileSaver", "$filter"];
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService, ScheduleService,FileSaver,$filter) {
+                                  CoreService, $uibModal, AuditLogService, ScheduleService, FileSaver, $filter) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -1209,21 +1209,21 @@
             }
         });
 
-        function setCanvasBackground(canvas,background){
+        function setCanvasBackground(canvas, background) {
             var w = canvas.width;
-	        var h = canvas.height;
-	    var context = canvas.getContext("2d");
-		context.globalCompositeOperation = "destination-over";
-		context.fillStyle = getBackground();
-		context.fillRect(0,0,w,h);
+            var h = canvas.height;
+            var context = canvas.getContext("2d");
+            context.globalCompositeOperation = "destination-over";
+            context.fillStyle = getBackground();
+            context.fillRect(0, 0, w, h);
         }
 
-        function getBackground(){
+        function getBackground() {
             return $(".box").css("background-color");
         }
 
-        function getBoundingNodes(){
-            var obj = {maxTop:0,maxLeft:0};
+        function getBoundingNodes() {
+            var obj = {maxTop: 0, maxLeft: 0};
             angular.forEach(vm.coords, function (coord) {
                 if (coord.left && coord.left > obj.maxLeft) {
                     obj.maxLeft = coord.left;
@@ -1235,13 +1235,9 @@
             return obj;
         }
 
-
-
         vm.exportDiagram = function (type) {
-
             vm.loading = true;
             var bound = getBoundingNodes();
-
             var oHeight = $('#exportId').height();
             var oWidth = $('#exportId').width();
             $(".block-ellipsis").css("overflow", "auto");
@@ -1639,9 +1635,9 @@
                 order.params = paramObject.params;
             }
 
-            if(order.params && order.params.length>0){
-               orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
-            }else{
+            if (order.params && order.params.length > 0) {
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+            } else {
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             }
             delete orders['params'];
@@ -1652,7 +1648,7 @@
             var orders = {};
             orders.orders = [];
             orders.jobschedulerId = $scope.schedulerIds.selected;
-            if(vm.comments) {
+            if (vm.comments) {
                 orders.auditLog = {};
                 if (vm.comments.comment) {
                     orders.auditLog.comment = vm.comments.comment;
@@ -1736,7 +1732,8 @@
                 });
             });
         };
-
+        var firstDay;
+        var lastDay;
         vm.onOrderAction = function (order, action) {
             var modalInstance = '';
             vm.comments = {};
@@ -2073,24 +2070,25 @@
             }
 
             if (action == 'view calendar') {
+
+                vm.maxPlannedTime = undefined;
+                vm.isCaledarLoading = true;
                 vm._jobChain = order;
                 vm._jobChain.name = order.orderId;
                 vm.planItems = [];
-
+                firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+                lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
                 DailyPlanService.getPlans({
                     jobschedulerId: $scope.schedulerIds.selected,
                     states: ['PLANNED'],
-                    orderId: order.orderId
+                    orderId: order.orderId,
+                    dateFrom: firstDay,
+                    dateTo: lastDay
                 }).then(function (res) {
-                    vm.planItemData = res.planItems;
-                    vm.planItemData.forEach(function (data) {
-                        var planData = {
-                            planneloadHistorydStartTime: data.plannedStartTime,
-                            expectedEndTime: data.expectedEndTime
-                        };
-                        vm.planItems.push(planData);
-                    });
+                    populatePlanItems(res);
+                    vm.isCaledarLoading = false;
                 }, function (err) {
+                    vm.isCaledarLoading = false;
                 });
                 openCalendar();
             }
@@ -2133,6 +2131,52 @@
                 }
             }
         };
+      vm.getPlan = function (calendarView, viewDate) {
+            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'month') {
+                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
+            }
+
+            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
+                return;
+            }
+            firstDay = firstDay2;
+            lastDay = lastDay2;
+
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            DailyPlanService.getPlans({
+                jobschedulerId: $scope.schedulerIds.selected,
+                states: ['PLANNED'],
+                orderId: vm._jobChain.orderId,
+                dateFrom: firstDay,
+                dateTo: lastDay
+            }).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function (err) {
+                vm.isCaledarLoading = false;
+            });
+
+        };
+
+        function populatePlanItems(res) {
+            vm.planItemData = res.planItems;
+            vm.planItemData.forEach(function (data) {
+                var planData = {
+                    plannedStartTime: data.plannedStartTime,
+                    expectedEndTime: data.expectedEndTime,
+                    orderId: data.orderId
+                };
+                vm.planItems.push(planData);
+                if (res.created) {
+                    var date = new Date();
+                    vm.maxPlannedTime = date.setDate(date.getDate() + res.created.days.value);
+                }
+            });
+        }
 
         $scope.$on('$destroy', function () {
             watcher1();
@@ -2155,6 +2199,7 @@
         };
         var firstDay;
         var lastDay;
+
         function volatileInfo(draw) {
             JobChainService.getJobChain({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -2302,29 +2347,28 @@
         };
 
 
-
-        vm.getPlan = function(calendarView,viewDate){
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(),0, 1,0,0,0);
-             var lastDay2 = new Date(new Date(viewDate).getFullYear(),11, 31,23,59,0);
-            if(calendarView=='month'){
-                firstDay2 = new Date(new Date(viewDate).getFullYear(),new Date(viewDate).getMonth(), 1,0,0,0);
-                lastDay2 = new Date(new Date(viewDate).getFullYear(),new Date(viewDate).getMonth()+1, 0,23,59,0);
+        vm.getPlan = function (calendarView, viewDate) {
+            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'month') {
+                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
-             if(new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)){
+            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
                 return;
             }
-                 firstDay=firstDay2;
-                 lastDay = lastDay2;
+            firstDay = firstDay2;
+            lastDay = lastDay2;
 
             vm.planItems = [];
             vm.isCaledarLoading = true;
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-               jobChain: vm.selectedChain.path,
-                        dateFrom:firstDay,
-                        dateTo:lastDay
+                jobChain: vm._jobChain.path,
+                dateFrom: firstDay,
+                dateTo: lastDay
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -2332,26 +2376,24 @@
                 vm.isCaledarLoading = false;
             });
 
-        }
-
-
-
+        };
 
 
         vm.viewCalendar = function (nestedJobChain) {
+
             vm.maxPlannedTime = undefined;
             vm.isCaledarLoading = true;
-            vm.selectedChain=nestedJobChain;
+            vm.selectedChain = nestedJobChain;
             vm._jobChain = nestedJobChain ? nestedJobChain : vm.jobChain;
             vm.planItems = [];
-            firstDay = new Date(new Date().getFullYear(),new Date().getMonth(), 1,0,0,0);
-            lastDay = new Date(new Date().getFullYear(),new Date().getMonth()+1, 0,23,59,0);
+            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+            lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
                 jobChain: vm._jobChain.path,
-                        dateFrom:firstDay,
-                        dateTo:lastDay
+                dateFrom: firstDay,
+                dateTo: lastDay
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -2362,7 +2404,7 @@
             vm.object.jobChains = [];
         };
 
- function populatePlanItems(res){
+        function populatePlanItems(res) {
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
