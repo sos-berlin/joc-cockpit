@@ -2844,20 +2844,6 @@
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
             if (vm.dashboardFilters.filter.orderRange == 'today') {
-                var from = new Date();
-                var to = new Date();
-                from.setHours(0);
-                from.setMinutes(0);
-                from.setSeconds(0);
-                from.setMilliseconds(0);
-                to.setDate(to.getDate() + 1);
-                to.setHours(0);
-                to.setMinutes(0);
-                to.setSeconds(0);
-                to.setMilliseconds(0);
-
-                vm.dashboardFilters.filter.orderSummaryfrom = from;
-                vm.dashboardFilters.filter.orderSummaryto = to;
                 obj.dateFrom = '0d';
             } else {
                 obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
@@ -2882,25 +2868,16 @@
             if (vm.dashboardFilters.filter.range != 'today') {
                 var from = new Date();
                 var to = new Date();
-                from.setHours(0);
-                from.setMinutes(0);
-                from.setSeconds(0);
-                from.setMilliseconds(0);
                 to.setDate(to.getDate() + 1);
-                to.setHours(0);
-                to.setMinutes(0);
-                to.setSeconds(0);
-                to.setMilliseconds(0);
                 vm.dashboardFilters.filter.from = from;
                 vm.dashboardFilters.filter.to = to;
-                obj.dateFrom = vm.dashboardFilters.filter.from;
-                obj.dateTo = vm.dashboardFilters.filter.to;
+                obj.dateFrom = from;
+                obj.dateTo = to;
             } else {
                 obj.dateFrom = '0d';
                 obj.dateTo = '0d';
-
+                obj.timeZone = vm.userPreferences.zone;
             }
-            obj.timeZone = vm.userPreferences.zone;
 
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.planItemData = res.planItems;
@@ -2929,12 +2906,14 @@
                 vm.totalPlanData++;
                 var time;
                 if (value.state._text == 'FAILED') {
-                    if (value.late)
+                    if (value.late) {
                         vm.lateError++;
-
+                    }
+                    vm.error++;
                 } else if (value.state._text == 'SUCCESSFUL') {
-                    if (!value.late)
+                    if (value.late) {
                         vm.lateSuccess++;
+                    }
                     vm.success++;
                 } else if (value.state._text == 'PLANNED') {
                     if (value.late) {
@@ -3353,6 +3332,14 @@
                 return 800 * zoom;
             }
             return 40 * zoom;
+        };
+        vm.setToDate = function(){
+
+          if(vm.searchDailyPlanFilter.from && vm.searchDailyPlanFilter.to){
+             if(moment(vm.searchDailyPlanFilter.to).diff(vm.searchDailyPlanFilter.from)<0){
+                 vm.searchDailyPlanFilter.to = angular.copy(vm.searchDailyPlanFilter.from)
+             }
+          }
         };
 
         var hitSearch = false;

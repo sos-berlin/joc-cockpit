@@ -188,7 +188,7 @@
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="searchDailyPlanFilter.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
-                                       bs-datepicker type="text">
+                                       bs-datepicker type="text" ng-change="setToDate()">
                                 <input valid-time maxlength="8" ng-disabled="!searchDailyPlanFilter.from" class="form-control input-time m-l" ng-model="searchDailyPlanFilter.fromTime"
                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="searchDailyPlanFilter.from || searchDailyPlanFilter.fromTime" ng-click="searchDailyPlanFilter.from='';searchDailyPlanFilter.fromTime=''; " translate>button.clear</a>
