@@ -3371,8 +3371,7 @@
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
-                if (vm.pageView == 'grid')
-                    vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
+                vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if(res.created){
                     var date = new Date();
@@ -3766,7 +3765,7 @@
                 }
             }
 
-            vm.data = orderBy(orders, 'plannedStartTime');
+            vm.data = orders;
 
             if (flag)
                 promise1 = $timeout(function () {
@@ -3824,8 +3823,7 @@
             }
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
-                if (vm.pageView == 'grid')
-                    vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
+                vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if(res.created){
                     var date = new Date();
@@ -3841,16 +3839,113 @@
             })
         };
 
+        var reA = /[^a-zA-Z]/g;
+        var reN = /[^0-9]/g;
+
+        function sortByKey(array, key, order) {
+            if (key == 'processedPlanned' || key == 'orderId') {
+                return array.sort(function (x, y) {
+                    var key1 = key == 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
+
+                    var a = y[key1];
+                    var b = x[key1];
+                    if (order) {
+                        a = x[key1];
+                        b = y[key1];
+                    }
+
+                    if (!a && b) {
+                        return -1;
+                    } else if (a && !b) {
+                        return 1;
+                    }
+
+
+                    var AInt = parseInt(a, 10);
+                    var BInt = parseInt(b, 10);
+
+                    if (isNaN(AInt) && isNaN(BInt)) {
+                        return naturalSorter(a, b);
+                    } else if (isNaN(AInt)) {//A is not an Int
+                        return 1;
+                    } else if (isNaN(BInt)) {//B is not an Int
+                        return -1;
+                    } else if (AInt == BInt) {
+                        var aA = a.replace(reA, "");
+                        var bA = b.replace(reA, "");
+                        return aA > bA ? 1 : -1;
+                    } else {
+                        return AInt > BInt ? 1 : -1;
+                    }
+
+                });
+            } else if (key == 'duration') {
+                return array.sort(function (x, y) {
+                    var a = y;
+                    var b = x;
+                    if (order) {
+                        a = x;
+                        b = y;
+                    }
+                    var m, n;
+                    if (a.plannedStartTime && a.expectedEndTime) {
+                        m = moment(a.plannedStartTime).diff(a.expectedEndTime);
+                    }
+                    if (b.plannedStartTime && b.expectedEndTime) {
+                        n = moment(b.plannedStartTime).diff(b.expectedEndTime);
+                    }
+                    return m > n ? 1 : -1;
+                });
+            }else if(key == 'duration1'){
+                return array.sort(function (x, y) {
+                    var a = y;
+                    var b = x;
+                    if (order) {
+                        a = x;
+                        b = y;
+                    }
+
+                    var m =0, n=0;
+                    if (a.startTime && a.endTime) {
+                        m = moment(a.startTime).diff(a.endTime) || 0;
+                    }
+                    if (b.startTime && b.endTime) {
+                        n = moment(b.startTime).diff(b.endTime) || 0;
+                    }
+                    return m > n ? 1 : -1;
+                });
+            }
+            else {
+                return orderBy(array, key, order);
+            }
+        }
+
+        function naturalSorter(as, bs){
+            var a, b, a1, b1, i= 0, n, L,
+            rx=/(\.\d+)|(\d+(\.\d+)?)|([^\d.]+)|(\.\D+)|(\.$)/g;
+            if(as=== bs) return 0;
+            a= as.toLowerCase().match(rx);
+            b= bs.toLowerCase().match(rx);
+            L= a.length;
+            while(i<L){
+                if(!b[i]) return 1;
+                a1= a[i];
+                b1= b[i++];
+                if(a1!== b1){
+                    n= a1-b1;
+                    if(!isNaN(n)) return n;
+                    return a1>b1? 1:-1;
+                }
+            }
+            return b[i]? -1:0;
+        }
 
         /**--------------- filter, sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
             vm.dailyPlanFilters.reverse = !vm.dailyPlanFilters.reverse;
             vm.dailyPlanFilters.filter.sortBy = propertyName;
-            if (vm.pageView == 'grid') {
-
-                vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
-                prepareGanttData(vm.plans, true);
-            }
+            vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
+            prepareGanttData(vm.plans, true);
         };
 
         function isCustomizationSelected(flag) {
@@ -4322,8 +4417,7 @@
             DailyPlanService.getPlans(obj).then(function (res) {
                 vm.plans = res.planItems;
                 isLoaded = true;
-                if (vm.pageView == 'grid')
-                    vm.plans = orderBy(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
+                vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans);
                 if(res.created){
                     var date = new Date();
