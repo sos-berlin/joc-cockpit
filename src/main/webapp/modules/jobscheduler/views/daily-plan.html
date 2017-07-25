@@ -387,7 +387,7 @@
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'late' && dailyPlanFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('late')"><a><span translate>label.repeatType</span>
+                                <th ng-click="sortBy('startMode')"><a><span translate>label.repeatType</span>
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'startMode' && !dailyPlanFilters.reverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="dailyPlanFilters.filter.sortBy == 'startMode' && dailyPlanFilters.reverse"
@@ -438,7 +438,7 @@
                             </tr>
                             </thead>
                             <tbody >
-                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict) | orderBy: dailyPlanFilters.filter.sortBy:dailyPlanFilters.reverse | startFrom:(dailyPlanFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
+                            <tr ng-repeat="plan in filtered = (plans | filter: q:strict)  | startFrom:(dailyPlanFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-click="showLogWindow(plan.historyId && plan.jobChain?plan:null,plan.historyId && plan.job?{taskId:plan.historyId,job:plan.job}:null)" ng-class="{'cursor':plan.historyId}">
                                 <td>
                                     <span class="hide text-hover-primary" ng-click="showJobChain(plan.jobChain);$event.stopPropagation()"  ng-class="{show:plan.jobChain!=undefined}" ng-bind="plan.jobChain"></span>
                                     <span class="hide text-hover-primary" ng-click="showJob(plan.job);$event.stopPropagation()"  ng-class="{show:plan.job!=undefined}" ng-bind="plan.job"></span>
