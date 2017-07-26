@@ -111,10 +111,10 @@
                         <div class="form-group row">
                             <label class="col-md-4" translate>label.chooseRunTime</label>
 
-                            <div class="col-md-8" ng-init="order.at = 'now'">
+                            <div class="col-md-8">
                                 <label class="md-check w-sm">
                                     <input type="radio" name="radio" ng-model="order.at" value="now">
-                                    <i class="primary"></i> <span translate>label.runTime</span>
+                                    <i class="primary"></i> <span translate>label.frequency</span>
                                 </label>
                                 <label class="md-check">
                                     <input type="radio" name="radio" ng-model="order.at" value="later">
@@ -130,8 +130,9 @@
                                 <div class="input-dropdown">
                                     <input class="form-control" ng-model="_sch._schedule"  type="text">
                                 </div>
-                                <div class="text-orange" style="margin-top: -10px !important;"
+                                <div class="text-orange" style="margin-top: -22px !important;"
                                      translate>message.theScheduleAttributAndOtherRuntimes</div>
+                                <button class="btn btn-grey btn-xs m-t" ng-if="_sch._schedule" type="button" ng-click="removeSchedule()" translate>button.remove</button>
                             </div>
                             <div class="col-sm-12" ng-if="order.at == 'now'" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">

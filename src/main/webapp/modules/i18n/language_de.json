@@ -1032,5 +1032,6 @@
   "label.export": "Exportieren",
   "label.pdf": "PDF",
   "label.png": "PNG",
-  "label.calendarViewForPlannedJob": "Calendar View for planned job"
+  "label.calendarViewForPlannedJob": "Calendar View for planned job",
+  "label.dailyPlanCreated": "Daily plan created until"
 }

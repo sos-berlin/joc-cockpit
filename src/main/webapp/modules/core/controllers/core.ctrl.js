@@ -824,6 +824,7 @@
             getDateFormat();
 
         vm.currentTime = moment();
+
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
         var resetDate = true;
         var interval = $interval(function () {
@@ -885,13 +886,13 @@
 
         var isTouch = false;
         vm.refreshSession = function () {
-            if(!isTouch) {
+            if (!isTouch) {
                 isTouch = true;
                 UserService.touch().then(function (res) {
                     isTouch = false;
                     if (res && res.ok)
                         count = parseInt(SOSAuth.sessionTimeout / 1000) - 2;
-                },function(){
+                }, function () {
                     isTouch = false;
                 });
             }
@@ -1628,9 +1629,9 @@
                 return time.toString().substring(6, time.length) + ' seconds'
             } else if (time.toString().substring(0, 2) == '00') {
                 return time.toString().substring(3, time.length) + ' minutes'
-            } else if ((time.toString().substring(0, 2) != '00' && time.length==5) ||(time.length>5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
+            } else if ((time.toString().substring(0, 2) != '00' && time.length == 5) || (time.length > 5 && time.toString().substring(0, 2) != '00' && (time.toString().substring(6, time.length) == '00'))) {
                 return time.toString().substring(0, 5) + ' hours'
-            } else{
+            } else {
                 return time;
             }
         }
@@ -1642,7 +1643,7 @@
             if (form1)
                 form1.$setPristine();
             $('#period-editor').modal('hide');
-            $('.fade-modal').css('opacity',1);
+            $('.fade-modal').css('opacity', 1);
         };
         vm.save = function (form1) {
 
@@ -1672,7 +1673,7 @@
                 form1.$setUntouched();
             }
             $('#period-editor').modal('hide');
-            $('.fade-modal').css('opacity',1);
+            $('.fade-modal').css('opacity', 1);
 
         };
 
@@ -1732,10 +1733,10 @@
         };
         vm.save = function (form2) {
             vm.sch._valid_from = undefined;
-            if(!vm.from.time){
+            if (!vm.from.time) {
                 vm.from.time = '00:00';
             }
-            if(!vm.to.time){
+            if (!vm.to.time) {
                 vm.to.time = '00:00';
             }
             if (vm.from.time && vm.from.date) {
@@ -1770,8 +1771,8 @@
 
                 if (vm.error.validDate || vm.error.scheduleRequired) {
                     return;
-                }else{
-                    if(vm.sch._substitute){
+                } else {
+                    if (vm.sch._substitute) {
                         if (!vm.sch._valid_from || !vm.sch._valid_to) {
                             vm.error.requiredDate = true;
                             return;
@@ -2159,6 +2160,7 @@
         function compareNumbers(a, b) {
             return a - b;
         }
+
         vm.checkAllWeek = function () {
             if (vm.runTime.all) {
                 vm.runTime.days = ["1", "2", "3", "4", "5", "6", "7"]
@@ -2259,7 +2261,8 @@
             }
         }
 
-        function getXml2Json(xml) {
+        function getXml2Json(xml, load) {
+
             vm.runtimeList = [];
             if (!xml) {
                 return;
@@ -2371,32 +2374,35 @@
             run_time = _xml.run_time || _xml.schedule || {};
             if (!run_time._schedule) {
                 vm._sch = {};
+                if (load)
+                    vm.order.at = 'now';
             } else {
                 vm._sch._schedule = run_time._schedule;
+                if (load)
+                    vm.order.at = 'later';
+
             }
 
-
             vm.runTime1.timeZone = run_time._time_zone;
-
 
             if (run_time._valid_from) {
                 vm.from.date = run_time._valid_from;
 
                 var d = new Date(run_time._valid_from),
-                h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
-                h = h>9? h : '0'+h;
-                m = m>9? m : '0'+m;
-                s = s>9? s : '0'+s;
-                vm.from.time = h +':'+ m +':'+ s;
+                    h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+                h = h > 9 ? h : '0' + h;
+                m = m > 9 ? m : '0' + m;
+                s = s > 9 ? s : '0' + s;
+                vm.from.time = h + ':' + m + ':' + s;
             }
             if (run_time._valid_to) {
                 vm.to.date = run_time._valid_to;
                 var d = new Date(run_time._valid_to);
                 h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
-                h = h>9? h : '0'+h;
-                m = m>9? m : '0'+m;
-                s = s>9? s : '0'+s;
-                vm.to.time = h +':'+ m +':'+ s;
+                h = h > 9 ? h : '0' + h;
+                m = m > 9 ? m : '0' + m;
+                s = s > 9 ? s : '0' + s;
+                vm.to.time = h + ':' + m + ':' + s;
             }
             if (run_time._title) {
                 vm.sch._title = run_time._title;
@@ -2431,16 +2437,16 @@
                     if (angular.isArray(run_time.holidays.include)) {
                         angular.forEach(run_time.holidays.include, function (file) {
                             if (file._live_file)
-                                vm.calendarFiles.push('live_file: '+file._live_file);
+                                vm.calendarFiles.push('live_file: ' + file._live_file);
                             if (file._file)
-                                vm.calendarFiles.push('file: '+file._file);
+                                vm.calendarFiles.push('file: ' + file._file);
                         });
                     } else {
                         if (run_time.holidays.include._live_file) {
-                            vm.calendarFiles.push('live_file: '+run_time.holidays.include._live_file);
+                            vm.calendarFiles.push('live_file: ' + run_time.holidays.include._live_file);
                         }
                         if (run_time.holidays.include._file) {
-                            vm.calendarFiles.push('file: '+run_time.holidays.include._file);
+                            vm.calendarFiles.push('file: ' + run_time.holidays.include._file);
                         }
                     }
                 }
@@ -3911,10 +3917,10 @@
                                 }
                                 if (value1._file) {
 
-                                    vm.calendarFiles.push('file: '+value1._file);
+                                    vm.calendarFiles.push('file: ' + value1._file);
                                 }
                                 if (value1._live_file) {
-                                    vm.calendarFiles.push('live_file: '+value1._live_file);
+                                    vm.calendarFiles.push('live_file: ' + value1._live_file);
                                 }
                             });
                         } else {
@@ -3922,10 +3928,10 @@
                                 vm.holidayDates.push(new Date(value._date));
                             }
                             if (value._file) {
-                                vm.calendarFiles.push('file: '+value._file);
+                                vm.calendarFiles.push('file: ' + value._file);
                             }
                             if (value._live_file) {
-                                vm.calendarFiles.push('live_file: '+value._live_file);
+                                vm.calendarFiles.push('live_file: ' + value._live_file);
                             }
                         }
 
@@ -3972,6 +3978,13 @@
             }
         }
 
+        vm.removeSchedule = function(){
+             vm._xmlTemp = {run_time: {}};
+            var xmlStr = x2js.json2xml_str(vm._xmlTemp);
+            xmlStr = xmlStr.replace(/,/g, ' ');
+
+            getXml2Json(xmlStr);
+        };
 
         vm.addPeriodInFrequency = function (data) {
             $rootScope.$broadcast('period-editor', {
@@ -4034,7 +4047,7 @@
         $rootScope.$on('save-schedule', function (event, data1) {
             vm.sch = data1.sch;
             vm._schedules = data1._schedules;
-             saveSch();
+            saveSch();
         });
 
         function editRunTime(data) {
@@ -7345,9 +7358,9 @@
             $rootScope.$broadcast('schedule-editor', {
                 sch: vm.sch,
                 error: vm.error,
-                _schedules :vm._schedules,
-                from :vm.from,
-                to :vm.to
+                _schedules: vm._schedules,
+                from: vm.from,
+                to: vm.to
             });
             $('#schedule-editor').modal('show');
             $('.fade-modal').css('opacity', '0.85');
@@ -7399,28 +7412,29 @@
                 console.log(e);
             }
         }
-        if(vm.substituteObj) {
+
+        if (vm.substituteObj) {
             vm.substituteObj.fromTime = '00:00';
             vm.substituteObj.toTime = '00:00';
         }
         vm.saveScheduleDetail = function (param) {
             vm.sch._valid_from = undefined;
             vm.sch._name = vm.substituteObj.name;
-            if(!vm.substituteObj.fromTime){
+            if (!vm.substituteObj.fromTime) {
                 vm.substituteObj.fromTime = '00:00';
             }
-            if(!vm.substituteObj.toTime){
+            if (!vm.substituteObj.toTime) {
                 vm.substituteObj.toTime = '00:00';
             }
             vm.sch._title = vm.substituteObj.title;
             if (vm.substituteObj.fromTime && vm.substituteObj.fromDate) {
                 var date = new Date(vm.substituteObj.fromDate);
-                date.setHours(vm.substituteObj.fromTime.substring(0,2));
-                date.setMinutes(vm.substituteObj.fromTime.substring(3,5));
-                if(vm.substituteObj.fromTime.substring(6,8)){
-                date.setSeconds(vm.substituteObj.fromTime.substring(6,8));
-                    }
-                else{
+                date.setHours(vm.substituteObj.fromTime.substring(0, 2));
+                date.setMinutes(vm.substituteObj.fromTime.substring(3, 5));
+                if (vm.substituteObj.fromTime.substring(6, 8)) {
+                    date.setSeconds(vm.substituteObj.fromTime.substring(6, 8));
+                }
+                else {
                     date.setSeconds('00');
                 }
                 vm.sch._valid_from = moment(date).format('YYYY-MM-DD HH:mm:ss');
@@ -7428,12 +7442,12 @@
             vm.sch._valid_to = undefined;
             if (vm.substituteObj.toTime && vm.substituteObj.toDate) {
                 var date = new Date(vm.substituteObj.toDate);
-                date.setHours(vm.substituteObj.toTime.substring(0,2));
-                date.setMinutes(vm.substituteObj.toTime.substring(3,5));
-                if(vm.substituteObj.toTime.substring(6,8)){
-                date.setSeconds(vm.substituteObj.toTime.substring(6,8));
-                    }
-                else{
+                date.setHours(vm.substituteObj.toTime.substring(0, 2));
+                date.setMinutes(vm.substituteObj.toTime.substring(3, 5));
+                if (vm.substituteObj.toTime.substring(6, 8)) {
+                    date.setSeconds(vm.substituteObj.toTime.substring(6, 8));
+                }
+                else {
                     date.setSeconds('00');
                 }
                 vm.sch._valid_to = moment(date).format('YYYY-MM-DD HH:mm:ss');
@@ -7442,15 +7456,15 @@
             if (vm.sch._valid_from && vm.sch._valid_to && vm.sch._name) {
                 vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
                 if (!vm.error.validDate) {
-                    if(!vm.substituteObj.showText && !param)
+                    if (!vm.substituteObj.showText && !param)
                         vm.createNewRunTime();
-                    else{
-                      saveSch();
+                    else {
+                        saveSch();
                     }
                 }
-            }else{
-                if(!vm.substituteObj.showText && !param)
-                vm.error.validDate = true;
+            } else {
+                if (!vm.substituteObj.showText && !param)
+                    vm.error.validDate = true;
             }
         };
 
@@ -7468,10 +7482,10 @@
         };
 
         vm.addCalendarFile = function (file) {
-            if (vm.calendarFiles.indexOf(vm.fileObj.holidayFile+': '+file) === -1 && file) {
-               if (vm.fileObj.holidayFile == 'live_file') {
+            if (vm.calendarFiles.indexOf(vm.fileObj.holidayFile + ': ' + file) === -1 && file) {
+                if (vm.fileObj.holidayFile == 'live_file') {
                     vm.calendarFiles.push('live_file: ' + file);
-                } else{
+                } else {
                     vm.calendarFiles.push('file: ' + file);
                 }
             }
@@ -8064,7 +8078,7 @@
             getXml2Json(xmlStr);
         };
 
-        vm.removeTimeZone = function() {
+        vm.removeTimeZone = function () {
             vm.runTime1.timeZone = '';
             vm.createRunTime();
         };
@@ -8183,23 +8197,23 @@
                 }
             }
 
-                if (vm.calendarFiles && vm.calendarFiles.length > 0) {
-                    angular.forEach(vm.calendarFiles, function (value) {
-                        var type = value.substr(0, value.indexOf(':'));
-                        var n = value.length;
-                        if (type == 'live_file') {
-                            vm.run_time.holidays.include.push({_live_file: value.substr(value.indexOf(':') + 1, n)});
-                        }
-                        else if (type == 'file') {
-                            vm.run_time.holidays.include.push({_file: value.substr(value.indexOf(':') + 1, n)});
-                        }
-                    });
-                }
-                if (vm.holidayDates && vm.holidayDates.length > 0) {
-                    angular.forEach(vm.holidayDates, function (value) {
-                        vm.run_time.holidays.holiday.push({_date: moment(value).format('YYYY-MM-DD')});
-                    });
-                }
+            if (vm.calendarFiles && vm.calendarFiles.length > 0) {
+                angular.forEach(vm.calendarFiles, function (value) {
+                    var type = value.substr(0, value.indexOf(':'));
+                    var n = value.length;
+                    if (type == 'live_file') {
+                        vm.run_time.holidays.include.push({_live_file: value.substr(value.indexOf(':') + 1, n)});
+                    }
+                    else if (type == 'file') {
+                        vm.run_time.holidays.include.push({_file: value.substr(value.indexOf(':') + 1, n)});
+                    }
+                });
+            }
+            if (vm.holidayDates && vm.holidayDates.length > 0) {
+                angular.forEach(vm.holidayDates, function (value) {
+                    vm.run_time.holidays.holiday.push({_date: moment(value).format('YYYY-MM-DD')});
+                });
+            }
 
 
             if (!isEmpty(vm.run_time.date)) {
@@ -8333,7 +8347,7 @@
 
             if (vm.runTime1.timeZone) {
                 vm.run_time._time_zone = vm.runTime1.timeZone;
-            }else{
+            } else {
                 delete vm.run_time['_time_zone'];
             }
             if (vm.sch) {
@@ -8405,6 +8419,7 @@
         }
 
         function loadXml() {
+
             if (!vm.xml) {
                 if (!isEmpty(vm.order)) {
                     vm.xml = '<run_time></run_time>';
@@ -8431,8 +8446,7 @@
                     vm.xml = '<schedule></schedule>';
                 }
             }
-
-            getXml2Json(vm.xml);
+            getXml2Json(vm.xml, 'load');
         }
 
         loadXml();
@@ -8450,8 +8464,8 @@
         });
     }
 
-    ResetRuntimeDialogCtrl.$inject = ["$scope", "$uibModalInstance","$window"];
-    function ResetRuntimeDialogCtrl($scope,  $uibModalInstance,$window) {
+    ResetRuntimeDialogCtrl.$inject = ["$scope", "$uibModalInstance", "$window"];
+    function ResetRuntimeDialogCtrl($scope, $uibModalInstance, $window) {
         var vm = $scope;
         var dom_parser = new DOMParser();
         vm.resetXml = {};
