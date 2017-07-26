@@ -4,7 +4,7 @@
         <h4 class="modal-title">
             <span ng-if="_jobChain.name">{{_jobChain.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedOrders</span></span>
             <span ng-if="_job.name">{{_job.name}} : <span class="text-muted text" translate>label.calendarViewForPlannedJob</span></span>
-            <span ng-if="maxPlannedTime" class="text-muted font14">({{'label.maxAvailablePlanedDate' | translate}} : {{maxPlannedTime|stringToDate}})</span>
+            <span ng-if="maxPlannedTime" class="text-muted font14">({{'label.dailyPlanCreated' | translate}} : {{maxPlannedTime|stringToDate}})</span>
         </h4>
     </div>
     <div class="modal-body" ng-class="{'min-ht-500':planItems.length>0}">

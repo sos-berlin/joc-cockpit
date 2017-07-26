@@ -3847,11 +3847,11 @@
                 return array.sort(function (x, y) {
                     var key1 = key == 'processedPlanned' ? x.orderId ? 'jobChain' : 'job' : key;
 
-                    var a = y[key1];
-                    var b = x[key1];
+                    var a = x[key1];
+                    var b = y[key1];
                     if (order) {
-                        a = x[key1];
-                        b = y[key1];
+                        a = y[key1];
+                        b = x[key1];
                     }
 
                     if (!a && b) {
@@ -3881,11 +3881,11 @@
                 });
             } else if (key == 'duration') {
                 return array.sort(function (x, y) {
-                    var a = y;
-                    var b = x;
-                    if (order) {
-                        a = x;
-                        b = y;
+                    var a = x;
+                    var b = y;
+                    if (!order) {
+                        a = y;
+                        b = x;
                     }
                     var m, n;
                     if (a.plannedStartTime && a.expectedEndTime) {
@@ -3898,11 +3898,11 @@
                 });
             }else if(key == 'duration1'){
                 return array.sort(function (x, y) {
-                    var a = y;
-                    var b = x;
-                    if (order) {
-                        a = x;
-                        b = y;
+                    var a = x;
+                    var b = y;
+                    if (!order) {
+                        a = y;
+                        b = x;
                     }
 
                     var m =0, n=0;
