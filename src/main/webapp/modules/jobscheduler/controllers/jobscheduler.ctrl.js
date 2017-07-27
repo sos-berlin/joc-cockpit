@@ -1173,7 +1173,11 @@
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
-                vm._schedules = result.schedules;
+                vm._schedules = [];
+                angular.forEach(result.schedules, function (value) {
+                    if (value && !value.substitute && value.path != schedule.path)
+                        vm._schedules.push(value)
+                });
             });
             vm.zones = moment.tz.names();
         };
@@ -1195,8 +1199,9 @@
             }, function () {
                 vm.object.schedules = [];
             });
-            ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
+            ScheduleService.get({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = result.schedules;
+
             });
         };
 
@@ -1262,7 +1267,7 @@
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = [];
                 angular.forEach(result.schedules, function (value) {
-                    if (value && !value.substitute)
+                    if (value && !value.substitute && value.path != schedule.path)
                         vm._schedules.push(value)
                 });
             });
@@ -2217,7 +2222,11 @@
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
-                vm._schedules = result.schedules;
+                vm._schedules = [];
+                angular.forEach(result.schedules, function (value) {
+                    if (value && !value.substitute && value.path != schedule.path)
+                        vm._schedules.push(value)
+                });
             });
             vm.zones = moment.tz.names();
         };
@@ -2279,7 +2288,7 @@
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = [];
                 angular.forEach(result.schedules, function (value) {
-                    if (value && !value.substitute)
+                    if (value && !value.substitute && value.path != schedule.path)
                         vm._schedules.push(value)
                 });
             });

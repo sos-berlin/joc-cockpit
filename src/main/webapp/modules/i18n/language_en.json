@@ -1033,5 +1033,7 @@
   "label.pdf": "PDF",
   "label.png": "PNG",
   "label.calendarViewForPlannedJob": "Calendar View for planned job",
-  "label.dailyPlanCreated": "Daily plan created until"
+  "label.dailyPlanCreated": "Daily plan created until",
+  "label.frequencies": "Frequencies",
+  "button.removeSubstitute": "Remove Substitute"
 }

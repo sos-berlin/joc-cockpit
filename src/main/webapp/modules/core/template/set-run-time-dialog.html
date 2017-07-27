@@ -114,11 +114,11 @@
                             <div class="col-md-8">
                                 <label class="md-check w-sm">
                                     <input type="radio" name="radio" ng-model="order.at" value="now">
-                                    <i class="primary"></i> <span translate>label.frequency</span>
+                                    <i class="primary"></i> <span translate>label.frequencies</span>
                                 </label>
                                 <label class="md-check">
                                     <input type="radio" name="radio" ng-model="order.at" value="later">
-                                    <i class="primary"></i> <span translate>label.schedule</span>
+                                    <i class="primary"></i> <span translate>label.schedules</span>
                                 </label>
                             </div>
                         </div>
@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="text-orange" style="margin-top: -22px !important;"
                                      translate>message.theScheduleAttributAndOtherRuntimes</div>
-                                <button class="btn btn-grey btn-xs m-t" ng-if="_sch._schedule" type="button" ng-click="removeSchedule()" translate>button.remove</button>
+                                <button class="btn btn-grey bg-hover-color btn-xs m-t" ng-if="_sch._schedule" type="button" ng-click="removeSchedule()" translate>button.remove</button>
                             </div>
                             <div class="col-sm-12" ng-if="order.at == 'now'" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">

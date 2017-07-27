@@ -1152,7 +1152,7 @@
         }
 
         vm.addOrder = function (jobChain) {
-            ScheduleService.getSchedulesP({
+            ScheduleService.get({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true
             }).then(function (res) {

@@ -1679,8 +1679,8 @@
 
     }
 
-    ScheduleEditorCtrl.$inject = ["$scope", "$rootScope", "gettextCatalog"];
-    function ScheduleEditorCtrl($scope, $rootScope, gettextCatalog) {
+    ScheduleEditorCtrl.$inject = ["$scope", "$rootScope"];
+    function ScheduleEditorCtrl($scope, $rootScope) {
         var vm = $scope;
         vm.sch = {};
         vm.error = {};
@@ -1726,11 +1726,30 @@
         });
 
         vm.cancel = function (form2) {
-            if (form2)
+            if (form2) {
                 form2.$setPristine();
+                form2.$setUntouched();
+            }
             $('#schedule-editor').modal('hide');
             $('.fade-modal').css('opacity', 1);
         };
+
+        vm.removeSubstitue = function (form2) {
+            $rootScope.$broadcast('remove-substitue', {
+                _schedules: vm._schedules,
+                _sch : {}
+            });
+            vm.sch = {};
+            vm.from = {};
+            vm.from.time = '00:00';
+            vm.to = {};
+            vm.to.time = '00:00';
+            if (form2) {
+                form2.$setPristine();
+                form2.$setUntouched();
+            }
+        };
+
         vm.save = function (form2) {
             vm.sch._valid_from = undefined;
             if (!vm.from.time) {
@@ -1786,12 +1805,7 @@
                 from: vm.from,
                 to: vm.to
             });
-            if (form2) {
-                form2.$setPristine();
-                form2.$setUntouched();
-            }
-            $('#schedule-editor').modal('hide');
-            $('.fade-modal').css('opacity', 1);
+            vm.cancel(form2);
 
         };
     }
@@ -2372,15 +2386,16 @@
             }
 
             run_time = _xml.run_time || _xml.schedule || {};
+
             if (!run_time._schedule) {
                 vm._sch = {};
-                if (load)
+
+                if (load && vm.order)
                     vm.order.at = 'now';
             } else {
                 vm._sch._schedule = run_time._schedule;
-                if (load)
+                if (load && vm.order)
                     vm.order.at = 'later';
-
             }
 
             vm.runTime1.timeZone = run_time._time_zone;
@@ -2404,14 +2419,22 @@
                 s = s > 9 ? s : '0' + s;
                 vm.to.time = h + ':' + m + ':' + s;
             }
-            if (run_time._title) {
+
+            if(vm.sch) {
                 vm.sch._title = run_time._title;
-            }
-            if (run_time._name) {
                 vm.sch._name = run_time._name;
-            } else {
-                if (run_time._substitute) {
-                    vm.sch._substitute = run_time._substitute;
+                vm.sch._substitute = run_time._substitute;
+            }
+
+            if(vm.substituteObj) {
+                vm.substituteObj.name = run_time._name;
+                if (!run_time._valid_from) {
+                    vm.substituteObj.fromDate = '';
+                    vm.substituteObj.fromTime = '00:00';
+                }
+                if (!run_time._valid_to) {
+                    vm.substituteObj.toDate = '';
+                    vm.substituteObj.toTime = '00:00';
                 }
             }
 
@@ -4041,6 +4064,26 @@
                     vm.runTime.frequency = undefined;
                     vm.runTime.period = {};
                 }
+            }
+        });
+
+        $rootScope.$on('remove-substitue', function (event, data1) {
+
+            try {
+
+                var _xml = x2js.xml_str2json(vm.xml);
+                if (typeof _xml.schedule !== 'object') _xml.schedule = {};
+                delete _xml.schedule['_valid_from'];
+                delete _xml.schedule['_valid_to'];
+                delete _xml.schedule['_title'];
+                delete _xml.schedule['_substitute'];
+
+                var xmlStr = x2js.json2xml_str(_xml);
+                xmlStr = xmlStr.replace(/,/g, ' ');
+
+                getXml2Json(xmlStr);
+            } catch (e) {
+                console.log(e);
             }
         });
 
@@ -7418,6 +7461,7 @@
             vm.substituteObj.toTime = '00:00';
         }
         vm.saveScheduleDetail = function (param) {
+
             vm.sch._valid_from = undefined;
             vm.sch._name = vm.substituteObj.name;
             if (!vm.substituteObj.fromTime) {
@@ -7465,6 +7509,17 @@
             } else {
                 if (!vm.substituteObj.showText && !param)
                     vm.error.validDate = true;
+            }
+        };
+
+        vm.removeSubstitute = function(form2){
+            vm.substituteObj = {};
+            vm.substituteObj.fromTime = '00:00';
+            vm.substituteObj.toTime = '00:00';
+            vm.saveScheduleDetail('check');
+            if (form2) {
+                form2.$setPristine();
+                form2.$setUntouched();
             }
         };
 
@@ -8446,6 +8501,7 @@
                     vm.xml = '<schedule></schedule>';
                 }
             }
+
             getXml2Json(vm.xml, 'load');
         }
 
