@@ -72,6 +72,9 @@
                                 ng-disabled="form2.$invalid || error.scheduleRequired || error.validDate  || error.requiredDate">
                             <span translate>button.save</span>
                         </button>
+                        <button type="button" class="btn bg-hover-color btn-sm m-l-sm" ng-if="sch._substitute" ng-click="removeSubstitue(form2)">
+                            <span translate>button.remove</span>
+                        </button>
                         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form2)" translate>
                             button.cancel
                         </button>

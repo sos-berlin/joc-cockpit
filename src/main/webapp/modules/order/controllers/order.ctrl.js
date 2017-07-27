@@ -2484,7 +2484,7 @@
         }
 
         vm.addOrder = function (path) {
-            ScheduleService.getSchedulesP({
+            ScheduleService.get({
                 jobschedulerId: $scope.schedulerIds.selected,
                 compact: true
             }).then(function (res) {

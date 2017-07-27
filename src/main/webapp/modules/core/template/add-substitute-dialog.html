@@ -74,10 +74,15 @@
                                 <input class="form-control" ng-model="substituteObj.folder" name="folder" required>
                             </div>
                         </div>
-                        <div class="form-group row" ng-class="{ 'has-error' : form.scheduleName.$invalid && form.scheduleName.$dirty }">
+                        <div class="form-group row m-t" ng-class="{ 'has-error' : form.scheduleName.$invalid && form.scheduleName.$dirty }">
                             <label class="col-sm-3 form-control-label" translate>label.enterScheduleName</label>
                             <div class="col-sm-9">
-                                <input class="form-control" ng-model="substituteObj.name" name="scheduleName" required ng-blur="saveScheduleDetail('check');">
+                                <select class="form-control" name="scheduleName" ng-model="substituteObj.name" style="border: none" ng-change="saveScheduleDetail('check')"
+                                        ng-options="schedul.path as schedul.path for schedul in _schedules | orderBy:'path'">
+                                </select>
+                                <div class="input-dropdown" style="margin-bottom: -25px">
+                                    <input name="scheduleName" class="form-control" ng-model="substituteObj.name" required type="text" ng-blur="saveScheduleDetail('check');">
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row" ng-class="{ 'has-error' : (form.date1.$invalid && form.date1.$dirty) || form.fromTime.$invalid && form.fromTime.$dirty }">
@@ -697,6 +702,7 @@
     <div class="modal-footer text-left" ng-if="!editor.showHoildayTab">
         <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || error.validDate" translate>button.submit</button>
         <button ng-if="!editor.hidePervious && !substituteObj.showText" type="button" class="btn btn-sm orange" ng-disabled="form.$invalid || error.validDate" ng-click="saveScheduleDetail();" translate>button.addNewRuntime</button>
+        <button ng-if="!editor.hidePervious && substituteObj.showText && substituteObj.name" type="button" ng-click="removeSubstitute(form)" class="btn btn-sm bg-hover-color" translate>button.removeSubstitute</button>
         <button ng-if="!editor.hidePervious" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
                 translate>button.cancel
         </button>
