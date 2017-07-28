@@ -1126,8 +1126,8 @@
         };
     }
 
-    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService', '$timeout', 'toasty', 'gettextCatalog'];
-    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout, toasty, gettextCatalog) {
+    PermissionCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$stateParams', 'ResourceService', '$timeout'];
+    function PermissionCtrl($scope, UserService, $uibModal, $stateParams, ResourceService, $timeout) {
         var vm = $scope;
         vm.loading = true;
         vm.isDuplicate = false;
@@ -1346,21 +1346,6 @@
             });
         };
         vm.deleteFolder = function (folder) {
-
-            var flag = true;
-
-            if (vm.folderArr.length == 1 && vm.rolePermissions.length == 0) {
-                flag = false;
-            }
-            if (!flag) {
-                toasty.warning({
-                    msg: gettextCatalog.getString('message.cannotDeleteLastFolderOrPermission'),
-                    timeout: 10000
-                });
-                return;
-            }
-
-
             vm.folder = angular.copy(folder);
             vm.folder.folder = vm.folder.folder == "" ? '/' : vm.folder.folder;
             var modalInstance = $uibModal.open({

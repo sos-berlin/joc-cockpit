@@ -3260,7 +3260,26 @@
         }
 
         function volatileFolderData(data, obj) {
+            if(vm.scheduleState == 'UNREACHABLE'){
+                if (data.orders.length > 0) {
+                    angular.forEach(data.orders, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
 
+                        for (var i = 0; i < vm.allOrders; i++) {
+                            if (value.path == vm.allOrders[i].path) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag)
+                            vm.allOrders.push(value);
+                    });
+                }
+                vm.loading = false;
+                vm.folderPath = data.name || '/';
+                return;
+            }
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
             } else {
@@ -3332,7 +3351,32 @@
         }
 
         function volatileFolderData1(data, obj) {
+            if(vm.scheduleState == 'UNREACHABLE'){
+                var temp = [];
+                if (data.orders.length > 0) {
 
+                    for (var x = 0; x < vm.allOrders.length; x++) {
+                        if (vm.allOrders[x].path1 != data.path) {
+                            temp.push(vm.allOrders[x]);
+                        }
+                    }
+                    angular.forEach(data.orders, function (value) {
+                        for (var x = 0; x < temp.length; x++) {
+                            if (temp[x].path1 == data.path && temp[x].path == value.path) {
+                                temp[x].splice(x, 1);
+                                break;
+                            }
+                        }
+                        value.path1 = data.path;
+                        temp.push(value);
+                    });
+
+                }
+                vm.allOrders = angular.copy(temp);
+                vm.folderPath = data.name || '/';
+                vm.loading = false;
+                return;
+            }
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
             } else {
@@ -3660,6 +3704,13 @@
             });
 
             OrderService.getOrdersP(obj1).then(function (result) {
+                if(vm.scheduleState == 'UNREACHABLE') {
+                    angular.forEach(vm.tree, function (node, index) {
+                        insertData(node, result.orders);
+                    });
+                    vm.loading = false;
+                    return;
+                }
                 OrderService.get(obj).then(function (res) {
                     vm.allOrders = [];
                     if (result.orders && result.orders.length > 0) {
