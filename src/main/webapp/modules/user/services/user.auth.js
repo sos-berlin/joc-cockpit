@@ -58,7 +58,7 @@
                                 SOSAuth.clearStorage();
                                 $location.path('/login');
                             } else {
-                                if (rejection.data && rejection.data.error && rejection.status != 434)
+                                if ((rejection.data && rejection.data.error && rejection.status != 434 && rejection.data.error.code && rejection.data.error.code !='JOC-402' && rejection.data.error.code !='JOC-400' ))
                                     toasty.error({
                                         title: rejection.data.error.code || rejection.status,
                                         msg: rejection.data.error.message || 'API expection',

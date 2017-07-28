@@ -2463,9 +2463,30 @@
             }
         };
 
+        function agentClusterRunningTaskGraph(agentArray){
+            vm.processClasses = [];
+                vm.agentStatusChart = [{
+                    "key": "Agents",
+                    "values": agentArray
+                }];
+                vm.isLoadedRunningTask = true;
+                if (document.getElementById('agent-cluster-status')) {
+                    var a = document.getElementById('agent-cluster-status').clientHeight
+                }
+                if (document.getElementById('agent-running-task')) {
+                    var b = document.getElementById('agent-running-task').clientHeight
+                }
+                if (a && b && (a + b > 320)) {
+                    $('#master-cluster-status').css('height', (a + b - 20) + 'px');
+                }
+        }
         vm.getAgentClusterRunningTask = function () {
             vm.isLoadedRunningTask = false;
             var agentArray = [];
+            if(vm.scheduleState == 'UNREACHABLE'){
+                agentClusterRunningTaskGraph(agentArray);
+                return;
+            }
             ResourceService.getProcessClass({
                 jobschedulerId: $scope.schedulerIds.selected,
                 isAgentCluster: true
@@ -2496,21 +2517,7 @@
                 }
 
             }, function () {
-                vm.processClasses = [];
-                vm.agentStatusChart = [{
-                    "key": "Agents",
-                    "values": agentArray
-                }];
-                vm.isLoadedRunningTask = true;
-                if (document.getElementById('agent-cluster-status')) {
-                    var a = document.getElementById('agent-cluster-status').clientHeight
-                }
-                if (document.getElementById('agent-running-task')) {
-                    var b = document.getElementById('agent-running-task').clientHeight
-                }
-                if (a && b && (a + b > 320)) {
-                    $('#master-cluster-status').css('height', (a + b - 20) + 'px');
-                }
+                 agentClusterRunningTaskGraph(agentArray);
             });
         };
 
@@ -2836,6 +2843,11 @@
         };
 
         vm.loadOrderSnapshot = function () {
+            if(vm.scheduleState == 'UNREACHABLE'){
+                isLoadedSnapshot = true;
+                vm.snapshot ={};
+                return;
+            }
             isLoadedSnapshot = false;
             OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.snapshot = res.orders;

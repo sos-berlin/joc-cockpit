@@ -930,6 +930,8 @@
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
             vm.selectedJobScheduler = JSON.parse($window.sessionStorage.$SOS$JOBSCHEDULE);
+            if(vm.selectedJobScheduler.state)
+            vm.scheduleState = vm.selectedJobScheduler.state._text;
             vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                 document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
@@ -937,7 +939,6 @@
 
 
         function getScheduleDetail(res) {
-
             for (var i = 0; i < res.masters.length; i++) {
                 if (res.masters[i].jobschedulerId == vm.schedulerIds.selected) {
                     vm.selectedJobScheduler = res.masters[i];
@@ -945,6 +946,8 @@
                     if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                         document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
                     $window.sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(vm.selectedJobScheduler);
+                     if(vm.selectedJobScheduler.state)
+                    vm.scheduleState = vm.selectedJobScheduler.state._text;
                     break;
                 }
             }
@@ -953,6 +956,28 @@
         $scope.$on('reloadScheduleDetail', function (event, res) {
             getScheduleDetail(res);
         });
+        function loadScheduleDetail() {
+            if ($state.current.name != 'app.dasboard' && vm.schedulerIds.selected) {
+                JobSchedulerService.getClusterMembers({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+                    getScheduleDetail(res);
+                });
+            }
+        }
+        loadScheduleDetail();
+        vm.$on('event-started', function (event, args) {
+            if (args.events && args.events.length > 0) {
+                angular.forEach(args.otherEvents, function (event) {
+                    angular.forEach(event.eventSnapshots, function (value1) {
+                        if (value1.eventType === "SchedulerStateChanged") {
+                            loadScheduleDetail();
+                        }
+                    });
+                });
+
+
+            }
+        });
+
 
         vm.changeScheduler = function (jobScheduler) {
             vm.switchScheduler = true;
@@ -970,6 +995,10 @@
                         if ($location.path().match('job_chain_detail/')) {
                             $location.path('/').search({});
                         } else {
+                            if($state.current.name!='app.dasboard')
+                            JobSchedulerService.getClusterMembers({jobschedulerId:vm.schedulerIds.selected}).then(function(res){
+                                getScheduleDetail(res);
+                            });
                             $state.reload(vm.currentState);
                         }
                     } else {

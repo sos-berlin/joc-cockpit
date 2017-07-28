@@ -1,16 +1,27 @@
 <div id="content" class="app-content " role="main" ng-controller="HeaderCtrl" ng-click="refreshSession()">
     <div class="w-full text-right top-header-bar white fa-fa-color">
-        <span class="pull-left p-l-3" ng-if="userPreferences.themeTitle"><span class="_600 m-l-sm text-shadow" ng-bind="userPreferences.themeTitle"></span> </span>
-        <span class="m-r-sm" ><span translate>label.time</span>: <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
-        <span class="m-r-sm" ><span translate>label.remainingSessionTime</span>: <span class="text-primary" ng-bind="remainingSessionTime"></span></span>
-        <span class="m-r-sm" ng-show="selectedJobScheduler.startedAt"><span translate>label.jobSchedulerStartTime</span>: <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span></span>
+        <span class="pull-left p-l-3" ng-if="userPreferences.themeTitle"><span class="_600 m-l-sm text-shadow"
+                                                                               ng-bind="userPreferences.themeTitle"></span> </span>
+        <span class="m-r-sm"><span translate>label.time</span>: <span class="text-primary"
+                                                                      ng-bind="currentTime | stringToDate"></span></span>
+        <span class="m-r-sm"><span translate>label.remainingSessionTime</span>: <span class="text-primary"
+                                                                                      ng-bind="remainingSessionTime"></span></span>
+        <span class="m-r-sm" ng-show="selectedJobScheduler.startedAt"><span translate>label.jobSchedulerStartTime</span>: <span
+                class="text-primary"
+                ng-bind="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span></span>
+        <span class="m-r-sm" ng-hide="selectedJobScheduler.startedAt" ng-if="scheduleState"><span translate>label.state</span>: <span
+                class="text-danger"
+                ng-bind="scheduleState | translate"></span></span>
         <span class="dropdown" ng-if="schedulerIds.selected">
             <a data-toggle="dropdown">
                 <span translate>label.id</span>:
-                <span class="_500 text-orange" ng-bind="schedulerIds.selected"></span><i class="fa fa-caret-down p-l-xs"></i>
+                <span class="_500 text-orange" ng-bind="schedulerIds.selected"></span><i
+                    class="fa fa-caret-down p-l-xs"></i>
             </a>
             <div class="dropdown-menu dropdown-ac dropdown-more pull-right m-r" role="menu">
-                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds" ng-click="changeScheduler(jobScheduler);$event.stopPropagation()" ng-class="{'primary':schedulerIds.selected == jobScheduler}">
+                <a class="dropdown-item" ng-repeat="jobScheduler in schedulerIds.jobschedulerIds"
+                   ng-click="changeScheduler(jobScheduler);$event.stopPropagation()"
+                   ng-class="{'primary':schedulerIds.selected == jobScheduler}">
                     <span>{{jobScheduler}}</span>
                 </a>
             </div>
@@ -23,7 +34,7 @@
     </div>
     <!-- END HEADER -->
     <!-- BEGIN CONTENT -->
-    <div class="app-body" >
+    <div class="app-body">
         <div ui-view id="view"></div>
     </div>
     <!-- END CONTENT -->
