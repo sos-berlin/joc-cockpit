@@ -3633,8 +3633,7 @@
             var maxEndTime;
             var orders = [];
             $scope.ordersNoDuplicate = [];
-            //data2 = orderBy(data2, 'plannedStartTime', false);
-
+      
             var groupJobChain = [];
             for (var i = 0; i < data2.length; i++) {
 
@@ -3876,11 +3875,30 @@
                     }
 
                     if (!a && b) {
-                        return -1;
+                        if(key1 =='job') {
+                            a = x['jobChain'];
+                            if (order) {
+                                a = y['jobChain'];
+                            }
+                        }else if(key1 =='jobChain'){
+                            a = x['job'];
+                            if (order) {
+                                a = y['job'];
+                            }
+                        }
                     } else if (a && !b) {
-                        return 1;
+                        if(key1 =='job') {
+                            b = y['jobChain'];
+                            if (order) {
+                                b = x['jobChain'];
+                            }
+                        }else if(key1 =='jobChain'){
+                            b = y['job'];
+                            if (order) {
+                                b = x['job'];
+                            }
+                        }
                     }
-
 
                     var AInt = parseInt(a, 10);
                     var BInt = parseInt(b, 10);

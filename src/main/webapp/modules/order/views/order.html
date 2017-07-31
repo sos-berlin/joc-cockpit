@@ -711,12 +711,10 @@
                                                 time="{{order.startedAt}}"></span>)</span></span></td>
                                         <td ng-bind="order.historyId || '-'"></td>
                                         <td>
-                                                    <span class="hide"
-                                                          ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
-                                                        <i class="fa fa-circle-o text-info text-xs"
-                                                           ng-if="order.runTimeIsTemporary"></i>{{order.nextStartTime | stringToDate}}
-                                                        <span class="text-success">(<span
-                                                                time="{{order.nextStartTime}}"></span>)</span></span>
+                                            <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                                                <i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i>
+                                                {{order.nextStartTime | stringToDate}}
+                                                <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                             <span class="hide tableexport-ignore"
                                                   ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}"
                                                   translate>label.never</span>

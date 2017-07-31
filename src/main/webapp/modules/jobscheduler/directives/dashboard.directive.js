@@ -194,7 +194,7 @@
                                     if (scope.clusterStatusData.members.masters.length - 1 == index && res.masters.length - 1 == rIndex && !refresh) {
                                         drawFlow();
                                     }
-                                })
+                                });
 
                                 if (refresh && (refresh.state == 'stopping' || refresh.state == 'starting') && res.masters.length == 0) {
                                     if (master.state._text !== ' ') {
@@ -203,7 +203,7 @@
                                     }
 
                                 }
-                            })
+                            });
                         $rootScope.$broadcast('reloadScheduleDetail', scope.clusterStatusData.members);
 
                     }
@@ -256,7 +256,6 @@
                             rect.setAttribute('data-content', popoverTemplate);
                         }
                     }
-
 
                     function drawFlow() {
                         var sLeft = 0;
@@ -937,7 +936,7 @@
             template: '<div class="plan-overview bg-dimgrey" ng-style="{\'width\': width[0]+\'%\'}">\n'
             + '<label class="hide" ng-class="{\'show\': waiting > 0}" uib-tooltip="{{waiting*total/100 | number:0}} out of {{total}}"><a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:1,day:day})" ><span  translate>label.waiting</span> - {{waiting |number:1}} %  </a></label></div>'
             + '<div class="plan-overview bg-gold" ng-style="{width: width[1]+\'%\'}">\n'
-            + '<label class="hide plan-status" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span  translate>label.PlannedLate</span> - {{late |number:1}} % </a></label></div>'
+            + '<label class="hide text-dark" ng-class="{\'show\': late > 0}" uib-tooltip="{{late*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:2,day:day})" > <span  translate>label.PlannedLate</span> - {{late |number:1}} % </a></label></div>'
             + '<div class="plan-overview bg-green1" ng-style="{width: width[3]+\'%\'}">\n'
             + '<label class="hide plan-status" ng-class="{\'show\': lateSuccess > 0}" uib-tooltip="{{lateSuccess*total/100 | number:0}} out of {{total}}"> <a class="nav-link block-ellipsis-job" ui-sref="app.dailyPlan({filter:3,day:day})" > <span  translate>label.successfulLate</span> - {{lateSuccess |number:1}} % </a></label></div>'
             + '<div class="plan-overview bg-crimson1" ng-style="{width: width[5]+\'%\'}">\n'
