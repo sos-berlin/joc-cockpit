@@ -3068,9 +3068,10 @@
                         obj.isOrderJob = vm.selectedFiltered.type[0] == 'order';
                     }
                 }
-            }
-            if (vm.jobFilters.filter.type != 'ALL') {
-                obj.isOrderJob = vm.jobFilters.filter.type == 'order';
+            }else {
+                if (vm.jobFilters.filter.type != 'ALL') {
+                    obj.isOrderJob = vm.jobFilters.filter.type == 'order';
+                }
             }
             obj.folders = [{folder: data.path, recursive: false}];
             JobService.getJobsP(obj).then(function (result) {
@@ -3260,6 +3261,7 @@
                             }
                         }
                     });
+                     data1 = data1.concat(res.jobs);
                     data.jobs = data1;
                 } else {
                     data.jobs = res.jobs;
@@ -4218,8 +4220,6 @@
             }
             vm.isAuditLog = false;
 
-            vm.showTaskPanel = value;
-
             vm.loadHistory(value);
 
             if (value.numOfQueuedTasks > 0 || value.numOfRunningTasks > 0) {
@@ -4230,26 +4230,24 @@
                 JobService.getJobsP(obj).then(function (res) {
                     JobService.get(obj).then(function (result) {
                         if (res.jobs.length > 0 && result.jobs.length > 0)
-                            vm.showTaskPanel = angular.merge(res.jobs[0], result.jobs[0]);
+                            value = angular.merge(res.jobs[0], result.jobs[0]);
                         else if (res.jobs.length == 0 && result.jobs.length != 0)
-                            vm.showTaskPanel = result.jobs[0];
+                            value = result.jobs[0];
                         else
-                            vm.showTaskPanel = res.jobs[0];
-                        value.runningTasks = vm.showTaskPanel.runningTasks;
+                            value = res.jobs[0];
 
                     }, function (err) {
-                        vm.showTaskPanel = res.jobs[0];
-                        value.runningTasks = vm.showTaskPanel.runningTasks;
+                        value = res.jobs[0];
                     });
                 }, function () {
                     JobService.get(obj).then(function (result) {
-                        vm.showTaskPanel = angular.merge(value, result.jobs[0]);
-                        value.runningTasks = vm.showTaskPanel.runningTasks;
+                        value = angular.merge(value, result.jobs[0]);
                     });
                 });
             }
             if (value.ordersSummary)
                 getQueueOrders(value);
+            vm.showTaskPanel = value;
 
             vm.isRunning = isRunning;
             vm.jobFilters.showTaskPanel = vm.showTaskPanel.path;
@@ -5229,6 +5227,7 @@
 
 
         function navFullTreeForUpdateJob(path) {
+
             for (var i = 0; i < vm.tree.length; i++) {
                 if (vm.tree[i].path != path) {
                     traverseTreeForUpdateJob(vm.tree[i], path);

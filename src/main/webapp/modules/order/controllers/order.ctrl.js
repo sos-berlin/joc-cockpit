@@ -1243,6 +1243,10 @@
             $(".block-ellipsis").css("overflow", "auto");
             $('#exportId').height(bound.maxTop + 600);
             $('#exportId').width(bound.maxLeft + 100);
+            if(type=='png'){
+                 $('#exportId').css("padding-left",10);
+            }
+
             if (vm.slider && vm.slider.value != 100) {
                 $("#zoomCn").css("zoom", 1);
                 $("#zoomCn").css("transform", "Scale(1)");
@@ -1268,16 +1272,20 @@
                 background: getBackground(),
 
                 onrendered: function (canvas) {
-
                     var data = canvas.toDataURL('image/png');
 
                     if (type == 'pdf') {
                         var docDefinition = {
-                            content: [{
-                                image: data,
-                                width: 500
-                            }]
-                        };
+
+                        content: [{
+                            image: data,
+                            width:(bound.maxLeft +100)
+                        }],
+                             pageOrientation: 'landscape'
+                    };
+                    if((bound.maxLeft +100)>750){
+                        docDefinition.pageSize={width:(bound.maxLeft +100),height:1200};
+                    }
 
                         pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
                     } else {
@@ -1299,6 +1307,9 @@
                         $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
                         $("#zoomCn").css("transform-origin", "0 0");
                     }
+                 if(type=='png'){
+                    $('#exportId').css("padding-left",0);
+                 }
                     if (fitToScreen) {
                         vm.fitToScreen = true;
                         setHeight();
