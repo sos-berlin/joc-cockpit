@@ -258,7 +258,9 @@
                             $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                             document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
                             preferences = JSON.parse($window.sessionStorage.preferences);
-
+                            if(preferences && !preferences.pageView){
+                                preferences.pageView = 'grid';
+                            }
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
@@ -279,7 +281,6 @@
                                 $('#dailyPlan_id img').attr("src", 'images/daily_plan.png');
                                 $('#resources_id img').attr("src", 'images/resources.png');
                             }
-
                             $window.localStorage.$SOS$LANG = preferences.locale;
 
                             $resource("modules/i18n/language_" + preferences.locale + ".json").get(function (data) {
@@ -331,8 +332,8 @@
         function setPermission() {
             if (SOSAuth.permission) {
                 vm.permission = JSON.parse(SOSAuth.permission);
-            }else{
-                vm.permission ={};
+            } else {
+                vm.permission = {};
             }
         }
 
@@ -348,8 +349,8 @@
                 vm.schedulerIds = JSON.parse(SOSAuth.scheduleIds);
             } else if ($location.search() && $location.search().scheduler_id) {
                 vm.schedulerIds = $location.search().scheduler_id;
-            }else{
-                vm.schedulerIds ={};
+            } else {
+                vm.schedulerIds = {};
             }
         }
 
@@ -404,7 +405,6 @@
             if (!order && !task) {
                 return;
             }
-
             refreshParent();
             if ((task && !vm.permission.Job.view.taskLog) || (order && !vm.permission.Order.view.orderLog)) {
                 toasty.warning({
@@ -413,7 +413,6 @@
                 });
                 return;
             }
-
             var url = null;
             if (vm.userPreferences.isNewWindow == 'newWindow') {
 
@@ -432,8 +431,8 @@
                             return;
                         }
 
-                        document.cookie = "$SOS$scheduleId=" +vm.schedulerIds.selected+ ";path=/";
-                        document.cookie = "$SOS$accessTokenId=" +SOSAuth.accessTokenId+ ";path=/";
+                        document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
+                        document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
                         newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
 
                         t1 = $timeout(function () {
@@ -459,7 +458,7 @@
             }
         };
 
-         vm.end = function (task, path) {
+        vm.end = function (task, path) {
             var jobs = {};
             jobs.jobs = [];
             var taskIds = [];
@@ -639,7 +638,7 @@
             $location.path('/resources/agent_clusters/')
         };
 
-         vm.showProcessClass = function (processClass) {
+        vm.showProcessClass = function (processClass) {
             var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
@@ -661,7 +660,7 @@
                 path: path
             };
 
-           $location.path('/orders')
+            $location.path('/orders')
         };
 
         vm.isEmpty = function (obj) {
@@ -930,7 +929,7 @@
 
         if ($window.sessionStorage.$SOS$JOBSCHEDULE) {
             vm.selectedJobScheduler = JSON.parse($window.sessionStorage.$SOS$JOBSCHEDULE);
-            if(vm.selectedJobScheduler.state)
+            if(vm.selectedJobScheduler && vm.selectedJobScheduler.state)
             vm.scheduleState = vm.selectedJobScheduler.state._text;
             vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
             if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
@@ -946,7 +945,7 @@
                     if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                         document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
                     $window.sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(vm.selectedJobScheduler);
-                     if(vm.selectedJobScheduler.state)
+                     if(vm.selectedJobScheduler && vm.selectedJobScheduler.state)
                     vm.scheduleState = vm.selectedJobScheduler.state._text;
                     break;
                 }

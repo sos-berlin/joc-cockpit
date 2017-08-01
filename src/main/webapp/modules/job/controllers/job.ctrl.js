@@ -1063,8 +1063,7 @@
                     };
                     vm.planItems.push(planData);
                     if(res.created){
-                        var date = new Date();
-                        vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
+                        vm.maxPlannedTime = new Date(res.deliveryDate);
                     }
                 });
         }
@@ -5058,8 +5057,7 @@
                     };
                     vm.planItems.push(planData);
                     if(res.created){
-                        var date = new Date();
-                        vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
+                        vm.maxPlannedTime = new Date(res.deliveryDate);
                     }
                 });
         }

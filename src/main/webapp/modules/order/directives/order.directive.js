@@ -185,8 +185,8 @@
                     if(SOSAuth && SOSAuth.jobChain){
                          scope.jobChain = JSON.parse(SOSAuth.jobChain);
                     }
-
                     scope.jobChainData = angular.copy(scope.nestedChain || scope.jobChain);
+
                     scope.jobChainData.nodes = [];
                     var jobChainData2 = angular.copy(scope.nestedChain || scope.jobChain);
                     var isFirstNode = false;
@@ -205,8 +205,16 @@
 
                         });
 
-                        if (isFirstNode && !(splitRegex.test(item.name))) {
-                            firstIndex = index;
+                        if (isFirstNode && !(splitRegex.test(item.name))  ) {
+
+                             if(firstIndex==-1){
+                                   firstIndex = index;
+                             }else if(firstIndex<index){
+                                jobChainData2.nodes[index].secondParent = true;
+                                 console.log("second parent here -- "+JSON.stringify(jobChainData2.nodes[index])+" firstIndex "+firstIndex+" index "+index);
+                             }
+
+
                         }
                     });
                     if (firstIndex == -1) {
@@ -372,6 +380,8 @@
 
                     scope.startId = "start";
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
+
+
                         if (!item) {
                             return;
                         }
@@ -431,8 +441,17 @@
                                 }
                             })
                         } else if (index > 0) {
-                            
-                            var matched = false;
+                            if(item.secondParent){
+                                angular.forEach(scope.coords,function (obj) {
+                                if (item.nextNode == obj.name ) {
+                                    scope.coords[index].left = obj.left-rectW-margin;
+                                    scope.coords[index].parent = obj.actual;
+                                    scope.coords[index].top = obj.top + rectH + splitMargin;;
+                                }
+
+                            });
+                        }else{
+                               var matched = false;
                             angular.forEach(scope.coords,function (obj) {
 
                                 if (obj.next == item.name && scope.coords[index].left <= obj.left) {
@@ -460,6 +479,8 @@
                                 errorNodeCls = 'error-node';
 
                             }
+                            }
+
                         }
 
                         var jobName;

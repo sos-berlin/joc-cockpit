@@ -3395,8 +3395,9 @@
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if(res.created){
-                    var date = new Date();
-                    vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
+                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                }else{
+                    vm.maxPlannedTime = undefined;
                 }
                 vm.isLoading = true;
                 isLoaded = true;
@@ -3632,8 +3633,8 @@
             var minNextStartTime;
             var maxEndTime;
             var orders = [];
-            $scope.ordersNoDuplicate = [];
-      
+            vm.ordersNoDuplicate = [];
+
             var groupJobChain = [];
             for (var i = 0; i < data2.length; i++) {
 
@@ -3846,8 +3847,9 @@
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
                 if(res.created){
-                    var date = new Date();
-                    vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
+                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                }else{
+                    vm.maxPlannedTime = undefined;
                 }
                 vm.isLoading = true;
                 isLoaded = true;
@@ -4459,8 +4461,9 @@
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans);
                 if(res.created){
-                    var date = new Date();
-                    vm.maxPlannedTime = date.setDate(date.getDate()+res.created.days.value);
+                    vm.maxPlannedTime = new Date(res.deliveryDate);
+                }else{
+                    vm.maxPlannedTime = undefined;
                 }
             }, function () {
                 isLoaded = true;
