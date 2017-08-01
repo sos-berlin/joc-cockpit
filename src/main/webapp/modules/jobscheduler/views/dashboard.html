@@ -272,6 +272,9 @@
                         <div class="hide text-center m-t h6 text-u-c"
                             ng-class="{'show': totalPlanData == 0}" translate>message.noDataAvailable
                         </div>
+                        <div class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': totalPlanData == undefined}">
+                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                        </div>
                     </div>
                 </div>
             </div>

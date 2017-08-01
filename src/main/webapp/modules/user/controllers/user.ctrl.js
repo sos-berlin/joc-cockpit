@@ -154,6 +154,9 @@
             setPreferences();
         });
 
+        if(vm.preferences && !vm.preferences.pageView){
+            vm.preferences.pageView = 'grid';
+        }
         vm.setLocale = function () {
             $window.localStorage.$SOS$LANG = vm.preferences.locale;
             $resource("modules/i18n/language_" + vm.preferences.locale + ".json").get(function (data) {
