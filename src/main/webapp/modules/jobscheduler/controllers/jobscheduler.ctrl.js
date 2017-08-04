@@ -3887,6 +3887,8 @@
                             if (order) {
                                 a = y['job'];
                             }
+                        }else{
+                            return -1;
                         }
                     } else if (a && !b) {
                         if(key1 =='job') {
@@ -3899,6 +3901,8 @@
                             if (order) {
                                 b = x['job'];
                             }
+                        }else{
+                            return 1;
                         }
                     }
 
