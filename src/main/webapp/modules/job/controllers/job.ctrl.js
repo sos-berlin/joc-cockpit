@@ -2535,6 +2535,18 @@
             return scrTree;
         };
 
+        function recursiveSort(tree){
+            function recursive(data) {
+                data.folders = orderBy(data.folders, 'name');
+                angular.forEach(data.folders, function(value) {
+                        recursive(value);
+                });
+            }
+            angular.forEach(tree, function(value) {
+                recursive(value);
+            });
+        }
+
 
         var loadOrderObj = true;
         var loadFileBasedObj = true;
@@ -2570,6 +2582,8 @@
                         loadFileBasedObj = true;
                         vm.jobChainFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobChainFilters.expand_to);
                         vm.tree = vm.jobChainFilters.expand_to;
+                        recursiveSort(vm.tree);
+
                     }, function () {
                         loadFileBasedObj = true;
                     });
@@ -2733,7 +2747,7 @@
         function getJobByPath(path) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.compact = true;
+
             obj.jobs = [{job: path}];
             JobService.getJobsP(obj).then(function (result) {
                 vm.jobs = result.jobs;
@@ -2748,6 +2762,7 @@
         function getJobByPathV(obj) {
             JobService.get(obj).then(function (res) {
                 if (vm.jobs) {
+                    vm.jobs[0].runningTasks = [];
                     vm.jobs = angular.merge(vm.jobs, res.jobs)
                 } else {
                     vm.jobs = res.jobs;
@@ -3253,6 +3268,7 @@
 
                         for (var i = 0; i < res.jobs.length; i++) {
                             if (jobs.path == res.jobs[i].path) {
+                                jobs.runningTasks = [];
                                 jobs = angular.merge(jobs, res.jobs[i]);
                                 data1.push(jobs);
                                 res.jobs.splice(i, 1);
@@ -4303,16 +4319,15 @@
         }
 
         vm.showJobChains = function (job) {
-            if (job.usedInJobChains > 0) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            jobs.jobs.push({job: job.path});
+            JobService.getJobsP(jobs).then(function (res) {
+                job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
-                var jobs = {};
-                jobs.jobs = [];
-                jobs.jobschedulerId = vm.schedulerIds.selected;
-                jobs.jobs.push({job: job.path});
-                JobService.getJobsP(jobs).then(function (res) {
-                    job.jobChains = res.jobs[0].jobChains;
-                });
-            }
+            });
+
         };
 
         vm.hideTaskPanel = function () {
@@ -5114,6 +5129,21 @@
             return scrTree;
         };
 
+
+
+        function recursiveSort(tree){
+            function recursive(data) {
+                data.folders = orderBy(data.folders, 'name');
+                angular.forEach(data.folders, function(value) {
+                        recursive(value);
+                });
+            }
+            angular.forEach(tree, function(value) {
+                recursive(value);
+            });
+        }
+
+
         var t1 = '';
         var mapObj = new Object();
         $scope.$on('event-started', function () {
@@ -5142,7 +5172,6 @@
                                             obj.jobschedulerId = $scope.schedulerIds.selected;
                                             obj.jobs = [];
                                             obj.jobs.push({job: vm.allJobs[index].path});
-
                                             JobService.get(obj).then(function (res) {
                                                 delete mapObj[path[0]];
                                                 if (res.jobs && res.jobs.length > 0 && res.jobs[0].path == vm.allJobs[index].path) {
@@ -5155,6 +5184,7 @@
                                                     res.jobs[0].usedInJobChains = vm.allJobs[index].usedInJobChains;
                                                     res.jobs[0].jobChains = vm.allJobs[index].jobChains;
                                                     res.jobs[0].showJobChains = vm.allJobs[index].showJobChains;
+                                                    vm.allJobs[index].runningTasks = [];
                                                     vm.allJobs[index] = angular.merge(vm.allJobs[index], res.jobs[0]);
                                                     if (vm.showTaskPanel && (vm.showTaskPanel.path == vm.allJobs[index].path)) {
                                                         vm.showTaskPanel = vm.allJobs[index];
@@ -5199,6 +5229,7 @@
                         }).then(function (res) {
                                 vm.jobFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.jobFilters.expand_to);
                                 vm.tree = vm.jobFilters.expand_to;
+                                recursiveSort(vm.tree);
                             }
                         );
 

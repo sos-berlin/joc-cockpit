@@ -92,7 +92,7 @@
                                           ng-bind="job.name"></span>
                                     <span ng-if="job.title">-</span><i class="text-muted" ng-bind-html="job.title | linky:'_blank'"></i>
 
-                                    <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask"
+                                    <div class="p-l-sm noExl" ng-if="job.runningTasks && showTask" ng-hide="job.showJobChains"
                                          ng-repeat="task in job.runningTasks">
 
                                         <div class="btn-group dropdown"
@@ -165,24 +165,91 @@
                             </tr>
                             <tr ng-if="job.error" style="background: transparent !important;">
                                     <td></td>
-                                    <td colspan="13">
+                                    <td colspan="12">
                                      {{job.error.code}} :<span ng-class="colorFunction(job.state.severity)">{{job.error.message}}</span>
                                     </td>
+                            </tr>
+                                <tr ng-if="job.showJobChains && (!job.runningTasks || job.runningTasks.length==0) && (!job.jobChains || job.jobChains.length==0)" style="background: transparent !important;">
+                                    <td></td>
+                                    <td colspan="12">
+                                     <span translate>message.noDataFound</span>
+                                    </td>
                                 </tr>
-                            <tr ng-if="job.showJobChains" style="background: transparent !important;" ng-repeat="jobChain in job.jobChains">
-                                <td></td>
-                                        <td colspan="12">
-
-                                            <div class="btn-group dropdown">
-                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                                            class="fa fa-ellipsis-h"></i></button>
-                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
-                                                        <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
-                                                    </div>
-                                                </div>
-                                             <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
-                                        </td>
-                                    </tr>
+                                <tr ng-if="job.showJobChains && job.runningTasks.length>0" style="background: transparent !important;">
+                                    <td></td>
+                                    <td colspan="12">
+                                        <table class="table table-hover table-bordered m-t-xs m-b-sm">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-xs" translate>
+                                                    label.action
+                                                </th>
+                                                <th class="text-xs" translate>
+                                                    label.pid
+                                                </th>
+                                                <th class="text-xs" translate>
+                                                    label.taskId
+                                                </th>
+                                                <th class="text-xs" translate>
+                                                    label.cause
+                                                </th>
+                                                <th class="text-xs" translate>
+                                                    label.order
+                                                </th>
+                                                <th class="text-xs" translate>
+                                                    label.processSteps
+                                                </th>
+                                                <th class="text-xs" translate>
+                                                    label.runningSince
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="task in job.runningTasks">
+                                                    <td ng-if="permission.Job.view.taskLog || permission.Job.execute.endAllTasks || permission.Job.execute.kill || permission.Job.execute.terminate">
+                                                        <div class="btn-group dropdown">
+                                                            <button type="button"
+                                                                    class="btn-drop more-option-h"
+                                                                    data-toggle="dropdown">
+                                                                <i class="fa fa-ellipsis-h"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more"
+                                                                 role="menu">
+                                                                <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,task,nestedNode.job.path)" translate>button.viewLog</a>
+                                                                <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks" ng-click="end(task,nestedNode.job.path)" translate>button.end</a>
+                                                                <a class="dropdown-item bg-hover-color" ng-if="permission.Job.execute.kill" ng-click="killTask(task,nestedNode.job.path)" translate>button.killImmediately</a>
+                                                                <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTask(task,nestedNode.job.path)" translate>button.terminate</a>
+                                                                <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTaskWithTimeout(null,task,nestedNode.job.path)" translate>button.terminateWithTimeout</a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-xs">{{task.pid}}</td>
+                                                    <td class="text-xs">{{task.taskId}}</td>
+                                                    <td class="text-xs">{{task._cause | translate}}</td>
+                                                    <td class="text-xs">{{task.order.orderId}}</td>
+                                                    <td class="text-xs">{{task.steps}}</td>
+                                                    <td class="text-xs">{{task.startedAt | stringToDate}} <span class="text-success">(<span time="{{task.startedAt}}"></span>)</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr ng-if="job.showJobChains" style="background: transparent !important;" >
+                                    <td></td>
+                                    <td colspan="12">
+                                        <div class="p-t-xs" ng-class="{'p-b-xs' :$index==job.jobChains.length-1}" ng-repeat="jobChain in job.jobChains">
+                                        <div ng-if="$index==0" class="text-muted p-b-xs"><span translate>label.jobChain</span> : </div>
+                                        <div class="btn-group dropdown m-l-md">
+                                            <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                    class="fa fa-ellipsis-h"></i></button>
+                                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                <a class="dropdown-item" ng-click="copyLinkToObject('jobChain',jobChain)" translate>button.copyLinkToObject</a>
+                                            </div>
+                                        </div>
+                                        <a class="text-hover-primary" ng-click="showJobChain(jobChain)">{{jobChain}}</a>
+                                        </div>
+                                    </td>
+                                </tr>
                         </tbody>
 
                     </table>

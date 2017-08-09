@@ -1719,6 +1719,18 @@
                 });
             }
         };
+
+        function recursiveSort(tree){
+            function recursive(data) {
+                data.folders = orderBy(data.folders, 'name');
+                angular.forEach(data.folders, function(value) {
+                    recursive(value);
+                });
+            }
+            angular.forEach(tree, function(value) {
+                recursive(value);
+            });
+        }
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
@@ -1731,6 +1743,7 @@
                             }).then(function (res) {
                                 vm.locksFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.locksFilters.expand_to, 'lock');
                                 vm.treeLock = vm.locksFilters.expand_to;
+                                recursiveSort(vm.treeLock);
                             });
 
                             var path = event.path;
@@ -1756,7 +1769,7 @@
 
                                 vm.processFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.processFilters.expand_to, 'processClass');
                                 vm.treeProcess = vm.processFilters.expand_to;
-
+                                recursiveSort(vm.treeProcess);
                             });
 
                             var path = event.path;
@@ -1779,6 +1792,7 @@
                             }).then(function (res) {
                                 vm.schdeuleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.schdeuleFilters.expand_to, 'schedule');
                                 vm.tree = vm.schdeuleFilters.expand_to;
+                                recursiveSort(vm.tree);
                             });
 
                             var path = event.path;
@@ -1802,6 +1816,7 @@
                             }).then(function (res) {
                                 vm.agentsFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.agentsFilters.expand_to, 'agent');
                                 vm.treeAgent = vm.agentsFilters.expand_to;
+                                recursiveSort(vm.treeAgent);
                             });
 
                             vm.pollAgents();

@@ -4648,7 +4648,17 @@
                 value.show = false;
             });
         };
-
+        function recursiveSort(tree){
+            function recursive(data) {
+                data.folders = orderBy(data.folders, 'name');
+                angular.forEach(data.folders, function(value) {
+                        recursive(value);
+                });
+            }
+            angular.forEach(tree, function(value) {
+                recursive(value);
+            });
+        }
         var t1 = '';
         var mapObj = new Object();
         $scope.$on('event-started', function () {
@@ -4700,6 +4710,7 @@
                                 vm.filterTree = res.folders;
                                 vm.orderFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.orderFilters.expand_to);
                                 vm.tree = vm.orderFilters.expand_to;
+                                recursiveSort(vm.tree);
                             }
                         });
                         var path = [];
