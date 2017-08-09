@@ -1032,8 +1032,8 @@
   "label.export": "Exporter",
   "label.pdf": "PDF",
   "label.png": "PNG",
-  "label.calendarViewForPlannedJob": "Calendar View for planned job",
-  "label.dailyPlanCreated": "Daily plan created until",
-  "label.frequencies": "Frequencies",
-  "button.removeSubstitute": "Remove Substitute"
+  "label.calendarViewForPlannedJob": "Calendrier de la Tâche planifié",
+  "label.dailyPlanCreated": "Plan Quotidien créé jusqu'à",
+  "label.frequencies": "Fréquences",
+  "button.removeSubstitute": "Supprimer Substitut"
 }
