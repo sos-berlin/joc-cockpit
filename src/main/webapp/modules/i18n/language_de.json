@@ -1027,13 +1027,13 @@
   "tooltip.viewObject": "Objekt ansehen",
   "unhealthy": "eingeschränkt",
   "unreachable": "nicht erreichbar",
-  "button.expandSelected": "Expand active",
-  "button.collapseUnselected": "Collapse inactive",
+  "button.expandSelected": "Aktive ausklappen",
+  "button.collapseUnselected": "Inaktive einklappen",
   "label.export": "Exportieren",
   "label.pdf": "PDF",
   "label.png": "PNG",
-  "label.calendarViewForPlannedJob": "Calendar View for planned job",
-  "label.dailyPlanCreated": "Daily plan created until",
-  "label.frequencies": "Frequencies",
-  "button.removeSubstitute": "Remove Substitute"
+  "label.calendarViewForPlannedJob": "Kalenderansicht für geplanten Job",
+  "label.dailyPlanCreated": "Tagesplan erstellt bis",
+  "label.frequencies": "Häufigkeiten",
+  "button.removeSubstitute": "Ersetzung entfernen"
 }
