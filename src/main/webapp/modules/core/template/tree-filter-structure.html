@@ -1,7 +1,7 @@
 <div>
     <table class="tree-grid folder-tree-grid pull-left">
         <tbody>
-        <tr ng-repeat="row in tree_rows | searchFor:$parent.filterString:expandingProperty:colDefinitions track by row.branch.uid"
+        <tr ng-repeat="row in tree_rows track by row.branch.uid"
             ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')" class="tree-grid-row">
             <td ng-class="{'text-primary' : row.branch.selected1}">
                 <table class="indented">
