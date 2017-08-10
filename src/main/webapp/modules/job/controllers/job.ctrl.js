@@ -3175,6 +3175,7 @@
                             flag = false;
                         }
                         if (flag && value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                            vm.allJobs[index1].showJobChains = true;
                             JobService.get({
                                 jobschedulerId: vm.schedulerIds.selected,
                                 jobs: [{job: value1.path}]
@@ -3297,6 +3298,17 @@
 
                 }
                 vm.allJobs = angular.copy(temp);
+                angular.forEach(vm.allJobs, function (value1, index1) {
+                    if (value1.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                        vm.allJobs[index1].showJobChains = true;
+                        JobService.get({
+                            jobschedulerId: vm.schedulerIds.selected,
+                            jobs: [{job: value1.path}]
+                        }).then(function (res1) {
+                            vm.allJobs[index1] = angular.merge(vm.allJobs[index1], res1.jobs[0]);
+                        });
+                    }
+                });
 
                 vm.folderPath = data.name || '/';
 
@@ -3555,6 +3567,7 @@
             obj.folders = [];
             obj1.folders = [];
             obj.jobschedulerId = vm.schedulerIds.selected;
+            if(!vm.showTask)
             obj.compact = true;
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
@@ -3588,7 +3601,6 @@
                     checkExpandTreeForUpdates(vm.tree[i]);
             }
 
-
             JobService.getJobsP(obj1).then(function (result) {
                 if(vm.scheduleState == 'UNREACHABLE') {
                     angular.forEach(vm.tree, function (node, index) {
@@ -3599,13 +3611,16 @@
                 JobService.get(obj).then(function (res) {
                     vm.allJobs = [];
                     if (result.jobs && result.jobs.length > 0) {
-                        var x = [];
-                        angular.forEach(result.jobs, function (jobs) {
 
+                        var x = [];
+                        angular.forEach(result.jobs, function (job) {
                             for (var i = 0; i < res.jobs.length; i++) {
-                                if (jobs.path == res.jobs[i].path) {
-                                    jobs = angular.merge(jobs, res.jobs[i]);
-                                    x.push(jobs);
+                                if (job.path == res.jobs[i].path) {
+                                    job = angular.merge(job, res.jobs[i]);
+                                    if (job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
+                                        job.showJobChains = true;
+                                    }
+                                    x.push(job);
                                     res.jobs.splice(i, 1);
                                     break;
                                 }
@@ -4326,6 +4341,11 @@
             JobService.getJobsP(jobs).then(function (res) {
                 job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
+                JobService.get(jobs).then(function (result) {
+
+                    job.runningTasks = result.jobs[0].runningTasks;
+                    job.error = result.jobs[0].error;
+                });
             });
 
         };
@@ -4339,8 +4359,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             angular.forEach(vm.allJobs, function (value, index) {
-                if (value.usedInJobChains > 0)
-                    obj.jobs.push({job: value.path});
+                obj.jobs.push({job: value.path});
             });
 
             JobService.getJobsP(obj).then(function (res) {
@@ -4349,6 +4368,19 @@
                         if (res.jobs[i].path == vm.allJobs[index].path && res.jobs[i].name == vm.allJobs[index].name) {
                             vm.allJobs[index].jobChains = res.jobs[i].jobChains;
                             vm.allJobs[index].showJobChains = true;
+
+                            if (vm.allJobs[index].state && vm.allJobs[index].state._text == 'RUNNING') {
+                                JobService.get({
+                                    jobschedulerId: vm.schedulerIds.selected,
+                                    jobs: [{job: vm.allJobs[index].path}]
+                                }).then(function (result) {
+                                    if(vm.allJobs[index].path == result.jobs[0].path) {
+                                        vm.allJobs[index].runningTasks = result.jobs[0].runningTasks;
+                                        vm.allJobs[index].error = result.jobs[0].error;
+                                    }
+                                });
+                            }
+
                             res.jobs.splice(i, 1);
                             break;
                         }
@@ -4759,7 +4791,127 @@
             });
 
         };
+        vm.end = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            var taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'End Task';
+                vm.comments.type = 'Job';
 
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                    TaskService.end(jobs);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                TaskService.end(jobs);
+                vm.reset();
+            }
+
+        };
+
+        vm.killTask = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            var taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'Kill Task';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                    TaskService.kill(jobs);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                TaskService.kill(jobs);
+                vm.reset();
+            }
+
+        };
+        vm.terminateTask = function (task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            var taskIds = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = path;
+                vm.comments.operation = 'Terminate Task';
+                vm.comments.type = 'Job';
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    jobs.auditLog = {};
+                    if (vm.comments.comment)
+                        jobs.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        jobs.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        jobs.auditLog.ticketLink = vm.comments.ticketLink;
+                    TaskService.terminate(jobs);
+                    vm.reset();
+                }, function () {
+                    vm.reset();
+                });
+            } else {
+                TaskService.terminate(jobs);
+                vm.reset();
+            }
+
+        };
         vm.killAllTask = function (job) {
             var jobs = {};
             jobs.jobs = [];
@@ -5037,7 +5189,7 @@
                 vm.isCaledarLoading = false;
             });
 
-        }
+        };
 
 
         vm.viewCalendar = function (job) {
@@ -5175,21 +5327,20 @@
                                             JobService.get(obj).then(function (res) {
                                                 delete mapObj[path[0]];
                                                 if (res.jobs && res.jobs.length > 0 && res.jobs[0].path == vm.allJobs[index].path) {
-                                                    res.jobs[0].title = vm.allJobs[index].title;
-                                                    res.jobs[0].path1 = vm.allJobs[index].path1;
-                                                    res.jobs[0].isOrderJob = vm.allJobs[index].isOrderJob;
-                                                    res.jobs[0].hasDescription = vm.allJobs[index].hasDescription;
-                                                    res.jobs[0].estimatedDuration = vm.allJobs[index].estimatedDuration;
                                                     res.jobs[0].maxTasks = vm.allJobs[index].maxTasks;
                                                     res.jobs[0].usedInJobChains = vm.allJobs[index].usedInJobChains;
                                                     res.jobs[0].jobChains = vm.allJobs[index].jobChains;
                                                     res.jobs[0].showJobChains = vm.allJobs[index].showJobChains;
                                                     vm.allJobs[index].runningTasks = [];
+                                                    vm.allJobs[index].error = undefined;
                                                     vm.allJobs[index] = angular.merge(vm.allJobs[index], res.jobs[0]);
+                                                    if (vm.allJobs[index].state && vm.allJobs[index].state._text == 'RUNNING' && vm.showTask) {
+                                                        vm.allJobs[index].showJobChains = true;
+                                                    }
+
                                                     if (vm.showTaskPanel && (vm.showTaskPanel.path == vm.allJobs[index].path)) {
                                                         vm.showTaskPanel = vm.allJobs[index];
                                                     }
-
                                                 }
                                             }, function () {
                                                 delete mapObj[path[0]];
