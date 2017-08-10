@@ -121,14 +121,12 @@
                         </td>
                     </tr>
                     <tr ng-if="processClass.show && processClass.processes.length>0">
-
-
-                            <td></td>
-                            <td colspan="9" style="padding: 1px !important;">
+                        <td></td>
+                            <td colspan="4" style="padding: 1px !important;">
                                 <table class="table m-a-0">
                                     <thead>
                                     <tr>
-                                        <th translate>label.action</th>
+                                        <th width="45" translate>label.action</th>
                                         <th translate>label.agent</th>
                                         <th translate>label.job</th>
                                         <th translate>label.pid</th>
@@ -136,28 +134,26 @@
                                         <th translate>label.runningSince</th>
                                     </tr>
                                     </thead>
-
                                     <tbody ng-repeat="process in processClass.processes">
                                     <tr>
                                         <td>
-                             <div class="btn-group dropdown">
-                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                     <i class="fa fa-ellipsis-h"></i></button>
-                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                     <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,process,process.job)" translate>button.viewLog</a>
+                                            <div class="btn-group dropdown">
+                                                <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                                    <i class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                    <a class="dropdown-item" ng-if="permission.Job.view.taskLog" ng-click="showLogWindow(null,process,process.job)" translate>button.viewLog</a>
                                                     <a class="dropdown-item" ng-if="permission.Job.execute.endAllTasks" ng-click="end(process,process.job)" translate>button.end</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="permission.Job.execute.kill" ng-click="killTask(process,process.job)" translate>button.killImmediately</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTask(process,process.job)" translate>button.terminate</a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="(selectedJobScheduler.os.name.toLowerCase() == 'linux' || selectedJobScheduler.os.name.toLowerCase() == 'unix') && permission.Job.execute.terminate" ng-click="terminateTaskWithTimeout(process,process.job)" translate>button.terminateWithTimeout</a>
-
-                                 </div>
-                             </div>
-                         </td>
-                                        <td>{{process.agent}}</td>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{process.agent || '-'}}</td>
                                         <td>{{process.job }}</td>
                                         <td>{{process.pid}}</td>
                                         <td>{{process.taskId}}</td>
-                                        <td>{{process.runningSince |stringToDate}}</td>
+                                        <td>{{process.runningSince |stringToDate}} <span class="text-success">(<span time="{{process.runningSince}}"></span>)</span></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -202,6 +198,7 @@
     </div>
     <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
 </div>
+
 <div ng-if="isLoading && treeProcess.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noProcessClassesFound</div>
 <script>
     $('.table-responsive').on('show.bs.dropdown', function (e) {

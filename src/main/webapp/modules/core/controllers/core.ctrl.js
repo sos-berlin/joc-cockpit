@@ -488,13 +488,11 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     TaskService.end(jobs);
-                    vm.reset();
                 }, function () {
-                    vm.reset();
                 });
             } else {
                 TaskService.end(jobs);
-                vm.reset();
+
             }
 
         };
@@ -529,13 +527,13 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     TaskService.kill(jobs);
-                    vm.reset();
+
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.kill(jobs);
-                vm.reset();
+
             }
 
         };
@@ -569,13 +567,13 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     TaskService.terminate(jobs);
-                    vm.reset();
+
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.terminate(jobs);
-                vm.reset();
+
             }
 
         };

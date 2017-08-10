@@ -726,11 +726,11 @@
 
         vm.showRunningProcesses = function (processClass) {
             processClass.show = true;
-        }
+        };
 
         vm.hideRunningProcesses = function (processClass) {
             processClass.show = false;
-        }
+        };
 
         function terminateTaskWithTimeout(task, path) {
             var jobs = {};
@@ -1833,11 +1833,10 @@
                             ResourceService.getProcessClass(obj).then(function (res) {
                                 if (res.processClasses) {
                                     angular.forEach(res.processClasses, function (value1, index1) {
-
                                         angular.forEach(vm.allProcessClasses, function (value2, index2) {
-                                            value2.processes = [];
                                             if (value1.path == value2.path) {
-                                                vm.allProcessClasses[index2] = angular.merge(vm.allProcessClasses[index2], value1);
+                                                vm.allProcessClasses[index2].processes = value1.processes;
+                                                vm.allProcessClasses[index2].numOfProcesses = value1.numOfProcesses;
                                             }
                                         })
 
@@ -2026,8 +2025,8 @@
     }
 
 
-    ResourceInfoCtrl.$inject = ['$scope', '$rootScope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal'];
-    function ResourceInfoCtrl($scope, $rootScope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal) {
+    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal','TaskService'];
+    function ResourceInfoCtrl($scope,  $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal,TaskService) {
         var vm = $scope;
         vm.checkSchedulerId();
         load();
@@ -2044,7 +2043,13 @@
                 getSchedule();
             }
         }
+        vm.showRunningProcesses = function (processClass) {
+            processClass.show = true;
+        };
 
+        vm.hideRunningProcesses = function (processClass) {
+            processClass.show = false;
+        };
 
         function getAgentCluster() {
             vm.agentClusters = [];
@@ -2308,6 +2313,55 @@
                 });
             });
             vm.zones = moment.tz.names();
+        };
+
+        function terminateTaskWithTimeout(task, path) {
+            var jobs = {};
+            jobs.jobs = [];
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            var taskIds = [];
+            taskIds.push({taskId: task.taskId});
+            jobs.jobs.push({job: path, taskIds: taskIds});
+
+            jobs.auditLog = {};
+            if (vm.comments.comment) {
+                jobs.auditLog.comment = vm.comments.comment;
+            }
+            if (vm.comments.timeSpent) {
+                jobs.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                jobs.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            jobs.timeout = vm.timeout;
+            TaskService.terminateWith(jobs);
+
+        }
+
+
+        vm.terminateTaskWithTimeout = function (task, path) {
+            if (task && path) {
+                vm.task = task;
+                vm.path = path;
+            }
+
+            vm.timeout = 10;
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/terminate-task-timeout-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                terminateTaskWithTimeout(task, path);
+            }, function () {
+
+            });
+
         };
 
     }
