@@ -5,8 +5,8 @@
         .directive('dailyPlanOverview', dailyPlanOverview);
 
 
-    clusterStatusView.$inject = ["$compile", "$sce", "$window", "$rootScope","gettextCatalog"];
-    function clusterStatusView($compile, $sce, $window, $rootScope,gettextCatalog) {
+    clusterStatusView.$inject = ["$compile", "$sce", "$window", "$rootScope"];
+    function clusterStatusView($compile, $sce, $window, $rootScope) {
 
         return {
             restrict: 'E',
@@ -219,15 +219,15 @@
                         if (master.state && span) {
 
                             var rect = document.getElementById(master.host + master.port);
-                           var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
+                           var popoverTemplate = '{{"label.architecture" | translate}}'+': - <br>'+ '{{"label.distribution" | translate}}'+' : - ' +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + master.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span > </span><br>'+'{{"label.surveyDate"}}'+': - ';
 
 
                                 if (master.os && master.startedAt) {
-                                      popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                      popoverTemplate = '{{"label.architecture" | translate}}'+': ' + master.os.architecture + '<br> '+'{{"label.distribution" | translate}}'+' : ' + master.os.distribution +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + master.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+'{{"label.surveyDate" | translate}}'+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                                 }
                              rect.setAttribute('data-content', popoverTemplate);
@@ -240,16 +240,16 @@
                         if (supervisor.data.jobscheduler.state) {
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
                             var rect = document.getElementById(supervisor.host + supervisor.port);
-                            var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + supervisor.data.jobscheduler.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
+                            var popoverTemplate = '{{"label.architecture" | translate}}'+': - <br>'+ '{{"label.distribution" | translate}}'+' : - ' +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + supervisor.data.jobscheduler.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span > </span><br> '+'{{"label.surveyDate" | translate}}'+': - ';
 
                             if(supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os){
-                                popoverTemplate = gettextCatalog.getString('label.architecture')+' : ' + supervisor.data.jobscheduler.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + supervisor.data.jobscheduler.os.distribution +
-                                '<br>'+gettextCatalog.getString('label.version')+' : ' + supervisor.data.jobscheduler.version +
-                                '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' +
+                                popoverTemplate = '{{"label.architecture" | translate}}'+' : ' + supervisor.data.jobscheduler.os.architecture + '<br> '+'{{"label.distribution" | translate}}'+' : ' + supervisor.data.jobscheduler.os.distribution +
+                                '<br>'+'{{"label.version" | translate}}'+' : ' + supervisor.data.jobscheduler.version +
+                                '<br>'+'{{"label.startedAt" | translate}}'+' : <span>' +
                                 moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) +
-                                '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' +
+                                '</span><br> '+'{{"label.surveyDate" | translate}}'+': ' +
                                 moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                             }
@@ -278,12 +278,12 @@
 
                             var popoverTemplate = '';
                             if (supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os) {
-                                popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + supervisor.data.jobscheduler.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + supervisor.data.jobscheduler.os.distribution +
-                                '<br>'+gettextCatalog.getString('label.version')+' : ' + supervisor.data.jobscheduler.version +
-                                '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                popoverTemplate = '{{"label.architecture" | translate}}'+': ' + supervisor.data.jobscheduler.os.architecture + '<br> '+'{{"label.distribution" | translate}}'+' : ' + supervisor.data.jobscheduler.os.distribution +
+                                '<br>'+'{{"label.version" | translate}}'+' : ' + supervisor.data.jobscheduler.version +
+                                '<br>'+'{{"label.startedAt" | translate}}'+' : <span>' + moment(supervisor.data.jobscheduler.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+'{{"label.surveyDate" | translate}}'+': ' + moment(supervisor.data.jobscheduler.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                             } else {
-                                popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br> '+gettextCatalog.getString('label.distribution')+' : - <br>'+gettextCatalog.getString('label.version')+' : - <br>'+gettextCatalog.getString('label.startedAt')+' : - <span></span><br>'+gettextCatalog.getString('label.surveyDate')+': - ';
+                                popoverTemplate = '{{"label.architecture" | translate}}'+': - <br> '+'{{"label.distribution" | translate}}'+' : - <br>'+'{{"label.version" | translate}}'+' : - <br>'+'{{"label.startedAt" | translate}}'+' : - <span></span><br>'+'{{"label.surveyDate" | translate}}'+': - ';
                             }
 
                             var sClassRunning = 'text-success';
@@ -330,7 +330,7 @@
                             template = template + '<div class="text-sm text-left p-t-xs p-l-sm "><span>' + supervisor.host + ':' + supervisor.port +
                             '</span></div>';
                             if (supervisor.data.jobscheduler.state && supervisor.data.jobscheduler.state._text) {
-                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text"></span></div>';
+                                template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm" id="' + 'state' + supervisor.host + supervisor.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\'' + sIndex + '\'].data.jobscheduler.state._text | translate"></span></div>';
                             } else {
                                 template = template + '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + supervisor.host + supervisor.port + '" class="' + sClassRunning + '"></span></div>';
                             }
@@ -357,15 +357,15 @@
                                 }
 
 
-                                var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
+                                var popoverTemplate = '{{"label.architecture" | translate}}'+': - <br>'+ '{{"label.distribution" | translate}}'+' : - ' +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + master.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span > </span><br> '+'{{"label.surveyDate" | translate}}'+': - ';
 
 
                                 if (master.os && master.startedAt) {
-                                      popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                      popoverTemplate = '{{"label.architecture" | translate}}'+': ' + master.os.architecture + '<br> '+'{{"label.distribution" | translate}}'+' : ' + master.os.distribution +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + master.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+'{{"label.surveyDate" | translate}}'+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                                 }
 
@@ -411,7 +411,7 @@
                                     '</span></div>';
                                 }
                                 masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text"></span></div>' +
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm" id="' + 'state' + master.host + master.port + '" ng-class="{\'text-success\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text==\' \'}" ng-bind="clusterStatusData.supervisors[\'' + sIndex + '\'].masters[\'' + index + '\'].state._text | translate"></span></div>' +
                                 '</div>';
 
                                 if (index == 0) {
@@ -479,16 +479,16 @@
                                 lastId = master.host + master.port;
 
 
-                                 var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
+                                 var popoverTemplate = '{{"label.architecture" | translate}}'+': - <br>'+ '{{"label.distribution" | translate}}'+' : - ' +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + master.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span > </span><br> '+'{{"label.surveyDate" | translate}}'+': - ';
 
 
 
                                 if (master.os && master.startedAt) {
-                                    popoverTemplate = gettextCatalog.getString('label.architecture')+': ' + master.os.architecture + '<br> '+gettextCatalog.getString('label.distribution')+' : ' + master.os.distribution +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
-                                    '<br>'+gettextCatalog.getString('label.startedAt')+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+gettextCatalog.getString('label.surveyDate')+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                                    popoverTemplate = '{{"label.architecture" | translate}}'+': ' + master.os.architecture + '<br> '+'{{"label.distribution" | translate}}'+' : ' + master.os.distribution +
+                                    '<br>'+'{{"label.version" | translate}}'+' : ' + master.version +
+                                    '<br>'+'{{"label.startedAt" | translate}}'+' : <span>' + moment(master.startedAt).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat) + '</span><br> '+'{{"label.surveyDate" | translate}}'+': ' + moment(master.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
                                 }
 
@@ -517,7 +517,7 @@
                                     '</span></div>';
                                 }
                                 masterTemplate = masterTemplate + '<div class="text-sm text-left p-t-xs p-l-sm ">' + master.host + ':' + master.port + '</div>' +
-                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span id="' + 'state' + master.host + master.port + '" ng-class="{\'text-success\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\' \'}" ng-bind="clusterStatusData.members.masters[\'' + index + '\'].state._text"></span></div>' +
+                                '<div class="text-left text-xs p-t-xs p-b-xs p-l-sm"><span class="text-black-dk" translate>label.state</span>: <span class="text-sm" id="' + 'state' + master.host + master.port + '" ng-class="{\'text-success\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'RUNNING\',\'text-black-lt\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'PAUSED\',\'text-danger\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPED\',\'text-warn\':clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STOPPING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'STARTING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'TERMINATING\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\'UNREACHABLE\'||clusterStatusData.members.masters[\'' + index + '\'].state._text==\' \'}" ng-bind="clusterStatusData.members.masters[\'' + index + '\'].state._text | translate"></span></div>' +
                                 '</div>';
 
                                 if (index == 0) {
@@ -553,9 +553,9 @@
                         }
 
 
-                        var popoverTemplate = ' Survey Date : ' + moment(scope.clusterStatusData.database.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
+                        var popoverTemplate = '{{"label.surveyDate" | translate}}'+': ' + moment(scope.clusterStatusData.database.surveyDate).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat);
 
-                        var masterTemplate = '<div data-toggle="popover"  data-placement="top" data-content="' + popoverTemplate + '" ' +
+                        var masterTemplate = '<div data-toggle="popover" data-placement="top" data-content=\'' + popoverTemplate + '\'' +
 
                             'style="left:' + mLeft + 'px;top:' + dTop + 'px" id="' + 'database' + '" class="' + c + '"   >' +
                             '<span class="m-t-n-xxs fa fa-stop text-success success-node"></span>' +
@@ -563,9 +563,7 @@
                             '</span></div>' +
                             '<div class="text-sm text-left p-t-xs p-b-xs p-l-sm ">' +
                             '<span ng-bind="clusterStatusData.database.database.version"></span></div>' +
-
                             '</div>';
-
 
                         template = template + '<div   id="masterContainer">' + masterTemplate + '</div></div>' +
                         ' <script>' +
@@ -577,7 +575,6 @@
                         template = $compile(template)(scope);
                         elem.append(template);
                         alignToCenter();
-
                     }
 
 
