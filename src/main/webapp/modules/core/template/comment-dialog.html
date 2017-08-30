@@ -5,13 +5,21 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
+            <div class="form-group row" ng-if="comments.node">
+                <label class="col-sm-4" translate>label.node</label>
+                <label class="col-sm-8">{{comments.node}}</label>
+            </div>
             <div class="form-group row">
                 <label class="col-sm-4" translate>{{comments.type}}</label>
-                <label class="col-sm-6">{{comments.name}}</label>
+                <label class="col-sm-8">{{comments.name}} <i ng-if="comments.title">-</i> <span class="text-muted">{{comments.title}}</span></label>
+            </div>
+            <div class="form-group row" ng-if="comments.task">
+                <label class="col-sm-4" translate>label.taskId</label>
+                <label class="col-sm-8">{{comments.task}}</label>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4" translate>label.operation</label>
-                <label class="col-sm-6">{{comments.operation}}</label>
+                <label class="col-sm-8">{{comments.operation}}</label>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4 " translate>label.selectComments</label>

@@ -277,11 +277,10 @@
 
             if (action == 'stop node') {
                 if (vm.userPreferences.auditLog) {
-
                     vm.comments.name = path;
-                    vm.comments.operation = 'Stop Node';
+                    vm.comments.operation = 'Stop';
+                    vm.comments.node = node;
                     vm.comments.type = 'Job Chain';
-
                     modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
                         controller: 'DialogCtrl',
@@ -307,7 +306,8 @@
                 if (vm.userPreferences.auditLog) {
 
                     vm.comments.name = path;
-                    vm.comments.operation = 'Skip Node';
+                    vm.comments.operation = 'Skip';
+                    vm.comments.node = node;
                     vm.comments.type = 'Job Chain';
 
                     modalInstance = $uibModal.open({
@@ -333,11 +333,10 @@
                 }
             } else if (action == 'unstop node' || action == 'unskip') {
                 if (vm.userPreferences.auditLog) {
-
                     vm.comments.name = path;
-                    vm.comments.operation = action == 'unskip' ? 'Unskip Node' : 'Unstop Node';
+                    vm.comments.node = node;
+                    vm.comments.operation = action == 'unskip' ? 'Unskip' : 'Unstop';
                     vm.comments.type = 'Job Chain';
-
                     modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
                         controller: 'DialogCtrl',
@@ -484,7 +483,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Stop Node';
+                vm.comments.title = jobChain.title;
+                vm.comments.node = data.name;
+                vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -521,7 +522,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Unstop Node';
+                vm.comments.title = jobChain.title;
+                vm.comments.node = data.name;
+                vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -557,7 +560,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Skip Node';
+                vm.comments.title = jobChain.title;
+                vm.comments.node = data.name;
+                vm.comments.operation = 'Skip';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -595,7 +600,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Unskip Node';
+                vm.comments.title = jobChain.title;
+                vm.comments.node = data.name;
+                vm.comments.operation = 'Unskip';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -632,6 +639,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = data.job.path;
+                vm.comments.title = data.job.title;
                 vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job';
 
@@ -669,6 +677,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = data.job.path;
+                vm.comments.title = data.job.title;
                 vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job';
 
@@ -746,7 +755,6 @@
 
         vm.reset = function () {
             vm.object1.nodes = [];
-            vm.selectedNodes = [];
         };
 
         vm.onRemove = function (item) {
@@ -795,7 +803,7 @@
 
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.stop(jobs).then(function (res) {
+                    JobService.stop(jobs).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {
                             operation: 'stopJobs',
                             status: 'success'
@@ -806,7 +814,7 @@
                     vm.reset();
                 });
             } else {
-                JobService.stop(jobs).then(function (res) {
+                JobService.stop(jobs).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {
                         operation: 'stopJobs',
                         status: 'success'
@@ -852,7 +860,7 @@
 
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.unstop(jobs).then(function (res) {
+                    JobService.unstop(jobs).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopJobs', status: 'success'});
                     });
                     vm.reset();
@@ -860,7 +868,7 @@
                     vm.reset();
                 });
             } else {
-                JobService.unstop(jobs).then(function (res) {
+                JobService.unstop(jobs).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopJobs', status: 'success'});
                 });
                 vm.reset();
@@ -879,14 +887,16 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = '';
-                vm.comments.operation = 'Skip Node';
+                vm.comments.name = vm.jobChain.path;
+                vm.comments.title = vm.jobChain.title;
+                vm.comments.node = '';
+                vm.comments.operation = 'Skip';
                 vm.comments.type = 'Job Chain';
                 angular.forEach(vm.selectedNodes, function (value, index) {
                     if (index == vm.selectedNodes.length - 1) {
-                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                        vm.comments.node = vm.comments.node + ' ' + value.name;
                     } else {
-                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                        vm.comments.node = value.name + ', ' + vm.comments.node;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -904,7 +914,7 @@
 
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.skipNode(nodes).then(function (res) {
+                    JobService.skipNode(nodes).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {operation: 'skipNodes', status: 'success'});
                     });
                     vm.reset();
@@ -912,7 +922,7 @@
                     vm.reset();
                 });
             } else {
-                JobService.skipNode(nodes).then(function (res) {
+                JobService.skipNode(nodes).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {operation: 'skipNodes', status: 'success'});
                 });
                 vm.reset();
@@ -932,14 +942,16 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = '';
-                vm.comments.operation = 'Unskip Node';
+                vm.comments.name = vm.jobChain.path;
+                vm.comments.title = vm.jobChain.title;
+                vm.comments.node = '';
+                vm.comments.operation = 'Unskip';
                 vm.comments.type = 'Job Chain';
                 angular.forEach(vm.selectedNodes, function (value, index) {
                     if (index == vm.selectedNodes.length - 1) {
-                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                        vm.comments.node = vm.comments.node + ' ' + value.name;
                     } else {
-                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                        vm.comments.node = value.name + ', ' + vm.comments.node;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -957,7 +969,7 @@
 
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.activateNode(nodes).then(function (res) {
+                    JobService.activateNode(nodes).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unskipNodes', status: 'success'});
                     });
                     vm.reset();
@@ -965,7 +977,7 @@
                     vm.reset();
                 });
             } else {
-                JobService.activateNode(nodes).then(function (res) {
+                JobService.activateNode(nodes).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unskipNodes', status: 'success'});
                 });
                 vm.reset();
@@ -985,14 +997,16 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = '';
-                vm.comments.operation = 'Stop Node';
+                vm.comments.name = vm.jobChain.path;
+                vm.comments.title = vm.jobChain.title;
+                vm.comments.node = '';
+                vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job Chain';
                 angular.forEach(vm.selectedNodes, function (value, index) {
                     if (index == vm.selectedNodes.length - 1) {
-                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                        vm.comments.node = vm.comments.node + ' ' + value.name;
                     } else {
-                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                        vm.comments.node = value.name + ', ' + vm.comments.node;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -1010,7 +1024,7 @@
 
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.stopNode(nodes).then(function (res) {
+                    JobService.stopNode(nodes).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {operation: 'stopNodes', status: 'success'});
                     });
                     vm.reset();
@@ -1018,7 +1032,7 @@
                     vm.reset();
                 });
             } else {
-                JobService.stopNode(nodes).then(function (res) {
+                JobService.stopNode(nodes).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {operation: 'stopNodes', status: 'success'});
                 });
                 vm.reset();
@@ -1038,14 +1052,16 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = '';
-                vm.comments.operation = 'Unstop Node';
+                vm.comments.name = vm.jobChain.path;
+                vm.comments.title = vm.jobChain.title;
+                vm.comments.node = '';
+                vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job Chain';
                 angular.forEach(vm.selectedNodes, function (value, index) {
                     if (index == vm.selectedNodes.length - 1) {
-                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                        vm.comments.node = vm.comments.node + ' ' + value.name;
                     } else {
-                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                        vm.comments.node = value.name + ', ' + vm.comments.node;
                     }
                 });
                 var modalInstance = $uibModal.open({
@@ -1063,14 +1079,14 @@
 
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.activateNode(nodes).then(function (res) {
+                    JobService.activateNode(nodes).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopNodes', status: 'success'});
                     });
                 }, function () {
 
                 });
             } else {
-                JobService.activateNode(nodes).then(function (res) {
+                JobService.activateNode(nodes).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopNodes', status: 'success'});
                 });
             }
@@ -1113,7 +1129,7 @@
 
                     if (vm.comments.ticketLink)
                         jobChains.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobChainService.stop(jobChains).then(function (res) {
+                    JobChainService.stop(jobChains).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {
                             operation: 'stopJobChains',
                             status: 'success'
@@ -1124,7 +1140,7 @@
                     vm.reset();
                 });
             } else {
-                JobChainService.stop(jobChains).then(function (res) {
+                JobChainService.stop(jobChains).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {
                         operation: 'stopJobChains',
                         status: 'success'
@@ -1170,7 +1186,7 @@
 
                     if (vm.comments.ticketLink)
                         jobChains.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobChainService.unstop(jobChains).then(function (res) {
+                    JobChainService.unstop(jobChains).then(function () {
                         $rootScope.$broadcast('bulkOperationCompleted', {
                             operation: 'unstopJobChains',
                             status: 'success'
@@ -1181,7 +1197,7 @@
                     vm.reset();
                 });
             } else {
-                JobChainService.unstop(jobChains).then(function (res) {
+                JobChainService.unstop(jobChains).then(function () {
                     $rootScope.$broadcast('bulkOperationCompleted', {operation: 'unstopJobChains', status: 'success'});
                 });
                 vm.reset();
@@ -1283,9 +1299,9 @@
                         }],
                              pageOrientation: 'landscape'
                     };
-                    if((bound.maxLeft +100)>750){
-                        docDefinition.pageSize={width:(bound.maxLeft +100),height:1200};
-                    }
+                         if((bound.maxLeft +100)>750){
+                             docDefinition.pageSize={width:(bound.maxLeft +100),height:1200};
+                         }
 
                         pdfMake.createPdf(docDefinition).download(vm.jobChain.name + ".pdf");
                     } else {
@@ -1307,9 +1323,9 @@
                         $("#zoomCn").css("transform", "Scale(" + vm.slider.value / 100 + ")");
                         $("#zoomCn").css("transform-origin", "0 0");
                     }
-                 if(type=='png'){
-                    $('#exportId').css("padding-left",0);
-                 }
+                     if(type=='png'){
+                 $('#exportId').css("padding-left",0);
+            }
                     if (fitToScreen) {
                         vm.fitToScreen = true;
                         setHeight();
@@ -1423,7 +1439,7 @@
                 JobChainService.histories(filter).then(function (res) {
                     vm.orderHistory = res.history;
                     vm.isLoading1 = true;
-                    vm.showHistoryPanel = {name: vm.jobChain.path, title: vm.jobChain.title}
+                    vm.showHistoryPanel = {name: vm.jobChain.path, title: vm.jobChain.title};
                     if (nestedJobChain) {
                         vm.isAuditLog = false;
                         vm.showHistoryPanel = {name: nestedJobChain.path, title: nestedJobChain.title}
@@ -3522,7 +3538,6 @@
             });
         }
 
-
         function filteredTreeData() {
             angular.forEach(vm.tree, function (value) {
                 if ($rootScope.order_expand_to) {
@@ -3542,7 +3557,6 @@
         }
 
         function checkExpandTreeForUpdates(data) {
-
             if (data.selected1) {
                 obj.folders.push({folder: data.path, recursive: false});
                 obj1.folders.push({folder: data.path, recursive: false});
@@ -3555,7 +3569,6 @@
                     checkExpandTreeForUpdates(value);
             });
         }
-
 
         function insertData(node, x) {
             node.orders = [];
@@ -3633,7 +3646,6 @@
             return obj;
         }
 
-
         function volatileInformation(obj, expandNode) {
             if (vm.selectedFiltered) {
                 obj = parseDate(obj);
@@ -3678,7 +3690,6 @@
                 vm.loading = false;
             });
         }
-
         var obj = {};
         var obj1 = {};
         vm.changeStatus = function () {
@@ -3776,20 +3787,16 @@
         vm.showLogFuc = function (value) {
             var orders = {};
             vm.isAuditLog = false;
-
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
-
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
-
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
-
 
         function loadAuditLogs(obj) {
             obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
@@ -3812,7 +3819,6 @@
                 loadAuditLogs(obj);
         };
 
-
         if (vm.orderFilters && vm.orderFilters.showLogPanel) {
             vm.showLogFuc(vm.orderFilters.showLogPanel);
         }
@@ -3821,7 +3827,6 @@
             vm.showLogPanel = undefined;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
-
 
         /**---------------filter, sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
@@ -3949,7 +3954,6 @@
         }
 
         vm.search = function () {
-
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.compact = true;
@@ -3962,7 +3966,6 @@
                     obj.folders.push({folder: vm.orderFilter1.paths[i], recursive: true});
                 }
             }
-
             OrderService.getOrdersP(obj).then(function (result) {
                 vm.orders = result.orders;
                 searchV(obj);
@@ -3971,9 +3974,7 @@
             });
         };
 
-
         function traverseTreeForSearchData() {
-
             function traverseTree1(data) {
                 for (var i = 0; i < data.folders.length; i++) {
                     data.folders[i].selected1 = false;
@@ -4193,7 +4194,6 @@
         };
 
         vm.makePrivate = function (configObj) {
-
             UserService.privateConfiguration({
                 jobschedulerId: configObj.jobschedulerId,
                 id: configObj.id
@@ -4208,6 +4208,7 @@
                 }
             });
         };
+
         vm.makeShare = function (configObj) {
             UserService.shareConfiguration({
                 jobschedulerId: configObj.jobschedulerId,
@@ -4265,6 +4266,7 @@
             SavedFilter.save();
 
         };
+
         vm.getTreeStructure = function () {
             OrderService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
@@ -4280,9 +4282,7 @@
             $('#treeModal').modal('show');
         };
 
-
         vm.treeExpand = function (data) {
-
             angular.forEach(vm.object.paths, function (value) {
                 if (data.path == value) {
                     if (data.folders.length > 0) {
@@ -4294,7 +4294,6 @@
                 }
             });
         };
-
 
         var watcher1 = $scope.$watchCollection('object.paths', function (newNames) {
             if (newNames && newNames.length > 0) {
@@ -4314,10 +4313,7 @@
             }
         };
 
-
         /** --------action ------------ **/
-
-
         vm.deleteAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -4384,7 +4380,6 @@
             }
 
         };
-
         vm.suspendAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -4431,7 +4426,6 @@
             }
 
         };
-
         vm.resumeAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -4570,7 +4564,6 @@
             }
 
         };
-
         vm.hidePanel = function () {
             $('#rightPanel1').addClass('m-l-0 fade-in');
             $('#rightPanel1 .parent .child').removeClass('col-xxl-3 col-lg-4').addClass('col-xxl-2 col-lg-3');
@@ -4699,6 +4692,24 @@
                                 navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                             }
                         }
+                    }
+                    if (vm.showLogPanel && event.eventType == "ReportingChangedOrder" && !event.eventId) {
+
+                        if (vm.permission.AuditLog.view.status) {
+                            var obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.orders = [];
+                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                            loadAuditLogs(obj);
+                        }
+                        var orders = {};
+                        orders.orders = [];
+                        orders.orders.push({orderId: vm.showLogPanel.orderId, jobChain: vm.showLogPanel.path.split(',')[0]});
+                        orders.jobschedulerId = $scope.schedulerIds.selected;
+                        orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+                        OrderService.histories(orders).then(function (res) {
+                            vm.historys = res.history;
+                        });
                     }
                     if ((event.eventType === "FileBasedActivated" || event.eventType == "FileBasedRemoved") && event.objectType == "ORDER") {
                         OrderService.tree({
@@ -5368,6 +5379,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Start';
                 vm.comments.type = 'Order';
                 var modalInstance = $uibModal.open({
@@ -5613,6 +5625,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Suspend';
                 vm.comments.type = 'Order';
                 var modalInstance = $uibModal.open({
@@ -5650,6 +5663,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Resume';
                 vm.comments.type = 'Order';
                 var modalInstance = $uibModal.open({
@@ -5684,6 +5698,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Resume';
                 vm.comments.type = 'Order';
             }
@@ -5810,6 +5825,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Reset';
                 vm.comments.type = 'Order';
                 var modalInstance = $uibModal.open({
@@ -5848,6 +5864,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Delete';
                 vm.comments.type = 'Order';
                 var modalInstance = $uibModal.open({
@@ -5886,6 +5903,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = order.path;
+                vm.comments.title = order.title;
                 vm.comments.operation = 'Delete';
                 vm.comments.type = 'Order';
                 var modalInstance = $uibModal.open({
@@ -5980,7 +5998,7 @@
                 vm.isCaledarLoading = false;
             });
 
-        }
+        };
 
 
         vm.viewCalendar = function (order) {
@@ -6675,6 +6693,7 @@
                             filter.orders.push({jobChain: value});
                         });
                     } else {
+                        if(vm.jobChainSearch.jobChains)
                         for (var i = 0; i < vm.jobChainSearch.jobChains.length; i++) {
                             for (var j = 0; j < filter.orders.length; j++) {
                                 var flag = true;
@@ -6800,7 +6819,6 @@
                         }
                     }
                 }
-
             }
             if (vm.selectedFiltered1.state && vm.selectedFiltered1.state.length > 0) {
                 obj.historyStates = vm.selectedFiltered1.state;
@@ -7619,6 +7637,7 @@
         vm.object.jobChains = [];
         vm.object.jobs = [];
         var watcher6 = $scope.$watchCollection('object.paths', function (newNames) {
+
             if (newNames && newNames.length > 0) {
                 vm.paths = newNames;
             }
@@ -7643,33 +7662,36 @@
         });
 
         vm.addFolderPaths = function () {
-            if (vm.historyFilter)
+            if (vm.historyFilter && !vm.showSearchPanel) {
                 vm.historyFilter.paths = vm.paths;
-            else if (vm.jobChainSearch && vm.historyFilters.type == 'jobChain')
+            }else if (vm.jobChainSearch && vm.historyFilters.type == 'jobChain') {
                 vm.jobChainSearch.paths = vm.paths;
-            else if (vm.jobSearch && vm.historyFilters.type == 'job')
+            }else if (vm.jobSearch && vm.historyFilters.type == 'job') {
                 vm.jobSearch.paths = vm.paths;
+            }
         };
         vm.addObjectPaths = function () {
             if (vm.historyFilters.type == 'jobChain') {
-                if (vm.historyFilter) {
-                    vm.historyFilter.orders = vm.orders;
-                    vm.historyFilter.jobChains = vm.jobChains;
-                } else if (vm.jobChainSearch) {
+                if (vm.jobChainSearch && vm.showSearchPanel) {
                     vm.jobChainSearch.orders = vm.orders;
                     vm.jobChainSearch.jobChains = vm.jobChains;
                 }
+                else if (vm.historyFilter && !vm.showSearchPanel) {
+                    vm.historyFilter.orders = vm.orders;
+                    vm.historyFilter.jobChains = vm.jobChains;
+                }
             } else {
-                if (vm.historyFilter) {
-                    vm.historyFilter.jobs = vm.jobs;
-                } else if (vm.jobSearch) {
+                if (vm.jobSearch && vm.showSearchPanel) {
                     vm.jobSearch.jobs = vm.jobs;
+                }
+                else if (vm.historyFilter && !vm.showSearchPanel) {
+                    vm.historyFilter.jobs = vm.jobs;
                 }
             }
         };
         vm.remove = function (object, type) {
             if (type == 'jobChain') {
-                if (vm.historyFilter && vm.historyFilter.jobChains) {
+                if (vm.historyFilter && vm.historyFilter.jobChains && !vm.showSearchPanel) {
                     for (var i = 0; i < vm.historyFilter.jobChains.length; i++) {
                         if (angular.equals(vm.historyFilter.jobChains[i], object)) {
                             vm.historyFilter.jobChains.splice(i, 1);
@@ -7687,7 +7709,7 @@
 
                 }
             } else if (type == 'job') {
-                if (vm.historyFilter && vm.historyFilter.jobs) {
+                if (vm.historyFilter && vm.historyFilter.jobs && !vm.showSearchPanel) {
                     for (var i = 0; i < vm.historyFilter.jobs.length; i++) {
                         if (angular.equals(vm.historyFilter.jobs[i], object)) {
                             vm.historyFilter.jobs.splice(i, 1);
@@ -7704,7 +7726,7 @@
                 }
 
             } else if (type == 'order') {
-                if (vm.historyFilter && vm.historyFilter.orders) {
+                if (vm.historyFilter && vm.historyFilter.orders && !vm.showSearchPanel) {
                     for (var i = 0; i < vm.historyFilter.orders.length; i++) {
                         if (angular.equals(vm.historyFilter.orders[i], object)) {
                             vm.historyFilter.orders.splice(i, 1);
@@ -7723,7 +7745,7 @@
                 }
 
             } else {
-                if (vm.historyFilter && vm.historyFilter.paths) {
+                if (vm.historyFilter && vm.historyFilter.paths && !vm.showSearchPanel) {
                     for (var i = 0; i < vm.historyFilter.paths.length; i++) {
                         if (angular.equals(vm.historyFilter.paths[i], object)) {
                             vm.historyFilter.paths.splice(i, 1);

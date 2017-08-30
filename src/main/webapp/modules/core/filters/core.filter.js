@@ -16,16 +16,6 @@
         }
     }
 
-    function n(e) {
-        return function (t) {
-            if (e.sessionStorage.preferences) {
-                if (!t)return "-";
-                var n = JSON.parse(e.sessionStorage.preferences);
-                return moment(t).tz(n.zone).format("YYYY-MM-DD HH:mm:ss,SSS")
-            }
-        }
-    }
-
     function r(e, t) {
         return function (n, r) {
             if (e.sessionStorage.preferences) {
@@ -100,5 +90,5 @@
         }
     }
 
-    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDateFormat", n).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f), e.$inject = ["$window"], t.$inject = ["$window"], n.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"]
+    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f), e.$inject = ["$window"], t.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"]
 }();

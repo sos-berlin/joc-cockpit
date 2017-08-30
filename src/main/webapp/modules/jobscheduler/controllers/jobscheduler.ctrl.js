@@ -19,6 +19,7 @@
         vm.locksFilters = vm.resourceFilters.locks;
         vm.processFilters = vm.resourceFilters.processClasses;
         vm.schdeuleFilters = vm.resourceFilters.schedules;
+        vm.calendarFilters = vm.resourceFilters.calendar;
 
         vm.object = {};
 
@@ -26,10 +27,19 @@
         vm.treeLock = [];
         vm.treeProcess = [];
         vm.treeAgent = [];
+        vm.treeCalendar = [];
         vm.my_tree = {};
         vm.my_tree_lock = {};
         vm.my_tree_process = {};
         vm.my_tree_agent = {};
+        vm.my_tree_calendar = {};
+
+        vm.filter_tree = {};
+        vm.filterTree1 = [];
+        vm.object.paths = [];
+        vm.expanding_property = {
+            field: "name"
+        };
 
         vm.expanding_propertyA = {
             field: "name"
@@ -44,7 +54,9 @@
         vm.expanding_propertyP = {
             field: "name"
         };
-
+        vm.expanding_propertyC = {
+            field: "name"
+        };
         vm.sortByA = function (propertyName) {
             vm.agentsFilters.reverse = !vm.agentsFilters.reverse;
             vm.agentsFilters.filter.sortBy = propertyName;
@@ -693,7 +705,7 @@
         /** -----------------Begin ProcessClass------------------- */
 
         /**
-         * Function to initialized SCHEDULE tree
+         * Function to initialized Proccess tree
          */
         function initProccessTree() {
             ResourceService.tree({
@@ -1051,12 +1063,6 @@
                     $rootScope.process_class_expand_to = undefined;
                 }
                 checkExpandP(value);
-                /*                if (value.expanded || value.selected1) {
-                 if (data.path == '/') {
-                 data.selected1 = false;
-                 }
-                 }*/
-
             });
         }
 
@@ -1076,6 +1082,219 @@
 
 
         /** <<<<<<<<<<<<< End ProcessClass >>>>>>>>>>>>>>> */
+
+
+        /** -----------------Begin Calendar------------------- */
+
+        vm.category = [{category:'All'},{category:'working_days'},{category:'non_working_days'}];
+        vm.filter ={};
+        vm.filter.category = 'All';
+        var _tempp = [];
+        /**
+         * Function to initialized Calendar tree
+         */
+        function initCalendarTree() {
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ['CALENDAR']
+            }).then(function (res) {
+                vm.treeCalendar = angular.copy(res.folders);
+                vm.allCalendars = [{
+                    'name': 'My calendar',
+                    'path': '/sos',
+                    'category': 'working_days'
+                }, {'name': 'Calendar1', 'path': '/', 'category': 'non_working_days'}, {
+                    'name': 'Calendar2',
+                    'path': '/sos',
+                    'category': 'working_days'
+                }];
+                _tempp = angular.copy(vm.allCalendars);
+
+
+                /*                if ($rootScope.calendar_expand_to) {
+                 vm.treeCalendar = angular.copy(res.folders);
+                 filteredTreeDataC();
+
+                 } else {
+
+                 if (vm.isEmpty(vm.calendarFilters.expand_to)) {
+                 vm.treeCalendar = angular.copy(res.folders);
+                 filteredTreeDataC();
+                 } else {
+                 vm.calendarFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.calendarFilters.expand_to, 'calendar');
+                 vm.treeCalendar = vm.calendarFilters.expand_to;
+                 previousTreeStateC();
+                 }
+                 }*/
+
+                vm.calendarFilters.expand_to = vm.treeCalendar;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+        }
+
+        vm.changeCategoryFilter = function(){
+           console.log(vm.filter.category);
+            if(vm.filter.category =='All'){
+                vm.allCalendars  = angular.copy(_tempp);
+                return;
+            }
+
+            var data = [];
+            angular.forEach( _tempp, function(value){
+                if(value.category == vm.filter.category){
+                    data.push(value)
+                }
+            });
+            vm.allCalendars = data;
+        };
+
+        function filteredTreeDataC() {
+            angular.forEach(vm.treeCalendar, function (value) {
+                value.expanded = true;
+                value.selected1 = true;
+                vm.allCalendars = [];
+                checkExpandC(value);
+            });
+        }
+
+        function previousTreeStateP() {
+            angular.forEach(vm.treeCalendar, function (value) {
+                vm.allCalendars = [];
+                checkExpandC(value);
+            });
+        }
+
+        function checkExpandC(data) {
+            if (data.selected1) {
+                data.calendars = [];
+                expandFolderDataC(data);
+
+                vm.folderPathC = data.name || '/';
+                angular.forEach(data.calendars, function (value) {
+                    value.path1 = data.path;
+                    vm.allCalendars.push(value);
+                });
+            }
+            data.folders = orderBy(data.folders, 'name');
+            angular.forEach(data.folders, function (value) {
+                if ($rootScope.calendar_expand_to && $rootScope.calendar_expand_to.path.indexOf(value.path) != -1) {
+                    value.expanded = true;
+                }
+                if ($rootScope.calendar_expand_to && $rootScope.calendar_expand_to.path == value.path) {
+                    value.selected1 = true;
+                    $rootScope.calendar_expand_to = undefined;
+                }
+                checkExpandC(value);
+            });
+        }
+
+        function expandFolderDataC(data) {
+            vm.loading = true;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.folders = [{folder: data.path, recursive: false}];
+            ResourceService.getProcessClassP(obj).then(function (result) {
+                data.calendars = result.processClasses;
+                if (data.calendars.length > 0) {
+                    angular.forEach(data.calendars, function (value) {
+                        var flag = true;
+                        value.path1 = data.path;
+
+                        angular.forEach(vm.allCalendars, function (value1) {
+                            if (value.path == value1.path) {
+                                flag = false;
+                            }
+                        });
+                        if (flag)
+                            vm.allCalendars.push(value);
+                    });
+                }
+                vm.folderPathC = data.name || '/';
+                vm.loading = false;
+            }, function () {
+
+                vm.loading = false;
+            });
+        }
+
+        vm.addCalendar = function() {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            vm.calendar ={};
+            vm.calendar.create =true;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/set-calendar-dialog.html',
+                controller: 'CalendarEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+            modalInstance.result.then(function () {
+               vm.allCalendars.push(vm.calendar);
+            }, function () {
+
+            });
+        };
+        vm.editCalendar = function(data){
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            vm.calendar = angular.copy(data);
+            vm.calendar.create =false;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/set-calendar-dialog.html',
+                controller: 'CalendarEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+            modalInstance.result.then(function () {
+                angular.forEach(vm.allCalendars, function(value){
+                    if((value.name == data.name) && (value.path == data.path)){
+                        value = vm.calendar;
+                    }
+                })
+            }, function () {
+
+            });
+        };
+        vm.deleteCalendar = function(index){
+            vm.allCalendars.splice(index,1);
+            _tempp.splice(index,1);
+        };
+
+        vm.getTreeStructure = function () {
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: ['CALENDAR']
+            }).then(function (res) {
+                vm.filterTree1 = res.folders;
+
+            }, function () {
+                $('#treeModal').modal('hide');
+                $('.fade-modal').css('opacity', '1');
+            });
+
+            $('#treeModal').modal('show');
+             $('.fade-modal').css('opacity', '0.85');
+        };
+        vm.closeModal = function(){
+            $('#treeModal').modal('hide');
+            $('.fade-modal').css('opacity', '1');
+        };
+        vm.treeExpand = function (data) {
+            vm.calendar.path = data.path;
+            $('#treeModal').modal('hide');
+             $('.fade-modal').css('opacity', '1');
+        };
+        /** <<<<<<<<<<<<< End Calendar >>>>>>>>>>>>>>> */
 
 
         /** -----------------Begin Schedules------------------- */
@@ -1964,11 +2183,15 @@
                 vm.resourceFilters.state = 'processClass';
                 vm.treeProcess = [];
                 initProccessTree();
-            } else {
+            } else if (toState.name == 'app.resources.schedules') {
                 vm.pageView = views.schedule;
                 vm.resourceFilters.state = 'schedules';
                 vm.tree = [];
                 initTree();
+            }else if (toState.name == 'app.resources.calendars') {
+                vm.resourceFilters.state = 'calendars';
+                vm.treeCalendar = [];
+                initCalendarTree();
             }
             startPolling();
         });
@@ -2837,8 +3060,8 @@
                 if (vm.userPreferences.auditLog && action !== 'downloadLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
-                    vm.comments.name = objectType;
-                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove unused Masters" : "Continue";
+                    vm.comments.name = id + ' ('+host+':'+ port+')';
+                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove instance" : "Continue";
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
@@ -2881,6 +3104,7 @@
         vm.getTimeout = function (host, port, id) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
+            vm._scheduleName = id + ' ('+host+':'+ port+')';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
                 controller: 'DialogCtrl',

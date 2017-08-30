@@ -74,6 +74,46 @@
                 });
                 return deferred.promise;
             },
+            getListOfCalendars: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getListOfDates: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getCalendars: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            writeCalendars: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             tree: function (filter) {
                 var deferred = $q.defer();
                 var Tree = $resource('tree');

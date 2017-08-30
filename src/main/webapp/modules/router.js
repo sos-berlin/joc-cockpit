@@ -220,6 +220,10 @@
             url: "/schedules",
             templateUrl: "modules/jobscheduler/views/resource-schedules.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.schedules' | translate}}", parent: "app.resources"}
+        }).state("app.resources.calendars", {
+            url: "/calendars",
+            templateUrl: "modules/jobscheduler/views/resource-calendars.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.calendars' | translate}}", parent: "app.resources"}
         }).state("app.agentCluster", {
             url: "/agent_cluster?path&scheduler_id",
             templateUrl: "modules/jobscheduler/views/agent-cluster.html",

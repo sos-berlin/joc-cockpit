@@ -6,11 +6,12 @@
             <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
         <span class="m-r-sm"><span translate>label.remainingSessionTime</span>:
             <span class="text-primary" ng-bind="remainingSessionTime"></span></span>
+        <span class="m-r-sm" ng-if="scheduleState"><span translate>label.state</span>:
+            <span class="text-warn" ng-class="{'text-success': scheduleState == 'RUNNING', 'text-danger': (scheduleState == 'UNREACHABLE' || scheduleState == 'TERMINATING'  || scheduleState == 'DEAD')}" ng-bind="scheduleState | translate"></span>
+        </span>
         <span class="m-r-sm" ng-show="selectedJobScheduler.startedAt">
             <span translate>label.jobSchedulerStartTime</span>:
             <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span></span>
-        <span class="m-r-sm" ng-hide="selectedJobScheduler.startedAt" ng-if="scheduleState"><span translate>label.state</span>:
-            <span class="text-danger" ng-bind="scheduleState | translate"></span></span>
         <span class="dropdown" ng-if="schedulerIds.selected">
             <a data-toggle="dropdown">
                 <span translate>label.id</span>:

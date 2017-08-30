@@ -1,0 +1,169 @@
+<div class="hide-block sidebar-btn resize-cursor">
+    <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
+</div>
+<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeCalendar.length>0">
+    <div>
+        <a class="text" ng-click="my_tree_process.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+            <i class="fa fa-angle-double-down fa-lg"></i>
+        </a>
+        <a class="text m-l-xs" ng-click="my_tree_process.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+            <i class="fa fa-angle-double-up fa-lg"></i>
+        </a>
+        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
+        <tree tree-data="treeCalendar"
+              tree-control="my_tree_calendar"
+              expand-on="expanding_propertyC"
+              on-select="treeHandler1P(branch)"
+              on-click="treeHandlerP(branch)"
+              expand-node="expandNodeP(branch)"
+              collapse-node="collapseNode(branch)"
+              template-url="modules/core/template/tree.html">
+        </tree>
+    </div>
+</div>
+<div id="rightPanel1">
+
+    <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">        
+        <div class="box p-a" ng-show="allCalendars.length>0">
+            <div class="table-responsive" >
+                <table class="table table-hover table-bordered  ">
+                    <thead>
+                    <tr>
+                        <th class="noExl" width="45"><span translate>label.action</span></th>
+                        <th ng-click="sortByP('name')"><a><span translate>label.name</span>
+                            <i ng-show="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByP('name')"><a><span translate>label.path</span>
+                            <i ng-show="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByP('category')"><a><span translate>label.category</span>
+                            <i ng-show="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody ng-repeat="calendar in allCalendars | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse | startFrom:(calendarFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tr >
+                        <td>
+                             <div class="btn-group dropdown">
+                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                     <i class="fa fa-ellipsis-h"></i></button>
+                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                     <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
+                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar($index)" class="dropdown-item" translate>button.deleteCalendar</a>
+                                 </div>
+                             </div>
+                         </td>
+                        <td ng-bind="calendar.name"></td>
+                        <td ng-bind="calendar.path"></td>
+                        <td ng-bind="calendar.category"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allCalendars.length > 10}" ng-if="allCalendars.length >0"><span translate>label.total</span> {{allCalendars.length}}
+                     <span translate ng-if="allCalendars.length >1">label.calendarsFound</span>
+                     <span translate ng-if="allCalendars.length ==1">label.calendarFound</span>
+                 </div>
+                <ul ng-show="allCalendars.length > userPreferences.entryPerPage" uib-pagination total-items="allCalendars.length" ng-model="calendarFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
+                <div class="pull-left" ng-show="allCalendars.length > 10">
+                    <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="isLoading && !loading && folderPathC && allCalendars.length==0 && treeCalendar.length>0" class="text-center m-t h6">
+            <span class="text-primary">"{{folderPathC}}"</span>
+            <span translate>message.emptyFolder</span>
+        </div>
+    </div>
+    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
+        <div class="backdrop" ></div>
+        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+    </div>
+    <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
+</div>
+
+<div ng-if="isLoading && treeCalendar.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noCalendarFound</div>
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            expand-on="expanding_property"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModal()" translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $table = $(this),
+                $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
+    });
+    $(document).ready(function () {
+        $('#leftPanel').stickySidebar({
+            sidebarTopMargin: 190
+        });
+    });
+</script>

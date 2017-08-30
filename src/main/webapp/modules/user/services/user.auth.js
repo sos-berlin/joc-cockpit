@@ -59,13 +59,13 @@
                                 $location.path('/login');
                             } else {
                                 $rootScope.errorCode = '';
-                                if ((rejection.data && rejection.data.error && rejection.status != 434 && rejection.data.error.code !='JOC-402' && !$rootScope.errorCode)) {
+                                if ((rejection.data && rejection.data.error && rejection.status != 434 && !$rootScope.errorCode)) {
                                     toasty.error({
                                         title: rejection.data.error.code || rejection.status,
                                         msg: rejection.data.error.message || 'API expection',
                                         timeout: 10000
                                     });
-                                    if(rejection.data.error.code == 'JOC-400')
+                                    if(rejection.data.error.code == 'JOC-400' || rejection.data.error.code == 'JOC-402')
                                       $rootScope.errorCode = 'JOC-400';
                                 }
                                 if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)

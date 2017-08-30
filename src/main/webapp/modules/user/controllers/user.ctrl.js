@@ -785,6 +785,7 @@
             vm.user = angular.copy(user);
             temp_name = user.user;
             vm.isUnique = true;
+            vm.user.fakepassword = "00000000";
 
             vm.newUser = false;
             var modalInstance = $uibModal.open({
@@ -794,6 +795,12 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+
+                if (vm.user.fakepassword != '00000000') {
+                    vm.user.password = vm.user.fakepassword;
+                }
+                delete vm.user['fakepassword'];
+
                 angular.forEach(vm.users, function (usr, index) {
                     if (angular.equals(user, usr))
                         vm.users[index] = vm.user;
@@ -2050,7 +2057,6 @@
             }
 
             function scrollToLast() {
-               
                 if ($('#mainTree').width() < (endNodes2.rightMost.x + 284)) {
                     $('#mainTree').animate({
                         scrollTop: endNodes2.rightMost.y,
