@@ -469,6 +469,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'End Task';
                 vm.comments.type = 'Job';
 
@@ -508,6 +509,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'Kill Task';
                 vm.comments.type = 'Job';
 
@@ -548,6 +550,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'Terminate Task';
                 vm.comments.type = 'Job';
 
@@ -670,6 +673,7 @@
         };
 
         vm.about = function () {
+            vm.versionData = $rootScope.versionData;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/about-dialog.html',
                 controller: 'DialogCtrl',
@@ -738,19 +742,12 @@
                     vm.resourceFilters.state = 'locks';
                 }
             }
-            if (vm.resourceFilters.state = 'locks' && vm.permission.Lock.view.status) {
+            if (vm.resourceFilters.state == 'locks' && vm.permission.Lock.view.status) {
                 $state.go('app.resources.locks');
             }
         };
 
-        vm.displaykeyboardshortcuts = function () {
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/keyboard-shortcuts-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm
-            });
-        };
-
+     
         vm.isIE = function() {
           return !!navigator.userAgent.match(/MSIE/i) || !!navigator.userAgent.match(/Trident.*rv:11\./);
         }
@@ -935,45 +932,52 @@
         }
 
 
-        function getScheduleDetail(res) {
-            for (var i = 0; i < res.masters.length; i++) {
-                if (res.masters[i].jobschedulerId == vm.schedulerIds.selected) {
-                    vm.selectedJobScheduler = res.masters[i];
+        function getScheduleDetail() {
+            JobSchedulerService.getJobSchedulerP({jobschedulerId: vm.schedulerIds.selected}).then(function (result) {
+                JobSchedulerService.get({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+                    res.jobscheduler.os = result.jobscheduler.os;
+                    res.jobscheduler.timeZone = result.jobscheduler.timeZone;
+                    vm.selectedJobScheduler = res.jobscheduler;
                     vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
                     if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
                         document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
                     $window.sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(vm.selectedJobScheduler);
-                     if(vm.selectedJobScheduler && vm.selectedJobScheduler.state)
-                    vm.scheduleState = vm.selectedJobScheduler.state._text;
-                    break;
-                }
-            }
+                    if (vm.selectedJobScheduler && vm.selectedJobScheduler.state)
+                        vm.scheduleState = vm.selectedJobScheduler.state._text;
+                    if (vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType)
+                        vm.permission.precedence = vm.selectedJobScheduler.clusterType.precedence;
+                }, function () {
+                    vm.selectedJobScheduler = res.jobscheduler;
+                    vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
+                    if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
+                        document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
+                    $window.sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(vm.selectedJobScheduler);
+                });
+            }, function () {
+                JobSchedulerService.get({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
+                    vm.selectedJobScheduler = res.jobscheduler;
+                    vm.selectedScheduler.scheduler = vm.selectedJobScheduler;
+                    if (vm.selectedScheduler && vm.selectedScheduler.scheduler)
+                        document.title = vm.selectedScheduler.scheduler.host + ':' + vm.selectedScheduler.scheduler.port + '/' + vm.selectedScheduler.scheduler.jobschedulerId;
+                    $window.sessionStorage.$SOS$JOBSCHEDULE = JSON.stringify(vm.selectedJobScheduler);
+                    if (vm.selectedJobScheduler && vm.selectedJobScheduler.state)
+                        vm.scheduleState = vm.selectedJobScheduler.state._text;
+                    if (vm.selectedJobScheduler && vm.selectedJobScheduler.clusterType)
+                        vm.permission.precedence = vm.selectedJobScheduler.clusterType.precedence;
+                });
+            });
         }
 
-        $scope.$on('reloadScheduleDetail', function (event, res) {
-            getScheduleDetail(res);
+        $scope.$on('reloadScheduleDetail', function () {
+            getScheduleDetail();
         });
         function loadScheduleDetail() {
-            if ($state.current.name != 'app.dasboard' && vm.schedulerIds.selected) {
-                JobSchedulerService.getClusterMembers({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-                    getScheduleDetail(res);
-                });
+            if ($state.current.name != 'app.dashboard' && vm.schedulerIds.selected) {
+                getScheduleDetail();
             }
         }
+
         loadScheduleDetail();
-        vm.$on('event-started', function (event, args) {
-            if (args.events && args.events.length > 0) {
-                angular.forEach(args.otherEvents, function (event) {
-                    angular.forEach(event.eventSnapshots, function (value1) {
-                        if (value1.eventType === "SchedulerStateChanged") {
-                            loadScheduleDetail();
-                        }
-                    });
-                });
-
-
-            }
-        });
 
 
         vm.changeScheduler = function (jobScheduler) {
@@ -992,10 +996,8 @@
                         if ($location.path().match('job_chain_detail/')) {
                             $location.path('/').search({});
                         } else {
-                            if($state.current.name!='app.dasboard')
-                            JobSchedulerService.getClusterMembers({jobschedulerId:vm.schedulerIds.selected}).then(function(res){
-                                getScheduleDetail(res);
-                            });
+                            if ($state.current.name != 'app.dashboard')
+                                getScheduleDetail();
                             $state.reload(vm.currentState);
                         }
                     } else {
@@ -1019,9 +1021,7 @@
         $scope.$on('$stateChangeSuccess', function (event, toState, toParam, fromState) {
             vm.currentState = toState.name;
             if (toState.name != 'app.dashboard' && fromState.name == 'login') {
-                JobSchedulerService.getClusterMembersP({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-                    getScheduleDetail(res);
-                });
+                getScheduleDetail();
             }
             vm.checkNavHeader();
             $uibModalStack.dismissAll();
@@ -1035,7 +1035,6 @@
         vm.allEvents = '';
 
         vm.changeEvent = function (jobScheduler) {
-
             if (!eventLoading) {
                 eventLoading = true;
                 var obj = {};
@@ -1059,9 +1058,7 @@
                 } else {
                     obj.jobscheduler = vm.eventsRequest;
                 }
-
                 CoreService.getEvents(obj).then(function (res) {
-
                     if (!vm.switchScheduler && !logout) {
                         vm.eventsRequest = [];
                         for (var i = 0; i < res.events.length; i++) {
@@ -1083,6 +1080,16 @@
                                     jobschedulerId: res.events[i].jobschedulerId,
                                     eventId: res.events[i].eventId
                                 });
+
+                                angular.forEach(res.events[i].eventSnapshots, function (value1) {
+                                    if (value1.eventType === "SchedulerStateChanged") {
+                                        loadScheduleDetail();
+                                    } else if (value1.eventType === "CurrentJobSchedulerChanged") {
+                                        getScheduleDetail();
+                                        $state.reload(vm.currentState);
+                                    }
+                                });
+
                                 break;
                             }
                         }
@@ -1095,7 +1102,6 @@
                                 });
                             }
                         }
-
                         vm.allEvents = res.events;
                         filterdEvents();
                     }
@@ -1763,7 +1769,7 @@
         vm.removeSubstitue = function (form2) {
             $rootScope.$broadcast('remove-substitue', {
                 _schedules: vm._schedules,
-                _sch : {}
+                _sch: {}
             });
             vm.sch = {};
             vm.from = {};
@@ -2446,13 +2452,13 @@
                 vm.to.time = h + ':' + m + ':' + s;
             }
 
-            if(vm.sch) {
+            if (vm.sch) {
                 vm.sch._title = run_time._title;
                 vm.sch._name = run_time._name;
                 vm.sch._substitute = run_time._substitute;
             }
 
-            if(vm.substituteObj) {
+            if (vm.substituteObj) {
                 vm.substituteObj.name = run_time._name;
                 if (!run_time._valid_from) {
                     vm.substituteObj.fromDate = '';
@@ -4027,8 +4033,8 @@
             }
         }
 
-        vm.removeSchedule = function(){
-             vm._xmlTemp = {run_time: {}};
+        vm.removeSchedule = function () {
+            vm._xmlTemp = {run_time: {}};
             var xmlStr = x2js.json2xml_str(vm._xmlTemp);
             xmlStr = xmlStr.replace(/,/g, ' ');
 
@@ -7538,7 +7544,7 @@
             }
         };
 
-        vm.removeSubstitute = function(form2){
+        vm.removeSubstitute = function (form2) {
             vm.substituteObj = {};
             vm.substituteObj.fromTime = '00:00';
             vm.substituteObj.toTime = '00:00';

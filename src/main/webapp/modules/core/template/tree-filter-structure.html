@@ -6,7 +6,7 @@
             <td ng-class="{'text-primary' : row.branch.selected1}">
                 <table class="indented">
                     <tr>
-                        <td width="11">
+                        <td width="11" ng-if="object">
                             <label class="md-check md-check-sm m-r-xs m-t-xs">
                                 <input type="checkbox" data-checklist-model="object.paths"
                                        data-checklist-value="row.branch.path"><i class="primary"></i>

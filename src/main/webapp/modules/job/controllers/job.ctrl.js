@@ -1244,6 +1244,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
+                vm.comments.title = jobChain.title;
                 vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job Chain';
                 var modalInstance = $uibModal.open({
@@ -1282,6 +1283,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
+                vm.comments.title = jobChain.title;
                 vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job Chain';
                 var modalInstance = $uibModal.open({
@@ -1411,7 +1413,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Stop Node';
+                vm.comments.title = jobChain.title;
+                vm.comments.node = data.name;
+                vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -1447,7 +1451,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Unstop Node';
+                vm.comments.title = jobChain.title;
+                 vm.comments.node = data.name;
+                vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -1485,7 +1491,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Skip Node';
+                vm.comments.title = jobChain.title;
+                 vm.comments.node = data.name;
+                vm.comments.operation = 'Skip';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -1522,7 +1530,9 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = jobChain.path;
-                vm.comments.operation = 'Unskip Node';
+                vm.comments.title = jobChain.title;
+                 vm.comments.node = data.name;
+                vm.comments.operation = 'Unskip';
                 vm.comments.type = 'Job Chain';
 
                 var modalInstance = $uibModal.open({
@@ -1559,6 +1569,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = data.job.path;
+                vm.comments.title = data.job.title;
                 vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job';
 
@@ -1596,6 +1607,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = data.job.path;
+                vm.comments.title = data.job.title;
                 vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job';
 
@@ -1636,6 +1648,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'End Task';
                 vm.comments.type = 'Job';
 
@@ -1674,6 +1687,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'Kill Task';
                 vm.comments.type = 'Job';
 
@@ -1713,6 +1727,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'Terminate Task';
                 vm.comments.type = 'Job';
 
@@ -2644,6 +2659,13 @@
                         JobChainService.histories(filter).then(function (res) {
                             vm.historys = res.history;
                         });
+                        if (vm.permission.AuditLog.view.status) {
+                            var obj = {};
+                            obj.jobschedulerId = vm.schedulerIds.selected;
+                            obj.orders = [];
+                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
+                            loadAuditLogs(obj);
+                        }
                     }
                 }
             }
@@ -2760,6 +2782,7 @@
         }
 
         function getJobByPathV(obj) {
+            obj.compact = false;
             JobService.get(obj).then(function (res) {
                 if (vm.jobs) {
                     vm.jobs[0].runningTasks = [];
@@ -4405,6 +4428,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
+                vm.comments.title = job.title;
                 vm.comments.operation = 'Stop';
                 vm.comments.type = 'Job';
 
@@ -4443,6 +4467,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
+                vm.comments.title = job.title;
                 vm.comments.operation = 'Unstop';
                 vm.comments.type = 'Job';
 
@@ -4481,6 +4506,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = job.path;
+                vm.comments.title = job.title;
                 vm.comments.operation = 'Start';
                 vm.comments.type = 'Job';
 
@@ -4802,6 +4828,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'End Task';
                 vm.comments.type = 'Job';
 
@@ -4843,6 +4870,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'Kill Task';
                 vm.comments.type = 'Job';
 
@@ -4883,6 +4911,7 @@
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = path;
+                vm.comments.task = task.taskId;
                 vm.comments.operation = 'Terminate Task';
                 vm.comments.type = 'Job';
 
@@ -4981,6 +5010,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
+                vm.comments.name = '';
                 vm.comments.operation = 'Terminate All Task';
                 vm.comments.type = 'Job';
                 if (!job) {
@@ -5331,9 +5361,9 @@
                                                     res.jobs[0].usedInJobChains = vm.allJobs[index].usedInJobChains;
                                                     res.jobs[0].jobChains = vm.allJobs[index].jobChains;
                                                     res.jobs[0].showJobChains = vm.allJobs[index].showJobChains;
-                                                    vm.allJobs[index].runningTasks = [];
-                                                    vm.allJobs[index].error = undefined;
-                                                    vm.allJobs[index] = angular.merge(vm.allJobs[index], res.jobs[0]);
+                                                    res.jobs[0].isOrderJob = vm.allJobs[index].isOrderJob;
+                                                    res.jobs[0].title = vm.allJobs[index].title;
+                                                    vm.allJobs[index] = res.jobs[0];
                                                     if (vm.allJobs[index].state && vm.allJobs[index].state._text == 'RUNNING' && vm.showTask) {
                                                         vm.allJobs[index].showJobChains = true;
                                                     }
@@ -5363,6 +5393,8 @@
                         JobService.history(jobs).then(function (res) {
                             vm.taskHistory = res.history;
                         });
+                        if (vm.permission.AuditLog.view.status)
+                            vm.loadAuditLogs(vm.showTaskPanel);
                     }
                     if ((value1.eventType == "FileBasedActivated" || value1.eventType == "FileBasedRemoved" ) && value1.objectType == "JOB") {
 

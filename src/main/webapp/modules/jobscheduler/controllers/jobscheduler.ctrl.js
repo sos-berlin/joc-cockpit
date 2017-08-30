@@ -693,7 +693,7 @@
         /** -----------------Begin ProcessClass------------------- */
 
         /**
-         * Function to initialized SCHEDULE tree
+         * Function to initialized Proccess tree
          */
         function initProccessTree() {
             ResourceService.tree({
@@ -1051,12 +1051,6 @@
                     $rootScope.process_class_expand_to = undefined;
                 }
                 checkExpandP(value);
-                /*                if (value.expanded || value.selected1) {
-                 if (data.path == '/') {
-                 data.selected1 = false;
-                 }
-                 }*/
-
             });
         }
 
@@ -2837,8 +2831,8 @@
                 if (vm.userPreferences.auditLog && action !== 'downloadLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
-                    vm.comments.name = objectType;
-                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove unused Masters" : "Continue";
+                    vm.comments.name = id + ' ('+host+':'+ port+')';
+                    vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove instance" : "Continue";
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/comment-dialog.html',
@@ -2881,6 +2875,7 @@
         vm.getTimeout = function (host, port, id) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
+            vm._scheduleName = id + ' ('+host+':'+ port+')';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
                 controller: 'DialogCtrl',
