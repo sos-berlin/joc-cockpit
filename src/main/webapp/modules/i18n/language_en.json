@@ -1053,6 +1053,8 @@
   "label.years": "years",
   "label.updateCalendar": "Update Calendar",
   "label.calendarViewFor": "Calendar View for",
+  "label.calendar": "Calendar",
+  "label.showCalendarAllDates": "Show calendar view for all frequencies",
   "button.includedFrequencies": "Included Frequencies",
   "button.excludedFrequencies": "Excluded Frequencies",
   "button.addCalendar": "Add Calendar",

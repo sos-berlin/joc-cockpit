@@ -12,9 +12,7 @@
         "DailyPlanService", "$rootScope", "CoreService", "$timeout", "TaskService", "$window", "AuditLogService"];
     function JobChainCtrl($scope, JobChainService, OrderService, JobService, UserService, $location, SOSAuth, $uibModal, orderBy, ScheduleService, SavedFilter,
                           DailyPlanService, $rootScope, CoreService, $timeout, TaskService, $window, AuditLogService) {
-
         var vm = $scope;
-
         vm.jobChainFilters = CoreService.getJobChainTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
@@ -4271,29 +4269,30 @@
                 }
             }
             vm.isAuditLog = false;
-
             vm.loadHistory(value);
-
             if (value.numOfQueuedTasks > 0 || value.numOfRunningTasks > 0) {
                 var obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.jobs = [];
-                obj.jobs.push({job: value.path});
-                JobService.getJobsP(obj).then(function (res) {
-                    JobService.get(obj).then(function (result) {
-                        if (res.jobs.length > 0 && result.jobs.length > 0)
-                            value = angular.merge(res.jobs[0], result.jobs[0]);
-                        else if (res.jobs.length == 0 && result.jobs.length != 0)
-                            value = result.jobs[0];
-                        else
-                            value = res.jobs[0];
-
-                    }, function (err) {
-                        value = res.jobs[0];
+                obj.job =  value.path;
+                JobService.getJobP(obj).then(function (res) {
+                     value = angular.merge(value,res.job);
+                    JobService.getJob(obj).then(function (result) {
+                        result.job.isOrderJob = res.job.isOrderJob;
+                        result.job.title = res.job.title;
+                        result.job.usedInJobChains = res.job.usedInJobChains;
+                        result.job.jobChains = res.job.jobChains;
+                        result.job.maxTasks = res.job.maxTasks;
+                        value = angular.merge(value,result.job);
                     });
                 }, function () {
-                    JobService.get(obj).then(function (result) {
-                        value = angular.merge(value, result.jobs[0]);
+                    JobService.getJob(obj).then(function (result) {
+                        result.job.isOrderJob = value.isOrderJob;
+                        result.job.title = value.title;
+                        result.job.usedInJobChains = value.usedInJobChains;
+                        result.job.jobChains = value.jobChains;
+                        result.job.maxTasks = value.maxTasks;
+                        value = angular.merge(value,result.job);
+
                     });
                 });
             }
@@ -5009,7 +5008,7 @@
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
-                vm.comments.name = '';
+                vm.comments.name = ''
                 vm.comments.operation = 'Terminate All Task';
                 vm.comments.type = 'Job';
                 if (!job) {

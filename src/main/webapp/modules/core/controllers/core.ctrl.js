@@ -8560,8 +8560,8 @@
         });
     }
 
-    CalendarEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", '$window', '$filter', 'gettextCatalog'];
-    function CalendarEditorDialogCtrl($scope, $uibModalInstance, $window, $filter, gettextCatalog) {
+    CalendarEditorDialogCtrl.$inject = ["$scope", "$uibModalInstance", '$window', '$filter', 'gettextCatalog','$timeout'];
+    function CalendarEditorDialogCtrl($scope, $uibModalInstance, $window, $filter, gettextCatalog, $timeout) {
         var vm = $scope;
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
@@ -8596,15 +8596,16 @@
         vm.editor.hidePervious = false;
         vm.editor.showYearView = false;
         vm.editor.isEnable = false;
-        vm.runTime = {};
-        vm.runTime.frequencyType = 'INCLUDE';
+        vm.frequency = {};
+        vm.editor.frequencyType = 'INCLUDE';
 
         vm.calendarView = 'year';
         vm.viewDate = new Date();
         vm.events = [];
-        vm.planItems = [];
+        vm.planItems = [{
+            plannedStartTime: new Date()
+        }];
         vm.isCellOpen = true;
-        vm.nationalHoliday = {};
         vm.calendar.includedFrequencies = [];
         vm.calendar.excludedFrequencies = [];
 
@@ -8621,16 +8622,16 @@
                 str: 'On ' + date
             };
             var flag = false;
-            for(var i=0;i<vm.calendar.excludedFrequencies.length;i++){
-                if(vm.calendar.excludedFrequencies[i].tab == obj.tab && vm.calendar.excludedFrequencies[i].str == obj.str) {
+            for (var i = 0; i < vm.calendar.excludedFrequencies.length; i++) {
+                if (vm.calendar.excludedFrequencies[i].tab == obj.tab && vm.calendar.excludedFrequencies[i].str == obj.str) {
                     flag = true;
                     break;
                 }
             }
-            if(!flag)
-            vm.calendar.excludedFrequencies.push(obj);
-            for(var i=0;i<vm.calendar.includedFrequencies.length;i++){
-                if(vm.calendar.includedFrequencies[i].tab == obj.tab && vm.calendar.includedFrequencies[i].str == obj.str) {
+            if (!flag)
+                vm.calendar.excludedFrequencies.push(obj);
+            for (var i = 0; i < vm.calendar.includedFrequencies.length; i++) {
+                if (vm.calendar.includedFrequencies[i].tab == obj.tab && vm.calendar.includedFrequencies[i].str == obj.str) {
                     vm.calendar.includedFrequencies.splice(i, 1);
                     break;
                 }
@@ -8648,16 +8649,16 @@
             };
 
             var flag = false;
-            for(var i=0;i<vm.calendar.includedFrequencies.length;i++){
-                if(vm.calendar.includedFrequencies[i].tab == obj.tab && vm.calendar.includedFrequencies[i].str == obj.str) {
+            for (var i = 0; i < vm.calendar.includedFrequencies.length; i++) {
+                if (vm.calendar.includedFrequencies[i].tab == obj.tab && vm.calendar.includedFrequencies[i].str == obj.str) {
                     flag = true;
                     break;
                 }
             }
-            if(!flag)
-            vm.calendar.includedFrequencies.push(obj);
-            for(var i=0;i<vm.calendar.excludedFrequencies.length;i++){
-                if(vm.calendar.excludedFrequencies[i].tab == obj.tab && vm.calendar.excludedFrequencies[i].str == obj.str) {
+            if (!flag)
+                vm.calendar.includedFrequencies.push(obj);
+            for (var i = 0; i < vm.calendar.excludedFrequencies.length; i++) {
+                if (vm.calendar.excludedFrequencies[i].tab == obj.tab && vm.calendar.excludedFrequencies[i].str == obj.str) {
                     vm.calendar.excludedFrequencies.splice(i, 1);
                     break;
                 }
@@ -8666,8 +8667,7 @@
 
         function checkDate(date) {
             var planData = {
-                plannedStartTime: date,
-                expectedEndTime: date
+                plannedStartTime: date
             };
             var flag = false;
             for (var i = 0; i < vm.planItems.length; i++) {
@@ -8704,36 +8704,36 @@
         };
 
         vm.loadHolidayList = function () {
-            if (vm.runTime.country == 'IN' && vm.runTime.year) {
+            if (vm.frequency.country == 'IN' && vm.frequency.year) {
                 var holidays = [
                     {
-                        "date": vm.runTime.year + "-01-01",
+                        "date": vm.frequency.year + "-01-01",
                         "name": "New Years day",
                         "type": "public"
                     },
                     {
-                        "date": vm.runTime.year + "-01-26",
+                        "date": vm.frequency.year + "-01-26",
                         "name": "Republic day",
                         "type": "public"
                     },
                     {
-                        "date": vm.runTime.year + "-05-01",
+                        "date": vm.frequency.year + "-05-01",
                         "name": "Labours day",
                         "type": "public"
                     },
                     {
-                        "date": vm.runTime.year + "-08-15",
+                        "date": vm.frequency.year + "-08-15",
                         "name": "Independence day",
                         "type": "public"
                     },
                     {
-                        "date": vm.runTime.year + "-10-02",
+                        "date": vm.frequency.year + "-10-02",
                         "name": "Mahatma Gandhi Birthday",
                         "type": "public"
                     },
 
                     {
-                        "date": vm.runTime.year + "-12-25",
+                        "date": vm.frequency.year + "-12-25",
                         "name": "Christmas day",
                         "type": "public"
                     }
@@ -8741,9 +8741,9 @@
                 vm.holidayList = holidays;
                 return;
             }
-            if (vm.runTime.country && vm.runTime.year) {
-                hd.init(vm.runTime.country);
-                vm.holidayList = hd.getHolidays(vm.runTime.year);
+            if (vm.frequency.country && vm.frequency.year) {
+                hd.init(vm.frequency.country);
+                vm.holidayList = hd.getHolidays(vm.frequency.year);
             }
         };
 
@@ -8853,21 +8853,21 @@
                 return;
             }
             if (day == 1) {
-                return '1st ';
+                return '1st';
             } else if (day == 2) {
-                return '2nd ';
+                return '2nd';
             } else if (day == 3) {
-                return '3rd ';
+                return '3rd';
             } else if (day == 4) {
-                return '4th ';
+                return '4th';
             } else if (day == -1) {
-                return 'last ';
+                return 'last';
             } else if (day == -2) {
-                return '2nd last ';
+                return '2nd last';
             } else if (day == -3) {
-                return '3rd last ';
+                return '3rd last';
             } else if (day == -4) {
-                return '4th last ';
+                return '4th last';
             }
         }
 
@@ -8880,12 +8880,12 @@
             if (!angular.isArray(month)) {
                 months = month.toString().split(' ').sort(compareNumbers);
             }
-            for(var i =0; i< months.length;i++) {
-                if(months[i] == 31 && isUltimos) {
-                          continue;
+            for (var i = 0; i < months.length; i++) {
+                if (months[i] == 31 && isUltimos) {
+                    continue;
                 }
-                if(months[i] == 0 && !isUltimos) {
-                          continue;
+                if (months[i] == 0 && !isUltimos) {
+                    continue;
                 }
                 if (months[i] == 1) {
                     str = str + months[i] + 'st,';
@@ -8918,8 +8918,8 @@
             } else {
                 selectedMonths.splice(selectedMonths.indexOf(value), 1);
             }
-            vm.runTime.selectedMonths = angular.copy(selectedMonths);
-            vm.runTime.selectedMonths.sort(compareNumbers);
+            vm.frequency.selectedMonths = angular.copy(selectedMonths);
+            vm.frequency.selectedMonths.sort(compareNumbers);
             vm.editor.isEnable = selectedMonths.length > 0;
         };
 
@@ -8928,10 +8928,10 @@
                 return true;
         };
 
-        var watcher1 = vm.$watchCollection('runTime', function (newNames, oldValues) {
+        var watcher1 = vm.$watchCollection('frequency', function (newNames, oldValues) {
             if (newNames) {
                 if ((newNames.tab != oldValues.tab)) {
-                    if (vm.editor.create && !vm.runTime.selectedMonths)
+                    if (vm.editor.create && !vm.frequency.selectedMonths)
                         selectedMonths = [];
                 }
                 if (vm.editor.create) {
@@ -8954,7 +8954,7 @@
                 }
 
                 if (newNames.isUltimos != oldValues.isUltimos) {
-                    if (vm.editor.create && !vm.runTime.selectedMonths)
+                    if (vm.editor.create && !vm.frequency.selectedMonths)
                         selectedMonths = [];
                 }
 
@@ -8985,7 +8985,7 @@
                         vm.editor.isEnable = false;
                     }
                 } else if (newNames.tab == 'nationalHoliday') {
-                    if (vm.nationalHoliday && vm.nationalHoliday.length > 0) {
+                    if (newNames.nationalHoliday && newNames.nationalHoliday.length > 0) {
                         vm.editor.isEnable = true;
                     } else {
                         vm.editor.isEnable = false;
@@ -9001,17 +9001,25 @@
 
             }
         });
-        var watcher2 = vm.$watchCollection('runTime.days', function (newNames) {
+        var watcher2 = vm.$watchCollection('frequency.days', function (newNames) {
             if (newNames) {
                 vm.editor.isEnable = newNames.length > 0;
-                vm.runTime.all = newNames.length == 7;
-                vm.runTime.days.sort();
+                vm.frequency.all = newNames.length == 7;
+                vm.frequency.days.sort();
             }
         });
-        var watcher3 = vm.$watchCollection('runTime.months', function (newNames) {
+        var watcher3 = vm.$watchCollection('frequency.months', function (newNames) {
             if (newNames) {
-                vm.runTime.allMonth = newNames.length == 12;
-                vm.runTime.months.sort(compareNumbers);
+                vm.frequency.allMonth = newNames.length == 12;
+                vm.frequency.months.sort(compareNumbers);
+            }
+        });
+
+        var watcher4 = vm.$watchCollection('frequency.nationalHoliday', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.editor.isEnable = true;
+            } else {
+                vm.editor.isEnable = false;
             }
         });
 
@@ -9020,18 +9028,18 @@
         }
 
         vm.checkAllWeek = function () {
-            if (vm.runTime.all) {
-                vm.runTime.days = ["1", "2", "3", "4", "5", "6", "7"]
+            if (vm.frequency.all) {
+                vm.frequency.days = ["1", "2", "3", "4", "5", "6", "7"]
             } else {
-                vm.runTime.days = []
+                vm.frequency.days = []
             }
         };
 
         vm.checkAllMonth = function () {
-            if (vm.runTime.allMonth) {
-                vm.runTime.months = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+            if (vm.frequency.allMonth) {
+                vm.frequency.months = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
             } else {
-                vm.runTime.months = []
+                vm.frequency.months = []
             }
         };
 
@@ -9047,10 +9055,25 @@
                     return getWeekDays(period.days);
                 }
             } else if (period.tab == 'specificWeekDays') {
-                if (str) {
-                    return getSpecificDay(period.which) + period.specificWeekDay + ' of ' + str;
-                } else {
-                    return getSpecificDay(period.which) + period.specificWeekDay + ' of month';
+                if(!angular.isArray(period.which)) {
+                    if (str) {
+                        return getSpecificDay(period.which) + ' '+ period.specificWeekDay + ' of ' + str;
+                    } else {
+                        return getSpecificDay(period.which) + ' '+ period.specificWeekDay + ' of month';
+                    }
+                }else{
+                    var str1 = '';
+                    angular.forEach(period.which, function(value, index){
+                        str1 = str1 + getSpecificDay(value);
+                        if(period.which.length-1 != index){
+                            str1 = str1 + ', ';
+                        }
+                    });
+                    if (str) {
+                        return str1 + ' '+ period.specificWeekDay + ' of ' + str;
+                    } else {
+                        return str1 + ' '+ period.specificWeekDay + ' of month';
+                    }
                 }
             }
             else if (period.tab == 'specificDays') {
@@ -9059,9 +9082,9 @@
             else if (period.tab == 'monthDays') {
                 if (period.isUltimos) {
                     if (str) {
-                        return getMonthDays(period.selectedMonths,period.isUltimos) + ' of ' + str;
+                        return getMonthDays(period.selectedMonths, period.isUltimos) + ' of ' + str;
                     } else {
-                        return getMonthDays(period.selectedMonths,period.isUltimos) + ' of ultimos';
+                        return getMonthDays(period.selectedMonths, period.isUltimos) + ' of ultimos';
                     }
                 } else {
                     if (str) {
@@ -9092,9 +9115,9 @@
             }
             else if (period.tab == 'nationalHoliday') {
                 str = 'On national holidays ';
-                angular.forEach(vm.nationalHoliday.list, function (date, index) {
+                angular.forEach(period.nationalHoliday, function (date, index) {
                     str = str + $filter('date')(new Date(date), vm.dataFormat);
-                    if (index != vm.nationalHoliday.list.length - 1) {
+                    if (index != period.nationalHoliday.length - 1) {
                         str = str + ', ';
                     }
                 });
@@ -9103,15 +9126,25 @@
         }
 
         vm.frequencyList = [];
-        var _tempPeriod = {};
 
         vm.back = function () {
             vm.editor.hidePervious = false;
             vm.frequencyList = [];
         };
         vm.showYearView = function () {
+            vm.planItems = [];
             vm.editor.showYearView = true;
+            vm.showMsgText = true;
             vm.editor.showText = undefined;
+            $timeout(function () {
+                for (var i = 0; i < vm.calendar.includedFrequencies.length; i++) {
+                    calculate(vm.calendar.includedFrequencies[i])
+                }
+
+                for (var j = 0; j < vm.calendar.excludedFrequencies.length; j++) {
+                    excludeDates(vm.calendar.excludedFrequencies[j])
+                }
+            }, 0)
         };
 
         vm.back1 = function () {
@@ -9128,22 +9161,39 @@
             vm.editor.update = false;
             vm.frequencyList = [];
             selectedMonths = [];
-            vm.runTime = {};
-            vm.runTime.tab = 'weekDays';
-            vm.runTime.frequencyType = 'INCLUDE';
-            vm.runTime.y = 'days';
-            vm.runTime.year = new Date().getFullYear();
-            vm.nationalHoliday.list = [];
+            vm.frequency = {};
+            vm.frequency.tab = 'weekDays';
+            vm.frequency.y = 'days';
+            vm.frequency.year = new Date().getFullYear();
+            vm.isRuntimeEdit = false;
+
         };
         vm.addFrequency = function () {
-            vm.runTime.str = frequencyToString(vm.runTime);
-            if (vm.runTime.tab == 'nationalHoliday') {
-                vm.runTime.nationalHoliday = angular.copy(vm.nationalHoliday.list);
-            }
-            var _temp = angular.copy(vm.runTime);
+            vm.frequency.str = frequencyToString(vm.frequency);
+            var _temp = angular.copy(vm.frequency);
             var flag = false;
+
+            if (vm.isRuntimeEdit) {
+                vm.isRuntimeEdit = false;
+                console.log('...if')
+                if(vm.frequencyList.length > 0) {
+                    for (var i = 0; i < vm.frequencyList.length; i++) {
+                        console.log('>>>>');
+                        console.log(vm.temp);
+                        if (angular.equals(vm.frequencyList[i], vm.temp)) {
+                            vm.frequencyList[i] = angular.copy(vm.frequency);
+                            vm.saveFrequency();
+                            break;
+                        }
+                    }
+                }else{
+                   vm.frequencyList[0] = angular.copy(vm.frequency);
+                    vm.saveFrequency();
+                }
+                return;
+            }
             for (var i = 0; i < vm.frequencyList.length; i++) {
-                if (angular.equals(vm.frequencyList[i], vm.runTime)) {
+                if (angular.equals(vm.frequencyList[i], vm.frequency)) {
                     flag = true;
                     break;
                 }
@@ -9154,27 +9204,27 @@
             if (vm.frequencyList.length > 0) {
                 var flag1 = false;
                 for (var i = 0; i < vm.frequencyList.length; i++) {
-                    if (vm.runTime.tab == vm.frequencyList[i].tab) {
-                        if (vm.runTime.tab == 'weekDays') {
-                            if (vm.runTime.months) {
-                                if (vm.runTime.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.runTime.months)) {
-                                    vm.frequencyList[i].days = angular.copy(vm.runTime.days);
-                                    vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                    if (vm.frequency.tab == vm.frequencyList[i].tab) {
+                        if (vm.frequency.tab == 'weekDays') {
+                            if (vm.frequency.months) {
+                                if (vm.frequency.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
+                                    vm.frequencyList[i].days = angular.copy(vm.frequency.days);
+                                    vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                                     flag1 = true;
                                     break;
                                 }
                             } else {
-                                vm.frequencyList[i].days = angular.copy(vm.runTime.days);
-                                vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                                vm.frequencyList[i].days = angular.copy(vm.frequency.days);
+                                vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                                 flag1 = true;
                                 break;
                             }
-                        } else if (vm.runTime.tab == 'monthDays' && vm.runTime.isUltimos && vm.frequencyList[i].isUltimos) {
-                            if (vm.runTime.months) {
-                                if (vm.runTime.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.runTime.months)) {
-                                    vm.frequencyList[i].selectedMonths = angular.copy(vm.runTime.selectedMonths);
+                        } else if (vm.frequency.tab == 'monthDays' && vm.frequency.isUltimos && vm.frequencyList[i].isUltimos) {
+                            if (vm.frequency.months) {
+                                if (vm.frequency.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
+                                    vm.frequencyList[i].selectedMonths = angular.copy(vm.frequency.selectedMonths);
 
-                                    vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                                    vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                                     if (vm.frequencyList[i].selectedMonths.indexOf('31') > -1) {
                                         vm.frequencyList[i].selectedMonths.splice(vm.frequencyList[i].selectedMonths.indexOf('31'), 1);
                                     }
@@ -9182,9 +9232,9 @@
                                     break;
                                 }
                             } else {
-                                vm.frequencyList[i].selectedMonths = angular.copy(vm.runTime.selectedMonths);
+                                vm.frequencyList[i].selectedMonths = angular.copy(vm.frequency.selectedMonths);
 
-                                vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                                vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                                 if (vm.frequencyList[i].selectedMonths.indexOf('31') > -1) {
                                     vm.frequencyList[i].selectedMonths.splice(vm.frequencyList[i].selectedMonths.indexOf('31'), 1);
                                 }
@@ -9192,11 +9242,11 @@
                                 break;
                             }
                         }
-                        else if (vm.runTime.tab == 'monthDays' && !vm.runTime.isUltimos && !vm.frequencyList[i].isUltimos) {
-                            if (vm.runTime.months) {
-                                if (vm.runTime.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.runTime.months)) {
-                                    vm.frequencyList[i].selectedMonths = angular.copy(vm.runTime.selectedMonths);
-                                    vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                        else if (vm.frequency.tab == 'monthDays' && !vm.frequency.isUltimos && !vm.frequencyList[i].isUltimos) {
+                            if (vm.frequency.months) {
+                                if (vm.frequency.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
+                                    vm.frequencyList[i].selectedMonths = angular.copy(vm.frequency.selectedMonths);
+                                    vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                                     if (vm.frequencyList[i].selectedMonths.indexOf('0') > -1) {
                                         vm.frequencyList[i].selectedMonths.splice(vm.frequencyList[i].selectedMonths.indexOf('0'), 1);
                                     }
@@ -9204,9 +9254,9 @@
                                     break;
                                 }
                             } else {
-                                vm.frequencyList[i].selectedMonths = angular.copy(vm.runTime.selectedMonths);
+                                vm.frequencyList[i].selectedMonths = angular.copy(vm.frequency.selectedMonths);
 
-                                vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                                vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                                 if (vm.frequencyList[i].selectedMonths.indexOf('0') > -1) {
                                     vm.frequencyList[i].selectedMonths.splice(vm.frequencyList[i].selectedMonths.indexOf('0'), 1);
                                 }
@@ -9214,11 +9264,44 @@
                                 break;
                             }
                         }
-                        else if (vm.runTime.tab == 'specificDays') {
+                        else if (vm.frequency.tab == 'specificWeekDays') {
+                            console.log(vm.frequencyList[i]);
+                            console.log(vm.frequency);
+                            if (vm.frequency.months) {
+                                if (vm.frequency.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
+                                    if (vm.frequencyList[i].specificWeekDay == vm.frequency.specificWeekDay) {
+                                        if (angular.isArray(vm.frequencyList[i].which)) {
+                                            vm.frequencyList[i].which.push(vm.frequency.which);
+                                        } else {
+                                            var tempp = angular.copy(vm.frequencyList[i].which);
+                                            vm.frequencyList[i].which = [];
+                                            vm.frequencyList[i].which.push(tempp);
+                                            vm.frequencyList[i].which.push(vm.frequency.which);
+                                        }
+                                        vm.frequencyList[i].str = frequencyToString(vm.frequencyList[i]);
+                                        flag1 = true;
+                                        break;
+                                    }
+                                }
+                            }else {
+                                if (vm.frequencyList[i].specificWeekDay == vm.frequency.specificWeekDay) {
+                                    if (angular.isArray(vm.frequencyList[i].which)) {
+                                        vm.frequencyList[i].which.push(vm.frequency.which);
+                                    } else {
+                                        var tempp = angular.copy(vm.frequencyList[i].which);
+                                        vm.frequencyList[i].which = [];
+                                        vm.frequencyList[i].which.push(tempp);
+                                        vm.frequencyList[i].which.push(vm.frequency.which);
+                                    }
+                                    vm.frequencyList[i].str = frequencyToString(vm.frequencyList[i]);
+                                    flag1 = true;
+                                    break;
+                                }
+                            }
 
-                        } else if (vm.runTime.tab == 'nationalHoliday') {
-                            vm.frequencyList[i].nationalHoliday = angular.copy(vm.nationalHoliday.list);
-                            vm.frequencyList[i].str = angular.copy(vm.runTime.str);
+                        } else if (vm.frequency.tab == 'nationalHoliday') {
+                            vm.frequencyList[i].nationalHoliday = angular.copy(vm.frequency.nationalHoliday);
+                            vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                             flag1 = true;
                             break;
                         }
@@ -9226,10 +9309,12 @@
                 }
 
                 if (!flag1) {
-                    vm.frequencyList.push(angular.copy(vm.runTime))
+                    vm.frequency.type = vm.editor.frequencyType.toLowerCase();
+                    vm.frequencyList.push(angular.copy(vm.frequency))
                 }
             } else {
-                vm.frequencyList.push(angular.copy(vm.runTime));
+                vm.frequency.type = vm.editor.frequencyType.toLowerCase();
+                vm.frequencyList.push(angular.copy(vm.frequency));
             }
         };
 
@@ -9256,8 +9341,7 @@
                                 }
 
                                 dates.push({
-                                    plannedStartTime: angular.copy(d),
-                                    expectedEndTime: angular.copy(d)
+                                    plannedStartTime: angular.copy(d)
                                 });
                                 for (var i = 1; i < 6; i++) {
                                     d.setDate(d.getDate() + 7);
@@ -9265,8 +9349,7 @@
                                         break;
                                     }
                                     dates.push({
-                                        plannedStartTime: angular.copy(d),
-                                        expectedEndTime: angular.copy(d)
+                                        plannedStartTime: angular.copy(d)
                                     });
                                 }
                             });
@@ -9289,14 +9372,12 @@
                                 today.setDate(today.getDate() + (7 - (todayDays - value)));
                             }
                             dates.push({
-                                plannedStartTime: angular.copy(today),
-                                expectedEndTime: angular.copy(today)
+                                plannedStartTime: angular.copy(today)
                             });
                             for (var i = 1; i < 53; i++) {
                                 today.setDate(today.getDate() + 7);
                                 dates.push({
-                                    plannedStartTime: angular.copy(today),
-                                    expectedEndTime: angular.copy(today)
+                                    plannedStartTime: angular.copy(today)
                                 });
                             }
                         });
@@ -9309,18 +9390,7 @@
             }
         };
 
-        vm.showCalendar = function (data, flag) {
-            vm.planItems = [];
-            vm.editor.showYearView = true;
-            vm.editor.hidePervious = false;
-            if(!data){
-                return;
-            }
-            vm.editor.showText = data.str;
-            vm.data = {};
-            vm.flag = flag;
-            vm.calendarTitle = new Date().getFullYear();
-            tempList = [];
+        function calculate(data) {
             if (data.tab == 'weekDays') {
                 vm.data = data;
                 if (data.months) {
@@ -9339,8 +9409,7 @@
                                 }
 
                                 dates.push({
-                                    plannedStartTime: angular.copy(d),
-                                    expectedEndTime: angular.copy(d)
+                                    plannedStartTime: angular.copy(d)
                                 });
 
                                 for (var i = 1; i < 6; i++) {
@@ -9350,8 +9419,7 @@
                                         break;
                                     }
                                     dates.push({
-                                        plannedStartTime: angular.copy(d),
-                                        expectedEndTime: angular.copy(d)
+                                        plannedStartTime: angular.copy(d)
                                     });
                                 }
                             });
@@ -9370,19 +9438,16 @@
                             today.setDate(today.getDate() + (7 - (todayDays - value)));
                         }
                         dates.push({
-                            plannedStartTime: angular.copy(today),
-                            expectedEndTime: angular.copy(today)
+                            plannedStartTime: angular.copy(today)
                         });
                         for (var i = todayWeeks + 1; i < 53; i++) {
                             today.setDate(today.getDate() + 7);
                             dates.push({
-                                plannedStartTime: angular.copy(today),
-                                expectedEndTime: angular.copy(today)
+                                plannedStartTime: angular.copy(today)
                             });
                         }
-
                     });
-                    vm.planItems = dates;
+                    vm.planItems = vm.planItems.concat(angular.copy(dates));
                     tempList = dates;
                 }
             }
@@ -9391,8 +9456,7 @@
             }
             else if (data.tab == 'specificDays') {
                 var planData = {
-                    plannedStartTime: data.date,
-                    expectedEndTime: data.date
+                    plannedStartTime: data.date
                 };
                 vm.planItems.push(planData);
             }
@@ -9405,12 +9469,125 @@
             else if (data.tab == 'nationalHoliday') {
                 angular.forEach(data.nationalHoliday, function (value) {
                     var planData = {
-                        plannedStartTime: value,
-                        expectedEndTime: value
+                        plannedStartTime: value
                     };
                     vm.planItems.push(planData);
                 })
             }
+        }
+
+        function excludeDates(data) {
+            if (data.tab == 'weekDays') {
+                var dates = [];
+                if (data.months) {
+                    var currentMonth = moment().month() + 1;
+                    angular.forEach(data.months, function (month) {
+                        if (month > currentMonth) {
+                            angular.forEach(data.days, function (value) {
+                                var d = new Date();
+                                d.setMonth(month - 1, 1);
+                                var todayDays = moment(d).weekday() + 1;
+                                if (value > todayDays) {
+                                    d.setDate(d.getDate() + (value - todayDays));
+                                } else if (value < todayDays) {
+                                    d.setDate(d.getDate() + (7 - (todayDays - value)));
+                                }
+
+                                dates.push({
+                                    plannedStartTime: angular.copy(d)
+                                });
+
+                                for (var i = 1; i < 6; i++) {
+                                    d.setDate(d.getDate() + 7);
+
+                                    if (d.getMonth() + 1 != month) {
+                                        break;
+                                    }
+                                    dates.push({
+                                        plannedStartTime: angular.copy(d)
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    var todayWeeks = moment().week();
+                    var todayDays = moment().weekday() + 1;
+                    angular.forEach(data.days, function (value) {
+                        var today = new Date();
+                        if (value > todayDays) {
+                            today.setDate(today.getDate() + (value - todayDays));
+                        } else if (value < todayDays) {
+                            today.setDate(today.getDate() + (7 - (todayDays - value)));
+                        }
+                        dates.push({
+                            plannedStartTime: angular.copy(today)
+                        });
+                        for (var i = todayWeeks + 1; i < 53; i++) {
+                            today.setDate(today.getDate() + 7);
+                            dates.push({
+                                plannedStartTime: angular.copy(today)
+                            });
+                        }
+
+                    });
+
+                }
+                for (var i = 0; i < dates.length; i++) {
+                    for (var j = 0; j < vm.planItems.length; j++) {
+                        if (new Date(vm.planItems[j].plannedStartTime).setHours(0, 0, 0, 0) == new Date(dates[i].plannedStartTime).setHours(0, 0, 0, 0)) {
+                            vm.planItems.splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            else if (data.tab == 'specificWeekDays') {
+                console.log(data)
+            }
+            else if (data.tab == 'specificDays') {
+                var planData = {
+                    plannedStartTime: data.date
+                };
+                for (var j = 0; j < vm.planItems.length; j++) {
+                    if (new Date(vm.planItems[j].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0)) {
+                        vm.planItems.splice(j, 1);
+                        break;
+                    }
+                }
+            }
+            else if (data.tab == 'monthDays') {
+                console.log(data)
+            }
+            else if (data.tab == 'others') {
+                console.log(data)
+            }
+            else if (data.tab == 'nationalHoliday') {
+                angular.forEach(data.nationalHoliday, function (value) {
+                    var planData = {
+                        plannedStartTime: value
+                    };
+                    for (var j = 0; j < vm.planItems.length; j++) {
+                        if (new Date(vm.planItems[j].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0)) {
+                            vm.planItems.splice(j, 1);
+                            break;
+                        }
+                    }
+                })
+            }
+        }
+
+        vm.showCalendar = function (data, flag) {
+            vm.planItems = [];
+            vm.editor.showYearView = true;
+            vm.editor.hidePervious = false;
+            vm.showMsgText = false;
+            vm.editor.showText = data.str;
+            vm.data = {};
+            vm.flag = flag;
+            vm.calendarTitle = new Date().getFullYear();
+            tempList = [];
+            calculate(data);
         };
 
         vm.updateFrequency = function (data) {
@@ -9419,19 +9596,21 @@
             vm.editor.create = false;
             vm.editor.update = true;
             vm.frequencyList = [];
-            vm.runTime = data;
-            console.log(vm.runTime);
-            if (vm.runTime.tab == 'nationalHoliday') {
-                vm.nationalHoliday.list = vm.runTime.nationalHoliday;
+            vm.isRuntimeEdit = true;
+            vm.temp = angular.copy(data);
+            vm.frequency = angular.copy(data);
+            if (vm.frequency.tab == 'monthDays') {
+                selectedMonths = [];
+                angular.forEach(runTime.selectedMonths, function (val) {
+                    vm.selectMonthDays(val);
+                });
             }
         };
-
         vm.editFrequency = function (data) {
-            vm.runTime = angular.copy(data);
-            if (vm.runTime.tab == 'nationalHoliday') {
-                vm.nationalHoliday.list = vm.runTime.nationalHoliday;
-            }
-            if (vm.runTime.tab == 'monthDays') {
+            vm.temp = angular.copy(data);
+            vm.frequency = angular.copy(data);
+            vm.isRuntimeEdit = true;
+            if (vm.frequency.tab == 'monthDays') {
                 selectedMonths = [];
                 angular.forEach(runTime.selectedMonths, function (val) {
                     vm.selectMonthDays(val);
@@ -9439,7 +9618,7 @@
             }
         };
         vm.removeFrequency = function (index) {
-            if (vm.runTime.frequencyType == 'INCLUDE') {
+            if (vm.editor.frequencyType == 'INCLUDE') {
                 vm.calendar.includedFrequencies.splice(index, 1);
             } else {
                 vm.calendar.excludedFrequencies.splice(index, 1)
@@ -9448,31 +9627,26 @@
         vm.deleteFrequency = function (index) {
             vm.frequencyList.splice(index, 1);
             if (vm.frequencyList.length == 0) {
-                var temp = angular.copy(vm.runTime);
-                vm.runTime = {};
-                vm.runTime.period = {};
-                vm.runTime.tab = temp.tab;
-                vm.runTime.isUltimos = temp.isUltimos;
+                var temp = angular.copy(vm.frequency);
+                vm.frequency = {};
+                vm.frequency.tab = temp.tab;
+                vm.frequency.isUltimos = temp.isUltimos;
                 selectedMonths = [];
             }
         };
-
         vm.saveFrequency = function () {
-            if (vm.runTime.frequencyType == 'INCLUDE') {
+            if (vm.editor.frequencyType == 'INCLUDE') {
                 vm.calendar.includedFrequencies = vm.calendar.includedFrequencies.concat(angular.copy(vm.frequencyList));
             } else {
                 vm.calendar.excludedFrequencies = vm.calendar.excludedFrequencies.concat(angular.copy(vm.frequencyList));
             }
             vm.editor.hidePervious = false;
-            if (vm.runTime.tab == 'nationalHoliday') {
-                vm.nationalHoliday.list = [];
-            }
         };
-
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
             watcher3();
+            watcher4();
         });
     }
 
