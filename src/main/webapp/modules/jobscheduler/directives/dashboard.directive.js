@@ -241,7 +241,7 @@
                             var span = document.getElementById('sp' + supervisor.host + supervisor.port);
                             var rect = document.getElementById(supervisor.host + supervisor.port);
                             var popoverTemplate = gettextCatalog.getString('label.architecture')+': - <br>'+ gettextCatalog.getString('label.distribution')+' : - ' +
-                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + master.version +
+                                    '<br>'+gettextCatalog.getString('label.version')+' : ' + supervisor.data.jobscheduler.version +
                                     '<br>'+gettextCatalog.getString('label.startedAt')+' : <span > </span><br> '+gettextCatalog.getString('label.surveyDate')+': - ';
 
                             if(supervisor.data && supervisor.data.jobscheduler && supervisor.data.jobscheduler.os){
