@@ -2057,27 +2057,23 @@
 
         function getMonthDays(month) {
             var str = '';
-            if (!month) {
+            if (!month)
                 return month;
-            }
+
             var months = month;
             if (!angular.isArray(month)) {
                 months = month.toString().split(' ');
             }
             angular.forEach(months.sort(compareNumbers), function (value) {
-
                 if (value == 1) {
                     str = str + value + 'st,';
-                }
-                else if (value == 2) {
+                } else if (value == 2) {
                     str = str + value + 'nd,';
-                }
-                else if (value == 3) {
+                } else if (value == 3) {
                     str = str + value + 'rd,';
                 } else {
                     str = str + value + 'th,';
                 }
-
             });
 
             if (str.length == 1) {

@@ -30,7 +30,7 @@
                                     }
                                 }
                             }
-                            config.url = './api/' + config.url;
+                            config.url = 'http://192.168.1.111:4446/joc/api/' + config.url;
                             if ($rootScope.clientLogFilter.isEnable && !config.url.match('touch')) {
                                 var date = new Date();
                                 var info = {
