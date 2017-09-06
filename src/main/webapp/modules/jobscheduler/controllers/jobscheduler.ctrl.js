@@ -2635,7 +2635,10 @@
         }
 
         vm.getAgentCluster = function () {
-            vm.isLoadedAgentCluster = false;
+            if(!vm.agentClusters){
+                vm.isLoadedAgentCluster = false;
+            }
+
             JobSchedulerService.getAgentCluster({
                 jobschedulerId: $scope.schedulerIds.selected
             }).then(function (res) {
@@ -2644,6 +2647,7 @@
                     prepareAgentClusterData(vm.agentClusters);
                 }
                 vm.isLoadedAgentCluster = true;
+                setClusterWidgetHeigth();
             }, function () {
                 vm.isLoadedAgentCluster = true;
             });
@@ -2755,22 +2759,27 @@
             }
         };
 
+        function setClusterWidgetHeigth() {
+            if (document.getElementById('agent-cluster-status')) {
+                var a = document.getElementById('agent-cluster-status').clientHeight
+            }
+            if (document.getElementById('agent-running-task')) {
+                var b = document.getElementById('agent-running-task').clientHeight
+            }
+            if (a && b && (a + b > 320)) {
+                $('#master-cluster-status').css('height', (a + b - 20) + 'px');
+            }
+        }
+
         function agentClusterRunningTaskGraph(agentArray){
             vm.processClasses = [];
                 vm.agentStatusChart = [{
                     "key": "Agents",
                     "values": agentArray
                 }];
-                vm.isLoadedRunningTask = true;
-                if (document.getElementById('agent-cluster-status')) {
-                    var a = document.getElementById('agent-cluster-status').clientHeight
-                }
-                if (document.getElementById('agent-running-task')) {
-                    var b = document.getElementById('agent-running-task').clientHeight
-                }
-                if (a && b && (a + b > 320)) {
-                    $('#master-cluster-status').css('height', (a + b - 20) + 'px');
-                }
+
+                setClusterWidgetHeigth();
+            vm.isLoadedRunningTask = true;
         }
         vm.getAgentClusterRunningTask = function () {
             vm.isLoadedRunningTask = false;
@@ -2796,18 +2805,8 @@
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
                 }
+                setClusterWidgetHeigth();
                 vm.isLoadedRunningTask = true;
-
-                if (document.getElementById('agent-cluster-status')) {
-                    var a = document.getElementById('agent-cluster-status').clientHeight
-                }
-                if (document.getElementById('agent-running-task')) {
-                    var b = document.getElementById('agent-running-task').clientHeight
-                }
-                if (a && b && (a + b > 320)) {
-                    $('#master-cluster-status').css('height', (a + b - 20) + 'px');
-                }
-
             }, function () {
                  agentClusterRunningTaskGraph(agentArray);
             });
@@ -2880,18 +2879,11 @@
 
                     interval = $timeout(function () {
 
-                        if (document.getElementById('agent-cluster-status')) {
-                            var a = document.getElementById('agent-cluster-status').clientHeight
-                        }
-                        if (document.getElementById('agent-running-task')) {
-                            var b = document.getElementById('agent-running-task').clientHeight
-                        }
-                        if (a && b && (a + b > 320)) {
-                            $('#master-cluster-status').css('height', (a + b - 20) + 'px');
-                        }
                         vm.clusterStatusData = clusterStatusData;
+                        setClusterWidgetHeigth();
                         $rootScope.$broadcast('clusterStatusDataChanged');
                         vm.isLoadedMasterCluster = true;
+
                     }, 100);
                 }, function () {
                     vm.isLoadedMasterCluster = true;

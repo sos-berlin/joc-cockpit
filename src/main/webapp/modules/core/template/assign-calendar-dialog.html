@@ -1,0 +1,31 @@
+<div class="modal fade" id="calendar-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog modal-lg" ng-controller="CalendarAssignDialogCtrl">
+        <div class="modal-content">
+           <div class="modal-body p-a" style="min-height: 500px;max-height: 550px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            expand-on="expanding_property"
+                            on-click="treeExpand(branch)"
+                            on-choose="selectCalendar(calendar)"
+                            template-url="modules/core/template/object-tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" ng-click="cancel()" translate>button.cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+

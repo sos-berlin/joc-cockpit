@@ -18,6 +18,7 @@
                 expandOn: "=",
                 onSelect: "&",
                 onClick: "&",
+                onChoose: "&",
                 expandNode: "&",
                 collapseNode: "&",
                 initialSelection: "@",
@@ -75,6 +76,8 @@
                     if (a !== o)return n(a)
                 },b.sortBy = function (a) {
                     "asc" === a.sortDirection ? (v(b.treeData, a, !0), a.sortDirection = "desc", a.sortingIcon = d.sortedDesc) : (v(b.treeData, a, !1), a.sortDirection = "asc", a.sortingIcon = d.sortedAsc), a.sorted = !0, x(a)
+                }, b.on_choose_calendar = function (a) {
+                    b.onChoose && b.onChoose({calendar: a})
                 };
                 var v = function (a, b, c) {
                     a.sort(w(b, c));

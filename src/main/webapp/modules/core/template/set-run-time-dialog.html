@@ -82,7 +82,7 @@
                     <div class="col-md-12">
                         <div>
                             <div class="col-sm-2 form-control-label p-l-0" translate>label.timeZone</div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <select ng-disabled="order.at == 'later'" class="form-control"
                                         ng-model="runTime1.timeZone" ng-change="createRunTime()">
                                     <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
@@ -92,18 +92,21 @@
                              <i class="fa fa-times cursor text-hover-primary" ng-click="removeTimeZone();"></i>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-sm btn-grey pull-right "
+                        <button type="button" class="btn btn-sm btn-grey pull-right"
+                                ng-click="assignCalendar(data)" translate>button.assignCalendar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm m-b"
                                 ng-disabled="order.at == 'later'"
                                 ng-click="showHoildayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                        <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
                                 ng-disabled="order.at == 'later'"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
-                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
-                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
                                 ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
                     </div>
@@ -143,7 +146,7 @@
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList track by $index">
-                                        <tr>
+                                        <tr ng-if="data.frequency">
                                             <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
@@ -157,6 +160,14 @@
                                                 </div>
                                                 <div class="text-xs cursor text-hover-primary"><i
                                                         class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i></div>
+                                            </td>
+                                        </tr>
+                                        <tr ng-if="data.name">
+                                            <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                                <span class="text-muted" translate>label.calendar</span>:
+                                                <a ng-click="editRunTime(data);">{{data.path}}/{{data.name}} - {{data.category}}</a>
+                                                <a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="deleteCalendar($index)"><i class="fa fa-times"></i></a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -301,7 +312,7 @@
                                     <label class="col-sm-3 form-control-label" translate>label.date</label>
 
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-model="runTime.date"
+                                        <input class="form-control input-date" ng-model="runTime.date" data-min-date="{{minDate}}"
                                                data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
                                                bs-datepicker type="text">
                                     </div>
@@ -604,111 +615,148 @@
                         </button>
                     </div>
                 </div>
-
-
             </div>
             <div ng-if="editor.showHoildayTab">
-                <div class="row m-b-sm">
+               <div class="row m-b-sm">
                     <label class="col-sm-12 text">{{'label.nonWorkingDays' | translate}}</label>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-3" translate>label.date</label>
+                <div class="b-b">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href data-toggle="tab" data-target="#tab10"
+                                translate>tab.nationalHoliday</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
+                    <div class="tab-pane active" id="tab10">
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.country</label>
 
-                    <div class="col-sm-6">
-                        <input class="form-control input-date" ng-model="holidayDate"
-                               data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
-                               type="text">
-                        <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"
-                                ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-offset-3 col-sm-3">
-                        <table class="table table-bordered" style="min-height: 100px; width: 87%">
-                            <tbody>
-                            <tr ng-repeat="date in holidayDates track by $index">
-                                <td>{{date | date:'yyyy-MM-dd'}}
-                                    <a class="pull-right" ng-click="removeHolidayDate($index)"><i
-                                            class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-3" translate>label.weekDays</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" ng-model="runTime.country" ng-change="loadHolidayList()">
+                                    <option ng-repeat="(k,v) in countryList" value="{{k}}">{{v}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.year</label>
 
-                    <div class="col-sm-9">
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'1'">
-                            <i class="primary"></i> <span translate>label.monday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'2'">
-                            <i class="primary"></i> <span translate>label.tuesday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'3'">
-                            <i class="primary"></i> <span translate>label.wednesday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'4'">
-                            <i class="primary"></i> <span translate>label.thursday</span>
-                        </label>
-                        <label class="md-check m-t-sm w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'5'">
-                            <i class="primary"></i> <span translate>label.friday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'6'">
-                            <i class="primary"></i> <span translate>label.saturday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'7'">
-                            <i class="primary"></i> <span translate>label.sunday</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-3 form-control-label" translate>label.includeFiles</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" ng-model="fileObj.holidayFile" style="padding-top: 6px ">
-                            <option value="live_file" translate>label.liveFile</option>
-                            <option value="file" translate>label.file</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-5 p-l-0">
-                        <input type="text" class="form-control" ng-model="liveFile">
-                    </div>
-                    <div class="col-sm-1">
-                        <button ng-disabled="!liveFile" type="button" class="btn btn-xs btn-grey"
-                                style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i
-                                class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-offset-3 col-sm-7">
-                        <table class="table table-bordered" style="min-height: 100px;">
-                            <tbody>
-                            <tr ng-repeat="file in calendarFiles track by $index">
-                                <td>{{file}}
-                                    <a class="pull-right" ng-click="removeCalendarFile($index)"><i
-                                            class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" min="2016" ng-model="runTime.year" ng-change="loadHolidayList()">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-6" ng-repeat="holiday in holidayList" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                <label class="md-check">
+                                    <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
+                                           data-checklist-value="holiday.date"><i class="primary"></i>
 
+                                    {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group row">
+                        <label class="col-sm-3" translate>label.date</label>
+
+                        <div class="col-sm-6">
+                            <input class="form-control input-date" ng-model="holidayDate" data-min-date="{{minDate}}"
+                                   data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
+                                   type="text">
+                            <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"
+                                    ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-offset-3 col-sm-3" style="max-height: 150px; overflow: auto;">
+                            <table class="table table-bordered" style="width: 87%; ">
+                                <tbody>
+                                <tr ng-repeat="date in holidayDates track by $index">
+                                    <td>{{date | date:'yyyy-MM-dd'}}
+                                        <a class="pull-right" ng-click="removeHolidayDate($index,date)"><i
+                                                class="fa fa-times"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3" translate>label.weekDays</label>
+
+                        <div class="col-sm-9">
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'1'">
+                                <i class="primary"></i> <span translate>label.monday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'2'">
+                                <i class="primary"></i> <span translate>label.tuesday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'3'">
+                                <i class="primary"></i> <span translate>label.wednesday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'4'">
+                                <i class="primary"></i> <span translate>label.thursday</span>
+                            </label>
+                            <label class="md-check m-t-sm w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'5'">
+                                <i class="primary"></i> <span translate>label.friday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'6'">
+                                <i class="primary"></i> <span translate>label.saturday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'7'">
+                                <i class="primary"></i> <span translate>label.sunday</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.includeFiles</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" ng-model="fileObj.holidayFile" style="padding-top: 6px ">
+                                <option value="live_file" translate>label.liveFile</option>
+                                <option value="file" translate>label.file</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5 p-l-0">
+                            <input type="text" class="form-control" ng-model="liveFile">
+                        </div>
+                        <div class="col-sm-1">
+                            <button ng-disabled="!liveFile" type="button" class="btn btn-xs btn-grey"
+                                    style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i
+                                    class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-offset-3 col-sm-7">
+                            <table class="table table-bordered" style="min-height: 100px;">
+                                <tbody>
+                                <tr ng-repeat="file in calendarFiles track by $index">
+                                    <td>{{file}}
+                                        <a class="pull-right" ng-click="removeCalendarFile($index)"><i
+                                                class="fa fa-times"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="modal-footer text-left" ng-if="!editor.showHoildayTab">

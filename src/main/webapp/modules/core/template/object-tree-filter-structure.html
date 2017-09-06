@@ -24,7 +24,7 @@
                             </span>
                         </td>
                     </tr>
-                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0)">
+                    <tr ng-if="(row.branch.jobChains && row.branch.jobChains.length>0) || (row.branch.jobs && row.branch.jobs.length>0) || (row.branch.calendars && row.branch.calendars.length>0)">
 
                         <td></td>
                         <td>
@@ -53,6 +53,12 @@
                                     </label>
                                     <img class="job_img" src="images/job1.png" width="15" height="15" style="margin-top: -2px">
                                     <span>{{job.name}}</span>
+                                 </span>
+                            </div>
+                            <div class="p-l-md p-t-xs" ng-repeat="calendar in row.branch.calendars">
+                                <span class="cursor" ng-click="on_choose_calendar(calendar)">
+                                    <i class="fa fa-calendar"></i>
+                                    <span>{{calendar.name}}</span>
                                  </span>
                             </div>
                         </td>

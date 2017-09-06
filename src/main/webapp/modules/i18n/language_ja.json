@@ -1068,5 +1068,9 @@
   "placeholder.enterOrSelectFromTree": "Enter or Select from tree",
   "message.noCalendarFound": "no Calendar found",
   "tab.every": "Every",
-  "tab.nationalHoliday": "National Holiday"
+  "tab.nationalHoliday": "National Holiday",
+  "label.assignRuntime": "assign run-time ",
+  "label.assignNonworking": "assign non working",
+  "label.assignChange": "assign change",
+  "button.assignCalendar": "Assign Calendar"
 }
