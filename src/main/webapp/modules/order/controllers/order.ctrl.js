@@ -155,7 +155,6 @@
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
 
-
         vm.showLeftPanel = function () {
             CoreService.setSideView(false);
             $('#rightPanel').removeClass('fade-in m-l-0');
@@ -195,22 +194,17 @@
 
 
         function loadJobChain() {
-
             if (SOSAuth.jobChain) {
                 vm.totalNodes = 0;
                 vm.totalSubNodes = 0;
-
                 vm.jobChain = JSON.parse(SOSAuth.jobChain);
-
                 if (vm.totalSubNodes > 0) {
                     vm.totalLineWidth = vm.totalNodes + vm.totalSubNodes;
                 } else {
                     vm.totalLineWidth = vm.totalNodes;
                 }
-
                 angular.forEach(vm.jobChain.nodes, function (val, index) {
                     if (val.job && val.job.state && val.job.state._text == 'RUNNING' && vm.userPreferences.showTasks) {
-
                         JobService.get({
                             jobschedulerId: vm.schedulerIds.selected,
                             jobs: [{job: val.job.path}]
@@ -219,7 +213,6 @@
                         });
                     }
                 });
-
             }
         }
 
@@ -2633,7 +2626,6 @@
                     vm.reset();
                 });
             } else {
-
                 JobChainService.unstop(jobChains);
                 vm.reset();
             }
@@ -2643,7 +2635,19 @@
         vm.unstopJobChain = vm.unstopJob;
 
         /** --------action ------------ **/
-
+        function checkAuditLog() {
+            for (var i = 0; i < vm.object.orders.length; i++) {
+                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.orders = [];
+                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                    vm.loadAuditLogs(obj);
+                    break;
+                }
+            }
+            vm.reset();
+        }
 
         vm.deleteAllOrder = function () {
             var orders = {};
@@ -2691,7 +2695,6 @@
                                     break;
                                 }
                             }
-
                         }
                         vm.reset();
                     });
@@ -2710,7 +2713,6 @@
                                 break;
                             }
                         }
-
                     }
                     vm.reset();
                 });
@@ -2754,34 +2756,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.suspendOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.suspendOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -2823,34 +2805,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resumeOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.resumeOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -2891,34 +2853,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resetOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.resetOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -2959,34 +2901,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.startOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.startOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -4409,6 +4331,21 @@
         };
 
         /** --------action ------------ **/
+
+        function checkAuditLog() {
+            for (var i = 0; i < vm.object.orders.length; i++) {
+                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.orders = [];
+                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                    vm.loadAuditLogs(obj);
+                    break;
+                }
+            }
+            vm.reset();
+        }
+
         vm.deleteAllOrder = function () {
             var orders = {};
             orders.orders = [];
@@ -4516,17 +4453,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.suspendOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
 
                 }, function () {
@@ -4534,17 +4461,7 @@
                 });
             } else {
                 OrderService.suspendOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -4585,34 +4502,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resumeOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.resumeOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -4653,17 +4550,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resetOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
 
                 }, function () {
@@ -4671,17 +4558,7 @@
                 });
             } else {
                 OrderService.resetOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
 
             }
@@ -4723,17 +4600,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.startOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
 
                 }, function () {
@@ -4741,17 +4608,7 @@
                 });
             } else {
                 OrderService.startOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
 
             }
@@ -4985,7 +4842,6 @@
         vm.orderFilters.currentPage = 1;
 
         vm.allOrders = [];
-
         vm.object = {};
 
         vm.reset = function () {
@@ -5013,7 +4869,6 @@
                 vm.isLoading = true;
                 vm.isError = true;
             });
-
         };
 
         vm.init();
@@ -5025,11 +4880,9 @@
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = $scope.schedulerIds.selected;
             orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
-
             OrderService.histories(orders).then(function (res) {
                 vm.historys = res.history;
             });
-
             vm.showLogPanel = value;
             vm.orderFilters.showLogPanel = vm.showLogPanel;
         };
@@ -5041,7 +4894,7 @@
                     vm.auditLogs = result.auditLog;
                 }
             });
-        }
+        };
 
         vm.showAuditLogs = function (value) {
             vm.showLogPanel = value;
@@ -5065,7 +4918,6 @@
 
 
         vm.changeStatus = function () {
-
             vm.hideLogPanel();
             vm.init();
         };
@@ -5077,7 +4929,6 @@
                 obj.compact = true;
                 obj.processingStates = [];
                 obj.processingStates.push(vm.orderFilters.filter.state);
-
                 OrderService.get(obj).then(function (res) {
                     angular.forEach(res.orders, function (value) {
                         value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
@@ -5095,6 +4946,19 @@
         };
 
         /** --------action ------------ **/
+        function checkAuditLog() {
+            for (var i = 0; i < vm.object.orders.length; i++) {
+                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.orders = [];
+                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                    vm.loadAuditLogs(obj);
+                    break;
+                }
+            }
+            vm.reset();
+        }
 
         vm.deleteAllOrder = function () {
             var orders = {};
@@ -5142,7 +5006,6 @@
                                     break;
                                 }
                             }
-
                         }
                         vm.reset();
                     });
@@ -5161,12 +5024,10 @@
                                 break;
                             }
                         }
-
                     }
                     vm.reset();
                 });
             }
-
         };
 
         vm.suspendAllOrder = function () {
@@ -5205,34 +5066,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.suspendOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.suspendOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -5274,34 +5115,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resumeOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.resumeOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -5342,34 +5163,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resetOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.resetOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -5410,34 +5211,14 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.startOrder(orders).then(function () {
-                        for (var i = 0; i < vm.object.orders.length; i++) {
-                            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                                var obj = {};
-                                obj.jobschedulerId = vm.schedulerIds.selected;
-                                obj.orders = [];
-                                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                                vm.loadAuditLogs(obj);
-                                break;
-                            }
-                        }
-                        vm.reset();
+                        checkAuditLog();
                     });
                 }, function () {
                     vm.reset();
                 });
             } else {
                 OrderService.startOrder(orders).then(function () {
-                    for (var i = 0; i < vm.object.orders.length; i++) {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == vm.object.orders[i].path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                            break;
-                        }
-                    }
-                    vm.reset();
+                    checkAuditLog();
                 });
             }
 
@@ -5467,6 +5248,16 @@
                             });
                             vm.reset();
                             vm.allOrders = res.orders;
+                            var flag = false;
+                            for (var i = 0; i < vm.allOrders.length; i++) {
+                                if (vm.showLogPanel && vm.showLogPanel.path == vm.allOrders[i].path) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (!flag) {
+                                vm.showLogPanel = undefined;
+                            }
                             waitForResponse = true;
 
                         }, function () {
@@ -5574,6 +5365,18 @@
             vm.reset();
         };
 
+        function checkAuditLog(order) {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.orders = [];
+            if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
+                obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                vm.loadAuditLogs(obj);
+            } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
+                obj.orders.push({jobChain: vm.showHistoryPanel.path});
+                vm.loadAuditLogs(obj);
+            }
+        }
 
         function startAt(order, paramObject) {
             var orders = {};
@@ -5623,21 +5426,7 @@
                 OrderService.get(obj).then(function (res) {
                     order = angular.merge(order, res.orders[0]);
                 });
-
-                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                    vm.loadAuditLogs(obj);
-                }
-                else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                    vm.loadAuditLogs(obj);
-                }
+                checkAuditLog(order);
             });
             vm.reset();
         }
@@ -5700,19 +5489,7 @@
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
 
                     OrderService.startOrder(orders).then(function () {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                        } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
-                        }
+                        checkAuditLog(order);
                     });
                     vm.reset();
                 }, function () {
@@ -5720,19 +5497,7 @@
                 });
             } else {
                 OrderService.startOrder(orders).then(function () {
-                    if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                        vm.loadAuditLogs(obj);
-                    } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                        vm.loadAuditLogs(obj);
-                    }
+                    checkAuditLog(order);
                 });
                 vm.reset();
             }
@@ -5765,19 +5530,7 @@
             });
 
             OrderService.setOrderState(orders).then(function () {
-                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                    vm.loadAuditLogs(obj);
-                } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                    vm.loadAuditLogs(obj);
-                }
+                checkAuditLog(order);
             });
             vm.reset();
         }
@@ -5849,19 +5602,7 @@
                     order = angular.merge(order, res.orders[0]);
                 });
 
-                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                    vm.loadAuditLogs(obj);
-                } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                    vm.loadAuditLogs(obj);
-                }
+                checkAuditLog(order);
 
             });
             vm.reset();
@@ -5939,24 +5680,8 @@
                     order.startedAt = undefined;
                     order = angular.merge(order, res.orders[0]);
                 });
-
-
-                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                    vm.loadAuditLogs(obj);
-                } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                    vm.loadAuditLogs(obj);
-                }
-
+                checkAuditLog(order);
             });
-
         }
 
         vm.resetRunTime = function (order) {
@@ -6019,19 +5744,7 @@
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
 
                     OrderService.suspendOrder(orders).then(function () {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                        } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
-                        }
+                        checkAuditLog(order);
                     });
                     vm.reset();
                 }, function () {
@@ -6039,19 +5752,7 @@
                 });
             } else {
                 OrderService.suspendOrder(orders).then(function () {
-                    if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                        vm.loadAuditLogs(obj);
-                    } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                        vm.loadAuditLogs(obj);
-                    }
+                    checkAuditLog(order);
                 });
                 vm.reset();
             }
@@ -6085,19 +5786,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resumeOrder(orders).then(function () {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                        } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
-                        }
+                        checkAuditLog(order);
                     });
                     vm.reset();
                 }, function () {
@@ -6105,19 +5794,7 @@
                 });
             } else {
                 OrderService.resumeOrder(orders).then(function () {
-                    if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                        vm.loadAuditLogs(obj);
-                    } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                        vm.loadAuditLogs(obj);
-                    }
+                    checkAuditLog(order);
                 });
                 vm.reset();
             }
@@ -6183,19 +5860,7 @@
             });
 
             OrderService.setOrderState(orders).then(function () {
-                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                    vm.loadAuditLogs(obj);
-                } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                    vm.loadAuditLogs(obj);
-                }
+                checkAuditLog(order);
             });
             vm.reset();
         }
@@ -6230,19 +5895,7 @@
             delete orders['params'];
 
             OrderService.resumeOrder(orders).then(function () {
-                if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                    vm.loadAuditLogs(obj);
-                } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                    var obj = {};
-                    obj.jobschedulerId = vm.schedulerIds.selected;
-                    obj.orders = [];
-                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                    vm.loadAuditLogs(obj);
-                }
+                checkAuditLog(order);
             });
             vm.reset();
         }
@@ -6303,19 +5956,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.resetOrder(orders).then(function () {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                        } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
-                        }
+                        checkAuditLog(order);
                     });
                     vm.reset();
                 }, function () {
@@ -6323,19 +5964,7 @@
                 });
             } else {
                 OrderService.resetOrder(orders).then(function () {
-                    if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                        vm.loadAuditLogs(obj);
-                    } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                        vm.loadAuditLogs(obj);
-                    }
+                    checkAuditLog(order);
                 });
                 vm.reset();
             }
@@ -6370,19 +5999,7 @@
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
                     OrderService.removeOrder(orders).then(function () {
-                        if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                            vm.loadAuditLogs(obj);
-                        } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
-                        }
+                        checkAuditLog(order);
                     });
                     vm.reset();
                 }, function () {
@@ -6390,23 +6007,46 @@
                 });
             } else {
                 OrderService.removeOrder(orders).then(function () {
-                    if (vm.permission.AuditLog.view.status && vm.showLogPanel && vm.showLogPanel.path == order.path) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
-                        vm.loadAuditLogs(obj);
-                    } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                        vm.loadAuditLogs(obj);
-                    }
+                    checkAuditLog(order);
                 });
                 vm.reset();
             }
         };
+
+        function deleteOrder(orders, order, jobChain) {
+            OrderService.deleteOrder(orders).then(function (res) {
+                if (vm.showLogPanel && order.path == vm.showLogPanel.path) {
+                    vm.showLogPanel = '';
+                } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.orders = [];
+                    obj.orders.push({jobChain: vm.showHistoryPanel.path});
+                    vm.loadAuditLogs(obj);
+                }
+                if (vm.allOrders && vm.allOrders.length > 0) {
+                    for (var j = 0; j < vm.allOrders.length; j++) {
+                        if (vm.allOrders[j].path == order.path) {
+                            vm.allOrders.splice(j, 1);
+                            break;
+                        }
+                    }
+
+                } else if (vm.orders && vm.orders.length > 0) {
+                    for (var j = 0; j < vm.orders.length; j++) {
+                        if (vm.orders[j].path == order.path) {
+                            vm.orders.splice(j, 1);
+                            break;
+                        }
+                    }
+
+                } else {
+                    $scope.$emit('refreshList', jobChain);
+                }
+
+                vm.reset();
+            });
+        }
 
         vm.deleteOrder = function (order, jobChain) {
 
@@ -6436,70 +6076,12 @@
 
                     if (vm.comments.ticketLink)
                         orders.auditLog.ticketLink = vm.comments.ticketLink;
-                    OrderService.deleteOrder(orders).then(function (res) {
-                        if (vm.allOrders && vm.allOrders.length > 0) {
-                            for (var j = 0; j < vm.allOrders.length; j++) {
-                                if (vm.allOrders[j].path == order.path) {
-                                    vm.allOrders.splice(j, 1);
-                                }
-                            }
-                        } else if (vm.orders && vm.orders.length > 0) {
-                            for (var j = 0; j < vm.orders.length; j++) {
-                                if (vm.orders[j].path == order.path) {
-                                    vm.orders.splice(j, 1);
-                                }
-                            }
-                        } else {
-                            $scope.$emit('refreshList', jobChain);
-                        }
-
-                         if (vm.showLogPanel && order.path == vm.showLogPanel.path) {
-                             vm.showLogPanel = undefined;
-                         } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
-                        }
-
-
-                        vm.reset();
-                    });
+                    deleteOrder(orders, order, jobChain);
                 }, function () {
                     vm.reset();
                 });
             } else {
-                OrderService.deleteOrder(orders).then(function (res) {
-                    if (vm.allOrders && vm.allOrders.length > 0) {
-                        for (var j = 0; j < vm.allOrders.length; j++) {
-                            if (vm.allOrders[j].path == order.path) {
-                                vm.allOrders.splice(j, 1);
-                            }
-                        }
-
-                    } else if (vm.orders && vm.orders.length > 0) {
-                        for (var j = 0; j < vm.orders.length; j++) {
-                            if (vm.orders[j].path == order.path) {
-                                vm.orders.splice(j, 1);
-                            }
-                        }
-
-                    } else {
-                        $scope.$emit('refreshList', jobChain);
-                    }
-
-                    if (vm.showLogPanel && order.path == vm.showLogPanel.path) {
-                             vm.showLogPanel = undefined;
-                    } else if (vm.permission.AuditLog.view.status && vm.showHistoryPanel && vm.showHistoryPanel.path == order.jobChain) {
-                        var obj = {};
-                        obj.jobschedulerId = vm.schedulerIds.selected;
-                        obj.orders = [];
-                        obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                        vm.loadAuditLogs(obj);
-                    }
-                    vm.reset();
-                });
+                deleteOrder(orders, order, jobChain);
             }
         };
 

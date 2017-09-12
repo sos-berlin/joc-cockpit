@@ -23,10 +23,6 @@
         vm.schedulerIds = {};
         $rootScope.currentYear = moment().format(('YYYY'));
 
-        vm.app = {
-            name: 'JOC Cockpit'
-        };
-
         vm.userPreferences = {};
 
         /**
@@ -48,6 +44,7 @@
                 console.log(e)
             }
         });
+
 
         if ($window.sessionStorage.clientLogFilter) {
             $rootScope.clientLogFilter = JSON.parse($window.sessionStorage.clientLogFilter);
@@ -74,9 +71,7 @@
                         } else {
                             $rootScope.clientLogFilter.isEnable = false;
                         }
-
                         $window.sessionStorage.clientLogFilter = JSON.stringify($rootScope.clientLogFilter);
-
                     });
                 }
             }, function () {
@@ -165,7 +160,6 @@
         $(window).resize(function () {
             vm.calculateHeight();
             vm.checkNavHeader();
-
             if (document.getElementById('agent-cluster-status')) {
                 var a = document.getElementById('agent-cluster-status').clientHeight
             }
@@ -253,8 +247,6 @@
                     }).then(function (res) {
 
                         if (res.configuration && res.configuration.configurationItem) {
-
-
                             $window.sessionStorage.preferences = JSON.parse(JSON.stringify(res.configuration.configurationItem));
                             document.getElementById('style-color').href = 'css/' + JSON.parse($window.sessionStorage.preferences).theme + '-style.css';
                             preferences = JSON.parse($window.sessionStorage.preferences);
@@ -2440,7 +2432,7 @@
             }
             if (run_time._valid_to) {
                 vm.to.date = run_time._valid_to;
-                var d = new Date(run_time._valid_to);
+                var d = new Date(run_time._valid_to),
                 h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
                 h = h > 9 ? h : '0' + h;
                 m = m > 9 ? m : '0' + m;
