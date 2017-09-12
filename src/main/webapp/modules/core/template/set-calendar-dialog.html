@@ -96,6 +96,7 @@
                                 ng-if="editor.frequencyType=='INCLUDE'">
                                 <td class="cursor"
                                     style="border-right: none !important;vertical-align: top !important; ">
+
                                     <a ng-click="updateFrequency(data);">{{data.str}}</a>
                                     <a class="text-xs text-hover-color m-l-sm"><i ng-click="removeFrequency($index)"
                                                                                   class="fa fa-times "></i></a>
@@ -107,6 +108,7 @@
                                 ng-if="editor.frequencyType=='EXCLUDE'">
                                 <td class="cursor"
                                     style="border-right: none !important;vertical-align: top !important; ">
+                                    <i ng-if="data.exclude" class="fa fa-minus"> </i>
                                     <a ng-click="updateFrequency(data);">{{data.str}}</a>
                                     <a class="text-xs text-hover-color m-l-sm"><i ng-click="removeFrequency($index)"
                                                                                   class="fa fa-times "></i></a>
@@ -390,7 +392,7 @@
                                         <input type="number" class="form-control" min="1" max="31" ng-model="frequency.interval">
                                     </div>
                                     <div class="col-sm-3">
-                                        <select class="form-control" ng-model="frequency.y">
+                                        <select class="form-control" ng-model="frequency.dateEntity">
                                             <option value="days" translate>label.days</option>
                                             <option value="weeks" translate>label.weeks</option>
                                             <option value="months" translate>label.months</option>
@@ -401,7 +403,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3" translate>label.startingWith</label>
                                     <div class="col-sm-5">
-                                        <input class="form-control input-date" style="width: 100%;background-position: 95%" ng-model="frequency.z"
+                                        <input class="form-control input-date" style="width: 100%;background-position: 95%" ng-model="frequency.startingWith"
                                            data-date-format="{{dataFormat}}" data-min-date="{{minDate}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
                                            bs-datepicker type="text">
                                     </div>
@@ -532,6 +534,7 @@
                                 <tr ng-repeat="data in frequencyList track by $index" class="cursor">
                                     <td ng-click="editFrequency(data)">{{$index+1}}</td>
                                     <td ng-click="editFrequency(data)">
+                                        <i ng-if="data.exclude" class="fa fa-minus"> </i>
                                         <span ng-if="data.isUltimos">{{'label.ultimos' | translate}} - </span>
                                         <span>{{data.str}}</span>
                                     </td>
@@ -551,7 +554,7 @@
                     </div>
                 </div>
             </div>
-            <div class="opacity0" ng-show="editor.showYearView" ng-class="{opacity1: editor.showYearView}">
+            <div class="hide" ng-class="{show: editor.showYearView}">
                 <div>
                     <label ng-if="editor.showText">
                         <span class="text-primary text-u-l" translate>label.showCalendar</span>

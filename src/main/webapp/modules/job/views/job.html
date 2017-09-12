@@ -647,12 +647,14 @@
                                 <span class="text">{{showTaskPanel.path}} <i ng-if="showTaskPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showTaskPanel.title | linky:'_blank'"></i></span>
                             </div>
                             <div class="box-tool">
-                                <ul class="nav text-muted text-md">
+                                <ul class="nav text-muted text-md"  ng-if="!object.tasks.length &&  !object.orders.length">
                                     <li class="nav-item inline m-l-sm">
                                         <a class="text-sm m-r-sm text-primary " ng-click="viewAllHistories()" translate>button.viewAllHistories</a>
                                         <a href="" ng-click="hideTaskPanel()"><img src="images/remove.png"> </a>
                                     </li>
                                 </ul>
+                                <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-if="permission.Job.execute.kill && object.tasks.length>0" ng-click="deleteAllTask()" translate>button.delete</button>
+                                <button class="btn btn-grey btn-sm m-l-sm bg-hover-color" ng-if="permission.Order.delete.permanent && object.orders.length>0" ng-click="deleteAllOrder()" translate>button.delete</button>
                             </div>
                              <div class="box-body p-t b-t" >
                                 <div class="b-b">
@@ -717,6 +719,12 @@
                                                 <table class="table table-hover table-bordered ">
                                                     <thead>
                                                     <tr>
+                                                        <th width="30" ng-if="permission.Job.execute.kill">
+                                                            <label class="md-check lg-check">
+                                                                <input type="checkbox" ng-model="allTaskCheck.checkbox" ng-click="checkAllTask()"><i class="primary"></i>
+                                                            </label>
+                                                        </th>
+                                                        <th ng-if="permission.Job.execute.kill" translate>label.action</th>
                                                         <th translate>label.taskId</th>
                                                         <th translate>label.enqueued</th>
                                                         <th translate>label.plannedStart</th>
@@ -724,8 +732,22 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="task in showTaskPanel.taskQueue">
+                                                            <td ng-if="permission.Job.execute.kill">
+                                                                <label class="md-check">
+                                                                    <input type="checkbox" data-checklist-model="object.tasks" data-checklist-value="task"><i class="primary"></i>
+                                                                </label>
+                                                            </td>
+                                                            <td width="40" ng-if="permission.Job.execute.kill">
+                                                                <div class="btn-group dropdown">
+                                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                                            class="fa fa-ellipsis-h"></i></button>
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                                                        <a class="dropdown-item bg-hover-color" ng-click="killTask(task,showTaskPanel.path)" translate>button.delete</a>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                                             <td>{{task.taskId}}</td>
-                                                            <td>{{task.enqueued}}</td>
+                                                            <td>{{task.enqueued | stringToDate}}</td>
                                                             <td>{{task.plannedStart | stringToDate}}</td>
                                                         </tr>
                                                     </tbody>
@@ -742,6 +764,12 @@
                                                 <table class="table table-hover table-bordered " >
                                                     <thead>
                                                     <tr>
+                                                        <th width="30" ng-if="permission.Order.delete.permanent">
+                                                            <label class="md-check lg-check">
+                                                                <input type="checkbox" ng-model="allOrderCheck.checkbox" ng-click="checkAllOrder()"><i class="primary"></i>
+                                                            </label>
+                                                        </th>
+                                                        <th ng-if="permission.Order.delete.permanent" translate>label.action</th>
                                                         <th translate>label.orderId</th>
                                                         <th translate>label.jobChain</th>
                                                         <th translate>label.status</th>
@@ -751,6 +779,20 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="order in queueOrders.orderQueue">
+                                                            <td ng-if="permission.Order.delete.permanent">
+                                                                <label class="md-check">
+                                                                    <input type="checkbox" ng-disabled="order._type =='PERMANENT'" data-checklist-model="object.orders" data-checklist-value="order"><i class="primary"></i>
+                                                                </label>
+                                                            </td>
+                                                            <td width="40" ng-if="permission.Order.delete.permanent">
+                                                                <div class="btn-group dropdown">
+                                                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" >
+                                                                        <i class="fa fa-ellipsis-h"></i></button>
+                                                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                                                        <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':order._type =='PERMANENT'}" ng-click="deleteOrder(order)" translate>button.delete</a>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                                             <td>{{order.orderId}}</td>
                                                             <td><a class="text-hover-primary" ng-click="showJonChain(order.jobChain)">{{order.jobChain}}</a></td>
                                                             <td>
@@ -828,7 +870,6 @@
                                                         <th translate>label.created</th>
                                                         <th translate>label.account</th>
                                                         <th translate>label.request</th>
-
                                                         <th translate>label.comment</th>
                                                         <th translate>label.timeSpend</th>
                                                         <th translate>label.ticketLink</th>

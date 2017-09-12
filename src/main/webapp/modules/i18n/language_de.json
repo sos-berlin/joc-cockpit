@@ -1072,5 +1072,6 @@
   "label.assignRuntime": "Startzeit zuweisen",
   "label.assignNonworking": "Ferientage zuweisen",
   "label.assignChange": "Änderung zuweisen",
-  "button.assignCalendar": "Kalender zuweisen"
+  "button.assignCalendar": "Kalender zuweisen",
+  "label.updateCalendarFrequency": "Update Calendar Frequency"
 }

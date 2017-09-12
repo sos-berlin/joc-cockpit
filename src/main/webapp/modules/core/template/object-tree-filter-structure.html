@@ -57,8 +57,8 @@
                             </div>
                             <div class="p-l-md p-t-xs" ng-repeat="calendar in row.branch.calendars">
                                 <span class="cursor" ng-click="on_choose_calendar(calendar)">
-                                    <i class="fa fa-calendar"></i>
-                                    <span>{{calendar.name}}</span>
+                                    <i class="fa fa-calendar text-sm"></i>
+                                    <span>{{calendar.name}}</span> - <span class="text-sm text-muted">{{calendar.category}}</span>
                                  </span>
                             </div>
                         </td>

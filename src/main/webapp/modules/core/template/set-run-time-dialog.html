@@ -1,3 +1,15 @@
+<style>
+    .cal-month-day span[data-cal-date] {
+        cursor: pointer;
+    }
+    .cal-row-head{
+        color: #222;
+    }
+    .cal-day-outmonth {
+        background: transparent !important;
+    }
+
+</style>
 <div ng-click="refreshSession()">
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-header">
@@ -12,7 +24,7 @@
             </h4>
         </div>
         <div class="modal-body p-a" style="min-height: 390px;">
-            <div ng-hide="editor.hidePervious || editor.showHoildayTab">
+            <div ng-hide="editor.hidePervious || editor.showHolidayTab || editor.showCalendarTab">
                 <div class="row">
                     <div class="col-md-12 hide" ng-class="{'show': display}">
                         <div class="form-group row">
@@ -88,16 +100,16 @@
                                     <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
                                 </select>
                             </div>
-                            <div class="col-sm-1 p-l-0 p-t-xs" ng-if="runTime1.timeZone">
+                            <div class="col-sm-1 p-l-0 p-t-xs" ng-if="runTime1.timeZone" style="width: 20px">
                              <i class="fa fa-times cursor text-hover-primary" ng-click="removeTimeZone();"></i>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-sm btn-grey pull-right"
+                        <button type="button" class="btn btn-sm btn-grey pull-right" ng-disabled="selectedCalendar"
                                 ng-click="assignCalendar(data)" translate>button.assignCalendar
                         </button>
                         <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm m-b"
                                 ng-disabled="order.at == 'later'"
-                                ng-click="showHoildayTab()" translate>button.nonWorkingDays
+                                ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
                         <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
                                 ng-disabled="order.at == 'later'"
@@ -146,11 +158,16 @@
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList track by $index">
-                                        <tr ng-if="data.frequency">
-                                            <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                        <tr>
+                                            <td ng-if="data.frequency" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
+                                            </td>
+                                            <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                                <a ng-click="editCalendar(data);">{{data.calendar.path}}/{{data.calendar.name}} -  <span class="text-muted">{{data.calendar.category}}</span></a>
+                                                <a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
@@ -160,14 +177,6 @@
                                                 </div>
                                                 <div class="text-xs cursor text-hover-primary"><i
                                                         class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i></div>
-                                            </td>
-                                        </tr>
-                                        <tr ng-if="data.name">
-                                            <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <span class="text-muted" translate>label.calendar</span>:
-                                                <a ng-click="editRunTime(data);">{{data.path}}/{{data.name}} - {{data.category}}</a>
-                                                <a class="text-xs text-hover-primary m-l-sm"
-                                                   ng-click="deleteCalendar($index)"><i class="fa fa-times"></i></a>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -185,7 +194,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="!editor.showHoildayTab && editor.hidePervious">
+            <div ng-if="!editor.showHolidayTab && !editor.showCalendarTab && editor.hidePervious">
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
@@ -616,7 +625,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-if="editor.showHoildayTab">
+            <div ng-if="editor.showHolidayTab">
                <div class="row m-b-sm">
                     <label class="col-sm-12 text">{{'label.nonWorkingDays' | translate}}</label>
                 </div>
@@ -670,7 +679,7 @@
                                     ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" ng-if="holidayDates && holidayDates.length>0">
                         <div class="col-sm-offset-3 col-sm-3" style="max-height: 150px; overflow: auto;">
                             <table class="table table-bordered" style="width: 87%; ">
                                 <tbody>
@@ -758,8 +767,32 @@
                     </div>
                 </div>
             </div>
+            <div class="hide" ng-class="{show: editor.showCalendarTab}">
+               <div class="row m-b-sm">
+                    <label class="col-sm-12 text" translate>label.updateCalendarFrequency</label>
+                </div>
+                <div class="text-md text-center">
+                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeDate()">
+                        <i class="fa fa-angle-left fa-lg"></i>
+                    </a>
+                    {{calendarTitle}}
+                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeDate()">
+                        <i class="fa fa-angle-right fa-lg"></i>
+                    </a>
+                </div>
+                <div class="calendar m-t-sm">
+                    <mwl-calendar
+                            view="calendarView"
+                            view-date="viewDate"
+                            events="events"
+                            plan-items="planItems"
+                            view-title="calendarTitle"
+                            cell-is-open="true">
+                    </mwl-calendar>
+                </div>
+            </div>
         </div>
-        <div class="modal-footer text-left" ng-if="!editor.showHoildayTab">
+        <div class="modal-footer text-left" ng-if="!editor.showHolidayTab && !editor.showCalendarTab">
             <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
@@ -779,8 +812,11 @@
                     class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
-        <div class="modal-footer text-left" ng-if="editor.showHoildayTab">
-            <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();">
+        <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab">
+                <span translate>button.save</span>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="updateCalendar();" ng-if="editor.showCalendarTab">
                 <span translate>button.save</span>
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.cancel</button>

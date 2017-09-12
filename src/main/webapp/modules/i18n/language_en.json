@@ -1072,5 +1072,6 @@
   "label.assignRuntime": "assign run-time ",
   "label.assignNonworking": "assign non working",
   "label.assignChange": "assign change",
+  "label.updateCalendarFrequency": "Update Calendar Frequency",
   "button.assignCalendar": "Assign Calendar"
 }

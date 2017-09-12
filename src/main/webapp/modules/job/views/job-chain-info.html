@@ -373,7 +373,7 @@
                                                                                     <span>{{'label.order'| translate}}:&nbsp;</span><a
                                                                                         href="" class="text-hover-primary"
                                                                                         ng-click="viewOrders(jobChain)">{{order.orderId}}</a> <i
-                                                                                        class="text-muted text-xs" ng-if="order.title">-
+                                                                                        class="text-muted text-sm" ng-if="order.title">-
                                                                                     <span ng-bind-html="order.title | linky:'_blank'"></span></i> - <span class="label"
                                                                                                                 ng-class="bgColorFunction(order.processingState.severity)"
                                                                                                                 ng-bind="order.processingState._text | translate"></span>
@@ -389,7 +389,7 @@
                                                                                 </span>
                                                                             </span>
 
-                                                                                <div class="text-sm p-l-sm" ng-bind-html="order.stateText | linky:'_blank'"></div>
+                                                                                <div class="text-sm p-l-md m-l" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                                             </div>
                                                                             <i class="cursor text-xs"
                                                                                ng-if="nestedNode.numOfOrders>limitNum"
@@ -646,7 +646,7 @@
                                                                 <span>{{'label.order'| translate}}:&nbsp;</span><a
                                                                     href="" class="text-hover-primary"
                                                                     ng-click="viewOrders(jobChain)">{{order.orderId}}</a> <i
-                                                                    class="text-muted text-xs" ng-if="order.title">-
+                                                                    class="text-muted text-sm" ng-if="order.title">-
                                                                 <span ng-bind-html="order.title | linky:'_blank'"></span></i> - <span class="label"
                                                                                             ng-class="bgColorFunction(order.processingState.severity)"
                                                                                             ng-bind="order.processingState._text | translate"></span>
@@ -661,6 +661,7 @@
                                                                         time="{{order.startedAt}}"></span>)</span>
                                                             </span>
                                                         </span>
+                                                        <div class="text-sm p-l-md m-l" ng-bind-html="order.stateText | linky:'_blank'"></div>
                                                     </div>
                                                     <i class="cursor text-xs"
                                                        ng-if="node.numOfOrders>limitNum"

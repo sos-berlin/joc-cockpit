@@ -3127,8 +3127,9 @@
             });
         };
 
-        vm.loadOrderSnapshot = function () {
-            if(vm.scheduleState == 'UNREACHABLE'){
+        vm.loadOrderSnapshot = function (flag) {
+           
+            if(vm.scheduleState == 'UNREACHABLE' && !flag){
                 isLoadedSnapshot = true;
                 vm.snapshot ={};
                 return;
@@ -3136,8 +3137,10 @@
             isLoadedSnapshot = false;
             OrderService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
                 vm.snapshot = res.orders;
+                vm.notPermissionForSnapshot = '';
                 isLoadedSnapshot = true;
             }, function (err) {
+                 if(err.data)
                 vm.notPermissionForSnapshot = !err.data.isPermitted;
                 isLoadedSnapshot = true;
             });
@@ -3319,7 +3322,11 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if (vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot) {
+                    if(vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged"){
+                        isLoadedSnapshot = false;
+                        vm.loadOrderSnapshot(true);
+                    }
+                    if ((vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
                         isLoadedSnapshot = false;
                         if (!vm.notPermissionForSnapshot)
                             vm.loadOrderSnapshot();
