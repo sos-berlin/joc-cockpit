@@ -6,6 +6,10 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
+                    <label class="md-check">
+                        <input type="checkbox" ng-model="historyView.current" ng-click="changeJobScheduler()">
+                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                    </label>
                     <div class="hide" ng-class="{'show-block':historyFilters.type == 'jobChain'}">
                        <div class="btn-group m-l-sm hidden-btn-group">
                             <button ng-disabled="savedHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="order.filter.historyStates" uib-btn-radio="'all'" ng-click="loadHistory()"
@@ -459,6 +463,12 @@
                                     <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-if="!historyView.current" ng-click="sortBy('jobChain')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="order.filter.sortBy == 'jobSchedulerId' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'jobSchedulerId' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
                                     <i ng-show="order.filter.sortBy == 'state._text' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -512,6 +522,7 @@
                             <td ng-click="showLogWindow(history,null)">
                                 <span ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="history.jobChain"></span>
                             </td>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(history,null)" ng-bind="history.jobSchedulerId"></td>
                             <td ng-click="showLogWindow(history,null)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(history.state.severity)" ng-bind="history.state._text | translate"></span></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(history,null)" ng-bind="history.endTime | stringToDate"></td>
@@ -600,6 +611,12 @@
                                     <i ng-show="task.filter.sortBy == 'job' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-if="!historyView.current" ng-click="sortBy1('job')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="task.filter.sortBy == 'jobSchedulerId' && !task.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="task.filter.sortBy == 'jobSchedulerId' && task.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy1('state._text')"><a><span translate>label.status</span>
                                     <i ng-show="task.filter.sortBy == 'state._text' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -651,6 +668,7 @@
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></span>
                             </td>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.jobSchedulerId"></td>
                             <td ng-click="showLogWindow(null,jobHistory)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(jobHistory.state.severity)" ng-bind="jobHistory.state._text | translate"></span></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.startTime | stringToDate"></td>
                             <td ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.endTime | stringToDate"></td>

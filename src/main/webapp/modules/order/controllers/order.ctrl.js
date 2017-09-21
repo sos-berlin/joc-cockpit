@@ -6227,6 +6227,12 @@
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.isUnique = true;
+         vm.historyView={};
+        vm.historyView.current=vm.userPreferences.historyView == 'current';
+
+        vm.changeJobScheduler = function(){
+            vm.init();
+        };
 
         vm.historyFilters = CoreService.getHistoryTab();
         vm.order = vm.historyFilters.order;
@@ -6308,7 +6314,6 @@
             }
         }
 
-
         function checkSharedTaskFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
                 var obj = {};
@@ -6374,25 +6379,25 @@
                                 loadConfig = true;
                                 vm.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
                                 vm.selectedFiltered1.account = value.account;
-                                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                                vm.init();
                             });
                         }
                     });
                     if (flag) {
                         vm.savedHistoryFilter.selected = undefined;
                         loadConfig = true;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     }
                 } else {
                     loadConfig = true;
                     vm.savedHistoryFilter.selected = undefined;
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
                 }
 
             }, function (err) {
                 vm.savedHistoryFilter.selected = undefined;
                 loadConfig = true;
-                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                vm.init();
             });
         }
 
@@ -6438,25 +6443,25 @@
                                 loadConfig = true;
                                 vm.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
                                 vm.selectedFiltered2.account = value.account;
-                                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                                vm.init();
                             });
                         }
                     });
                     if (flag) {
                         vm.savedJobHistoryFilter.selected = undefined;
                         loadConfig = true;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     }
                 } else {
                     loadConfig = true;
                     vm.savedJobHistoryFilter.selected = undefined;
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
                 }
 
             }, function (err) {
                 loadConfig = true;
                 vm.savedJobHistoryFilter.selected = undefined;
-                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                vm.init();
             });
         }
 
@@ -6482,23 +6487,21 @@
                             vm.savedIgnoreList = JSON.parse(res.configuration.configurationItem);
                         }
                         loadIgnoreList = true;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     }, function () {
                         loadIgnoreList = true;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     });
                 } else {
                     loadIgnoreList = true;
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
                 }
             }, function () {
                 loadIgnoreList = true;
-                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                vm.init();
             });
         }
-
         getIgnoreList();
-
 
         /**--------------- sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
@@ -6577,7 +6580,7 @@
                 if (vm.jobHistorys && vm.jobHistorys.length > 0) {
                     return;
                 }
-                filter = {jobschedulerId: $scope.schedulerIds.selected};
+                filter = {jobschedulerId: vm.historyView.current ==true? vm.schedulerIds.selected: ''};
             }
             vm.isLoading = false;
 
@@ -6617,7 +6620,7 @@
                 if (vm.historys && vm.historys.length > 0) {
                     return;
                 }
-                filter = {jobschedulerId: $scope.schedulerIds.selected};
+                filter = {jobschedulerId: vm.historyView.current ==true? vm.schedulerIds.selected: ''};
             }
             vm.isLoading = false;
             if (vm.selectedFiltered1) {
@@ -6646,7 +6649,9 @@
             });
         }
 
-        vm.init = function (filter) {
+        vm.init = function () {
+            var filter={}
+            filter.jobschedulerId = vm.historyView.current ==true? vm.schedulerIds.selected: '';
             if (loadConfig && loadIgnoreList) {
                 isLoaded = false;
                 if (vm.historyFilters.type == 'job') {
@@ -6661,7 +6666,7 @@
             if (!flag)
                 vm.loading = true;
             var filter = {
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.historyView.current ==true? vm.schedulerIds.selected: '',
                 limit: parseInt(vm.userPreferences.maxRecords)
             };
 
@@ -7092,14 +7097,14 @@
             } else {
                 vm.jobChainSearch = {};
             }
-            vm.init({jobschedulerId: $scope.schedulerIds.selected})
+            vm.init()
         };
 
 
         vm.showPanelFuc = function (value) {
             value.show = true;
             var orders = {};
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = vm.historyView.current ==true? vm.schedulerIds.selected: '';
             orders.jobChain = value.jobChain;
             orders.orderId = value.orderId;
             orders.historyId = value.historyId;
@@ -7272,7 +7277,7 @@
                             vm.historyFilters.order.selectedView = true;
                             vm.selectedFiltered1 = vm.historyFilter;
                             vm.selectedFiltered1.account = vm.permission.user;
-                            vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                            vm.init();
                             isCustomizationSelected1(true);
                         }
                         vm.historyFilterObj.order = vm.savedHistoryFilter;
@@ -7283,7 +7288,7 @@
                             vm.historyFilters.task.selectedView = true;
                             vm.selectedFiltered2 = vm.historyFilter;
                             vm.selectedFiltered2.account = vm.permission.user;
-                            vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                            vm.init();
                             isCustomizationSelected2(true);
                         }
                         vm.historyFilterObj.job = vm.savedJobHistoryFilter;
@@ -7352,7 +7357,7 @@
                     if (vm.savedHistoryFilter.selected == filter.id) {
                         vm.selectedFiltered1 = vm.historyFilter;
                         vm.historyFilters.order.selectedView = true;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                         isCustomizationSelected1(true);
                     }
                     vm.historyFilterObj.order = vm.savedHistoryFilter;
@@ -7361,7 +7366,7 @@
                     if (vm.savedJobHistoryFilter.selected == filter.id) {
                         vm.selectedFiltered2 = vm.historyFilter;
                         vm.historyFilters.task.selectedView = true;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                         isCustomizationSelected2(true);
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
@@ -7467,7 +7472,7 @@
                         vm.historyFilters.order.selectedView = false;
                         vm.selectedFiltered1 = undefined;
                         isCustomizationSelected1(false);
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     } else {
                         if (vm.orderHistoryFilterList.length == 0) {
                             vm.savedHistoryFilter.selected = undefined;
@@ -7488,7 +7493,7 @@
                         vm.savedJobHistoryFilter.selected = undefined;
                         vm.historyFilters.task.selectedView = false;
                         vm.selectedFiltered2 = undefined;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                         isCustomizationSelected2(false);
                     } else {
                         if (vm.jobHistoryFilterList.length == 0) {
@@ -7552,7 +7557,7 @@
             }
             SavedFilter.setHistory(vm.historyFilterObj);
             SavedFilter.save();
-            vm.init({jobschedulerId: $scope.schedulerIds.selected});
+            vm.init();
         };
 
         vm.removeFavorite = function () {
@@ -7612,7 +7617,7 @@
                     }).then(function (conf) {
                         vm.selectedFiltered1 = JSON.parse(conf.configuration.configurationItem);
                         vm.selectedFiltered1.account = filter.account;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     });
                 }
                 else {
@@ -7620,7 +7625,7 @@
                     vm.savedHistoryFilter.selected = filter;
                     vm.historyFilters.order.selectedView = false;
                     vm.selectedFiltered1 = filter;
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
                 }
 
                 vm.historyFilterObj.order = vm.savedHistoryFilter;
@@ -7635,7 +7640,7 @@
                     }).then(function (conf) {
                         vm.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
                         vm.selectedFiltered2.account = filter.account;
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     });
                 }
                 else {
@@ -7643,7 +7648,7 @@
                     vm.savedJobHistoryFilter.selected = filter;
                     vm.historyFilters.task.selectedView = false;
                     vm.selectedFiltered2 = filter;
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
                 }
 
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
@@ -7902,7 +7907,7 @@
                     if (jobChainSearch) {
                         vm.search(true);
                     } else {
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     }
                 }
                 configObj.configurationType = "IGNORELIST";
@@ -7921,7 +7926,7 @@
                     if (jobChainSearch) {
                         vm.search(true);
                     } else {
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     }
                 }
                 configObj.configurationType = "IGNORELIST";
@@ -7940,7 +7945,7 @@
                     if (jobSearch) {
                         vm.search(true);
                     } else {
-                        vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                        vm.init();
                     }
                 }
                 configObj.configurationType = "IGNORELIST";
@@ -7975,7 +7980,7 @@
                 if ((jobChainSearch && vm.historyFilters.type == 'jobChain')) {
                     vm.search(true);
                 } else
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
             }
         };
         vm.removeJobChainIgnoreList = function (name) {
@@ -7990,7 +7995,7 @@
                 if ((jobChainSearch && vm.historyFilters.type == 'jobChain')) {
                     vm.search(true);
                 } else
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
             }
         };
         vm.removeJobIgnoreList = function (name) {
@@ -8005,7 +8010,7 @@
                 if ((jobSearch && vm.historyFilters.type != 'jobChain')) {
                     vm.search(true);
                 } else
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
             }
         };
 
@@ -8015,12 +8020,12 @@
                 if (jobChainSearch) {
                     vm.search(true);
                 } else
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
             } else if ((vm.savedIgnoreList.isEnable == 'true' || vm.savedIgnoreList.isEnable == true) && vm.historyFilters.type != 'jobChain' && (vm.savedIgnoreList.jobs && vm.savedIgnoreList.jobs.length > 0)) {
                 if (jobSearch) {
                     vm.search(true);
                 } else
-                    vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                    vm.init();
             }
             vm.savedIgnoreList.orders = [];
             vm.savedIgnoreList.jobChains = [];
@@ -8045,7 +8050,7 @@
             if ((jobSearch && vm.historyFilters.type != 'jobChain') || (jobChainSearch && vm.historyFilters.type == 'jobChain')) {
                 vm.search(true);
             } else
-                vm.init({jobschedulerId: $scope.schedulerIds.selected});
+                vm.init();
         };
 
         vm.$on('event-started', function () {
@@ -8054,7 +8059,7 @@
                     if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedOrder' && isLoaded) {
                         isLoaded = false;
                         var filter = {};
-                        filter.jobschedulerId = $scope.schedulerIds.selected;
+                        filter.jobschedulerId = vm.historyView.current ==true? vm.schedulerIds.selected: '';
 
                         if (vm.selectedFiltered1) {
                             filter = orderParseDate(filter);
@@ -8086,7 +8091,7 @@
                     } else if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedJob' && isLoaded) {
                         isLoaded = false;
                         var filter = {};
-                        filter.jobschedulerId = $scope.schedulerIds.selected;
+                        filter.jobschedulerId = vm.historyView.current ==true? vm.schedulerIds.selected: '';
                         if (vm.selectedFiltered2) {
                             filter = jobParseDate(filter);
                         } else {

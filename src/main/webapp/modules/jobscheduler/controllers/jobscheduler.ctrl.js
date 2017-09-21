@@ -2541,7 +2541,7 @@
                 $('#master-cluster-status').css('height', (a + b - 20) + 'px');
             }
         }
-
+var t1, t2;
         function agentClusterRunningTaskGraph(agentArray){
             vm.processClasses = [];
                 vm.agentStatusChart = [{
@@ -2568,6 +2568,7 @@
                     angular.forEach(vm.processClasses, function (value) {
                         agentArray.push({label: value.path, value: value.numOfProcesses});
                     });
+                t1 = $timeout(function () {
                     vm.agentStatusChart = [{
                         "key": "Agents",
                         "values": agentArray
@@ -2575,8 +2576,11 @@
                     if (vm.agentStatusChart[0] && vm.agentStatusChart[0].values && vm.agentStatusChart[0].values.length > 10) {
                         vm.barOptions.chart.width = vm.agentStatusChart[0].values.length * 50;
                     }
+setClusterWidgetHeigth();
+               }, 0);
                 }
-                setClusterWidgetHeigth();
+                
+         
                 vm.isLoadedRunningTask = true;
             }, function () {
                  agentClusterRunningTaskGraph(agentArray);
@@ -2636,7 +2640,7 @@
 
         prepareClusterStatusData();
         var clusterStatusData = {};
-        var interval = undefined;
+        
         vm.isLoadedMasterCluster = false;
         function prepareClusterStatusData() {
 
@@ -2648,14 +2652,14 @@
 
                     vm.clusterStatusData = clusterStatusData;
 
-                    interval = $timeout(function () {
+                    t2 = $timeout(function () {
 
                         vm.clusterStatusData = clusterStatusData;
                         setClusterWidgetHeigth();
                         $rootScope.$broadcast('clusterStatusDataChanged');
                         vm.isLoadedMasterCluster = true;
 
-                    }, 100);
+                    }, 60);
                 }, function () {
                     vm.isLoadedMasterCluster = true;
                 });
@@ -2817,13 +2821,14 @@
             }
 
             if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithTimeout') {
-                vm.getTimeout(host, port, id);
-            } else {
-
+                vm.getTimeout(host, port, id,action);
+            } if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateWithin') {
+                vm.getTimeout(host, port, id,action);
+            }else {
                 if (vm.userPreferences.auditLog && action !== 'downloadLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
-                    vm.comments.name = id + ' ('+host+':'+ port+')';
+                    vm.comments.name = id + ' (' + host + ':' + port + ')';
                     vm.comments.operation = action == "terminateFailsafe" ? "Terminate and fail-over" : action == "terminateAndRestart" ? "Terminate and Restart" : action == "abortAndRestart" ? "Abort and Restart" : action == "terminate" ? "Terminate" : action == "pause" ? "Pause" : action == "abort" ? "Abort" : action == "remove" ? "Remove instance" : "Continue";
                     vm.comments.type = 'JobScheduler';
                     var modalInstance = $uibModal.open({
@@ -2847,9 +2852,7 @@
 
         /*-------------Menu active function call-------------------*/
         vm.terminate = function () {
-            JobSchedulerService.terminate({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-
-            });
+            JobSchedulerService.terminate({jobschedulerId: $scope.schedulerIds.selected});
         };
         vm.restart = function () {
             JobSchedulerService.restart({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
@@ -2857,17 +2860,16 @@
             });
         };
         vm.terminateFailSafe = function () {
-            JobSchedulerService.terminateFailSafe({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
-
-            });
+            JobSchedulerService.terminateFailSafe({jobschedulerId: $scope.schedulerIds.selected});
         };
 
         vm.criterion = {};
         vm.criterion.timeout = 60;
-        vm.getTimeout = function (host, port, id) {
+        vm.getTimeout = function (host, port, id,action) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            vm._scheduleName = id + ' ('+host+':'+ port+')';
+            vm._scheduleName = id + ' (' + host + ':' + port + ')';
+            vm.action = action;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/get-timeout-dialog.html',
                 controller: 'DialogCtrl',
@@ -2891,18 +2893,19 @@
                 if (vm.comments.ticketLink) {
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
                 }
-
-                JobSchedulerService.restartWithin(obj);
+                if (action == 'terminateAndRestartWithTimeout')
+                    JobSchedulerService.restartWithin(obj);
+                else
+                    JobSchedulerService.terminate(obj);
             }, function () {
 
             });
         };
 
         vm.loadOrderSnapshot = function (flag) {
-            
-            if(vm.scheduleState == 'UNREACHABLE' && !flag){
+            if (vm.scheduleState == 'UNREACHABLE' && !flag) {
                 isLoadedSnapshot = true;
-                vm.snapshot ={};
+                vm.snapshot = {};
                 return;
             }
             isLoadedSnapshot = false;
@@ -2911,8 +2914,8 @@
                 vm.notPermissionForSnapshot = '';
                 isLoadedSnapshot = true;
             }, function (err) {
-                 if(err.data)
-                vm.notPermissionForSnapshot = !err.data.isPermitted;
+                if (err.data)
+                    vm.notPermissionForSnapshot = !err.data.isPermitted;
                 isLoadedSnapshot = true;
             });
         };
@@ -3135,8 +3138,13 @@
 
 
         $scope.$on('$destroy', function () {
-            $timeout.cancel(interval);
-            $interval.cancel(interval1);
+            if (t1)
+                $timeout.cancel(t1);
+            if (t2)
+                $timeout.cancel(t2);
+            if (interval1)
+                $interval.cancel(interval1);
+            
 
         });
     }

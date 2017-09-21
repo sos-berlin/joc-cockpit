@@ -279,6 +279,9 @@
         if (!vm.preferences) {
             return;
         }
+        if (!vm.preferences.events) {
+            return;
+        }
         if (angular.isArray(vm.preferences.events.filter)) {
             $scope.eventFilter = vm.preferences.events.filter;
         } else {
@@ -526,7 +529,7 @@
             if (vm.adtLog.filter.date == 'all') {
 
             } else if (vm.adtLog.filter.date == 'today') {
-                 filter.dateFrom = '0d';
+                filter.dateFrom = '0d';
                 filter.dateTo = '0d';
             } else {
                 filter.dateFrom = vm.adtLog.filter.date;

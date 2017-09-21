@@ -1035,5 +1035,9 @@
   "label.calendarViewForPlannedJob": "Calendar View for planned job",
   "label.dailyPlanCreated": "Daily plan created until",
   "label.frequencies": "Frequencies",
-  "button.removeSubstitute": "Remove Substitute"
+  "button.removeSubstitute": "Remove Substitute",
+  "label.showHistoryForJobScheduler": "Show History for JobScheduler",
+  "label.currentJobscheduler": "Current JobScheduler",
+  "label.jobSchedulerId": "JobScheduler ID",
+  "button.terminateWithin": "Terminate with Timeout"
 }
