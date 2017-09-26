@@ -58,19 +58,16 @@
                                 SOSAuth.clearStorage();
                                 $location.path('/login');
                             } else {
-                                $rootScope.errorCode = '';
-                                if ((rejection.data && rejection.data.error && rejection.status != 434 && !$rootScope.errorCode)) {
+                                if ((rejection.data && rejection.data.error && rejection.status != 434)) {
                                     toasty.error({
                                         title: rejection.data.error.code || rejection.status,
-                                        msg: rejection.data.error.message || 'API expection',
+                                        msg: rejection.data.error.message || 'API exception',
                                         timeout: 10000
                                     });
-                                    if(rejection.data.error.code == 'JOC-400' || rejection.data.error.code == 'JOC-402')
-                                      $rootScope.errorCode = 'JOC-400';
                                 }
                                 if (rejection.data && rejection.data.errors && rejection.data.errors.length > 0 && rejection.status != 434)
                                     toasty.error({
-                                        msg: rejection.data.errors[0].message || 'API expection',
+                                        msg: rejection.data.errors[0].message || 'API exception',
                                         timeout: 10000
                                     });
                             }

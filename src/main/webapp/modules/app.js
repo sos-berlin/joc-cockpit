@@ -30,7 +30,8 @@
             'ngFileSaver',
             'angular-clipboard',
             'ngclipboard',
-            'ui.select'
+            'ui.select',
+            'gridster'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs = [];

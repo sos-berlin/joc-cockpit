@@ -244,6 +244,11 @@
             templateUrl: "modules/jobscheduler/views/schedule.html",
             controller: "ResourceInfoCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.schedule' | translate}}", parent: "app.resources.schedules"}
+        }).state("app.calendar", {
+            url: "/calendar?path&scheduler_id",
+            templateUrl: "modules/jobscheduler/views/calendar.html",
+            controller: "ResourceInfoCtrl",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.calendar' | translate}}", parent: "app.resources.calendars"}
         }).state("app.history", {
             url: "/history",
             templateUrl: "modules/order/views/history.html",

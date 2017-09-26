@@ -14,8 +14,7 @@
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-header">
             <button ng-if="!editor.hidePervious && !editor.showYearView" type="button" class="close" ng-click="cancel()"
-                    aria-label="Close"><span aria-hidden="true"
-                                             class="fa fa-times-circle"></span>
+                    aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span>
             </button>
             <h4 class="modal-title">
                 <span translate ng-if="calendar.create">label.createCalendar</span>
@@ -24,10 +23,80 @@
         </div>
         <div class="modal-body p-a" style="min-height: 490px;">
             <div class="row" ng-if="!editor.showYearView && !editor.hidePervious">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label class="col-sm-3 form-control-label" translate>label.name</label>
+                <div class="col-md-12 hide" ng-class="{'show': display}">
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.selectComments</label>
 
+                            <div class=" col-sm-9">
+                                <div>
+                                    <label class="md-check w w-md">
+                                        <input type="radio" name="radio1" ng-model="comments.radio" value="predefined">
+                                        <i class="primary"></i> <span translate>label.predefined</span>
+                                    </label>
+                                    <label class="md-check w">
+                                        <input type="radio" name="radio1" ng-model="comments.radio" value="new">
+                                        <i class="primary"></i> <span translate>label.individual</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-if="comments.radio=='predefined'"
+                             ng-class="{'has-error' : logError}">
+                            <label class="col-sm-3 form-control-label" translate>label.selectComment</label>
+
+                            <div class="col-sm-9">
+                                <select class="form-control" ng-model="comments.comment" ng-change="logError = false">
+                                    <option value="" selected translate>label.selectPredefinedReason</option>
+                                    <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                                </select>
+
+                                <div class="help-block text-danger" ng-if="logError">
+                                    <div translate>message.requiredError</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row" ng-if="comments.radio=='new'" ng-class="{'has-error' : logError}">
+                            <label class="col-sm-3 " translate>label.comment</label>
+
+                            <div class=" col-sm-9">
+                                <textarea rows="3" class="form-control" maxlength="2000" name="comment"
+                                          ng-model="comments.comment"
+                                          ng-attr-placeholder="{{'placeholder.enterComment' | translate}}"
+                                          ng-focus="logError = false"></textarea>
+
+                                <div class="help-block text-danger" ng-if="logError">
+                                    <div translate>message.requiredError</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.timeSpend</label>
+
+                            <div class="col-sm-9">
+                                <input type="text" ng-pattern="/^(\d)+$/" class="form-control"
+                                       placeholder="{{'placeholder.timeSpend' | translate}}"
+                                       ng-model="comments.timeSpent">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.ticketLink</label>
+
+                            <div class="col-sm-9">
+                                <input type="url" class="form-control"
+                                       placeholder="{{'placeholder.ticketLink' | translate}}"
+                                       ng-model="comments.ticketLink">
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-md-12">
+                    <div class="m-b-xs row" ng-if="!calendar.create">
+                        <label class="col-sm-3" translate>label.path</label>
+                        <div class="col-sm-9">
+                            <span>{{calendar.path}}</span>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="calendar.create">
+                        <label class="col-sm-3 form-control-label" translate>label.name</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" required
                                    placeholder="{{'placeholder.enterCalendarName' | translate}}"
@@ -35,8 +104,14 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.title</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" placeholder="{{'placeholder.title' | translate}}"
+                                   ng-model="calendar.title">
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="calendar.create">
                         <label class="col-sm-3 form-control-label" translate>label.path</label>
-
                         <div class="col-sm-9">
                             <input type="text" class="form-control" required
                                    placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}"
@@ -46,14 +121,23 @@
                                 class="fa fa-folder-o fa-lg"></i></a></div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.type</label>
+
+                        <div class="col-sm-9">
+                            <select class="form-control" ng-model="calendar.type" ng-init="calendar.type= 'WORKING_DAYS'">
+                                <option value="WORKING_DAYS">{{'label.workingDay' | translate}}</option>
+                                <option value="NON_WORKING_DAYS">{{'label.nonWorkingDay' | translate}}</option>
+                            </select>
+                        </div>
+                    </div>
+                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.category</label>
 
                         <div class="col-sm-9">
-                            <select class="form-control" style="border: none" ng-model="calendar.category" required>
-                                <option value="working_days">{{'label.workingDay' | translate}}</option>
-                                <option value="non_working_days">{{'label.nonWorkingDay' | translate}}</option>
+                            <select class="form-control" style="border: none" ng-model="calendar.category"
+                                    ng-options="category as category for category in categories" ng-focus="getCategories()">
+                                <option value="" translate>label.chooseCategories</option>
                             </select>
-
                             <div class="input-dropdown" style="margin-bottom: -15px">
                                 <input class="form-control" type="text" required
                                        placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
@@ -415,7 +499,7 @@
 
                                     <div class="col-sm-6">
                                         <select class="form-control" ng-model="frequency.country" ng-change="loadHolidayList()">
-                                            <option ng-repeat="(k,v) in countryList" value="{{k}}">{{v}}</option>
+                                            <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName" value="{{country.code}}">{{country.name}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -427,13 +511,27 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="col-sm-6" ng-repeat="holiday in holidayList" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
-                                        <label class="md-check">
-                                            <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-6 p-l-0">
+                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.ceil(holidayList.length/2))" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                                <label class="md-check">
+                                                    <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
                                                    data-checklist-value="holiday.date"><i class="primary"></i>
 
-                                        {{getDateFormat(holiday.date)}} - {{holiday.name}}
-                                        </label>
+                                                    {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 p-l-0">
+                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(Math.ceil(holidayList.length/2),holidayList.length)" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                                <label class="md-check">
+                                                  <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
+                                                   data-checklist-value="holiday.date"><i class="primary"></i>
+
+                                                    {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

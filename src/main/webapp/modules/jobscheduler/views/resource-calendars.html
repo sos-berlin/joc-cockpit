@@ -3,19 +3,19 @@
 </div>
 <div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeCalendar.length>0">
     <div>
-        <a class="text" ng-click="my_tree_process.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+        <a class="text" ng-click="my_tree_calendar.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
             <i class="fa fa-angle-double-down fa-lg"></i>
         </a>
-        <a class="text m-l-xs" ng-click="my_tree_process.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+        <a class="text m-l-xs" ng-click="my_tree_calendar.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
             <i class="fa fa-angle-double-up fa-lg"></i>
         </a>
         <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
         <tree tree-data="treeCalendar"
               tree-control="my_tree_calendar"
               expand-on="expanding_propertyC"
-              on-select="treeHandler1P(branch)"
-              on-click="treeHandlerP(branch)"
-              expand-node="expandNodeP(branch)"
+              on-select="treeHandler1C(branch)"
+              on-click="treeHandlerC(branch)"
+              expand-node="expandNodeC(branch)"
               collapse-node="collapseNode(branch)"
               template-url="modules/core/template/tree.html">
         </tree>
@@ -23,26 +23,85 @@
 </div>
 <div id="rightPanel1">
 
-    <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">        
-        <div class="box p-a" ng-show="allCalendars.length>0">
+    <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
+        <div class="hide row" ng-class="{'show': pageView=='grid'}">
+            <div ng-repeat="(key, value) in allCalendars  | groupBy: 'path1'">
+                <div class="col-sm-12" style="margin-bottom: 10px">
+                    <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
+                </div>
+                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                     ng-repeat="calendar in value | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse">
+                    <div class="box card">
+                        <div class="box-body">
+
+                            <div>
+                                <label class="md-check pos-abt" ng-if="permission.Calendar.edit.delete">
+                                    <input type="checkbox" data-checklist-model="object.calendars" data-checklist-value="calendar"><i class="primary"></i>
+                                </label>
+
+                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Calendar.edit.delete}">
+                                    <span class="fa fa-calendar text-sm" ></span>
+                                    <span uib-tooltip="{{calendar.title}}" ng-bind="calendar.name"></span>
+                                </div>
+                                <div class="btn-group dropdown pull-right abt-dropdown ">
+                                    <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more">
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar,$index)" translate>button.deleteCalendar</a>
+                                         <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
+                                        <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-sm">
+                                <span translate>label.type </span>:
+                                <span ng-class="{'text-success': calendar.type=='WORKING_DAYS','text-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-xs">
+                                <span translate>label.category </span>:
+                               <span ng-bind="calendar.category || '-'"></span>
+                            </div>
+                        </div>
+                        <div class="box-footer b-t" >
+                            <div>
+                                <a href class="text-left primary-text-hover-color " ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editCalendar</span></a>
+                                <a href class="pull-right text-hover-color " ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)"><i class="fa fa-remove text-black-lt"></i> <span class="text-black-lt" translate>button.deleteCalendar</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box p-a" ng-show="pageView=='list' && allCalendars.length>0">
             <div class="table-responsive" >
                 <table class="table table-hover table-bordered  ">
                     <thead>
                     <tr>
-                        <th class="noExl" width="45"><span translate>label.action</span></th>
-                        <th ng-click="sortByP('name')"><a><span translate>label.name</span>
+                        <th width="30" ng-if="permission.Calendar.edit.delete">
+                            <label class="md-check lg-check">
+                                <input type="checkbox" ng-model="allCheckCalendar.checkbox" ng-click="checkAllCalendar()"><i class="primary"></i>
+                            </label>
+                        </th>
+                        <th width="45"><span translate>label.action</span></th>
+                        <th ng-click="sortByC('name')"><a><span translate>label.name</span>
                             <i ng-show="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByP('name')"><a><span translate>label.path</span>
+                        <th ng-click="sortByC('name')"><a><span translate>label.path</span>
                             <i ng-show="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByP('category')"><a><span translate>label.category</span>
+                        <th ng-click="sortByC('name')"><a><span translate>label.type</span>
+                            <i ng-show="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByC('category')"><a><span translate>label.category</span>
                             <i ng-show="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
@@ -52,18 +111,33 @@
                     </thead>
                     <tbody ng-repeat="calendar in allCalendars | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse | startFrom:(calendarFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <tr >
+                        <td ng-if="permission.Calendar.edit.delete" >
+                            <label class="md-check">
+                                <input type="checkbox" data-checklist-model="object.calendars"
+                                       data-checklist-value="calendar"><i class="primary"></i>
+                            </label>
+                        </td>
                         <td>
                              <div class="btn-group dropdown">
                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                      <i class="fa fa-ellipsis-h"></i></button>
                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                      <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
-                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar($index)" class="dropdown-item" translate>button.deleteCalendar</a>
+                                     <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
+                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)" class="dropdown-item" translate>button.deleteCalendar</a>
+                                     <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                  </div>
                              </div>
                          </td>
-                        <td ng-bind="calendar.name"></td>
+                        <td>
+                         <span>
+                             <span class="text-dark ">{{calendar.name}}</span>
+                             <span ng-if="calendar.title">-</span>
+                             <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
+                         </span>
+                        </td>
                         <td ng-bind="calendar.path"></td>
+                        <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
                         <td ng-bind="calendar.category"></td>
                     </tr>
                     </tbody>

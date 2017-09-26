@@ -644,7 +644,7 @@
 
                             <div class="col-sm-6">
                                 <select class="form-control" ng-model="runTime.country" ng-change="loadHolidayList()">
-                                    <option ng-repeat="(k,v) in countryList" value="{{k}}">{{v}}</option>
+                                    <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName" value="{{country.code}}">{{country.name}}</option>
                                 </select>
                             </div>
                         </div>
@@ -656,13 +656,27 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-sm-6" ng-repeat="holiday in holidayList" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
-                                <label class="md-check">
-                                    <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
-                                           data-checklist-value="holiday.date"><i class="primary"></i>
+                            <div class="col-sm-12">
+                                <div class="col-sm-6 p-l-0">
+                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.ceil(holidayList.length/2))" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                        <label class="md-check">
+                                            <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
+                                                   data-checklist-value="holiday.date"><i class="primary"></i>
 
-                                    {{getDateFormat(holiday.date)}} - {{holiday.name}}
-                                </label>
+                                            {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 p-l-0">
+                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday2 in holidayList.slice(Math.ceil(holidayList.length/2),holidayList.length)" ng-if="holiday2.type == 'public' || holiday2.type == 'bank'">
+                                        <label class="md-check">
+                                            <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
+                                                   data-checklist-value="holiday2.date"><i class="primary"></i>
+
+                                            {{getDateFormat(holiday2.date)}} - {{holiday2.name}}
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

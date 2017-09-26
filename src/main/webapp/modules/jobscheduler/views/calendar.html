@@ -1,0 +1,101 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht">
+    <div class="padding p-b-0">
+        <div class="hide m-t-xs" ng-class="{'show': isLoading}" >
+            <div class="box p-a">
+                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
+                    <table class="table table-hover table-bordered  ">
+                        <thead>
+                        <tr>
+                            <th class="hide"  ng-class="{show:permission.Calendar.edit.change && permission.Calendar.edit.delete}" width="45"><span translate>label.action</span></th>
+                            <th><span translate>label.name</span>
+                            </th>
+                            <th><span translate>label.path</span>
+                            </th>
+                            <th><span translate>label.type</span>
+                            </th>
+                            <th><span translate>label.category</span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="calendar in allCalendars">
+                            <td class="hide"  ng-class="{show:permission.Calendar.edit.change && permission.Calendar.edit.delete}"  width="45">
+                                 <div class="btn-group dropdown">
+                                     <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                         <i class="fa fa-ellipsis-h"></i></button>
+                                     <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu">
+                                         <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
+                                          <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
+                                         <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)" class="dropdown-item" translate>button.deleteCalendar</a>
+                                     </div>
+                                 </div>
+                            </td>
+                            <td>
+                             <span>
+                                 <span class="text-dark ">{{calendar.name}}</span>
+                                 <span ng-if="calendar.title">-</span>
+                                 <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
+                             </span>
+                            </td>
+                            <td ng-bind="calendar.path"></td>
+                            <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
+                            <td ng-bind="calendar.category"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree.expand_all();"
+                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
+                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                        <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+
+                    <tree
+                            tree-data="filterTree1"
+                            tree-control="filter_tree"
+                            icon-leaf="fa fa-folder"
+                            icon-expand="fa fa-folder"
+                            expand-on="expanding_property"
+                            on-click="treeExpand(branch)"
+                            template-url="modules/core/template/tree-filter-structure.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModal()" translate>
+                    button.cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -279,6 +279,9 @@
         if (!vm.preferences) {
             return;
         }
+        if (!vm.preferences.events) {
+            return;
+        }
         if (angular.isArray(vm.preferences.events.filter)) {
             $scope.eventFilter = vm.preferences.events.filter;
         } else {
@@ -751,6 +754,10 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+                if (vm.user.fakepassword) {
+                    vm.user.password = vm.user.fakepassword;
+                }
+                delete vm.user['fakepassword'];
                 vm.users.push(vm.user);
                 saveInfo();
                 vm.user = {};

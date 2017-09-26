@@ -9,7 +9,8 @@
         .service('ResourceService', ResourceService)
         .service('ScheduleService', ScheduleService)
         .service('JobSchedulerService', JobSchedulerService)
-        .service('DailyPlanService', DailyPlanService);
+        .service('DailyPlanService', DailyPlanService)
+        .service('CalendarService', CalendarService);
 
     ResourceService.$inject = ["$resource", "$q"];
     function ResourceService($resource, $q ) {
@@ -74,46 +75,6 @@
                 });
                 return deferred.promise;
             },
-            getListOfCalendars: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendars');
-                Calendar.save(filter,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            getListOfDates: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar');
-                Calendar.save(filter,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            getCalendars: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar');
-                Calendar.save(filter,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            writeCalendars: function (filter) {
-                var deferred = $q.defer();
-                var Calendar = $resource('calendar');
-                Calendar.save(filter,function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             tree: function (filter) {
                 var deferred = $q.defer();
                 var Tree = $resource('tree');
@@ -126,7 +87,6 @@
             }
         }
     }
-
 
     ScheduleService.$inject = ["$resource", "$q" ];
     function ScheduleService($resource, $q ) {
@@ -484,6 +444,72 @@
                 var deferred = $q.defer();
                 var Plan = $resource('plan');
                 Plan.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }
+        }
+    }
+
+    CalendarService.$inject = ["$resource", "$q"];
+    function CalendarService($resource, $q) {
+        return{
+             getListOfCalendars: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            delete: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars/delete');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getListOfDates: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar/dates');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getCalendarCategories: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars/categories');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            storeCalendar: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar/store');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            renameCalendar: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar/rename');
+                Calendar.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

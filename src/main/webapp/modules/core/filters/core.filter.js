@@ -11,6 +11,9 @@
             if (e.sessionStorage.preferences) {
                 if (!t)return "-";
                 var n = JSON.parse(e.sessionStorage.preferences);
+                if(!n.zone){
+                    return;
+                }
                 return moment(t).tz(n.zone).format(n.dateFormat)
             }
         }

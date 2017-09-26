@@ -1,7 +1,11 @@
 <div ng-click="refreshSession()">
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
-        <h4 class="modal-title" ><span translate>button.terminate</span>: {{_scheduleName}}</h4>
+        <h4 class="modal-title" >
+            <span translate ng-if="action!='terminateAndRestartWithTimeout'">button.terminate</span>
+            <span translate ng-if="action=='terminateAndRestartWithTimeout'">button.terminateAndRestart</span>
+            : {{_scheduleName}}
+        </h4>
     </div>
     <form name="form" ng-submit="ok()" novalidate>
     <div class="modal-body p-a">

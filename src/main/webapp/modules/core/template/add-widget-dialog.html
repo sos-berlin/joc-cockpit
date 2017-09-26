@@ -1,0 +1,23 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close">
+            <span aria-hidden="true" class="fa fa-times-circle"></span>
+        </button>
+        <h4 class="modal-title" translate>label.addWidget</h4>
+    </div>
+    <div class="modal-body p-a-md" style="min-height: 180px">
+        <div class="form-group row p-b b-b" ng-repeat="widget in dashboardLayout" ng-if="!widget.visible">
+            <img class="pull-left m-l" ng-src="images/{{widget.name}}.png" width="120px" height="60px">
+            <div class="col-sm-6">
+                <label class="font14 text-dark m-b-0" ng-bind="'label.'+widget.name | translate"></label>
+                <p class="text-sm text-muted">{{widget.message}}</p>
+            </div>
+            <button type="button" class="btn btn-grey btn-sm pull-right m-r" ng-click="addWidget(widget)" translate>
+                button.widget
+            </button>
+        </div>
+        <div class="text-center m-t-lg text text-orange hide" ng-class="{'show':dashboard.widgets.length == dashboardLayout.length}" translate>
+            message.noWidgetFound
+        </div>
+    </div>
+</div>
