@@ -7104,7 +7104,7 @@
         vm.showPanelFuc = function (value) {
             value.show = true;
             var orders = {};
-            orders.jobschedulerId = vm.historyView.current ==true? vm.schedulerIds.selected: '';
+            orders.jobschedulerId = value.jobschedulerId || vm.schedulerIds.selected;
             orders.jobChain = value.jobChain;
             orders.orderId = value.orderId;
             orders.historyId = value.historyId;
