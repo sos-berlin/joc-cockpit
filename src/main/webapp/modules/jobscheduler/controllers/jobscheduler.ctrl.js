@@ -1339,10 +1339,12 @@
 
         function storeCalendar() {
             var obj = {};
-            delete vm.calendar['create'];
-            obj.calendar = vm.calendar;
+            obj.calendar = vm.calendar.calendarObj;
             obj.calendar.path = vm.calendar.path+'/'+vm.calendar.name;
-            obj.calendar.includes = {"weekdays": [{"from": "","to": "","days": [1,2]}]};
+            obj.calendar.title = vm.calendar.title;
+            obj.calendar.category = vm.calendar.category;
+            obj.calendar.type = vm.calendar.type;
+
             if (vm.comments.comment) {
                 obj.auditLog = {};
                 obj.auditLog.comment = vm.comments.comment;
@@ -1351,6 +1353,7 @@
                 obj.auditLog.timeSpent = vm.comments.timeSpent;
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
+            //console.log(JSON.stringify(obj));
             CalendarService.storeCalendar(obj).then(function (result) {
                 console.log(result)
             });
@@ -1360,7 +1363,7 @@
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = {};
-            vm.calendar.path = vm.folderPathC;
+            vm.calendar.path = '/';
             vm.calendar.create = true;
 
             var modalInstance = $uibModal.open({
@@ -1380,7 +1383,7 @@
         vm.editCalendar = function (calendar) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            vm.calendar = angular.copy(calendar);
+            vm.calendar = calendar;
             vm.calendar.create = false;
 
             var modalInstance = $uibModal.open({
@@ -1392,7 +1395,7 @@
                 windowClass: 'fade-modal'
             });
             modalInstance.result.then(function () {
-                console.log(vm.calendar)
+                storeCalendar();
             }, function () {
 
             });
@@ -1412,10 +1415,10 @@
                 windowClass: 'fade-modal'
             });
             modalInstance.result.then(function () {
-                console.log(vm.calendar);
+             //   console.log(vm.calendar);
                 var obj = {};
                 obj.path = vm.calendar.path;
-                obj.newPath = vm.calendar.newPath+'/'+vm.calendar.newName;;
+                obj.newPath = vm.calendar.newPath+'/'+vm.calendar.newName;
                 if (vm.comments.comment) {
                     obj.auditLog = {};
                     obj.auditLog.comment = vm.comments.comment;
@@ -1432,7 +1435,7 @@
         };
 
         function deleteCalendar(obj,calendar, index) {
-            CalendarService.delete(obj).then(function (result) {
+            CalendarService.delete(obj).then(function () {
                 if (calendar) {
                     vm.allCalendars.splice(index, 1);
                 } else {
@@ -2811,17 +2814,130 @@
 
         };
 
+        function getCalendar() {
+            vm.allCalendars = [];
+            var obj = {};
+            obj.calendars = [$stateParams.path];
+            CalendarService.getListOfCalendars(obj).then(function (res) {
+               vm.allCalendars = res.calendars;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+        }
+
+        vm.filter_tree = {};
+        vm.filterTree1 = [];
+        vm.expanding_property = {
+            field: "name"
+        };
+        vm.getTreeStructure = function () {
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true
+            }).then(function (res) {
+                vm.filterTree1 = res.folders;
+
+            }, function () {
+                $('#treeModal').modal('hide');
+                $('.fade-modal').css('opacity', '1');
+            });
+
+            $('#treeModal').modal('show');
+            $('.fade-modal').css('opacity', '0.85');
+        };
+        vm.closeModal = function () {
+            $('#treeModal').modal('hide');
+            $('.fade-modal').css('opacity', '1');
+        };
+        vm.treeExpand = function (data) {
+            vm.calendar.path = data.path;
+            vm.calendar.newPath = data.path;
+            $('#treeModal').modal('hide');
+            $('.fade-modal').css('opacity', '1');
+        };
+        vm.renameCalendar = function(calendar) {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            vm.calendar = angular.copy(calendar);
+            vm.calendar.create = false;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/rename-calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+            modalInstance.result.then(function () {
+                var obj = {};
+                obj.path = vm.calendar.path;
+                obj.newPath = vm.calendar.newPath+'/'+vm.calendar.newName;
+                if (vm.comments.comment) {
+                    obj.auditLog = {};
+                    obj.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent)
+                    obj.auditLog.timeSpent = vm.comments.timeSpent;
+                if (vm.comments.ticketLink)
+                    obj.auditLog.ticketLink = vm.comments.ticketLink;
+                CalendarService.rename(obj);
+            }, function () {
+
+            });
+        };
+
+        function deleteCalendar(obj) {
+            vm.allCalendars=[];
+            CalendarService.delete(obj);
+        }
+        vm.deleteCalendar = function (calendar, index) {
+            var obj = {};
+            obj.calendars = [];
+            obj.calendars.push(calendar.path);
+
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.type = 'Calendar';
+                vm.comments.operation = 'Delete';
+                vm.comments.name = calendar.path;
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    deleteCalendar(obj);
+                }, function () {
+
+                });
+
+            } else {
+                deleteCalendar(obj);
+            }
+        };
+
     }
 
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","UserService","$window"];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,UserService,$window) {
         var vm = $scope;
         vm.loadingImg = true;
         var isDragging = false;
         vm.gridsterOpts = {
             resizable: {
-                resize: function (event, $element, widget) {
+                resize: function () {
                     isDragging = true;
                 },
                 stop: function () {
@@ -2830,11 +2946,10 @@
                 }
             },
             draggable: {
-                drag: function (event, $element, widget) {
-                    console.log('draggable...');
+                drag: function () {
                     isDragging = true;
                 },
-                stop: function (event, $element, widget) {
+                stop: function () {
                    setWidgetPreference();
                     isDragging = false;
                 }
@@ -3059,7 +3174,7 @@
                 return parseInt(a.row) - parseInt(b.row);
             });
             for (var i = 0; i < vm.dashboard.widgets.length; i++) {
-                console.log(vm.dashboard.widgets[i].name + ' ' + vm.dashboard.widgets[i].row + ' : ' + vm.dashboard.widgets[i].col)
+
                 if (i > 0) {
                     if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
                         if (vm.dashboard.widgets[i].sizeY == vm.dashboard.widgets[i - 1].sizeY) {
@@ -4048,7 +4163,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if(vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged"){
+                    if (vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged") {
                         isLoadedSnapshot = false;
                         vm.loadOrderSnapshot(true);
                     }
@@ -4961,7 +5076,7 @@
                         b = x;
                     }
 
-                    var m =0, n=0;
+                    var m = 0, n = 0;
                     if (a.startTime && a.endTime) {
                         m = moment(a.startTime).diff(a.endTime) || 0;
                     }
@@ -4976,24 +5091,24 @@
             }
         }
 
-        function naturalSorter(as, bs){
-            var a, b, a1, b1, i= 0, n, L,
-            rx=/(\.\d+)|(\d+(\.\d+)?)|([^\d.]+)|(\.\D+)|(\.$)/g;
-            if(as=== bs) return 0;
-            a= as.toLowerCase().match(rx);
-            b= bs.toLowerCase().match(rx);
-            L= a.length;
-            while(i<L){
-                if(!b[i]) return 1;
-                a1= a[i];
-                b1= b[i++];
-                if(a1!== b1){
-                    n= a1-b1;
-                    if(!isNaN(n)) return n;
-                    return a1>b1? 1:-1;
+        function naturalSorter(as, bs) {
+            var a, b, a1, b1, i = 0, n, L,
+                rx = /(\.\d+)|(\d+(\.\d+)?)|([^\d.]+)|(\.\D+)|(\.$)/g;
+            if (as === bs) return 0;
+            a = as.toLowerCase().match(rx);
+            b = bs.toLowerCase().match(rx);
+            L = a.length;
+            while (i < L) {
+                if (!b[i]) return 1;
+                a1 = a[i];
+                b1 = b[i++];
+                if (a1 !== b1) {
+                    n = a1 - b1;
+                    if (!isNaN(n)) return n;
+                    return a1 > b1 ? 1 : -1;
                 }
             }
-            return b[i]? -1:0;
+            return b[i] ? -1 : 0;
         }
 
         /**--------------- filter, sorting and pagination -------------------*/
@@ -5466,7 +5581,7 @@
                 obj.dateTo.setSeconds(0);
                 obj.dateTo.setMilliseconds(0);
             }
-             obj.timeZone = vm.userPreferences.zone;
+            obj.timeZone = vm.userPreferences.zone;
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
                 delete obj['timeZone']
             }
@@ -5475,9 +5590,9 @@
                 isLoaded = true;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans);
-                if(res.created){
+                if (res.created) {
                     vm.maxPlannedTime = new Date(res.deliveryDate);
-                }else{
+                } else {
                     vm.maxPlannedTime = undefined;
                 }
             }, function () {

@@ -176,7 +176,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="data in calendar.includedFrequencies track by $index"
+                            <tr ng-repeat="data in calendar.includesFrequency track by $index"
                                 ng-if="editor.frequencyType=='INCLUDE'">
                                 <td class="cursor"
                                     style="border-right: none !important;vertical-align: top !important; ">
@@ -188,7 +188,7 @@
                                                                           class="fa fa-calendar"></i></a>
                                 </td>
                             </tr>
-                            <tr ng-repeat="data in calendar.excludedFrequencies track by $index"
+                            <tr ng-repeat="data in calendar.excludesFrequency track by $index"
                                 ng-if="editor.frequencyType=='EXCLUDE'">
                                 <td class="cursor"
                                     style="border-right: none !important;vertical-align: top !important; ">
@@ -204,11 +204,11 @@
                         </table>
                     </div>
                     <div class="text-center text-orange "
-                         ng-if="(!calendar.includedFrequencies || calendar.includedFrequencies.length==0) && editor.frequencyType=='INCLUDE'">
+                         ng-if="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
                         <a href ng-click="createNewFrequency()" translate>button.addNewFrequency</a>
                     </div>
                     <div class="text-center text-orange "
-                         ng-if="(!calendar.excludedFrequencies || calendar.excludedFrequencies.length==0) && editor.frequencyType=='EXCLUDE'">
+                         ng-if="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
                         <a href ng-click="createNewFrequency()" translate>button.addNewFrequency</a>
                     </div>
                 </div>
@@ -303,7 +303,7 @@
                                         </label>
                                         <label class="md-check m-t-sm w">
                                             <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'7'">
+                                                   data-checklist-value="'0'">
                                             <i class="primary"></i> <span translate>label.sunday</span>
                                         </label>
                                     </div>
@@ -513,7 +513,7 @@
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="col-sm-6 p-l-0">
-                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.ceil(holidayList.length/2))" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
                                                 <label class="md-check">
                                                     <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
                                                    data-checklist-value="holiday.date"><i class="primary"></i>
@@ -523,7 +523,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-6 p-l-0">
-                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(Math.ceil(holidayList.length/2),holidayList.length)" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
                                                 <label class="md-check">
                                                   <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
                                                    data-checklist-value="holiday.date"><i class="primary"></i>
@@ -633,7 +633,6 @@
                                     <td ng-click="editFrequency(data)">{{$index+1}}</td>
                                     <td ng-click="editFrequency(data)">
                                         <i ng-if="data.exclude" class="fa fa-minus"> </i>
-                                        <span ng-if="data.isUltimos">{{'label.ultimos' | translate}} - </span>
                                         <span>{{data.str}}</span>
                                     </td>
                                     <td>
@@ -696,8 +695,8 @@
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || frequencyList.length==0"
                     ng-click="saveFrequency(form);">
-                <span ng-if="!editor.update" translate>button.apply</span>
-                <span ng-if="editor.update" translate>button.save</span>
+                <span translate>button.apply</span>
+
             </button>
             <button ng-if="editor.showYearView" type="button"
                     class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.back

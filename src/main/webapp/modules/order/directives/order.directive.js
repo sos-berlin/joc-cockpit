@@ -380,22 +380,10 @@
 
                     scope.startId = "start";
                     angular.forEach(scope.jobChainData.nodes, function (item, index) {
-
-
-                        if (!item) {
+                         if (!item) {
                             return;
                         }
-
-                        if (item.name == 'start') {
-                            scope.startId = "start" + index;
-                        }
-                        if (index == 0) {
-                            avatarTop = top + rectH / 2 + 5 - avatarW / 2;
-                            var startTop = avatarTop - 25;
-                            var startLeft = avatarW / 2 - "Start".length * 3;
-                            rectangleTemplate = rectangleTemplate + '<span id="lb' + scope.startId + '" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
-                            + '" translate>label.start</span>' +
-                            '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
+                    if (index == 0) {
                             left = margin + avatarW;
                         }
 
@@ -413,7 +401,6 @@
                         }
 
                         if (splitRegex.test(item.name)) {
-                            
                             isSplitted = true;
                             scope.coords[index].name = splitRegex.exec(item.name)[2];
                             scope.coords[index].isParallel = true;
@@ -423,10 +410,8 @@
                                     obj.parallels = obj.parallels + 1;
                                     scope.coords[index].parent = obj.actual;
                                     scope.coords[index].left = obj.left + rectW + margin;
-                                    //
                                     if (obj.parallels == 1) {
                                         scope.coords[index].top = obj.top - rectH / 2 - splitMargin / 2;
-
                                     }
                                     else if (obj.parallels == 2) {
                                         scope.coords[index].top = obj.top + rectH / 2 + splitMargin / 2;
@@ -436,23 +421,24 @@
 
                                     } else if (obj.parallels % 2 != 0) {
                                         scope.coords[index].top = obj.top - rectH / 2 - splitMargin / 2 - (rectH + splitMargin) * (obj.parallels - 2);
-
                                     }
                                 }
                             })
                         } else if (index > 0) {
                             if(item.secondParent){
+                                var lastTop=scope.coords[index].top;
                                 angular.forEach(scope.coords,function (obj) {
-                                if (item.nextNode == obj.name ) {
-                                    scope.coords[index].left = obj.left-rectW-margin;
-                                    scope.coords[index].parent = obj.actual;
-                                    scope.coords[index].top = obj.top + rectH + splitMargin;;
-                                }
+                                    if(scope.coords[index].left==obj.left && lastTop == obj.top  ){
+
+                                        lastTop = obj.top + rectH + splitMargin;
+                                    }
 
                             });
+                               scope.coords[index].top = lastTop;
                         }else{
                                var matched = false;
-                            angular.forEach(scope.coords,function (obj) {
+
+                            angular.forEach(scope.coords,function (obj,i) {
 
                                 if (obj.next == item.name && scope.coords[index].left <= obj.left) {
                                     scope.coords[index].left = obj.left + margin + rectW;
@@ -463,11 +449,17 @@
                                     matched = true;
                                 }
 
+                                if (item.nextNode == obj.name && scope.coords[index].left <= obj.left) {
+                                    obj.left = scope.coords[index].left + margin + rectW;
+                                }
+
                             });
+
+
                             if(!matched){
                                   scope.coords[index].left = scope.coords[index-1].left + margin + rectW;
                                 }
-                            var errorNodeCls = '';
+
                             if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
 
                                 angular.forEach(scope.coords,function (obj) {
@@ -476,12 +468,39 @@
                                         scope.coords[index].top = obj.top + rectH + splitMargin;
                                     }
                                 })
-                                errorNodeCls = 'error-node';
+
 
                             }
                             }
 
                         }
+
+                    })
+                    angular.forEach(scope.jobChainData.nodes, function (item, index) {
+
+                        if (!item) {
+                            return;
+                        }
+
+                        var errorNodeCls = '';
+                            if (item.isErrorNode && scope.jobChainData.nodes[index - 1].nextNode !== item.name) {
+                                errorNodeCls = 'error-node';
+
+                            }
+
+                        if (item.name == 'start') {
+                            scope.startId = "start" + index;
+                        }
+                        if (index == 0) {
+                            avatarTop = top + rectH / 2 + 5 - avatarW / 2;
+                            var startTop = avatarTop - 25;
+                            var startLeft = avatarW / 2 - "Start".length * 3;
+                            rectangleTemplate = rectangleTemplate + '<span id="lb' + scope.startId + '" class="text-primary text-c" style="position: absolute;left: ' + startLeft + 'px;top: ' + startTop + 'px;z-index=1000;'
+                            + '" translate>label.start</span>' +
+                            '<span id="' + scope.startId + '" class="avatar w-32 primary text-white" style="position: absolute;left: 0px;top: ' + avatarTop + 'px' + '"> </span>';
+                            left = margin + avatarW;
+                        }
+
 
                         var jobName;
 
@@ -667,6 +686,7 @@
                             }
                         });
                         height = window.innerHeight - 300;
+
 
                         rectangleTemplate = '<div id="mainContainer" class="p-a"  style="position: relative;width: 100%;" ><div id="zoomCn">' + rectangleTemplate + '</div>' +
                         '</div>';

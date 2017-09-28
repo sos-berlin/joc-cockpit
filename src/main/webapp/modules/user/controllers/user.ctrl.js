@@ -143,7 +143,13 @@
 
         if ($window.sessionStorage.preferences)
             vm.preferences = JSON.parse($window.sessionStorage.preferences);
-        vm.timezone = jstz().timezone_name;
+        var timezone = jstz.determine();
+        if(timezone)
+            vm.timezone = timezone.name();
+        else{
+            vm.timezone = $scope.selectedJobScheduler.timeZone
+        }
+
         function setPreferences() {
             if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {
                 vm.preferences = JSON.parse($window.sessionStorage.preferences);
@@ -529,7 +535,7 @@
             if (vm.adtLog.filter.date == 'all') {
 
             } else if (vm.adtLog.filter.date == 'today') {
-                 filter.dateFrom = '0d';
+                filter.dateFrom = '0d';
                 filter.dateTo = '0d';
             } else {
                 filter.dateFrom = vm.adtLog.filter.date;
@@ -679,6 +685,7 @@
             }
             $('#exportToExcelBtn').attr("disabled", false);
         };
+
     }
 
     UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope', '$location', 'toasty', 'gettextCatalog'];
@@ -708,7 +715,6 @@
                 vm.roles = res.SOSPermissionRoles.SOSPermissionRole;
             });
         }
-
 
         function saveInfo() {
             var obj = {};

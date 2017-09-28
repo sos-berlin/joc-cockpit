@@ -42,23 +42,27 @@
                                                data-checklist-value="order"><i class="primary"></i>
                                       </label>
                                       <img class="order_img" src="images/order1.png" width="13" height="14">
-                                      <span>{{order.orderId}}</span>
+                                      <span>{{order.orderId}}</span> <span ng-if="order.title" class="text-sm text-muted">&nbsp;-&nbsp;{{order.title}}</span>
                                   </div>
                             </div>
-                            <div class="p-l-sm p-t-xs" ng-repeat="job in row.branch.jobs">
+                            <div class="p-l-sm p-t-xs" ng-repeat="job in row.branch.jobs" >
                                 <span>
                                      <label class="md-check md-check-sm m-r-xs">
                                         <input type="checkbox" data-checklist-model="object.jobs"
                                                data-checklist-value="job.path"><i class="primary"></i>
                                     </label>
                                     <img class="job_img" src="images/job1.png" width="15" height="15" style="margin-top: -2px">
-                                    <span>{{job.name}}</span>
+                                    <span>{{job.name}} </span> <span ng-if="job.title" class="text-sm text-muted">&nbsp;-&nbsp;{{job.title}}</span>
                                  </span>
                             </div>
-                            <div class="p-l-md p-t-xs" ng-repeat="calendar in row.branch.calendars">
-                                <span class="cursor" ng-click="on_choose_calendar(calendar)">
-                                    <i class="fa fa-calendar text-sm"></i>
-                                    <span>{{calendar.name}}</span> - <span class="text-sm text-muted">{{calendar.category}}</span>
+                            <div class="p-l-sm p-t-xs" ng-repeat="calendar in row.branch.calendars">
+                                <span class="cursor">
+                                    <label class="md-check md-check-sm m-r-xs">
+                                        <input type="checkbox" data-checklist-model="object.calendars"
+                                               data-checklist-value="calendar"><i class="primary"></i>
+                                    </label>
+                                    <i class="fa fa-calendar text-sm" style="margin-top: -2px"></i>
+                                    <span>{{calendar.name}}</span>  <span ng-if="calendar.title" class="text-sm text-muted">&nbsp;-&nbsp;{{calendar.title}}</span>
                                  </span>
                             </div>
                         </td>
