@@ -7726,9 +7726,13 @@
                     obj.folders = [{folder: data.path, recursive: false}];
                     OrderService.getOrdersP(obj).then(function (result) {
                         data.jobChains = result.orders;
-                        if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
-                            $('.order_img').attr("src", 'images/order.png');
-                        }
+                        setTimeout(function () {
+                            if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
+                                $('.order_img').attr("src", 'images/order.png');
+                            }
+                         
+                        }, 100);
+
                     });
                 } else {
                     data.jobs = [];
@@ -7738,9 +7742,11 @@
                     obj.folders = [{folder: data.path, recursive: false}];
                     JobService.getJobsP(obj).then(function (result) {
                         data.jobs = result.jobs;
+                         setTimeout(function () {
                         if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
                             $('.job_img').attr("src", 'images/job.png');
                         }
+                             }, 100);
                     });
                 }
             } else {
@@ -8162,7 +8168,7 @@
 
             vm.jobChain = object.jobChain;
             var orders = {};
-            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobschedulerId = object.schedulerId;
             orders.jobChain = vm.jobChain;
             orders.orderId = object.orderId;
             orders.historyId = object.historyId;
@@ -8184,7 +8190,7 @@
 
             vm.job = object.job;
             var jobs = {};
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
+            jobs.jobschedulerId = object.schedulerId;
             jobs.taskId = object.taskId;
             jobs.mime = ['HTML'];
             TaskService.log(jobs).then(function (res) {

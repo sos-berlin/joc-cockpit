@@ -143,7 +143,13 @@
 
         if ($window.sessionStorage.preferences)
             vm.preferences = JSON.parse($window.sessionStorage.preferences);
-        vm.timezone = jstz().timezone_name;
+        var timezone = jstz.determine();
+        if(timezone)
+            vm.timezone = timezone.name();
+        else{
+            vm.timezone = $scope.selectedJobScheduler.timeZone
+        }
+
         function setPreferences() {
             if ($window.sessionStorage.preferences && $window.sessionStorage.preferences != 'undefined') {
                 vm.preferences = JSON.parse($window.sessionStorage.preferences);
@@ -754,6 +760,10 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+                if (vm.user.fakepassword) {
+                    vm.user.password = vm.user.fakepassword;
+                }
+                delete vm.user['fakepassword'];
                 vm.users.push(vm.user);
                 saveInfo();
                 vm.user = {};

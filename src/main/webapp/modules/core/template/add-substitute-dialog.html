@@ -9,7 +9,7 @@
             </h4>
         </div>
     <div class="modal-body p-a" style="min-height: 390px;">
-        <div ng-hide="editor.hidePervious || editor.showHoildayTab">
+        <div ng-hide="editor.hidePervious || editor.showHolidayTab">
                 <div class="row">
                     <div class="col-md-12 hide" ng-class="{'show': display}">
                         <div class="form-group row">
@@ -107,7 +107,7 @@
                     <div class="col-md-12" ng-if="substituteObj.showText">
                         <button type="button" class="btn btn-sm btn-grey pull-right "
                                 ng-disabled="order.at == 'later'"
-                                ng-click="showHoildayTab()" translate>button.nonWorkingDays
+                                ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
                         <button type="button" class="btn btn-sm pull-right btn-grey m-r m-b"
                                 ng-disabled="order.at == 'later'"
@@ -163,7 +163,7 @@
                 </div>
 
             </div>
-        <div ng-if="!editor.showHoildayTab && editor.hidePervious">
+        <div ng-if="!editor.showHolidayTab && editor.hidePervious">
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
@@ -595,7 +595,7 @@
 
 
             </div>
-        <div ng-if="editor.showHoildayTab">
+        <div ng-if="editor.showHolidayTab">
                 <div class="row m-b-sm">
                     <label class="col-sm-12 text">{{'label.nonWorkingDays' | translate}}</label>
                 </div>
@@ -699,7 +699,7 @@
 
             </div>
     </div>
-    <div class="modal-footer text-left" ng-if="!editor.showHoildayTab">
+    <div class="modal-footer text-left" ng-if="!editor.showHolidayTab">
         <button ng-if="!editor.hidePervious" type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid || error.validDate" translate>button.submit</button>
         <button ng-if="!editor.hidePervious && !substituteObj.showText" type="button" class="btn btn-sm orange" ng-disabled="form.$invalid || error.validDate" ng-click="saveScheduleDetail();" translate>button.addNewRuntime</button>
         <button ng-if="!editor.hidePervious && substituteObj.showText && substituteObj.name" type="button" ng-click="removeSubstitute(form)" class="btn btn-sm bg-hover-color" translate>button.removeSubstitute</button>
@@ -720,7 +720,7 @@
                 class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
         </button>
     </div>
-    <div class="modal-footer text-left" ng-if="editor.showHoildayTab">
+    <div class="modal-footer text-left" ng-if="editor.showHolidayTab">
         <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();">
             <span translate>button.save</span>
         </button>

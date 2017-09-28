@@ -398,7 +398,7 @@
         }
 
         var t1;
-        vm.showLogWindow = function (order, task, job) {
+        vm.showLogWindow = function (order, task, job, id) {
             if (!order && !task) {
                 return;
             }
@@ -428,7 +428,12 @@
                             return;
                         }
 
-                        document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
+
+                        if (id) {
+                            document.cookie = "$SOS$scheduleId=" + id + ";path=/";
+                        } else {
+                            document.cookie = "$SOS$scheduleId=" + vm.schedulerIds.selected + ";path=/";
+                        }
                         document.cookie = "$SOS$accessTokenId=" + SOSAuth.accessTokenId + ";path=/";
                         newWindow = $window.open(url, "Log", 'top=' + $window.localStorage.log_window_y + ',left=' + $window.localStorage.log_window_x + ',innerwidth=' + $window.localStorage.log_window_wt + ',innerheight=' + $window.localStorage.log_window_ht + windowProperties, true);
 
@@ -441,12 +446,12 @@
                 }
             } else {
                 if (order && order.historyId && order.orderId) {
-                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain;
+                    url = '#!/order/log?historyId=' + order.historyId + '&orderId=' + order.orderId + '&jobChain=' + order.jobChain + '&schedulerId=' + (id || SOSAuth.accessTokenId);
                 } else if (task && task.taskId) {
                     if (task.job)
-                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job;
+                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
                     else
-                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + job;
+                        url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
 
                 } else {
                     return;
@@ -699,6 +704,7 @@
             } else if (objType == 'schedule' && path) {
                 link = host + 'schedule?path=' + path;
             }
+
             if (link !== '') {
                 clipboard.copyText(link + '&scheduler_id=' + vm.schedulerIds.selected);
             }

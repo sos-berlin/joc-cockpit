@@ -91,7 +91,7 @@
                 <table class="table table-hover table-bordered  ">
                     <thead>
                     <tr>
-                        <th ng-if="permission.Schedule.change.addSubstitute">
+                        <th width="30" ng-if="permission.Schedule.change.addSubstitute">
                             <label class="md-check lg-check">
                                 <input type="checkbox" ng-model="allCheck.checkbox" ng-click="checkAll()"><i class="primary"></i>
                             </label>
@@ -150,7 +150,7 @@
                     </thead>
                     <tbody  ng-repeat="schedule in allSchedules | orderBy: schdeuleFilters.filter.sortBy:schdeuleFilters.reverse | startFrom:(schdeuleFilters.currentPage - 1) * userPreferences.entryPerPage|limitTo: userPreferences.entryPerPage">
                     <tr>
-                        <td ng-if="permission.Schedule.change.addSubstitute">
+                        <td ng-if="permission.Schedule.change.addSubstitute" >
                             <label class="md-check">
                                 <input type="checkbox" data-checklist-model="object.schedules"
                                        data-checklist-value="schedule"><i class="primary"></i>

@@ -18,7 +18,7 @@
         vm.agentsFilters = vm.resourceFilters.agents;
         vm.locksFilters = vm.resourceFilters.locks;
         vm.processFilters = vm.resourceFilters.processClasses;
-        vm.schdeuleFilters = vm.resourceFilters.schedules;
+        vm.scheduleFilters = vm.resourceFilters.schedules;
 
         vm.object = {};
 
@@ -55,8 +55,8 @@
         };
         vm.sortByS = function (propertyName) {
             vm.object.schedules = [];
-            vm.schdeuleFilters.reverse = !vm.schdeuleFilters.reverse;
-            vm.schdeuleFilters.filter.sortBy = propertyName;
+            vm.scheduleFilters.reverse = !vm.scheduleFilters.reverse;
+            vm.scheduleFilters.filter.sortBy = propertyName;
         };
         vm.sortByL = function (propertyName) {
             vm.locksFilters.reverse = !vm.locksFilters.reverse;
@@ -1081,7 +1081,7 @@
 
         var watcher1 = $scope.$watchCollection('object.schedules', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.allCheck.checkbox = newNames.length == vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.schdeuleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.schdeuleFilters.currentPage)).length;
+                vm.allCheck.checkbox = newNames.length == vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage)).length;
             } else {
                 vm.allCheck.checkbox = false;
             }
@@ -1094,7 +1094,7 @@
 
         vm.checkAll = function () {
             if (vm.allCheck.checkbox && vm.allSchedules.length > 0) {
-                vm.object.schedules = vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.schdeuleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.schdeuleFilters.currentPage));
+                vm.object.schedules = vm.allSchedules.slice((vm.userPreferences.entryPerPage * (vm.scheduleFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.scheduleFilters.currentPage));
             } else {
                 vm.object.schedules = [];
             }
@@ -1279,15 +1279,15 @@
                 types: ['SCHEDULE']
             }).then(function (res) {
 
-                if (vm.isEmpty(vm.schdeuleFilters.expand_to)) {
+                if (vm.isEmpty(vm.scheduleFilters.expand_to)) {
                     vm.tree = angular.copy(res.folders);
                     filteredTreeData();
                 } else {
-                    vm.schdeuleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.schdeuleFilters.expand_to, 'schedule');
-                    vm.tree = vm.schdeuleFilters.expand_to;
+                    vm.scheduleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.scheduleFilters.expand_to, 'schedule');
+                    vm.tree = vm.scheduleFilters.expand_to;
                     vm.changeState();
                 }
-                vm.schdeuleFilters.expand_to = vm.tree;
+                vm.scheduleFilters.expand_to = vm.tree;
 
                 vm.isLoading = true;
             }, function (err) {
@@ -1351,9 +1351,9 @@
         vm.changeState = function () {
             obj = {folders: []};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            if (vm.schdeuleFilters.filter.state != 'all') {
+            if (vm.scheduleFilters.filter.state != 'all') {
                 obj.states = [];
-                obj.states.push(vm.schdeuleFilters.filter.state);
+                obj.states.push(vm.scheduleFilters.filter.state);
             }
             vm.allSchedules = [];
             vm.loading = true;
@@ -1408,9 +1408,9 @@
         }
 
         function volatileInformation(obj, expandNode) {
-            if (vm.schdeuleFilters.filter.state != 'all') {
+            if (vm.scheduleFilters.filter.state != 'all') {
                 obj.states = [];
-                obj.states.push(vm.schdeuleFilters.filter.state);
+                obj.states.push(vm.scheduleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
                 var data = [];
@@ -1469,9 +1469,9 @@
         }
 
         function volatileFolderData(data, obj) {
-            if (vm.schdeuleFilters.filter.state != 'all') {
+            if (vm.scheduleFilters.filter.state != 'all') {
                 obj.states = [];
-                obj.states.push(vm.schdeuleFilters.filter.state);
+                obj.states.push(vm.scheduleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
                 var data1 = [];
@@ -1533,9 +1533,9 @@
         }
 
         function volatileFolderData1(data, obj) {
-            if (vm.schdeuleFilters.filter.state != 'all') {
+            if (vm.scheduleFilters.filter.state != 'all') {
                 obj.states = [];
-                obj.states.push(vm.schdeuleFilters.filter.state);
+                obj.states.push(vm.scheduleFilters.filter.state);
             }
             ScheduleService.get(obj).then(function (res) {
                 var data1 = [];
@@ -1784,8 +1784,8 @@
                                 compact: true,
                                 types: ['SCHEDULE']
                             }).then(function (res) {
-                                vm.schdeuleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.schdeuleFilters.expand_to, 'schedule');
-                                vm.tree = vm.schdeuleFilters.expand_to;
+                                vm.scheduleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.scheduleFilters.expand_to, 'schedule');
+                                vm.tree = vm.scheduleFilters.expand_to;
                                 recursiveSort(vm.tree);
                             });
 
