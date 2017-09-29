@@ -194,7 +194,12 @@
 
         function setUserPrefrences(preferences, configObj) {
             if ($window.sessionStorage.preferenceId == 0) {
-                preferences.zone = jstz().timezone_name;
+                var timezone = jstz.determine();
+                if(timezone)
+                    preferences.zone = timezone.name() || $scope.selectedJobScheduler.timeZone;
+                else{
+                    preferences.zone = $scope.selectedJobScheduler.timeZone;
+                }
                 preferences.locale = $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                 preferences.maxRecords = 10000;

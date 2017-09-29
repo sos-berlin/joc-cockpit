@@ -1036,6 +1036,7 @@
   "label.dailyPlanCreated": "Plan Quotidien créé jusqu'à",
   "label.frequencies": "Fréquences",
   "button.removeSubstitute": "Supprimer Substitut",
+  "label.of": "of"
   "label.showHistoryForJobScheduler": "Show History for JobScheduler",
   "label.currentJobscheduler": "Current JobScheduler",
   "label.jobSchedulerId": "JobScheduler ID",

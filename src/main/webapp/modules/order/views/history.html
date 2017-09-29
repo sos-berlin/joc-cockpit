@@ -274,6 +274,14 @@
                                 <a class="text-sm text-primary" ng-show="jobChainSearch.to || jobChainSearch.toTime" ng-click="jobChainSearch.to='';jobChainSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
+                        <div class="form-group row" ng-if="!historyView.current">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                           <div class=" col-sm-6">
+                               <select class="form-control" ng-model="jobChainSearch.jobschedulerId">
+                                   <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+                               </select>
+                           </div>
+                        </div>
                         <div class="form-group row">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
                            <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
@@ -379,6 +387,14 @@
                                        placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime" ng-click="jobSearch.to='';jobSearch.toTime=''; " translate>button.clear</a>
                             </div>
+                        </div>
+                        <div class="form-group row" ng-if="!historyView.current">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                           <div class=" col-sm-6">
+                               <select class="form-control" ng-model="jobSearch.jobschedulerId">
+                                   <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+                               </select>
+                           </div>
                         </div>
                         <div class="form-group row">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>

@@ -106,12 +106,12 @@
                                 <td>
                                     <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
                                         <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
-                                        <i class="text-black ">of</i>
+                                        <i class="text-black " translate>label.of</i>
                                         <span class="text-black _600" ng-bind="job.maxTasks || 1"></span>
                                     </span>
                                     <span ng-if="!job.numOfRunningTasks">
                                         <span ng-bind="job.numOfRunningTasks || 0"></span>
-                                        <i class="text-black" translate>of</i>
+                                        <i class="text-black" translate>label.of</i>
                                         <span ng-bind="job.maxTasks || 1"></span>
                                     </span>
                                 </td>

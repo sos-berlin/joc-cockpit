@@ -6716,7 +6716,9 @@
                 if (vm.jobSearch.regex) {
                     filter.regex = vm.jobSearch.regex;
                 }
-
+                if (vm.jobSearch.jobschedulerId) {
+                    filter.jobschedulerId = vm.jobSearch.jobschedulerId;
+                }
                 if (vm.jobSearch.paths && vm.jobSearch.paths.length > 0) {
                     filter.folders = [];
                     angular.forEach(vm.jobSearch.paths, function (value) {
@@ -6797,6 +6799,9 @@
 
                 if (vm.jobChainSearch.regex) {
                     filter.regex = vm.jobChainSearch.regex;
+                }
+                if (vm.jobChainSearch.jobschedulerId) {
+                    filter.jobschedulerId = vm.jobChainSearch.jobschedulerId;
                 }
                 if (vm.jobChainSearch.paths && vm.jobChainSearch.paths.length > 0) {
                     filter.folders = [];

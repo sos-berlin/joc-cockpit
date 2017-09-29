@@ -1039,5 +1039,6 @@
   "label.showHistoryForJobScheduler": "Show History for JobScheduler",
   "label.currentJobscheduler": "Current JobScheduler",
   "label.jobSchedulerId": "JobScheduler ID",
-  "button.terminateWithin": "Terminate with Timeout"
+  "button.terminateWithin": "Terminate with Timeout",
+"label.of": "of"
 }

@@ -145,9 +145,9 @@
             vm.preferences = JSON.parse($window.sessionStorage.preferences);
         var timezone = jstz.determine();
         if(timezone)
-            vm.timezone = timezone.name();
+            vm.timezone = timezone.name() || $scope.selectedJobScheduler.timeZone;
         else{
-            vm.timezone = $scope.selectedJobScheduler.timeZone
+            vm.timezone = $scope.selectedJobScheduler.timeZone;
         }
 
         function setPreferences() {
@@ -685,6 +685,7 @@
             }
             $('#exportToExcelBtn').attr("disabled", false);
         };
+
     }
 
     UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope', '$location', 'toasty', 'gettextCatalog'];
