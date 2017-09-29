@@ -165,7 +165,7 @@
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <a ng-click="editCalendar(data);">{{data.calendar.path}} -  <span class="text-muted">{{data.calendar.type}}</span></a>
+                                                <a ng-click="editCalendar(data);">{{data.calendar.path}} -  <span class="text-muted" ng-bind="data.calendar.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>

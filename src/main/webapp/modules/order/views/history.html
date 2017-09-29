@@ -371,6 +371,14 @@
                                 <a class="text-sm text-primary" ng-show="jobChainSearch.to || jobChainSearch.toTime" ng-click="jobChainSearch.to='';jobChainSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
+                        <div class="form-group row" ng-if="!historyView.current">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                           <div class=" col-sm-6">
+                               <select class="form-control" ng-model="jobChainSearch.jobschedulerId">
+                                   <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+                               </select>
+                           </div>
+                        </div>
                         <div class="form-group row">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
                            <div class=" col-sm-6" ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
@@ -476,6 +484,14 @@
                                        placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime" ng-click="jobSearch.to='';jobSearch.toTime=''; " translate>button.clear</a>
                             </div>
+                        </div>
+                        <div class="form-group row" ng-if="!historyView.current">
+                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                           <div class=" col-sm-6">
+                               <select class="form-control" ng-model="jobSearch.jobschedulerId">
+                                   <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+                               </select>
+                           </div>
                         </div>
                         <div class="form-group row">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
@@ -636,10 +652,10 @@
                         <thead>
                             <tr>
                                 <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
-                                <th ng-if="!historyView.current" ng-click="sortBy('jobChain')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="order.filter.sortBy == 'jobSchedulerId' && !order.sortReverse"
+                                <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobSchedulerId' && order.sortReverse"
+                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('orderId')"><a><span translate>label.orderId</span>
@@ -699,10 +715,10 @@
                                     </div>
                                 </div>
                             </td>
-                             <td ng-if="!historyView.current" ng-click="showLogWindow(history,null)">
+                             <td ng-if="!historyView.current" ng-click="showLogWindow(history,null,null,history.jobschedulerId)">
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
-                                 <span ng-bind="history.jobSchedulerId"></span>
+                                 <span ng-bind="history.jobschedulerId"></span>
                              </td>
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
@@ -788,10 +804,10 @@
                         <thead>
                             <tr>
                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
-                                <th ng-if="!historyView.current" ng-click="sortBy1('job')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="task.filter.sortBy == 'jobSchedulerId' && !task.sortReverse"
+                                <th ng-if="!historyView.current" ng-click="sortBy1('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="task.filter.sortBy == 'jobschedulerId' && !task.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="task.filter.sortBy == 'jobSchedulerId' && task.sortReverse"
+                                    <i ng-show="task.filter.sortBy == 'jobschedulerId' && task.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy1('taskId')"><a><span translate>label.taskId</span>
@@ -851,7 +867,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-if="!historyView.current" ng-click="showLogWindow(null,jobHistory)" ng-bind="jobHistory.jobSchedulerId"></td>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.jobschedulerId"></td>
                             <td ng-click="showLogWindow(null,jobHistory)"><span ng-bind="jobHistory.taskId"></span></td>
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></span>

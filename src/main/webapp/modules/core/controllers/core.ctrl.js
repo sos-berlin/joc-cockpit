@@ -196,7 +196,12 @@
 
         function setUserPrefrences(preferences, configObj) {
             if ($window.sessionStorage.preferenceId == 0) {
-                preferences.zone = jstz().timezone_name;
+                var timezone = jstz.determine();
+                if(timezone)
+                    preferences.zone = timezone.name() || $scope.selectedJobScheduler.timeZone;
+                else{
+                    preferences.zone = $scope.selectedJobScheduler.timeZone;
+                }
                 preferences.locale = $rootScope.locale.lang;
                 preferences.dateFormat = 'DD.MM.YYYY HH:mm:ss';
                 preferences.maxRecords = 10000;
@@ -4105,10 +4110,16 @@
                                 _period: res.period
                             });
                         }
+                        var _calendar ={}
+                        angular.forEach(vm.selectedCalendar, function(calendar){
+                            if(calendar.path == res._calendar){
+                                _calendar = calendar;
+                            }
+                        });
 
                         vm.runtimeList.push(
                             {
-                                calendar: vm.selectedCalendar,
+                                calendar: _calendar,
                                 period: periodStrArr,
                                 obj: objArr,
                                 type: 'calendar'
@@ -4904,6 +4915,24 @@
                     angular.forEach(run_time.date, function (value, indx) {
                         if (value._calendar && value._calendar == data.frequency.frequency.calendar.path) {
                             console.log(value)
+                            if (value.period) {
+                                if (!angular.isArray(value.period)) {
+                                    var periodArr = [];
+                                    var _temp = angular.copy(value.period);
+                                    value.period = [];
+                                    value.period.push(_temp);
+                                } else {
+                                    for (var i = 0; i < value.period.length; i++) {
+                                        if (checkPeriod(value.period[i], data.frequency.period)) {
+                                            value.period.splice(i, 1);
+                                            break;
+                                        }
+                                    }
+                                }
+                                value.period.push(obj.period);
+                            } else {
+                                value.period = obj.period;
+                            }
                         }
                     });
                 }
@@ -8817,8 +8846,25 @@
         };
 
         vm.changeDate = function () {
-            //TODO
-            console.log(vm.calendarTitle)
+            var newDate = new Date();
+            newDate.setHours(0, 0, 0, 0);
+            if (newDate.getFullYear() < vm.calendarTitle) {
+                vm.planItems = [];
+                var obj = {};
+                obj.dateFrom = vm.calendarTitle + '-01-01';
+                obj.dateTo = vm.calendarTitle + '-12-31';
+                obj.path = vm.calendarPath;
+
+                CalendarService.getListOfDates(obj).then(function (result) {
+                    angular.forEach(result.dates, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date
+                        });
+                    });
+                });
+            } else if (newDate.getFullYear() == vm.calendarTitle) {
+                vm.planItems = angular.copy(tempList)
+            }
         };
 
         vm.$on('calendarDayClicked', function (event, data) {
@@ -8827,32 +8873,59 @@
                 data.day.label = data.day.label > 9 ? data.day.label : '0' + data.day.label;
                 var date = vm.calendarTitle + '-' + data.month + '-' + data.day.label;
                 console.log(date);
-                vm.planItems.push({
+/*                vm.planItems.push({
                     plannedStartTime: date
-                });
+                });*/
             }
         });
         $rootScope.$on('save-calendar', function (event, data) {
             vm.selectedCalendar = data.selectedCalendar;
-            if (vm.selectedCalendar) {
+
+            if (vm.selectedCalendar && vm.selectedCalendar.length>0) {
                 try {
                     var _xml = x2js.xml_str2json(vm.xml);
                 } catch (e) {
                     console.log(e);
                 }
                 var run_time = _xml.run_time || _xml.schedule || {};
+                angular.forEach(vm.selectedCalendar, function (calendar) {
+                    if (run_time.date) {
+                        if (!angular.isArray(run_time.date)) {
+                            var _temp = angular.copy(run_time.date);
+                            run_time.date = [];
+                            run_time.date.push(_temp)
+                        }
+                        var flag = false;
+                        if(run_time.date.length>0){
+                            for(var i = 0; i< run_time.date.length; i++){
+                                if(run_time.date[i]._calendar == calendar.path){
+                                    flag =true;
+                                    break;
+                                }
+                            }
+                        }
 
-                if(run_time.date){
-                    if(!angular.isArray(run_time.date)){
-                        var _temp = angular.copy(run_time.date);
-                        run_time.date= [];
-                        run_time.date.push(_temp)
+                        if(!flag)
+                        run_time.date.push({_calendar: calendar.path});
+                    } else {
+                        run_time.date = {};
+                        run_time.date._calendar = calendar.path;
                     }
-                    run_time.date.push({_calendar : vm.selectedCalendar.path});
-                }else{
-                    run_time.date ={};
-                    run_time.date._calendar = vm.selectedCalendar.path;
-                }
+                });
+                var _tempData = [];
+
+                angular.forEach(vm.selectedCalendar, function (calendar) {
+                     if (angular.isArray(run_time.date)) {
+                         for(var i = 0; i< run_time.date.length; i++){
+                             if(run_time.date[i]._calendar == calendar.path){
+                                _tempData.push(run_time.date[i]);
+                                 break;
+                             }
+                         }
+                     }
+                });
+
+                run_time.date = angular.copy(_tempData);
 
                 if (vm.order) {
                     vm.run_time = {run_time: run_time};
@@ -8872,8 +8945,9 @@
             }
         });
 
+        var tempList=[];
 
-        vm.editCalendar = function(data){
+        vm.editCalendar = function (data) {
             console.log(data);
             vm.editor.showHolidayTab = false;
             vm.editor.showCalendarTab = true;
@@ -8883,12 +8957,25 @@
             vm.editor.showText = undefined;
             vm.viewDate = new Date();
             vm.calendarTitle = new Date().getFullYear();
+            var obj = {};
+            obj.dateFrom = moment().format('YYYY-MM-DD');
+            obj.dateTo = vm.calendarTitle + '-12-31';
+            vm.calendarPath = data.calendar.path;
+            obj.path = vm.calendarPath;
 
+            CalendarService.getListOfDates(obj).then(function (result) {
+                angular.forEach(result.dates, function (date) {
+                    vm.planItems.push({
+                        plannedStartTime: date
+                    });
+                });
+                tempList = angular.copy(vm.planItems);
+            });
         };
 
 
-        vm.deleteCalendar = function (data,index) {
-            vm.selectedCalendar = undefined;
+        vm.deleteCalendar = function (data, index) {
+           // vm.selectedCalendar = undefined;
             vm.runtimeList.splice(index, 1);
             try {
                 var _xml = x2js.xml_str2json(vm.xml);
@@ -10461,6 +10548,14 @@
                                         if (angular.equals(alreadyExistFrequency[i].days, val.days)) {
                                             alreadyExistFrequency.splice(i, 1);
                                             break;
+                                        }else {
+                                            angular.forEach(alreadyExistFrequency[i].days, function (day) {
+                                                if (val.days.indexOf(day) == -1)
+                                                    val.days.push(day)
+                                            });
+                                            val.str = frequencyToString(val);
+                                            alreadyExistFrequency.splice(i, 1);
+                                            break;
                                         }
                                     } else {
                                         angular.forEach(alreadyExistFrequency[i].months, function (month) {
@@ -10494,6 +10589,14 @@
                                     if (val.months && val.months > 0) {
                                         if (angular.equals(alreadyExistFrequency[i].months, val.months)) {
                                             if (angular.equals(alreadyExistFrequency[i].selectedMonths, val.selectedMonths)) {
+                                                alreadyExistFrequency.splice(i, 1);
+                                                break;
+                                            }else {
+                                                angular.forEach(alreadyExistFrequency[i].selectedMonths, function (day) {
+                                                    if (val.selectedMonths.indexOf(day) == -1)
+                                                        val.selectedMonths.push(day)
+                                                });
+                                                val.str = frequencyToString(val);
                                                 alreadyExistFrequency.splice(i, 1);
                                                 break;
                                             }

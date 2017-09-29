@@ -1106,5 +1106,6 @@
   "breadcrumb.calendar":"Calendar",
   "label.chooseCategories":"Choose categories",
   "button.renameCalendar": "Rename Calendar",
-  "label.renameCalendar": "Rename Calendar"
+  "label.renameCalendar": "Rename Calendar",
+  "label.of": "of"
 }

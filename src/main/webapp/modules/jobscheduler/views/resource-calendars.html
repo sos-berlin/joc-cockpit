@@ -40,7 +40,7 @@
                                 </label>
 
                                 <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Calendar.edit.delete}">
-                                    <span class="fa fa-calendar text-sm" ></span>
+                                    <span class="text-sm fa" ng-class="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>
                                     <span uib-tooltip="{{calendar.title}}" ng-bind="calendar.name"></span>
                                 </div>
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
@@ -65,7 +65,7 @@
                         <div class="box-footer b-t" >
                             <div>
                                 <a href class="text-left primary-text-hover-color " ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editCalendar</span></a>
-                                <a href class="pull-right text-hover-color " ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)"><i class="fa fa-remove text-black-lt"></i> <span class="text-black-lt" translate>button.deleteCalendar</span></a>
+                                <a href class="pull-right text-hover-color " ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteCalendar</span></a>
                             </div>
                         </div>
                     </div>

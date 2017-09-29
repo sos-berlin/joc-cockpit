@@ -6,9 +6,10 @@
     <form name="form" ng-submit="ok()" novalidate>
     <div class="modal-body p-a">
         <div class="form-group row">
-            <label class="col-sm-12 test" ng-if="path">{{path}} : {{task.taskId}}</label>
-            <label class="col-sm-12 test" ng-if="taskJobs" ng-repeat="job in taskJobs">{{job.path}}</label>
-            <label class="col-sm-12 test" ng-if="job">{{job.path}}</label>
+            <label class="col-sm-4 " translate>label.job</label>
+            <label class="col-sm-8 " ng-if="path">{{path}} : {{task.taskId}}</label>
+            <label class="col-sm-8 " ng-if="taskJobs" ng-repeat="job in taskJobs">{{job.path}}</label>
+            <label class="col-sm-8 " ng-if="job">{{job.path}}</label>
         </div>
         <div class="form-group row"  ng-class="{ 'has-error' : form.timeout.$invalid && form.timeout.$dirty }">
            <label class="col-sm-4 form-control-label" translate>label.withTimeout</label>
