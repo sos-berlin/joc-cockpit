@@ -1,19 +1,7 @@
-<style>
-    .cal-month-day span[data-cal-date] {
-        cursor: pointer;
-    }
-    .cal-row-head{
-        color: #222;
-    }
-    .cal-day-outmonth {
-        background: transparent !important;
-    }
-
-</style>
 <div ng-click="refreshSession()">
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-header">
-            <button ng-if="!editor.hidePervious && !editor.showYearView" type="button" class="close" ng-click="cancel()"
+            <button type="button" class="close" ng-click="cancel()"
                     aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span>
             </button>
             <h4 class="modal-title">
@@ -22,7 +10,7 @@
             </h4>
         </div>
         <div class="modal-body p-a" style="min-height: 490px;">
-            <div class="row" ng-if="!editor.showYearView && !editor.hidePervious">
+            <div class="row">
                 <div class="col-md-12 hide" ng-class="{'show': display}">
                         <div class="form-group row">
                             <label class="col-sm-3" translate>label.selectComments</label>
@@ -130,7 +118,7 @@
                             </select>
                         </div>
                     </div>
-                     <div class="form-group row">
+                     <div class="form-grou row">
                         <label class="col-sm-3 form-control-label" translate>label.category</label>
 
                         <div class="col-sm-9">
@@ -139,10 +127,26 @@
                                 <option value="" translate>label.chooseCategories</option>
                             </select>
                             <div class="input-dropdown" style="margin-bottom: -15px">
-                                <input class="form-control" type="text" required
+                                <input class="form-control" type="text"
                                        placeholder="{{'placeholder.enterOrSelectCategory' | translate}}"
                                        ng-model="calendar.category">
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
+                        <div class="col-sm-3">
+                            <input class="form-control input-date input-date1" required ng-model="calendar.dateFrom"
+                                   data-min-date="{{minDate}}"
+                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
+                                   bs-datepicker type="text">
+                        </div>
+                        <label class="col-sm-3 form-control-label text-center" translate>label.validTo</label>
+                        <div class="col-sm-3">
+                            <input class="form-control input-date input-date1" required ng-model="calendar.dateTo" ng-disabled="!calendar.dateFrom"
+                                   data-min-date="{{calendar.dateFrom}}"
+                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
+                                   bs-datepicker type="text">
                         </div>
                     </div>
                 </div>
@@ -159,20 +163,23 @@
                             button.excludedFrequencies
                         </button>
                     </div>
-                    <button type="button" class="btn btn-sm pull-right btn-grey"
+                    <button type="button" class="btn btn-sm pull-right btn-grey" ng-disabled="!(calendar.dateFrom && calendar.dateTo)"
                             ng-click="createNewFrequency()" translate>button.addNewFrequency
                     </button>
-                    <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
+                    <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b" ng-disabled="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
                             ng-click="showYearView()" translate>button.showYearView
                     </button>
                 </div>
                 <div class="col-sm-12" style="max-height: 450px; overflow: auto">
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered frequency-table">
+                        <table class="table table-hover table-bordered ">
                             <thead>
                             <tr>
                                 <th translate>label.listOfFrequencies</th>
+                                <th translate>label.validFrom</th>
+                                <th translate>label.validTo</th>
+                                <th translate>label.action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -182,22 +189,58 @@
                                     style="border-right: none !important;vertical-align: top !important; ">
 
                                     <a ng-click="updateFrequency(data);">{{data.str}}</a>
-                                    <a class="text-xs text-hover-color m-l-sm"><i ng-click="removeFrequency($index)"
-                                                                                  class="fa fa-times "></i></a>
-                                    <a class="text-primary pull-right"><i ng-click="showCalendar(data,true)"
-                                                                          class="fa fa-calendar"></i></a>
+                                </td>
+                                <td>
+                                    <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate}}</span>
+                                </td>
+                                <td>
+                                    <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.endOn | stringToDate}}</span>
+                                </td>
+                                <td>
+
+                                    <a class="text-hover-primary ">
+                                        <i ng-click="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                                    </a>
+                                    <a><i ng-click="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                                    <a class="text-hover-color">
+                                        <i ng-click="removeFrequency($index)" class="fa fa-times "></i>
+                                    </a>
                                 </td>
                             </tr>
                             <tr ng-repeat="data in calendar.excludesFrequency track by $index"
                                 ng-if="editor.frequencyType=='EXCLUDE'">
                                 <td class="cursor"
                                     style="border-right: none !important;vertical-align: top !important; ">
+
                                     <i ng-if="data.exclude" class="fa fa-minus"> </i>
                                     <a ng-click="updateFrequency(data);">{{data.str}}</a>
-                                    <a class="text-xs text-hover-color m-l-sm"><i ng-click="removeFrequency($index)"
-                                                                                  class="fa fa-times "></i></a>
-                                    <a class="text-primary pull-right"><i ng-click="showCalendar(data,true)"
-                                                                          class="fa fa-calendar"></i></a>
+                                </td>
+                                <td>
+                                    <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate}}</span>
+                                </td>
+                                <td>
+                                    <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.endOn | stringToDate}}</span>
+                                </td>
+                                <td>
+                                    <a class="text-hover-primary ">
+                                        <i ng-click="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                                    </a>
+                                    <a><i ng-click="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                                    <a class="text-hover-color">
+                                        <i ng-click="removeFrequency($index)" class="fa fa-times "></i>
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
@@ -205,504 +248,21 @@
                     </div>
                     <div class="text-center text-orange "
                          ng-if="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
-                        <a href ng-click="createNewFrequency()" translate>button.addNewFrequency</a>
+                        <a href  ng-click="createNewFrequency()" ng-class="{'disable-link':!(calendar.dateFrom && calendar.dateTo)}" translate>button.addNewFrequency</a>
                     </div>
                     <div class="text-center text-orange "
                          ng-if="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
-                        <a href ng-click="createNewFrequency()" translate>button.addNewFrequency</a>
+                        <a href ng-click="createNewFrequency()" ng-class="{'disable-link':!(calendar.dateFrom && calendar.dateTo)}" translate>button.addNewFrequency</a>
                     </div>
-                </div>
-            </div>
-            <div ng-if="!editor.showYearView && editor.hidePervious">
-                <div>
-                    <div class="row m-b-sm">
-                        <label class="col-sm-12" ng-show="editor.create">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.create</span>
-                            <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
-                        </label>
-                        <label class="col-sm-12" ng-show="editor.update">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.edit</span>
-                            <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
-                        </label>
-                    </div>
-                    <div>
-                        <div class="b-b">
-                            <ul class="nav nav-tabs">
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab1"
-                                       ng-class="{'active':frequency.tab == 'weekDays'}"
-                                       ng-click="frequency.tab = 'weekDays'" translate>tab.weekDays</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab2"
-                                       ng-class="{'active':frequency.tab == 'specificWeekDays'}"
-                                       ng-click="frequency.tab = 'specificWeekDays'" translate>label.specificWeekDays</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab3"
-                                       ng-class="{'active':frequency.tab == 'specificDays'}"
-                                       ng-click="frequency.tab = 'specificDays'" translate>label.specificDays</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab4"
-                                       ng-class="{'active':frequency.tab == 'monthDays'}"
-                                       ng-click="frequency.tab = 'monthDays'" translate>tab.monthDays</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab5"
-                                       ng-class="{'active':frequency.tab == 'others'}"
-                                       ng-click="frequency.tab = 'others'" translate>tab.every</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab6"
-                                       ng-class="{'active':frequency.tab == 'nationalHoliday'}"
-                                       ng-click="frequency.tab = 'nationalHoliday'" translate>tab.nationalHoliday</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
-                            <div class="tab-pane animated fadeIn" id="tab1"
-                                 ng-class="{'active':frequency.tab == 'weekDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.weekDays</label>
-
-                                    <div class="col-sm-9">
-                                        <label class="md-check w">
-                                            <input type="checkbox" ng-model="frequency.all" ng-click="checkAllWeek()">
-                                            <i class="primary"></i> <span translate>label.everyDay</span>
-                                        </label><br>
-                                        <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'1'">
-                                            <i class="primary"></i> <span translate>label.monday</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'2'">
-                                            <i class="primary"></i> <span translate>label.tuesday</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'3'">
-                                            <i class="primary"></i> <span translate>label.wednesday</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'4'">
-                                            <i class="primary"></i> <span translate>label.thursday</span>
-                                        </label>
-                                        <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'5'">
-                                            <i class="primary"></i> <span translate>label.friday</span>
-                                        </label>
-                                        <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'6'">
-                                            <i class="primary"></i> <span translate>label.saturday</span>
-                                        </label>
-                                        <label class="md-check m-t-sm w">
-                                            <input type="checkbox" data-checklist-model="frequency.days"
-                                                   data-checklist-value="'0'">
-                                            <i class="primary"></i> <span translate>label.sunday</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane animated fadeIn" id="tab2"
-                                 ng-class="{'active':frequency.tab == 'specificWeekDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.dayNumber</label>
-
-                                    <div class="col-sm-6">
-                                        <select class="form-control" ng-model="frequency.which">
-                                            <option value="1" translate>label.first</option>
-                                            <option value="2" translate>label.second</option>
-                                            <option value="3" translate>label.third</option>
-                                            <option value="4" translate>label.fourth</option>
-                                            <option value="-1" translate>label.last</option>
-                                            <option value="-2" translate>label.secondLast</option>
-                                            <option value="-3" translate>label.thirdLast</option>
-                                            <option value="-4" translate>label.fourthLast</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-3 form-control-label" translate>label.weekDays</label>
-
-                                    <div class="col-sm-6">
-                                        <select class="form-control" ng-model="frequency.specificWeekDay">
-                                            <option value="monday">{{'label.monday' | translate}}</option>
-                                            <option value="tuesday">{{'label.tuesday' | translate}}</option>
-                                            <option value="wednesday">{{'label.wednesday' | translate}}</option>
-                                            <option value="thursday">{{'label.thursday' | translate}}</option>
-                                            <option value="friday">{{'label.friday' | translate}}</option>
-                                            <option value="saturday">{{'label.saturday' | translate}}</option>
-                                            <option value="sunday">{{'label.sunday' | translate}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="tab-pane animated fadeIn" id="tab3"
-                                 ng-class="{'active':frequency.tab == 'specificDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 form-control-label" translate>label.date</label>
-
-                                    <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-model="frequency.date"
-                                               data-min-date="{{minDate}}"
-                                               data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
-                                               bs-datepicker type="text">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane animated fadeIn" id="tab4"
-                                 ng-class="{'active':frequency.tab == 'monthDays'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.countFromTheLastDay</label>
-
-                                    <div class="col-sm-6">
-                                        <label class="md-check">
-                                            <input type="checkbox" ng-model="frequency.isUltimos">
-                                            <i class="primary"></i>
-                                        </label>
-                                    </div>
-                                    <div class="col-sm-6 m-t-sm">
-                                        <table class="table table-bordered table-striped text-center m-b-xs w">
-                                            <tr>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('1')}"><a
-                                                        ng-click="selectMonthDays('1')">1</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('2')}"><a
-                                                        ng-click="selectMonthDays('2')">2</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('3')}"><a
-                                                        ng-click="selectMonthDays('3')">3</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('4')}"><a
-                                                        ng-click="selectMonthDays('4')">4</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('5')}"><a
-                                                        ng-click="selectMonthDays('5')">5</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('6')}"><a
-                                                        ng-click="selectMonthDays('6')">6</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('7')}"><a
-                                                        ng-click="selectMonthDays('7')">7</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('8')}"><a
-                                                        ng-click="selectMonthDays('8')">8</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('9')}"><a
-                                                        ng-click="selectMonthDays('9')">9</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('10')}"><a
-                                                        ng-click="selectMonthDays('10')">10</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('11')}"><a
-                                                        ng-click="selectMonthDays('11')">11</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('12')}"><a
-                                                        ng-click="selectMonthDays('12')">12</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('13')}"><a
-                                                        ng-click="selectMonthDays('13')">13</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('14')}"><a
-                                                        ng-click="selectMonthDays('14')">14</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('15')}"><a
-                                                        ng-click="selectMonthDays('15')">15</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('16')}"><a
-                                                        ng-click="selectMonthDays('16')">16</a></td>
-                                                <td style="border: 1px solid #fff"
-                                                    ng-class="{'primary': getSelectedMonthDays('17')}"><a
-                                                        ng-click="selectMonthDays('17')">17</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('18')}"><a
-                                                        ng-click="selectMonthDays('18')">18</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('19')}"><a
-                                                        ng-click="selectMonthDays('19')">19</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('20')}"><a
-                                                        ng-click="selectMonthDays('20')">20</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('21')}"><a
-                                                        ng-click="selectMonthDays('21')">21</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('22')}"><a
-                                                        ng-click="selectMonthDays('22')">22</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('23')}"><a
-                                                        ng-click="selectMonthDays('23')">23</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('24')}"><a
-                                                        ng-click="selectMonthDays('24')">24</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('25')}"><a
-                                                        ng-click="selectMonthDays('25')">25</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('26')}"><a
-                                                        ng-click="selectMonthDays('26')">26</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('27')}"><a
-                                                        ng-click="selectMonthDays('27')">27</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('28')}"><a
-                                                        ng-click="selectMonthDays('28')">28</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('29')}"><a
-                                                        ng-click="selectMonthDays('29')">29</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('30')}"><a
-                                                        ng-click="selectMonthDays('30')">30</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('31')}"
-                                                    ng-if="!frequency.isUltimos"><a
-                                                        ng-click="selectMonthDays('31')">31</a></td>
-                                                <td style="border: 1px solid #fff" colspan="3" ng-class="{'primary': getSelectedMonthDays('0')}"
-                                                    ng-if="frequency.isUltimos"><a ng-click="selectMonthDays('0')">Last
-                                                    Day</a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane animated fadeIn" id="tab5"
-                                 ng-class="{'active':frequency.tab == 'others'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.every</label>
-                                    <div class="col-sm-2">
-                                        <input type="number" class="form-control" min="1" max="31" ng-model="frequency.interval">
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <select class="form-control" ng-model="frequency.dateEntity">
-                                            <option value="days" translate>label.days</option>
-                                            <option value="weeks" translate>label.weeks</option>
-                                            <option value="months" translate>label.months</option>
-                                            <option value="years" translate>label.years</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.startingWith</label>
-                                    <div class="col-sm-5">
-                                        <input class="form-control input-date" style="width: 100%;background-position: 95%" ng-model="frequency.startingWith"
-                                           data-date-format="{{dataFormat}}" data-min-date="{{minDate}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
-                                           bs-datepicker type="text">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane animated fadeIn" id="tab6" ng-class="{'active':frequency.tab == 'nationalHoliday'}">
-                                <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.country</label>
-
-                                    <div class="col-sm-6">
-                                        <select class="form-control" ng-model="frequency.country" ng-change="loadHolidayList()">
-                                            <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName" value="{{country.code}}">{{country.name}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-3 form-control-label" translate>label.year</label>
-
-                                    <div class="col-sm-6">
-                                        <input type="number" class="form-control" min="2016" ng-model="frequency.year" ng-change="loadHolidayList()">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        <div class="col-sm-6 p-l-0">
-                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
-                                                <label class="md-check">
-                                                    <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
-                                                   data-checklist-value="holiday.date"><i class="primary"></i>
-
-                                                    {{getDateFormat(holiday.date)}} - {{holiday.name}}
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 p-l-0">
-                                            <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
-                                                <label class="md-check">
-                                                  <input type="checkbox" data-checklist-model="frequency.nationalHoliday"
-                                                   data-checklist-value="holiday.date"><i class="primary"></i>
-
-                                                    {{getDateFormat(holiday.date)}} - {{holiday.name}}
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="form-group row" ng-hide="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='others'">
-                            <label class="col-sm-3">{{'label.monthRange' | translate}}
-                            <a href>
-                                <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showMonthRange"
-                                   ng-click="showMonthRange=true"></i>
-                                <i class="cursor fa fa-caret-down m-l-xs" ng-show="showMonthRange"
-                                   ng-click="showMonthRange=false"></i>
-                            </a>
-                            </label>
-
-                            <div class="col-sm-9" ng-show="showMonthRange">
-                                <label class="md-check w">
-                                    <input type="checkbox" ng-model="frequency.allMonth" ng-click="checkAllMonth()">
-                                    <i class="primary"></i> <span translate>label.everyMonth</span>
-                                </label><br>
-                                <label class="md-check m-t-sm w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'1'">
-                                    <i class="primary"></i> <span translate>label.january</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'2'">
-                                    <i class="primary"></i> <span translate>label.february</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'3'">
-                                    <i class="primary"></i> <span translate>label.march</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'4'">
-                                    <i class="primary"></i> <span translate>label.april</span>
-                                </label>
-                                <label class="md-check m-t-sm w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'5'">
-                                    <i class="primary"></i> <span translate>label.may</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'6'">
-                                    <i class="primary"></i> <span translate>label.june</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'7'">
-                                    <i class="primary"></i> <span translate>label.july</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'8'">
-                                    <i class="primary"></i> <span translate>label.august</span>
-                                </label>
-                                <label class="md-check m-t-sm w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'9'">
-                                    <i class="primary"></i> <span translate>label.september</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'10'">
-                                    <i class="primary"></i> <span translate>label.october</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'11'">
-                                    <i class="primary"></i> <span translate>label.november</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="frequency.months"
-                                           data-checklist-value="'12'">
-                                    <i class="primary"></i> <span translate>label.december</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12" style="max-height: 260px; overflow: auto">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th translate>label.srNo</th>
-                                    <th translate>label.frequency</th>
-                                    <th translate>label.action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="data in frequencyList track by $index" class="cursor">
-                                    <td ng-click="editFrequency(data)">{{$index+1}}</td>
-                                    <td ng-click="editFrequency(data)">
-                                        <i ng-if="data.exclude" class="fa fa-minus"> </i>
-                                        <span>{{data.str}}</span>
-                                    </td>
-                                    <td>
-                                        <a class="text-hover-primary"><i ng-click="showCalendar(data)" class="fa fa-calendar m-r-sm"></i></a>
-                                        <a><i ng-click="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
-                                        <a class="text-hover-color"><i ng-click="deleteFrequency($index)" class="fa fa-times "></i></a>
-
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col-md-12 text-center" ng-if="frequencyList.length==0" translate>
-                        message.noFrequencyFound
-                    </div>
-                </div>
-            </div>
-            <div class="hide" ng-class="{show: editor.showYearView}">
-                <div>
-                    <label ng-if="editor.showText">
-                        <span class="text-primary text-u-l" translate>label.showCalendar</span>
-                        <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{editor.showText}}
-                    </label>
-                    <label ng-if="showMsgText">
-                        <span class="text text-u-l" translate>label.showCalendarAllDates</span>
-                    </label>
-                 </div>
-                <div class="text-md text-center">
-                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeDate()">
-                        <i class="fa fa-angle-left fa-lg"></i>
-                    </a>
-                    {{ calendarTitle }}
-                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeDate()">
-                        <i class="fa fa-angle-right fa-lg"></i>
-                    </a>
-                </div>
-                <div class="calendar m-t-sm">
-                    <mwl-calendar
-                            view="calendarView"
-                            view-date="viewDate"
-                            events="events"
-                            plan-items="planItems"
-                            view-title="calendarTitle"
-                            cell-is-open="true">
-                    </mwl-calendar>
                 </div>
             </div>
         </div>
-        <div class="modal-footer text-left" ng-if="!editor.showHoildayTab">
-            <button ng-if="!editor.hidePervious && !editor.showYearView" type="submit" class="btn btn-primary btn-sm"
+        <div class="modal-footer text-left">
+            <button type="submit" class="btn btn-primary btn-sm"
                     ng-disabled="form.$invalid" translate>button.submit
             </button>
-            <button ng-if="!editor.hidePervious && !editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
                     translate>button.cancel
-            </button>
-            <button ng-if="editor.hidePervious" type="button" class="btn btn-primary btn-sm"
-                    ng-disabled="form.$invalid || !editor.isEnable" ng-click="addFrequency();">
-                <span translate>button.save</span>
-            </button>
-            <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || frequencyList.length==0"
-                    ng-click="saveFrequency();">
-                <span translate>button.apply</span>
-
-            </button>
-            <button ng-if="editor.showYearView" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.back
-            </button>
-            <button ng-if="editor.hidePervious" type="button"
-                    class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
     </form>

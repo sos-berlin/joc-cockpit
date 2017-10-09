@@ -1344,7 +1344,10 @@
             obj.calendar.title = vm.calendar.title;
             obj.calendar.category = vm.calendar.category;
             obj.calendar.type = vm.calendar.type;
-
+            if(vm.calendar.dateFrom)
+                obj.calendar.dateFrom = moment(vm.calendar.dateFrom).format('YYYY-MM-DD') ;
+            if(vm.calendar.dateTo)
+                obj.calendar.dateTo = moment(vm.calendar.dateTo).format('YYYY-MM-DD');
             if (vm.comments.comment) {
                 obj.auditLog = {};
                 obj.auditLog.comment = vm.comments.comment;
@@ -1353,19 +1356,22 @@
                 obj.auditLog.timeSpent = vm.comments.timeSpent;
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
-            //console.log(JSON.stringify(obj));
+
             CalendarService.storeCalendar(obj).then(function (result) {
                 console.log(result)
             });
         }
-
+        $scope.$on('calendar-obj', function (event, data) {
+            vm.calendar = data.calendar;
+            storeCalendar();
+        });
         vm.addCalendar = function () {
+
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = {};
             vm.calendar.path = '/';
             vm.calendar.create = true;
-
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-calendar-dialog.html',
                 controller: 'CalendarEditorDialogCtrl',
@@ -1374,13 +1380,10 @@
                 backdrop: 'static',
                 windowClass: 'fade-modal'
             });
-            modalInstance.result.then(function () {
-                storeCalendar();
-            }, function () {
-
-            });
+            vm.template = 'page1';
         };
         vm.editCalendar = function (calendar) {
+
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = calendar;
@@ -1394,12 +1397,9 @@
                 backdrop: 'static',
                 windowClass: 'fade-modal'
             });
-            modalInstance.result.then(function () {
-                storeCalendar();
-            }, function () {
+            vm.template = 'page1';
 
-            });
-             vm.object.calendar=[];
+            vm.object.calendar=[];
         };
         vm.renameCalendar = function(calendar) {
             vm.comments = {};
@@ -1495,7 +1495,8 @@
         vm.getTreeStructure = function () {
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
-                compact: true
+                compact: true,
+                types: ['CALENDAR']
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
 

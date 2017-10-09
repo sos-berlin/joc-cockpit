@@ -154,7 +154,8 @@
                                     <table class="table table-hover table-bordered frequency-table">
                                         <thead>
                                         <tr>
-                                            <th translate colspan="2">label.listOfFrequencies</th>
+                                            <th translate>label.listOfFrequenciesCalendars</th>
+                                            <th translate>label.period</th>
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList track by $index">
@@ -165,7 +166,7 @@
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <a ng-click="editCalendar(data);">{{data.calendar.path}} -  <span class="text-muted" ng-bind="data.calendar.type | translate"></span></a>
+                                                <a ng-click="previewCalendar(data);"><i class="fa fa-calendar-plus-o"></i> {{data.calendar.path}} -  <span class="text-muted" ng-bind="data.calendar.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>
@@ -198,11 +199,11 @@
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.create</span>
+                            <span class="text-primary" translate>label.addFrequencies</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                         <label class="col-sm-12" ng-show="editor.update">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.edit</span>
+                            <span class="text-primary" translate>label.editFrequencies</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                     </div>
@@ -330,16 +331,23 @@
                             <div class="tab-pane animated fadeIn" id="tab4"
                                  ng-class="{'active':runTime.tab == 'monthDays'}">
                                 <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.countFromTheLastDay</label>
-
-                                    <div class="col-sm-6">
-                                        <label class="md-check">
-                                            <input type="checkbox" ng-model="runTime.isUltimos">
+                                    <label class="col-sm-3" translate>label.monthDays</label>
+                                    <div class="col-sm-9">
+                                        <label class="md-check ">
+                                            <input type="radio" ng-model="runTime.isUltimos" name="radio"
+                                                   value="months">
                                             <i class="primary"></i>
+                                            <span translate>label.countFromFirstDay</span>
+                                        </label>
+                                        <label class="md-check m-l-md">
+                                            <input type="radio" ng-model="runTime.isUltimos" name="radio"
+                                                   value="ultimos">
+                                            <i class="primary"></i>
+                                            <span translate>label.countFromTheLastDay</span>
                                         </label>
                                     </div>
                                     <div class="col-sm-6 m-t-sm">
-                                        <table class="table table-bordered table-striped text-center m-b-xs w">
+                                        <table class="table table-bordered table-striped text-center m-b-xs w" ng-show="runTime.isUltimos=='months'">
                                             <tr>
                                                 <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('1')}"><a
                                                         ng-click="selectMonthDays('1')">1</a></td>
@@ -409,13 +417,84 @@
                                                         ng-click="selectMonthDays('29')">29</a></td>
                                                 <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('30')}"><a
                                                         ng-click="selectMonthDays('30')">30</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('31')}"
-                                                    ng-if="!runTime.isUltimos"><a
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('31')}"><a
                                                         ng-click="selectMonthDays('31')">31</a></td>
-                                                <td style="border: 1px solid #fff" colspan="3" ng-class="{'primary': getSelectedMonthDays('0')}"
-                                                    ng-if="runTime.isUltimos"><a ng-click="selectMonthDays('0')">Last
-                                                    Day</a>
-                                                </td>
+                                            </tr>
+                                        </table>
+                                         <table class="table table-bordered table-striped text-center m-b-xs w" ng-hide="runTime.isUltimos=='months'">
+                                            <tr>
+                                                <td colspan="2" style="border: 1px solid #fff"
+                                                    ng-class="{'primary': getSelectedMonthDaysU('0')}"><a
+                                                        ng-click="selectMonthDaysU('0')" translate>label.lastDay</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('1')}"><a
+                                                        ng-click="selectMonthDaysU('1')">-1</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('2')}"><a
+                                                        ng-click="selectMonthDaysU('2')">-2</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('3')}"><a
+                                                        ng-click="selectMonthDaysU('3')">-3</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('4')}"><a
+                                                        ng-click="selectMonthDaysU('4')">-4</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('5')}"><a
+                                                        ng-click="selectMonthDaysU('5')">-5</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('6')}"><a
+                                                        ng-click="selectMonthDaysU('6')">-6</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('7')}"><a
+                                                        ng-click="selectMonthDaysU('7')">-7</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('8')}"><a
+                                                        ng-click="selectMonthDaysU('8')">-8</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('9')}"><a
+                                                        ng-click="selectMonthDaysU('9')">-9</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('10')}"><a
+                                                        ng-click="selectMonthDaysU('10')">-10</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('11')}"><a
+                                                        ng-click="selectMonthDaysU('11')">-11</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('12')}"><a
+                                                        ng-click="selectMonthDaysU('12')">-12</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('13')}"><a
+                                                        ng-click="selectMonthDaysU('13')">-13</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('14')}"><a
+                                                        ng-click="selectMonthDaysU('14')">-14</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('15')}"><a
+                                                        ng-click="selectMonthDaysU('15')">-15</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('16')}"><a
+                                                        ng-click="selectMonthDaysU('16')">-16</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('17')}"><a
+                                                        ng-click="selectMonthDaysU('17')">-17</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('18')}"><a
+                                                        ng-click="selectMonthDaysU('18')">-18</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('19')}"><a
+                                                        ng-click="selectMonthDaysU('19')">-19</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('20')}"><a
+                                                        ng-click="selectMonthDaysU('20')">-20</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('21')}"><a
+                                                        ng-click="selectMonthDaysU('21')">-21</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('22')}"><a
+                                                        ng-click="selectMonthDaysU('22')">-22</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('23')}"><a
+                                                        ng-click="selectMonthDaysU('23')">-23</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('24')}"><a
+                                                        ng-click="selectMonthDaysU('24')">-24</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('25')}"><a
+                                                        ng-click="selectMonthDaysU('25')">-25</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('26')}"><a
+                                                        ng-click="selectMonthDaysU('26')">-26</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('27')}"><a
+                                                        ng-click="selectMonthDaysU('27')">-27</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('28')}"><a
+                                                        ng-click="selectMonthDaysU('28')">-28</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('29')}"><a
+                                                        ng-click="selectMonthDaysU('29')">-29</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('30')}"><a
+                                                        ng-click="selectMonthDaysU('30')">-30</a></td>
+
                                             </tr>
                                         </table>
                                     </div>
@@ -586,7 +665,6 @@
                                 <tr ng-repeat="period in periodList track by $index" class="cursor">
                                     <td ng-click="editPeriod(period)">{{$index+1}}</td>
                                     <td ng-click="editPeriod(period)">
-                                        <span ng-if="period.isUltimos">{{'label.ultimos' | translate}} - </span>
                                         <span>{{period.str}}</span>
                                     </td>
                                     <td ng-click="editPeriod(period)">
@@ -627,7 +705,10 @@
             </div>
             <div ng-if="editor.showHolidayTab">
                <div class="row m-b-sm">
-                    <label class="col-sm-12 text">{{'label.nonWorkingDays' | translate}}</label>
+                    <label class="col-sm-3 text">{{'label.nonWorkingDays' | translate}}</label>
+                   <button type="button" class="btn btn-sm btn-grey pull-right m-r"
+                           ng-click="assignHolidayCalendar(data)" translate>button.assignCalendar
+                   </button>
                 </div>
                 <div class="b-b">
                     <ul class="nav nav-tabs">
@@ -652,13 +733,13 @@
                             <label class="col-sm-3 form-control-label" translate>label.year</label>
 
                             <div class="col-sm-6">
-                                <input type="number" class="form-control" min="2016" ng-model="runTime.year" ng-change="loadHolidayList()">
+                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="runTime.year" ng-change="loadHolidayList()">
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-12">
                                 <div class="col-sm-6 p-l-0">
-                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.ceil(holidayList.length/2))" ng-if="holiday.type == 'public' || holiday.type == 'bank'">
+                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
                                                    data-checklist-value="holiday.date"><i class="primary"></i>
@@ -668,7 +749,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6 p-l-0">
-                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday2 in holidayList.slice(Math.ceil(holidayList.length/2),holidayList.length)" ng-if="holiday2.type == 'public' || holiday2.type == 'bank'">
+                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday2 in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)">
                                         <label class="md-check">
                                             <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
                                                    data-checklist-value="holiday2.date"><i class="primary"></i>
@@ -815,11 +896,11 @@
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn btn-primary btn-sm"
                     ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();">
-                <span translate>button.save</span>
+                <span translate>button.addNewFrequency</span>
             </button>
             <button ng-if="editor.hidePervious" type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || !editor.isEnable"
                     ng-click="createRunTime(form);">
-                <span ng-if="!editor.update" translate>button.apply</span>
+                <span ng-if="!editor.update" translate>button.close</span>
                 <span ng-if="editor.update" translate>button.save</span>
             </button>
             <button ng-if="editor.hidePervious" type="button"
@@ -828,9 +909,6 @@
         </div>
         <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab">
             <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab">
-                <span translate>button.save</span>
-            </button>
-            <button type="button" class="btn btn-primary btn-sm" ng-click="updateCalendar();" ng-if="editor.showCalendarTab">
                 <span translate>button.save</span>
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.cancel</button>

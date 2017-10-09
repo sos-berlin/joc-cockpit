@@ -107,14 +107,12 @@
                     obj.processingStates.push(vm.orderFilters.filter.state);
                 }
                 loadOrders(obj);
-
             }
         });
 
         vm.showLogFuc = function (value) {
             var orders = {};
             vm.isAuditLog = false;
-            orders = {};
             orders.orders = [];
             orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
             orders.jobschedulerId = $scope.schedulerIds.selected;
@@ -129,6 +127,7 @@
         };
 
         vm.loadAuditLogs = function (obj) {
+
             obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
             AuditLogService.getLogs(obj).then(function (result) {
                 if (result && result.auditLog) {
@@ -6227,6 +6226,13 @@
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.isUnique = true;
+ vm.historyView={};
+        vm.historyView.current=vm.userPreferences.historyView == 'current';
+
+        vm.changeJobScheduler = function(){
+            vm.init();
+        };
+
 
         vm.historyFilters = CoreService.getHistoryTab();
         vm.order = vm.historyFilters.order;
