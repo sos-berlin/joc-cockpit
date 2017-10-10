@@ -1500,8 +1500,8 @@
 
                                     var menu = '<span class="text-sm"><i id="circle-' + order.orderId + '" class="text-xs fa fa-circle" ng-class="colorFunction(\'' + order.processingState.severity + '\')"></i> ' +
 
-                                        '<span ng-style="{\'max-width\':calWidth(\'' + order.orderId + '\',\'' + order.state + '\',\'' + order.runTimeIsTemporary + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
-                                        + '<span  class="show-block v-m text-success text-xs"> <small class="fa fa-circle-o text-info hide" ng-class="{\'show-block\':\''+order.runTimeIsTemporary+'\' == \'true\'}"></small> ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + '(' + diff + ')</span>'
+                                        '<span ng-style="{\'max-width\':calWidth(\'' + order.orderId + '\',\'' + order.state + '\')}" class="' + blockEllipsisFlowOrder + ' show-block v-m p-r-xs" title="' + order.orderId + '">' + order.orderId + '</span>'
+                                        + '<span  class="show-block v-m text-success text-xs">  ' + (time!==0?moment(time).tz(JSON.parse($window.sessionStorage.preferences).zone).format(JSON.parse($window.sessionStorage.preferences).dateFormat):'') + '(' + diff + ')</span>'
                                         + '</span>'
                                         + '<div class="btn-group dropdown "><button type="button"  class="btn-drop more-option-h dropdown1" data-toggle="dropdown"><i class="fa fa-ellipsis-h"></i></button>'
                                         + '<div class="dropdown-menu dropdown-ac " role="menu" style="position: fixed;z-index: 9999;">'

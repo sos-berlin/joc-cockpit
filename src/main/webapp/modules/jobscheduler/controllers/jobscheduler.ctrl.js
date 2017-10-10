@@ -1344,10 +1344,10 @@
             obj.calendar.title = vm.calendar.title;
             obj.calendar.category = vm.calendar.category;
             obj.calendar.type = vm.calendar.type;
-            if(vm.calendar.dateFrom)
-                obj.calendar.dateFrom = moment(vm.calendar.dateFrom).format('YYYY-MM-DD') ;
-            if(vm.calendar.dateTo)
-                obj.calendar.dateTo = moment(vm.calendar.dateTo).format('YYYY-MM-DD');
+            if(vm.calendar.from)
+                obj.calendar.from = moment(vm.calendar.from).format('YYYY-MM-DD') ;
+            if(vm.calendar.to)
+                obj.calendar.to = moment(vm.calendar.to).format('YYYY-MM-DD');
             if (vm.comments.comment) {
                 obj.auditLog = {};
                 obj.auditLog.comment = vm.comments.comment;
@@ -1386,7 +1386,7 @@
 
             vm.comments = {};
             vm.comments.radio = 'predefined';
-            vm.calendar = calendar;
+            vm.calendar = angular.copy(calendar);
             vm.calendar.create = false;
 
             var modalInstance = $uibModal.open({

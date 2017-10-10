@@ -133,18 +133,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.validFrom</label>
                         <div class="col-sm-3">
-                            <input class="form-control input-date input-date1" required ng-model="calendar.dateFrom"
-                                   data-min-date="{{minDate}}"
+                            <input class="form-control input-date input-date1" ng-model="calendar.from"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                    bs-datepicker type="text">
                         </div>
                         <label class="col-sm-3 form-control-label text-center" translate>label.validTo</label>
                         <div class="col-sm-3">
-                            <input class="form-control input-date input-date1" required ng-model="calendar.dateTo" ng-disabled="!calendar.dateFrom"
-                                   data-min-date="{{calendar.dateFrom}}"
+                            <input class="form-control input-date input-date1" required ng-model="calendar.to" name="to"
+                                   data-min-date="{{calendar.from}}"
                                    data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.endDate' | translate}}"
                                    bs-datepicker type="text">
                         </div>
@@ -163,7 +162,7 @@
                             button.excludedFrequencies
                         </button>
                     </div>
-                    <button type="button" class="btn btn-sm pull-right btn-grey" ng-disabled="!(calendar.dateFrom && calendar.dateTo)"
+                    <button type="button" class="btn btn-sm pull-right btn-grey" ng-disabled="!calendar.to"
                             ng-click="createNewFrequency()" translate>button.addNewFrequency
                     </button>
                     <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b" ng-disabled="calendar.includesFrequency.length==0 && calendar.excludesFrequency.length==0"
@@ -222,16 +221,16 @@
                                     <a ng-click="updateFrequency(data);">{{data.str}}</a>
                                 </td>
                                 <td>
-                                    <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate}}</span>
-                                    <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate}}</span>
-                                    <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate}}</span>
-                                    <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate}}</span>
+                                    <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
                                 </td>
                                 <td>
-                                    <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate}}</span>
-                                    <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate}}</span>
-                                    <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate}}</span>
-                                    <span ng-if="data.tab=='others'">{{data.endOn | stringToDate}}</span>
+                                    <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
                                 </td>
                                 <td>
                                     <a class="text-hover-primary ">
@@ -248,11 +247,11 @@
                     </div>
                     <div class="text-center text-orange "
                          ng-if="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
-                        <a href  ng-click="createNewFrequency()" ng-class="{'disable-link':!(calendar.dateFrom && calendar.dateTo)}" translate>button.addNewFrequency</a>
+                        <a href  ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to}" translate>button.addNewFrequency</a>
                     </div>
                     <div class="text-center text-orange "
                          ng-if="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
-                        <a href ng-click="createNewFrequency()" ng-class="{'disable-link':!(calendar.dateFrom && calendar.dateTo)}" translate>button.addNewFrequency</a>
+                        <a href ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to}" translate>button.addNewFrequency</a>
                     </div>
                 </div>
             </div>

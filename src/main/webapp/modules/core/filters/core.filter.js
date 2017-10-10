@@ -19,6 +19,36 @@
         }
     }
 
+    function d(e) {
+        return function (t) {
+            if (e.sessionStorage.preferences) {
+                if (!t)return "-";
+                var n = JSON.parse(e.sessionStorage.preferences);
+                if (!n.zone) {
+                    return;
+                }
+                if (n.dateFormat.match('HH:mm')) {
+                    n.dateFormat = n.dateFormat.replace('HH:mm', '');
+                }
+                else if (n.dateFormat.match('hh:mm')) {
+                    n.dateFormat = n.dateFormat.replace('hh:mm', '');
+                }
+
+                if (n.dateFormat.match(':ss')) {
+                    n.dateFormat = n.dateFormat.replace(':ss', '');
+                }
+                if (n.dateFormat.match('A')) {
+                    n.dateFormat = n.dateFormat.replace('A', '');
+                }
+                if (n.dateFormat.match('|')) {
+                    n.dateFormat = n.dateFormat.replace('|', '');
+                }
+                n.dateFormat = n.dateFormat.trim();
+                return moment(t).tz(n.zone).format(n.dateFormat)
+            }
+        }
+    }
+
     function r(e, t) {
         return function (n, r) {
             if (e.sessionStorage.preferences) {
@@ -93,5 +123,5 @@
         }
     }
 
-    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f), e.$inject = ["$window"], t.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"]
+    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"]
 }();

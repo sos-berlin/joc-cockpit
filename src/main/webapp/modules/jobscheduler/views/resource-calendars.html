@@ -61,6 +61,12 @@
                                 <span translate>label.category </span>:
                                <span ng-bind="calendar.category || '-'"></span>
                             </div>
+                            <div class="text-sm text-left text-muted p-t-xs">
+                                <span translate>label.validity </span>:
+                                <span ng-if="calendar.from" ng-bind="calendar.from | stringToDate1"></span>
+                                <span ng-if="calendar.from && calendar.to" translate> label.to </span>
+                                <span ng-bind="calendar.to | stringToDate1"></span>
+                            </div>
                         </div>
                         <div class="box-footer b-t" >
                             <div>
@@ -107,6 +113,18 @@
                             <i ng-show="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                         </th>
+                        <th ng-click="sortByC('from')"><a><span translate>label.validityFrom</span>
+                            <i ng-show="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByC('to')"><a><span translate>label.validityTo</span>
+                            <i ng-show="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
                     </tr>
                     </thead>
                     <tbody ng-repeat="calendar in allCalendars | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse | startFrom:(calendarFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
@@ -139,6 +157,8 @@
                         <td ng-bind="calendar.path"></td>
                         <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
                         <td ng-bind="calendar.category"></td>
+                        <td ng-bind="calendar.from | stringToDate1"></td>
+                        <td ng-bind="calendar.to | stringToDate1"></td>
                     </tr>
                     </tbody>
                 </table>
