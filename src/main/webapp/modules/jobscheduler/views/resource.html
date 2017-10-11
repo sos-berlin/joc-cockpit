@@ -188,7 +188,7 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                         <a class="dropdown-item" ng-model="calendarFilters.filter.category" ng-click="loadCategory()"
-                                           ng-repeat="category in categories" uib-btn-radio="category"
+                                           ng-repeat="category in categories" ng-if="category" uib-btn-radio="category"
                                            ng-class="{'btn-primary': calendarFilters.filter.category==category}" >
                                             <span>{{category}}</span>
                                             <i ng-click="loadCategory('remove');$event.stopPropagation();" ng-if="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>

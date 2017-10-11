@@ -476,6 +476,16 @@
                 });
                 return deferred.promise;
             },
+            calendarUsed: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendar/used');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             delete: function (filter) {
                 var deferred = $q.defer();
                 var Calendar = $resource('calendars/delete');

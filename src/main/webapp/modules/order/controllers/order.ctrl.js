@@ -1702,55 +1702,9 @@
             });
         }
 
-        function resetRunTime(order) {
+  
 
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.orders.push({jobChain: order.jobChain, orderId: order.orderId});
-            if (vm.userPreferences.auditLog) {
-                orders.auditLog = {};
-                if (vm.comments.comment)
-                    orders.auditLog.comment = vm.comments.comment;
-                if (vm.comments.timeSpent)
-                    orders.auditLog.timeSpent = vm.comments.timeSpent;
-
-                if (vm.comments.ticketLink)
-                    orders.auditLog.ticketLink = vm.comments.ticketLink;
-            }
-            OrderService.resetRunTime(orders).then(function (res) {
-                $scope.$emit('refreshList');
-            });
-
-        }
-
-        vm.resetRunTime = function (order) {
-            vm.order = order;
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            OrderService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobChain: order.jobChain,
-                orderId: order.orderId
-            }).then(function (res) {
-                if (res.runTime) {
-                    vm.xml = res.runTime.permanentRunTime;
-                    vm.xml1 = res.runTime.runTime;
-                }
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/reset-run-time-dialog.html',
-                    controller: 'ResetRuntimeDialogCtrl',
-                    scope: vm,
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    resetRunTime(order);
-                }, function () {
-                    vm.reset();
-                });
-            });
-        };
+      
         var firstDay;
         var lastDay;
         vm.onOrderAction = function (order, action) {
@@ -1859,10 +1813,7 @@
                     orderId: order.orderId
                 }).then(function (res) {
                     if (res.runTime) {
-                        vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
-                        if (vm.runTimeIsTemporary) {
-                            vm.permanentRunTime = res.runTime.permanentRunTime;
-                        }
+                       
                         vm.runTimes = res.runTime;
                         vm.xml = vm.runTimes.runTime;
                     }
@@ -1895,9 +1846,7 @@
 
                 vm.zones = moment.tz.names();
             }
-            if (action == 'reset run time') {
-                vm.resetRunTime(order);
-            }
+
             if (action == 'suspend order') {
                 var orders = {};
                 orders.orders = [];
@@ -5618,10 +5567,6 @@
                 orderId: order.orderId
             }).then(function (res) {
                 if (res.runTime) {
-                    vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
-                    if (vm.runTimeIsTemporary) {
-                        vm.permanentRunTime = res.runTime.permanentRunTime;
-                    }
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
                 }
@@ -5657,60 +5602,7 @@
 
             vm.zones = moment.tz.names();
         };
-        function resetRunTime(order) {
-
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            orders.orders.push({jobChain: order.jobChain, orderId: order.orderId});
-            if (vm.userPreferences.auditLog) {
-                orders.auditLog = {};
-                if (vm.comments.comment)
-                    orders.auditLog.comment = vm.comments.comment;
-                if (vm.comments.timeSpent)
-                    orders.auditLog.timeSpent = vm.comments.timeSpent;
-
-                if (vm.comments.ticketLink)
-                    orders.auditLog.ticketLink = vm.comments.ticketLink;
-            }
-            OrderService.resetRunTime(orders).then(function (res) {
-                OrderService.get(orders).then(function (res) {
-                    order.nextStartTime = undefined;
-                    order.startedAt = undefined;
-                    order = angular.merge(order, res.orders[0]);
-                });
-                checkAuditLog(order);
-            });
-        }
-
-        vm.resetRunTime = function (order) {
-            vm.order = order;
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            OrderService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobChain: order.jobChain,
-                orderId: order.orderId
-            }).then(function (res) {
-                if (res.runTime) {
-                    vm.xml = res.runTime.permanentRunTime;
-                    vm.xml1 = res.runTime.runTime;
-                }
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/reset-run-time-dialog.html',
-                    controller: 'ResetRuntimeDialogCtrl',
-                    scope: vm,
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    resetRunTime(order);
-                }, function () {
-                    vm.reset();
-                });
-            });
-        };
-
+       
         /**------------------------------------------------------end run time editor -------------------------------------------------------*/
 
 

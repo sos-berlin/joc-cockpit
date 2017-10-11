@@ -306,7 +306,6 @@
                                             <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start" translate>button.startTask</a>
                                             <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start" translate>button.startTaskat</a>
                                             <a class="dropdown-item" ng-click="setRunTime(job)" ng-class="{'disable-link':job.configurationStatus.severity==2}" ng-if="permission.Job.change.runTime" ><span translate>button.setRunTime</span></a>
-                                            <a href class="dropdown-item" ng-class="{'disable-link':!job.runTimeIsTemporary}" ng-click="resetRunTime(job)" ng-if="permission.Job.change.runTime"><span translate>button.resetRunTime</span></a>
                                             <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop" ng-click="stop(job)" translate>button.stop</a>
                                             <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.execute.unstop" ng-click="unstop(job)" translate>button.unstop</a>
                                             <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.execute.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
@@ -343,7 +342,7 @@
                                     </div>
                                     <div class="text-sm  text-left text-muted m-l p-t-xs">
                                         <span ng-if="job.nextStartTime">
-                                            <i class="fa fa-circle-o text-info text-xs" ng-if="job.runTimeIsTemporary"></i> {{job.nextStartTime | stringToDate}}
+                                             {{job.nextStartTime | stringToDate}}
                                             <span class="text-success" >(<span time="{{job.nextStartTime}}"></span>)</span>
                                         </span>
                                         <span ng-if="!job.nextStartTime">{{'label.never' | translate}}</span>
@@ -466,7 +465,6 @@
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="start(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start" translate>button.startTask</a>
                                                     <a class="dropdown-item" ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}" ng-click="startAt(job)" ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true)  && permission.Job.execute.start" translate>button.startTaskat</a>
                                                     <a class="dropdown-item" ng-click="setRunTime(job)" ng-if="permission.Job.change.runTime" ng-class="{'disable-link':job.configurationStatus.severity==2}" ><span translate>button.setRunTime</span></a>
-                                                    <a class="dropdown-item" ng-class="{'disable-link':!job.runTimeIsTemporary}" ng-if="permission.Job.change.runTime" ng-click="resetRunTime(job)" ><span translate>button.resetRunTime</span></a>
                                                     <a class="dropdown-item bg-hover-color" ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop" ng-click="stop(job)" translate>button.stop</a>
                                                     <a class="dropdown-item" ng-if="job.state._text =='STOPPED' && permission.Job.execute.unstop" ng-click="unstop(job)" translate>button.unstop</a>
                                                     <a class="dropdown-item bg-hover-color" ng-class="{'disable-link':job.state._text != 'RUNNING' || job.configurationStatus.severity==2}" ng-if="permission.Job.execute.kill" ng-click="killAllTask(job)" translate>button.killAllTasksImmediately</a>
@@ -507,7 +505,7 @@
                                         </td>
                                         <td>
                                             <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
-                                                <i class="fa fa-circle-o text-info text-xs" ng-if="job.runTimeIsTemporary"></i> {{job.nextStartTime | stringToDate}}
+                                                 {{job.nextStartTime | stringToDate}}
                                                 <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
                                             </span>
                                         </td>

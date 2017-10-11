@@ -1118,5 +1118,8 @@
   "placeholder.endDate": "End Date",
   "label.lastDay": "last day",
   "label.weekDays": "Weekdays",
-  "label.editFrequencies": "Update Frequencies"
+  "label.editFrequencies": "Update Frequencies",
+  "message.updateCalendar": "Are you sure you want to update this calendar?",
+  "button.confirm": "Confirm",
+  "placeholder.enterNewCalendarName": "Enter a New Calendar Name"
 }

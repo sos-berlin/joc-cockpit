@@ -1340,7 +1340,15 @@
         function storeCalendar() {
             var obj = {};
             obj.calendar = vm.calendar.calendarObj;
-            obj.calendar.path = vm.calendar.path+'/'+vm.calendar.name;
+            if(vm.calendar.create) {
+                if (vm.calendar.path == '/') {
+                    obj.calendar.path = '/' + vm.calendar.name;
+                } else {
+                    obj.calendar.path = vm.calendar.path + '/' + vm.calendar.name;
+                }
+            }else{
+                obj.calendar.path = vm.calendar.path;
+            }
             obj.calendar.title = vm.calendar.title;
             obj.calendar.category = vm.calendar.category;
             obj.calendar.type = vm.calendar.type;
@@ -1370,7 +1378,7 @@
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = {};
-            vm.calendar.path = '/';
+            vm.calendar.path = vm.folderPathC == '/' ? '/' : '/'+vm.folderPathC;
             vm.calendar.create = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-calendar-dialog.html',
@@ -1405,19 +1413,17 @@
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = angular.copy(calendar);
-            vm.calendar.create = false;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/rename-calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
-                backdrop: 'static',
-                windowClass: 'fade-modal'
+                backdrop: 'static'
             });
             modalInstance.result.then(function () {
-             //   console.log(vm.calendar);
+
                 var obj = {};
-                obj.path = vm.calendar.path;
+                obj.path = calendar.path;
                 obj.newPath = vm.calendar.newPath+'/'+vm.calendar.newName;
                 if (vm.comments.comment) {
                     obj.auditLog = {};
@@ -1427,7 +1433,7 @@
                     obj.auditLog.timeSpent = vm.comments.timeSpent;
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
-                CalendarService.rename(obj);
+                CalendarService.renameCalendar(obj);
             }, function () {
 
             });

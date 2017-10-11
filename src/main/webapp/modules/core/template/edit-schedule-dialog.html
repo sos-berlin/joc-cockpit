@@ -81,29 +81,23 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-<!--                        <div>
-                            <div class="col-sm-2 form-control-label p-l-0" translate>label.timeZone</div>
-                            <div class="col-sm-4">
-                                <select class="form-control"
-                                        ng-model="runTime1.timeZone" ng-change="createRunTime()">
-                                    <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
-                                </select>
-                            </div>
-                        </div>-->
-                        <button type="button" class="btn btn-sm btn-grey pull-right m-b"
-                                ng-click="showHolidayTab()" translate>button.nonWorkingDays
-                        </button>
-                        <button type="button" class="btn btn-sm pull-right btn-grey m-r"
-                                ng-click="createNewRunTime()" translate>button.addNewFrequency
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey pull-right m-r"
-                                ng-click="showScheduleTab()" translate>label.schedule
-                        </button>
-                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r"
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r-sm"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
-                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r"
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
+                        </button>
+                        <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
+                                ng-click="showScheduleTab()" translate>label.schedule
+                        </button>
+                        <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm m-b"
+                                ng-click="showHolidayTab()" translate>button.nonWorkingDays
+                        </button>
+                        <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
+                                ng-click="createNewRunTime()" translate>button.addNewFrequency
+                        </button>
+                        <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
+                                ng-click="assignCalendar(data)" translate>button.assignCalendar
                         </button>
                     </div>
                     <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
@@ -113,27 +107,30 @@
                                     <table class="table table-hover table-bordered frequency-table">
                                         <thead>
                                         <tr>
-                                            <th translate colspan="2">label.listOfFrequencies</th>
+                                            <th translate>label.listOfFrequenciesCalendars</th>
+                                            <th translate>label.period</th>
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList track by $index">
                                         <tr>
-                                            <td class="cursor"
-                                                style="border-right: none !important;vertical-align: top !important; ">
+                                            <td ng-if="data.frequency" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
+                                            <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                                <a ng-click="previewCalendar(data);"><i class="fa fa-calendar-plus-o"></i> {{data.calendar.path}} -  <span class="text-muted" ng-bind="data.calendar.type | translate"></span></a>
+                                                <a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
+                                            </td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
                                                     <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
-                                                    <a class="text-xs text-hover-primary m-l-sm"
-                                                       ng-click="deletePeriodFromFrequency(data, $index)"><i
+                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
                                                             class="fa fa-times"></i></a>
                                                 </div>
                                                 <div class="text-xs cursor text-hover-primary"><i
-                                                        class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i>
-                                                </div>
+                                                        class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i></div>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -148,19 +145,19 @@
                         </div>
                     </div>
                     <div class="col-md-6" ng-if="editor.editXml">
-                        <textarea class="form-control" rows="12" ng-model="xml" ng-blur="textEditor(xml)" placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
+                        <textarea class="form-control" rows="12" ng-model="xmlObj.xml" ng-blur="textEditor()" placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
             </div>
-            <div ng-if="!editor.showHolidayTab && editor.hidePervious">
+            <div ng-if="!editor.showHolidayTab && !editor.showCalendarTab && editor.hidePervious">
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.create</span>
+                            <span class="text-primary" translate>label.addFrequencies</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                         <label class="col-sm-12" ng-show="editor.update">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.edit</span>
+                            <span class="text-primary" translate>label.editFrequencies</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                     </div>
@@ -271,6 +268,7 @@
                                         </select>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="tab-pane animated fadeIn" id="tab3"
                                  ng-class="{'active':runTime.tab == 'specificDays'}">
@@ -278,7 +276,7 @@
                                     <label class="col-sm-3 form-control-label" translate>label.date</label>
 
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-model="runTime.date"
+                                        <input class="form-control input-date" ng-model="runTime.date" data-min-date="{{minDate}}"
                                                data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
                                                bs-datepicker type="text">
                                     </div>
@@ -287,16 +285,23 @@
                             <div class="tab-pane animated fadeIn" id="tab4"
                                  ng-class="{'active':runTime.tab == 'monthDays'}">
                                 <div class="form-group row">
-                                    <label class="col-sm-3" translate>label.countFromTheLastDay</label>
-
-                                    <div class="col-sm-6">
-                                        <label class="md-check">
-                                            <input type="checkbox" ng-model="runTime.isUltimos">
+                                    <label class="col-sm-3" translate>label.monthDays</label>
+                                    <div class="col-sm-9">
+                                        <label class="md-check ">
+                                            <input type="radio" ng-model="runTime.isUltimos" name="radio"
+                                                   value="months">
                                             <i class="primary"></i>
+                                            <span translate>label.countFromFirstDay</span>
+                                        </label>
+                                        <label class="md-check m-l-md">
+                                            <input type="radio" ng-model="runTime.isUltimos" name="radio"
+                                                   value="ultimos">
+                                            <i class="primary"></i>
+                                            <span translate>label.countFromTheLastDay</span>
                                         </label>
                                     </div>
                                     <div class="col-sm-6 m-t-sm">
-                                        <table class="table table-bordered table-striped text-center m-b-xs w">
+                                        <table class="table table-bordered table-striped text-center m-b-xs w" ng-show="runTime.isUltimos=='months'">
                                             <tr>
                                                 <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('1')}"><a
                                                         ng-click="selectMonthDays('1')">1</a></td>
@@ -366,13 +371,84 @@
                                                         ng-click="selectMonthDays('29')">29</a></td>
                                                 <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('30')}"><a
                                                         ng-click="selectMonthDays('30')">30</a></td>
-                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('31')}"
-                                                    ng-if="!runTime.isUltimos"><a
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDays('31')}"><a
                                                         ng-click="selectMonthDays('31')">31</a></td>
-                                                <td style="border: 1px solid #fff" colspan="3" ng-class="{'primary': getSelectedMonthDays('0')}"
-                                                    ng-if="runTime.isUltimos"><a ng-click="selectMonthDays('0')">Last
-                                                    Day</a>
-                                                </td>
+                                            </tr>
+                                        </table>
+                                         <table class="table table-bordered table-striped text-center m-b-xs w" ng-hide="runTime.isUltimos=='months'">
+                                            <tr>
+                                                <td colspan="2" style="border: 1px solid #fff"
+                                                    ng-class="{'primary': getSelectedMonthDaysU('0')}"><a
+                                                        ng-click="selectMonthDaysU('0')" translate>label.lastDay</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('1')}"><a
+                                                        ng-click="selectMonthDaysU('1')">-1</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('2')}"><a
+                                                        ng-click="selectMonthDaysU('2')">-2</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('3')}"><a
+                                                        ng-click="selectMonthDaysU('3')">-3</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('4')}"><a
+                                                        ng-click="selectMonthDaysU('4')">-4</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('5')}"><a
+                                                        ng-click="selectMonthDaysU('5')">-5</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('6')}"><a
+                                                        ng-click="selectMonthDaysU('6')">-6</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('7')}"><a
+                                                        ng-click="selectMonthDaysU('7')">-7</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('8')}"><a
+                                                        ng-click="selectMonthDaysU('8')">-8</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('9')}"><a
+                                                        ng-click="selectMonthDaysU('9')">-9</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('10')}"><a
+                                                        ng-click="selectMonthDaysU('10')">-10</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('11')}"><a
+                                                        ng-click="selectMonthDaysU('11')">-11</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('12')}"><a
+                                                        ng-click="selectMonthDaysU('12')">-12</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('13')}"><a
+                                                        ng-click="selectMonthDaysU('13')">-13</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('14')}"><a
+                                                        ng-click="selectMonthDaysU('14')">-14</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('15')}"><a
+                                                        ng-click="selectMonthDaysU('15')">-15</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('16')}"><a
+                                                        ng-click="selectMonthDaysU('16')">-16</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('17')}"><a
+                                                        ng-click="selectMonthDaysU('17')">-17</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('18')}"><a
+                                                        ng-click="selectMonthDaysU('18')">-18</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('19')}"><a
+                                                        ng-click="selectMonthDaysU('19')">-19</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('20')}"><a
+                                                        ng-click="selectMonthDaysU('20')">-20</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('21')}"><a
+                                                        ng-click="selectMonthDaysU('21')">-21</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('22')}"><a
+                                                        ng-click="selectMonthDaysU('22')">-22</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('23')}"><a
+                                                        ng-click="selectMonthDaysU('23')">-23</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('24')}"><a
+                                                        ng-click="selectMonthDaysU('24')">-24</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('25')}"><a
+                                                        ng-click="selectMonthDaysU('25')">-25</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('26')}"><a
+                                                        ng-click="selectMonthDaysU('26')">-26</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('27')}"><a
+                                                        ng-click="selectMonthDaysU('27')">-27</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('28')}"><a
+                                                        ng-click="selectMonthDaysU('28')">-28</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('29')}"><a
+                                                        ng-click="selectMonthDaysU('29')">-29</a></td>
+                                                <td style="border: 1px solid #fff" ng-class="{'primary': getSelectedMonthDaysU('30')}"><a
+                                                        ng-click="selectMonthDaysU('30')">-30</a></td>
+
                                             </tr>
                                         </table>
                                     </div>
@@ -543,7 +619,6 @@
                                 <tr ng-repeat="period in periodList track by $index" class="cursor">
                                     <td ng-click="editPeriod(period)">{{$index+1}}</td>
                                     <td ng-click="editPeriod(period)">
-                                        <span ng-if="period.isUltimos">{{'label.ultimos' | translate}} - </span>
                                         <span>{{period.str}}</span>
                                     </td>
                                     <td ng-click="editPeriod(period)">
@@ -581,111 +656,204 @@
                         </button>
                     </div>
                 </div>
-
-
             </div>
             <div ng-if="editor.showHolidayTab">
-                <div class="row m-b-sm">
-                    <label class="col-sm-12 text">{{'label.nonWorkingDays' | translate}}</label>
+               <div class="row m-b-sm">
+                    <label class="col-sm-3 text">{{'label.nonWorkingDays' | translate}}</label>
+                   <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey pull-right m-r"
+                           ng-click="assignHolidayCalendar(data)" translate>button.assignCalendar
+                   </button>
                 </div>
-                <div class="form-group row">
-                    <label class="col-sm-3" translate>label.date</label>
+                <div class="b-b">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" href data-toggle="tab" data-target="#tab10"
+                                translate>tab.nationalHoliday</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
+                    <div class="tab-pane active" id="tab10">
+                        <div class="form-group row">
+                            <label class="col-sm-3" translate>label.country</label>
 
-                    <div class="col-sm-6">
-                        <input class="form-control input-date" ng-model="holidayDate"
-                               data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
-                               type="text">
-                        <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"
-                                ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-offset-3 col-sm-3">
-                        <table class="table table-bordered" style="min-height: 100px; width: 87%">
-                            <tbody>
-                            <tr ng-repeat="date in holidayDates track by $index">
-                                <td>{{date | date:'yyyy-MM-dd'}}
-                                    <a class="pull-right" ng-click="removeHolidayDate($index)"><i
-                                            class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-3" translate>label.weekDays</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" ng-model="runTime.country" ng-change="loadHolidayList()">
+                                    <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName" value="{{country.code}}">{{country.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 form-control-label" translate>label.year</label>
 
-                    <div class="col-sm-9">
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'1'">
-                            <i class="primary"></i> <span translate>label.monday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'2'">
-                            <i class="primary"></i> <span translate>label.tuesday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'3'">
-                            <i class="primary"></i> <span translate>label.wednesday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'4'">
-                            <i class="primary"></i> <span translate>label.thursday</span>
-                        </label>
-                        <label class="md-check m-t-sm w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'5'">
-                            <i class="primary"></i> <span translate>label.friday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'6'">
-                            <i class="primary"></i> <span translate>label.saturday</span>
-                        </label>
-                        <label class="md-check w">
-                            <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
-                                   data-checklist-value="'7'">
-                            <i class="primary"></i> <span translate>label.sunday</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-3 form-control-label" translate>label.includeFiles</label>
-                    <div class="col-sm-2">
-                        <select class="form-control" ng-model="fileObj.holidayFile" style="padding-top: 6px ">
-                            <option value="live_file" translate>label.liveFile</option>
-                            <option value="file" translate>label.file</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-5 p-l-0">
-                        <input type="text" class="form-control" ng-model="liveFile">
-                    </div>
-                    <div class="col-sm-1">
-                        <button ng-disabled="!liveFile" type="button" class="btn btn-xs btn-grey"
-                                style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i
-                                class="fa fa-plus"></i></button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-offset-3 col-sm-6">
-                        <table class="table table-bordered" style="min-height: 100px;">
-                            <tbody>
-                            <tr ng-repeat="file in calendarFiles track by $index">
-                                <td>{{file}}
-                                    <a class="pull-right" ng-click="removeCalendarFile($index)"><i
-                                            class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="runTime.year" ng-change="loadHolidayList()">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6 p-l-0">
+                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))">
+                                        <label class="md-check">
+                                            <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
+                                                   data-checklist-value="holiday.date"><i class="primary"></i>
 
+                                            {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 p-l-0">
+                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday2 in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)">
+                                        <label class="md-check">
+                                            <input type="checkbox" data-checklist-model="runTime.nationalHoliday"
+                                                   data-checklist-value="holiday2.date"><i class="primary"></i>
+
+                                            {{getDateFormat(holiday2.date)}} - {{holiday2.name}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group row">
+                        <label class="col-sm-3" translate>label.date</label>
+
+                        <div class="col-sm-6">
+                            <input class="form-control input-date" ng-model="holidayDate" data-min-date="{{minDate}}"
+                                   data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
+                                   type="text">
+                            <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"
+                                    ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="holidayDates && holidayDates.length>0">
+                        <div class="col-sm-offset-3 col-sm-3" style="max-height: 150px; overflow: auto;">
+                            <table class="table table-bordered" style="width: 87%; ">
+                                <tbody>
+                                <tr ng-repeat="date in holidayDates track by $index">
+                                    <td>{{date | date:'yyyy-MM-dd'}}
+                                        <a class="pull-right" ng-click="removeHolidayDate($index,date)"><i
+                                                class="fa fa-times"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3" translate>label.weekDays</label>
+
+                        <div class="col-sm-9">
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'1'">
+                                <i class="primary"></i> <span translate>label.monday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'2'">
+                                <i class="primary"></i> <span translate>label.tuesday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'3'">
+                                <i class="primary"></i> <span translate>label.wednesday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'4'">
+                                <i class="primary"></i> <span translate>label.thursday</span>
+                            </label>
+                            <label class="md-check m-t-sm w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'5'">
+                                <i class="primary"></i> <span translate>label.friday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'6'">
+                                <i class="primary"></i> <span translate>label.saturday</span>
+                            </label>
+                            <label class="md-check w">
+                                <input type="checkbox" data-checklist-model="runTime1.holidays.weekdays.day._day"
+                                       data-checklist-value="'7'">
+                                <i class="primary"></i> <span translate>label.sunday</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 form-control-label" translate>label.includeFiles</label>
+                        <div class="col-sm-2">
+                            <select class="form-control" ng-model="fileObj.holidayFile" style="padding-top: 6px ">
+                                <option value="live_file" translate>label.liveFile</option>
+                                <option value="file" translate>label.file</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-5 p-l-0">
+                            <input type="text" class="form-control" ng-model="liveFile">
+                        </div>
+                        <div class="col-sm-1">
+                            <button ng-disabled="!liveFile" type="button" class="btn btn-xs btn-grey"
+                                    style="margin-left: -10px; margin-top: 2px" ng-click="addCalendarFile(liveFile);"><i
+                                    class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="row" ng-if="calendarFiles && calendarFiles.length>0">
+                        <div class="col-sm-offset-3 col-sm-7" style="max-height: 120px; overflow: auto;">
+                            <table class="table table-bordered" >
+                                <tbody>
+                                <tr ng-repeat="file in calendarFiles track by $index">
+                                    <td>{{file}}
+                                        <a class="pull-right" ng-click="removeCalendarFile($index)"><i
+                                                class="fa fa-times"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group row" ng-if="holidayCalendar && holidayCalendar.length>0">
+                        <label class="col-sm-3" translate>label.calendar</label>
+                        <div class="col-md-9" style="max-height: 120px; overflow: auto;">
+                            <div ng-repeat="h in holidayCalendar">
+                                <a href="" ng-click="previewCalendar(h)"><i class="fa fa-calendar-plus-o"></i> {{h.path}}
+                                <span ng-if="h.title">- <i class="text-muted">{{h.title}}</i></span></a>
+                                <a href="" ng-click="deleteHolidayCalendar(h)"><i class="m-l fa fa-times"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hide" ng-class="{show: editor.showCalendarTab}">
+               <div class="row">
+                    <label class="col-sm-12 text" >{{calendarObj.path}} <i ng-if="calendarObj.title" class="text-muted">- {{calendarObj.title}}</i>
+                        <span class="m-t">(<span class="text-sm" translate>label.validity </span>:
+                        <span class="text-sm" ng-if="calendarObj.from" ng-bind="calendarObj.from | stringToDate1"></span>
+                        <span class="text-sm" ng-if="calendarObj.from && calendarObj.to" translate> label.to </span>
+                        <span class="text-sm" ng-bind="calendarObj.to | stringToDate1"></span>)</span>
+                    </label>
+                </div>
+                <div class="text-md text-center">
+                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" >
+                        <i class="fa fa-angle-left fa-lg"></i>
+                    </a>
+                    {{calendarTitle}}
+                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" >
+                        <i class="fa fa-angle-right fa-lg"></i>
+                    </a>
+                </div>
+                <div class="calendar m-t-sm">
+                    <mwl-calendar
+                            view="calendarView"
+                            view-date="viewDate"
+                            events="events"
+                            plan-items="planItems"
+                            view-title="calendarTitle"
+                            cell-is-open="true">
+                    </mwl-calendar>
+                </div>
             </div>
         </div>
         <div class="modal-footer text-left" ng-if="!editor.showHolidayTab">
@@ -697,19 +865,19 @@
             </button>
             <button ng-if="editor.hidePervious && !editor.update" type="button" class="btn btn-primary btn-sm"
                     ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();">
-                    <span translate>button.save</span>
+                    <span translate>button.addNewFrequency</span>
             </button>
             <button ng-if="editor.hidePervious" type="button" class="btn orange btn-sm" ng-disabled="form.$invalid || !editor.isEnable"
                     ng-click="createRunTime(form);">
-                <span ng-if="!editor.update" translate>button.apply</span>
+                <span ng-if="!editor.update" translate>button.close</span>
                 <span ng-if="editor.update" translate>button.save</span>
             </button>
             <button ng-if="editor.hidePervious" type="button"
                     class="btn btn-grey btn-sm m-l-sm" ng-click="back()" translate>button.cancel
             </button>
         </div>
-        <div class="modal-footer text-left" ng-if="editor.showHolidayTab">
-            <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();">
+        <div class="modal-footer text-left" ng-if="editor.showHolidayTab || editor.showCalendarTab">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab">
                 <span translate>button.save</span>
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.cancel</button>

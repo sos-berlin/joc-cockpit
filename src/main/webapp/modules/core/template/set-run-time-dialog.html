@@ -115,7 +115,7 @@
                                 ng-disabled="order.at == 'later'"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
-                        <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
+                        <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
                                 ng-click="assignCalendar(data)" translate>button.assignCalendar
                         </button>
                     </div>
@@ -188,7 +188,7 @@
                         </div>
                     </div>
                     <div class="col-md-6" ng-if="editor.editXml">
-                        <textarea class="form-control" rows="15" ng-model="xml" ng-blur="textEditor(xml)" ng-attr-placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
+                        <textarea class="form-control" rows="15" ng-model="xmlObj.xml" ng-blur="textEditor()" ng-attr-placeholder="<run_time></run_time>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
             </div>
@@ -703,7 +703,7 @@
             <div ng-if="editor.showHolidayTab">
                <div class="row m-b-sm">
                     <label class="col-sm-3 text">{{'label.nonWorkingDays' | translate}}</label>
-                   <button type="button" class="btn btn-sm btn-grey pull-right m-r"
+                   <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey pull-right m-r"
                            ng-click="assignHolidayCalendar(data)" translate>button.assignCalendar
                    </button>
                 </div>

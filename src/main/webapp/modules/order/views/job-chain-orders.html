@@ -40,11 +40,6 @@
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                            ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
-                                                        <a href class="dropdown-item"
-                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                           ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
-                                                            <span translate>button.resetRunTime</span>
-                                                        </a>
                                                         <a href class="dropdown-item bg-hover-color"
                                                            ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                            ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
@@ -199,11 +194,6 @@
                                                         <a href class="dropdown-item"
                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                            ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
-                                                        <a href class="dropdown-item"
-                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                           ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
-                                                            <span translate>button.resetRunTime</span>
-                                                        </a>
                                                         <a href class="dropdown-item bg-hover-color"
                                                            ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                            ng-click="suspendOrder(order)" translate>button.suspendOrder</a>

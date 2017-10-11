@@ -49,11 +49,6 @@
                                                        ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                        ng-click="setRunTime(order)"><span
                                                             translate>button.setRunTime</span></a>
-                                                    <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                       ng-class="{'disable-link':!order.runTimeIsTemporary}"
-                                                       ng-click="resetRunTime(order)">
-                                                        <span translate>button.resetRunTime</span>
-                                                    </a>
                                                     <a href class="dropdown-item bg-hover-color"
                                                        ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                        ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
@@ -100,7 +95,7 @@
                             <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
                             <td  class="text-muted">
                                 <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
-                                     <i class="fa fa-circle-o text-info text-xs" ng-if="order.runTimeIsTemporary"></i>{{order.nextStartTime | stringToDate}}
+                                     {{order.nextStartTime | stringToDate}}
                                     <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
                                 <span class="hide " ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
                             </td>

@@ -56,9 +56,6 @@
                                             <a class="dropdown-item" ng-click="setRunTime(job)"
                                                ng-if="permission.Job.change.runTime"
                                                ng-class="{'disable-link':job.configurationStatus.severity==2}" ><span translate>button.setRunTime</span></a>
-                                            <a href class="dropdown-item" ng-if="permission.Job.change.runTime" ng-class="{'disable-link':!order.runTimeIsTemporary}" ng-click="resetRunTime(order)" >
-                                                <span translate>button.resetRunTime</span>
-                                            </a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
                                                ng-click="stop(job)" translate>button.stop</a>
@@ -117,7 +114,7 @@
                                 </td>
                                 <td>
                                     <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
-                                        <i class="fa fa-circle-o text-info text-xs" ng-if="job.runTimeIsTemporary"></i> {{job.nextStartTime | stringToDate}}
+                                        {{job.nextStartTime | stringToDate}}
                                         <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
                                     </span>
                                 </td>

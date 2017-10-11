@@ -2790,7 +2790,7 @@
             dest.stateText = sour.stateText;
             dest.configurationStatus = sour.configurationStatus;
             dest.ordersSummary = sour.ordersSummary;
-            dest.runTimeIsTemporary = sour.runTimeIsTemporary;
+           
             return dest;
         }
 
@@ -5137,10 +5137,7 @@
                 job: job.path
             }).then(function (res) {
                 if (res.runTime) {
-                    vm.runTimeIsTemporary = res.runTime.runTimeIsTemporary;
-                    if (vm.runTimeIsTemporary) {
-                        vm.permanentRunTime = res.runTime.permanentRunTime;
-                    }
+                 
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
 
@@ -5179,60 +5176,6 @@
             vm.zones = moment.tz.names();
         };
 
-        function resetRunTime(job) {
-
-            var jobs = {};
-            jobs.jobs = [];
-            jobs.jobschedulerId = $scope.schedulerIds.selected;
-            jobs.jobs.push({job: job.path});
-            if (vm.userPreferences.auditLog) {
-                jobs.auditLog = {};
-                if (vm.comments.comment)
-                    jobs.auditLog.comment = vm.comments.comment;
-                if (vm.comments.timeSpent)
-                    jobs.auditLog.timeSpent = vm.comments.timeSpent;
-
-                if (vm.comments.ticketLink)
-                    jobs.auditLog.ticketLink = vm.comments.ticketLink;
-            }
-            JobService.resetRunTime(jobs).then(function (res) {
-                JobService.get({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    jobs: [{job: job.path}]
-                }).then(function (res1) {
-                    job = mergePermanentAndVolatile(res1.jobs[0], job);
-                });
-            });
-
-        }
-
-        vm.resetRunTime = function (job) {
-            vm.order = job;
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            JobService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                job: job.path
-            }).then(function (res) {
-                if (res.runTime) {
-                    vm.xml = res.runTime.permanentRunTime;
-                    vm.xml1 = res.runTime.runTime;
-                    var modalInstance = $uibModal.open({
-                        templateUrl: 'modules/core/template/reset-run-time-dialog.html',
-                        controller: 'ResetRuntimeDialogCtrl',
-                        scope: vm,
-                        size: 'lg',
-                        backdrop: 'static'
-                    });
-                    modalInstance.result.then(function () {
-                        resetRunTime(job);
-                    }, function () {
-                        vm.reset();
-                    });
-                }
-            });
-
-        };
 
         vm.deleteAllOrder =  function() {
 
