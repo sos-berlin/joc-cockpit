@@ -547,8 +547,6 @@
                 var data1 = [];
                 if (data.jobChains && data.jobChains.length > 0) {
                     angular.forEach(data.jobChains, function (jobChain) {
-                        if (vm.userPreferences.showOrders)
-                            jobChain.show = true;
                         jobChain.nestedJobChains = res.nestedJobChains;
                         for (var i = 0; i < res.jobChains.length; i++) {
                             var flag1 = true;
@@ -2663,20 +2661,26 @@
                             });
                         }
                     });
-
-                    if (vm.showHistoryPanel && vm.showHistoryPanel.path == arr1[0].jobChain) {
-                        var filter = {};
-                        filter.jobChain = vm.showHistoryPanel.path;
-                        filter.jobschedulerId = $scope.schedulerIds.selected;
-                        JobChainService.histories(filter).then(function (res) {
-                            vm.historys = res.history;
-                        });
-                        if (vm.permission.AuditLog.view.status) {
-                            var obj = {};
-                            obj.jobschedulerId = vm.schedulerIds.selected;
-                            obj.orders = [];
-                            obj.orders.push({jobChain: vm.showHistoryPanel.path});
-                            vm.loadAuditLogs(obj);
+                }
+                if (vm.showHistoryPanel) {
+                    for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                        if (vm.events[0].eventSnapshots[i].eventType == "ReportingChangedOrder") {
+                            var filter = {};
+                            filter.jobChain = vm.showHistoryPanel.path;
+                            filter.jobschedulerId = $scope.schedulerIds.selected;
+                            JobChainService.histories(filter).then(function (res) {
+                                vm.historys = res.history;
+                            });
+                        }
+                        var path = vm.events[0].eventSnapshots[i].path.split(',')[0]
+                        if (vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged" && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER") && (path == vm.showHistoryPanel.path)) {
+                            if (vm.permission.AuditLog.view.status) {
+                                var obj = {};
+                                obj.jobschedulerId = vm.schedulerIds.selected;
+                                obj.orders = [];
+                                obj.orders.push({jobChain: vm.showHistoryPanel.path});
+                                vm.loadAuditLogs(obj);
+                            }
                         }
                     }
                 }
@@ -4515,19 +4519,13 @@
 
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.start(jobs).then(function () {
-                        if (vm.showTaskPanel && vm.showTaskPanel.path == job.path && vm.scheduleState == 'PAUSED')
-                            getHistoryPanelData(vm.showTaskPanel);
-                    });
+                    JobService.start(jobs)
                     vm.reset();
                 }, function () {
                     vm.reset();
                 });
             } else {
-                JobService.start(jobs).then(function () {
-                    if (vm.showTaskPanel && vm.showTaskPanel.path == job.path && vm.scheduleState == 'PAUSED')
-                        getHistoryPanelData(vm.showTaskPanel);
-                });
+                JobService.start(jobs);
                 vm.reset();
             }
         };
@@ -4572,10 +4570,7 @@
             }
 
             jobs.jobs.push(obj);
-            JobService.start(jobs).then(function () {
-                if (vm.showTaskPanel && vm.showTaskPanel.path == job.path && vm.scheduleState == 'PAUSED')
-                    getHistoryPanelData(vm.showTaskPanel);
-            });
+            JobService.start(jobs);
         }
 
         vm.startAt = function (job) {
@@ -5219,8 +5214,6 @@
                     OrderService.deleteOrder(orders).then(function (res) {
                         vm.allOrderCheck.checkbox = false;
                         vm.object.orders = [];
-                       getHistoryPanelData(vm.showTaskPanel);
-                    getQueueOrders(vm.showTaskPanel);
                     });
 
                 }, function () {
@@ -5231,8 +5224,6 @@
                 OrderService.deleteOrder(orders).then(function () {
                     vm.allOrderCheck.checkbox = false;
                     vm.object.orders = [];
-                    getHistoryPanelData(vm.showTaskPanel);
-                    getQueueOrders(vm.showTaskPanel);
                 });
             }
         };
@@ -5268,8 +5259,7 @@
                     OrderService.deleteOrder(orders).then(function () {
                         vm.allOrderCheck.checkbox = false;
                         vm.object.orders = [];
-                       getHistoryPanelData(vm.showTaskPanel);
-                    getQueueOrders(vm.showTaskPanel);
+
                     });
                 }, function () {
                     vm.allOrderCheck.checkbox = false;
@@ -5279,8 +5269,6 @@
                 OrderService.deleteOrder(orders).then(function () {
                     vm.allOrderCheck.checkbox = false;
                     vm.object.orders = [];
-                    getHistoryPanelData(vm.showTaskPanel);
-                    getQueueOrders(vm.showTaskPanel);
                 });
             }
         };
@@ -5484,6 +5472,8 @@
                         JobService.history(jobs).then(function (res) {
                             vm.taskHistory = res.history;
                         });
+                    }
+                    if (vm.showTaskPanel && value1.eventType == "AuditLogChanged" && value1.objectType == "JOB" && value1.path == vm.showTaskPanel.path) {
                         if (vm.permission.AuditLog.view.status)
                             vm.loadAuditLogs(vm.showTaskPanel);
                     }
@@ -5523,6 +5513,10 @@
                         } else {
                             navFullTreeForUpdateJob(path[0].substring(0, path[0].lastIndexOf('/')));
                         }
+                    }
+                    if (value1.eventType == "JobTaskQueueChanged"  && vm.showTaskPanel) {
+                        console.log(JSON.stringify(value1))
+                        getHistoryPanelData(vm.showTaskPanel);
                     }
                 });
             }

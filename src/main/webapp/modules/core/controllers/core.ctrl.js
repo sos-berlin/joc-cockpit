@@ -2215,30 +2215,19 @@
                 if (vm.frequencyList.length > 0) {
                     for (var i = 0; i < vm.frequencyList.length; i++) {
                         if (angular.equals(vm.frequencyList[i], vm.temp)) {
+
+                            if (vm.frequency.tab == 'specificDays') {
+                                vm.frequency.dates = [];
+                                angular.forEach(vm.tempItems, function (date) {
+                                    vm.frequency.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
+                                });
+                                vm.frequency.str = frequencyToString(vm.frequency);
+                            }
                             vm.frequencyList[i] = angular.copy(vm.frequency);
                             saveFrequency();
                             break;
                         }
                     }
-                } else {
-                    if (vm.frequency.type == 'INCLUDE') {
-                        for (var i = 0; i < vm.calendar.includesFrequency.length; i++) {
-                            if (angular.equals(vm.calendar.includesFrequency[i], vm.temp)) {
-                                vm.calendar.includesFrequency.splice(i, 1);
-                                break;
-                            }
-                        }
-                    } else {
-                        for (var i = 0; i < vm.calendar.excludesFrequency.length; i++) {
-                            if (angular.equals(vm.calendar.excludesFrequency[i], vm.temp)) {
-                                vm.calendar.excludesFrequency.splice(i, 1);
-                                break;
-                            }
-                        }
-                    }
-
-                    vm.frequencyList[0] = angular.copy(vm.frequency);
-                    saveFrequency();
                 }
                 return;
             }
@@ -2448,13 +2437,18 @@
                 }
             }
         };
-        vm.deleteFrequency = function (index) {
+        vm.deleteFrequency = function (data, index) {
             vm.frequencyList.splice(index, 1);
             if (vm.frequencyList.length == 0) {
                 var temp = angular.copy(vm.frequency);
                 vm.frequency = {};
                 vm.frequency.tab = temp.tab;
                 vm.frequency.isUltimos = temp.isUltimos;
+            }
+            if(data.tab == 'specificDays'){
+                vm.tempItems =[];
+            }else if(data.tab == 'nationalHoliday'){
+                vm.frequency.nationalHoliday =[];
             }
         };
         vm.changeDate = function () {
@@ -2681,7 +2675,7 @@
                             if (data.endOnM) {
                                 to = moment(data.endOnM).format('YYYY-MM-DD')
                             }
-                            obj.includes.ultimos.push({days: data.selectedMonths, from:from, to: to});
+                            obj.includes.ultimos.push({days: data.selectedMonthsU, from:from, to: to});
                         }
                     } else if (data.tab == 'specificWeekDays') {
                         arr.push({
@@ -2809,7 +2803,7 @@
                         } else {
                             if (!obj.excludes.ultimos)
                                 obj.excludes.ultimos = [];
-                            obj.excludes.ultimos.push({days: data.selectedMonths, from:from, to: to});
+                            obj.excludes.ultimos.push({days: data.selectedMonthsU, from:from, to: to});
                         }
                     } else if (data.tab == 'specificWeekDays') {
                         if(data.startingWithS){
@@ -11184,7 +11178,7 @@
                             if (data.endOnM) {
                                 to = moment(data.endOnM).format('YYYY-MM-DD')
                             }
-                            obj.includes.ultimos.push({days: data.selectedMonths, from:from, to: to});
+                            obj.includes.ultimos.push({days: data.selectedMonthsU, from:from, to: to});
                         }
                     } else if (data.tab == 'specificWeekDays') {
                         arr.push({
@@ -11312,7 +11306,7 @@
                         } else {
                             if (!obj.excludes.ultimos)
                                 obj.excludes.ultimos = [];
-                            obj.excludes.ultimos.push({days: data.selectedMonths, from:from, to: to});
+                            obj.excludes.ultimos.push({days: data.selectedMonthsU, from:from, to: to});
                         }
                     } else if (data.tab == 'specificWeekDays') {
                         if(data.startingWithS){

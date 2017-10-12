@@ -296,25 +296,25 @@
         <div class="row m-b m-t-xs">
             <div class="col-md-6 col-sm-4">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                    <li class="nav-item">
+                    <li class="nav-item" ng-if="permission.History.view">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='jobChain'}" ng-model="historyFilters.type"
                            uib-btn-radio="'jobChain'" ng-click="orderHistory()">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.order</span></span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown-separator">
+                    <li class="nav-item dropdown-separator" ng-if="permission.History.view">
                         <span class="separator"></span>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" ng-if="permission.History.view">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='job'}" ng-model="historyFilters.type"
                            uib-btn-radio="'job'" ng-click="jobHistory()">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown-separator">
+                    <li class="nav-item dropdown-separator" ng-if="permission.Yade.view.transfers">
                         <span class="separator"></span>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" ng-if="permission.Yade.view.transfers">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='yade'}" ng-model="historyFilters.type"
                            uib-btn-radio="'yade'" ng-click="yadeHistory()">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.fileTransfer</span></span>
