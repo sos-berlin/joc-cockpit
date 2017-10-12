@@ -1165,6 +1165,7 @@
                 expandFolderDataC(data);
 
                 vm.folderPathC = data.name || '/';
+                vm.folderFullPathC = data.path || '/';
                 angular.forEach(data.calendars, function (value) {
                     value.path1 = data.path;
                     vm.allCalendars.push(value);
@@ -1184,7 +1185,7 @@
         }
 
         function expandFolderDataC(data) {
-            vm.object.calendar=[];
+            vm.object.calendars=[];
             vm.loading = true;
             var obj = {};
             obj.folders = [{folder: data.path, recursive: false}];
@@ -1199,6 +1200,7 @@
                 data.calendars = result.calendars;
                 vm.allCalendars = result.calendars;
                 vm.folderPathC = data.name || '/';
+                vm.folderFullPathC = data.path || '/';
                 vm.loading = false;
                 if (data.calendars.length > 0) {
                     angular.forEach(data.calendars, function (value) {
@@ -1240,6 +1242,7 @@
             vm.allCalendars = [];
             vm.loading = true;
             vm.folderPathC = data.name || '/';
+            vm.folderFullPathC = data.path || '/';
             var obj = {};
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
@@ -1290,6 +1293,7 @@
             }
 
             vm.folderPathC = node.name || '/';
+            vm.folderFullPathC = node.path || '/';
             angular.forEach(node.folders, function (value) {
                 if (value.expanded || value.selected1)
                     insertCalendar(value, x);
@@ -1308,7 +1312,7 @@
         }
 
         vm.loadCategory = function(flag) {
-            vm.object.calendar=[];
+            vm.object.calendars=[];
             if(flag == 'remove'){
                 vm.calendarFilters.filter.category = undefined;
             }
@@ -1336,6 +1340,7 @@
                 vm.loading = false;
             });
         };
+
 
         function storeCalendar() {
             var obj = {};
@@ -1365,8 +1370,8 @@
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            CalendarService.storeCalendar(obj).then(function (result) {
-                console.log(result)
+            CalendarService.storeCalendar(obj).then(function () {
+                  initCalendarTree();
             });
         }
         $scope.$on('calendar-obj', function (event, data) {
@@ -1378,7 +1383,7 @@
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = {};
-            vm.calendar.path = vm.folderPathC == '/' ? '/' : '/'+vm.folderPathC;
+            vm.calendar.path = vm.folderFullPathC;
             vm.calendar.create = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-calendar-dialog.html',
@@ -1407,7 +1412,7 @@
             });
             vm.template = 'page1';
 
-            vm.object.calendar=[];
+            vm.object.calendars=[];
         };
         vm.renameCalendar = function(calendar) {
             vm.comments = {};
@@ -1433,38 +1438,29 @@
                     obj.auditLog.timeSpent = vm.comments.timeSpent;
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
-                CalendarService.renameCalendar(obj);
+                CalendarService.renameCalendar(obj).then(function(){
+                     initCalendarTree();
+                })
             }, function () {
 
             });
-             vm.object.calendar=[];
+             vm.object.calendars=[];
         };
 
-        function deleteCalendar(obj,calendar, index) {
+        function deleteCalendar(obj,calendar) {
             CalendarService.delete(obj).then(function () {
-                if (calendar) {
-                    vm.allCalendars.splice(index, 1);
-                } else {
-                    for (var i = 0; i < vm.object.calendar.length; i++) {
-                        for (var j = 0; j < vm.allCalendars.length; j++) {
-                            if (vm.object.calendar[i].path == vm.allCalendars[j].path) {
-                                vm.allCalendars.splice(j, 1);
-                                break;
-                            }
-                        }
-                    }
-                }
-                vm.object.calendar=[];
+                initCalendarTree();
+                vm.object.calendars=[];
             });
         }
-        vm.deleteCalendar = function (calendar, index) {
+        vm.deleteCalendar = function (calendar) {
             var obj = {};
-            obj.calendars = [];
+            obj.calendarIds = [];
             if (calendar) {
-                obj.calendars.push(calendar.path)
+                obj.calendarIds.push(calendar.id)
             } else {
-                angular.forEach(vm.object.calendar, function (value) {
-                    obj.calendars.push(value.path)
+                angular.forEach(vm.object.calendars, function (value) {
+                    obj.calendarIds.push(value.id)
                 });
             }
             if (vm.userPreferences.auditLog) {
@@ -1488,13 +1484,13 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    deleteCalendar(obj,calendar, index);
+                    deleteCalendar(obj,calendar);
                 }, function () {
-                        vm.object.calendar=[];
+                        vm.object.calendars=[];
                 });
 
             } else {
-                deleteCalendar(obj,calendar, index);
+                deleteCalendar(obj,calendar);
             }
         };
 
@@ -3114,14 +3110,15 @@
             for(var i=0; i<vm.dashboardLayout.length;i++) {
                 if (vm.dashboardLayout[i].name == widget.name) {
                     vm.dashboardLayout[i].visible = true;
-
-                    if ((vm.dashboardLayout[vm.dashboard.widgets.length - 1].row == widget.row) && (widget.sizeX +vm.dashboardLayout[vm.dashboard.widgets.length - 1].sizeX)==6) {
-                        if(vm.dashboardLayout[vm.dashboard.widgets.length - 1].col != widget.col){
-                             vm.dashboardLayout[i].col = vm.dashboardLayout[vm.dashboard.widgets.length - 1].col+2;
+                    if (vm.dashboard.widgets.length - 1 >= 0) {
+                        if ((vm.dashboardLayout[vm.dashboard.widgets.length - 1].row == widget.row) && (widget.sizeX + vm.dashboardLayout[vm.dashboard.widgets.length - 1].sizeX) == 6) {
+                            if (vm.dashboardLayout[vm.dashboard.widgets.length - 1].col != widget.col) {
+                                vm.dashboardLayout[i].col = vm.dashboardLayout[vm.dashboard.widgets.length - 1].col + 2;
+                            }
+                            vm.dashboardLayout[i].row = parseInt(vm.dashboardLayout[vm.dashboard.widgets.length - 1].row);
+                        } else {
+                            vm.dashboardLayout[i].row = parseInt(vm.dashboardLayout[vm.dashboard.widgets.length - 1].row) + 1;
                         }
-                        vm.dashboardLayout[i].row = parseInt(vm.dashboardLayout[vm.dashboard.widgets.length - 1].row);
-                    }else{
-                        vm.dashboardLayout[i].row = parseInt(vm.dashboardLayout[vm.dashboard.widgets.length - 1].row) + 1;
                     }
 
                     vm.dashboard.widgets.push(vm.dashboardLayout[i]);
@@ -3227,7 +3224,10 @@
                         }
                     }
                 }
-                if (vm.dashboard.widgets[i].row > 0) {
+                if (vm.dashboard.widgets[i].row == 0){
+                    $('#' + vm.dashboard.widgets[i].name).css('top','22px');
+                }
+                else if (vm.dashboard.widgets[i].row > 0) {
                     if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
                         $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
                         continue;

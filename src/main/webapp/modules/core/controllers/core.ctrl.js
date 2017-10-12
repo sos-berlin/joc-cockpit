@@ -1793,44 +1793,25 @@
             }
             return n1.value < n2.value ? -1 : 1;
         };
-        function checkIncludeExclude(date, type) {
-            var date1 = new Date(date);
-            date1.setHours(0, 0, 0, 0);
-            var frequencyType = angular.copy(vm.editor.frequencyType);
-            if (vm.showMsgText) {
-                frequencyType = 'INCLUDE';
-            }
+        function checkIncludeExclude(dates) {
 
+            var frequencyType = angular.copy(vm.editor.frequencyType);
             var obj = {
                 tab: "specificDays",
-                type: frequencyType,
-                y: "days",
-                year: 2017,
-                date: date1,
+                type: frequencyType == 'INCLUDE' ? 'EXCLUDE' : 'INCLUDE',
                 exclude: false,
-                str: 'On ' + date
+                dates:[]
             };
 
+            angular.forEach(dates, function(date){
+                obj.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
+            });
+
+            obj.str = frequencyToString(obj);
 
             var flag = false;
-            if (frequencyType == 'INCLUDE' && type == 'add') {
-                for (var i = 0; i < vm.calendar.includesFrequency.length; i++) {
-                    if (vm.calendar.includesFrequency[i].tab == obj.tab) {
-                        console.log(vm.calendar.includesFrequenc)
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag)
-                    vm.calendar.includesFrequency.push(obj);
-                for (var i = 0; i < vm.calendar.excludesFrequency.length; i++) {
-                    if (vm.calendar.excludesFrequency[i].tab == obj.tab && vm.calendar.excludesFrequency[i].str == obj.str) {
-                        vm.calendar.excludesFrequency.splice(i, 1);
-                        break;
-                    }
-                }
-            }
-            else if (frequencyType == 'INCLUDE' && type == 'remove') {
+
+            if (obj.type == 'EXCLUDE') {
                 for (var i = 0; i < vm.calendar.excludesFrequency.length; i++) {
                     if (vm.calendar.excludesFrequency[i].tab == obj.tab && vm.calendar.excludesFrequency[i].str == obj.str) {
                         flag = true;
@@ -1839,7 +1820,6 @@
                 }
                 if (!flag) {
                     vm.calendar.excludesFrequency.push(obj);
-
                 }
                 for (var i = 0; i < vm.calendar.includesFrequency.length; i++) {
                     if (vm.calendar.includesFrequency[i].tab == obj.tab && vm.calendar.includesFrequency[i].str == obj.str) {
@@ -1847,38 +1827,24 @@
                         break;
                     }
                 }
-            } else if (frequencyType == 'EXCLUDE' && type == 'add') {
-                for (var i = 0; i < vm.calendar.excludesFrequency.length; i++) {
-                    if (vm.calendar.excludesFrequency[i].tab == obj.tab && vm.calendar.excludesFrequency[i].str == obj.str) {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    vm.calendar.excludesFrequency.push(obj);
-
-                }
-                for (var i = 0; i < vm.calendar.includesFrequency.length; i++) {
-                    if (vm.calendar.includesFrequency[i].tab == obj.tab && vm.calendar.includesFrequency[i].str == obj.str) {
-                        vm.calendar.includesFrequency.splice(i, 1);
-                        break;
-                    }
-                }
-            }
-            else if (frequencyType == 'EXCLUDE' && type == 'remove') {
-
+            } else {
                 obj.exclude = true;
 
                 for (var i = 0; i < vm.calendar.excludesFrequency.length; i++) {
                     if (vm.calendar.excludesFrequency[i].tab == obj.tab && vm.calendar.excludesFrequency[i].str == obj.str) {
                         vm.calendar.excludesFrequency.splice(i, 1);
+
+                        break;
+                    }
+                }
+                for (var i = 0; i < vm.calendar.includesFrequency.length; i++) {
+                    if (vm.calendar.includesFrequency[i].tab == obj.tab && vm.calendar.includesFrequency[i].str == obj.str) {
                         flag = true;
                         break;
                     }
                 }
                 if (!flag) {
-                    vm.calendar.excludesFrequency.push(obj);
-
+                    vm.calendar.includesFrequency.push(obj);
                 }
             }
         }
@@ -1905,19 +1871,21 @@
                          }
                     }
                 }
-                //vm.planItems.push(planData);
-                //  checkIncludeExclude(date, 'add');
             } else {
                 unselectDates.push(planData);
                 vm.planItems.splice(i, 1);
-                //checkIncludeExclude(date, 'remove');
             }
         }
 
         vm.addCalendarDates = function(){
              if(unselectDates.length>0){
-                 //checkIncludeExclude(unselectDates, 'remove');
+                 checkIncludeExclude(unselectDates);
              }
+            if (vm.flag) {
+                vm.save();
+            }else{
+                vm.editor.showYearView = false;
+            }
         };
 
         vm.holidayDays = {checked: false};
@@ -1938,7 +1906,7 @@
                 data.day.label = data.day.label > 9 ? data.day.label : '0' + data.day.label;
                 var date = vm.calendarTitle + '-' + data.month + '-' + data.day.label;
 
-                if (vm.frequency.tab == 'specificDays') {
+                if (vm.frequency.tab == 'specificDays' && !vm.editor.showYearView) {
                     var planData = {
                         plannedStartTime: date
                     };
@@ -1959,7 +1927,7 @@
                     } else {
                         vm.editor.isEnable = false;
                     }
-                } else {
+                } else if(vm.editor.showYearView){
                     checkDate(date);
                 }
             }
@@ -1980,13 +1948,10 @@
                 vm.editor.showYearView = true;
                 vm.calObj.freqency = JSON.stringify(data);
                 var obj1 = {};
-                if (data.type == 'INCLUDE') {
-                    obj1.includes = {};
-                } else {
-                    obj1.excludes = {};
-                }
-
-                vm.frequencyObj = generateCalendarObj(data, obj1);
+                obj1.includes = {};
+                var data1 = angular.copy(data);
+                data1.type = 'INCLUDE';
+                vm.frequencyObj = generateCalendarObj(data1, obj1);
             } else {
                 vm.calObj.freqency = 'all';
                 vm.frequencyObj = generateCalendarAllObj();
@@ -2241,6 +2206,7 @@
 
         vm.addFrequency = function () {
             vm.frequency.str = frequencyToString(vm.frequency);
+
             var _temp = angular.copy(vm.frequency);
             var flag = false;
 
@@ -2453,6 +2419,7 @@
                 vm.frequencyList.push(angular.copy(vm.frequency));
 
             }
+
         };
 
         function saveFrequency() {
@@ -2930,20 +2897,11 @@
                 frequencyList: vm.frequencyList
             });
 
-            if (form1) {
-                form1.$setPristine();
-                form1.$setUntouched();
-            }
             $('#frequency-editor').modal('hide');
             $('.fade-modal').css('opacity', 1);
         };
 
-        vm.cancel = function (form1) {
-            vm.period = {};
-            vm.period.period = {};
-            $rootScope.$broadcast('cancel-period');
-            if (form1)
-                form1.$setPristine();
+        vm.cancel = function () {
             $('#frequency-editor').modal('hide');
             $('.fade-modal').css('opacity', 1);
         };
@@ -3431,7 +3389,6 @@
             }
         };
         vm.textEditor = function () {
-            
             loadXml(vm.xmlObj.xml);
         };
 
@@ -3906,9 +3863,7 @@
                     if (temp)
                         run_time.date.push(temp)
                 }else {
-                    console.log('here')
                     angular.forEach(run_time.date, function (date, index) {
-
                         if (date._calendar) {
                             var flg = false;
                             if (vm.selectedCalendar && vm.selectedCalendar.length > 0) {
@@ -5456,7 +5411,6 @@
                                     vm.holidayDates.push(new Date(value1._date));
                                 }
                                 if (value1._file) {
-
                                     vm.calendarFiles.push('file: ' + value1._file);
                                 }
                                 if (value1._live_file) {
@@ -10453,7 +10407,6 @@
                 } else {
                     vm.xmlObj.xml = '<schedule></schedule>';
                 }
-               
             }else{
                 vm.xmlObj.xml =  xml;
             }
@@ -10518,7 +10471,21 @@
             }
         }
 
-        vm.ok = function () {
+        vm.ok = function (form) {
+
+            if(vm.calendar.name && vm.calendar.path && vm.calendar.to){
+                form.$setPristine();
+                form.$setUntouched();
+            }else{
+                form.name.$invalid = !vm.calendar.name ? true : false;
+                form.name.$dirty = !vm.calendar.name ? true : false;
+                form.path.$invalid = !vm.calendar.path ? true : false;
+                form.path.$dirty = !vm.calendar.path ? true : false;
+                form.to.$invalid = !vm.calendar.to ? true : false;
+                form.to.$dirty = !vm.calendar.to ? true : false;
+                return;
+            }
+
             vm.logError = false;
             vm.calendar.calendarObj = generateCalendarAllObj();
             if (vm.required) {
@@ -11019,7 +10986,6 @@
                     obj.str = frequencyToString(obj);
                     vm.calendar.excludesFrequency.push(obj);
 
-                    console.log(obj)
                 }
                 if (data.excludes.weekdays && data.excludes.weekdays.length > 0) {
                     angular.forEach(data.excludes.weekdays, function (weekday) {
@@ -11472,6 +11438,7 @@
 
             $('#frequency-editor').modal({show: true});
             $('.fade-modal').css('opacity', '0.85');
+
         };
 
 

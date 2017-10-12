@@ -47,7 +47,7 @@
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar,$index)" translate>button.deleteCalendar</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
                                          <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                     </div>
@@ -64,14 +64,14 @@
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.validity </span>:
                                 <span ng-if="calendar.from" ng-bind="calendar.from | stringToDate1"></span>
-                                <span ng-if="calendar.from && calendar.to" translate> label.to </span>
+                                <span ng-if="calendar.from && calendar.to" translate> to </span>
                                 <span ng-bind="calendar.to | stringToDate1"></span>
                             </div>
                         </div>
                         <div class="box-footer b-t" >
                             <div>
                                 <a href class="text-left primary-text-hover-color " ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editCalendar</span></a>
-                                <a href class="pull-right text-hover-color " ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteCalendar</span></a>
+                                <a href class="pull-right text-hover-color " ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteCalendar</span></a>
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                      <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
                                      <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
-                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar,$index)" class="dropdown-item" translate>button.deleteCalendar</a>
+                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)" class="dropdown-item" translate>button.deleteCalendar</a>
                                      <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                  </div>
                              </div>
@@ -1020,7 +1020,7 @@
                         <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
                             button.cancel
                         </button>
-                        <button  ng-if="editor.showYearView" type="submit" class="btn orange btn-sm" ng-click="addCalendarDates()">
+                        <button  ng-if="editor.showYearView" type="button" class="btn orange btn-sm" ng-click="addCalendarDates()">
                             <span translate>button.close</span>
                         </button>
                         <button  ng-if="editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>
