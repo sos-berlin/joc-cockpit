@@ -686,6 +686,14 @@
             $('#exportToExcelBtn').attr("disabled", false);
         };
 
+        $scope.$on('event-started', function () {
+            for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                if (vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged") {
+                    vm.load();
+                    break;
+                }
+            }
+        });
     }
 
     UsersCtrl.$inject = ['$scope', 'UserService', '$uibModal', '$rootScope', '$location', 'toasty', 'gettextCatalog'];
