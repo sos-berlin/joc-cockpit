@@ -1120,6 +1120,7 @@
   "label.weekDays": "Weekdays",
   "label.editFrequencies": "Update Frequencies",
   "message.updateCalendar": "Are you sure you want to update this calendar?",
+  "message.deleteCalendar": "Are you sure you want to delete this calendar?",
   "button.confirm": "Confirm",
   "placeholder.enterNewCalendarName": "Enter a New Calendar Name"
 }

@@ -1463,12 +1463,37 @@
                     obj.calendarIds.push(value.id)
                 });
             }
+            if (calendar) {
+                vm.calendar = angular.copy(calendar);
+                vm.calendar.delete = true;
+                CalendarService.calendarUsed({id: vm.calendar.id}).then(function (res) {
+                    vm.calendar.usedIn = res.jobschedulers;
+                });
+            } else {
+                vm.calendarArr = angular.copy(vm.object.calendars);
+                angular.forEach(vm.calendarArr, function (value) {
+                    CalendarService.calendarUsed({id: value.id}).then(function (res) {
+                        value.usedIn = res.jobschedulers;
+                    });
+                });
+            }
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.type = 'Calendar';
                 vm.comments.operation = 'Delete';
-                vm.comments.name = calendar.path;
+                if (calendar) {
+                    vm.comments.name = calendar.path;
+                } else {
+                    vm.comments.name = '';
+                    angular.forEach(vm.object.calendars, function (value, index) {
+                        if (index == vm.object.calendars.length - 1) {
+                            vm.comments.name = vm.comments.name + ' ' + value.path;
+                        } else {
+                            vm.comments.name = value.path + ', ' + vm.comments.name;
+                        }
+                    });
+                }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
@@ -1484,13 +1509,23 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    deleteCalendar(obj,calendar);
+                    deleteCalendar(obj, calendar);
                 }, function () {
-                        vm.object.calendars=[];
+                    vm.object.calendars = [];
                 });
 
             } else {
-                deleteCalendar(obj,calendar);
+                var modalInstance1 = $uibModal.open({
+                    templateUrl: 'modules/core/template/confirm-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance1.result.then(function () {
+                    deleteCalendar(obj, calendar);
+                }, function () {
+
+                });
             }
         };
 
