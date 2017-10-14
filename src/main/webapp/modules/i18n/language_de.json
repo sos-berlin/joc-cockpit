@@ -1122,5 +1122,10 @@
   "message.updateCalendar": "Are you sure you want to update this calendar?",
   "message.deleteCalendar": "Are you sure you want to delete this calendar?",
   "button.confirm": "Confirm",
+  "button.showUsage": "Show usage",
+  "button.saveAs": "Save as",
+  "label.copyCalendar": "Copy Calendar",
+  "label.showUsage": "Show usage",
+  "label.validityUntil": "Valid until",
   "placeholder.enterNewCalendarName": "Enter a New Calendar Name"
 }

@@ -1711,7 +1711,7 @@
 
 
         function submit() {
-            if ((vm.calendar || vm.calendarArr))  {
+            if ((vm.calendar && !vm.calendar.copy) || vm.calendarArr)  {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
                     controller: 'DialogCtrl1',
@@ -2566,7 +2566,8 @@
             }
             else if (period.tab == 'specificDays') {
                 str = 'On ';
-                angular.forEach(period.dates, function (date, index) {
+                if(period.dates)
+                angular.forEach(period.dates.sort(), function (date, index) {
                     str = str + $filter('date')(new Date(date), vm.dataFormat);
                     if (index != period.dates.length - 1) {
                         str = str + ', ';
@@ -2611,7 +2612,8 @@
             }
             else if (period.tab == 'nationalHoliday') {
                 str = 'On national holidays ';
-                angular.forEach(period.nationalHoliday, function (date, index) {
+                if(period.nationalHoliday)
+                angular.forEach(period.nationalHoliday.sort(), function (date, index) {
                     str = str + $filter('date')(new Date(date), vm.dataFormat);
                     if (index != period.nationalHoliday.length - 1) {
                         str = str + ', ';
@@ -10137,20 +10139,57 @@
                 }
             }
             deleteEmptyValue(vm.run_time);
+            var tempArr =[];
+
+            for (var propName in vm.run_time) {
+                if (typeof propName == 'string') {
+                    if (propName == 'date') {
+                        tempArr.push({date: vm.run_time[propName], key:0})
+                    } else if (propName == 'weekdays') {
+                        tempArr.push({weekdays: vm.run_time[propName], key:1})
+                    } else if (propName == 'monthdays') {
+                        tempArr.push({monthdays: vm.run_time[propName], key:2})
+                    } else if (propName == 'ultimos') {
+                        tempArr.push({ultimos: vm.run_time[propName], key:3})
+                    } else if (propName == 'month') {
+                        tempArr.push({month: vm.run_time[propName], key:4})
+                    } else if (propName == 'holidays') {
+                        tempArr.push({holidays: vm.run_time[propName], key:5})
+                    }
+                }
+            }
+            tempArr.sort(function(a,b){
+                var x = a['key'];
+                var y = b['key'];
+                if(x >y){
+                    return x-y;
+                }
+            });
+           var tempData ={};
+            angular.forEach(tempArr, function(data) {
+                delete data['key'];
+                if (data.date) {
+                    tempData.date = data.date;
+                } else if (data.weekdays) {
+                   tempData.weekdays = data.weekdays;
+                } else if (data.monthdays) {
+                     tempData.monthdays = data.monthdays;
+                } else if (data.ultimos) {
+                      tempData.ultimos = data.ultimos;
+                }else if (data.month) {
+                      tempData.month = data.month;
+                } else if (data.holidays) {
+                   tempData.holidays = data.holidays;
+                }
+            });
+
             if (vm.order) {
-                vm.run_time = {run_time: vm.run_time};
+                vm.run_time = {run_time: tempData};
             }
             else if (vm.schedule) {
-                vm.run_time = {schedule: vm.run_time};
+                vm.run_time = {schedule: tempData};
             }
-            var testData =[];
-            testData.push(vm.run_time.run_time)
-            var abc  = sortJSON(testData);
 
-
-            //Sort json object
-
-            console.log(JSON.stringify(vm.run_time))
 
             try {
                 var xmlStr = x2js.json2xml_str(vm.run_time);
@@ -10178,17 +10217,6 @@
             getXml2Json(xmlStr);
         };
 
-        function sortJSON(data) {
-            console.log(JSON.stringify(data))
-            return data.sort(function (a, b) {
-                console.log(a);
-                console.log(b);
-                var x = a;
-                var y = b;
-
-                return ((x > y) ? -1 : ((x < y) ? 1 : 0));
-            });
-        }
 
         vm.assignCalendar = function () {
             $rootScope.$broadcast('calendar-editor',{calendar :vm.selectedCalendar});
@@ -10246,14 +10274,13 @@
 
         });
         $rootScope.$on('save-calendar', function (event, data) {
-            vm.selectedCalendar = data.selectedCalendar;
+            vm.selectedCalendar = angular.copy(data.selectedCalendar);
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
                 console.log(e);
             }
             var run_time = _xml.run_time || _xml.schedule || {};
-
             angular.forEach(vm.selectedCalendar, function (calendar, index) {
                 var obj = {};
                 obj.dateFrom = calendar.from;
@@ -10280,15 +10307,12 @@
             })
         });
 
-
         var tempList=[];
 
         vm.previewCalendar = function (data) {
-
             vm.editor.showHolidayTab = false;
             vm.editor.showCalendarTab = true;
             vm.planItems = [];
-
             vm.viewDate = new Date();
             vm.calendarTitle = new Date().getFullYear();
             var obj = {};
@@ -10478,7 +10502,7 @@
             if (!vm.calendar.create) {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
-                    controller: 'DialogCtrl',
+                    controller: 'DialogCtrl1',
                     scope: vm,
                     backdrop: 'static'
                 });
@@ -10541,11 +10565,11 @@
         vm.calendar.excludesFrequency = [];
         if (vm.calendar.includes || vm.calendar.excludes) {
             convertObjToArr(vm.calendar);
+        }
+       if (!vm.calendar.create)
             CalendarService.calendarUsed({id:vm.calendar.id}).then(function(res){
                 vm.calendar.usedIn = res.jobschedulers;
             });
-        }
-
         vm.frequencyList = [];
 
         vm.getCategories = function () {
@@ -10576,7 +10600,8 @@
             }
             else if (period.tab == 'specificDays') {
                 str = 'On ';
-                angular.forEach(period.dates, function (date, index) {
+                if(period.dates)
+                angular.forEach(period.dates.sort(), function (date, index) {
                     str = str + $filter('date')(new Date(date), vm.dataFormat);
                     if (index != period.dates.length - 1) {
                         str = str + ', ';
@@ -10622,7 +10647,8 @@
             }
             else if (period.tab == 'nationalHoliday') {
                 str = 'On national holidays ';
-                angular.forEach(period.nationalHoliday, function (date, index) {
+                if(period.nationalHoliday)
+                angular.forEach(period.nationalHoliday.sort(), function (date, index) {
                     str = str + $filter('date')(new Date(date), vm.dataFormat);
                     if (index != period.nationalHoliday.length - 1) {
                         str = str + ', ';

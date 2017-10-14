@@ -148,7 +148,7 @@
                             </div>
                             <div class="col-sm-12" ng-if="order.at == 'now'" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-bordered frequency-table">
+                                    <table class="table table-hover table-bordered ">
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequenciesCalendars</th>
@@ -160,6 +160,8 @@
                                             <td ng-if="data.frequency" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="editRunTime(data)"><i class="fa fa-pencil"></i></a>
+                                                <a class="text-xs text-hover-color m-l-sm"
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
@@ -170,7 +172,9 @@
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
                                                     <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
-                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
+                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
+                                                            class="fa fa-pencil"></i></a>
+                                                    <a class="text-xs text-hover-color m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
                                                             class="fa fa-times"></i></a>
                                                 </div>
                                                 <div class="text-xs cursor text-hover-primary"><i

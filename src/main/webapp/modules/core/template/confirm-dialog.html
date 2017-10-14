@@ -5,8 +5,14 @@
             <span ng-if="!calendar">
                 <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}}?
             </span>
-            <span ng-if="calendar">
+            <span ng-if="calendar && !calendar.delete">
                 <span class="text-capitalize" translate>label.update</span> {{calendar.name}} ?
+            </span>
+            <span ng-if="calendar && calendar.delete">
+                <span class="text-capitalize" translate>label.delete</span> {{calendar.name}} ?
+            </span>
+            <span ng-if="calendarArr">
+                <span class="text-capitalize" translate>label.deleteAllCalendar</span>?
             </span>
         </h4>
     </div>
@@ -18,7 +24,85 @@
                 <span ng-if="master.master" translate class="text">message.deleteMaster</span>
                 <span ng-if="folder.folder" translate class="text">message.deleteFolder</span>
                 <span ng-if="permission.path" translate class="text">message.deletePermission</span>
-                <span ng-if="calendar" translate class="text">message.updateCalendar</span>
+                <div ng-if="calendar">
+                    <div class="row form-group">
+                        <span ng-if="!calendar.delete" translate class="text">message.updateCalendar</span>
+                        <span ng-if="calendar.delete" translate class="text">message.deleteCalendar</span>
+                    </div>
+                    <div class="text-left row">
+                        <div class=" col-sm-12">
+                            <div ng-repeat="use in calendar.usedIn" ng-class="{'b-b': $index>0}">
+                                <div class="row ">
+                                    <label class="col-sm-3" translate>
+                                        label.jobSchedulerId
+                                    </label>
+                                    <div class="col-sm-9">
+                                        {{use.jobschedulerId}}
+                                    </div>
+                                </div>
+                                <div class="row form-group" ng-if="use.jobs">
+                                    <label class="col-md-3" translate="">
+                                        label.jobs
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="job in use.jobs">
+                                            {{$index+1}} - {{job}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group" ng-if="use.orders">
+                                    <label class="col-md-3" translate="">
+                                        label.orders
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="order in use.orders">
+                                            {{$index+1}} - {{order}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-if="calendarArr">
+                    <div class="row form-group">
+                        <span  translate class="text">message.deleteAllCalendar</span>
+                    </div>
+                    <div class="text-left row">
+                        <div class=" col-sm-12">
+                            <div ng-repeat="use in calendarArr.usedIn" ng-class="{'b-b': $index>0}">
+                                <div class="row">
+                                    <label class="col-sm-3" translate>
+                                        label.jobSchedulerId
+                                    </label>
+                                    <div class="col-sm-9">
+                                        {{use.jobschedulerId}}
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3" translate="">
+                                        label.jobs
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="job in use.jobs">
+                                            {{$index+1}} - {{job}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <label class="col-md-3" translate="">
+                                        label.orders
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="order in use.orders">
+                                            {{$index+1}} - {{order}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row m-t-md">
@@ -26,8 +110,8 @@
         </div>
         <div class="form-group m-t m-b-xs">
             <button type="submit" class="btn btn-primary btn-sm" ng-click="ok()">
-                <span ng-if="!calendar" translate>button.delete</span>
-                <span ng-if="calendar" translate>button.confirm</span>
+                <span ng-if="!calendar || calendar.delete" translate>button.delete</span>
+                <span ng-if="calendar && !calendar.delete" translate>button.confirm</span>
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
         </div>

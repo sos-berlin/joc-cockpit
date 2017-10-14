@@ -1,0 +1,52 @@
+<div>
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title" >
+            <span>
+                <span translate>label.showUsage</span> : {{calendar.path}}
+            </span>
+        </h4>
+    </div>
+    <div class="modal-body p-a">
+        <div class="row">
+            <div class=" col-sm-12">
+                <div ng-repeat="use in calendar.usedIn" class="p-l-sm" ng-class="{'b-b': $index>0}">
+                    <div class="row form-group">
+                        <label class="col-sm-3" translate>
+                            label.jobSchedulerId
+                        </label>
+                        <div class="col-sm-9">
+                            {{use.jobschedulerId}}
+                        </div>
+                    </div>
+                    <div class="row form-group" ng-if="use.jobs">
+                        <label class="col-md-3" translate="">
+                            label.jobs
+                        </label>
+                        <div class="col-md-9">
+                            <div ng-repeat="job in use.jobs">
+                                {{$index+1}} - {{job}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group" ng-if="use.orders">
+                        <label class="col-md-3" translate="">
+                            label.orders
+                        </label>
+                        <div class="col-md-9">
+                            <div ng-repeat="order in use.orders">
+                                {{$index+1}} - {{order}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m-t-md">
+            <div class="b-t"></div>
+        </div>
+        <div class="form-group m-t m-b-xs">
+            <button type="button" class="btn btn-grey btn-sm" ng-click="cancel()" translate>button.cancel</button>
+        </div>
+    </div>
+</div>

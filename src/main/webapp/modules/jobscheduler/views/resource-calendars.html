@@ -47,8 +47,10 @@
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
+                                        <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="copyCalendar(calendar)" translate>button.saveAs</a>
+                                        <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
-                                         <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
@@ -62,9 +64,10 @@
                                <span ng-bind="calendar.category || '-'"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
-                                <span translate>label.validity </span>:
+                                <span ng-if="calendar.from && calendar.to" ><span translate>label.validity</span> :</span>
+                                <span ng-if="!calendar.from && calendar.to"><span translate>label.validityUntil</span> : </span>
                                 <span ng-if="calendar.from" ng-bind="calendar.from | stringToDate1"></span>
-                                <span ng-if="calendar.from && calendar.to" translate> to </span>
+                                <span ng-if="calendar.from && calendar.to" translate> label.to </span>
                                 <span ng-bind="calendar.to | stringToDate1"></span>
                             </div>
                         </div>
@@ -141,6 +144,8 @@
                                      <i class="fa fa-ellipsis-h"></i></button>
                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                      <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
+                                     <a ng-click="showUsage(calendar)" class="dropdown-item" translate>button.showUsage</a>
+                                     <a ng-if="permission.Calendar.edit.change" ng-click="copyCalendar(calendar)" class="dropdown-item" translate>button.saveAs</a>
                                      <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
                                      <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)" class="dropdown-item" translate>button.deleteCalendar</a>
                                      <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
