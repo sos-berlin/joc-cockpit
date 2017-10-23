@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService","$timeout"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService,$timeout) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -1113,7 +1113,7 @@
         });
 
         vm.getCategories = function() {
-            CalendarService.getCalendarCategories().then(function (res) {
+            CalendarService.getCalendarCategories({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
                 vm.categories = res.categories;
             });
         };
@@ -1188,6 +1188,7 @@
             vm.object.calendars=[];
             vm.loading = true;
             var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [{folder: data.path, recursive: false}];
             if (vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
@@ -1245,6 +1246,7 @@
             vm.folderPathC = data.name || '/';
             vm.folderFullPathC = data.path || '/';
             var obj = {};
+             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
             if (vm.calendarFilters.filter.type != 'ALL') {
@@ -1333,6 +1335,7 @@
                     getExpandTreeForUpdates1(value);
             });
             obj1.compact = true;
+             obj1.jobschedulerId = vm.schedulerIds.selected;
             CalendarService.getListOfCalendars(obj1).then(function (res) {
                 var data = res.calendars;
                 angular.forEach(vm.treeCalendar, function (value) {
@@ -1343,10 +1346,11 @@
                 vm.loading = false;
             });
         };
-
+        var t1;
 
         function storeCalendar() {
             var obj = {};
+             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = vm.calendar.calendarObj;
             if(vm.calendar.create) {
                 if (vm.calendar.path == '/') {
@@ -1386,7 +1390,8 @@
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = {};
-            vm.calendar.path = vm.folderFullPathC;
+            vm.calendar.path = vm.folderFullPathC || '/';
+            vm.calendar.type = 'WORKING_DAYS';
             vm.calendar.create = true;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/set-calendar-dialog.html',
@@ -1396,12 +1401,19 @@
                 backdrop: 'static',
                 windowClass: 'fade-modal'
             });
-            vm.template = 'page1';
+            t1 = $timeout(function(){
+                vm.template = 'page1';
+            },100);
         };
+
         vm.editCalendar = function (calendar) {
 
-            CalendarService.getCalendar({id: calendar.id}).then(function (res) {
+            CalendarService.getCalendar({
+                id: calendar.id,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
                 vm.calendar = res.calendar;
+                vm.calendar.newPath = angular.copy(calendar.path);
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
 
@@ -1415,89 +1427,44 @@
                     backdrop: 'static',
                     windowClass: 'fade-modal'
                 });
-                vm.template = 'page1';
+                t1 = $timeout(function () {
+                    vm.template = 'page1';
+                }, 100);
             });
             vm.object.calendars = [];
         };
-        vm.renameCalendar = function(calendar) {
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            vm.calendar = angular.copy(calendar);
 
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/rename-calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
+        vm.copyCalendar = function() {
+            //TODO
 
-                var obj = {};
-                obj.path = calendar.path;
-                obj.newPath = vm.calendar.newPath+'/'+vm.calendar.newName;
-                if (vm.comments.comment) {
-                    obj.auditLog = {};
-                    obj.auditLog.comment = vm.comments.comment;
-                }
-                if (vm.comments.timeSpent)
-                    obj.auditLog.timeSpent = vm.comments.timeSpent;
-                if (vm.comments.ticketLink)
-                    obj.auditLog.ticketLink = vm.comments.ticketLink;
-                CalendarService.renameCalendar(obj).then(function(){
-                     initCalendarTree();
-                })
-            }, function () {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.calendar = {};
+            obj.calendar.path = vm.calendar.newPath;
+            if (vm.calendar.title)
+                obj.calendar.title = vm.calendar.title;
+            if (vm.calendar.category)
+                obj.calendar.category = vm.calendar.category;
+            obj.calendar.type = vm.calendar.type;
+            if (vm.calendar.includes)
+                obj.calendar.includes = vm.calendar.includes;
+            if (vm.calendar.excludes)
+                obj.calendar.excludes = vm.calendar.excludes;
+            if (vm.calendar.from)
+                obj.calendar.from = moment(vm.calendar.from).format('YYYY-MM-DD');
+            if (vm.calendar.to)
+                obj.calendar.to = moment(vm.calendar.to).format('YYYY-MM-DD');
+            if (vm.comments.comment) {
+                obj.auditLog = {};
+                obj.auditLog.comment = vm.comments.comment;
+            }
+            if (vm.comments.timeSpent)
+                obj.auditLog.timeSpent = vm.comments.timeSpent;
+            if (vm.comments.ticketLink)
+                obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            });
-             vm.object.calendars=[];
-        };
-
-        vm.copyCalendar = function(calendar) {
-            CalendarService.getCalendar({id: calendar.id}).then(function (res) {
-                calendar = angular.merge(calendar, res.calendar);
-            });
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            vm.calendar = angular.copy(calendar);
-            vm.calendar.copy = true;
-
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/copy-calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                var obj = {};
-
-                obj.calendar = {};
-                obj.calendar.path = vm.calendar.newPath + '/' + vm.calendar.newName;
-                obj.calendar.title = calendar.title;
-                if(calendar.category)
-                    obj.calendar.category = calendar.category;
-                obj.calendar.type = calendar.type;
-                if(calendar.includes)
-                    obj.calendar.includes = calendar.includes;
-                if(calendar.excludes)
-                    obj.calendar.excludes = calendar.excludes;
-                if(calendar.from)
-                    obj.calendar.from = calendar.from;
-                obj.calendar.to = calendar.to;
-
-                if (vm.comments.comment) {
-                    obj.auditLog = {};
-                    obj.auditLog.comment = vm.comments.comment;
-                }
-                if (vm.comments.timeSpent)
-                    obj.auditLog.timeSpent = vm.comments.timeSpent;
-                if (vm.comments.ticketLink)
-                    obj.auditLog.ticketLink = vm.comments.ticketLink;
-
-                CalendarService.storeCalendar(obj).then(function(){
-                    initCalendarTree();
-                })
-            }, function () {
-
+            CalendarService.saveAs(obj).then(function () {
+                initCalendarTree();
             });
         };
         vm.showUsage = function(calendar){
@@ -1518,36 +1485,13 @@
                 });
         };
 
-        function deleteCalendar(obj,calendar) {
+        function deleteCalendar(obj) {
             CalendarService.delete(obj).then(function () {
                 initCalendarTree();
                 vm.object.calendars=[];
             });
         }
-        vm.deleteCalendar = function (calendar) {
-            var obj = {};
-            obj.calendarIds = [];
-            if (calendar) {
-                obj.calendarIds.push(calendar.id)
-            } else {
-                angular.forEach(vm.object.calendars, function (value) {
-                    obj.calendarIds.push(value.id)
-                });
-            }
-            if (calendar) {
-                vm.calendar = angular.copy(calendar);
-                vm.calendar.delete = true;
-                CalendarService.calendarUsed({id: vm.calendar.id}).then(function (res) {
-                    vm.calendar.usedIn = res.jobschedulers;
-                });
-            } else {
-                vm.calendarArr = angular.copy(vm.object.calendars);
-                angular.forEach(vm.calendarArr, function (value) {
-                    CalendarService.calendarUsed({id: value.id}).then(function (res) {
-                        value.usedIn = res.jobschedulers;
-                    });
-                });
-            }
+        function deleteCalendarFn(obj, calendar) {
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
@@ -1580,9 +1524,9 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    deleteCalendar(obj, calendar);
+                    deleteCalendar(obj);
                 }, function () {
-                    vm.object.calendars = [];
+
                 });
 
             } else {
@@ -1593,11 +1537,43 @@
                     backdrop: 'static'
                 });
                 modalInstance1.result.then(function () {
-                    deleteCalendar(obj, calendar);
+                    deleteCalendar(obj);
                 }, function () {
 
                 });
             }
+        }
+        vm.deleteCalendar = function (calendar) {
+            var obj = {};
+             obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.calendarIds = [];
+            if (calendar) {
+                obj.calendarIds.push(calendar.id)
+            } else {
+                angular.forEach(vm.object.calendars, function (value) {
+                    obj.calendarIds.push(value.id)
+                });
+            }
+            vm.calendar = angular.copy(calendar);
+            if (calendar) {
+                vm.calendarArr = undefined;
+                vm.calendar.delete = true;
+                CalendarService.calendarUsed({id: vm.calendar.id,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
+                    vm.calendar.usedIn = res.jobschedulers;
+
+                });
+            } else {
+
+                vm.calendarArr = angular.copy(vm.object.calendars);
+                angular.forEach(vm.calendarArr, function (value) {
+                    CalendarService.calendarUsed({id: value.id, jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
+                        value.usedIn = res.jobschedulers;
+                    });
+                });
+
+            }
+            deleteCalendarFn(obj,calendar);
+
         };
 
         vm.getTreeStructure = function () {
@@ -2499,7 +2475,6 @@
             var views = {};
             if ($window.localStorage.views)
                 views = JSON.parse($window.localStorage.views);
-
             if (toState.name == 'app.resources.agentClusters') {
                 vm.resourceFilters.state = 'agent';
                 vm.pageView = views.agent;
@@ -2523,6 +2498,8 @@
                 vm.tree = [];
                 initTree();
             } else if (toState.name == 'app.resources.calendars') {
+                vm.pageView = views.calendar;
+
                 vm.resourceFilters.state = 'calendars';
                 vm.treeCalendar = [];
                 initCalendarTree();
@@ -2578,13 +2555,14 @@
             watcher4();
             $interval.cancel(interval1);
             $interval.cancel(interval2);
+            $timeout.cancel(t1);
 
         });
     }
 
 
-    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService','CalendarService'];
-    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService,CalendarService) {
+    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService','CalendarService','$timeout'];
+    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService,CalendarService, $timeout) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
             vm.checkSchedulerId();
@@ -2927,8 +2905,9 @@
             var obj = {};
             obj.calendars = [$stateParams.path];
             obj.compact = true;
+             obj.jobschedulerId = vm.schedulerIds.selected;
             CalendarService.getListOfCalendars(obj).then(function (res) {
-               vm.allCalendars = res.calendars;
+                vm.allCalendars = res.calendars;
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -2967,22 +2946,23 @@
         };
         function storeCalendar() {
             var obj = {};
+             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = vm.calendar.calendarObj;
-            if(vm.calendar.create) {
+            if (vm.calendar.create) {
                 if (vm.calendar.path == '/') {
                     obj.calendar.path = '/' + vm.calendar.name;
                 } else {
                     obj.calendar.path = vm.calendar.path + '/' + vm.calendar.name;
                 }
-            }else{
+            } else {
                 obj.calendar.path = vm.calendar.path;
             }
             obj.calendar.title = vm.calendar.title;
             obj.calendar.category = vm.calendar.category;
             obj.calendar.type = vm.calendar.type;
-            if(vm.calendar.from)
-                obj.calendar.from = moment(vm.calendar.from).format('YYYY-MM-DD') ;
-            if(vm.calendar.to)
+            if (vm.calendar.from)
+                obj.calendar.from = moment(vm.calendar.from).format('YYYY-MM-DD');
+            if (vm.calendar.to)
                 obj.calendar.to = moment(vm.calendar.to).format('YYYY-MM-DD');
             if (vm.comments.comment) {
                 obj.auditLog = {};
@@ -2997,30 +2977,16 @@
 
             });
         }
+
+        var t1;
         $scope.$on('calendar-obj', function (event, data) {
             vm.calendar = data.calendar;
             storeCalendar();
         });
-        vm.addCalendar = function () {
 
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            vm.calendar = {};
-            vm.calendar.path = vm.folderFullPathC;
-            vm.calendar.create = true;
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/set-calendar-dialog.html',
-                controller: 'CalendarEditorDialogCtrl',
-                scope: vm,
-                size: 'lg',
-                backdrop: 'static',
-                windowClass: 'fade-modal'
-            });
-            vm.template = 'page1';
-        };
         vm.editCalendar = function (calendar) {
 
-            CalendarService.getCalendar({id: calendar.id}).then(function (res) {
+            CalendarService.getCalendar({id: calendar.id, jobschedulerId :vm.schedulerIds.selected}).then(function (res) {
                 vm.calendar = res.calendar;
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
@@ -3035,45 +3001,16 @@
                     backdrop: 'static',
                     windowClass: 'fade-modal'
                 });
-                vm.template = 'page1';
-            });
-
-        };
-        vm.renameCalendar = function(calendar) {
-            vm.comments = {};
-            vm.comments.radio = 'predefined';
-            vm.calendar = angular.copy(calendar);
-
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/rename-calendar-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-
-                var obj = {};
-                obj.path = calendar.path;
-                obj.newPath = vm.calendar.newPath+'/'+vm.calendar.newName;
-                if (vm.comments.comment) {
-                    obj.auditLog = {};
-                    obj.auditLog.comment = vm.comments.comment;
-                }
-                if (vm.comments.timeSpent)
-                    obj.auditLog.timeSpent = vm.comments.timeSpent;
-                if (vm.comments.ticketLink)
-                    obj.auditLog.ticketLink = vm.comments.ticketLink;
-                CalendarService.renameCalendar(obj).then(function(){
-
-                })
-            }, function () {
-
+                t1 = $timeout(function () {
+                    vm.template = 'page1';
+                }, 100);
             });
 
         };
 
-        vm.copyCalendar = function(calendar) {
-            CalendarService.getCalendar({id: calendar.id}).then(function (res) {
+
+        vm.copyCalendar = function (calendar) {
+            CalendarService.getCalendar({id: calendar.id, jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                 calendar = angular.merge(calendar, res.calendar);
             });
             vm.comments = {};
@@ -3089,18 +3026,18 @@
             });
             modalInstance.result.then(function () {
                 var obj = {};
-
+ obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.calendar = {};
                 obj.calendar.path = vm.calendar.newPath + '/' + vm.calendar.newName;
                 obj.calendar.title = calendar.title;
-                if(calendar.category)
+                if (calendar.category)
                     obj.calendar.category = calendar.category;
                 obj.calendar.type = calendar.type;
-                if(calendar.includes)
+                if (calendar.includes)
                     obj.calendar.includes = calendar.includes;
-                if(calendar.excludes)
+                if (calendar.excludes)
                     obj.calendar.excludes = calendar.excludes;
-                if(calendar.from)
+                if (calendar.from)
                     obj.calendar.from = calendar.from;
                 obj.calendar.to = calendar.to;
 
@@ -3113,36 +3050,38 @@
                 if (vm.comments.ticketLink)
                     obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-                CalendarService.storeCalendar(obj).then(function(){
+                CalendarService.storeCalendar(obj).then(function () {
 
                 })
             }, function () {
 
             });
         };
-        vm.showUsage = function(calendar){
+        vm.showUsage = function (calendar) {
             vm.calendar = angular.copy(calendar);
-            CalendarService.calendarUsed({id: calendar.id}).then(function (res) {
-                    vm.calendar.usedIn = res.jobschedulers;
-                });
-              var modalInstance1 = $uibModal.open({
-                    templateUrl: 'modules/core/template/show-usage-calendar-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance1.result.then(function () {
+            CalendarService.calendarUsed({id: calendar.id, jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
+                vm.calendar.usedIn = res.jobschedulers;
+            });
+            var modalInstance1 = $uibModal.open({
+                templateUrl: 'modules/core/template/show-usage-calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance1.result.then(function () {
 
-                }, function () {
+            }, function () {
 
-                });
+            });
         };
 
-        function deleteCalendar(obj,calendar) {
+        function deleteCalendar(obj, calendar) {
             CalendarService.delete(obj);
         }
+
         vm.deleteCalendar = function (calendar) {
             var obj = {};
+             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendarIds = [];
             if (calendar) {
                 obj.calendarIds.push(calendar.id)
@@ -3150,7 +3089,7 @@
             if (calendar) {
                 vm.calendar = angular.copy(calendar);
                 vm.calendar.delete = true;
-                CalendarService.calendarUsed({id: vm.calendar.id}).then(function (res) {
+                CalendarService.calendarUsed({id: vm.calendar.id, jobschedulerId :vm.schedulerIds.selected}).then(function (res) {
                     vm.calendar.usedIn = res.jobschedulers;
                 });
             }
@@ -3197,6 +3136,9 @@
             }
         };
 
+        $scope.$on('$destroy', function () {
+            $timeout.cancel(t1);
+        });
     }
 
 

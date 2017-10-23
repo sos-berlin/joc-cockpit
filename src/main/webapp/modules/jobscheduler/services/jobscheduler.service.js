@@ -526,9 +526,9 @@
                 });
                 return deferred.promise;
             },
-            renameCalendar: function (filter) {
+            saveAs: function (filter) {
                 var deferred = $q.defer();
-                var Calendar = $resource('calendar/rename');
+                var Calendar = $resource('calendar/save_as');
                 Calendar.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {

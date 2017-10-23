@@ -1711,7 +1711,7 @@
 
 
         function submit() {
-            if ((vm.calendar && !vm.calendar.copy) || vm.calendarArr)  {
+            if ((vm.calendar && !vm.calendar.copy && vm.calendar.usedIn && vm.calendar.usedIn.length>0) || vm.calendarArr)  {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
                     controller: 'DialogCtrl1',
@@ -1978,6 +1978,7 @@
             vm.viewDate = new Date();
             vm.calendarTitle = new Date().getFullYear();
             var obj = {};
+             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = {};
             obj.dateFrom = moment().format('YYYY-MM-DD');
             obj.dateTo = vm.calendarTitle + '-12-31';
@@ -2504,7 +2505,7 @@
                 obj.dateFrom = vm.calendarTitle + '-01-01';
                 obj.dateTo = vm.calendarTitle + '-12-31';
                 obj.calendar = vm.frequencyObj;
-
+                obj.jobschedulerId = vm.schedulerIds.selected;
                 CalendarService.getListOfDates(obj).then(function (result) {
                     angular.forEach(result.dates, function (date) {
                         vm.planItems.push({
@@ -3645,7 +3646,7 @@
         }
         function getHolidayCalendarById() {
             angular.forEach(ids, function (id, index) {
-                CalendarService.getCalendar({id: id}).then(function (res) {
+                CalendarService.getCalendar({id: id,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                     if (vm.holidayCalendar && angular.isArray(vm.holidayCalendar))
                         vm.holidayCalendar.push(res.calendar);
                     else {
@@ -3667,7 +3668,7 @@
         function getCalendarById() {
            
             angular.forEach(calendarIds, function (id, index) {
-                CalendarService.getCalendar({id: id}).then(function (res) {
+                CalendarService.getCalendar({id: id, jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                     if (vm.selectedCalendar && angular.isArray(vm.selectedCalendar))
                         vm.selectedCalendar.push(res.calendar);
                     else {
@@ -10086,35 +10087,6 @@
                     vm.run_time.holidays.holiday.push({_date: moment(value).format('YYYY-MM-DD')});
                 });
             }
-            angular.forEach(vm.holidayCalendar, function (calendar, index) {
-
-                if (calendar.dates.length > 0) {
-                    angular.forEach(calendar.dates, function (d) {
-                        if (!vm.isEmpty(run_time.holidays)) {
-                            if (run_time.holidays.holiday && angular.isArray(run_time.holidays.holiday)) {
-                                run_time.holidays.holiday.push({
-                                    _calendar: calendar.id,
-                                    _date: moment(d).format('YYYY-MM-DD')
-                                });
-                            } else {
-                                run_time.holidays.holiday = [];
-                                run_time.holidays.holiday.push({
-                                    _calendar: calendar.id,
-                                    _date: moment(d).format('YYYY-MM-DD')
-                                });
-                            }
-
-                        } else {
-                            run_time.holidays = {};
-                            run_time.holidays.holiday = [];
-                            run_time.holidays.holiday.push({
-                                _calendar: calendar.id,
-                                _date: moment(d).format('YYYY-MM-DD')
-                            });
-                        }
-                    });
-                }
-            });
 
             if (vm.calendarFiles && vm.calendarFiles.length > 0) {
                 angular.forEach(vm.calendarFiles, function (value) {
@@ -10145,34 +10117,33 @@
                 delete vm.run_time['holidays'];
             }
 
-            if (vm.runTime1.timeZone) {
-                vm.run_time._time_zone = vm.runTime1.timeZone;
-            } else {
-                delete vm.run_time['_time_zone'];
-            }
-            if (vm.sch) {
-                if (vm.sch._name) {
-                    vm.run_time._name = vm.sch._name;
-                } else {
-                    if (vm.sch._substitute) {
-                        vm.run_time._substitute = vm.sch._substitute;
-                    }
-                }
-                if (vm.sch._valid_from) {
-                    vm.run_time._valid_from = vm.sch._valid_from;
-                }
-                if (vm.sch._valid_to) {
-                    vm.run_time._valid_to = vm.sch._valid_to;
-                }
-                if (vm.sch._title) {
-                    vm.run_time._title = vm.sch._title;
-                }
-            }
-
             deleteEmptyValue(vm.run_time);
 
             var tempData = sortRuntimeObj(vm.run_time);
 
+            if (vm.sch) {
+                if (vm.sch._name) {
+                    tempData._name = vm.sch._name;
+                } else {
+                    if (vm.sch._substitute) {
+                        tempData._substitute = vm.sch._substitute;
+                    }
+                }
+                if (vm.sch._valid_from) {
+                    tempData._valid_from = vm.sch._valid_from;
+                }
+                if (vm.sch._valid_to) {
+                    tempData._valid_to = vm.sch._valid_to;
+                }
+                if (vm.sch._title) {
+                    tempData._title = vm.sch._title;
+                }
+            }
+
+
+            if (vm.runTime1.timeZone) {
+                tempData._time_zone = vm.runTime1.timeZone;
+            }
             if (vm.order) {
                 vm.run_time = {run_time: tempData};
             }
@@ -10297,18 +10268,70 @@
             }
         }
 
+        function generateHolidayCalendarDates(run_time, dates,calendar) {
+            if (dates.length > 0) {
+                angular.forEach(dates, function (d) {
+                    if (!vm.isEmpty(run_time.holidays)) {
+                        if (run_time.holidays.holiday && angular.isArray(run_time.holidays.holiday)) {
+                            run_time.holidays.holiday.push({
+                                _calendar: calendar.id,
+                                _date: moment(d).format('YYYY-MM-DD')
+                            });
+                        } else {
+                            run_time.holidays.holiday = [];
+                            run_time.holidays.holiday.push({
+                                _calendar: calendar.id,
+                                _date: moment(d).format('YYYY-MM-DD')
+                            });
+                        }
+
+                    } else {
+                        run_time.holidays = {};
+                        run_time.holidays.holiday = [];
+                        run_time.holidays.holiday.push({
+                            _calendar: calendar.id,
+                            _date: moment(d).format('YYYY-MM-DD')
+                        });
+                    }
+                });
+            }
+        }
+
         vm.$on('save-holiday-calendar', function (event, data) {
-            vm.holidayCalendar = data.holidayCalendar;
+            vm.holidayCalendar = angular.copy(data.holidayCalendar);
+            try {
+                var _xml = x2js.xml_str2json(vm.xmlObj.xml);
+            } catch (e) {
+                console.log(e);
+            }
+            var run_time = _xml.run_time || _xml.schedule || {};
             angular.forEach(vm.holidayCalendar, function (calendar, index) {
                 var obj = {};
                 obj.dateFrom = calendar.from;
                 obj.dateTo = calendar.to;
                 obj.path = calendar.path;
+                 obj.jobschedulerId = vm.schedulerIds.selected;
                 CalendarService.getListOfDates(obj).then(function (result) {
-                    calendar.dates = result.dates;
+                    generateHolidayCalendarDates(run_time, result.dates, calendar);
+
+                    if (index == vm.holidayCalendar.length - 1) {
+                         var tempData = sortRuntimeObj(run_time);
+                        if (vm.order) {
+                            vm.run_time = {run_time: tempData};
+                        }
+                        else if (vm.schedule) {
+                            vm.run_time = {schedule: tempData};
+                        }
+                        try {
+                            var xmlStr = x2js.json2xml_str(vm.run_time);
+                        } catch (e) {
+                            console.log(e);
+                        }
+                        xmlStr = xmlStr.replace(/,/g, ' ');
+                        getXml2Json(xmlStr);
+                    }
                 });
             })
-
         });
         vm.$on('save-calendar', function (event, data) {
             vm.selectedCalendar = angular.copy(data.selectedCalendar);
@@ -10324,6 +10347,7 @@
                 obj.dateFrom = calendar.from;
                 obj.dateTo = calendar.to;
                 obj.path = calendar.path;
+                 obj.jobschedulerId = vm.schedulerIds.selected;
                 CalendarService.getListOfDates(obj).then(function (result) {
                     generateCalendarDates(run_time, result.dates, calendar);
 
@@ -10364,7 +10388,7 @@
             obj.dateFrom = vm.calendarObj.from;
             obj.dateTo =  vm.calendarObj.to;
             obj.path = vm.calendarObj.path;
-
+            obj.jobschedulerId = vm.schedulerIds.selected;
             CalendarService.getListOfDates(obj).then(function (result) {
                 angular.forEach(result.dates, function (date) {
                     vm.planItems.push({
@@ -10374,18 +10398,6 @@
                 tempList = angular.copy(vm.planItems);
             });
         };
-
-        vm.$on('calendarDayClicked', function (event, data) {
-            if (data.day && data.day.inMonth) {
-                data.month = data.month > 9 ? data.month : '0' + data.month;
-                data.day.label = data.day.label > 9 ? data.day.label : '0' + data.day.label;
-                var date = vm.calendarTitle + '-' + data.month + '-' + data.day.label;
-
-                /*                vm.planItems.push({
-                 plannedStartTime: date
-                 });*/
-            }
-        });
 
         vm.deleteCalendar = function (data, index) {
             try {
@@ -10442,12 +10454,57 @@
         };
 
         vm.deleteHolidayCalendar = function (data) {
-            for(var x=0; x<vm.holidayCalendar.length;x++ ){
-                if(data.path == vm.holidayCalendar[x].path){
-                    vm.holidayCalendar.splice(x,1);
+            try {
+                var _xml = x2js.xml_str2json(vm.xmlObj.xml);
+            } catch (e) {
+                console.log(e);
+            }
+            if (!_xml) {
+                return;
+            }
+            for (var x = 0; x < vm.holidayCalendar.length; x++) {
+                if (data.path == vm.holidayCalendar[x].path) {
+                    vm.holidayCalendar.splice(x, 1);
                     break;
                 }
             }
+            var run_time = _xml.run_time || _xml.schedule;
+
+            if (run_time.holidays) {
+                if (!angular.isArray(run_time.holidays.holiday)) {
+                    delete run_time.holidays['holiday'];
+                } else {
+                    var _tempList = angular.copy(run_time.holidays.holiday);
+                    angular.forEach(_tempList, function (value, indx) {
+                        if (value._calendar && value._calendar == data.id) {
+                            for (var i = 0; i < run_time.holidays.holiday.length; i++) {
+                                if (value._calendar == run_time.holidays.holiday[i]._calendar) {
+                                    run_time.holidays.holiday.splice(i, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    });
+
+                }
+                if (run_time.holidays.holiday && angular.isArray && run_time.holidays.holiday.length == 0) {
+                    delete run_time.holidays['holiday'];
+                }
+            }
+
+            if (vm.order) {
+                vm.run_time = {run_time: run_time};
+            }
+            else if (vm.schedule) {
+                vm.run_time = {schedule: run_time};
+            }
+            try {
+                var xmlStr = x2js.json2xml_str(vm.run_time);
+            } catch (e) {
+                console.log(e);
+            }
+            xmlStr = xmlStr.replace(/,/g, ' ');
+            getXml2Json(xmlStr);
         };
 
         vm.back1 = function () {
@@ -10542,23 +10599,34 @@
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
 
         function submit() {
-            if (!vm.calendar.create) {
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/confirm-dialog.html',
-                    controller: 'DialogCtrl1',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
-                    $rootScope.$broadcast('calendar-obj', {
-                        calendar: vm.calendar
-                    });
-                    $uibModalInstance.close('ok');
-                }, function () {
 
+            if (!vm.calendar.create) {
+                CalendarService.calendarUsed({id: vm.calendar.id,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
+                    vm.calendar.usedIn = res.jobschedulers;
+                    vm.calendarArr = undefined;
+                    if (vm.calendar.usedIn && vm.calendar.usedIn.length > 0) {
+                        var modalInstance = $uibModal.open({
+                            templateUrl: 'modules/core/template/confirm-dialog.html',
+                            controller: 'DialogCtrl1',
+                            scope: vm,
+                            backdrop: 'static'
+                        });
+                        modalInstance.result.then(function () {
+                            $rootScope.$broadcast('calendar-obj', {
+                                calendar: vm.calendar
+                            });
+                            $uibModalInstance.close('ok');
+                        }, function () {
+
+                        });
+                    } else {
+                        $rootScope.$broadcast('calendar-obj', {
+                            calendar: vm.calendar
+                        });
+                        $uibModalInstance.close('ok');
+                    }
                 });
             } else {
-
                 $rootScope.$broadcast('calendar-obj', {
                     calendar: vm.calendar
                 });
@@ -10609,15 +10677,11 @@
         if (vm.calendar.includes || vm.calendar.excludes) {
             convertObjToArr(vm.calendar);
         }
-       if (!vm.calendar.create)
-            CalendarService.calendarUsed({id:vm.calendar.id}).then(function(res){
-                vm.calendar.usedIn = res.jobschedulers;
-            });
         vm.frequencyList = [];
 
         vm.getCategories = function () {
             if (!vm.cateogries || vm.cateogries.length == 0)
-                CalendarService.getCalendarCategories().then(function (res) {
+                CalendarService.getCalendarCategories({ jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                     vm.categories = res.categories;
                 });
         };
@@ -11635,13 +11699,15 @@
             vm.filterTree1=[];
             vm.filter = {};
             vm.object.calendars=[];
+            vm.filter.type ='WORKING_DAYS';
             obj={};
             if(calendar.data == 'holiday') {
                 vm.holiday = calendar.data;
+                vm.filter.type ='NON_WORKING_DAYS';
             }else{
                 vm.holiday = undefined;
             }
-            vm.filter.type ='WORKING_DAYS';
+
             vm.calendars =calendar.calendar || [];
             if(vm.calendars.length>0)
                 vm.object.calendars = angular.copy(vm.calendars);
@@ -11720,6 +11786,7 @@
             obj = {folders: []};
             obj.type = vm.filter.type;
             obj.compact = true;
+             obj.jobschedulerId = vm.schedulerIds.selected;
             angular.forEach(vm.filterTree1, function (value) {
                 if (value.expanded)
                     getExpandTreeForUpdates(value);

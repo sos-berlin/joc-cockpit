@@ -2,7 +2,7 @@
     <div class="modal-header">
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
-            <span ng-if="!calendar">
+            <span ng-if="!calendar && !calendarArr">
                 <span class="text-capitalize" translate>label.delete</span> {{user.user}} {{role.role}} {{master.master}} {{folder.folder}}{{permission.path}}?
             </span>
             <span ng-if="calendar && !calendar.delete">
@@ -18,13 +18,13 @@
     </div>
     <div class="modal-body p-a">
         <div class="row">
-            <div class=" col-sm-12 text-center m-a">
+            <div class=" col-sm-12 text-center m-t">
                 <span ng-if="user.user" translate class="text">message.deleteUser</span>
                 <span ng-if="role.role" translate class="text">message.deleteRole</span>
                 <span ng-if="master.master" translate class="text">message.deleteMaster</span>
                 <span ng-if="folder.folder" translate class="text">message.deleteFolder</span>
                 <span ng-if="permission.path" translate class="text">message.deletePermission</span>
-                <div ng-if="calendar">
+                <div ng-if="calendar && !calendarArr">
                     <div class="row form-group">
                         <span ng-if="!calendar.delete" translate class="text">message.updateCalendar</span>
                         <span ng-if="calendar.delete" translate class="text">message.deleteCalendar</span>
@@ -64,13 +64,13 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="calendarArr">
+                <div ng-if="calendarArr && !calendar">
                     <div class="row form-group">
                         <span  translate class="text">message.deleteAllCalendar</span>
                     </div>
-                    <div class="text-left row">
+                    <div class="text-left row" ng-repeat="calendar in calendarArr">
                         <div class=" col-sm-12">
-                            <div ng-repeat="use in calendarArr.usedIn" ng-class="{'b-b': $index>0}">
+                            <div ng-repeat="use in calendar.usedIn" ng-class="{'b-b': $index>0}">
                                 <div class="row">
                                     <label class="col-sm-3" translate>
                                         label.jobSchedulerId
@@ -79,7 +79,7 @@
                                         {{use.jobschedulerId}}
                                     </div>
                                 </div>
-                                <div class="row form-group">
+                                <div class="row form-group" ng-if="use.jobs">
                                     <label class="col-md-3" translate="">
                                         label.jobs
                                     </label>
@@ -89,7 +89,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row form-group">
+                                <div class="row form-group" ng-if="use.orders">
                                     <label class="col-md-3" translate="">
                                         label.orders
                                     </label>

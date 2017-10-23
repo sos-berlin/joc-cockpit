@@ -247,6 +247,17 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+
+            getcalendars: function (orders) {
+                var deferred = $q.defer();
+                var Calendar = $resource('order/calendars');
+                Calendar.save(orders, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
 
         }

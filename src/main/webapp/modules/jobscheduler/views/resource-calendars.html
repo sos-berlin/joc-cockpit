@@ -48,8 +48,6 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
                                         <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="copyCalendar(calendar)" translate>button.saveAs</a>
-                                        <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                     </div>
@@ -145,8 +143,6 @@
                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                      <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
                                      <a ng-click="showUsage(calendar)" class="dropdown-item" translate>button.showUsage</a>
-                                     <a ng-if="permission.Calendar.edit.change" ng-click="copyCalendar(calendar)" class="dropdown-item" translate>button.saveAs</a>
-                                     <a ng-if="permission.Calendar.edit.change" ng-click="renameCalendar(calendar)" class="dropdown-item" translate>button.renameCalendar</a>
                                      <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)" class="dropdown-item" translate>button.deleteCalendar</a>
                                      <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                  </div>
@@ -944,7 +940,7 @@
                                         <tr>
                                             <th translate>label.srNo</th>
                                             <th translate>label.frequency</th>
-                                            <th translate>label.action</th>
+                                            <th width="100" translate>label.action</th>
                                         </tr>
                                         </thead>
                                         <tbody>

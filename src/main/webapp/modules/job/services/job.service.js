@@ -312,6 +312,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            getcalendars: function (jobs) {
+                var deferred = $q.defer();
+                var Calendar = $resource('job/calendars');
+                Calendar.save(jobs, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

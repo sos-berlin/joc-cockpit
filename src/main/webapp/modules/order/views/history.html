@@ -311,10 +311,10 @@
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown-separator" ng-if="permission.Yade.view.transfers">
+                    <li class="nav-item dropdown-separator" ng-if="permission.YADE.view.transfers">
                         <span class="separator"></span>
                     </li>
-                    <li class="nav-item" ng-if="permission.Yade.view.transfers">
+                    <li class="nav-item" ng-if="permission.YADE.view.transfers">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='yade'}" ng-model="historyFilters.type"
                            uib-btn-radio="'yade'" ng-click="yadeHistory()">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.fileTransfer</span></span>

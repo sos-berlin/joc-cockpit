@@ -5227,6 +5227,27 @@
                 });
             }
         };
+        vm.showAssignedCalendar = function(job){
+            var jobs = {};
+            jobs.jobschedulerId = vm.schedulerIds.selected;
+            jobs.job = job.path;
+            jobs.compact = true;
+            JobService.getcalendars(jobs).then(function (res) {
+                  console.log(res);
+                  vm.calendar.calendars = res.calendars;
+                });
+            var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+
+                }, function () {
+
+                });
+        };
 
 
         vm.deleteOrder =  function(order) {

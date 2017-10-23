@@ -151,6 +151,7 @@
                     lock: view,
                     processClass: view,
                     schedule: view,
+                    calendar: view,
                     jobChainOrder: view,
                     orderOverView: view,
                     permission: view
@@ -176,7 +177,9 @@
                     t.pageView = views.processClass;
                 } else if (l.path() == '/resources/schedules') {
                     t.pageView = views.schedule;
-                } else if (l.path().match('/job_chain_detail/')) {
+                } else if (l.path() == '/resources/calendars') {
+                    t.pageView = views.calendar;
+                }else if (l.path().match('/job_chain_detail/')) {
                     t.pageView = views.jobChainOrder;
                 } else if (l.path().match('/orders_overview')) {
                     t.pageView = views.orderOverView;
@@ -202,6 +205,8 @@
                         views.processClass = t.pageView;
                     } else if (l.path() == '/resources/schedules') {
                         views.schedule = t.pageView;
+                    }else if (l.path() == '/resources/calendars') {
+                        views.calendar = t.pageView;
                     } else if (l.path().match('/job_chain_detail/')) {
                         views.jobChainOrder = t.pageView;
                     } else if (l.path().match('/orders_overview')) {

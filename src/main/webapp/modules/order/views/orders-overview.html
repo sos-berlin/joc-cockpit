@@ -157,6 +157,10 @@
                                                 <a href class="dropdown-item"
                                                    ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                    ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
+                                                    <a href class="dropdown-item"
+                                                       ng-click="showAssignedCalendar(order)">
+                                                        <span translate>button.showAssignedCalendar</span>
+                                                    </a>
                                                 <a href class="dropdown-item bg-hover-color"
                                                    ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                    ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
@@ -310,7 +314,11 @@
                                                    ng-click="setOrderState(order)" translate>button.setOrderState</a>
                                                 <a href class="dropdown-item"
                                                    ng-if="(order.processingState._text == 'SUSPENDED' || order.processingState._text == 'PENDING') && permission.Order.change.runTime"
-                                                   ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
+                                                   ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
+                                                <a href class="dropdown-item"
+                                                   ng-click="showAssignedCalendar(order)">
+                                                    <span translate>button.showAssignedCalendar</span>
+                                                </a>
                                                 <a href class="dropdown-item bg-hover-color"
                                                    ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
                                                    ng-click="suspendOrder(order)" translate>button.suspendOrder</a>

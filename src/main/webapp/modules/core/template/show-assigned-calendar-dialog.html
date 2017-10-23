@@ -3,14 +3,14 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span>
-                <span translate>label.showUsage</span> : {{calendar.path}}
+                <span translate>label.showAssignedCalendar</span> : {{order.path}}
             </span>
         </h4>
     </div>
     <div class="modal-body p-a">
         <div class="row">
             <div class=" col-sm-12">
-                <div ng-repeat="use in calendar.usedIn" class="p-l-sm" ng-class="{'b-b': $index>0}">
+               <!-- <div ng-repeat="use in calendar.usedIn" class="p-l-sm" ng-class="{'b-b': $index>0}">
                     <div class="row form-group">
                         <label class="col-sm-3" translate>
                             label.jobSchedulerId
@@ -35,13 +35,13 @@
                         </label>
                         <div class="col-md-9">
                             <div ng-repeat="order in use.orders">
-                                {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showOrderLink(order)">{{order}}</span>
+                                {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showJobChain(order)">{{order}}</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="text-center text" ng-if="!calendar.usedIn || calendar.usedIn.length==0" translate>message.calendarNotUsed</div>
-            </div>
+           --> </div>
         </div>
         <div class="row m-t-md">
             <div class="b-t"></div>

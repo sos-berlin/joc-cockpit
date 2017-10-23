@@ -1511,6 +1511,7 @@
                                         + '<a class="hide" id="orderat-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'PENDING\' ||\'' + order.processingState._text + '\'== \'SETBACK\'))&& permission.Order.execute.start}">' + gettextCatalog.getString("button.startOrderat") + '</a>'
                                         + '<a class="hide" id="orderstate-' + order.orderId + '" ng-class="{\'show dropdown-item\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'BLACKLIST\' && permission.Order.change.state}">' + gettextCatalog.getString("button.setOrderState") + '</a>'
                                         + '<a class="hide" id="runtime-' + order.orderId + '" ng-class="{\'show dropdown-item\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'BLACKLIST\' && permission.Order.change.runTime}">' + gettextCatalog.getString("button.setRunTime") + '</a>'
+                                        + '<a class="hide" id="showAssignedCalendar-' + order.orderId + '" ng-class="{\'show dropdown-item\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'BLACKLIST\' && permission.Order.change.runTime}">' + gettextCatalog.getString("button.showAssignedCalendar") + '</a>'
                                         + '<a class="hide" id="resetruntime-' + order.orderId + '" ng-class="{\'show dropdown-item\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'BLACKLIST\' && permission.Order.change.runTime, \'disable-link\':\''+order.runTimeIsTemporary+'\' == \'false\'}">' + gettextCatalog.getString("button.resetRunTime") + '</a>'
                                         + '<a class="hide" id="suspend-' + order.orderId + '" ng-class="{\'show dropdown-item bg-hover-color\':\'' + order.processingState + '\'&& \'' + order.processingState._text + '\'!== \'SUSPENDED\' && \'' + order.processingState._text + '\'!== \'BLACKLIST\'&& permission.Order.execute.suspend}">' + gettextCatalog.getString("button.suspendOrder") + '</a>'
                                         + '<a class="hide" id="resume-' + order.orderId + '" ng-class="{\'show dropdown-item\':(\'' + order.processingState + '\'&& (\'' + order.processingState._text + '\'== \'SUSPENDED\'))&& permission.Order.execute.resume}">' + gettextCatalog.getString("button.resumeOrder") + '</a>'
@@ -1567,6 +1568,14 @@
                                     vm.onOrderAction({
                                         order: order,
                                         action: 'set run time'
+                                    })
+                                });
+
+                                var showAssignedCalendar = document.getElementById('showAssignedCalendar-' + order.orderId);
+                                showAssignedCalendar.addEventListener('click', function () {
+                                    vm.onOrderAction({
+                                        order: order,
+                                        action: 'show assigned calendar'
                                     })
                                 });
 

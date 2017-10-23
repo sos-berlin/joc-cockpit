@@ -77,12 +77,6 @@
                         </div>
                     </div>
                 <div class="col-md-12">
-                    <div class="m-b-xs row" ng-if="!calendar.create">
-                        <label class="col-sm-3" translate>label.path</label>
-                        <div class="col-sm-9">
-                            <span>{{calendar.path}}</span>
-                        </div>
-                    </div>
                     <div class="form-group row" ng-if="calendar.create" ng-class="{ 'has-error' : form.name.$invalid && form.name.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.name</label>
                         <div class="col-sm-9">
@@ -102,12 +96,15 @@
                                    ng-model="calendar.title">
                         </div>
                     </div>
-                    <div class="form-group row" ng-if="calendar.create" ng-class="{ 'has-error' : form.path.$invalid && form.path.$dirty }">
+                    <div class="form-group row" ng-class="{ 'has-error' : form.path.$invalid && form.path.$dirty }">
                         <label class="col-sm-3 form-control-label" translate>label.path</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" required name="path"
+                            <input type="text" ng-if="calendar.create" class="form-control" required name="path"
                                    placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}"
                                    ng-model="calendar.path">
+                              <input type="text" ng-if="!calendar.create" class="form-control" required name="path"
+                                   placeholder="{{'placeholder.enterOrSelectFromTree' | translate}}"
+                                   ng-model="calendar.newPath">
                             <div class="help-block text-danger" ng-if="form.path.$dirty"
                                  ng-messages="form.path.$error">
                                 <div ng-message="required" translate>message.requiredError</div>
@@ -118,9 +115,8 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.type</label>
-
                         <div class="col-sm-9">
-                            <select class="form-control" ng-model="calendar.type" ng-init="calendar.type= 'WORKING_DAYS'">
+                            <select class="form-control" ng-model="calendar.type">
                                 <option value="WORKING_DAYS">{{'label.workingDay' | translate}}</option>
                                 <option value="NON_WORKING_DAYS">{{'label.nonWorkingDay' | translate}}</option>
                             </select>
@@ -271,6 +267,9 @@
         <div class="modal-footer text-left">
             <button type="submit" class="btn btn-primary btn-sm"
                     translate>button.submit
+            </button>
+            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath" type="button" class="btn orange btn-sm m-l-sm" ng-click="copyCalendar()"
+                    translate>button.saveAs
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"
                     translate>button.cancel

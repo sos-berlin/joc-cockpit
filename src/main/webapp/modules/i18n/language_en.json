@@ -1128,5 +1128,10 @@
   "label.copyCalendar": "Copy Calendar",
   "label.showUsage": "Show Usage",
   "label.validityUntil": "Valid until",
-  "placeholder.enterNewCalendarName": "Enter a New Calendar Name"
+  "placeholder.enterNewCalendarName": "Enter a New Calendar Name",
+  "button.assignNonWorkingDayCalendar": "Assign Non-Working days Calendar",
+  "message.deleteAllCalendar": "Are you sure you want to delete all calendars?",
+  "label.deleteAllCalendar" :"Delete all calendars",
+  "button.showAssignedCalendar": "Show Assigned Calendar",
+  "label.showAssignedCalendar": "Show Assigned Calendar"
 }

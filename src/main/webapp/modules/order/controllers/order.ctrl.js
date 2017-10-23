@@ -2070,6 +2070,28 @@
                 });
                 openCalendar();
             }
+            if (action == 'show assigned calendar') {
+                var orders = {};
+                orders.jobschedulerId = $scope.schedulerIds.selected;
+                orders.jobChain = order.jobChain;
+                orders.orderId = order.orderId;
+                orders.compact = true;
+                OrderService.getcalendars(orders).then(function (res) {
+                    console.log(res);
+                    vm.calendar.calendars = res.calendars;
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+
+                }, function () {
+
+                });
+            };
 
             if (action == 'delete order') {
                 var orders = {};
@@ -5927,6 +5949,28 @@ vm.reset();
                 vm.isCaledarLoading = false;
             });
 
+        };
+        vm.showAssignedCalendar = function(order){
+            var orders = {};
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.jobChain = order.jobChain;
+            orders.orderId = order.orderId;
+            orders.compact = true;
+            OrderService.getcalendars(orders).then(function (res) {
+                  console.log(res);
+                  vm.calendar.calendars = res.calendars;
+                });
+            var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+
+                }, function () {
+
+                });
         };
 
 
