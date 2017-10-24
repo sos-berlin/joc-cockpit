@@ -124,17 +124,20 @@
                         <div class="form-group row">
                             <div class="col-sm-12" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-bordered frequency-table">
+                                    <table class="table table-hover table-bordered">
                                         <thead>
                                         <tr>
                                             <th translate colspan="2">label.listOfFrequencies</th>
+<th translate>label.period</th>
                                         </tr>
                                         </thead>
                                         <tbody ng-repeat="data in runtimeList track by $index">
                                         <tr>
                                             <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
-                                                <a class="text-xs text-hover-primary m-l-sm"
+<a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="editRunTime(data)"><i class="fa fa-pencil"></i></a>
+                                                <a class="text-xs text-hover-color m-l-sm"
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td style="border-left: none !important; ">
@@ -158,7 +161,7 @@
                         </div>
                     </div>
                     <div class="col-md-6" ng-if="substituteObj.showText && editor.editXml">
-                        <textarea class="form-control" rows="10" ng-model="xml" ng-blur="textEditor(xml)" ng-attr-placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
+                        <textarea class="form-control" rows="10" ng-model="xmlObj.xml" ng-blur="textEditor()" ng-attr-placeholder="<schedule></schedule>" style="min-height: 226px;max-height: 638px;"></textarea>
                     </div>
                 </div>
 
@@ -167,11 +170,11 @@
                 <div>
                     <div class="row m-b-sm">
                         <label class="col-sm-12" ng-show="editor.create">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.create</span>
+                            <span class="text-primary" translate>label.addFrequencies</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                         <label class="col-sm-12" ng-show="editor.update">
-                            <span class="text-primary text-u-l text-capitalize" translate>label.edit</span>
+                            <span class="text-primary" translate>label.editFrequencies</span>
                             <i class="fa fa-angle-right m-l-xs fa-lg"></i> {{str}}
                         </label>
                     </div>
@@ -709,11 +712,11 @@
         <button ng-if="editor.hidePervious && !editor.update" type="button"
                 class="btn btn-primary btn-sm"
                 ng-disabled="form.$invalid || !editor.isEnable" ng-click="addPeriod();substituteObj.showText=true;">
-             <span translate>button.save</span>
+             <span translate>button.addNewFrequency</span>
         </button>
         <button ng-if="editor.hidePervious" type="button" ng-disabled="form.$invalid || !editor.isEnable"
                 class="btn orange btn-sm" ng-click="createRunTime(form);substituteObj.showText=true;">
-                  <span ng-if="!editor.update" translate>button.apply</span>
+                  <span ng-if="!editor.update" translate>button.close</span>
                 <span ng-if="editor.update" translate>button.save</span>
         </button>
         <button ng-if="editor.hidePervious" type="button"

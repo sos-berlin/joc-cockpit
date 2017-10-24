@@ -37,8 +37,20 @@
                 <label class="col-sm-4 form-control-label" translate>label.enterDateAndTime</label>
 
                 <div class="col-sm-8">
-                    <input ng-required="order.at == 'later'" class="form-control input-date" ng-model="order.date" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.time" data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                    <input ng-required="order.at == 'later'" class="form-control input-date" ng-model="order.date" data-min-date="{{minDate}}"
+                           data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}"
+                           bs-datepicker type="text">
+                    <input ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.time" data-min-date="{{minDate}}"
+                           data-time-format="HH:mm:ss" data-length="1" data-autoclose="1" placeholder="HH:MM:SS"
+                           bs-timepicker type="text">
+                </div>
+            </div>
+            <div class="form-group row" ng-hide="order.at =='now'">
+                <div class="col-sm-4" translate>label.timeZone</div>
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="order.timeZone">
+                        <option ng-repeat="zone in zones" value="{{zone}}">{{zone}}</option>
+                    </select>
                 </div>
             </div>
             <div class="form-group row hide" ng-class="{'show': display}">

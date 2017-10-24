@@ -890,7 +890,6 @@
   "label.waitingTask": "Waiting Tasks",
   "label.warn": "Warn",
   "label.wednesday": "Wednesday",
-  "label.weekDays": "Week Days",
   "label.weekly": "Weekly",
   "label.white": "White",
   "label.withTimeout": "With Timeout",
@@ -1036,9 +1035,13 @@
   "label.dailyPlanCreated": "Daily plan created until",
   "label.frequencies": "Frequencies",
   "button.removeSubstitute": "Remove Substitute",
+  "label.of": "of",
   "label.showHistoryForJobScheduler": "Show History for JobScheduler",
   "label.currentJobscheduler": "Current JobScheduler",
   "label.jobSchedulerId": "JobScheduler ID",
   "button.terminateWithin": "Terminate with Timeout",
-"label.of": "of"
+  "label.addFrequencies": "Add Frequencies",
+  "label.editFrequencies": "Update Frequencies",
+  "label.period": "Period",
+  "label.weekDays": "Weekdays"
 }

@@ -2296,7 +2296,7 @@
 
                     setRunTime(schedule);
                 }, function () {
-                    vm.object.schedules = [];
+
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {

@@ -1003,6 +1003,8 @@
             getDateFormat();
 
         vm.currentTime = moment();
+                vm.minDate = new Date();
+        vm.minDate.setDate(vm.minDate.getDate() - 1);
 
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
         var resetDate = true;
@@ -2034,9 +2036,9 @@
 
             vm.logError = false;
             try {
-                var dom_document = dom_parser.parseFromString(vm.xml, "text/xml");
-                if (dom_document.documentElement.nodeName == "parsererror") {
-                    throw new Error("Error at XML answer: " + dom_document.documentElement.firstChild.nodeValue);
+                var dom_document = dom_parser.parseFromString(vm.xmlObj.xml, 'text/xml');
+                if (dom_document.documentElement.nodeName == 'parsererror') {
+                    throw new Error('Error at XML answer: ' + dom_document.documentElement.firstChild.nodeValue);
                 } else {
                     if (vm.required) {
                         if (vm.comments.comment) {
@@ -2108,8 +2110,8 @@
                 return true;
         };
 
-        vm.textEditor = function (xml) {
-            getXml2Json(xml);
+        vm.textEditor = function () {
+             loadXml(vm.xmlObj.xml);
         };
 
         var watcher1 = vm.$watchCollection('runTime', function (newNames, oldValues) {
@@ -2174,6 +2176,12 @@
                                 selectedMonths.splice(selectedMonths.indexOf('0'), 1);
                             }
                         }
+                    }
+                }else if(newNames.tab == 'weekDays'){
+                    if(newNames.days && newNames.days.length>0){
+                        vm.editor.isEnable = true;
+                    }else{
+                        vm.editor.isEnable = false;
                     }
                 }
 
@@ -2251,14 +2259,14 @@
                 }
 
                 xmlStr = xmlStr.replace(/,/g, ' ');
-                vm.xml = xmlStr;
+                vm.xmlObj.xml = xmlStr;
             } else {
-                vm.xml = x2js.json2xml_str({run_time: {}});
+                vm.xmlObj.xml = x2js.json2xml_str({run_time: {}});
             }
             vm.runTime1 = {};
             vm.holidayDates = [];
             vm.calendarFiles = [];
-            getXml2Json(vm.xml);
+            getXml2Json(vm.xmlObj.xml);
         };
 
         function frequencyToString(period) {
@@ -2374,7 +2382,7 @@
                 }
 
                 var xmlAsString;
-                vm.xml = "";
+                vm.xmlObj.xml = undefined;
                 try {
 
                     if (window.DOMParser) {
@@ -2388,7 +2396,7 @@
                     if (y.length > 0)
                         xmlAsString = xmlAsString.replace(/<\w+\/>/g, " ");
                     promise2 = $timeout(function () {
-                        vm.xml = vkbeautify.xml(xmlAsString, 2);
+                        vm.xmlObj.xml = vkbeautify.xml(xmlAsString, 2);
                     }, 0);
 
 
@@ -3993,6 +4001,7 @@
             else {
                 vm.schedule.runTime = xml;
             }
+            vm.xmlObj.xml = vkbeautify.xml(xml, 2);
 
         }
 
@@ -4060,12 +4069,11 @@
             $('#period-editor').modal('show');
             $('.fade-modal').css('opacity', '0.85');
         };
-        $rootScope.$on('cancel-period', function () {
+        $scope.$on('cancel-period', function () {
             _tempPeriod = {};
         });
-        $rootScope.$on('save-period', function (event, data1) {
+        $scope.$on('save-period', function (event, data1) {
             var data = angular.copy(data1);
-
             if (data.frequency && !vm.isEmpty(data.frequency)) {
                 editRunTime(data);
             } else {
@@ -4089,10 +4097,9 @@
             }
         });
 
-        $rootScope.$on('remove-substitue', function (event, data1) {
+        $scope.$on('remove-substitue', function (event, data1) {
             try {
-
-                var _xml = x2js.xml_str2json(vm.xml);
+                var _xml = x2js.xml_str2json(vm.xmlObj.xml);
                 if (typeof _xml.schedule !== 'object') _xml.schedule = {};
                 delete _xml.schedule['_valid_from'];
                 delete _xml.schedule['_valid_to'];
@@ -4108,7 +4115,7 @@
             }
         });
 
-        $rootScope.$on('save-schedule', function (event, data1) {
+        $scope.$on('save-schedule', function (event, data1) {
             vm.sch = data1.sch;
             vm._schedules = data1._schedules;
             saveSch();
@@ -6500,7 +6507,7 @@
             vm.periodList.splice(index, 1);
         };
         vm.deletePeriodFromFrequency = function (data, index) {
-            var xml = x2js.xml_str2json(vm.xml);
+            var xml = x2js.xml_str2json(vm.xmlObj.xml);
             var _xml = xml.run_time || xml.schedule;
             if (!xml) {
                 return;
@@ -7413,7 +7420,7 @@
         vm.back = function () {
             vm.editor.hidePervious = false;
             vm.periodList = [];
-            getXml2Json(vm.xml);
+            getXml2Json(vm.xmlObj.xml);
         };
          vm.showHolidayTab = function () {
             vm.editor.showHolidayTab = true;
@@ -7431,7 +7438,7 @@
         };
         vm.back1 = function () {
             vm.editor.showHolidayTab = false;
-            getXml2Json(vm.xml);
+            getXml2Json(vm.xmlObj.xml);
         };
 
         vm.from = {};
@@ -7440,7 +7447,7 @@
         function saveSch() {
             try {
 
-                var _xml = x2js.xml_str2json(vm.xml);
+                var _xml = x2js.xml_str2json(vm.xmlObj.xml);
                 if (typeof _xml.schedule !== 'object') _xml.schedule = {};
 
                 if (vm.sch._valid_from) {
@@ -7893,7 +7900,7 @@
 
         vm.deleteRunTime = function (data) {
 
-            var xml = x2js.xml_str2json(vm.xml);
+            var xml = x2js.xml_str2json(vm.xmlObj.xml);
             if (!xml) {
                 return;
             }
@@ -8247,7 +8254,7 @@
                 if (vm.isEmpty(run_time)) {
 
                     try {
-                        var _xml = x2js.xml_str2json(vm.xml);
+                        var _xml = x2js.xml_str2json(vm.xmlObj.xml);
                     } catch (e) {
                         console.log(e);
                     }
@@ -8421,35 +8428,38 @@
                 delete vm.run_time['holidays'];
             }
 
-            if (vm.runTime1.timeZone) {
-                vm.run_time._time_zone = vm.runTime1.timeZone;
-            } else {
-                delete vm.run_time['_time_zone'];
-            }
+        deleteEmptyValue(vm.run_time);
+
+            var tempData = sortRuntimeObj(vm.run_time);
+
             if (vm.sch) {
                 if (vm.sch._name) {
-                    vm.run_time._name = vm.sch._name;
+                    tempData._name = vm.sch._name;
                 } else {
                     if (vm.sch._substitute) {
-                        vm.run_time._substitute = vm.sch._substitute;
+                        tempData._substitute = vm.sch._substitute;
                     }
                 }
                 if (vm.sch._valid_from) {
-                    vm.run_time._valid_from = vm.sch._valid_from;
+                    tempData._valid_from = vm.sch._valid_from;
                 }
                 if (vm.sch._valid_to) {
-                    vm.run_time._valid_to = vm.sch._valid_to;
+                    tempData._valid_to = vm.sch._valid_to;
                 }
                 if (vm.sch._title) {
-                    vm.run_time._title = vm.sch._title;
+                    tempData._title = vm.sch._title;
                 }
             }
-            deleteEmptyValue(vm.run_time);
+
+
+            if (vm.runTime1.timeZone) {
+                tempData._time_zone = vm.runTime1.timeZone;
+            }
             if (vm.order) {
-                vm.run_time = {run_time: vm.run_time};
+                vm.run_time = {run_time: tempData};
             }
             else if (vm.schedule) {
-                vm.run_time = {schedule: vm.run_time};
+                vm.run_time = {schedule: tempData};
             }
 
             try {
@@ -8473,6 +8483,54 @@
             vm.editor.isEnable = false;
             getXml2Json(xmlStr);
         };
+ function sortRuntimeObj(runtime) {
+            var tempArr = [];
+
+            for (var propName in runtime) {
+                if (typeof propName == 'string') {
+                    if (propName == 'date') {
+                        tempArr.push({date: runtime[propName], key: 0})
+                    } else if (propName == 'weekdays') {
+                        tempArr.push({weekdays: runtime[propName], key: 1})
+                    } else if (propName == 'monthdays') {
+                        tempArr.push({monthdays: runtime[propName], key: 2})
+                    } else if (propName == 'ultimos') {
+                        tempArr.push({ultimos: runtime[propName], key: 3})
+                    } else if (propName == 'month') {
+                        tempArr.push({month: runtime[propName], key: 4})
+                    } else if (propName == 'holidays') {
+                        tempArr.push({holidays: runtime[propName], key: 5})
+                    }
+                }
+            }
+            tempArr.sort(function (a, b) {
+                var x = a['key'];
+                var y = b['key'];
+                if (x > y) {
+                    return x - y;
+                }
+            });
+            var tempData = {};
+            angular.forEach(tempArr, function (data) {
+                delete data['key'];
+                if (data.date) {
+                    tempData.date = data.date;
+                } else if (data.weekdays) {
+                    tempData.weekdays = data.weekdays;
+                } else if (data.monthdays) {
+                    tempData.monthdays = data.monthdays;
+                } else if (data.ultimos) {
+                    tempData.ultimos = data.ultimos;
+                } else if (data.month) {
+                    tempData.month = data.month;
+                } else if (data.holidays) {
+                    tempData.holidays = data.holidays;
+                }
+            });
+
+            return tempData;
+
+        }
 
         function deleteEmptyValueFromArr(obj) {
             for (var i = 0; i < obj.length; i++) {
@@ -8494,12 +8552,11 @@
             }
         }
 
-        function loadXml() {
-
-            if (!vm.xml) {
-
+        vm.xmlObj = {};
+        function loadXml(xml) {
+            if (!xml) {
                 if (!vm.isEmpty(vm.order)) {
-                    vm.xml = '<run_time></run_time>';
+                    vm.xmlObj.xml = '<run_time></run_time>';
                 }
                 else if (vm.scheduleAction) {
 
@@ -8517,17 +8574,19 @@
                         str += ' title="' + vm.sch._title + '"';
                     }
 
-                    vm.xml = str + '></schedule>';
+                    vm.xmlObj.xml = str + '></schedule>';
 
                 } else {
-                    vm.xml = '<schedule></schedule>';
+                    vm.xmlObj.xml = '<schedule></schedule>';
                 }
+            }else{
+                vm.xmlObj.xml =  xml;
             }
 
-            getXml2Json(vm.xml, 'load');
+            getXml2Json(vm.xmlObj.xml, 'load');
         }
 
-        loadXml();
+        loadXml(vm.xml);
 
         $scope.$on('$destroy', function () {
             watcher1();

@@ -1136,7 +1136,7 @@
             }, function () {
                 vm.orders = null;
             });
-            vm.reset();
+
         };
 
 
@@ -1164,6 +1164,7 @@
 
             if (order.fromDate) {
                 obj.at = moment.utc(order.fromDate).format();
+                obj.timeZone = order.timeZone;
             } else {
                 obj.at = order.atTime;
             }
@@ -1171,6 +1172,7 @@
             if (paramObject && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             }
+
             orders.orders.push(obj);
             orders.auditLog = {};
             if (vm.comments.comment) {
@@ -1183,16 +1185,7 @@
             if (vm.comments.ticketLink) {
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }
-            OrderService.addOrder(orders).then(function () {
-                var obj = {};
-                obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.jobChains = [{jobChain: jobChain.path}];
-                obj.maxOrders = vm.userPreferences.maxOrderPerJobchain;
-                JobChainService.get(obj).then(function (res) {
-                    if (res.jobChains && res.jobChains[0])
-                        jobChain.nodes = res.jobChains[0].nodes;
-                });
-            });
+            OrderService.addOrder(orders);
             vm.reset();
         }
 
@@ -1220,6 +1213,10 @@
             vm.paramObject = {};
             vm.paramObject.params = [];
             vm.order.atTime = 'now';
+            vm.zones = moment.tz.names();
+            if (vm.userPreferences.zone) {
+                vm.order.timeZone = vm.userPreferences.zone;
+            }
 
             modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-order-dialog.html',
@@ -1232,7 +1229,7 @@
             }, function () {
 
             });
-            vm.reset();
+
         };
 
 
@@ -1267,13 +1264,15 @@
                         jobChains.auditLog.ticketLink = vm.comments.ticketLink;
 
                     JobChainService.stop(jobChains);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobChainService.stop(jobChains);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.unstopJobChain = function (jobChain) {
@@ -1306,13 +1305,15 @@
 
 
                     JobChainService.unstop(jobChains);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobChainService.unstop(jobChains);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.stopAll = function () {
             var jobChains = {};
@@ -1351,13 +1352,15 @@
                     if (vm.comments.ticketLink)
                         jobChains.auditLog.ticketLink = vm.comments.ticketLink;
                     JobChainService.stop(jobChains);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobChainService.stop(jobChains);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.unstopAll = function () {
@@ -1397,13 +1400,15 @@
                     if (vm.comments.ticketLink)
                         jobChains.auditLog.ticketLink = vm.comments.ticketLink;
                     JobChainService.unstop(jobChains);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobChainService.unstop(jobChains);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.stopNode = function (data, jobChain) {
@@ -1436,12 +1441,14 @@
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.stopNode(nodes);
+                    vm.reset();
                 }, function () {
                 });
             } else {
                 JobService.stopNode(nodes);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.unStopNode = function (data, jobChain) {
@@ -1475,13 +1482,15 @@
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.activateNode(nodes);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobService.activateNode(nodes);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.skipNode = function (data, jobChain) {
@@ -1514,13 +1523,15 @@
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.skipNode(nodes);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobService.skipNode(nodes);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.unskipNode = function (data, jobChain) {
@@ -1553,13 +1564,15 @@
                     if (vm.comments.ticketLink)
                         nodes.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.activateNode(nodes);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobService.activateNode(nodes);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.stopJob = function (data) {
@@ -1591,13 +1604,15 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.stop(jobs);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobService.stop(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
 
         vm.unstopJob = function (data) {
@@ -1629,13 +1644,14 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     JobService.unstop(jobs);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 JobService.unstop(jobs);
+                vm.reset();
             }
-            vm.reset();
         };
 
 
@@ -1670,13 +1686,15 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     TaskService.end(jobs);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 TaskService.end(jobs);
+                vm.reset();
             }
-            vm.reset();
+
         };
         vm.killTask = function (task, path) {
             var jobs = {};
@@ -1709,13 +1727,15 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     TaskService.kill(jobs);
+                    vm.reset();
                 }, function () {
 
                 });
             } else {
                 TaskService.kill(jobs);
+                vm.reset();
             }
-            vm.reset();
+
 
         };
         vm.terminateTask = function (task, path) {
@@ -1749,13 +1769,15 @@
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
                     TaskService.terminate(jobs);
+                     vm.reset();
                 }, function () {
 
                 });
             } else {
                 TaskService.terminate(jobs);
+                 vm.reset();
             }
-            vm.reset();
+
         };
         function terminateTaskWithTimeout(job, task, path) {
             var jobs = {};
@@ -1816,10 +1838,11 @@
             });
             modalInstance.result.then(function () {
                 terminateTaskWithTimeout(job, task, path);
+                 vm.reset();
             }, function () {
 
             });
-            vm.reset();
+
         };
 
         vm.resizerHeight = $window.localStorage.$SOS$JOBCHAINRESIZERHEIGHT;
@@ -1858,7 +1881,6 @@
 
         /**---------------filtering, sorting and pagination -------------------*/
         vm.pageChange = function () {
-
             vm.reset();
         };
 
@@ -2250,7 +2272,7 @@
         };
 
         vm.changeFilter = function (filter) {
-            vm.jobChainFilters.expand_to = {};
+
             vm.cancel();
             if (filter) {
                 vm.savedJobChainFilter.selected = filter.id;
@@ -2258,6 +2280,9 @@
                 UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                     vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                     vm.selectedFiltered.account = filter.account;
+                    if(vm.selectedFiltered.paths){
+                       vm.jobChainFilters.expand_to = {};
+                    }
                     vm.load();
                 });
             }
@@ -2627,8 +2652,8 @@
                     JobChainService.get(obj).then(function (res) {
                         if (res.jobChains) {
                             angular.forEach(vm.allJobChains, function (jobChain, index) {
-                                if (vm.userPreferences.showOrders)
-                                    vm.allJobChains[index].show = true;
+                                //if (vm.userPreferences.showOrders)
+                                    //vm.allJobChains[index].show = true;
                                 for (var i = 0; i < res.jobChains.length; i++) {
                                     if (vm.allJobChains[index].path == res.jobChains[i].path) {
                                         vm.allJobChains[index].nodes = [];
@@ -4204,7 +4229,7 @@
         };
 
         vm.changeFilter = function (filter) {
-            vm.jobFilters.expand_to = {};
+
             vm.cancel();
             if (filter) {
                 vm.savedJobFilter.selected = filter.id;
@@ -4212,6 +4237,10 @@
                 UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
                     vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                     vm.selectedFiltered.account = filter.account;
+
+                    if(vm.selectedFiltered.paths){
+                       vm.jobFilters.expand_to = {};
+                    }
                     vm.load();
                 });
             }
@@ -4437,7 +4466,7 @@
                     JobService.stop(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 JobService.stop(jobs);
@@ -4476,7 +4505,7 @@
                     JobService.unstop(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 JobService.unstop(jobs);
@@ -4512,10 +4541,10 @@
 
                     if (vm.comments.ticketLink)
                         jobs.auditLog.ticketLink = vm.comments.ticketLink;
-                    JobService.start(jobs)
+                    JobService.start(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 JobService.start(jobs);
@@ -4538,9 +4567,10 @@
                 job.date.setSeconds(job.time.getSeconds());
             }
 
-            if (job.date && job.at == 'later')
+            if (job.date && job.at == 'later') {
                 obj.at = moment.utc(job.date).format();
-            else
+                obj.timeZone = job.timeZone;
+            }else
                 obj.at = job.atTime;
 
             if (!obj.params && paramObject.params.length > 0) {
@@ -4580,6 +4610,11 @@
             vm.job.atTime = 'now';
             vm.comments = {};
             vm.comments.radio = 'predefined';
+            vm.zones = moment.tz.names();
+
+            if (vm.userPreferences.zone) {
+                vm.job.timeZone = vm.userPreferences.zone;
+            }
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/start-job-dialog.html',
                 controller: 'DialogCtrl',
@@ -4590,7 +4625,7 @@
                 startAt(vm.job, vm.paramObject);
                 vm.reset();
             }, function () {
-                vm.reset();
+
             });
         };
 
@@ -4633,7 +4668,7 @@
                     JobService.stop(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 JobService.stop(jobs);
@@ -4679,7 +4714,7 @@
                     JobService.unstop(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 JobService.unstop(jobs);
@@ -4725,7 +4760,7 @@
                     JobService.start(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 JobService.start(jobs);
@@ -4799,7 +4834,7 @@
                 terminateTaskWithTimeout(job, task, path);
                 vm.reset();
             }, function () {
-                vm.reset();
+
             });
 
         };
@@ -4836,7 +4871,7 @@
                     TaskService.end(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.end(jobs);
@@ -4878,7 +4913,7 @@
                     TaskService.kill(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.kill(jobs);
@@ -4919,7 +4954,7 @@
                     TaskService.terminate(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.terminate(jobs);
@@ -4974,7 +5009,7 @@
                     TaskService.killAll(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.killAll(jobs);
@@ -5079,7 +5114,7 @@
                     TaskService.terminateAll(jobs);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
             } else {
                 TaskService.terminateAll(jobs);
@@ -5145,7 +5180,7 @@
                     setRunTime(job);
                     vm.reset();
                 }, function () {
-                    vm.reset();
+
                 });
 
             });

@@ -3,7 +3,7 @@
          <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" translate><span ng-bind="jobChain.path"></span> : <span translate>label.orders</span></h4>
     </div>
-    <div class="modal-body" style="min-height: 500px; max-height: 650px; overflow: auto;background: rgba(0,0,0,.05)">
+    <div class="modal-body" style="min-height: 500px; max-height: 650px; overflow: auto">
         <div class="row">
             <div class="col-sm-12">
                 <div class="table-responsive">
@@ -26,7 +26,7 @@
                                                 <button type="button" class="btn-drop more-option-h"
                                                         data-toggle="dropdown"><i
                                                         class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more " role="menu">
+                                                <div class="dropdown-menu dropdown-menu-list1 dropdown-ac dropdown-more " role="menu">
                                                     <a ng-click="showLogWindow(order)" class="dropdown-item hide"
                                                        ng-if="order.historyId"
                                                        ng-class="{'show':permission.Order.view.orderLog}"
@@ -117,12 +117,12 @@
         var $table = $(this),
                 $menu = $(e.target).find('.more-option-h');
 
-        $('.dropdown-menu-list').addClass('list-dropdown');
-         $('.dropdown-menu-list').css('top', $menu.offset().top + 'px');
-        $('.dropdown-menu-list').css('left', '22px');
+        $('.dropdown-menu-list1').addClass('list-dropdown');
+         $('.dropdown-menu-list1').css('top', $menu.offset().top + 'px');
+        $('.dropdown-menu-list1').css('left', '22px');
     });
 
     $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list1').removeClass('list-dropdown');
     });
 </script>
