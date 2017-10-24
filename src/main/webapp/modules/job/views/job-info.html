@@ -59,7 +59,9 @@
                                            ng-if="permission.Job.change.runTime"
                                            ng-class="{'disable-link':job.configurationStatus.severity==2}"><span
                                                 translate>button.setRunTime</span></a>
-                                        <a href class="dropdown-item" ng-click="showAssignedCalendar(job)">
+                                        <a href class="dropdown-item" ng-click="showAssignedCalendar(job)"
+                                           ng-if="permission.Job.change.runTime"
+                                           ng-class="{'disable-link':job.configurationStatus.severity==2}">
                                             <span translate>button.showAssignedCalendar</span>
                                         </a>
                                         <a class="dropdown-item bg-hover-color"

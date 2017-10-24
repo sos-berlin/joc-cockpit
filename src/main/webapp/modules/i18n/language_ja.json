@@ -1130,6 +1130,7 @@
   "label.validityUntil": "Valid until",
   "placeholder.enterNewCalendarName": "Enter a New Calendar Name",
   "button.assignNonWorkingDayCalendar": "Assign Non-Working days Calendar",
+  "button.assignWorkingDayCalendar": "Assign Working days Calendar",
   "message.deleteAllCalendar": "Are you sure you want to delete all calendars?",
   "label.deleteAllCalendar": "Delete all calendars",
   "button.showAssignedCalendar": "Show Assigned Calendar",

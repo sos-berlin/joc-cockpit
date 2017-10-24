@@ -268,7 +268,7 @@
             <button type="submit" class="btn btn-primary btn-sm"
                     translate>button.submit
             </button>
-            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath" type="button" class="btn orange btn-sm m-l-sm" ng-click="copyCalendar()"
+            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath" type="button" class="btn orange btn-sm m-l-sm" ng-click="copyCalendar();cancel()"
                     translate>button.saveAs
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"

@@ -1016,6 +1016,8 @@
             getDateFormat();
 
         vm.currentTime = moment();
+                vm.minDate = new Date();
+        vm.minDate.setDate(vm.minDate.getDate() - 1);
 
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
         var resetDate = true;
@@ -3639,45 +3641,53 @@
             }
         }
 
-        var ids=[];
-        function setIds(id){
-            if(ids.indexOf(id)==-1)
-                ids.push(id)
+        var paths=[];
+        function setPaths(path){
+            if(paths.indexOf(path)==-1)
+                paths.push(path)
         }
-        function getHolidayCalendarById() {
-            angular.forEach(ids, function (id, index) {
-                CalendarService.getCalendar({id: id,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
-                    if (vm.holidayCalendar && angular.isArray(vm.holidayCalendar))
-                        vm.holidayCalendar.push(res.calendar);
-                    else {
+        function getHolidayCalendarByPath() {
+
+            angular.forEach(paths, function (path, index) {
+                CalendarService.getCalendar({path: path,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
+                    if (vm.holidayCalendar && angular.isArray(vm.holidayCalendar)) {
+                        var flag = false;
+                        angular.forEach(vm.holidayCalendar, function(value){
+                            if(value.path == res.calendar.path){
+                                flag = true;
+                            }
+                        });
+                        if(!flag){
+                            vm.holidayCalendar.push(res.calendar);
+                        }
+                    }else {
                         vm.holidayCalendar = [];
                         vm.holidayCalendar.push(res.calendar);
                     }
-                    if(index == ids.length-1){
-                        ids=[];
+                    if(index == paths.length-1){
+                        paths=[];
                     }
                 });
             })
         }
 
-        var calendarIds=[];
-        function setCalendarIds(id){
-            if(calendarIds.indexOf(id)==-1)
-                calendarIds.push(id)
+        var calendarPath=[];
+        function setCalendarPath(path){
+            if(calendarPath.indexOf(path)==-1)
+                calendarPath.push(path)
         }
-        function getCalendarById() {
-           
-            angular.forEach(calendarIds, function (id, index) {
-                CalendarService.getCalendar({id: id, jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
+        function getCalendarByPath() {
+
+            angular.forEach(calendarPath, function (path, index) {
+                CalendarService.getCalendar({path: path, jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                     if (vm.selectedCalendar && angular.isArray(vm.selectedCalendar))
                         vm.selectedCalendar.push(res.calendar);
                     else {
                         vm.selectedCalendar = [];
                         vm.selectedCalendar.push(res.calendar);
                     }
-                    if(index == calendarIds.length-1){
-                  
-                        calendarIds=[];
+                    if(index == calendarPath.length-1){
+                        calendarPath=[];
                         getXml2Json(vm.xmlObj.xml);
                     }
                 });
@@ -3865,18 +3875,18 @@
                             var flg = false;
                             if (vm.selectedCalendar && vm.selectedCalendar.length > 0) {
                                 for (var i = 0; i < vm.selectedCalendar.length; i++) {
-                                    if (vm.selectedCalendar[i].id == date._calendar) {
+                                    if (vm.selectedCalendar[i].path == date._calendar) {
                                         flg = true;
                                         break;
                                     }
                                 }
                             }
                             if (!flg) {
-                                setCalendarIds(date._calendar);
+                                setCalendarPath(date._calendar);
                             }
                         }
                         if (index == run_time.date.length - 1) {
-                            getCalendarById();
+                            getCalendarByPath();
                         }
                     });
                 }
@@ -3950,18 +3960,18 @@
                                 var flg= false;
                                 if(vm.holidayCalendar && vm.holidayCalendar.length>0) {
                                     for (var i = 0; i < vm.holidayCalendar.length; i++) {
-                                        if (vm.holidayCalendar[i].id == date._calendar) {
-                                           flg= true;
+                                        if (vm.holidayCalendar[i].path == date._calendar) {
+                                            flg = true;
                                             break;
                                         }
                                     }
                                 }
-                                if(!flg){
-                                    setIds(date._calendar);
+                                if (!flg) {
+                                    setPaths(date._calendar);
                                 }
                             }
-                            if(index == run_time.holidays.holiday.length-1){
-                                getHolidayCalendarById();
+                            if (index == run_time.holidays.holiday.length - 1) {
+                                getHolidayCalendarByPath();
                             }
                         });
 
@@ -4119,7 +4129,7 @@
                             var flg = true;
                             var _calendar = {};
                             angular.forEach(vm.selectedCalendar, function (calendar) {
-                                if (calendar.id == res._calendar) {
+                                if (calendar.path == res._calendar) {
                                     _calendar = calendar;
                                     flg = false;
                                 }
@@ -6245,7 +6255,7 @@
                     }
                 } else {
                     angular.forEach(run_time.date, function (value, indx) {
-                        if (value._calendar && value._calendar == data.frequency.frequency.calendar.id) {
+                        if (value._calendar && value._calendar == data.frequency.frequency.calendar.path) {
                             if (value.period) {
 
                                 if (!angular.isArray(value.period)) {
@@ -10250,7 +10260,7 @@
                         var flag = false;
                         if (run_time.date.length > 0) {
                             for (var i = 0; i < run_time.date.length; i++) {
-                                if (run_time.date[i]._date == d && run_time.date[i]._calendar == calendar.id) {
+                                if (run_time.date[i]._date == d && run_time.date[i]._calendar == calendar.path) {
                                     flag = true;
                                     break;
                                 }
@@ -10258,10 +10268,10 @@
                         }
 
                         if (!flag)
-                            run_time.date.push({_calendar: calendar.id, _date: d});
+                            run_time.date.push({_calendar: calendar.path, _date: d});
                     } else {
                         run_time.date = {};
-                        run_time.date._calendar = calendar.id;
+                        run_time.date._calendar = calendar.path;
                         run_time.date._date = d;
                     }
                 });
@@ -10274,13 +10284,13 @@
                     if (!vm.isEmpty(run_time.holidays)) {
                         if (run_time.holidays.holiday && angular.isArray(run_time.holidays.holiday)) {
                             run_time.holidays.holiday.push({
-                                _calendar: calendar.id,
+                                _calendar: calendar.path,
                                 _date: moment(d).format('YYYY-MM-DD')
                             });
                         } else {
                             run_time.holidays.holiday = [];
                             run_time.holidays.holiday.push({
-                                _calendar: calendar.id,
+                                _calendar: calendar.path,
                                 _date: moment(d).format('YYYY-MM-DD')
                             });
                         }
@@ -10289,7 +10299,7 @@
                         run_time.holidays = {};
                         run_time.holidays.holiday = [];
                         run_time.holidays.holiday.push({
-                            _calendar: calendar.id,
+                            _calendar: calendar.path,
                             _date: moment(d).format('YYYY-MM-DD')
                         });
                     }
@@ -10422,7 +10432,7 @@
                 } else {
                     var _tempList = angular.copy(run_time.date);
                     angular.forEach(_tempList, function (value, indx) {
-                        if (value._calendar && value._calendar == data.calendar.id) {
+                        if (value._calendar && value._calendar == data.calendar.path) {
                             for(var i=0; i<run_time.date.length;i++) {
                                 if(value._calendar == run_time.date[i]._calendar) {
                                     run_time.date.splice(i, 1);
@@ -10476,7 +10486,7 @@
                 } else {
                     var _tempList = angular.copy(run_time.holidays.holiday);
                     angular.forEach(_tempList, function (value, indx) {
-                        if (value._calendar && value._calendar == data.id) {
+                        if (value._calendar && value._calendar == data.path) {
                             for (var i = 0; i < run_time.holidays.holiday.length; i++) {
                                 if (value._calendar == run_time.holidays.holiday[i]._calendar) {
                                     run_time.holidays.holiday.splice(i, 1);
@@ -11695,6 +11705,17 @@
             field: "name"
         };
 
+        function loadTree(){
+            ResourceService.tree({
+                jobschedulerId: vm.schedulerIds.selected,
+                compact: true,
+                types: vm.filter.type =='WORKING_DAYS' ?  ['WORKINGDAYSCALENDAR'] : ['NONWORKINGDAYSCALENDAR']
+            }).then(function (res) {
+                vm.filterTree1 = angular.copy(res.folders);
+            }, function () {
+            });
+        }
+
         $scope.$on('calendar-editor', function (event,calendar) {
             vm.filterTree1=[];
             vm.filter = {};
@@ -11712,14 +11733,7 @@
             if(vm.calendars.length>0)
                 vm.object.calendars = angular.copy(vm.calendars);
 
-            ResourceService.tree({
-                jobschedulerId: vm.schedulerIds.selected,
-                compact: true,
-                types: ['CALENDAR']
-            }).then(function (res) {
-                vm.filterTree1 = angular.copy(res.folders);
-            }, function () {
-            });
+           loadTree();
 
         });
 
@@ -11783,7 +11797,7 @@
             });
         }
         vm.loadCategory = function() {
-            obj = {folders: []};
+/*            obj = {folders: []};
             obj.type = vm.filter.type;
             obj.compact = true;
              obj.jobschedulerId = vm.schedulerIds.selected;
@@ -11799,7 +11813,8 @@
                 vm.loading = false;
             }, function () {
                 vm.loading = false;
-            });
+            });*/
+            loadTree();
         };
 
 

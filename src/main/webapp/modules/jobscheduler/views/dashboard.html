@@ -356,30 +356,30 @@
                                             <span>  {{dashboardFilters.filter.label | translate}}</span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderRange"
-                                               ng-click="getOrderSummary();dashboardFilters.filter.label='button.today'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.fileRange"
+                                               ng-click="getFileSummary();dashboardFilters.filter.label='button.today'"
                                                uib-btn-radio="'today'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderRange=='today'}" translate>button.today
+                                               ng-class="{'btn-primary': dashboardFilters.filter.fileRange=='today'}" translate>button.today
                                             </a>
-                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last1'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.fileSummaryfrom"
+                                               ng-click="dashboardFilters.filter.fileRange='dateRange';getFileSummary();dashboardFilters.filter.label='button.last1'"
                                                uib-btn-radio="'-1h'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1h'}" translate>button.last1
+                                               ng-class="{'btn-primary': dashboardFilters.filter.fileSummaryfrom=='-1h'}" translate>button.last1
                                             </a>
-                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.fileSummaryfrom"
                                                uib-btn-radio="'-12h'"
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last12'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-12h'}" translate>button.last12
+                                               ng-click="dashboardFilters.filter.fileRange='dateRange';getFileSummary();dashboardFilters.filter.label='button.last12'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.fileSummaryfrom=='-12h'}" translate>button.last12
                                             </a>
-                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom "
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last24'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.fileSummaryfrom "
+                                               ng-click="dashboardFilters.filter.fileRange='dateRange';getFileSummary();dashboardFilters.filter.label='button.last24'"
                                                uib-btn-radio="'-1d'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1d'}" translate>button.last24
+                                               ng-class="{'btn-primary': dashboardFilters.filter.fileSummaryfrom=='-1d'}" translate>button.last24
                                             </a>
-                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.lastWeak'"
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.fileSummaryfrom"
+                                               ng-click="dashboardFilters.filter.fileRange='dateRange';getFileSummary();dashboardFilters.filter.label='button.lastWeak'"
                                                uib-btn-radio="'-1w'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1w'}" translate>button.lastWeak
+                                               ng-class="{'btn-primary': dashboardFilters.filter.fileSummaryfrom=='-1w'}" translate>button.lastWeak
                                             </a>
                                         </div>
                                     </div>
@@ -388,7 +388,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <table style="width: 100%" ng-if="!notPermissionForSummary">
+                        <table style="width: 100%">
                             <tr class="text-center">
                                 <td width="50%">
                                     <div translate>label.successful</div>
@@ -397,12 +397,12 @@
                                     <div translate>label.failed</div>
                                 </td>
                             </tr>
-                            <tr class="text-center" ng-if="orderSummary">
+                            <tr class="text-center" ng-if="yadeSummary">
                                 <td width="50%">
-                                    <a ng-click="showOrderSummary('SUCCESSFUL')" class="text-lg _600 " ng-class="{'text-success':orderSummary.successful >0}" ng-bind="orderSummary.successful || 0"></a>
+                                    <a class="text-lg _600 " ng-class="{'text-success':yadeSummary.successful >0}" ng-bind="yadeSummary.successful || 0"></a>
                                 </td>
                                 <td width="50%">
-                                    <a ng-click="showOrderSummary('FAILED')" class="text-lg _600 " ng-class="{'crimson':orderSummary.failed  >0}" ng-bind="orderSummary.failed || 0"></a>
+                                    <a class="text-lg _600 " ng-class="{'crimson':yadeSummary.failed  >0}" ng-bind="yadeSummary.failed || 0"></a>
                                 </td>
                             </tr>
 

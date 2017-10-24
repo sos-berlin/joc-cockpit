@@ -301,6 +301,7 @@
                                                    ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                    ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
                                                 <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                    ng-click="showAssignedCalendar(order)">
                                                     <span translate>button.showAssignedCalendar</span>
                                                 </a>
@@ -684,6 +685,7 @@
                                                                            ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                                            ng-click="setRunTime(order)" translate>button.setRunTime</a>
                                                                         <a href class="dropdown-item"
+                                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                                            ng-click="showAssignedCalendar(order)">
                                                                             <span translate>button.showAssignedCalendar</span>
                                                                         </a>

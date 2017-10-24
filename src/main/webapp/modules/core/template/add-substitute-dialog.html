@@ -112,49 +112,64 @@
                                 ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
                         <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm m-b"
-                                ng-disabled="order.at == 'later'"
+                                
                                 ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
                         <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
-                                ng-disabled="order.at == 'later'"
+                               
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
                         </button>
+  <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm pull-right btn-grey m-r-sm"
+                                ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
+                        </button>
                         <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
-                                ng-click="assignCalendar(data)" translate>button.assignCalendar
+                                ng-click="assignCalendar(data)" translate>button.assignWorkingDayCalendar
                         </button>
                     </div>
                     <div class="col-md-6" ng-if="substituteObj.showText" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">
                             <div class="col-sm-12" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-bordered frequency-table">
+                                    <table class="table table-hover table-bordered">
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequenciesCalendars</th>
                                             <th translate>label.period</th>
                                         </tr>
                                         </thead>
-                                        <tbody ng-repeat="data in runtimeList track by $index">
-                                        <tr>
+                                        <tbody>
+                                         <tr ng-repeat="data in runtimeList track by $index">
                                             <td ng-if="data.frequency" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="editRunTime(data)"><i class="fa fa-pencil"></i></a>
+                                                <a class="text-xs text-hover-color m-l-sm"
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <a ng-click="previewCalendar(data);"><i class="fa fa-calendar-plus-o"></i> {{data.calendar.path}} -  <span class="text-muted" ng-bind="data.calendar.type | translate"></span></a>
+                                                <a ng-click="previewCalendar(data);"><i class="fa fa-calendar text-success"></i> {{data.calendar.path}} -  <span class="label" ng-class="{'bg-green': data.calendar.type=='WORKING_DAYS','bg-gold':data.calendar.type=='NON_WORKING_DAYS'}" ng-bind="data.calendar.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
                                                     <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
-                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
+                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
+                                                            class="fa fa-pencil"></i></a>
+                                                    <a class="text-xs text-hover-color m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
                                                             class="fa fa-times"></i></a>
                                                 </div>
                                                 <div class="text-xs cursor text-hover-primary"><i
                                                         class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i></div>
                                             </td>
+                                        </tr>
+                                        <tr ng-repeat="holiday in holidayCalendar">
+                                            <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
+                                                <a ng-click="previewCalendar(holiday);"><i class="fa fa-calendar text-danger"></i> {{holiday.path}} -  <span class="label" ng-class="{'bg-green': holiday.type=='WORKING_DAYS','bg-gold':holiday.type=='NON_WORKING_DAYS'}" ng-bind="holiday.type | translate"></span></a>
+                                                <a class="text-xs text-hover-primary m-l-sm"
+                                                   ng-click="deleteHolidayCalendar(holiday)"><i class="fa fa-times"></i></a>
+                                            </td>
+                                            <td></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -683,9 +698,9 @@
             <div ng-if="editor.showHolidayTab">
                <div class="row m-b-sm">
                     <label class="col-sm-3 text">{{'label.nonWorkingDays' | translate}}</label>
-                   <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey pull-right m-r"
+<!--                   <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey pull-right m-r"
                            ng-click="assignHolidayCalendar(data)" translate>button.assignCalendar
-                   </button>
+                   </button>-->
                 </div>
                 <div class="b-b">
                     <ul class="nav nav-tabs">
@@ -837,7 +852,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="form-group row" ng-if="holidayCalendar && holidayCalendar.length>0">
+                    <!--<div class="form-group row" ng-if="holidayCalendar && holidayCalendar.length>0">
                         <label class="col-sm-3" translate>label.calendar</label>
                         <div class="col-md-9" style="max-height: 120px; overflow: auto;">
                             <div ng-repeat="h in holidayCalendar">
@@ -846,7 +861,7 @@
                                 <a href="" ng-click="deleteHolidayCalendar(h)"><i class="m-l fa fa-times"></i></a>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
             <div class="hide" ng-class="{show: editor.showCalendarTab}">

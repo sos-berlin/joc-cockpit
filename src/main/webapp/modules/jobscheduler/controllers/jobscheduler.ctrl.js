@@ -1127,7 +1127,7 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ['CALENDAR']
+                types: ["WORKINGDAYSCALENDAR","NONWORKINGDAYSCALENDAR"]
             }).then(function (res) {
                 if ($rootScope.calendar_expand_to) {
                     vm.treeCalendar = angular.copy(res.folders);
@@ -1469,7 +1469,7 @@
         };
         vm.showUsage = function(calendar){
             vm.calendar = angular.copy(calendar);
-            CalendarService.calendarUsed({id: calendar.id}).then(function (res) {
+            CalendarService.calendarUsed({id: calendar.id,jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                     vm.calendar.usedIn = res.jobschedulers;
                 });
               var modalInstance1 = $uibModal.open({
@@ -1580,7 +1580,7 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ['CALENDAR']
+                types: ["WORKINGDAYSCALENDAR","NONWORKINGDAYSCALENDAR"]
             }).then(function (res) {
                 vm.filterTree1 = res.folders;
 
@@ -3142,8 +3142,8 @@
     }
 
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","UserService","$window"];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,UserService,$window) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","UserService","$window","YadeService"];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,UserService,$window,YadeService) {
         var vm = $scope;
         vm.loadingImg = true;
         var isDragging = false;
@@ -3604,7 +3604,7 @@
         }
 
         vm.dashboardFilters = CoreService.getDashboardTab();
-        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true;
+        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary= true, isLoadedFileOverview=true;
 
         function groupBy(data) {
             var results = [];
@@ -3811,7 +3811,6 @@
             });
         };
 
-
         function prepareAgentClusterData(result) {
             var agentArray1 = [];
             vm.YAxisDomain = [0, 3];
@@ -3859,7 +3858,6 @@
                 return format(d);
             }
         };
-
 
         var clusterStatusData = {};
 
@@ -4089,7 +4087,6 @@
 
         };
 
-
         /*-------------Menu active function call-------------------*/
         vm.terminate = function () {
             JobSchedulerService.terminate({jobschedulerId: $scope.schedulerIds.selected});
@@ -4184,6 +4181,33 @@
             }, function (err) {
                 vm.notPermissionForSummary = !err.data.isPermitted;
                 isLoadedSummary = true;
+            })
+        };
+        vm.getFileOverview = function () {
+            if(!vm.isFileOverviewVisible){
+                return;
+            }
+        };
+
+        vm.getFileSummary = function () {
+            if(!vm.isFileSummaryVisible){
+                return;
+            }
+            isLoadedFileSummary = false;
+            var obj = {};
+
+            if (vm.dashboardFilters.filter.fileRange == 'today') {
+                obj.dateFrom = '0d';
+            } else {
+                obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
+            }
+            obj.timeZone = vm.userPreferences.zone;
+            YadeService.getSummary(obj).then(function (res) {
+                vm.yadeSummary = res;
+                isLoadedFileSummary = true;
+            }, function (err) {
+                vm.notPermissionForFileSummary = !err.data.isPermitted;
+                isLoadedFileSummary = true;
             })
         };
 
@@ -4356,8 +4380,10 @@
                 vm.getOrderSummary();
             } else if (id == 'fileTransferOverview') {
                 vm.isFileOverviewVisible = flag;
+                vm.getFileOverview();
             } else if (id == 'fileTransferSummary') {
                 vm.isFileSummaryVisible = flag;
+                vm.getFileSummary();
             } else if (id == 'dailyPlanOverview') {
                 vm.isDailPlanVisible = flag;
                 vm.getDailyPlans();

@@ -90,10 +90,10 @@
                     </div>
                     <div class="col-md-12">
                         <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm"
-                                ng-disabled="order.at == 'later'" ng-click="assignCalendar(data)" translate>button.assignCalendar
+                                ng-disabled="order.at == 'later'" ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
                         <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm"
-                                ng-disabled="order.at == 'later'" ng-click="assignHolidayCalendar(data)" translate>button.assignNonWorkingDayCalendar
+                                ng-disabled="order.at == 'later'" ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-disabled="order.at == 'later'"
@@ -170,7 +170,7 @@
                                                    ng-click="deleteRunTime(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <a ng-click="previewCalendar(data);"><i class="fa fa-calendar-o text-success"></i> {{data.calendar.path}} -  <span class="label" ng-class="{'bg-green': data.calendar.type=='WORKING_DAYS','bg-gold':data.calendar.type=='NON_WORKING_DAYS'}" ng-bind="data.calendar.type | translate"></span></a>
+                                                <a ng-click="previewCalendar(data);"><i class="fa fa-calendar text-success"></i> {{data.calendar.path}} -  <span class="label" ng-class="{'bg-green': data.calendar.type=='WORKING_DAYS','bg-gold':data.calendar.type=='NON_WORKING_DAYS'}" ng-bind="data.calendar.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>
@@ -188,7 +188,7 @@
                                         </tr>
                                         <tr ng-repeat="holiday in holidayCalendar">
                                             <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
-                                                <a ng-click="previewCalendar(holiday);"><i class="fa fa-calendar-o text-danger"></i> {{holiday.path}} -  <span class="label" ng-class="{'bg-green': holiday.type=='WORKING_DAYS','bg-gold':holiday.type=='NON_WORKING_DAYS'}" ng-bind="holiday.type | translate"></span></a>
+                                                <a ng-click="previewCalendar(holiday);"><i class="fa fa-calendar text-danger"></i> {{holiday.path}} -  <span class="label" ng-class="{'bg-green': holiday.type=='WORKING_DAYS','bg-gold':holiday.type=='NON_WORKING_DAYS'}" ng-bind="holiday.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteHolidayCalendar(holiday)"><i class="fa fa-times"></i></a>
                                             </td>
@@ -720,6 +720,9 @@
             <div ng-if="editor.showHolidayTab">
                <div class="row m-b-sm">
                    <label class="col-sm-3 text">{{'label.nonWorkingDays' | translate}}</label>
+                   <!--                   <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey pull-right m-r"
+                           ng-click="assignHolidayCalendar(data)" translate>button.assignCalendar
+                   </button>-->
                 </div>
                 <div class="b-b">
                     <ul class="nav nav-tabs">
@@ -871,6 +874,16 @@
                             </table>
                         </div>
                     </div>
+                    <!--<div class="form-group row" ng-if="holidayCalendar && holidayCalendar.length>0">
+                        <label class="col-sm-3" translate>label.calendar</label>
+                        <div class="col-md-9" style="max-height: 120px; overflow: auto;">
+                            <div ng-repeat="h in holidayCalendar">
+                                <a href="" ng-click="previewCalendar(h)"><i class="fa fa-calendar-plus-o"></i> {{h.path}}
+                                <span ng-if="h.title">- <i class="text-muted">{{h.title}}</i></span></a>
+                                <a href="" ng-click="deleteHolidayCalendar(h)"><i class="m-l fa fa-times"></i></a>
+                            </div>
+                        </div>
+                    </div>-->
                 </div>
             </div>
             <div class="hide" ng-class="{show: editor.showCalendarTab}">

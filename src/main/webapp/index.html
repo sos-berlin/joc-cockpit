@@ -148,12 +148,11 @@
 <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
 
 <!-- AngularJS directive for D3 and NVD3 -->
-<script src="js/d3.v3.min.js"></script>
+<!--<script src="js/d3.v3.min.js"></script>-->
 <script src="bower_components/d3/d3.min.js"></script>
 <script src="bower_components/nvd3/nv.d3.min.js"></script>
 <script src="bower_components/angularjs-nvd3-directives/dist/angular-nvd3-directive.min.js"></script>
-
-<script src="bower_components/moment-range/dist/moment-range.min.js"></script>
+<!--<script src="bower_components/moment-range/dist/moment-range.min.js"></script>-->
 <script src="bower_components/angular-gantt/assets/angular-gantt.js"></script>
 <script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js"></script>
 <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
@@ -206,7 +205,14 @@
 <script src="modules/order/services/order.service.js"></script>
 <script src="modules/order/directives/order.directive.js"></script>
 <!-- endbuild -->
+<!-- yade module-->
+<script src="modules/yade/controllers/yade.ctrl.js"></script>
+<script src="modules/yade/services/yade.service.js"></script>
+<!-- endbuild -->
+
+
 <script>
+
     window.setTimeout(function () {
         var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
         $('body').append($fakeFrame);

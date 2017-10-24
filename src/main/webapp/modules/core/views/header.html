@@ -225,7 +225,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view">
+                <a class="nav-link" ui-sref="app.resources" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view">
                     <span class="nav-text" id="resources_id">
                         <img src="images/resources.png">
                         <span class="font11 text-white text-u-c _600" translate>label.resources</span>
@@ -238,7 +238,7 @@
                 </a>
 
             </li>
-            <li class="nav-item" ng-if="permission.History.view">
+            <li class="nav-item" ng-if="permission.History.view || permission.YADE.view.transfers">
                 <a class="nav-link" ui-sref="app.history" ui-sref-active="active">
                     <span class="nav-text">
                         <i class="fa fa-history text-white history-icon"></i>
