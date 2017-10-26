@@ -2494,7 +2494,7 @@
                 vm.tree = [];
                 initTree();
             } else if (toState.name == 'app.resources.calendars') {
-                vm.pageView = views.calendar || userPreferences.pageView || 'grid';
+                vm.pageView = views.calendar || vm.userPreferences.pageView || 'grid';
                 vm.resourceFilters.state = 'calendars';
                 vm.treeCalendar = [];
                 initCalendarTree();
