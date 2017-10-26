@@ -1012,6 +1012,19 @@
             vm.dataFormat = vm.dataFormat.trim();
         }
 
+        vm.getCalendarTimeFormat =function() {
+            var timeFormat = vm.userPreferences.dateFormat;
+
+            if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
+                var result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
+                if (result.match(/hh/g)) {
+                    return result + " a";
+                } else {
+                    return result;
+                }
+            }
+        }
+
         if (vm.userPreferences)
             getDateFormat();
 
@@ -1836,10 +1849,10 @@
                 tab: "specificDays",
                 type: frequencyType == 'INCLUDE' ? 'EXCLUDE' : 'INCLUDE',
                 exclude: false,
-                dates:[]
+                dates: []
             };
 
-            angular.forEach(dates, function(date){
+            angular.forEach(dates, function (date) {
                 obj.dates.push(moment(date.plannedStartTime).format('YYYY-MM-DD'));
             });
 
@@ -1885,7 +1898,7 @@
                 }
             }
         }
-        var unselectDates =[];
+        var excludedDates =[];
 
         function checkDate(date) {
             var planData = {
@@ -1893,32 +1906,35 @@
             };
             var flag = false;
             for (var i = 0; i < vm.planItems.length; i++) {
-                if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0)) && vm.planItems[i].color != 'orange') {
+                    vm.planItems[i].color= 'orange';
                     flag = true;
                     break;
                 }
             }
             if (!flag) {
-                if(unselectDates.length>0){
-                    for (var i = 0; i < unselectDates.length; i++) {
-                         if ((new Date(unselectDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
-                              unselectDates.splice(i, 1);
-                             vm.planItems.push(planData);
+                if(excludedDates.length>0){
+                    for (var i = 0; i < excludedDates.length; i++) {
+                         if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                              excludedDates.splice(i, 1);
+                             for (var j = 0; j < vm.planItems.length; j++) {
+                                if ((new Date(vm.planItems[j].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                                    vm.planItems[j].color= 'blue';
+                                    break;
+                                }
+                            }
                              break;
                          }
                     }
                 }
             } else {
-              
                 unselectDates.push(planData);
-                vm.planItems.splice(i, 1);
-              
             }
         }
 
         vm.addCalendarDates = function(){
-             if(unselectDates.length>0){
-                 checkIncludeExclude(unselectDates);
+             if(excludedDates.length>0){
+                 checkIncludeExclude(excludedDates);
              }
             if (vm.flag) {
                 vm.save();
@@ -1973,14 +1989,14 @@
         });
 
         vm.showCalendar = function (data) {
-            if(data && data != 'all' && !data.tab)
-                data  =JSON.parse(data);
+            if (data && data != 'all' && !data.tab)
+                data = JSON.parse(data);
 
             vm.planItems = [];
             vm.viewDate = new Date();
             vm.calendarTitle = new Date().getFullYear();
             var obj = {};
-             obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = {};
             obj.dateFrom = moment().format('YYYY-MM-DD');
             obj.dateTo = vm.calendarTitle + '-12-31';
@@ -1989,6 +2005,15 @@
                 vm.calObj.freqency = JSON.stringify(data);
                 var obj1 = {};
                 obj1.includes = {};
+
+                if(vm.excludeFrequencyList && vm.excludeFrequencyList.length>0) {
+                    var x={};
+                    x.excludes = {};
+                    angular.forEach(vm.excludeFrequencyList, function(value){
+                       generateCalendarObj(value, x);
+                    });
+                    obj1.excludes = x;
+                }
                 var data1 = angular.copy(data);
                 data1.type = 'INCLUDE';
                 vm.frequencyObj = generateCalendarObj(data1, obj1);
@@ -1999,9 +2024,20 @@
 
             obj.calendar = vm.frequencyObj;
             CalendarService.getListOfDates(obj).then(function (result) {
+                var color ='blue';
+                if(data && data.type =='EXCLUDE'){
+                    color ='orange';
+                }
                 angular.forEach(result.dates, function (date) {
                     vm.planItems.push({
-                        plannedStartTime: date
+                        plannedStartTime: date,
+                        color: color
+                    });
+                });
+                angular.forEach(result.withExcludes, function (date) {
+                    vm.planItems.push({
+                        plannedStartTime: date,
+                        color: 'orange'
                     });
                 });
                 tempList = angular.copy(vm.planItems);
@@ -2511,7 +2547,14 @@
                 CalendarService.getListOfDates(obj).then(function (result) {
                     angular.forEach(result.dates, function (date) {
                         vm.planItems.push({
-                            plannedStartTime: date
+                            plannedStartTime: date,
+                            color: 'blue'
+                        });
+                    });
+                    angular.forEach(result.withExcludes, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date,
+                            color: 'orange'
                         });
                     });
                 });
@@ -2921,6 +2964,7 @@
             }
             vm.frequency = data.frequency;
             vm.frequencyList = data.frequencyList;
+            vm.excludeFrequencyList = data.excludeFrequencyList;
 
             vm.tempItems = [];
             vm.temp = data.temp;
@@ -3943,7 +3987,6 @@
                 }
             }
 
-
             if (!vm.isEmpty(run_time.holidays) && run_time.holidays) {
                 vm.runTime1.holidays = {};
                 if (run_time.holidays.weekdays && run_time.holidays.weekdays.day) {
@@ -3952,13 +3995,14 @@
                     vm.runTime1.holidays.weekdays.day._day.sort();
                 }
                 if (run_time.holidays.holiday) {
+
                     if (angular.isArray(run_time.holidays.holiday)) {
                         angular.forEach(run_time.holidays.holiday, function (date, index) {
-                            if(!date._calendar)
+                            if (!date._calendar)
                                 vm.holidayDates.push(new Date(date._date));
-                            if(date._calendar){
-                                var flg= false;
-                                if(vm.holidayCalendar && vm.holidayCalendar.length>0) {
+                            if (date._calendar) {
+                                var flg = false;
+                                if (vm.holidayCalendar && vm.holidayCalendar.length > 0) {
                                     for (var i = 0; i < vm.holidayCalendar.length; i++) {
                                         if (vm.holidayCalendar[i].path == date._calendar) {
                                             flg = true;
@@ -3976,7 +4020,7 @@
                         });
 
                     } else {
-                        if(!run_time.holidays.holiday._calendar)
+                        if (!run_time.holidays.holiday._calendar)
                             vm.holidayDates.push(new Date(run_time.holidays.holiday._date));
                     }
                 }else{
@@ -10612,7 +10656,7 @@
 
             if (!vm.calendar.create) {
                 CalendarService.calendarUsed({id: vm.calendar.id,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
-                    vm.calendar.usedIn = res.jobschedulers;
+                    vm.calendar.usedIn = res;
                     vm.calendarArr = undefined;
                     if (vm.calendar.usedIn && vm.calendar.usedIn.length > 0) {
                         var modalInstance = $uibModal.open({
@@ -10669,6 +10713,37 @@
                 }
             } else {
                 submit();
+            }
+        };
+
+        vm.saveAs = function(form) {
+            if (vm.calendar.path && vm.calendar.to) {
+                form.$setPristine();
+                form.$setUntouched();
+            } else {
+                form.path.$invalid = !vm.calendar.path ? true : false;
+                form.path.$dirty = !vm.calendar.path ? true : false;
+                form.to.$invalid = !vm.calendar.to ? true : false;
+                form.to.$dirty = !vm.calendar.to ? true : false;
+                return;
+            }
+            vm.logError = false;
+            vm.calendar.calendarObj = generateCalendarAllObj();
+            if (vm.required) {
+                if (vm.comments.comment) {
+
+                    $rootScope.$broadcast('copy-calendar', {
+                        calendar: vm.calendar
+                    });
+                    $uibModalInstance.dismiss('cancel');
+                } else {
+                    vm.logError = true;
+                }
+            } else {
+                $rootScope.$broadcast('copy-calendar', {
+                    calendar: vm.calendar
+                });
+                $uibModalInstance.dismiss('cancel');
             }
         };
 
@@ -11562,6 +11637,9 @@
             vm.editor.showYearView = true;
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.includesFrequency;
+                if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
             } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.excludesFrequency;
             }
@@ -11571,6 +11649,7 @@
                     calendar: vm.calendar,
                     frequency: vm.frequency,
                     frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
                     flag:true
                 }
             });
@@ -11595,6 +11674,9 @@
 
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.includesFrequency;
+                if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
             } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.excludesFrequency;
             }
@@ -11603,7 +11685,8 @@
                     editor: vm.editor,
                     frequency: vm.frequency,
                     frequencyList: vm.frequencyList,
-                    calendar: vm.calendar,
+                    excludeFrequencyList: vm.excludeFrequencyList,
+                    calendar: vm.calendar
                 }
             });
 
@@ -11621,6 +11704,9 @@
             vm.editor.showYearView = true;
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.includesFrequency;
+                if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
             } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.excludesFrequency;
             }
@@ -11629,6 +11715,7 @@
                     editor: vm.editor,
                     frequency: vm.frequency,
                     frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
                     calendar: vm.calendar,
                     data : data,
                     flag : true
@@ -11650,6 +11737,9 @@
 
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.includesFrequency;
+                 if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
             } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
                 vm.frequencyList = vm.calendar.excludesFrequency;
             }
@@ -11659,6 +11749,7 @@
                     temp: vm.temp,
                     frequency: vm.frequency,
                     frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
                     calendar: vm.calendar
                 }
             });
@@ -11772,49 +11863,6 @@
             }
             $('#calendar-editor').modal('hide');
             $('.fade-modal').css('opacity', '1');
-        };
-
-        function getExpandTreeForUpdates(data) {
-            if (data.expanded) {
-                obj.folders.push({folder: data.path, recursive: false});
-            }
-            data.folders = orderBy(data.folders, 'name');
-            angular.forEach(data.folders, function (value) {
-                if (value.expanded)
-                    getExpandTreeForUpdates(value);
-            });
-        }
-        function insertCalendar(node, x) {
-            node.calendars = [];
-            for (var i = 0; i < x.length; i++) {
-                if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1)) {
-                    node.calendars.push(x[i]);
-                }
-            }
-            angular.forEach(node.folders, function (value) {
-                if (value.expanded)
-                    insertCalendar(value, x);
-            });
-        }
-        vm.loadCategory = function() {
-/*            obj = {folders: []};
-            obj.type = vm.filter.type;
-            obj.compact = true;
-             obj.jobschedulerId = vm.schedulerIds.selected;
-            angular.forEach(vm.filterTree1, function (value) {
-                if (value.expanded)
-                    getExpandTreeForUpdates(value);
-            });
-            CalendarService.getListOfCalendars(obj).then(function (res) {
-                var data = res.calendars;
-                angular.forEach(vm.filterTree1, function (value) {
-                    insertCalendar(value, data);
-                });
-                vm.loading = false;
-            }, function () {
-                vm.loading = false;
-            });*/
-            loadTree();
         };
 
 

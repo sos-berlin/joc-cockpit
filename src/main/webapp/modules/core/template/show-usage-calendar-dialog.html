@@ -10,37 +10,34 @@
     <div class="modal-body p-a">
         <div class="row">
             <div class=" col-sm-12">
-                <div ng-repeat="use in calendar.usedIn" class="p-l-sm" ng-class="{'b-b': $index>0}">
-                    <div class="row form-group">
-                        <label class="col-sm-3" translate>
-                            label.jobSchedulerId
-                        </label>
-                        <div class="col-sm-9">
-                            {{use.jobschedulerId}}
+                <div class="p-l-sm">
+                    <div class="row form-group" ng-if="calendar.usedIn.orders || calendar.usedIn.jobs">
+                        <div class="col-md-12">
+                            <span class="text _600" translate>label.usedIn</span> :
                         </div>
                     </div>
-                    <div class="row form-group" ng-if="use.jobs">
+                    <div class="row form-group" ng-if="calendar.usedIn.jobs">
                         <label class="col-md-3" translate="">
                             label.jobs
                         </label>
                         <div class="col-md-9">
-                            <div ng-repeat="job in use.jobs">
+                            <div ng-repeat="job in calendar.usedIn.jobs">
                                 {{$index+1}} - <span style="cursor: pointer" class="text-hover-primary" ng-click="showJob(job)">{{job}}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="row form-group" ng-if="use.orders">
+                    <div class="row form-group" ng-if="calendar.usedIn.orders">
                         <label class="col-md-3" translate="">
                             label.orders
                         </label>
                         <div class="col-md-9">
-                            <div ng-repeat="order in use.orders">
+                            <div ng-repeat="order in calendar.usedIn.orders">
                                 {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showOrderLink(order)">{{order}}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-center text" ng-if="!calendar.usedIn || calendar.usedIn.length==0" translate>message.calendarNotUsed</div>
+                <div class="text-center text" ng-if="!calendar.usedIn.orders && !calendar.usedIn.jobs" translate>message.calendarNotUsed</div>
             </div>
         </div>
         <div class="row m-t-md">

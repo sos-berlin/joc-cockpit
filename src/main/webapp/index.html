@@ -73,19 +73,16 @@
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
 
     <link rel="stylesheet" href="css/light-style.css" type="text/css" id="style-color"/>
-    <script src="bower_components/es6-promise/dist/es6-promise.auto.js"></script>
-    <script src="js/canvas-toBlob.js"></script>
 
     <script>
         function themeInit() {
-           if (window.localStorage.$SOS$THEME != undefined && window.localStorage.$SOS$THEME != 'undefined') {
-               document.getElementById('style-color').href = 'css/' + window.localStorage.$SOS$THEME + '-style.css';
-           }
+            if (window.localStorage.$SOS$THEME != undefined && window.localStorage.$SOS$THEME != 'undefined') {
+                document.getElementById('style-color').href = 'css/' + window.localStorage.$SOS$THEME + '-style.css';
+            }
         }
         themeInit();
     </script>
     <link rel="stylesheet" href="css/style.responsive.css" type="text/css"/>
-
     <style type="text/css">
         [ng-cloak] {
             display: none;
@@ -93,15 +90,18 @@
     </style>
 </head>
 <body ng-controller="AppCtrl">
-    <!--[if lt IE 9]>
-    <p class="text-center text m-t-lg">This browser version is not compatible to the JOC Cockpit.  Check the documentation for <a class="text-primary text-hover-primary" href="https://kb.sos-berlin.com/display/PKB/JOC+Cockpit+-+Browser+Compatibility">Browser Compatibility</a>.</p>
-    <![endif]-->
-    <!-- BEGIN PAGE SPINNER -->
-    <div ng-spinner-bar class="loading-img"></div>
-    <!-- END PAGE SPINNER -->
-    <!-- BEGIN ACTUAL CONTENT -->
-    <div class="app" ng-cloak ui-view></div>
-    <!-- END ACTUAL CONTENT -->
+<!--[if lt IE 9]>
+<p class="text-center text m-t-lg">This browser version is not compatible to the JOC Cockpit. Check the documentation
+    for <a class="text-primary text-hover-primary"
+           href="https://kb.sos-berlin.com/display/PKB/JOC+Cockpit+-+Browser+Compatibility">Browser Compatibility</a>.
+</p>
+<![endif]-->
+<!-- BEGIN PAGE SPINNER -->
+<div ng-spinner-bar class="loading-img"></div>
+<!-- END PAGE SPINNER -->
+<!-- BEGIN ACTUAL CONTENT -->
+<div class="app" ng-cloak ui-view></div>
+<!-- END ACTUAL CONTENT -->
 
 <toasty></toasty>
 
@@ -110,15 +110,14 @@
 <script src="bower_components/tether/dist/js/tether.min.js"></script>
 <!-- Bootstrap -->
 <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
 <!-- Angular -->
 <script src="bower_components/angular/angular.min.js"></script>
-<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-<script src="bower_components/angular-messages/angular-messages.min.js"></script>
+<script src="bower_components/angular/angular-animate.min.js"></script>
+<script src="bower_components/angular/angular-sanitize.min.js"></script>
+<script src="bower_components/angular/angular-messages.min.js"></script>
 <!-- router -->
 <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+<script src="bower_components/angular/angular-resource.min.js"></script>
 <script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
 <!-- toasty -->
 <script src="bower_components/angular-toasty/dist/angular-toasty.min.js"></script>
@@ -127,16 +126,13 @@
 <script src="bower_components/moment-timezone/moment-timezone.min.js"></script>
 <script src="bower_components/angular-moment/angular-moment.min.js"></script>
 <script src="bower_components/jstz/jstz.js"></script>
-
 <script src="bower_components/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.js"></script>
 <!-- angular-bootstrap -->
 <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-
 <!-- Angular strap -->
 <script src="bower_components/angular-strap/dist/angular-strap.js"></script>
 <script src="bower_components/angular-strap/dist/angular-strap.tpl.js"></script>
-
 <script src="bower_components/angular-gettext/dist/angular-gettext.min.js"></script>
 <!-- Slider -->
 <script src="bower_components/angularjs-slider/dist/rzslider.min.js"></script>
@@ -146,13 +142,10 @@
 <script src="bower_components/angular-bootstrap-grid-tree/src/tree-grid-directive.js"></script>
 <script src="bower_components/angular-resizable-master/angular-resizable.min.js"></script>
 <script src="bower_components/angular-ui-select/dist/select.min.js"></script>
-
 <!-- AngularJS directive for D3 and NVD3 -->
-<!--<script src="js/d3.v3.min.js"></script>-->
 <script src="bower_components/d3/d3.min.js"></script>
 <script src="bower_components/nvd3/nv.d3.min.js"></script>
 <script src="bower_components/angularjs-nvd3-directives/dist/angular-nvd3-directive.min.js"></script>
-<!--<script src="bower_components/moment-range/dist/moment-range.min.js"></script>-->
 <script src="bower_components/angular-gantt/assets/angular-gantt.js"></script>
 <script src="bower_components/angular-gantt/assets/angular-gantt-plugins.js"></script>
 <script src="bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
@@ -179,6 +172,8 @@
 <script type="text/javascript" src="js/html2canvas.js"></script>
 <script type="text/javascript" src="js/pdfmake.min.js"></script>
 <script type="text/javascript" src="js/bundle.js"></script>
+<script src="bower_components/es6-promise/dist/es6-promise.auto.js"></script>
+<script src="js/canvas-toBlob.js"></script>
 <!-- app -->
 <script src="modules/app.js"></script>
 <script src="modules/router.js"></script>
@@ -210,9 +205,7 @@
 <script src="modules/yade/services/yade.service.js"></script>
 <!-- endbuild -->
 
-
 <script>
-
     window.setTimeout(function () {
         var $fakeFrame = $('<iframe style="height:0;width:0;display:none" src="favicon.ico"></iframe>');
         $('body').append($fakeFrame);
@@ -222,11 +215,9 @@
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
     });
-
 </script>
 </body>
 </html>
-
 
 
 

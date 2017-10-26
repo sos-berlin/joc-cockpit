@@ -1,6 +1,6 @@
 <div>
     <div class="hide-block sidebar-btn resize-cursor">
-        <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
+        <i  class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
     </div>
     <aside id="leftPanel" class="hidden-sm-down" style="width: 100%">
         <pie-chart-component status="status"></pie-chart-component>
@@ -10,24 +10,19 @@
             <div class="hide " ng-class="{'show': isLoading  && permission.Order.view.status}">
                 <div class="hide" ng-class="{'show': pageView=='grid'}">
                     <div class="row">
-                        <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 "
-                             ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse">
-                            <div class="box card">
-                                <div class="box-body">
-                                    <div>
-                                        <label class="md-check pos-abt"
-                                               ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
-                                            <input type="checkbox" data-checklist-model="object.orders"
-                                                   data-checklist-value="order"><i
-                                                class="primary"></i>
-                                        </label>
-
-                                        <div class="text-left block-ellipsis"
-                                             ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
-                                            <span uib-tooltip="{{order.title}}">{{order.orderId}}</span></div>
-                                        <div class="btn-group dropdown pull-right abt-dropdown ">
-                                            <a href class=" more-option text-black-lt" data-toggle="dropdown">
-                                                <i class="text fa fa-ellipsis-h"></i></a>
+                        <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 " ng-repeat="order in orders | orderBy:orderFilters.filter.sortBy:orderFilters.reverse" >
+                            <div class="box card" >
+                            <div class="box-body">
+                                <div>
+                                    <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
+                                        <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i
+                                            class="primary"></i>
+                                    </label>
+                                    <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
+                                        <span uib-tooltip="{{order.title}}">{{order.orderId}}</span></div>
+                                    <div class="btn-group dropdown pull-right abt-dropdown ">
+                                        <a href class=" more-option text-black-lt" data-toggle="dropdown">
+                                            <i class="text fa fa-ellipsis-h"></i></a>
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
                                                      <a ng-click="showLogWindow(order)" class="dropdown-item hide"

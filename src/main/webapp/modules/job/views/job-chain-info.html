@@ -631,7 +631,8 @@
                                                                    translate>button.resumeOrderParametrized</a>
                                                                 <a href class="dropdown-item"
                                                                    ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                                   ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
+                                                                   ng-click="resumeOrderNextstate(order)"
+                                                                   translate>button.resumeOrderFromState</a>
                                                                 <a href class="dropdown-item"
                                                                    ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
                                                                    ng-click="resetOrder(order)" translate>button.resetOrder</a>

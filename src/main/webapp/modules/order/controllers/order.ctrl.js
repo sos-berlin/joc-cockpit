@@ -2083,8 +2083,8 @@
                 orders.orderId = order.orderId;
                 orders.compact = true;
                 OrderService.getcalendars(orders).then(function (res) {
-                    console.log(res);
-                    vm.calendar.calendars = res.calendars;
+                    vm.obj = angular.copy(order);
+                    vm.obj.calendars = res.calendars;
                 });
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
@@ -2098,7 +2098,7 @@
 
                 });
             }
-            ;
+
 
             if (action == 'delete order') {
                 var orders = {};
@@ -2170,12 +2170,13 @@
         };
 
         function populatePlanItems(res) {
+
             vm.planItemData = res.planItems;
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
-                    orderId: data.orderId
+                    orderId: data.orderId,
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -2183,6 +2184,7 @@
                 }
             });
         }
+
 
         $scope.$on('$destroy', function () {
             watcher1();
@@ -2415,8 +2417,8 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
-                    orderId: data.orderId
+                    orderId: data.orderId,
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -5971,18 +5973,18 @@
             orders.orderId = order.orderId;
             orders.compact = true;
             OrderService.getcalendars(orders).then(function (res) {
-                  console.log(res);
-                  vm.calendar.calendars = res.calendars;
-                });
+                vm.obj = angular.copy(order);
+                    vm.obj.calendars = res.calendars;
+            });
             var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
+                templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
 
-                }, function () {
+            }, function () {
 
             });
         };
@@ -6019,8 +6021,8 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
-                    orderId: data.orderId
+                    orderId: data.orderId,
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -6030,7 +6032,7 @@
         }
 
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,

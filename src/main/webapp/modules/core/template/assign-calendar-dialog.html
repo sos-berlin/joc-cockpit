@@ -2,19 +2,8 @@
     <div class="modal-dialog modal-lg" ng-controller="CalendarAssignDialogCtrl">
         <div class="modal-content">
            <div class="modal-body p-a" style="min-height: 500px;max-height: 550px; overflow: auto">
-               <div class="btn-group ">
-                   <button class="btn btn-grey btn-sm "
-                           ng-model="filter.type" uib-btn-radio="'WORKING_DAYS'"
-                           ng-click="loadCategory()" ng-class="{'btn-primary': filter.type=='WORKING_DAYS'}"
-                           translate>button.workingDays
-                   </button>
-                   <button class="btn btn-grey btn-sm "
-                           ng-model="filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
-                           ng-click="loadCategory()" ng-class="{'btn-primary': filter.type=='NON_WORKING_DAYS'}"
-                           translate>button.nonWorkingDays
-                   </button>
-               </div>
-                <div class="m-t">
+
+                <div>
                     <a class="text" ng-click="filter_tree.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
                         <i class="fa fa-angle-double-down fa-lg"></i>
                     </a>

@@ -644,11 +644,9 @@
             }
         }
 
-
         var count = 1, splitPath = [];
 
         function checkExpand(data) {
-
             if (data.selected1) {
                 if (!data.jobChains) {
                     data.jobChains = [];
@@ -686,7 +684,6 @@
                             data.selected1 = false;
                         }
                     }
-
                 }
             }
         }
@@ -707,9 +704,7 @@
 
                 vm.allJobChains = [];
                 checkExpand(vm.tree[i]);
-
             }
-
         }
 
         function checkExpandTreeForUpdates(data) {
@@ -727,7 +722,6 @@
         }
 
         function insertData(node, x) {
-
             node.jobChains = [];
             for (var i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1) == node.path)) {
@@ -736,7 +730,6 @@
                     vm.allJobChains.push(x[i]);
                 }
             }
-
             angular.forEach(node.folders, function (value) {
                 if (value.expanded || value.selected1)
                     insertData(value, x);
@@ -1067,7 +1060,7 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
+                    format:vm.getCalendarTimeFormat(),
                     orderId: data.orderId
                 };
                 vm.planItems.push(planData);
@@ -5260,28 +5253,27 @@
                 });
             }
         };
-        vm.showAssignedCalendar = function(job){
+        vm.showAssignedCalendar = function(job) {
             var jobs = {};
             jobs.jobschedulerId = vm.schedulerIds.selected;
             jobs.job = job.path;
             jobs.compact = true;
             JobService.getcalendars(jobs).then(function (res) {
-                  console.log(res);
-                  vm.calendar.calendars = res.calendars;
-                });
+                vm.obj = angular.copy(job);
+                vm.obj.calendars = res.calendars;
+            });
             var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance.result.then(function () {
+                templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
 
-                }, function () {
+            }, function () {
 
-                });
+            });
         };
-
 
         vm.deleteOrder =  function(order) {
             var orders = {};
@@ -5389,7 +5381,7 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {

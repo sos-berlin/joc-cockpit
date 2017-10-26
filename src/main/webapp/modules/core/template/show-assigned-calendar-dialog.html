@@ -3,45 +3,26 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span>
-                <span translate>label.showAssignedCalendar</span> : {{order.path}}
+                <span translate>label.showAssignedCalendar</span> : {{obj.path}} <span ng-if="obj.title">- <span class="text-muted text-sm">{{obj.title}}</span></span>
             </span>
         </h4>
     </div>
     <div class="modal-body p-a">
         <div class="row">
-            <div class=" col-sm-12">
-               <!-- <div ng-repeat="use in calendar.usedIn" class="p-l-sm" ng-class="{'b-b': $index>0}">
-                    <div class="row form-group">
-                        <label class="col-sm-3" translate>
-                            label.jobSchedulerId
-                        </label>
-                        <div class="col-sm-9">
-                            {{use.jobschedulerId}}
-                        </div>
-                    </div>
-                    <div class="row form-group" ng-if="use.jobs">
-                        <label class="col-md-3" translate="">
-                            label.jobs
-                        </label>
-                        <div class="col-md-9">
-                            <div ng-repeat="job in use.jobs">
-                                {{$index+1}} - <span style="cursor: pointer" class="text-hover-primary" ng-click="showJob(job)">{{job}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row form-group" ng-if="use.orders">
-                        <label class="col-md-3" translate="">
-                            label.orders
-                        </label>
-                        <div class="col-md-9">
-                            <div ng-repeat="order in use.orders">
-                                {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showJobChain(order)">{{order}}</span>
+            <div class=" col-sm-12 m-l">
+                <div ng-repeat="calendar in obj.calendars">
+                    <div class="row form-group" >
+                        <div class="col-md-12">
+                            <div>
+                                {{$index+1}} - <span class="text-hover-primary cursor" ng-click="showCalendar(calendar.path)">{{calendar.path}} <span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-center text" ng-if="!calendar.usedIn || calendar.usedIn.length==0" translate>message.calendarNotUsed</div>
-           --> </div>
+                <div class="text-center text" ng-if="!obj.calendars || obj.calendars.length==0" >
+                    <span translate>message.calendarNotAssigned</span>&nbsp; {{obj.id}}{{obj.name}}
+                </div>
+            </div>
         </div>
         <div class="row m-t-md">
             <div class="b-t"></div>

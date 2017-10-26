@@ -1134,5 +1134,7 @@
   "message.deleteAllCalendar": "Are you sure you want to delete all calendars?",
   "label.deleteAllCalendar" :"Delete all calendars",
   "button.showAssignedCalendar": "Show Assigned Calendar",
-  "label.showAssignedCalendar": "Show Assigned Calendar"
+  "label.showAssignedCalendar": "Show Assigned Calendar",
+  "label.usedIn": "This Calendar is used in",
+  "message.calendarNotAssigned": "No calendar assigned to this"
 }

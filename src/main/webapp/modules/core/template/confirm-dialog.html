@@ -32,14 +32,6 @@
                     <div class="text-left row">
                         <div class=" col-sm-12">
                             <div ng-repeat="use in calendar.usedIn" ng-class="{'b-b': $index>0}">
-                                <div class="row ">
-                                    <label class="col-sm-3" translate>
-                                        label.jobSchedulerId
-                                    </label>
-                                    <div class="col-sm-9">
-                                        {{use.jobschedulerId}}
-                                    </div>
-                                </div>
                                 <div class="row form-group" ng-if="use.jobs">
                                     <label class="col-md-3" translate="">
                                         label.jobs
@@ -71,14 +63,6 @@
                     <div class="text-left row" ng-repeat="calendar in calendarArr">
                         <div class=" col-sm-12">
                             <div ng-repeat="use in calendar.usedIn" ng-class="{'b-b': $index>0}">
-                                <div class="row">
-                                    <label class="col-sm-3" translate>
-                                        label.jobSchedulerId
-                                    </label>
-                                    <div class="col-sm-9">
-                                        {{use.jobschedulerId}}
-                                    </div>
-                                </div>
                                 <div class="row form-group" ng-if="use.jobs">
                                     <label class="col-md-3" translate="">
                                         label.jobs

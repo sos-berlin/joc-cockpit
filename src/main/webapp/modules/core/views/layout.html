@@ -1,7 +1,7 @@
 <div id="content" class="app-content " role="main" ng-controller="HeaderCtrl" ng-click="refreshSession()">
-    <div class="w-full text-right top-header-bar white fa-fa-color">
-        <span class="pull-left p-l-3" ng-if="userPreferences.themeTitle">
-            <span class="_600 m-l-sm text-shadow" ng-bind="userPreferences.themeTitle"></span> </span>
+    <div class="w-full text-right top-header-bar white fa-fa-color"  ng-class="{'backup-top-header':permission.precedence>0}">
+        <span class="pull-left p-l-3 backup-text" ng-if="userPreferences.themeTitle">
+            <span class="_600 m-l-sm text-shadow backup-text" ng-bind="userPreferences.themeTitle"></span> </span>
         <span class="m-r-sm"><span translate>label.time</span>:
             <span class="text-primary" ng-bind="currentTime | stringToDate"></span></span>
         <span class="m-r-sm"><span translate>label.remainingSessionTime</span>:
@@ -14,7 +14,7 @@
             <span class="text-primary" ng-bind="selectedJobScheduler.startedAt | stringToDate:selectedJobScheduler.timeZone"></span></span>
         <span class="dropdown" ng-if="schedulerIds.selected">
             <a data-toggle="dropdown">
-                <span translate>label.id</span>:
+                <span class="backup-text" translate>label.id</span>:
                 <span class="_500 text-orange" ng-bind="schedulerIds.selected"></span><i
                     class="fa fa-caret-down p-l-xs"></i>
             </a>
