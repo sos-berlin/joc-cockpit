@@ -2205,8 +2205,8 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
-                    orderId: data.orderId
+                    orderId: data.orderId,
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -2446,8 +2446,8 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
-                    orderId: data.orderId
+                    orderId: data.orderId,
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -6085,8 +6085,8 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
-                    orderId: data.orderId
+                    orderId: data.orderId,
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -6096,7 +6096,7 @@
         }
 
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,

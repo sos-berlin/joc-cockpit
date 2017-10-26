@@ -1060,7 +1060,7 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime,
+                    format:vm.getCalendarTimeFormat(),
                     orderId: data.orderId
                 };
                 vm.planItems.push(planData);
@@ -5420,7 +5420,7 @@
             vm.planItemData.forEach(function (data) {
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
-                    expectedEndTime: data.expectedEndTime
+                    format:vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {

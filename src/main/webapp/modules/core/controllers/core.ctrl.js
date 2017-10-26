@@ -999,6 +999,19 @@
             vm.dataFormat = vm.dataFormat.trim();
         }
 
+        vm.getCalendarTimeFormat =function() {
+            var timeFormat = vm.userPreferences.dateFormat;
+
+            if ((timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) != null) {
+                var result = (timeFormat.match(/HH:mm:ss/gi) || timeFormat.match(/HH:mm/gi) || timeFormat.match(/hh:mm:ss A/gi) || timeFormat.match(/hh:mm A/gi)) + '';
+                if (result.match(/hh/g)) {
+                    return result + " a";
+                } else {
+                    return result;
+                }
+            }
+        }
+
         if (vm.userPreferences)
             getDateFormat();
 
