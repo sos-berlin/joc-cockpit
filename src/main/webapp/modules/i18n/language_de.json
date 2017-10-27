@@ -1129,12 +1129,12 @@
   "label.showUsage": "Verwendung zeigen",
   "label.validityUntil": "Gültig bis",
   "placeholder.enterNewCalendarName": "Namen des Neuen Kalenders angeben",
-  "button.assignNonWorkingDayCalendar": "Assign Non-Working days Calendar",
-  "button.assignWorkingDayCalendar": "Assign Working days Calendar",
-  "message.deleteAllCalendar": "Are you sure you want to delete all calendars?",
-  "label.deleteAllCalendar": "Delete all calendars",
-  "button.showAssignedCalendar": "Show Assigned Calendar",
-  "label.showAssignedCalendar": "Show Assigned Calendar",
-  "label.usedIn": "This Calendar is used in",
-  "message.calendarNotAssigned": "No calendar assigned to this"
+  "button.assignNonWorkingDayCalendar": "Kalender der Nicht-Arbeitstage zuweisen",
+  "button.assignWorkingDayCalendar": "Kalender der Arbeitstage zuweisen",
+  "message.deleteAllCalendar": "Sind Sie sicher, dass Sie alle Kalender löschen möchten?",
+  "label.deleteAllCalendar": "Alle Kalender löschen",
+  "button.showAssignedCalendar": "Zugewiesenen Kalender anzeigen",
+  "label.showAssignedCalendar": "Zugewiesenen Kalender anzeigen",
+  "label.usedIn": "Dieser Kalender wird verwendet von",
+  "message.calendarNotAssigned": "Kein Kalender zugewiesen"
 }
