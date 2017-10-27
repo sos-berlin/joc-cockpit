@@ -1163,7 +1163,7 @@
             }
 
             if (order.fromDate) {
-                obj.at = moment.utc(order.fromDate).format();
+                obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else {
                 obj.at = order.atTime;
@@ -4567,7 +4567,7 @@
             }
 
             if (job.date && job.at == 'later') {
-                obj.at = moment.utc(job.date).format();
+                obj.at = moment(job.date).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = job.timeZone;
             }else
                 obj.at = job.atTime;

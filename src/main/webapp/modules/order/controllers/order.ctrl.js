@@ -1561,7 +1561,7 @@
             }
 
             if (order.date && order.at == 'later') {
-                obj.at = moment.utc(order.date).format();
+                obj.at = moment(order.date).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else {
                 obj.at = order.atTime;
@@ -2462,7 +2462,7 @@
             }
 
             if (order.fromDate && order.at == 'later') {
-                obj.at = moment.utc(order.fromDate).format();
+                obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else {
                 obj.at = order.atTime;
@@ -5330,7 +5330,7 @@
             }
 
             if (order.date && order.at == 'later') {
-                obj.at = moment.utc(order.date).format();
+                obj.at = moment(order.date).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else
                 obj.at = order.atTime;
