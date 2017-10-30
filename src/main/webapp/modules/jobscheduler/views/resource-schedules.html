@@ -72,7 +72,7 @@
                             <div class="text-sm text-left text-muted p-t-xs">
                                 <span translate>label.validity </span>:
                                 <span ng-if="schedule.substitute.validFrom" ng-bind="schedule.substitute.validFrom | stringToDate"></span>
-                                <span ng-if="schedule.substitute.validFrom && schedule.substitute.validTo"> to </span>
+                                <span ng-if="schedule.substitute.validFrom && schedule.substitute.validTo" translate> label.to </span>
                                 <span ng-bind="schedule.substitute.validTo | stringToDate"></span>
                             </div>
                         </div>

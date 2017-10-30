@@ -722,10 +722,19 @@
         }
 
         function insertData(node, x) {
+            var _temp = angular.copy(node.jobChains);
             node.jobChains = [];
             for (var i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1) == node.path)) {
                     x[i].path1 = node.path;
+                    if(_temp && _temp.length>0){
+                        for(var j=0; j < _temp.length;j++){
+                            if(_temp[j].path == x[i].path){
+                                 x[i].show = _temp[j].show;
+                                break;
+                            }
+                        }
+                    }
                     node.jobChains.push(x[i]);
                     vm.allJobChains.push(x[i]);
                 }
@@ -865,7 +874,7 @@
 
             JobChainService.getJobChainsP(obj1).then(function (result) {
                 if (vm.scheduleState == 'UNREACHABLE') {
-                    angular.forEach(vm.tree, function (node, index) {
+                    angular.forEach(vm.tree, function (node) {
                         insertData(node, result.jobChains);
                     });
                     vm.loading = false;
@@ -876,8 +885,6 @@
                     if (result.jobChains && result.jobChains.length > 0) {
                         var x = [];
                         angular.forEach(result.jobChains, function (jobChain, index) {
-                            if (vm.userPreferences.showOrders)
-                                result.jobChains[index].show = true;
                             for (var i = 0; i < res.jobChains.length; i++) {
                                 var flag1 = true;
                                 if (result.jobChains[index].path == res.jobChains[i].path) {
@@ -3495,10 +3502,22 @@
         }
 
         function insertData(node, x) {
+            var _temp = angular.copy(node.jobs);
             node.jobs = [];
             for (var i = 0; i < x.length; i++) {
                 if (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/')) || (node.path == x[i].path.substring(0, x[i].path.lastIndexOf('/') + 1))) {
                     x[i].path1 = node.path;
+                    if(_temp && _temp.length>0){
+                        for(var j=0; j < _temp.length;j++){
+                            if(_temp[j].path == x[i].path){
+                                 x[i].showJobChains = _temp[j].showJobChains;
+                                if(x[i].showJobChains){
+                                   x[i].jobChains = _temp[j].jobChains;
+                                }
+                                break;
+                            }
+                        }
+                    }
                     node.jobs.push(x[i]);
                     vm.allJobs.push(x[i]);
                 }

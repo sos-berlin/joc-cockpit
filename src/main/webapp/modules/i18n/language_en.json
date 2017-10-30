@@ -990,7 +990,7 @@
   "placeholder.orderId": "Order ID",
   "placeholder.orderRegexAndChooseTree": "Name of Order, regular expression or choose from tree",
   "placeholder.password": "Enter password",
-  "placeholder.processExecuted": "now-600, -1h, -1d, today or 08:00am to 08:00pm",
+  "placeholder.processExecuted": "now-600, today, yesterday, -1(h|d|w|M) or 08:00am to 08:00pm, -1(h|d|w|M) to -1(h|d|w|M)",
   "placeholder.processPlanned": "now+600,1h, 1d, today or 08:00am to 08:00pm",
   "placeholder.regex": "Name of Order or regular expression",
   "placeholder.regexAndChooseTree": "Regular expression or choose folders from tree",

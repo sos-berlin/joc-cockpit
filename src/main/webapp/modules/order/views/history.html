@@ -257,11 +257,11 @@
                             <div class="col-md-6">
                                 <label class="md-check w-sm">
                                     <input type="radio" name="radio" ng-model="jobChainSearch.date" value="date">
-                                    <i class="primary"></i> <span translate>label.manualDate</span>
+                                    <i class="primary"></i> <span translate>label.specificDate</span>
                                 </label>
                                 <label class="md-check">
                                     <input type="radio" name="radio" ng-model="jobChainSearch.date" value="process">
-                                    <i class="primary"></i> <span translate>label.processExecuted</span>
+                                    <i class="primary"></i> <span translate>label.manualDate</span>
                                 </label>
                             </div>
                         </div>
@@ -311,7 +311,7 @@
                                        translate>button.clear</a>
                                 </div>
                         </div>
-                        <div class="form-group row" ng-if="!historyView.current">
+                        <div class="form-group row" >
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="jobChainSearch.jobschedulerId">
@@ -409,11 +409,11 @@
                             <div class="col-md-6">
                                 <label class="md-check w-sm">
                                     <input type="radio" name="radio" ng-model="jobSearch.date" value="date">
-                                    <i class="primary"></i> <span translate>label.manualDate</span>
+                                    <i class="primary"></i> <span translate>label.specificDate</span>
                                 </label>
                                 <label class="md-check">
                                     <input type="radio" name="radio" ng-model="jobSearch.date" value="process">
-                                    <i class="primary"></i> <span translate>label.processExecuted</span>
+                                    <i class="primary"></i> <span translate>label.manualDate</span>
                                 </label>
                             </div>
                         </div>
@@ -463,7 +463,7 @@
                                        translate>button.clear</a>
                                 </div>
                         </div>
-                        <div class="form-group row" ng-if="!historyView.current">
+                        <div class="form-group row">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="jobSearch.jobschedulerId">
@@ -609,6 +609,7 @@
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
+                                 <span ng-if="!history.jobschedulerId" ng-bind="jobChainSearch.jobschedulerId"></span>
                              </td>
                             <td class="nowrap" ng-click="showLogWindow(history,null)">
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show && historyView.current" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
@@ -757,7 +758,10 @@
                                     </div>
                                 </div>
                             </td>
-                            <td ng-if="!historyView.current" ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" ng-bind="jobHistory.jobschedulerId"></td>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(null,jobHistory,null,jobHistory.jobschedulerId)" >
+                                <span ng-bind="jobHistory.jobschedulerId"></span>
+                                <span ng-if="!jobHistory.jobschedulerId" ng-bind="jobSearch.jobschedulerId"></span>
+                            </td>
                             <td ng-click="showLogWindow(null,jobHistory)"><span ng-bind="jobHistory.taskId"></span></td>
                             <td ng-click="showLogWindow(null,jobHistory)">
                                 <span ng-click="showJob(jobHistory.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="jobHistory.job"></span>

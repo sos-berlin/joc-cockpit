@@ -3592,10 +3592,9 @@
         }
 
         function insertData(node, x) {
+            var _temp = angular.copy(node.orders);
             node.orders = [];
-
             for (var i = 0; i < x.length; i++) {
-
                 var p = [];
                 if (x[i].path.indexOf(",") > -1) {
                     p = x[i].path.split(",");
@@ -3604,6 +3603,21 @@
                 }
                 if (node.path == p[0].substring(0, p[0].lastIndexOf('/')) || node.path == p[0].substring(0, p[0].lastIndexOf('/') + 1)) {
                     x[i].path1 = node.path;
+
+                    if (_temp && _temp.length > 0) {
+                        for (var j = 0; j < _temp.length; j++) {
+                            if (_temp[j].path == x[i].path) {
+                                x[i].show = _temp[j].show;
+                                if(x[i].show) {
+                                    x[i].priority = _temp[j].priority;
+                                    x[i].params = _temp[j].params;
+                                    x[i].stateText = _temp[j].stateText;
+                                    x[i].endState = _temp[j].endState;
+                                }
+                                break;
+                            }
+                        }
+                    }
                     node.orders.push(x[i]);
                     vm.allOrders.push(x[i]);
                 }
@@ -6230,6 +6244,62 @@
             vm.savedJobHistoryFilter.selected = undefined;
         }
 
+
+
+        function parseProcessExecuted(regex, obj) {
+            var fromDate;
+            var toDate;
+
+            if (/^\s*(-)\s*(\d+)(h|d|w|M)\s*$/.test(regex)) {
+                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M)\s*$/.exec(regex)[0];
+            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+                fromDate = new Date();
+                toDate = new Date();
+                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                fromDate.setSeconds(toDate.getSeconds() - seconds);
+            } else if (/^\s*(Today)\s*$/i.test(regex)) {
+                fromDate = '0d';
+                toDate = '0d';
+            }else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+                fromDate = '-1d';
+                toDate = '0d';
+            } else if (/^\s*(now)\s*$/i.test(regex)) {
+                fromDate = new Date();
+                toDate = new Date();
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M)\s*to\s*(-)(\d+)\s*(h|d|w|M)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M)\s*to\s*(-)(\d+)\s*(h|d|w|M)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3];
+                toDate = '-'+date[5]+date[6];
+
+            }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+                fromDate = new Date();
+                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                    fromDate.setHours(parseInt(time[1]) - 12);
+                } else {
+                    fromDate.setHours(parseInt(time[1]));
+                }
+
+                fromDate.setMinutes(parseInt(time[2]));
+                toDate = new Date();
+                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                    toDate.setHours(parseInt(time[4]) - 12);
+                } else {
+                    toDate.setHours(parseInt(time[4]));
+                }
+                toDate.setMinutes(parseInt(time[5]));
+            }
+
+            if (fromDate) {
+                obj.dateFrom = fromDate;
+            }
+            if (toDate) {
+                obj.dateTo = toDate;
+            }
+            return obj;
+        }
+
+
         function checkSharedFilters() {
             if (vm.permission.JOCConfigurations.share.view) {
                 var obj = {};
@@ -6457,9 +6527,7 @@
                     filter.excludeJobs.push({job: job});
                 });
             }
-            if (vm.task.filter.date == 'all') {
-
-            } else if (vm.task.filter.date == 'today') {
+             if (vm.task.filter.date == 'today') {
                 var from = new Date();
                 var to = new Date();
                 from.setHours(0);
@@ -6474,7 +6542,7 @@
 
                 filter.dateFrom = from;
                 filter.dateTo = to;
-            } else {
+            } else if (vm.task.filter.date && vm.task.filter.date != 'all'){
                 filter.dateFrom = vm.task.filter.date;
             }
             return filter;
@@ -6492,13 +6560,11 @@
                 });
             }
 
-            if (vm.order.filter.date == 'all') {
-
-            } else if (vm.order.filter.date == 'today') {
+             if (vm.order.filter.date == 'today') {
                 filter.dateFrom = '0d';
                 filter.dateTo = '0d';
 
-            } else {
+            } else if(vm.order.filter.date && vm.order.filter.date != 'all'){
                 filter.dateFrom = vm.order.filter.date;
             }
 
@@ -6513,9 +6579,6 @@
                     checkSharedTaskFilters();
                     return;
                 }
-                if (vm.jobHistorys && vm.jobHistorys.length > 0) {
-                    return;
-                }
                 filter = {jobschedulerId: vm.historyView.current ==true? vm.schedulerIds.selected: ''};
             }
             vm.isLoading = false;
@@ -6525,7 +6588,7 @@
                 filter = jobParseDate(filter);
             } else {
                 filter = setTaskDateRange(filter);
-                if (vm.task.filter.historyStates != 'all') {
+                if (vm.task.filter.historyStates && vm.task.filter.historyStates != 'all' && vm.task.filter.historyStates.length > 0) {
                     filter.historyStates = [];
                     filter.historyStates.push(vm.task.filter.historyStates);
                 }
@@ -6553,9 +6616,6 @@
                 return;
             }
             if (!filter) {
-                if (vm.historys && vm.historys.length > 0) {
-                    return;
-                }
                 filter = {jobschedulerId: vm.historyView.current ==true? vm.schedulerIds.selected: ''};
             }
             vm.isLoading = false;
@@ -6564,7 +6624,7 @@
                 filter = orderParseDate(filter);
             } else {
                 filter = setOrderDateRange(filter);
-                if (vm.order.filter.historyStates != 'all') {
+                if (vm.order.filter.historyStates && vm.order.filter.historyStates != 'all' && vm.order.filter.historyStates.length>0) {
                     filter.historyStates = [];
                     filter.historyStates.push(vm.order.filter.historyStates);
                 }
@@ -6586,7 +6646,7 @@
         }
 
         vm.init = function () {
-            var filter={}
+            var filter={};
             filter.jobschedulerId = vm.historyView.current ==true? vm.schedulerIds.selected: '';
             if (loadConfig && loadIgnoreList) {
                 isLoaded = false;
@@ -6621,52 +6681,7 @@
                     filter.historyStates = vm.jobSearch.states;
                 }
                 if (vm.jobSearch.date == 'process') {
-                    var fromDate;
-                    var toDate;
-
-                    if (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(vm.jobSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var hours = (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.exec(vm.jobSearch.planned)[2]);
-                        fromDate.setHours(toDate.getHours() - hours);
-                    }
-                    else if (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(vm.jobSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var days = (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.exec(vm.jobSearch.planned)[2]);
-                        fromDate.setDate(toDate.getDate() - days);
-                    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.jobSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.jobSearch.planned)[2]);
-                        fromDate.setSeconds(toDate.getSeconds() - seconds);
-                    } else if (/^\s*(Today)\s*$/i.test(vm.jobSearch.planned)) {
-                        fromDate = '0d';
-                        toDate = '0d';
-                    } else if (/^\s*(now)\s*$/i.test(vm.jobSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.jobSearch.planned)) {
-                        var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.jobSearch.planned);
-                        fromDate = new Date();
-                        if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                            fromDate.setHours(parseInt(time[1]) - 12);
-                        } else {
-                            fromDate.setHours(parseInt(time[1]));
-                        }
-
-                        fromDate.setMinutes(parseInt(time[2]));
-                        toDate = new Date();
-                        if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                            toDate.setHours(parseInt(time[4]) - 12);
-                        } else {
-                            toDate.setHours(parseInt(time[4]));
-                        }
-                        toDate.setMinutes(parseInt(time[5]));
-                    }
-                    filter.dateFrom = fromDate;
-                    filter.dateTo = toDate;
-
+                    filter = parseProcessExecuted(vm.jobSearch.planned, filter);
                 }
                 if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
                     var fromDate = new Date(vm.jobSearch.from);
@@ -6750,51 +6765,7 @@
                     filter.historyStates = vm.jobChainSearch.states;
                 }
                 if (vm.jobChainSearch.date == 'process') {
-                    var fromDate;
-                    var toDate;
-
-                    if (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(vm.jobChainSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var hours = (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.exec(vm.jobChainSearch.planned)[2]);
-                        fromDate.setHours(toDate.getHours() - hours);
-                    }
-                    else if (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(vm.jobChainSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var days = (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.exec(vm.jobChainSearch.planned)[2]);
-                        fromDate.setDate(toDate.getDate() - days);
-                    } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.jobChainSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.jobChainSearch.planned)[2]);
-                        fromDate.setSeconds(toDate.getSeconds() - seconds);
-                    } else if (/^\s*(Today)\s*$/i.test(vm.jobChainSearch.planned)) {
-                        fromDate = '0d';
-                        toDate = '0d';
-                    } else if (/^\s*(now)\s*$/i.test(vm.jobChainSearch.planned)) {
-                        fromDate = new Date();
-                        toDate = new Date();
-                    } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.jobChainSearch.planned)) {
-                        var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.jobChainSearch.planned);
-                        fromDate = new Date();
-                        if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                            fromDate.setHours(parseInt(time[1]) - 12);
-                        } else {
-                            fromDate.setHours(parseInt(time[1]));
-                        }
-
-                        fromDate.setMinutes(parseInt(time[2]));
-                        toDate = new Date();
-                        if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                            toDate.setHours(parseInt(time[4]) - 12);
-                        } else {
-                            toDate.setHours(parseInt(time[4]));
-                        }
-                        toDate.setMinutes(parseInt(time[5]));
-                    }
-                    filter.dateFrom = fromDate;
-                    filter.dateTo = toDate;
+                  filter = parseProcessExecuted(vm.jobChainSearch.planned, filter);
 
                 }
                 if (vm.jobChainSearch.date == 'date' && vm.jobChainSearch.from) {
@@ -6984,55 +6955,7 @@
                 obj.historyStates = vm.selectedFiltered1.state;
             }
 
-            var fromDate;
-            var toDate;
-            if (vm.selectedFiltered1.planned) {
-                if (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var hours = (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.exec(vm.selectedFiltered1.planned)[2]);
-                    fromDate.setHours(toDate.getHours() - hours);
-                }
-                else if (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var days = (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.exec(vm.selectedFiltered1.planned)[2]);
-                    fromDate.setDate(toDate.getDate() - days);
-                } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.selectedFiltered1.planned)[2]);
-                    fromDate.setSeconds(toDate.getSeconds() - seconds);
-                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    fromDate = '0d';
-                    toDate = '0d';
-                } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered1.planned)) {
-                    var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.selectedFiltered1.planned);
-                    fromDate = new Date();
-                    if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                        fromDate.setHours(parseInt(time[1]) - 12);
-                    } else {
-                        fromDate.setHours(parseInt(time[1]));
-                    }
-
-                    fromDate.setMinutes(parseInt(time[2]));
-                    toDate = new Date();
-                    if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                        toDate.setHours(parseInt(time[4]) - 12);
-                    } else {
-                        toDate.setHours(parseInt(time[4]));
-                    }
-                    toDate.setMinutes(parseInt(time[5]));
-                }
-            }
-
-            if (fromDate && toDate) {
-                obj.dateFrom = fromDate;
-                obj.dateTo = toDate;
-            }
+            obj = parseProcessExecuted(vm.selectedFiltered1.planned, obj);
             return obj;
         }
 
@@ -7065,54 +6988,7 @@
                 });
 
             }
-            var fromDate;
-            var toDate;
-            if (vm.selectedFiltered2.planned) {
-                if (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var hours = (/^\s*(-)\s*(\d+)(h\s*)\s*$/i.exec(vm.selectedFiltered2.planned)[2]);
-                    fromDate.setHours(toDate.getHours() - hours);
-                }
-                else if (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var days = (/^\s*(-)\s*(\d+)(d\s*)\s*$/i.exec(vm.selectedFiltered2.planned)[2]);
-                    fromDate.setDate(toDate.getDate() - days);
-                } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.selectedFiltered2.planned)[2]);
-                    fromDate.setSeconds(toDate.getSeconds() - seconds);
-                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    fromDate = '0d';
-                    toDate = '0d';
-                } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    fromDate = new Date();
-                    toDate = new Date();
-                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered2.planned)) {
-                    var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.selectedFiltered2.planned);
-                    fromDate = new Date();
-                    if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                        fromDate.setHours(parseInt(time[1]) - 12);
-                    } else {
-                        fromDate.setHours(parseInt(time[1]));
-                    }
-
-                    fromDate.setMinutes(parseInt(time[2]));
-                    toDate = new Date();
-                    if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                        toDate.setHours(parseInt(time[4]) - 12);
-                    } else {
-                        toDate.setHours(parseInt(time[4]));
-                    }
-                    toDate.setMinutes(parseInt(time[5]));
-                }
-            }
-            if (fromDate && toDate) {
-                obj.dateFrom = fromDate;
-                obj.dateTo = toDate;
-            }
+            obj = parseProcessExecuted(vm.selectedFiltered1.planned, obj);
             return obj;
         }
 
@@ -7235,6 +7111,7 @@
                 obj.orders = vm.jobChainSearch.orders;
                 obj.state = vm.jobChainSearch.states;
                 obj.name = vm.jobChainSearch.name;
+                obj.planned = vm.jobChainSearch.planned;
             }
             else {
                 configObj.name = vm.jobSearch.name;
@@ -7243,6 +7120,7 @@
                 obj.jobs = vm.jobSearch.jobs;
                 obj.state = vm.jobSearch.states;
                 obj.name = vm.jobSearch.name;
+                obj.planned = vm.jobSearch.planned;
             }
             configObj.id = 0;
 
