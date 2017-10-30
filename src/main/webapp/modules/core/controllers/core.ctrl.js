@@ -1928,7 +1928,7 @@
                     }
                 }
             } else {
-                unselectDates.push(planData);
+                excludedDates.push(planData);
             }
         }
 
@@ -2012,7 +2012,7 @@
                     angular.forEach(vm.excludeFrequencyList, function(value){
                        generateCalendarObj(value, x);
                     });
-                    obj1.excludes = x;
+                    obj1.excludes = x.excludes;
                 }
                 var data1 = angular.copy(data);
                 data1.type = 'INCLUDE';
@@ -9268,9 +9268,10 @@
             if (vm.sch._valid_from && vm.sch._valid_to && vm.sch._name) {
                 vm.error.validDate = moment(vm.sch._valid_from).diff(moment(vm.sch._valid_to)) > 0;
                 if (!vm.error.validDate) {
-                    if (!vm.substituteObj.showText && !param)
-                        vm.createNewRunTime();
-                    else {
+                    if (!vm.substituteObj.showText && !param) {
+                        //vm.createNewRunTime();
+                        vm.substituteObj.showText = true;
+                    }else {
                         saveSch();
                     }
                 }
@@ -10175,29 +10176,6 @@
 
             var tempData = sortRuntimeObj(vm.run_time);
 
-            if (vm.sch) {
-                if (vm.sch._name) {
-                    tempData._name = vm.sch._name;
-                } else {
-                    if (vm.sch._substitute) {
-                        tempData._substitute = vm.sch._substitute;
-                    }
-                }
-                if (vm.sch._valid_from) {
-                    tempData._valid_from = vm.sch._valid_from;
-                }
-                if (vm.sch._valid_to) {
-                    tempData._valid_to = vm.sch._valid_to;
-                }
-                if (vm.sch._title) {
-                    tempData._title = vm.sch._title;
-                }
-            }
-
-
-            if (vm.runTime1.timeZone) {
-                tempData._time_zone = vm.runTime1.timeZone;
-            }
             if (vm.order) {
                 vm.run_time = {run_time: tempData};
             }
@@ -10275,6 +10253,30 @@
                     tempData.holidays = data.holidays;
                 }
             });
+
+            if (vm.sch) {
+                if (vm.sch._name) {
+                    tempData._name = vm.sch._name;
+                } else {
+                    if (vm.sch._substitute) {
+                        tempData._substitute = vm.sch._substitute;
+                    }
+                }
+                if (vm.sch._valid_from) {
+                    tempData._valid_from = vm.sch._valid_from;
+                }
+                if (vm.sch._valid_to) {
+                    tempData._valid_to = vm.sch._valid_to;
+                }
+                if (vm.sch._title) {
+                    tempData._title = vm.sch._title;
+                }
+            }
+
+
+            if (vm.runTime1 && vm.runTime1.timeZone) {
+                tempData._time_zone = vm.runTime1.timeZone;
+            }
 
             return tempData;
 
@@ -10359,6 +10361,7 @@
                 console.log(e);
             }
             var run_time = _xml.run_time || _xml.schedule || {};
+
             angular.forEach(vm.holidayCalendar, function (calendar, index) {
                 var obj = {};
                 obj.dateFrom = calendar.from;

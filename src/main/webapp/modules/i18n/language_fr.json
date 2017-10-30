@@ -990,7 +990,7 @@
   "placeholder.orderId": "ID Ordre",
   "placeholder.orderRegexAndChooseTree": "Nom de l'Ordre, expression régulière ou sélectionner par l'arbre",
   "placeholder.password": "Saisir le mot de passe",
-  "placeholder.processExecuted": "now-600, -1h, -1d, today ou 08:00am à 08:00pm",
+  "placeholder.processExecuted": "now-600, today, yesterday, -1(h|d|w|M) ou 08:00am à 08:00pm, -1(h|d|w|M) à -1(h|d|w|M)",
   "placeholder.processPlanned": "now+600, 1h, 1d, Today ou 08:00am à 08:00pm",
   "placeholder.regex": "Nom de l'Ordre ou expression régulière",
   "placeholder.regexAndChooseTree": "Expression régulière ou sélectionner les dossiers par l'arbre",

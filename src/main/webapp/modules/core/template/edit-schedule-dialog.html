@@ -80,27 +80,28 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r-sm"
-                                ng-click="editor.editXml = true" translate>button.editXml
+                    <div class="col-md-12 m-b">
+
+                        <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
-                        <button ng-if="editor.editXml" type="button" class="btn btn-sm pull-right btn-grey m-r-sm"
-                                ng-click="editor.editXml = false" translate>button.hideXml
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
-                                ng-click="showScheduleTab()" translate>label.schedule
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey pull-right m-r-sm m-b"
-                                ng-click="showHolidayTab()" translate>button.nonWorkingDays
-                        </button>
-                        <button type="button" class="btn btn-sm pull-right btn-grey m-r-sm m-b"
-                                ng-click="createNewRunTime()" translate>button.addNewFrequency
-                        </button>
-                        <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm pull-right btn-grey m-r-sm"
+                        <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
                         </button>
-                        <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey pull-right m-r-sm"
-                                ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="showScheduleTab()" translate>label.schedule
+                        </button>
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="createNewRunTime()" translate>button.addNewFrequency
+                        </button>
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="showHolidayTab()" translate>button.nonWorkingDays
+                        </button>
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="editor.editXml = true" translate>button.editXml
+                        </button>
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
                     </div>
                     <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
