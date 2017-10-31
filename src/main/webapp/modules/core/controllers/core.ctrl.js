@@ -658,6 +658,18 @@
             $location.path('/resources/process_classes');
         };
 
+        vm.showScheduleLink = function (schedule) {
+            var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = schedule.substring(schedule.lastIndexOf('/') + 1, schedule.length);
+            $rootScope.schedule_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/resources/schedules');
+        };
+
         vm.showOrderLink = function (order) {
             var path = order.substring(0, order.lastIndexOf('/')) || '/';
             var name = '';
@@ -1692,8 +1704,8 @@
         }
     }
 
-    DialogCtrl.$inject = ['$scope', '$uibModalInstance', '$window'];
-    function DialogCtrl($scope, $uibModalInstance, $window) {
+    DialogCtrl.$inject = ['$scope', '$uibModalInstance', '$window','toasty','gettextCatalog'];
+    function DialogCtrl($scope, $uibModalInstance, $window,toasty,gettextCatalog) {
         var vm = $scope;
         vm.error = false;
         if (vm.userPreferences.auditLog) {
@@ -1710,7 +1722,17 @@
         vm.events = [];
         vm.isCellOpen = true;
         vm.ok = function () {
-
+            if(vm.user) {
+                if (/\s/.test(vm.user.user) && vm.user.fakepassword) {
+                    toasty.error({
+                        msg: gettextCatalog.getString('message.inValidUserName'),
+                        timeout: 10000
+                    });
+                    return;
+                }else if(/\s/.test(vm.user.user) && !vm.user.fakepassword){
+                   vm.user.user = encodeURIComponent(vm.user.user.trim());
+                }
+            }
             if (vm.paramObject) {
                 var indexArr = [];
                 angular.forEach(vm.paramObject.params, function (value, index) {
@@ -1737,7 +1759,11 @@
             }
         };
 
-        vm.cancel = function () {
+        vm.cancel = function (form) {
+            if(form) {
+                form.$setPristine();
+                form.$setUntouched();
+            }
             $uibModalInstance.dismiss('cancel');
         };
 

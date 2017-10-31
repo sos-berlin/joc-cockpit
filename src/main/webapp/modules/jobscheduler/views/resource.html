@@ -45,36 +45,36 @@
                                             ng-class="{'btn-primary': agentsFilters.filter.state=='2'}" ng-click="loadAgents()" translate>button.unreachableAgentCluster
                                     </a>
                                 </div>
-                        </div>
-                    </div>
-                    <div class="hide" ng-class="{'show-block':resourceFilters.state=='schedules'}">
-                         <div class="inline" ng-class="{'hide':object.schedules.length>0}">
-                             <div class="btn-group hidden-btn-group">
-                                <button class="btn btn-grey btn-sm" ng-model="schdeuleFilters.filter.state" uib-btn-radio="'all'"
-                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules
-                                </button>
-                                <button class="btn btn-grey btn-sm" ng-model="schdeuleFilters.filter.state"
-                                        uib-btn-radio="'ACTIVE'"
-                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='ACTIVE'}" ng-click="changeState()" translate>button.active
-                                </button>
-                                <button class="btn btn-grey btn-sm" ng-model="schdeuleFilters.filter.state"
-                                        uib-btn-radio="'INACTIVE'"
-                                        ng-class="{'btn-primary': schdeuleFilters.filter.state=='INACTIVE'}" ng-click="changeState()" translate>button.inactive
-                                </button>
                             </div>
-                             <div class="btn-group dropdown hidden-dropdown">
-                                <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
+                        </div>
+                        <div class="hide" ng-class="{'show-block':resourceFilters.state=='schedules'}">
+                            <div class="inline" ng-class="{'hide':object.schedules.length>0}">
+                                <div class="btn-group hidden-btn-group">
+                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state" uib-btn-radio="'all'"
+                                            ng-class="{'btn-primary': scheduleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules
+                                    </button>
+                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state"
+                                            uib-btn-radio="'ACTIVE'"
+                                            ng-class="{'btn-primary': scheduleFilters.filter.state=='ACTIVE'}" ng-click="changeState()" translate>button.active
+                                    </button>
+                                    <button class="btn btn-grey btn-sm" ng-model="scheduleFilters.filter.state"
+                                            uib-btn-radio="'INACTIVE'"
+                                            ng-class="{'btn-primary': scheduleFilters.filter.state=='INACTIVE'}" ng-click="changeState()" translate>button.inactive
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown hidden-dropdown">
+                                    <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.status</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                        <a class="dropdown-item" ng-model="schdeuleFilters.filter.state" uib-btn-radio="'all'"
-                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules
+                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state" uib-btn-radio="'all'"
+                                           ng-class="{'btn-primary': scheduleFilters.filter.state=='all'}" ng-click="changeState()" translate>button.allSchedules
                                         </a>
-                                        <a class="dropdown-item" ng-model="schdeuleFilters.filter.state"
-                                                uib-btn-radio="'ACTIVE'"
-                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='ACTIVE'}" ng-click="changeState()" translate>button.active
+                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state"
+                                           uib-btn-radio="'ACTIVE'"
+                                           ng-class="{'btn-primary': scheduleFilters.filter.state=='ACTIVE'}" ng-click="changeState()" translate>button.active
                                         </a>
-                                        <a class="dropdown-item" ng-model="schdeuleFilters.filter.state"
-                                                uib-btn-radio="'INACTIVE'"
-                                                ng-class="{'btn-primary': schdeuleFilters.filter.state=='INACTIVE'}" ng-click="changeState()" translate>button.inactive
+                                        <a class="dropdown-item" ng-model="scheduleFilters.filter.state"
+                                           uib-btn-radio="'INACTIVE'"
+                                           ng-class="{'btn-primary': scheduleFilters.filter.state=='INACTIVE'}" ng-click="changeState()" translate>button.inactive
                                         </a>
                                     </div>
                              </div>
@@ -124,15 +124,15 @@
                     <div class="btn-group dropdown" ng-if="resourceFilters.state=='schedules'">
                             <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown"><span translate>label.sortBy</span>
                                 <span class="text-primary">
-                                    <span ng-show="schdeuleFilters.filter.sortBy =='name'">
+                                    <span ng-show="scheduleFilters.filter.sortBy =='name'">
                                          {{'label.name' | translate}}
-                                        <i ng-show="!schdeuleFilters.reverse" class="fa fa-caret-up"></i>
-                                        <i ng-show="schdeuleFilters.reverse" class="fa fa-caret-down"></i>
+                                        <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
+                                        <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
-                                    <span ng-show="schdeuleFilters.filter.sortBy =='path'">
+                                    <span ng-show="scheduleFilters.filter.sortBy =='path'">
                                     {{'label.path' | translate}}
-                                    <i ng-show="!schdeuleFilters.reverse" class="fa fa-caret-up"></i>
-                                    <i ng-show="schdeuleFilters.reverse" class="fa fa-caret-down"></i>
+                                    <i ng-show="!scheduleFilters.reverse" class="fa fa-caret-up"></i>
+                                    <i ng-show="scheduleFilters.reverse" class="fa fa-caret-down"></i>
                                     </span>
                                 </span>
                             </a>

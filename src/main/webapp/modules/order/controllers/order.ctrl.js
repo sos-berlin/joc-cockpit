@@ -6988,7 +6988,7 @@
                 });
 
             }
-            obj = parseProcessExecuted(vm.selectedFiltered1.planned, obj);
+            obj = parseProcessExecuted(vm.selectedFiltered2.planned, obj);
             return obj;
         }
 

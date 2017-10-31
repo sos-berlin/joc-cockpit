@@ -1278,19 +1278,23 @@
                 compact: true,
                 types: ['SCHEDULE']
             }).then(function (res) {
-
-                if (vm.isEmpty(vm.scheduleFilters.expand_to)) {
+               
+                if ($rootScope.schedule_expand_to) {
                     vm.tree = angular.copy(res.folders);
                     filteredTreeData();
                 } else {
-                    vm.scheduleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.scheduleFilters.expand_to, 'schedule');
-                    vm.tree = vm.scheduleFilters.expand_to;
-                    vm.changeState();
+                    if (vm.isEmpty(vm.scheduleFilters.expand_to)) {
+                        vm.tree = angular.copy(res.folders);
+                        filteredTreeData();
+                    } else {
+                        vm.scheduleFilters.expand_to = vm.recursiveTreeUpdate(angular.copy(res.folders), vm.scheduleFilters.expand_to, 'schedule');
+                        vm.tree = vm.scheduleFilters.expand_to;
+                        vm.changeState();
+                    }
                 }
                 vm.scheduleFilters.expand_to = vm.tree;
-
                 vm.isLoading = true;
-            }, function (err) {
+            }, function () {
                 vm.isLoading = true;
             });
         }
@@ -1398,11 +1402,10 @@
         };
 
         function filteredTreeData() {
-            vm.allSchedules = [];
             angular.forEach(vm.tree, function (value) {
                 value.expanded = true;
                 value.selected1 = true;
-
+                vm.allSchedules = [];
                 checkExpand(value);
             });
         }
@@ -1668,9 +1671,7 @@
             if (data.selected1) {
                 data.schedules = [];
                 expandFolderData(data);
-
                 vm.folderPathS = data.name || '/';
-
                 angular.forEach(data.schedules, function (value) {
                     value.path1 = data.path;
                     vm.allSchedules.push(value);
@@ -1678,7 +1679,19 @@
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
+                if ($rootScope.schedule_expand_to && $rootScope.schedule_expand_to.path.indexOf(value.path) != -1) {
+                    value.expanded = true;
+                }
+                if ($rootScope.schedule_expand_to && $rootScope.schedule_expand_to.path == value.path) {
+                    value.selected1 = true;
+                    $rootScope.schedule_expand_to = undefined;
+                }
                 checkExpand(value);
+                if (value.expanded || value.selected1) {
+                    if (data.path == '/') {
+                        data.selected1 = false;
+                    }
+                }
             });
         }
 

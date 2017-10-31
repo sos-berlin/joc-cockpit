@@ -1043,5 +1043,6 @@
   "label.addFrequencies": "Ajouter des Fréquences",
   "label.editFrequencies": "Mettre à jour les Fréquences",
   "label.period": "Période",
-  "label.weekDays": "Jours de la semaine"
+  "label.weekDays": "Jours de la semaine",
+   "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication"
 }

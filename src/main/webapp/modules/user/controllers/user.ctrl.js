@@ -769,9 +769,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-                if (vm.user.fakepassword) {
-                    vm.user.password = vm.user.fakepassword;
-                }
+                vm.user.password = vm.user.fakepassword || '';
                 delete vm.user['fakepassword'];
                 vm.users.push(vm.user);
                 saveInfo();
@@ -819,7 +817,7 @@
             modalInstance.result.then(function () {
 
                 if (vm.user.fakepassword != '00000000') {
-                    vm.user.password = vm.user.fakepassword;
+                    vm.user.password = vm.user.fakepassword || '';
                 }
                 delete vm.user['fakepassword'];
 
