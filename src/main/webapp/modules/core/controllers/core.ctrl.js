@@ -10688,7 +10688,7 @@
                 CalendarService.calendarUsed({id: vm.calendar.id,  jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
                     vm.calendar.usedIn = res;
                     vm.calendarArr = undefined;
-                    if (vm.calendar.usedIn && vm.calendar.usedIn.length > 0) {
+                    if (vm.calendar.usedIn && (vm.calendar.usedIn.orders || vm.calendar.usedIn.jobs || vm.calendar.usedIn.schedules)) {
                         var modalInstance = $uibModal.open({
                             templateUrl: 'modules/core/template/confirm-dialog.html',
                             controller: 'DialogCtrl1',

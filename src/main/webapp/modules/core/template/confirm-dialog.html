@@ -31,24 +31,34 @@
                     </div>
                     <div class="text-left row">
                         <div class=" col-sm-12">
-                            <div ng-repeat="use in calendar.usedIn" ng-class="{'b-b': $index>0}">
-                                <div class="row form-group" ng-if="use.jobs">
+                            <div>
+                                <div class="row form-group" ng-if="calendar.usedIn.jobs">
                                     <label class="col-md-3" translate="">
                                         label.jobs
                                     </label>
                                     <div class="col-md-9">
-                                        <div ng-repeat="job in use.jobs">
+                                        <div ng-repeat="job in calendar.usedIn.jobs">
                                             {{$index+1}} - {{job}}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row form-group" ng-if="use.orders">
+                                <div class="row form-group" ng-if="calendar.usedIn.orders">
                                     <label class="col-md-3" translate="">
                                         label.orders
                                     </label>
                                     <div class="col-md-9">
-                                        <div ng-repeat="order in use.orders">
+                                        <div ng-repeat="order in calendar.usedIn.orders">
                                             {{$index+1}} - {{order}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group" ng-if="calendar.usedIn.schedules">
+                                    <label class="col-md-3" translate="">
+                                        label.schedules
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="schedule in calendar.usedIn.schedules">
+                                            {{$index+1}} - {{schedule}}
                                         </div>
                                     </div>
                                 </div>
@@ -60,26 +70,36 @@
                     <div class="row form-group">
                         <span  translate class="text">message.deleteAllCalendar</span>
                     </div>
-                    <div class="text-left row" ng-repeat="calendar in calendarArr">
+                    <div class="text-left row" ng-repeat="calendar in calendarArr" ng-class="{'b-b': $index>0}">
                         <div class=" col-sm-12">
-                            <div ng-repeat="use in calendar.usedIn" ng-class="{'b-b': $index>0}">
-                                <div class="row form-group" ng-if="use.jobs">
+                            <div>
+                                <div class="row form-group" ng-if="calendar.usedIn.jobs">
                                     <label class="col-md-3" translate="">
                                         label.jobs
                                     </label>
                                     <div class="col-md-9">
-                                        <div ng-repeat="job in use.jobs">
+                                        <div ng-repeat="job in calendar.usedIn.jobs">
                                             {{$index+1}} - {{job}}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row form-group" ng-if="use.orders">
+                                <div class="row form-group" ng-if="calendar.usedIn.orders">
                                     <label class="col-md-3" translate="">
                                         label.orders
                                     </label>
                                     <div class="col-md-9">
-                                        <div ng-repeat="order in use.orders">
+                                        <div ng-repeat="order in calendar.usedIn.orders">
                                             {{$index+1}} - {{order}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row form-group" ng-if="calendar.usedIn.schedules">
+                                    <label class="col-md-3" translate="">
+                                        label.schedules
+                                    </label>
+                                    <div class="col-md-9">
+                                        <div ng-repeat="schedule in calendar.usedIn.schedules">
+                                            {{$index+1}} - {{schedule}}
                                         </div>
                                     </div>
                                 </div>

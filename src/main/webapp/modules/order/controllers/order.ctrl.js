@@ -6280,6 +6280,26 @@
             }
         }
 
+        function checkSharedYadeFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "YADE_HISTORY";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    vm.yadeHistoryFilterList = res.configurations;
+                    getYadeCustomizations();
+                }, function () {
+                    vm.yadeHistoryFilterList = [];
+                    getYadeCustomizations();
+                });
+            } else {
+                vm.yadeHistoryFilterList = [];
+                getYadeCustomizations();
+            }
+        }
+
         var configObj = {};
         configObj.jobschedulerId = vm.schedulerIds.selected;
         configObj.account = vm.permission.user;
@@ -6411,12 +6431,76 @@
             });
         }
 
+        function getYadeCustomizations() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.account = vm.permission.user;
+            obj.configurationType = "CUSTOMIZATION";
+            obj.objectType = "YADE_HISTORY";
+            UserService.configurations(obj).then(function (res) {
+
+                if (vm.yadeHistoryFilterList && vm.yadeHistoryFilterList.length > 0) {
+                    if (res.configurations && res.configurations.length > 0) {
+                        vm.yadeHistoryFilterList = vm.yadeHistoryFilterList.concat(res.configurations);
+                    }
+                    var data = [];
+
+                    for (var i = 0; i < vm.yadeHistoryFilterList.length; i++) {
+                        var flag = true;
+                        for (var j = 0; j < data.length; j++) {
+                            if (data[j].account == vm.yadeHistoryFilterList[i].account && data[j].name == vm.yadeHistoryFilterList[i].name) {
+                                flag = false;
+                            }
+                        }
+                        if (flag) {
+                            data.push(vm.yadeHistoryFilterList[i]);
+                        }
+                    }
+                    vm.yadeHistoryFilterList = data;
+                } else {
+                    vm.yadeHistoryFilterList = res.configurations;
+                }
+
+                if (vm.savedYadeHistoryFilter.selected) {
+                    var flag = true;
+                    angular.forEach(vm.yadeHistoryFilterList, function (value) {
+                        if (value.id == vm.savedYadeHistoryFilter.selected) {
+                            flag = false;
+                            UserService.configuration({
+                                jobschedulerId: value.jobschedulerId,
+                                id: value.id
+                            }).then(function (conf) {
+                                loadConfig = true;
+                                vm.selectedFiltered2 = JSON.parse(conf.configuration.configurationItem);
+                                vm.selectedFiltered2.account = value.account;
+                                vm.init();
+                            });
+                        }
+                    });
+                    if (flag) {
+                        vm.savedYadeHistoryFilter.selected = undefined;
+                        loadConfig = true;
+                        vm.init();
+                    }
+                } else {
+                    loadConfig = true;
+                    vm.savedYadeHistoryFilter.selected = undefined;
+                    vm.init();
+                }
+
+            }, function (err) {
+                loadConfig = true;
+                vm.savedYadeHistoryFilter.selected = undefined;
+                vm.init();
+            });
+        }
+
         if (vm.historyFilters.type == 'jobChain') {
             checkSharedFilters();
         } else if (vm.historyFilters.type == 'job') {
             checkSharedTaskFilters();
         } else {
-            //TODO
+            checkSharedYadeFilters();
         }
         vm.ignoreListConfigId = 0;
         function getIgnoreList() {
@@ -6595,7 +6679,7 @@
 
         vm.yadeHistory = yadeHistory;
         function yadeHistory() {
-            YadeService.getTransfers({compact: true}).then(function (res) {
+            YadeService.getTransfers({compact: true,limit : parseInt(vm.userPreferences.maxRecords)}).then(function (res) {
                 vm.yadeHistorys = res.transfers;
                 vm.isLoading = true;
                 isLoaded = true;
@@ -6862,7 +6946,7 @@
                 vm.jobChainSearch = {};
                 jobChainSearch = false;
             } else {
-                //TODO
+                yadeSearch = false;
             }
             if (form)
                 form.$setPristine();
@@ -6982,7 +7066,7 @@
             } else if (vm.historyFilters.type == 'jobChain') {
                 vm.jobChainSearch = {};
             } else {
-                //TODO
+                vm.yadeSearch = {};
             }
             vm.init()
         };
@@ -7104,7 +7188,7 @@
             } else if (vm.historyFilters.type == 'job') {
                 configObj.objectType = "TASK_HISTORY";
             } else {
-                //TODO
+                configObj.objectType = "YADE_HISTORY";
             }
             configObj.configurationItem = JSON.stringify(obj);
             UserService.saveConfiguration(configObj).then(function (res) {
@@ -7114,7 +7198,7 @@
                 } else if (vm.historyFilters.type == 'job') {
                     vm.jobSearch.name = '';
                 } else {
-                    //TODO
+                   vm.yadeSearch.name = '';
                 }
                 if (form)
                     form.$setPristine();
@@ -7124,7 +7208,7 @@
                 } else if (vm.historyFilters.type == 'job') {
                     vm.jobHistoryFilterList.push(configObj);
                 } else {
-                    //TODO
+                    vm.yadeHistoryFilterList.push(configObj);
                 }
             });
         };
@@ -7162,7 +7246,7 @@
                 } else if (vm.historyFilters.type == 'job') {
                     configObj.objectType = "TASK_HISTORY";
                 } else {
-                    //TODO
+                    configObj.objectType = "YADE_HISTORY";
                 }
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;

@@ -11,7 +11,7 @@
         <div class="row">
             <div class=" col-sm-12">
                 <div class="p-l-sm">
-                    <div class="row form-group" ng-if="calendar.usedIn.orders || calendar.usedIn.jobs">
+                    <div class="row form-group" ng-if="calendar.usedIn.orders || calendar.usedIn.jobs || calendar.usedIn.schedules">
                         <div class="col-md-12">
                             <span class="text _600" translate>label.usedIn</span> :
                         </div>
@@ -36,8 +36,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row form-group" ng-if="calendar.usedIn.schedules">
+                        <label class="col-md-3" translate="">
+                            label.schedules
+                        </label>
+                        <div class="col-md-9">
+                            <div ng-repeat="schedule in calendar.usedIn.schedules">
+                                {{$index+1}} - <span style="cursor: pointer"  class="text-hover-primary" ng-click="showScheduleLink(schedule)">{{schedule}}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-center text" ng-if="!calendar.usedIn.orders && !calendar.usedIn.jobs" translate>message.calendarNotUsed</div>
+                <div class="text-center text" ng-if="!calendar.usedIn.orders && !calendar.usedIn.jobs && !calendar.usedIn.schedules" translate>message.calendarNotUsed</div>
             </div>
         </div>
         <div class="row m-t-md">

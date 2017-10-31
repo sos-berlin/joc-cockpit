@@ -167,17 +167,17 @@
                                 <div class="btn-group ">
                                     <button class="btn btn-grey btn-sm "
                                             ng-model="calendarFilters.filter.type" uib-btn-radio="'ALL'"
-                                            ng-click="loadCategory()" ng-class="{'btn-primary': calendarFilters.filter.type=='ALL'}" translate>
+                                            ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='ALL'}" translate>
                                         label.all
                                     </button>
                                     <button class="btn btn-grey btn-sm "
                                             ng-model="calendarFilters.filter.type" uib-btn-radio="'WORKING_DAYS'"
-                                            ng-click="loadCategory()" ng-class="{'btn-primary': calendarFilters.filter.type=='WORKING_DAYS'}"
+                                            ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='WORKING_DAYS'}"
                                             translate>button.workingDays
                                     </button>
                                     <button class="btn btn-grey btn-sm "
                                             ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
-                                            ng-click="loadCategory()" ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
+                                            ng-click="loadCalendar()" ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
                                             translate>button.nonWorkingDays
                                     </button>
                                 </div>
@@ -187,11 +187,11 @@
                                         <span class="text-primary" ng-bind="calendarFilters.filter.category"></span>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                        <a class="dropdown-item" ng-model="calendarFilters.filter.category" ng-click="loadCategory()"
+                                        <a class="dropdown-item" ng-model="calendarFilters.filter.category" ng-click="loadCalendar()"
                                            ng-repeat="category in categories" ng-if="category" uib-btn-radio="category"
                                            ng-class="{'btn-primary': calendarFilters.filter.category==category}" >
                                             <span>{{category}}</span>
-                                            <i ng-click="loadCategory('remove');$event.stopPropagation();" ng-if="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>
+                                            <i ng-click="loadCalendar('remove');$event.stopPropagation();" ng-if="calendarFilters.filter.category == category" class="fa fa-times-circle-o remove"></i>
                                         </a>
                                     </div>
                                 </div>

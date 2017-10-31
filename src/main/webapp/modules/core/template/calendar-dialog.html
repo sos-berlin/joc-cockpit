@@ -43,8 +43,7 @@
             </div>
         </div>
 
-        <div class="text-center m-t-lg" ng-show="isCaledarLoading" style="height: 150px" > <div class="loading-img1 m-t-lg"></div></div>
-        <div class="hide calendar-body" ng-class="{show:!isCaledarLoading && planItems.length>0}">
+        <div class="hide calendar-body" ng-class="{show:planItems.length>0}">
             <mwl-calendar
                     events="events"
                     plan-items="planItems"
