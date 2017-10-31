@@ -1136,5 +1136,7 @@
   "button.showAssignedCalendar": "Visualiser le Calendrier associé",
   "label.showAssignedCalendar": "Visualiser le Calendrier associé",
   "label.usedIn": "Le Calendrier est utilisé par",
-  "message.calendarNotAssigned": "Aucun Calendrier est associé"
+  "message.calendarNotAssigned": "Aucun Calendrier est associé",
+  "message.noYadeHistoryFound": "no Yade History found",
+  "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication"
 }
