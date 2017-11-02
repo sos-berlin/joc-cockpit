@@ -129,7 +129,7 @@
             c.events = c.events || [], c.changeView = function (e, n) {
                 c.view = e, c.viewDate = n
             }, c.dateClicked = function (m,d) {
-                x.$broadcast("calendarDayClicked",{month:m,day:d})
+                x.$broadcast("calendarDayClicked",{month:m,day:d,year:c.viewTitle})
             };
             var m = d(c.viewDate), w = c.view;
             o.loadTemplates().then(function () {

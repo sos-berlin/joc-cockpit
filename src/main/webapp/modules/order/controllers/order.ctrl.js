@@ -3613,7 +3613,7 @@
                     toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*\d+[d,h]\s*$/i.test(vm.selectedFiltered.planned)) {
+                } else if (/^\s*\d+[d,h,w,M,y]\s*$/i.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';
@@ -5533,7 +5533,8 @@
             orders.orders.push({
                 orderId: order.orderId,
                 jobChain: order.jobChain,
-                runTime: vkbeautify.xmlmin(order.runTime)
+                runTime: vkbeautify.xmlmin(order.runTime),
+                calendars: order.calendars
             });
 
 
@@ -5567,6 +5568,7 @@
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
+                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -6190,8 +6192,9 @@
             var fromDate;
             var toDate;
 
-            if (/^\s*(-)\s*(\d+)(h|d|w|M)\s*$/.test(regex)) {
-                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M)\s*$/.exec(regex)[0];
+            if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
+                
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
@@ -6206,8 +6209,8 @@
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
-            } else if (/^\s*(-)(\d+)\s*(h|d|w|M)\s*to\s*(-)(\d+)\s*(h|d|w|M)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)\s*(h|d|w|M)\s*to\s*(-)(\d+)\s*(h|d|w|M)\s*$/.exec(regex);
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
                 fromDate = '-'+date[2]+date[3];
                 toDate = '-'+date[5]+date[6];
 

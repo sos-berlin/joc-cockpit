@@ -1138,5 +1138,6 @@
   "label.usedIn": "Dieser Kalender wird verwendet von",
   "message.calendarNotAssigned": "Kein Kalender zugewiesen",
   "message.noYadeHistoryFound": "no Yade History found",
-  "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication"
+  "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication",
+  "label.restrictions": "Restrictions"
 }

@@ -124,7 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
+                    <div class="col-md-12" ng-class="{'w-50': editor.editXml}">
                         <div class="form-group row">
                             <label class="col-md-4" translate>label.chooseRunTime</label>
 
@@ -157,6 +157,7 @@
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequenciesCalendars</th>
+                                            <th translate>label.restrictions</th>
                                             <th translate>label.period</th>
                                         </tr>
                                         </thead>
@@ -174,6 +175,19 @@
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>
+                                            <td style="border-left: none !important; " ng-if="data.calendar">
+                                                <div ng-repeat="list in frequencyList">
+                                                    <a ng-click="editRestrictionInCalendar(data);">{{list.str}}</a>
+                                                    <a class="text-xs text-hover-primary m-l-sm"
+                                                       ng-click="editRestrictionInCalendar(list)"><i class="fa fa-pencil"></i></a>
+                                                    <a class="text-xs text-hover-color m-l-sm"
+                                                       ng-click="deleteRestrictionInCalendar(list)"><i class="fa fa-times"></i></a>
+                                                </div>
+                                                <div  class="text-xs cursor text-hover-primary"><i
+                                                        class="fa fa-plus" ng-click="addRestrictionInCalendar()"></i>
+                                                </div>
+                                            </td>
+                                            <td ng-if="!data.calendar"></td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
                                                     <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
@@ -192,6 +206,7 @@
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteHolidayCalendar(holiday)"><i class="fa fa-times"></i></a>
                                             </td>
+                                            <td></td>
                                             <td></td>
                                         </tr>
                                         </tbody>

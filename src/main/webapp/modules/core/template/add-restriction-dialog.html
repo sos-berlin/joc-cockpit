@@ -1,304 +1,22 @@
-<div class="hide-block sidebar-btn resize-cursor">
-    <i class="fa fa-angle-double-right p-l-sm" ng-click="showLeftPanel()"></i>
-</div>
-<div id="leftPanel" class="leftPanel" resizable r-directions="['right']" r-width="270" ng-show="treeCalendar.length>0">
-    <div>
-        <a class="text" ng-click="my_tree_calendar.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
-            <i class="fa fa-angle-double-down fa-lg"></i>
-        </a>
-        <a class="text m-l-xs" ng-click="my_tree_calendar.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-        </a>
-        <a class="text resize-cursor" uib-tooltip="{{'tooltip.hideTree' | translate}}" tooltip-placement="left" style="position: absolute; right: 28px;"><i class="fa fa-angle-double-left fa-lg" ng-click="hidePanel()" ></i></a>
-        <tree tree-data="treeCalendar"
-              tree-control="my_tree_calendar"
-              expand-on="expanding_propertyC"
-              on-select="treeHandler1C(branch)"
-              on-click="treeHandlerC(branch)"
-              expand-node="expandNodeC(branch)"
-              collapse-node="collapseNode(branch)"
-              template-url="modules/core/template/tree.html">
-        </tree>
-    </div>
-</div>
-<div id="rightPanel1">
-
-    <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
-        <div class="hide row" ng-class="{'show': pageView=='grid'}">
-            <div ng-repeat="(key, value) in allCalendars  | groupBy: 'path1'">
-                <div class="col-sm-12" style="margin-bottom: 10px">
-                    <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
-                </div>
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12"
-                     ng-repeat="calendar in value | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse">
-                    <div class="box card">
-                        <div class="box-body">
-
-                            <div>
-                                <label class="md-check pos-abt" ng-if="permission.Calendar.edit.delete">
-                                    <input type="checkbox" data-checklist-model="object.calendars" data-checklist-value="calendar"><i class="primary"></i>
-                                </label>
-
-                                <div class="text-left block-ellipsis" ng-class="{'m-l-md': permission.Calendar.edit.delete}">
-                                    <span class="text-sm fa" ng-class="{'fa-calendar-check-o': calendar.type=='WORKING_DAYS','fa-calendar-times-o':calendar.type=='NON_WORKING_DAYS'}"></span>
-                                    <span uib-tooltip="{{calendar.title}}" ng-bind="calendar.name"></span>
-                                </div>
-                                <div class="btn-group dropdown pull-right abt-dropdown ">
-                                    <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more">
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
-                                        <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
-                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
-                                        <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-sm">
-                                <span translate>label.type </span>:
-                                <span ng-class="{'text-success': calendar.type=='WORKING_DAYS','text-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-xs">
-                                <span translate>label.category </span>:
-                               <span ng-bind="calendar.category || '-'"></span>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-xs">
-                                <span ng-if="calendar.from && calendar.to" ><span translate>label.validity</span> :</span>
-                                <span ng-if="!calendar.from && calendar.to"><span translate>label.validityUntil</span> : </span>
-                                <span ng-if="calendar.from" ng-bind="calendar.from | stringToDate1"></span>
-                                <span ng-if="calendar.from && calendar.to" translate> label.to </span>
-                                <span ng-bind="calendar.to | stringToDate1"></span>
-                            </div>
-                        </div>
-                        <div class="box-footer b-t" >
-                            <div>
-                                <a href class="text-left primary-text-hover-color " ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)"><i class="fa fa-pencil text-black-lt"></i> <span class="text-black-lt" translate>button.editCalendar</span></a>
-                                <a href class="pull-right text-hover-color " ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)"><i class="fa fa-trash text-black-lt"></i> <span class="text-black-lt" translate>button.deleteCalendar</span></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="box p-a" ng-show="pageView=='list' && allCalendars.length>0">
-            <div class="table-responsive" >
-                <table class="table table-hover table-bordered  ">
-                    <thead>
-                    <tr>
-                        <th width="30" ng-if="permission.Calendar.edit.delete">
-                            <label class="md-check lg-check">
-                                <input type="checkbox" ng-model="allCheckCalendar.checkbox" ng-click="checkAllCalendar()"><i class="primary"></i>
-                            </label>
-                        </th>
-                        <th width="45"><span translate>label.action</span></th>
-                        <th ng-click="sortByC('name')"><a><span translate>label.name</span>
-                            <i ng-show="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByC('path')"><a><span translate>label.path</span>
-                            <i ng-show="calendarFilters.filter.sortBy == 'path' && !calendarFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="calendarFilters.filter.sortBy == 'path' && calendarFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByC('type')"><a><span translate>label.type</span>
-                            <i ng-show="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByC('category')"><a><span translate>label.category</span>
-                            <i ng-show="calendarFilters.filter.sortBy == 'category' && !calendarFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="calendarFilters.filter.sortBy == 'category' && calendarFilters.reverse"
-                                       class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByC('from')"><a><span translate>label.validityFrom</span>
-                            <i ng-show="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByC('to')"><a><span translate>label.validityTo</span>
-                            <i ng-show="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody ng-repeat="calendar in allCalendars | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse | startFrom:(calendarFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
-                    <tr >
-                        <td ng-if="permission.Calendar.edit.delete" >
-                            <label class="md-check">
-                                <input type="checkbox" data-checklist-model="object.calendars"
-                                       data-checklist-value="calendar"><i class="primary"></i>
-                            </label>
-                        </td>
-                        <td>
-                             <div class="btn-group dropdown">
-                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                     <i class="fa fa-ellipsis-h"></i></button>
-                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                     <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
-                                     <a ng-click="showUsage(calendar)" class="dropdown-item" translate>button.showUsage</a>
-                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)" class="dropdown-item" translate>button.deleteCalendar</a>
-                                     <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
-                                 </div>
-                             </div>
-                         </td>
-                        <td>
-                         <span>
-                             <span class="text-dark ">{{calendar.name}}</span>
-                             <span ng-if="calendar.title">-</span>
-                             <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
-                         </span>
-                        </td>
-                        <td ng-bind="calendar.path"></td>
-                        <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
-                        <td ng-bind="calendar.category"></td>
-                        <td ng-bind="calendar.from | stringToDate1"></td>
-                        <td ng-bind="calendar.to | stringToDate1"></td>
-                    </tr>
-                    </tbody>
-                </table>
-                 <div class="inline text-sm m-l-xs" ng-class="{'m-t-xs m-l-sm': allCalendars.length > 10}" ng-if="allCalendars.length >0"><span translate>label.total</span> {{allCalendars.length}}
-                     <span translate ng-if="allCalendars.length >1">label.calendarsFound</span>
-                     <span translate ng-if="allCalendars.length ==1">label.calendarFound</span>
-                 </div>
-                <ul ng-show="allCalendars.length > userPreferences.entryPerPage" uib-pagination total-items="allCalendars.length" ng-model="calendarFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="Prev"></ul>
-                <div class="pull-left" ng-show="allCalendars.length > 10">
-                    <div class="btn-group m-r-xxs">
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
-                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div ng-if="isLoading && !loading && folderPathC && allCalendars.length==0 && treeCalendar.length>0" class="text-center m-t h6">
-            <span class="text-primary">"{{folderPathC}}"</span>
-            <span translate>message.emptyFolder</span>
-        </div>
-    </div>
-    <div class="hide text-center m-t-lg text-primary text" ng-class="{'show': loading}">
-        <div class="backdrop" ></div>
-        <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
-    </div>
-    <div ng-if="!isLoading" class="text-center m-t-lg"><div class="cssload-loading">{{'label.loading' | translate}}...</div></div>
-</div>
-
-<div ng-if="isLoading && treeCalendar.length==0 && !loading" class="text-center m-t h6 text-uppercase" translate>message.noCalendarFound</div>
-<div class="modal fade" id="treeModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body p-a" style="min-height: 500px;max-height: 600px; overflow: auto">
-                <div>
-                    <a class="text" ng-click="filter_tree.expand_all();"
-                       uib-tooltip="{{'tooltip.expandAll' | translate}}">
-                        <i class="fa fa-angle-double-down fa-lg"></i>
-                    </a>
-                    <a class="text m-l-xs" ng-click="filter_tree.collapse_all();"
-                       uib-tooltip="{{'tooltip.collapseAll' | translate}}">
-                        <i class="fa fa-angle-double-up fa-lg"></i>
-                    </a>
-
-                    <tree
-                            tree-data="filterTree1"
-                            tree-control="filter_tree"
-                            icon-leaf="fa fa-folder"
-                            icon-expand="fa fa-folder"
-                            expand-on="expanding_property"
-                            on-click="treeExpand(branch)"
-                            template-url="modules/core/template/tree-filter-structure.html">
-                    </tree>
-                </div>
-            </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" ng-click="closeModal()" translate>
-                    button.cancel
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    $('.table-responsive').on('show.bs.dropdown', function (e) {
-        var $table = $(this),
-                $menu = $(e.target).find('.more-option-h');
-        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
-            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
-            $('.dropdown-menu-list').removeClass('dropdown-ac');
-            $('.dropdown-menu-list').addClass('dropdown-list');
-        } else {
-            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
-        }
-        $('.dropdown-menu-list').addClass('list-dropdown');
-        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
-    });
-
-    $('.table-responsive').on('hide.bs.dropdown', function () {
-        $('.dropdown-menu-list').removeClass('list-dropdown');
-        $('.dropdown-menu-list').removeClass('dropdown-list');
-        $('.dropdown-menu-list').addClass('dropdown-ac');
-    });
-    $(document).ready(function () {
-        $('#leftPanel').stickySidebar({
-            sidebarTopMargin: 190
-        });
-    });
-
-</script>
-<style>
-    .cal-month-day span[data-cal-date] {
-        cursor: pointer;
-    }
-    .cal-row-head{
-        color: #222;
-    }
-    .cal-day-outmonth {
-        background: transparent !important;
-    }
-
-</style>
-<ng-include src="template"></ng-include>
-<script type="text/ng-template" id="page1">
-
-<div class="modal fade" id="frequency-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.03)">
-    <div class="modal-dialog modal-lg" style="margin-top: 45px" ng-controller="FrequencyCtrl">
+<div class="modal fade" id="restriction-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.03)">
+    <div class="modal-dialog modal-lg" style="margin-top: 45px" ng-controller="AddRestrictionDialogCtrl">
         <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18); margin: 16px">
             <form name="form1" ng-submit="save(form1)" novalidate>
-                <div class="modal-body p-a" style="min-height: 515px">
-                    <div ng-hide="editor.showYearView">
+                <div class="modal-body p-a" style="min-height: 415px">
+                    <div>
                         <div>
                             <div class="row m-b-sm">
                                 <label class="col-sm-12" ng-show="editor.create">
                                     <span class="text-primary " translate>label.addFrequencies</span>
                                     : <span class="text-muted">{{str}}</span>
                                 </label>
-                                <label class="col-sm-12" ng-show="editor.update">
+                                <label class="col-sm-12" ng-hide="editor.create">
                                     <span class="text-primary " translate>label.editFrequencies</span>
                                     : <span class="text-muted">{{str}}</span>
                                 </label>
                                 <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
                             </div>
-
-                            <div>
-                                <div class="b-b">
+                            <div class="b-b">
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item">
                                             <a class="nav-link" href data-toggle="tab" data-target="#tab1"
@@ -313,27 +31,17 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href data-toggle="tab" data-target="#tab3"
-                                               ng-class="{'active':frequency.tab == 'specificDays'}"
-                                               ng-click="frequency.tab = 'specificDays'" translate>label.specificDays</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab4"
                                                ng-class="{'active':frequency.tab == 'monthDays'}"
                                                ng-click="frequency.tab = 'monthDays'" translate>tab.monthDays</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab5"
+                                            <a class="nav-link" href data-toggle="tab" data-target="#tab4"
                                                ng-class="{'active':frequency.tab == 'others'}"
                                                ng-click="frequency.tab = 'others'" translate>tab.every</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab6"
-                                               ng-class="{'active':frequency.tab == 'nationalHoliday'}"
-                                               ng-click="frequency.tab = 'nationalHoliday'" translate>tab.nationalHoliday</a>
-                                        </li>
                                     </ul>
                                 </div>
-                                <div class="tab-content b-l b-r b-b p-a p-b-0 m-b" ng-class="{'specific-day-ht':frequency.tab == 'specificDays' }">
+                            <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
                                     <div class="tab-pane animated fadeIn" id="tab1"
                                          ng-class="{'active':frequency.tab == 'weekDays'}">
                                         <div class="form-group row">
@@ -466,30 +174,6 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane animated fadeIn" id="tab3"
-                                         ng-class="{'active':frequency.tab == 'specificDays'}">
-                                        <div>
-                                            <div class="text-center">
-                                                <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView">
-                                                    <i class="fa fa-angle-left fa-lg"></i>
-                                                </a>
-                                                {{ calendarTitle }}
-                                                <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView">
-                                                    <i class="fa fa-angle-right fa-lg"></i>
-                                                </a>
-                                            </div>
-                                            <div class="specific-days-calendar">
-                                                <mwl-calendar
-                                                        view="calendarView"
-                                                        view-date="viewDate"
-                                                        events="events"
-                                                        plan-items="tempItems"
-                                                        view-title="calendarTitle"
-                                                        cell-is-open="true">
-                                                </mwl-calendar>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane animated fadeIn" id="tab4"
                                          ng-class="{'active':frequency.tab == 'monthDays'}">
                                         <div class="form-group row">
                                             <label class="col-sm-3" translate>label.monthDays</label>
@@ -745,7 +429,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane animated fadeIn" id="tab5"
+                                    <div class="tab-pane animated fadeIn" id="tab4"
                                          ng-class="{'active':frequency.tab == 'others'}">
                                         <div class="form-group row">
                                             <label class="col-sm-3 form-control-label" translate>label.every</label>
@@ -788,149 +472,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane animated fadeIn" id="tab6"
-                                         ng-class="{'active':frequency.tab == 'nationalHoliday'}">
-                                        <div class="form-group row">
-                                            <label class="col-sm-3" translate>label.country</label>
-
-                                            <div class="col-sm-6">
-                                                <select class="form-control" ng-model="frequency.country"
-                                                        ng-change="loadHolidayList()">
-                                                    <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName"
-                                                            value="{{country.code}}">{{country.name}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-3 form-control-label" translate>label.year</label>
-
-                                            <div class="col-sm-6">
-                                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="frequency.year"
-                                                       ng-change="loadHolidayList()">
-                                            </div>
-                                        </div>
-                                        <div class="row" ng-show="holidayList.length">
-                                            <label class="col-sm-3" translate>label.selectAll</label>
-                                            <div class="col-sm-6">
-                                                <label class="md-check">
-                                                    <input type="checkbox" ng-model="holidayDays.checked" ng-click="selectAllHolidays()"><i class="primary"></i>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-sm-12">
-                                                <div class="col-sm-6 p-l-0">
-                                                    <div class="col-sm-12 p-l-0"
-                                                         ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))"
-                                                         >
-                                                        <label class="md-check">
-                                                            <input type="checkbox"
-                                                                   data-checklist-model="frequency.nationalHoliday"
-                                                                   data-checklist-value="holiday.date"><i class="primary"></i>
-
-                                                            {{getDateFormat(holiday.date)}} - {{holiday.name}}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6 p-l-0">
-                                                    <div class="col-sm-12 p-l-0"
-                                                         ng-repeat="holiday in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)"
-                                                         >
-                                                        <label class="md-check">
-                                                            <input type="checkbox"
-                                                                   data-checklist-model="frequency.nationalHoliday"
-                                                                   data-checklist-value="holiday.date"><i class="primary"></i>
-
-                                                            {{getDateFormat(holiday.date)}} - {{holiday.name}}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <div class="form-group row"
-                                     ng-hide="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='others'">
-                                    <label class="col-sm-3">{{'label.monthRange' | translate}}
-                                        <a href>
-                                            <i class="cursor fa fa-caret-up m-l-xs" ng-hide="showMonthRange"
-                                               ng-click="showMonthRange=true"></i>
-                                            <i class="cursor fa fa-caret-down m-l-xs" ng-show="showMonthRange"
-                                               ng-click="showMonthRange=false"></i>
-                                        </a>
-                                    </label>
-
-                                    <div class="col-sm-9" ng-show="showMonthRange">
-                                        <label class="md-check w">
-                                            <input type="checkbox" ng-model="frequency.allMonth" ng-click="checkAllMonth()">
-                                            <i class="primary"></i> <span translate>label.everyMonth</span>
-                                        </label><br>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'1'">
-                                            <i class="primary"></i> <span translate>label.january</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'2'">
-                                            <i class="primary"></i> <span translate>label.february</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'3'">
-                                            <i class="primary"></i> <span translate>label.march</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'4'">
-                                            <i class="primary"></i> <span translate>label.april</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'5'">
-                                            <i class="primary"></i> <span translate>label.may</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'6'">
-                                            <i class="primary"></i> <span translate>label.june</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'7'">
-                                            <i class="primary"></i> <span translate>label.july</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'8'">
-                                            <i class="primary"></i> <span translate>label.august</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'9'">
-                                            <i class="primary"></i> <span translate>label.september</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'10'">
-                                            <i class="primary"></i> <span translate>label.october</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'11'">
-                                            <i class="primary"></i> <span translate>label.november</span>
-                                        </label>
-                                        <label class="md-check w">
-                                            <input type="checkbox" data-checklist-model="frequency.months"
-                                                   data-checklist-value="'12'">
-                                            <i class="primary"></i> <span translate>label.december</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="row" style="margin-bottom:15px;">
                             <div class="col-sm-12" style="max-height: 260px; overflow: auto">
@@ -940,21 +482,18 @@
                                         <tr>
                                             <th translate>label.srNo</th>
                                             <th translate>label.frequency</th>
-                                            <th width="100" translate>label.action</th>
+                                            <th width="80" translate>label.action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr ng-repeat="data in frequencyList track by $index" class="cursor"
-                                            ng-class="{'light-bg' : (temp.tab ==data.tab && temp.day ==data.day && temp.months ==data.months && temp.isUltimos ==data.isUltimos && temp.dateEntity ==data.dateEntity && temp.str ==data.str)}">
+                                            ng-class="{'light-bg' : (temp.tab ==data.tab  && temp.str ==data.str)}">
                                             <td ng-click="editFrequency(data)">{{$index+1}}</td>
                                             <td ng-click="editFrequency(data)">
                                                 <i ng-if="data.exclude" class="fa fa-minus"> </i>
                                                 <span>{{data.str}}</span>
                                             </td>
                                             <td>
-                                                <a class="text-hover-primary">
-                                                    <i ng-click="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
-                                                </a>
                                                 <a><i ng-click="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
                                                 <a class="text-hover-color">
                                                     <i ng-click="deleteFrequency(data, $index)" class="fa fa-times "></i>
@@ -971,42 +510,7 @@
                             </div>
                         </div>
                     </div>
-                    <div ng-if="editor.showYearView">
-                        <div class="row">
-                            <div class="col-sm-7">
-                                <label class="form-control-label">
-                                    <span class="text" translate>label.previewCalendar</span>
-                                </label>
-                            </div>
-                            <div class="col-sm-5">
-                                <select class="form-control" ng-model="calObj.freqency" ng-change="showCalendar(calObj.freqency)">
-                                    <option value="all" translate>label.allFrequency</option>
-                                    <option value="{{data}}" ng-repeat="data in frequencyList track by $index">{{data.str}}</option>
-                                </select>
-
-                            </div>
-                        </div>
-                        <div class="text-md text-center">
-                            <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView">
-                                <i class="fa fa-angle-left fa-lg"></i>
-                            </a>
-                            {{ calendarTitle }}
-                            <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView">
-                                <i class="fa fa-angle-right fa-lg"></i>
-                            </a>
-                        </div>
-                        <div class="calendar m-t-sm">
-                            <mwl-calendar
-                                    view="calendarView"
-                                    view-date="viewDate"
-                                    events="events"
-                                    plan-items="planItems"
-                                    view-title="calendarTitle"
-                                    cell-is-open="true">
-                            </mwl-calendar>
-                        </div>
-                    </div>
-                    <button ng-if="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
+                    <button type="button" class="btn btn-primary btn-sm"
                             style="position:absolute; bottom: 10px;" ng-disabled="form.$invalid || !editor.isEnable" ng-click="addFrequency();">
                         <span translate>button.addNewFrequency</span>
                     </button>
@@ -1014,17 +518,11 @@
                 <div class="modal-footer">
                     <div class="pull-left">
 
-                        <button ng-if="!editor.showYearView" type="submit" class="btn orange btn-sm"
+                        <button type="submit" class="btn orange btn-sm"
                                 ng-disabled="form.$invalid || frequencyList.length==0">
                             <span translate>button.close</span>
                         </button>
-                        <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
-                            button.cancel
-                        </button>
-                        <button  ng-if="editor.showYearView" type="button" class="btn orange btn-sm" ng-click="addCalendarDates()">
-                            <span translate>button.close</span>
-                        </button>
-                        <button  ng-if="editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>
                             button.cancel
                         </button>
                     </div>
@@ -1033,4 +531,3 @@
         </div>
     </div>
 </div>
-</script>
