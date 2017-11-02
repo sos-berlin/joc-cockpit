@@ -1044,5 +1044,5 @@
   "label.editFrequencies": "Update Frequencies",
   "label.period": "Period",
   "label.weekDays": "Weekdays",
-  "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication"
+  "message.inValidUserName": "User names with spaces are not allowed with Shiro authentication"
 }
