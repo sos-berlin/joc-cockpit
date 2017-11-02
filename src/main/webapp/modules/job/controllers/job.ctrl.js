@@ -853,9 +853,8 @@
             if (vm.selectedFiltered) {
                 obj.regex = vm.selectedFiltered.regex;
             }
-            if (vm.userPreferences.showOrders) {
-                obj.compact = false;
-            }
+
+            obj.compact = false;
 
             obj1.jobschedulerId = vm.schedulerIds.selected;
             obj1.compact = true;
@@ -3541,7 +3540,7 @@
                     toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*\d+[d,h]\s*$/i.test(vm.selectedFiltered.planned)) {
+                } else if (/^\s*\d+[d,h,w,M,y]\s*$/i.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';

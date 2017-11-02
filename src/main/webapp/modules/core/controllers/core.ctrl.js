@@ -1730,7 +1730,7 @@
                     });
                     return;
                 }else if(/\s/.test(vm.user.user) && !vm.user.fakepassword){
-                   vm.user.user = encodeURIComponent(vm.user.user.trim());
+                   vm.user.user = encodeURIComponent(vm.user.user);
                 }
             }
             if (vm.paramObject) {

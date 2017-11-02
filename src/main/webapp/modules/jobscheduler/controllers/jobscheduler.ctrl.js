@@ -3514,6 +3514,22 @@ setClusterWidgetHeigth();
                 form.$setPristine();
         };
 
+        function parseProcessExecuted(regex) {
+            var date;
+            if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+                date = new Date();
+                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.from1)[2]);
+                date.setSeconds(fromDate.getSeconds() - seconds);
+            } else if (/^\s*[-,+]?\d+[d,h,w,M,y]{1}\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+                date = vm.searchDailyPlanFilter.from1;
+            } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+                date = '0d';
+            } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+                date = new Date();
+            }
+            return date;
+        }
+
         function applySearchFilter(obj) {
             if (vm.searchDailyPlanFilter.regex)
                 obj.regex = vm.searchDailyPlanFilter.regex;
@@ -3580,30 +3596,10 @@ setClusterWidgetHeigth();
                 }
             } else {
                 if (vm.searchDailyPlanFilter.from1) {
-                    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.from1)[2]);
-                        fromDate.setSeconds(fromDate.getSeconds() - seconds);
-                    } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = vm.searchDailyPlanFilter.from1;
-                    } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = '0d';
-                    } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = new Date();
-                    }
+                   fromDate=  parseProcessExecuted(vm.searchDailyPlanFilter.from1);
                 }
                 if (vm.searchDailyPlanFilter.to1) {
-                    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.to1)[2]);
-                        toDate.setSeconds(toDate.getSeconds() + seconds);
-                    } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = vm.searchDailyPlanFilter.to1;
-                    } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = '0d';
-                    } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = new Date();
-                    }
+                     toDate=  parseProcessExecuted(vm.searchDailyPlanFilter.to1);
                 }
             }
             if (!fromDate) {
@@ -3663,31 +3659,10 @@ setClusterWidgetHeigth();
             var toDate;
 
             if (vm.selectedFiltered.from) {
-                if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.selectedFiltered.from)) {
-                    fromDate = new Date();
-                    var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.from)[2]);
-                    fromDate.setSeconds(fromDate.getSeconds() - seconds);
-                } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.selectedFiltered.from)) {
-                    fromDate = vm.selectedFiltered.from;
-                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.from)) {
-                    fromDate = '0d';
-                } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.from)) {
-                    fromDate = new Date();
-                }
+                fromDate=  parseProcessExecuted(vm.selectedFiltered.from);
             }
-
             if (vm.selectedFiltered.to) {
-                if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.selectedFiltered.to)) {
-                    toDate = new Date();
-                    var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.to)[2]);
-                    toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.selectedFiltered.to)) {
-                    toDate = vm.selectedFiltered.to;
-                } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.to)) {
-                    toDate = '0d';
-                } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.to)) {
-                    toDate = new Date();
-                }
+                toDate=  parseProcessExecuted(vm.selectedFiltered.to);
             }
 
             if (!fromDate) {
@@ -4114,32 +4089,11 @@ setClusterWidgetHeigth();
             obj.name = vm.searchDailyPlanFilter.name;
             if (vm.searchDailyPlanFilter.radio != 'current') {
                 if (vm.searchDailyPlanFilter.from1) {
-                    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.from1)[2]);
-                        fromDate.setSeconds(fromDate.getSeconds() - seconds);
-                    } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = vm.searchDailyPlanFilter.from1;
-                    } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = '0d';
-                    } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                        fromDate = new Date();
-                    }
+                    fromDate=  parseProcessExecuted(vm.searchDailyPlanFilter.from1);
                 }
                 if (vm.searchDailyPlanFilter.to1) {
-                    if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = new Date();
-                        var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.to1)[2]);
-                        toDate.setSeconds(toDate.getSeconds() + seconds);
-                    } else if (/^\s*[-,+]?\d+[d,h,w]{1}\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = vm.searchDailyPlanFilter.to1;
-                    } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = '0d';
-                    } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.to1)) {
-                        toDate = new Date();
-                    }
+                    toDate=  parseProcessExecuted(vm.searchDailyPlanFilter.to1);
                 }
-
             }
             if (fromDate) {
                 obj.from = fromDate;
