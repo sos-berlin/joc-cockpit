@@ -3516,15 +3516,15 @@ setClusterWidgetHeigth();
 
         function parseProcessExecuted(regex) {
             var date;
-            if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+            if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
                 date = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.from1)[2]);
+                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
                 date.setSeconds(fromDate.getSeconds() - seconds);
-            } else if (/^\s*[-,+]?\d+[d,h,w,M,y]{1}\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                date = vm.searchDailyPlanFilter.from1;
-            } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+            } else if (/^\s*[-,+]?\d+[d,h,w,M,y]{1}\s*$/i.test(regex)) {
+                date = regex;
+            } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
-            } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+            } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = new Date();
             }
             return date;
@@ -3905,9 +3905,9 @@ setClusterWidgetHeigth();
                 vm.plans = res.planItems;
                 vm.plans = sortByKey(vm.plans, vm.dailyPlanFilters.filter.sortBy, vm.dailyPlanFilters.reverse);
                 prepareGanttData(vm.plans, true);
-                if(res.created){
+                if (res.created) {
                     vm.maxPlannedTime = new Date(res.deliveryDate);
-                }else{
+                } else {
                     vm.maxPlannedTime = undefined;
                 }
                 vm.isLoading = true;
@@ -3936,31 +3936,31 @@ setClusterWidgetHeigth();
                     }
 
                     if (!a && b) {
-                        if(key1 =='job') {
+                        if (key1 == 'job') {
                             a = x['jobChain'];
                             if (order) {
                                 a = y['jobChain'];
                             }
-                        }else if(key1 =='jobChain'){
+                        } else if (key1 == 'jobChain') {
                             a = x['job'];
                             if (order) {
                                 a = y['job'];
                             }
-                        }else{
+                        } else {
                             return -1;
                         }
                     } else if (a && !b) {
-                        if(key1 =='job') {
+                        if (key1 == 'job') {
                             b = y['jobChain'];
                             if (order) {
                                 b = x['jobChain'];
                             }
-                        }else if(key1 =='jobChain'){
+                        } else if (key1 == 'jobChain') {
                             b = y['job'];
                             if (order) {
                                 b = x['job'];
                             }
-                        }else{
+                        } else {
                             return 1;
                         }
                     }
