@@ -517,6 +517,10 @@
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.adtLog = CoreService.getAuditLogTab();
+        vm.adtLog.current = vm.userPreferences.historyView == 'current';
+        vm.changeJobScheduler = function () {
+            vm.load();
+        };
 
         vm.tree = {};
         vm.expanding_property = {
@@ -547,7 +551,7 @@
         vm.filter_tree = {};
         vm.load = function () {
             var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobschedulerId = vm.adtLog.current == true ? vm.schedulerIds.selected : '';
             obj.limit = parseInt(vm.userPreferences.maxAuditLogRecords);
             obj = setDateRange(obj);
             obj.timeZone = vm.userPreferences.zone;
@@ -565,7 +569,7 @@
 
         vm.search = function () {
             var filter = {
-                jobschedulerId: $scope.schedulerIds.selected,
+                jobschedulerId: vm.adtLog.current == true ? vm.schedulerIds.selected : '',
                 limit: parseInt(vm.userPreferences.maxAuditLogRecords)
             };
 
@@ -629,6 +633,9 @@
             }
             if (vm.auditSearch.account) {
                 filter.account = vm.auditSearch.account;
+            }
+            if (vm.auditSearch.jobschedulerId) {
+                filter.jobschedulerId = vm.auditSearch.jobschedulerId;
             }
             filter.timeZone = vm.userPreferences.zone;
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
@@ -724,6 +731,7 @@
             });
         }
 
+
         function saveInfo() {
             var obj = {};
             obj.users = vm.users;
@@ -802,8 +810,10 @@
 
         vm.editUser = function (user) {
             vm.user = angular.copy(user);
+            vm.user.user = decodeURIComponent(vm.user.user);
             temp_name = user.user;
             vm.isUnique = true;
+            if(vm.user.password)
             vm.user.fakepassword = "00000000";
 
             vm.newUser = false;
@@ -814,7 +824,6 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
-
                 if (vm.user.fakepassword != '00000000') {
                     vm.user.password = vm.user.fakepassword || '';
                 }

@@ -4805,15 +4805,15 @@
 
         function parseProcessExecuted(regex) {
             var date;
-            if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+            if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
                 date = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(vm.searchDailyPlanFilter.from1)[2]);
+                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
                 date.setSeconds(fromDate.getSeconds() - seconds);
-            } else if (/^\s*[-,+]?\d+[d,h,w,M,y]{1}\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
-                date = vm.searchDailyPlanFilter.from1;
-            } else if (/^\s*(Today)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+            } else if (/^\s*[-,+]?\d+[d,h,w,M,y]{1}\s*$/i.test(regex)) {
+                date = regex;
+            } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
-            } else if (/^\s*(now)\s*$/i.test(vm.searchDailyPlanFilter.from1)) {
+            } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = new Date();
             }
             return date;

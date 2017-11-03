@@ -157,8 +157,8 @@
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequenciesCalendars</th>
-                                            <th translate>label.restrictions</th>
                                             <th translate>label.period</th>
+                                            <th translate>label.restrictions</th>
                                         </tr>
                                         </thead>
                                         <tbody >
@@ -175,7 +175,18 @@
                                                 <a class="text-xs text-hover-primary m-l-sm"
                                                    ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
                                             </td>
-                                            <td style="border-left: none !important; " ng-if="data.calendar">
+                                            <td style="border-left: none !important; ">
+                                                <div ng-repeat="p in data.period track by $index">
+                                                    <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
+                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
+                                                            class="fa fa-pencil"></i></a>
+                                                    <a class="text-xs text-hover-color m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
+                                                            class="fa fa-times"></i></a>
+                                                </div>
+                                                <div class="text-xs cursor text-hover-primary"><i
+                                                        class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i></div>
+                                            </td>
+                                            <td style="border-left: none !important;" ng-if="data.calendar && $index==0">
                                                 <div ng-repeat="list in frequencyList">
                                                     <a ng-click="editRestrictionInCalendar(data);">{{list.str}}</a>
                                                     <a class="text-xs text-hover-primary m-l-sm"
@@ -188,17 +199,6 @@
                                                 </div>
                                             </td>
                                             <td ng-if="!data.calendar"></td>
-                                            <td style="border-left: none !important; ">
-                                                <div ng-repeat="p in data.period track by $index">
-                                                    <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
-                                                    <a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
-                                                            class="fa fa-pencil"></i></a>
-                                                    <a class="text-xs text-hover-color m-l-sm" ng-click="deletePeriodFromFrequency(data, $index)"><i
-                                                            class="fa fa-times"></i></a>
-                                                </div>
-                                                <div class="text-xs cursor text-hover-primary"><i
-                                                        class="fa fa-plus" ng-click="addPeriodInFrequency(data)"></i></div>
-                                            </td>
                                         </tr>
                                         <tr ng-repeat="holiday in holidayCalendar">
                                             <td class="cursor" style="border-right: none !important;vertical-align: top !important; ">
