@@ -1044,5 +1044,10 @@
   "label.editFrequencies": "Update Frequencies",
   "label.period": "Period",
   "label.weekDays": "Weekdays",
-  "message.inValidUserName": "User names with spaces are not allowed with Shiro authentication"
+  "message.inValidUserName": "User names with spaces are not allowed with Shiro authentication",
+  "label.showAuditLogForJobScheduler": "Show Audit Log for JobScheduler",
+  "label.tasksOverview": "Tasks Overview",
+  "label.tasksSummary": "Tasks Summary",
+  "label.tasks": "Tasks",
+  "label.calendarViewFor": "Calendar View for"
 }

@@ -1044,5 +1044,10 @@
   "label.editFrequencies": "Häufigkeiten aktualisieren",
   "label.period": "Periode",
   "label.weekDays": "Wochentage",
-  "message.inValidUserName": "Benutzerkonten mit Leerzeichen sind für die Authentifizierung mit Shiro nicht zugelassen"
+  "message.inValidUserName": "Benutzerkonten mit Leerzeichen sind für die Authentifizierung mit Shiro nicht zugelassen",
+  "label.showAuditLogForJobScheduler": "Show Audit Log for JobScheduler",
+  "label.tasksOverview": "Tasks Overview",
+  "label.tasksSummary": "Tasks Summary",
+  "label.tasks": "Tasks",
+  "label.calendarViewFor": "Calendar View for"
 }

@@ -2374,8 +2374,8 @@
     }
 
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval"];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","JobService"];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,JobService) {
         var vm = $scope;
         vm.agentClusters = {};
         if (SOSAuth.jobChain) {
@@ -2384,7 +2384,7 @@
         }
 
         vm.dashboardFilters = CoreService.getDashboardTab();
-        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true;
+        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedTaskSnapshot = true, isLoadedTaskSummary = true;
 
         function groupBy(data) {
             var results = [];
@@ -2554,7 +2554,7 @@
                 $('#master-cluster-status').css('height', (a + b - 20) + 'px');
             }
         }
-var t1, t2;
+        var t1, t2;
         function agentClusterRunningTaskGraph(agentArray){
             vm.processClasses = [];
                 vm.agentStatusChart = [{
@@ -2939,11 +2939,8 @@ setClusterWidgetHeigth();
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
-            if (vm.dashboardFilters.filter.orderRange == 'today') {
-                obj.dateFrom = '0d';
-            } else {
-                obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
-            }
+            obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
+
             obj.timeZone = vm.userPreferences.zone;
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
@@ -2954,6 +2951,43 @@ setClusterWidgetHeigth();
             })
         };
         vm.getOrderSummary();
+
+        vm.loadTaskSnapshot = function (flag) {
+           if (vm.scheduleState == 'UNREACHABLE' && !flag) {
+                isLoadedTaskSnapshot = true;
+                vm.jobSnapshot = {};
+                return;
+            }
+            isLoadedTaskSnapshot = false;
+            JobService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                vm.jobSnapshot = res.jobs;
+                vm.notPermissionForTaskSnapshot = '';
+                isLoadedTaskSnapshot = true;
+            }, function (err) {
+                if (err.data)
+                    vm.notPermissionForTaskSnapshot = !err.data.isPermitted;
+                isLoadedTaskSnapshot = true;
+            });
+        };
+        vm.loadTaskSnapshot();
+
+        vm.getTaskSummary = function () {
+
+            isLoadedTaskSummary = false;
+            var obj = {};
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+            obj.dateFrom = vm.dashboardFilters.filter.taskSummaryfrom;
+
+            obj.timeZone = vm.userPreferences.zone;
+            JobService.getSummary(obj).then(function (res) {
+                vm.taskSummary = res.jobs;
+                isLoadedTaskSummary = true;
+            }, function (err) {
+                vm.notPermissionForTaskSummary = !err.data.isPermitted;
+                isLoadedTaskSummary = true;
+            })
+        };
+        vm.getTaskSummary();
         /*----------------- Daily plan overview -----------------*/
 
         vm.getDailyPlans = function () {
@@ -2981,6 +3015,7 @@ setClusterWidgetHeigth();
                 isLoadedDailyPlan = true;
             }, function () {
                 isLoadedDailyPlan = true;
+                vm.totalPlanData = 0;
             })
         };
 
@@ -3105,13 +3140,23 @@ setClusterWidgetHeigth();
             vm.taskHistoryTab.order.filter.date = typeof vm.dashboardFilters.filter.orderSummaryfrom === 'string' ? vm.dashboardFilters.filter.orderSummaryfrom : 'today';
             $state.go('app.history');
         };
+        vm.showTaskSummary = function (state) {
+            vm.taskHistoryTab = CoreService.getHistoryTab();
+            vm.taskHistoryTab.type = 'job';
+            vm.taskHistoryTab.task.filter.historyStates = state;
+            vm.taskHistoryTab.task.selectedView = false;
+            vm.taskHistoryTab.task.filter.date = typeof vm.dashboardFilters.filter.taskSummaryfrom === 'string' ? vm.dashboardFilters.filter.taskSummaryfrom : 'today';
+            $state.go('app.history');
+        };
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
-                    if(vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged"){
+                    if (vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged") {
                         isLoadedSnapshot = false;
+                        isLoadedTaskSnapshot = false;
                         vm.loadOrderSnapshot(true);
+                        vm.loadTaskSnapshot(true);
                     }
                     if ((vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
                         isLoadedSnapshot = false;
@@ -3121,6 +3166,15 @@ setClusterWidgetHeigth();
                         isLoadedSummary = false;
                         if (!vm.notPermissionForSummary)
                             vm.getOrderSummary();
+                    }
+                    else if ((vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedTaskSnapshot)) {
+                        isLoadedTaskSnapshot = false;
+                        if (!vm.notPermissionForTaskSnapshot)
+                            vm.loadTaskSnapshot();
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && isLoadedTaskSummary) {
+                        isLoadedTaskSummary = false;
+                        if (!vm.notPermissionForTaskSummary)
+                            vm.getTaskSummary();
                     } else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                         isLoadedDailyPlan = false;
                         vm.getDailyPlans();
@@ -3130,7 +3184,8 @@ setClusterWidgetHeigth();
                             vm.getAgentCluster();
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
+                    }
+                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
                         vm.isLoadedRunningTask = false;
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();

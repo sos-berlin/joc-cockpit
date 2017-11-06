@@ -1044,5 +1044,10 @@
   "label.editFrequencies": "Mettre à jour les Fréquences",
   "label.period": "Période",
   "label.weekDays": "Jours de la semaine",
-   "message.inValidUserName": "Les Comptes avec des espaces ne sont pas autorisés avec l'authentification Shiro"
+  "message.inValidUserName": "Les Comptes avec des espaces ne sont pas autorisés avec l'authentification Shiro",
+  "label.showAuditLogForJobScheduler": "Show Audit Log for JobScheduler",
+  "label.tasksOverview": "Tasks Overview",
+  "label.tasksSummary": "Tasks Summary",
+  "label.tasks": "Tasks",
+  "label.calendarViewFor": "Calendar View for"
 }

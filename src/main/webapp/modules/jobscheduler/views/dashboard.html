@@ -178,31 +178,31 @@
                                     <div class="btn-group dropdown ">
                                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
                                                 data-toggle="dropdown">
-                                            <span>  {{dashboardFilters.filter.label | translate}}</span>
+                                            <span>  {{dashboardFilters.filter.orderLabel | translate}}</span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderRange"
-                                               ng-click="getOrderSummary();dashboardFilters.filter.label='button.today'"
-                                               uib-btn-radio="'today'"
-                                               ng-class="{'btn-primary': dashboardFilters.filter.orderRange=='today'}" translate>button.today
+                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
+                                               ng-click="getOrderSummary();dashboardFilters.filter.orderLabel='button.today'"
+                                               uib-btn-radio="'0d'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='0d'}" translate>button.today
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last1'"
+                                               ng-click="getOrderSummary();dashboardFilters.filter.orderLabel='button.last1'"
                                                uib-btn-radio="'-1h'"
                                                ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1h'}" translate>button.last1
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
                                                uib-btn-radio="'-12h'"
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last12'"
+                                               ng-click="getOrderSummary();dashboardFilters.filter.orderLabel='button.last12'"
                                                ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-12h'}" translate>button.last12
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom "
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.last24'"
+                                               ng-click="getOrderSummary();dashboardFilters.filter.orderLabel='button.last24'"
                                                uib-btn-radio="'-1d'"
                                                ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1d'}" translate>button.last24
                                             </a>
                                             <a class="dropdown-item" ng-model="dashboardFilters.filter.orderSummaryfrom"
-                                               ng-click="dashboardFilters.filter.orderRange='dateRange';getOrderSummary();dashboardFilters.filter.label='button.lastWeak'"
+                                               ng-click="getOrderSummary();dashboardFilters.filter.orderLabel='button.lastWeak'"
                                                uib-btn-radio="'-1w'"
                                                ng-class="{'btn-primary': dashboardFilters.filter.orderSummaryfrom=='-1w'}" translate>button.lastWeak
                                             </a>
@@ -246,6 +246,142 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-9 col-md-8">
+                <div class="white">
+                    <div class="box">
+                        <div class="box-header b-b">
+                            <h3 class="m-t-xs" translate>label.tasksOverview</h3>
+                        </div>
+                        <div class="box-body" >
+                            <table style="width: 100%" ng-if="!notPermissionForTaskSnapshot">
+                                <tr class="text-center">
+                                    <td width="19.9%">
+                                        <div translate>label.pending</div>
+                                    </td>
+                                    <td width="19.9%">
+                                        <div translate>label.running</div>
+                                    </td>
+                                    <td width="19.9%">
+                                        <div translate>label.stopped</div>
+                                    </td>
+                                    <td width="19.9%">
+                                        <div translate>label.waitingForResource</div>
+                                    </td>
+                                    <td width="19.9%">
+                                        <div translate>label.tasks</div>
+                                    </td>
+                                </tr>
+                                <tr class="text-center" ng-if="jobSnapshot">
+                                    <td width="19.9%">
+                                        <a href="#!/tasks_overview/PENDING" class="text-lg _600 " ng-bind="jobSnapshot.pending || 0"></a>
+                                    </td>
+                                    <td width="19.9%">
+                                        <a href="#!/tasks_overview/RUNNING" class="text-lg _600 " ng-bind="jobSnapshot.running || 0"></a>
+                                    </td>
+                                    <td width="19.9%">
+                                        <a href="#!/tasks_overview/STOPPRD" class="text-lg _600 " ng-bind="jobSnapshot.stopped || 0"></a>
+                                    </td>
+                                    <td width="19.9%">
+                                        <a href="#!/tasks_overview/WAITINGFORRESOURCE" class="text-lg _600 " ng-bind="jobSnapshot.waitingForResource || 0"></a>
+                                    </td>
+                                    <td width="19.9%">
+                                        <span class="text-lg _600 " ng-bind="jobSnapshot.tasks || 0"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div ng-if="notPermissionForTaskSnapshot">
+                                <div class="text-u-c text-center text m-t-md m-b">
+                                    {{'message.noInformationAvailable' | translate}}
+                                </div>
+                            </div>
+                            <div ng-hide="notPermissionForTaskSnapshot" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !jobSnapshot}">
+                                <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <div class="box">
+                    <div class="box-header b-b">
+                        <h3 class="m-t-xs" translate>label.tasksSummary</h3>
+                    </div>
+                    <div class="row m-b-sm box-tool ">
+                        <div class="col-md-12 container-fluid">
+                            <div class="pull-right" ng-if="!notPermissionForTaskSummary">
+                                <div class="btn-group m-l-sm" style="padding-right:5px">
+                                    <div class="btn-group dropdown ">
+                                        <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
+                                                data-toggle="dropdown">
+                                            <span>  {{dashboardFilters.filter.taskLabel | translate}}</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                            
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.taskSummaryfrom"
+                                               ng-click="getTaskSummary();dashboardFilters.filter.taskLabel='button.today'"
+                                               uib-btn-radio="'0d'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.taskSummaryfrom=='0d'}" translate>button.today
+                                            </a>
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.taskSummaryfrom"
+                                               ng-click="getTaskSummary();dashboardFilters.filter.taskLabel='button.last1'"
+                                               uib-btn-radio="'-1h'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.taskSummaryfrom=='-1h'}" translate>button.last1
+                                            </a>
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.taskSummaryfrom"
+                                               uib-btn-radio="'-12h'"
+                                               ng-click="getTaskSummary();dashboardFilters.filter.taskLabel='button.last12'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.taskSummaryfrom=='-12h'}" translate>button.last12
+                                            </a>
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.taskSummaryfrom "
+                                               ng-click="getTaskSummary();dashboardFilters.filter.taskLabel='button.last24'"
+                                               uib-btn-radio="'-1d'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.taskSummaryfrom=='-1d'}" translate>button.last24
+                                            </a>
+                                            <a class="dropdown-item" ng-model="dashboardFilters.filter.taskSummaryfrom"
+                                               ng-click="getTaskSummary();dashboardFilters.filter.taskLabel='button.lastWeak'"
+                                               uib-btn-radio="'-1w'"
+                                               ng-class="{'btn-primary': dashboardFilters.filter.taskSummaryfrom=='-1w'}" translate>button.lastWeak
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <table style="width: 100%" ng-if="!notPermissionForTaskSummary">
+                            <tr class="text-center">
+                                <td width="50%">
+                                    <div translate>label.successful</div>
+                                </td>
+                                <td width="50%">
+                                    <div translate>label.failed</div>
+                                </td>
+                            </tr>
+                            <tr class="text-center" ng-if="taskSummary">
+                                <td width="50%">
+                                    <a ng-click="showTaskSummary('SUCCESSFUL')" class="text-lg _600 " ng-class="{'text-success':taskSummary.successful >0}" ng-bind="taskSummary.successful || 0"></a>
+                                </td>
+                                <td width="50%">
+                                    <a ng-click="showTaskSummary('FAILED')" class="text-lg _600 " ng-class="{'crimson':taskSummary.failed  >0}" ng-bind="taskSummary.failed || 0"></a>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <div ng-if="notPermissionForTaskSummary">
+                            <div class="text-u-c text-center text m-t-md m-b">
+                                {{'message.noInformationAvailable' | translate}}
+                            </div>
+                        </div>
+                        <div ng-hide="notPermissionForTaskSummary" class="hide text-center text-primary text m-t-md m-b" ng-class="{'show': !taskSummary}">
+                            <div><i class="fa fa-spinner fa-spin"></i> {{'label.loading' | translate}}...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="hide row" ng-class="{show: permission.DailyPlan.view.status}">
             <div class="col-sm-12">
                 <div class="box">
@@ -281,7 +417,7 @@
         </div>
     </div>
 </div>
-<div ng-if="loading" class="loading-img1"></div>
+<div ng-if="loadingImg" class="loading-img1"></div>
 <script>
     $(document).ready(function(){
         $('[data-toggle="popover"]').popover();

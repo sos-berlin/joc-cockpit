@@ -110,7 +110,7 @@
                         <div class="form-group row">
                             <div class="col-sm-12" style="max-height: 600px; overflow: auto">
                                 <div class="table-responsive">
-                                    <table class="table table-hover table-bordered frequency-table">
+                                    <table class="table table-hover table-bordered">
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequencies</th>
@@ -130,7 +130,9 @@
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
                                                     <a ng-click="editPeriodFromFrequency(data, $index,p)">{{p}}</a>
-                                                    <a class="text-xs text-hover-primary m-l-sm"
+<a class="text-xs text-hover-primary m-l-sm" ng-click="editPeriodFromFrequency(data, $index,p)"><i
+                                                            class="fa fa-pencil"></i></a>
+                                                    <a class="text-xs text-hover-color m-l-sm"
                                                        ng-click="deletePeriodFromFrequency(data, $index)"><i
                                                             class="fa fa-times"></i></a>
                                                 </div>
@@ -281,7 +283,7 @@
                                     <label class="col-sm-3 form-control-label" translate>label.date</label>
 
                                     <div class="col-sm-6">
-                                        <input class="form-control input-date" ng-model="runTime.date"
+                                        <input class="form-control input-date" ng-model="runTime.date" data-min-date="{{minDate}}"
                                                data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD"
                                                bs-datepicker type="text">
                                     </div>
@@ -546,7 +548,6 @@
                                 <tr ng-repeat="period in periodList track by $index" class="cursor">
                                     <td ng-click="editPeriod(period)">{{$index+1}}</td>
                                     <td ng-click="editPeriod(period)">
-                                        <span ng-if="period.isUltimos">{{'label.ultimos' | translate}} - </span>
                                         <span>{{period.str}}</span>
                                     </td>
                                     <td ng-click="editPeriod(period)">
@@ -594,30 +595,30 @@
                 <div class="form-group row">
                     <label class="col-sm-3" translate>label.date</label>
 
-                    <div class="col-sm-6">
-                        <input class="form-control input-date" ng-model="holidayDate"
-                               data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
-                               type="text">
-                        <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"
-                                ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
+                        <div class="col-sm-6">
+                            <input class="form-control input-date" ng-model="holidayDate" data-min-date="{{minDate}}"
+                                   data-date-format="yyyy-MM-dd" data-autoclose="1" placeholder="YYYY-MM-DD" bs-datepicker
+                                   type="text">
+                            <button ng-disabled="!holidayDate" type="button" class="btn btn-xs m-l-sm btn-grey"
+                                    ng-click="addHolidayDate(holidayDate);"><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-offset-3 col-sm-3">
-                        <table class="table table-bordered" style="min-height: 100px; width: 87%">
-                            <tbody>
-                            <tr ng-repeat="date in holidayDates track by $index">
-                                <td>{{date | date:'yyyy-MM-dd'}}
-                                    <a class="pull-right" ng-click="removeHolidayDate($index)"><i
-                                            class="fa fa-times"></i></a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="form-group row" ng-if="holidayDates && holidayDates.length>0">
+                        <div class="col-sm-offset-3 col-sm-3" style="max-height: 150px; overflow: auto;">
+                            <table class="table table-bordered" style="width: 87%; ">
+                                <tbody>
+                                <tr ng-repeat="date in holidayDates track by $index">
+                                    <td>{{date | date:'yyyy-MM-dd'}}
+                                        <a class="pull-right" ng-click="removeHolidayDate($index,date)"><i
+                                                class="fa fa-times"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-3" translate>label.weekDays</label>
+                    <div class="form-group row">
+                        <label class="col-sm-3" translate>label.weekDays</label>
 
                     <div class="col-sm-9">
                         <label class="md-check w">
@@ -674,9 +675,9 @@
                                 class="fa fa-plus"></i></button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-offset-3 col-sm-6">
-                        <table class="table table-bordered" style="min-height: 100px;">
+                <div class="row" ng-if="calendarFiles && calendarFiles.length>0">
+                    <div class="col-sm-offset-3 col-sm-7" style="max-height: 120px; overflow: auto;">
+                        <table class="table table-bordered" >
                             <tbody>
                             <tr ng-repeat="file in calendarFiles track by $index">
                                 <td>{{file}}

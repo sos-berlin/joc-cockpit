@@ -317,6 +317,19 @@
                            </label>
                        </div>
                    </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.showAuditLogForJobScheduler</div>
+                       <div class="col-sm-6">
+                           <label class="md-check w">
+                               <input type="radio" name="auditLog" ng-model="upc.preferences.adtLog" value="all" ng-change="upc.changeConfiguration();">
+                               <i class="primary"></i> <span translate>label.all</span>
+                           </label>
+                           <label class="md-check w">
+                               <input type="radio" name="auditLog" ng-model="upc.preferences.adtLog" value="current" ng-change="upc.changeConfiguration();">
+                               <i class="primary"></i> <span translate>label.current</span>
+                           </label>
+                       </div>
+                   </div>
                    <hr>
                     <h5 translate>label.eventFilter</h5>
                    <div class="row m-t">

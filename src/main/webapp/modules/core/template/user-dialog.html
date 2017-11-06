@@ -15,9 +15,9 @@
     </div>
     <form name="form" ng-submit="ok()" novalidate>
         <div class="modal-body p-a">
-            <div class="form-group row">
+            <div class="form-group row" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
                 <label class="col-sm-4 form-control-label" translate>label.user</label>
-                <div class=" col-sm-6" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
+                <div class=" col-sm-6" >
                     <input type="text" class="form-control" name="name" placeholder="{{'placeholder.user' | translate}}" ng-model="user.user" required ng-blur="checkUser()">
                     <div class="help-block text-danger" ng-if="form.name.$dirty"
                          ng-messages="form.name.$error">
@@ -34,15 +34,19 @@
                     <input type="password" class="form-control" name="password" placeholder="{{'placeholder.password' | translate}}" ng-model="user.fakepassword">
                 </div>
             </div>
-            <div class="form-group row" ng-if="!copy">
+            <div class="form-group row" ng-if="!copy" ng-class="{ 'has-error' : form.role.$invalid && form.role.$dirty}">
                <label class="col-sm-4 form-control-label" translate>label.roles</label>
                <div class="col-sm-6">
-                   <ui-select multiple ng-model="user.roles" on-remove="removed($item, $model)" theme="bootstrap" close-on-select="false" >
+                   <ui-select multiple ng-model="user.roles" name="role" required on-remove="removed($item, $model)" theme="bootstrap" close-on-select="false" >
                     <ui-select-match placeholder="{{'placeholder.selectRoles' | translate}}">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="role as role in roles">
                       <div ng-bind-html="role | highlight: $select.search"></div>
                     </ui-select-choices>
                    </ui-select>
+                   <div class="help-block text-danger" ng-if="form.role.$dirty"
+                         ng-messages="form.role.$error">
+                        <div ng-message="required" translate>message.requiredError</div>
+                    </div>
                </div>
             </div>
 
