@@ -38,10 +38,6 @@
             $resource("version.json").get(function (data) {
                 $rootScope.versionData = data;
             });
-
-        }])
-        .config(['calendarConfig', function (calendarConfig) {
-            calendarConfig.dateFormatter = 'moment';
         }])
         .config(['toastyConfigProvider', function (toastyConfigProvider) {
             toastyConfigProvider.setConfig({

@@ -219,7 +219,60 @@
                                 <button ng-if="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm" ng-click="addCalendar()"><i class="fa fa-plus"></i> {{'button.addCalendar' | translate}}</button>
                             </div>
                         </div>
-                        <toggle-view></toggle-view>
+
+                        <div class="hide" ng-class="{'show-block': resourceFilters.state=='agentJobExecutions'}">
+                            <label class="md-check m-r-sm">
+                                <input type="checkbox" ng-model="current" ng-click="changeJobScheduler()">
+                                <i class="primary"></i><span translate>label.currentJobscheduler</span>
+                            </label>
+
+                            <div class="inline" ng-class="{'hide':object.calendars.length>0}">
+                                <div class="btn-group m-r-sm">
+                                    <button class="btn btn-grey btn-sm "
+                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'ALL'"
+                                            ng-click="loadCalendar()"
+                                            ng-class="{'btn-primary': calendarFilters.filter.type=='ALL'}" translate>
+                                        button.all
+                                    </button>
+                                    <button class="btn btn-grey btn-sm "
+                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'WORKING_DAYS'"
+                                            ng-click="loadCalendar()"
+                                            ng-class="{'btn-primary': calendarFilters.filter.type=='WORKING_DAYS'}"
+                                            translate>button.today
+                                    </button>
+                                    <button class="btn btn-grey btn-sm "
+                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
+                                            ng-click="loadCalendar()"
+                                            ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
+                                            translate>button.last1
+                                    </button>
+                                    <button class="btn btn-grey btn-sm "
+                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
+                                            ng-click="loadCalendar()"
+                                            ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
+                                            translate>button.last12
+                                    </button>
+                                    <button class="btn btn-grey btn-sm "
+                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
+                                            ng-click="loadCalendar()"
+                                            ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
+                                            translate>button.last24
+                                    </button>
+                                    <button class="btn btn-grey btn-sm "
+                                            ng-model="calendarFilters.filter.type" uib-btn-radio="'NON_WORKING_DAYS'"
+                                            ng-click="loadCalendar()"
+                                            ng-class="{'btn-primary': calendarFilters.filter.type=='NON_WORKING_DAYS'}"
+                                            translate>button.lastWeak
+                                    </button>
+                                </div>
+
+
+                                <button class="btn btn-grey btn-sm" uib-tooltip="{{'tooltip.exportInXLS' | translate}}"
+                                        id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
+
+                            </div>
+                        </div>
+                        <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions'}"></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.schedules.length>0}">
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="substituteAll()"><i class="fa fa-repeat"></i> {{'button.substitute' | translate}}</button>
@@ -268,6 +321,15 @@
                 <li class="nav-item" ng-if="permission.Calendar.view">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.calendars">
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.calendars</span></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown-separator"
+                    ng-if="permission.Calendar.view && permission.JobschedulerUniversalAgent.view.status">
+                    <span class="separator"></span>
+                </li>
+                <li class="nav-item" ng-if="permission.JobschedulerUniversalAgent.view.status">
+                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.agentJobExecutions">
+                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
                     </a>
                 </li>
             </ul>

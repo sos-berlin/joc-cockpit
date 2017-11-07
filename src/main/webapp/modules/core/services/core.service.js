@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-!function () {
-    "use strict";
-    function e(e, r, t) {
-        var o = "grid", s = !1, a = {}, i = {}, l = {};
-        if (a._jobChain = {}, a._jobChain.filter = {}, a._jobChain.filter.state = "ALL", a._jobChain.filter.sortBy = "name", a._jobChain.reverse = !1, a._jobChain.currentPage = "1", a._jobChain.expand_to = [], a._jobChain.selectedView = !0, a._job = {}, a._job.filter = {}, a._job.filter.state = "ALL", a._job.filter.type = "ALL", a._job.filter.sortBy = "name", a._job.reverse = !1, a._job.currentPage = "1", a._job.expand_to = [], a._job.selectedView = !0, a._job.showTaskPanel = void 0, a._daliyPlan = {}, a._daliyPlan.filter = {}, a._daliyPlan.filter.status = "ALL",a._daliyPlan.filter.state = "", a._daliyPlan.filter.sortBy = "processedPlanned", a._daliyPlan.filter.range = "today", a._daliyPlan.range = "period", a._daliyPlan.reverse = !1, a._daliyPlan.currentPage = "1", a._daliyPlan.selectedView = !0, a._order = {}, a._order.filter = {}, a._order.filter.state = "ALL", a._order.filter.sortBy = "orderId", a._order.reverse = !1, a._order.currentPage = "1", a._order.expand_to = [], a._order.selectedView = !0, a._order.showLogPanel = void 0, a._order1 = {}, a._order1.filter = {}, a._order1.filter.sortBy = "orderId", a._order1.reverse = !1, a._orderDetail = {}, a._orderDetail.overview = !0, a._orderDetail.filter = {}, a._orderDetail.filter.sortBy = "orderId", a._orderDetail.reverse = !1, a._orderDetail.currentPage = "1", a._orderDetail.pageView = "grid", a._orderDetail.showErrorNodes = !0, a._orderDetail.showLogPanel = void 0, a._orderDetail.fitToScreen = !1, a._history = {}, a._history.order = {}, a._history.type = "jobChain", a._history.order.filter = {}, a._history.order.filter.historyStates = "all", a._history.order.filter.date = "today", a._history.order.filter.sortBy = "startTime", a._history.order.sortReverse = !0, a._history.order.currentPage = "1", a._history.order.selectedView = !0, a._history.task = {}, a._history.task.filter = {}, a._history.task.filter.historyStates = "all", a._history.task.filter.date = "today", a._history.task.filter.sortBy = "startTime", a._history.task.sortReverse = !0, a._history.task.currentPage = "1", a._history.task.selectedView = !0, a._auditLog = {}, a._auditLog.filter = {}, a._auditLog.filter.historyStates = "all", a._auditLog.filter.date = "today", a._auditLog.filter.sortBy = "created", a._auditLog.sortReverse = !0, a._auditLog.currentPage = "1", a._resource = {}, a._resource.agents = {}, a._resource.agents.filter = {}, a._resource.agents.filter.state = "all", a._resource.agents.filter.sortBy = "path", a._resource.agents.reverse = !1, a._resource.agents.currentPage = "1", a._resource.agents.expand_to = [], a._resource.locks = {}, a._resource.locks.filter = {}, a._resource.locks.filter.state = "all", a._resource.locks.filter.sortBy = "name", a._resource.locks.reverse = !1, a._resource.locks.currentPage = "1", a._resource.locks.expand_to = [], a._resource.processClasses = {}, a._resource.processClasses.filter = {}, a._resource.processClasses.filter.state = "all", a._resource.processClasses.filter.sortBy = "name", a._resource.processClasses.reverse = !1, a._resource.processClasses.currentPage = "1", a._resource.processClasses.expand_to = [],a._resource.calendar = {},a._resource.calendar.filter = {},a._resource.calendar.filter.type = "ALL",a._resource.calendar.filter.sortBy = "name",a._resource.calendar.reverse = !1,a._resource.calendar.currentPage = "1",a._resource.calendar.expand_to = [],  a._resource.schedules = {}, a._resource.schedules.filter = {}, a._resource.schedules.filter.state = "all", a._resource.schedules.filter.sortBy = "name",a._resource.schedules.reverse = !1,a._resource.schedules.currentPage = "1",a._resource.schedules.expand_to = [],a._resource.state = "agent",i._jobChain = {},i._jobChain.filter = {},i._jobChain.filter.state = "ALL",i._jobChain.filter.sortBy = "name",i._jobChain.reverse = !1,i._jobChain.currentPage = "1",i._jobChain.expand_to = [],i._jobChain.selectedView = !0,i._job = {},i._job.filter = {},i._job.filter.state = "ALL",i._job.filter.type = "ALL",i._job.filter.sortBy = "name",i._job.reverse = !1,i._job.currentPage = "1",i._job.expand_to = [],i._job.selectedView = !0,i._job.showTaskPanel = void 0,i._daliyPlan = {},i._daliyPlan.filter = {},i._daliyPlan.filter.status = "ALL",i._daliyPlan.filter.state = "",i._daliyPlan.filter.sortBy = "processedPlanned",i._daliyPlan.filter.range = "today",i._daliyPlan.range = "period",i._daliyPlan.reverse = !1,i._daliyPlan.currentPage = "1",i._daliyPlan.selectedView = !0,i._order = {},i._order.filter = {},i._order.filter.state = "ALL",i._order.filter.sortBy = "orderId",i._order.reverse = !1,i._order.currentPage = "1",i._order.expand_to = [],i._order.selectedView = !0,i._order.showLogPanel = void 0,i._order1 = {},i._order1.filter = {},i._order1.filter.sortBy = "orderId",i._order1.reverse = !1,i._orderDetail = {},i._orderDetail.overview = !0,i._orderDetail.filter = {},i._orderDetail.filter.state = "ALL",i._orderDetail.filter.sortBy = "orderId",i._orderDetail.reverse = !1,i._orderDetail.currentPage = "1",i._orderDetail.pageView = "grid",i._orderDetail.showErrorNodes = !0,i._orderDetail.fitToScreen = !1,i._orderDetail.showLogPanel = void 0,i._history = {},i._history.order = {},i._history.type = "jobChain",i._history.order.filter = {},i._history.order.filter.historyStates = "all",i._history.order.filter.date = "today",i._history.order.filter.sortBy = "startTime",i._history.order.sortReverse = !0,i._history.order.currentPage = "1",i._history.order.selectedView = !0,i._history.task = {},i._history.task.filter = {},i._history.task.filter.historyStates = "all",i._history.task.filter.date = "today",i._history.task.filter.sortBy = "startTime",i._history.task.sortReverse = !0,i._history.task.currentPage = "1",i._history.task.selectedView = !0,i._auditLog = {},i._auditLog.filter = {},i._auditLog.filter.historyStates = "all",i._auditLog.filter.date = "today",i._auditLog.filter.sortBy = "created",i._auditLog.sortReverse = !0,i._auditLog.currentPage = "1",i._resource = {},i._resource.agents = {},i._resource.agents.filter = {},i._resource.agents.filter.state = "all",i._resource.agents.filter.sortBy = "path",i._resource.agents.reverse = !1,i._resource.agents.currentPage = "1",i._resource.agents.expand_to = [],i._resource.locks = {},i._resource.locks.filter = {},i._resource.locks.filter.state = "all",i._resource.locks.filter.sortBy = "name",i._resource.locks.reverse = !1,i._resource.locks.currentPage = "1",i._resource.locks.expand_to = [],i._resource.processClasses = {},i._resource.processClasses.filter = {},i._resource.processClasses.filter.state = "all",i._resource.processClasses.filter.sortBy = "name",i._resource.processClasses.reverse = !1,i._resource.processClasses.currentPage = "1",i._resource.processClasses.expand_to = [],i._resource.calendar = {},i._resource.calendar.filter = {},i._resource.calendar.filter.type = "ALL",i._resource.calendar.filter.sortBy = "name",i._resource.calendar.reverse = !1,i._resource.calendar.currentPage = "1",i._resource.calendar.expand_to = [],i._resource.schedules = {},i._resource.schedules.filter = {},i._resource.schedules.filter.state = "all",i._resource.schedules.filter.sortBy = "name",i._resource.schedules.reverse = !1,i._resource.schedules.currentPage = "1",i._resource.schedules.expand_to = [],i._resource.state = "agent",l._dashboard = {},l._dashboard.filter = {},l._dashboard.filter.range = "today",l._dashboard.filter.orderRange = "today",l._dashboard.filter.orderSummaryfrom = "today",l._dashboard.filter.orderSummaryto = "today",l._dashboard.filter.orderRange = "today",l._dashboard.filter.label = "button.today",e.localStorage.$SOS$DASHBOARDTABS)try {
-            var _ = JSON.parse(e.localStorage.$SOS$DASHBOARDTABS);
-            _ && (l = _)
-        } catch (n) {
-            console.log(n)
-=======
 /**
  * Created by sourabhagrawal on 20/06/16.
  */
@@ -43,6 +32,18 @@
         tabs._job.currentPage = '1';
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
+        tabs._job.showTaskPanel = undefined;
+
+        tabs._jobDetail = {};
+        tabs._jobDetail.filter = {};
+        tabs._jobDetail.filter.state = 'ALL';
+        tabs._jobDetail.filter.type = 'ALL';
+        tabs._jobDetail.filter.sortBy = 'name';
+        tabs._jobDetail.reverse = false;
+        tabs._jobDetail.currentPage = '1';
+        tabs._jobDetail.expand_to = [];
+        tabs._jobDetail.selectedView = true;
+        tabs._jobDetail.showTaskPanel = undefined;
 
         tabs._daliyPlan = {};
         tabs._daliyPlan.filter = {};
@@ -79,6 +80,7 @@
         tabs._orderDetail.pageView = 'grid';
         tabs._orderDetail.showErrorNodes = true;
         tabs._orderDetail.fitToScreen = false;
+        tabs._orderDetail.showLogPanel = undefined;
 
         tabs._history = {};
         tabs._history.order = {};
@@ -98,6 +100,15 @@
         tabs._history.task.sortReverse = true;
         tabs._history.task.currentPage = '1';
         tabs._history.task.selectedView = true;
+        tabs._history.yade = {};
+        tabs._history.yade.filter = {};
+        tabs._history.yade.filter.historyStates = 'all';
+        tabs._history.yade.filter.date = 'today';
+        tabs._history.yade.filter.sortBy = 'startTime';
+        tabs._history.yade.sortReverse = true;
+        tabs._history.yade.currentPage = '1';
+        tabs._history.yade.selectedView = true;
+
         tabs._auditLog = {};
         tabs._auditLog.filter = {};
         tabs._auditLog.filter.historyStates = 'all';
@@ -135,7 +146,13 @@
         tabs._resource.schedules.reverse = false;
         tabs._resource.schedules.currentPage = '1';
         tabs._resource.schedules.expand_to = [];
-
+        tabs._resource.calendars = {};
+        tabs._resource.calendars.filter = {};
+        tabs._resource.calendars.filter.type = 'ALL';
+        tabs._resource.calendars.filter.sortBy = 'name';
+        tabs._resource.calendars.reverse = false;
+        tabs._resource.calendars.currentPage = '1';
+        tabs._resource.calendars.expand_to = [];
         tabs._resource.state = 'agent';
 
         tempTabs._jobChain = {};
@@ -157,6 +174,18 @@
         tempTabs._job.currentPage = '1';
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
+        tempTabs._job.showTaskPanel = undefined;
+
+        tempTabs._jobDetail = {};
+        tempTabs._jobDetail.filter = {};
+        tempTabs._jobDetail.filter.state = 'ALL';
+        tempTabs._jobDetail.filter.type = 'ALL';
+        tempTabs._jobDetail.filter.sortBy = 'name';
+        tempTabs._jobDetail.reverse = false;
+        tempTabs._jobDetail.currentPage = '1';
+        tempTabs._jobDetail.expand_to = [];
+        tempTabs._jobDetail.selectedView = true;
+        tempTabs._jobDetail.showTaskPanel = undefined;
 
         tempTabs._daliyPlan = {};
         tempTabs._daliyPlan.filter = {};
@@ -212,7 +241,14 @@
         tempTabs._history.task.sortReverse = true;
         tempTabs._history.task.currentPage = '1';
         tempTabs._history.task.selectedView = true;
-
+        tempTabs._history.yade = {};
+        tempTabs._history.yade.filter = {};
+        tempTabs._history.yade.filter.historyStates = 'all';
+        tempTabs._history.yade.filter.date = 'today';
+        tempTabs._history.yade.filter.sortBy = 'startTime';
+        tempTabs._history.yade.sortReverse = true;
+        tempTabs._history.yade.currentPage = '1';
+        tempTabs._history.yade.selectedView = true;
 
         tempTabs._auditLog = {};
         tempTabs._auditLog.filter = {};
@@ -251,7 +287,13 @@
         tempTabs._resource.schedules.reverse = false;
         tempTabs._resource.schedules.currentPage = '1';
         tempTabs._resource.schedules.expand_to = [];
-
+        tempTabs._resource.calendars = {};
+        tempTabs._resource.calendars.filter = {};
+        tempTabs._resource.calendars.filter.type = 'ALL';
+        tempTabs._resource.calendars.filter.sortBy = 'name';
+        tempTabs._resource.calendars.reverse = false;
+        tempTabs._resource.calendars.currentPage = '1';
+        tempTabs._resource.calendars.expand_to = [];
         tempTabs._resource.state = 'agent';
 
         dashboard._dashboard = {};
@@ -259,17 +301,17 @@
         dashboard._dashboard.filter.range = "today";
         dashboard._dashboard.filter.orderSummaryfrom = "0d";
         dashboard._dashboard.filter.taskSummaryfrom = "0d";
-
+        dashboard._dashboard.filter.fileSummaryfrom = "0d";
         dashboard._dashboard.filter.orderLabel = 'button.today';
         dashboard._dashboard.filter.taskLabel = 'button.today';
-
+        dashboard._dashboard.filter.fileLabel = 'button.today';
 
         if ($window.localStorage.$SOS$DASHBOARDTABS) {
             try {
                 var obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
 
                 if (obj) {
-                    if (obj._dashboard.filter.orderSummaryfrom != 'today') {
+                    if (obj._dashboard.filter.orderSummaryfrom!='today') {
                         dashboard = obj;
                     }
                 }
@@ -282,7 +324,6 @@
             _view = $window.sessionStorage.$SOS$VIEW;
         } else {
             $window.sessionStorage.$SOS$VIEW = 'grid';
->>>>>>> release/1.11
         }
 
         if ($window.sessionStorage.$SOS$SIDEVIEW == 'true' || $window.sessionStorage.$SOS$SIDEVIEW == true) {
@@ -324,6 +365,9 @@
             getJobTab: function () {
                 return tabs._job;
             },
+            getJobDetailTab: function () {
+                return tabs._jobDetail;
+            },
             getDailyPlanTab: function () {
                 return tabs._daliyPlan;
             },
@@ -353,7 +397,7 @@
             getResourceTab: function () {
                 return tabs._resource;
             },
-            getAuditLogTab: function () {
+            getAuditLogTab: function(){
                 return tabs._auditLog;
             },
             getEvents: function (filter) {

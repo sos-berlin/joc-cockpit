@@ -4,16 +4,16 @@
         <h4 class="modal-title" >
             <span ng-if="!newUser && !copy">
                 <span translate>label.editUser</span>:
-                <span>{{:: user.user}}</span>
+                <span ng-bind-html="temp_name  | decodeSpace"></span>
             </span>
             <span ng-if="!newUser && copy">
                 <span translate>label.copyUser</span> :
-                <span>{{:: userName}}</span>
+                <span ng-bind-html="userName  | decodeSpace"></span>
             </span>
             <span ng-if="newUser && !copy" translate>label.addUser</span>
         </h4>
     </div>
-    <form name="form" ng-submit="ok()" novalidate>
+    <form name="form" ng-submit="ok(form)" novalidate>
         <div class="modal-body p-a">
             <div class="form-group row" ng-class="{ 'has-error' : (form.name.$invalid && form.name.$dirty) || !isUnique }">
                 <label class="col-sm-4 form-control-label" translate>label.user</label>

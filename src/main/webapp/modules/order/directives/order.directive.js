@@ -21,7 +21,7 @@
                 var ordersData = [];
 
                 function preparePieData(res) {
-                    var ordersData = [];
+                    ordersData = [];
 
                     var count = 0;
                     for (var prop in res) {

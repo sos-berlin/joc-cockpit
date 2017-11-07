@@ -184,7 +184,6 @@
 
                                 angular.forEach(res.masters, function (nMaster, rIndex) {
                                     if (nMaster.host == master.host && nMaster.port == master.port) {
-
                                         scope.clusterStatusData.members.masters[index].state = nMaster.state;
                                         scope.clusterStatusData.members.masters[index].startedAt = nMaster.startedAt;
                                         if (master.state && refresh) {

@@ -19,7 +19,7 @@
         vm.locksFilters = vm.resourceFilters.locks;
         vm.processFilters = vm.resourceFilters.processClasses;
         vm.scheduleFilters = vm.resourceFilters.schedules;
-        vm.calendarFilters = vm.resourceFilters.calendar;
+        vm.calendarFilters = vm.resourceFilters.calendars;
 
         vm.object = {};
 
@@ -161,7 +161,7 @@
         /** -----------------Begin Agent clusters------------------- */
 
         /**
-         * Function to initialized SCHEDULE tree
+         * Function to initialized Agent tree
          */
         function initAgentTree(type) {
             ResourceService.tree({
@@ -413,7 +413,7 @@
 
         /** -----------------Begin Locks------------------- */
         /**
-         * Function to initialized SCHEDULE tree
+         * Function to initialized Lock tree
          */
         function initLockTree() {
 
@@ -2479,6 +2479,23 @@
 
 
         /** -----------------End Schedules------------------- */
+        /**
+         * Function to initialized Agent tasks
+         */
+        function getAgentTasks() {
+            var obj = {};
+            vm.agentTasks = [];
+            vm.isLoading = false;
+            vm.current = vm.userPreferences.agentTask == 'current';
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+
+            ResourceService.getAgentTask({}).then(function (res) {
+                vm.agentTasks = res.agents;
+                vm.isLoading = true;
+            });
+        }
+
+        /** -----------------End Agent tasks------------------- */
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             var views = {};
@@ -2511,6 +2528,9 @@
                 vm.resourceFilters.state = 'calendars';
                 vm.treeCalendar = [];
                 initCalendarTree();
+            } else if (toState.name == 'app.resources.agentJobExecutions') {
+                vm.resourceFilters.state = 'agentJobExecutions';
+                getAgentTasks();
             }
             startPolling();
         });
@@ -3173,7 +3193,6 @@
         };
 
         vm.dashboardFilters = CoreService.getDashboardTab();
-        console.log(vm.dashboardFilters);
 
         var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary= true, isLoadedFileOverview=true, isLoadedTaskSummary = true,isLoadedTaskSnapshot= true;
 
@@ -3191,8 +3210,8 @@
         vm.dashboard = {widgets: []};
         function initWidgets() {
             if (vm.userPreferences.dashboard) {
-                vm.dashboardLayout = vm.userPreferences.dashboard;
-            } else {
+/*                vm.dashboardLayout = vm.userPreferences.dashboard;
+            } else {*/
                 vm.dashboardLayout = [{
                     row: 0,
                     col: 0,
@@ -3200,7 +3219,7 @@
                     sizeY: 1,
                     name: "agentClusterStatus",
                     visible: true,
-                    message: 'Pie chart help to identify agents status'
+                    message: gettextCatalog.getString('message.agentClusterStatus')
                 }, {
                     row: 1,
                     col: 0,
@@ -3208,7 +3227,7 @@
                     sizeY: 1,
                     name: "agentClusterRunningTasks",
                     visible: true,
-                    message: 'Bar chart help to identify running task on agents'
+                    message: gettextCatalog.getString('message.agentClusterRunningTasks')
                 }, {
                     row: 0,
                     col: 2,
@@ -3216,7 +3235,7 @@
                     sizeY: 2,
                     name: "masterClusterStatus",
                     visible: true,
-                    message: 'Flow chart help to identify status of cluster'
+                    message: gettextCatalog.getString('message.masterClusterStatus')
                 }, {
                     row: 2,
                     col: 0,
@@ -3224,7 +3243,7 @@
                     sizeY: 1,
                     name: "ordersOverview",
                     visible: true,
-                    message: 'This widget help to identify the orders overview'
+                    message: gettextCatalog.getString('message.ordersOverview')
                 }, {
                     row: 2,
                     col: 4,
@@ -3232,7 +3251,7 @@
                     sizeY: 1,
                     name: "ordersSummary",
                     visible: true,
-                    message: 'This widget help to identify the summary of orders'
+                    message: gettextCatalog.getString('message.ordersSummary')
                 }, {
                     row: 3,
                     col: 0,
@@ -3240,7 +3259,7 @@
                     sizeY: 1,
                     name: "tasksOverview",
                     visible: true,
-                    message: 'This widget help to identify the summary of tasks overview'
+                    message: gettextCatalog.getString('message.tasksOverview')
                 }, {
                     row: 3,
                     col: 4,
@@ -3248,7 +3267,7 @@
                     sizeY: 1,
                     name: "tasksSummary",
                     visible: true,
-                    message: 'This widget help to identify the summary of tasks'
+                    message: gettextCatalog.getString('message.tasksSummary')
                 }, {
                     row: 4,
                     col: 0,
@@ -3256,7 +3275,7 @@
                     sizeY: 1,
                     name: "fileTransferOverview",
                     visible: true,
-                    message: 'This widget help to identify the files transfer overview'
+                    message: gettextCatalog.getString('message.fileTransferOverview')
                 }, {
                     row: 4,
                     col: 4,
@@ -3264,7 +3283,7 @@
                     sizeY: 1,
                     name: "fileTransferSummary",
                     visible: true,
-                    message: 'This widget help to identify the summary of files transfer'
+                    message: gettextCatalog.getString('message.fileTransferSummary')
                 },{
                     row: 5,
                     col: 0,
@@ -3272,7 +3291,7 @@
                     sizeY: 1,
                     name: "dailyPlanOverview",
                     visible: true,
-                    message: 'This widget help to identify daily plan overview'
+                    message: gettextCatalog.getString('message.dailyPlanOverview')
                 }];
             }
             adjustRow(vm.dashboardLayout);
@@ -3347,16 +3366,8 @@
                 if (vm.dashboardLayout[i].name == widget.name) {
                     vm.dashboardLayout[i].visible = true;
                     if (vm.dashboard.widgets.length - 1 >= 0) {
-                        if ((vm.dashboardLayout[vm.dashboard.widgets.length - 1].row == widget.row) && (widget.sizeX + vm.dashboardLayout[vm.dashboard.widgets.length - 1].sizeX) == 6) {
-                            if (vm.dashboardLayout[vm.dashboard.widgets.length - 1].col != widget.col) {
-                                vm.dashboardLayout[i].col = vm.dashboardLayout[vm.dashboard.widgets.length - 1].col + 2;
-                            }
-                            vm.dashboardLayout[i].row = parseInt(vm.dashboardLayout[vm.dashboard.widgets.length - 1].row);
-                        } else {
-                            vm.dashboardLayout[i].row = parseInt(vm.dashboardLayout[vm.dashboard.widgets.length - 1].row) + 1;
-                        }
+                        vm.dashboardLayout[i].row = parseInt(vm.dashboard.widgets[vm.dashboard.widgets.length - 1].row) + 1;
                     }
-
                     vm.dashboard.widgets.push(vm.dashboardLayout[i]);
                     break;
                 }

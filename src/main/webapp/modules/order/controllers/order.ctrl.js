@@ -4871,7 +4871,7 @@
                     vm.auditLogs = result.auditLog;
                 }
             });
-        };
+        }
 
         vm.showAuditLogs = function (value) {
             vm.showLogPanel = value;
@@ -6194,11 +6194,7 @@
 
             if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-<<<<<<< HEAD
-                
-=======
-              
->>>>>>> release/1.11
+               
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
@@ -6217,6 +6213,21 @@
                 var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
                 fromDate = '-'+date[2]+date[3];
                 toDate = '-'+date[5]+date[6];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3];
+                toDate = '-'+date[5]+date[6]+'-'+date[8]+date[9];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
+                toDate = '-'+date[8]+date[9];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
+                toDate = '-'+date[8]+date[9]+'-'+date[11]+date[12];
 
             }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
@@ -7090,6 +7101,14 @@
                 value.steps = res.history.steps;
             });
 
+        };
+        vm.showTransferFuc = function(value){
+            value.show = true;
+            var ids=[];
+            ids.push(value.id)
+            YadeService.files({transferIds : ids}).then(function(res){
+                value.files = res.files
+            })
         };
 
         vm.exportToExcel = function () {

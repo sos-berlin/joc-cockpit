@@ -220,6 +220,7 @@
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
                 preferences.adtLog = 'current';
+                preferences.agentTask = 'current';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
@@ -272,6 +273,9 @@
                             if (preferences && !preferences.adtLog) {
                                 preferences.adtLog = 'current';
                             }
+                      if (preferences && !preferences.agentTask) {
+                             preferences.agentTask = 'current';
+                        }
 
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
@@ -1760,7 +1764,7 @@
             }
         }
 
-        vm.ok = function () {
+        vm.ok = function (form) {
             if(vm.user) {
                 if (/\s/.test(vm.user.user) && vm.user.fakepassword) {
                     toasty.error({
@@ -1770,6 +1774,10 @@
                     return;
                 }else if(/\s/.test(vm.user.user) && !vm.user.fakepassword){
                    vm.user.user = encodeURIComponent(vm.user.user);
+                }
+                if (form) {
+                    form.$setPristine();
+                    form.$setUntouched();
                 }
             }
             if (vm.paramObject) {

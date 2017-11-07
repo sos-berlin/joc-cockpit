@@ -637,7 +637,7 @@
                          <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
                            <div class=" col-sm-6">
-                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="jobSearch.name" ng-blur="checkFilterName()">
+                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="yadeSearch.name" ng-blur="checkFilterName()">
                                <div class="help-block text-danger" ng-if="form1.filterName.$dirty" ng-messages="form1.filterName.$error">
                                     <div ng-message="maxlength" translate>message.tooLongError</div>
                                </div>
@@ -649,41 +649,23 @@
                         <div class="form-group row ">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
                             <div class="col-sm-6">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="jobSearch.from"
+                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="yadeSearch.from"
                                        data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!jobSearch.from" class="form-control input-time m-l" ng-model="jobSearch.fromTime"
+                                <input valid-time maxlength="8" ng-disabled="!yadeSearch.from" class="form-control input-time m-l" ng-model="yadeSearch.fromTime"
                                         placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="jobSearch.from || jobSearch.fromTime" ng-click="jobSearch.from='';jobSearch.fromTime=''; " translate>button.clear</a>
+                                <a class="text-sm text-primary" ng-show="yadeSearch.from || yadeSearch.fromTime" ng-click="yadeSearch.from='';yadeSearch.fromTime=''; " translate>button.clear</a>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
-                                       ng-model="jobSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{jobSearch.from}}" data-max-date="{{currentTime}}"
+                                       ng-model="yadeSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{yadeSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!jobSearch.to" class="form-control input-time m-l" ng-model="jobSearch.toTime"
+                                <input valid-time maxlength="8" ng-disabled="!yadeSearch.to" class="form-control input-time m-l" ng-model="yadeSearch.toTime"
                                        placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="jobSearch.to || jobSearch.toTime" ng-click="jobSearch.to='';jobSearch.toTime=''; " translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.regex</label>
-                           <div class=" col-sm-6" ng-class="{ 'has-error' : form1.regex.$invalid && form1.regex.$dirty }">
-                               <input valid-regex type="text" class="form-control" name="regex" placeholder="{{'placeholder.regexAndChooseTree' | translate}}" ng-model="jobSearch.regex">
-                               <div class="help-block text-danger" ng-messages="form1.regex.$error">
-                                    <div ng-message="invalid" translate>message.invalid</div>
-                                </div>
-                           </div>
-                           <div class="col-sm-1 p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i class="fa fa-folder-o fa-lg"></i></a></div>
-                        </div>
-                        <div class="form-group row" ng-if="jobSearch.paths.length>0">
-                             <label class="col-md-2 col-sm-4" translate>label.folders</label>
-                            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-                                <div ng-repeat="path in jobSearch.paths track by $index">
-                                        <span class="">{{path}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(path,'path')"></i>
-                                </div>
+                                <a class="text-sm text-primary" ng-show="yadeSearch.to || yadeSearch.toTime" ng-click="yadeSearch.to='';yadeSearch.toTime=''; " translate>button.clear</a>
                             </div>
                         </div>
 
@@ -692,15 +674,15 @@
 
                             <div class="col-sm-9">
                                 <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'INCOMPLETE'">
                                     <i class="primary"></i><span translate>label.incomplete</span>
                                 </label>
                                 <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'SUCCESSFUL'">
+                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'SUCCESSFUL'">
                                     <i class="primary"></i><span translate>label.successful</span>
                                 </label>
                                 <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'FAILED'">
+                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'FAILED'">
                                     <i class="primary"></i><span translate>label.failed</span>
                                 </label>
                             </div>
@@ -710,7 +692,7 @@
                                 button.search
                             </button>
                             <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form1.$invalid || !isUnique || !jobSearch.name" translate>button.saveAsFilter
+                                    ng-disabled="form1.$invalid || !isUnique || !yadeSearch.name" translate>button.saveAsFilter
                             </button>
                             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
                                 button.cancel
@@ -812,38 +794,38 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-show="history.show">
                             <td></td>
-                         <td colspan="8" >
-                             <table class="table m-a-0">
-                                 <thead>
-                                 <tr class="tableexport-ignore">
-                                     <th translate>label.step</th>
-                                     <th translate>label.state</th>
-                                     <th translate>label.job</th>
-                                     <th translate>label.start</th>
-                                     <th translate>label.end</th>
-                                     <th translate>label.duration</th>
-                                     <th translate>label.exitCode</th>
-                                     <th translate>label.errorCode</th>
-                                     <th translate>label.errorText</th>
-                                 </tr>
-                                 </thead>
-                                 <tbody>
-                                 <tr ng-repeat="step in history.steps" class="cursor">
-                                     <td ng-click="showLogWindow(null,step)">{{step.step}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.node}}</td>
-                                     <td ng-click="showLogWindow(null,step)"><a ng-click="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.exitCode}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.error.code}}</td>
-                                     <td ng-click="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
-                                 </tr>
-                                 </tbody>
-                             </table>
-                             <div ng-if="steps.length==0" translate>message.noDataMatched</div>
-                         </td>
-                     </tr>
+                             <td colspan="8" >
+                                 <table class="table m-a-0">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th translate>label.step</th>
+                                         <th translate>label.state</th>
+                                         <th translate>label.job</th>
+                                         <th translate>label.start</th>
+                                         <th translate>label.end</th>
+                                         <th translate>label.duration</th>
+                                         <th translate>label.exitCode</th>
+                                         <th translate>label.errorCode</th>
+                                         <th translate>label.errorText</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr ng-repeat="step in history.steps" class="cursor">
+                                         <td ng-click="showLogWindow(null,step)">{{step.step}}</td>
+                                         <td ng-click="showLogWindow(null,step)">{{step.node}}</td>
+                                         <td ng-click="showLogWindow(null,step)"><a ng-click="showJob(step.job);$event.stopPropagation()" class="text-hover-primary">{{step.job}}</a></td>
+                                         <td ng-click="showLogWindow(null,step)">{{step.startTime | stringToDate}}</td>
+                                         <td ng-click="showLogWindow(null,step)">{{step.endTime  | stringToDate}}</td>
+                                         <td ng-click="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
+                                         <td ng-click="showLogWindow(null,step)">{{step.exitCode}}</td>
+                                         <td ng-click="showLogWindow(null,step)">{{step.error.code}}</td>
+                                         <td ng-click="showLogWindow(null,step)" class="text-danger">{{step.error.message}}</td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                                 <div ng-if="steps.length==0" translate>message.noDataMatched</div>
+                             </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}" ng-if="filtered.length >0"><span translate>label.total</span> {{filtered.length}}
@@ -1044,34 +1026,34 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="history in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':history.show}">
+                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                        <a class="dropdown-item" ng-click="addOrderToIgnoreList(history.orderId,history.jobChain)" translate>button.addOrderToIgnoreList</a>
-                                        <a class="dropdown-item" ng-click="addJobChainToIgnoreList(history.jobChain)" translate>button.addJobChainToIgnoreList</a>
+                                        <a class="dropdown-item"  translate>button.restart</a>
+                                        <a class="dropdown-item"  translate>button.showLog</a>
                                     </div>
                                 </div>
                             </td>
-                            <td class="nowrap" ng-click="showLogWindow(history,null)">
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!history.show" ng-click="showPanelFuc(history);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="history.show" ng-click="history.show = false;$event.stopPropagation()"></i>
-                                <span ng-bind="history.orderId"></span>
+                            <td class="nowrap" ng-click="showLogWindow(transfer,null)">
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;$event.stopPropagation()"></i>
+                                <span ng-bind="transfer._operation"></span>
                             </td>
-                            <td ng-click="showLogWindow(history,null)">
-                                <span ng-click="showJobChain(history.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="history.jobChain"></span>
+                            <td ng-click="showLogWindow(transfer,null)">
+                                <span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
                             </td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.profileName"></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.mandator"></td>
-                            <td ng-click="showLogWindow(history,null)"><span uib-tooltip="{{history.error.message}}" class="label" ng-class="bgColorFunction(history.status.severity)" ng-bind="history.status._text | translate"></span></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | stringToDate"></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.endTime | stringToDate"></td>
-                            <td ng-click="showLogWindow(history,null)" ng-bind="history.startTime | duration:history.endTime"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.profile"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.mandator"></td>
+                            <td ng-click="showLogWindow(transfer,null)"><span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.end | stringToDate"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="history.show">
+                        <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
                          <td colspan="8" >
                              <table class="table m-a-0">
@@ -1087,18 +1069,18 @@
                                  </tr>
                                  </thead>
                                  <tbody>
-                                 <tr ng-repeat="step in history.steps" class="cursor">
-                                     <td ng-click="showLogWindow(null,step)">{{step.file}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.sourcePath}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.targetPath}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.status}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.size}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.startTime | duration:step.endTime}}</td>
-                                     <td ng-click="showLogWindow(null,step)">{{step.progress}}</td>
+                                 <tr ng-repeat="file in transfer.files" class="cursor">
+                                     <td ng-click="showLogWindow(null,file)">{{file.file}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.sourcePath}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.targetPath}}</td>
+                                     <td ng-click="showLogWindow(null,file)"><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.size}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.startTime | duration:file.endTime}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.progress}}</td>
                                  </tr>
                                  </tbody>
                              </table>
-                             <div ng-if="steps.length==0" translate>message.noDataMatched</div>
+                             <div ng-if="files.length==0" translate>message.noDataMatched</div>
                          </td>
                      </tr>
                         </tbody>

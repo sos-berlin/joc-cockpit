@@ -8,11 +8,11 @@
                     </div>
                     <div class="btn-group dropdown" ng-if="state == 'role'">
                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown">{{'label.user' | translate}}
-                            <span class="text-primary" ng-bind="selectedUser"></span></button>
+                            <span class="text-primary" ng-bind-html="selectedUser | decodeSpace"></span></button>
                         <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                             <a class="dropdown-item" ng-class="{orange: selectedUser == user.user}"
                                ng-click="selectUser(user.user)" ng-repeat="user in users | orderBy: 'name'">
-                                {{user.user}}
+                                <span  ng-bind-html="user.user | decodeSpace"></span>
                                 <i ng-click="selectUser();$event.stopPropagation();" ng-if="selectedUser == user.user" class="fa fa-times-circle-o remove"></i>
                             </a>
                         </div>
