@@ -219,6 +219,7 @@
                 preferences.pageView = 'grid';
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
+                preferences.adtLog = 'current';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
@@ -267,6 +268,9 @@
                             }
                             if (preferences && !preferences.historyView) {
                                 preferences.historyView = 'current';
+                            }
+                            if (preferences && !preferences.adtLog) {
+                                preferences.adtLog = 'current';
                             }
 
                             if (!preferences.entryPerPage) {
@@ -1036,7 +1040,7 @@
                     return result;
                 }
             }
-        }
+        };
 
         if (vm.userPreferences)
             getDateFormat();

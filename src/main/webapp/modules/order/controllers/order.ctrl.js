@@ -6194,7 +6194,11 @@
 
             if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
+<<<<<<< HEAD
                 
+=======
+              
+>>>>>>> release/1.11
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();

@@ -3146,8 +3146,8 @@
     }
 
 
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","UserService","$window","YadeService"];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,UserService,$window,YadeService) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","UserService","$window","YadeService",'JobService'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,UserService,$window,YadeService,JobService) {
         var vm = $scope;
         vm.loadingImg = true;
         var isDragging = false;
@@ -3172,11 +3172,18 @@
             }
         };
 
+        vm.dashboardFilters = CoreService.getDashboardTab();
+        console.log(vm.dashboardFilters);
+
+        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary= true, isLoadedFileOverview=true, isLoadedTaskSummary = true,isLoadedTaskSnapshot= true;
+
         vm.isAgentClusterVisible = true;
         vm.isRunningAgentVisible = true;
         vm.isMasterClusterVisible = true;
         vm.isOrderOverviewVisible = true;
         vm.isOrderSummaryVisible = true;
+        vm.istaskOverviewVisible = true;
+        vm.istaskSummaryVisible = true;
         vm.isFileOverviewVisible = true;
         vm.isFileSummaryVisible = true;
         vm.isDailPlanVisible = true;
@@ -3231,19 +3238,35 @@
                     col: 0,
                     sizeX: 4,
                     sizeY: 1,
+                    name: "tasksOverview",
+                    visible: true,
+                    message: 'This widget help to identify the summary of tasks overview'
+                }, {
+                    row: 3,
+                    col: 4,
+                    sizeX: 2,
+                    sizeY: 1,
+                    name: "tasksSummary",
+                    visible: true,
+                    message: 'This widget help to identify the summary of tasks'
+                }, {
+                    row: 4,
+                    col: 0,
+                    sizeX: 4,
+                    sizeY: 1,
                     name: "fileTransferOverview",
                     visible: true,
                     message: 'This widget help to identify the files transfer overview'
                 }, {
-                    row: 3,
+                    row: 4,
                     col: 4,
                     sizeX: 2,
                     sizeY: 1,
                     name: "fileTransferSummary",
                     visible: true,
                     message: 'This widget help to identify the summary of files transfer'
-                }, {
-                    row: 4,
+                },{
+                    row: 5,
                     col: 0,
                     sizeX: 6,
                     sizeY: 1,
@@ -3348,6 +3371,7 @@
                 setWidgetPreference();
             }, 100);
         };
+
         function adjustRow(widgets) {
             widgets.sort(function(a, b) {
                 if(parseInt(a.row) == parseInt(b.row)){
@@ -3448,150 +3472,198 @@
                     }
                     var ht = 0, ht1 = 0, ht2 = 0, ht3 = 0, ht4 = 0;
                     var top = 0;
-                    if (vm.dashboard.widgets[i].row == 1) {
-                        if (i == 1) {
-                            ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                        } else if (i == 2) {
-                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                            if (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i - 2].sizeY) {
-                                ht = ht1 > ht2 ? ht1 : ht2;
-                            } else if (vm.dashboard.widgets[i - 1].sizeY > vm.dashboard.widgets[i - 2].sizeY) {
-                                ht = ht2;
-                            } else {
-                                ht = ht1;
-                            }
-                        } else {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                ht = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 2].name).position().top;
-                            } else {
-                                $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
-                            }
+                    if (i == 1) {
+                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
+                            $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
                         }
-                        if (ht > 0)
+                        else {
+                            ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                             $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-
-                    } else if (vm.dashboard.widgets[i].row == 2) {
-                        if (i == 1) {
-                            ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                         }
-                        if (i == 2) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                    }
+                    if (i == 2) {
+                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
+                                if (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i - 2].sizeY) {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht = ht1 > ht2 ? ht1 : ht2;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                                }
+                                else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                    ht4 = ht2 + ht3;
+                                    $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
+                                    ht = ht1 > ht2 ? ht2 : ht1;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                                }
+                                else {
+                                    if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                        ht4 = ht1 + ht3;
+                                        $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                        ht = ht1 > ht2 ? ht2 : ht1;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                                    }
+
+                                }
+                            }
+                            else {
                                 ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else {
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                            }
+                        }
+                        else {
+                            if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
                                 ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
                                 ht = ht1 > ht2 ? ht1 : ht2;
-                                top = ht1 > ht2 ? $('#' + vm.dashboard.widgets[i - 1].name).position().top : $('#' + vm.dashboard.widgets[i - 2].name).position().top;
+                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                             }
-                        } else if (i == 3) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                            else {
                                 ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                ht = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 2].name).position().top;
-                            } else {
-                                $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                             }
-                        } else if (i == 4) {
-                            $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
                         }
-                        if (ht > 0)
-                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
 
-                    } else if (vm.dashboard.widgets[i].row == 3) {
-                        if (i == 4) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else {
-                                ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                ht = ht1 > ht2 ? ht1 : ht2;
-                                top = ht1 > ht2 ? $('#' + vm.dashboard.widgets[i - 1].name).position().top : $('#' + vm.dashboard.widgets[i - 2].name).position().top;
-                            }
-                        } else if (i == 5) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                ht = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 2].name).position().top;
-                            } else {
-                                if (vm.dashboard.widgets[i - 1].row == 2) {
-                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                    }
+                    if (i == 3) {
+                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
+                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
+                                    ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
                                     top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                 }
+                                else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                    ht4 = ht2 + ht3;
+                                    $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
+                                    ht = ht1 > ht2 ? ht2 : ht1;
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
+                                else {
+                                    if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                        ht4 = ht1 + ht3;
+                                        $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                        ht = ht1 > ht2 ? ht2 : ht1;
+                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                    }
+                                    else {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                        ht = ht1 > ht2 ? ht1 : ht2;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                    }
+
+                                }
+
                             }
-                        } else if (i == 6) {
-                            $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
-                        }
-                        if (ht > 0)
-                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                    } else if (vm.dashboard.widgets[i].row == 4) {
-                        //   console.log(vm.dashboard.widgets[i].name +' : '+vm.dashboard.widgets[i].row)
-                        if (i < 6) {
-                            ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                        }
-                        else if (i == 6) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                            else {
                                 ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else {
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                            }
+
+                        } else {
+                            if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
                                 ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
                                 ht = ht1 > ht2 ? ht1 : ht2;
-                                top = ht1 > ht2 ? $('#' + vm.dashboard.widgets[i - 1].name).position().top : $('#' + vm.dashboard.widgets[i - 2].name).position().top;
+                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                             }
-                        } else if (i == 7) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1 && vm.dashboard.widgets[i].col == 0) {
+                            else {
                                 ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1 && vm.dashboard.widgets[i].col == 0) {
-                                ht = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 2].name).position().top;
-                            } else {
-                                if (vm.dashboard.widgets[i - 1].row == 2) {
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
-                                }
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                             }
                         }
-                        if (ht > 0)
-                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                    } else if (vm.dashboard.widgets[i].row >= 5) {
-                        if (i == 6) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+
+                    }
+
+                    if (i > 3) {
+                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
+                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
+                                    ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
+                                else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                    ht4 = ht2 + ht3;
+                                    $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
+                                    ht = ht1 > ht2 ? ht2 : ht1;
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
+                                else {
+                                    if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                        ht4 = ht1 + ht3;
+                                        $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                        ht = ht1 > ht2 ? ht2 : ht1;
+                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                    }
+                                    else {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                        ht = ht1 > ht2 ? ht1 : ht2;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                    }
+
+                                }
+
+                            }
+                            else {
                                 ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else {
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                            }
+
+                        } else {
+                            if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
                                 ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
                                 ht = ht1 > ht2 ? ht1 : ht2;
-                                top = ht1 > ht2 ? $('#' + vm.dashboard.widgets[i - 1].name).position().top : $('#' + vm.dashboard.widgets[i - 2].name).position().top;
+                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                             }
-                        } else if (i == 7) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1 && vm.dashboard.widgets[i].col == 0) {
+                            else {
                                 ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                 top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                            } else if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1 && vm.dashboard.widgets[i].col == 0) {
-                                ht = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 2].name).position().top;
-                            } else {
-                                if (vm.dashboard.widgets[i - 1].row == 2) {
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
-                                }
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                             }
                         }
-                        if (ht > 0)
-                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+
                     }
                 }
             }
@@ -3607,9 +3679,6 @@
             SOSAuth.setJobChain(undefined);
             SOSAuth.save();
         }
-
-        vm.dashboardFilters = CoreService.getDashboardTab();
-        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary= true, isLoadedFileOverview=true;
 
         function groupBy(data) {
             var results = [];
@@ -4174,11 +4243,8 @@
             var obj = {};
             obj.jobschedulerId = $scope.schedulerIds.selected;
 
-            if (vm.dashboardFilters.filter.orderRange == 'today') {
-                obj.dateFrom = '0d';
-            } else {
-                obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
-            }
+            obj.dateFrom = vm.dashboardFilters.filter.orderSummaryfrom;
+
             obj.timeZone = vm.userPreferences.zone;
             OrderService.getSummary(obj).then(function (res) {
                 vm.orderSummary = res.orders;
@@ -4188,6 +4254,47 @@
                 isLoadedSummary = true;
             })
         };
+
+        vm.loadTaskSnapshot = function (flag) {
+            if(!vm.istaskOverviewVisible){
+                return;
+            }
+            if (vm.scheduleState == 'UNREACHABLE' && !flag) {
+                isLoadedTaskSnapshot = true;
+                vm.jobSnapshot = {};
+                return;
+            }
+            isLoadedTaskSnapshot = false;
+            JobService.getSnapshot({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                vm.jobSnapshot = res.jobs;
+                vm.notPermissionForTaskSnapshot = '';
+                isLoadedTaskSnapshot = true;
+            }, function (err) {
+                if (err.data)
+                    vm.notPermissionForTaskSnapshot = !err.data.isPermitted;
+                isLoadedTaskSnapshot = true;
+            });
+        };
+
+        vm.getTaskSummary = function () {
+             if(!vm.istaskSummaryVisible){
+                return;
+            }
+            isLoadedTaskSummary = false;
+            var obj = {};
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+            obj.dateFrom = vm.dashboardFilters.filter.taskSummaryfrom;
+
+            obj.timeZone = vm.userPreferences.zone;
+            JobService.getSummary(obj).then(function (res) {
+                vm.taskSummary = res.jobs;
+                isLoadedTaskSummary = true;
+            }, function (err) {
+                vm.notPermissionForTaskSummary = !err.data.isPermitted;
+                isLoadedTaskSummary = true;
+            })
+        };
+
         vm.getFileOverview = function () {
             if(!vm.isFileOverviewVisible){
                 return;
@@ -4200,12 +4307,7 @@
             }
             isLoadedFileSummary = false;
             var obj = {};
-
-            if (vm.dashboardFilters.filter.fileRange == 'today') {
-                obj.dateFrom = '0d';
-            } else {
-                obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
-            }
+            //obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
             obj.timeZone = vm.userPreferences.zone;
             YadeService.getSummary(obj).then(function (res) {
                 vm.yadeSummary = res;
@@ -4246,6 +4348,7 @@
                 isLoadedDailyPlan = true;
             }, function () {
                 isLoadedDailyPlan = true;
+                vm.totalPlanData = 0;
             })
         };
 
@@ -4354,7 +4457,14 @@
             vm.taskHistoryTab.order.filter.date = typeof vm.dashboardFilters.filter.orderSummaryfrom === 'string' ? vm.dashboardFilters.filter.orderSummaryfrom : 'today';
             $state.go('app.history');
         };
-
+        vm.showTaskSummary = function (state) {
+            vm.taskHistoryTab = CoreService.getHistoryTab();
+            vm.taskHistoryTab.type = 'job';
+            vm.taskHistoryTab.task.filter.historyStates = state;
+            vm.taskHistoryTab.task.selectedView = false;
+            vm.taskHistoryTab.task.filter.date = typeof vm.dashboardFilters.filter.taskSummaryfrom === 'string' ? vm.dashboardFilters.filter.taskSummaryfrom : 'today';
+            $state.go('app.history');
+        };
         var interval1='';
         function poll() {
             if (interval1)
@@ -4383,7 +4493,13 @@
             } else if (id == 'ordersSummary') {
                 vm.isOrderSummaryVisible = flag;
                 vm.getOrderSummary();
-            } else if (id == 'fileTransferOverview') {
+            } else if (id == 'tasksOverview') {
+                vm.istaskOverviewVisible = flag;
+                vm.loadTaskSnapshot();
+            } else if (id == 'tasksSummary') {
+                vm.istaskSummaryVisible = flag;
+                vm.getTaskSummary();
+            }  else if (id == 'fileTransferOverview') {
                 vm.isFileOverviewVisible = flag;
                 vm.getFileOverview();
             } else if (id == 'fileTransferSummary') {
@@ -4412,7 +4528,9 @@
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType === "SchedulerStateChanged") {
                         isLoadedSnapshot = false;
+                        isLoadedTaskSnapshot = false;
                         vm.loadOrderSnapshot(true);
+                        vm.loadTaskSnapshot(true);
                     }
                     if ((vm.events[0].eventSnapshots[i].eventType === "OrderStateChanged" && isLoadedSnapshot)) {
                         isLoadedSnapshot = false;
@@ -4422,7 +4540,16 @@
                         isLoadedSummary = false;
                         if (!vm.notPermissionForSummary)
                             vm.getOrderSummary();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
+                    }
+                    else if ((vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && isLoadedTaskSnapshot)) {
+                        isLoadedTaskSnapshot = false;
+                        if (!vm.notPermissionForTaskSnapshot)
+                            vm.loadTaskSnapshot();
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "ReportingChangedJob" && isLoadedTaskSummary) {
+                        isLoadedTaskSummary = false;
+                        if (!vm.notPermissionForTaskSummary)
+                            vm.getTaskSummary();
+                    }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                         isLoadedDailyPlan = false;
                         vm.getDailyPlans();
                     } else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (vm.isLoadedAgentCluster || vm.isLoadedRunningTask)) {
@@ -4431,7 +4558,8 @@
                             vm.getAgentCluster();
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();
-                    } else if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
+                    }
+                    if (vm.events[0].eventSnapshots[i].eventType === "JobStateChanged" && vm.isLoadedRunningTask) {
                         vm.isLoadedRunningTask = false;
                         if (vm.permission && vm.permission.ProcessClass && vm.permission.ProcessClass.view.status)
                             vm.getAgentClusterRunningTask();
@@ -5801,13 +5929,10 @@
             });
         };
 
-
         vm.$on('$destroy', function () {
             watcher1();
             if (promise1)
                 $timeout.cancel(promise1);
         });
-
-
     }
 })();

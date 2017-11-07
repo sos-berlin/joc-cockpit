@@ -1139,5 +1139,9 @@
   "message.calendarNotAssigned": "Aucun Calendrier est associé",
   "message.noYadeHistoryFound": "no Yade History found",
   "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication",
-  "label.restrictions": "Restrictions"
+  "label.restrictions": "Restrictions",
+  "label.showAuditLogForJobScheduler" : "Show Audit Log for JobScheduler",
+  "label.tasksOverview": "Tasks Overview",
+  "label.tasksSummary": "Tasks Summary",
+  "label.tasks": "Tasks"
 }

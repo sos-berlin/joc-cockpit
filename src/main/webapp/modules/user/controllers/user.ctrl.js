@@ -517,7 +517,7 @@
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.adtLog = CoreService.getAuditLogTab();
-        vm.adtLog.current = vm.userPreferences.historyView == 'current';
+        vm.adtLog.current = vm.userPreferences.adtLog == 'current';
         vm.changeJobScheduler = function () {
             vm.load();
         };
@@ -730,7 +730,6 @@
                 vm.roles = res.SOSPermissionRoles.SOSPermissionRole;
             });
         }
-
 
         function saveInfo() {
             var obj = {};

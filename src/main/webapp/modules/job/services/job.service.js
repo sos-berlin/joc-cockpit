@@ -322,6 +322,26 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            getSnapshot: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('jobs/overview/snapshot');
+                Job.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getSummary: function (filter) {
+                var deferred = $q.defer();
+                var Job = $resource('jobs/overview/summary');
+                Job.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }
