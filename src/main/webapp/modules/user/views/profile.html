@@ -20,7 +20,7 @@
                    <div class="row m-t">
                        <div class="col-sm-3"><span class="text-dark" translate>label.userName</span></div>
                        <div class="col-sm-9">
-                          <span class="text-black-lt">{{permission.user  | decodeSpace}}</span>
+                          <span class="text-black-lt" ng-bind-html="permission.user  | decodeSpace"></span>
                        </div>
                    </div>
                    <hr>
@@ -326,6 +326,19 @@
                            </label>
                            <label class="md-check w">
                                <input type="radio" name="auditLog" ng-model="upc.preferences.adtLog" value="current" ng-change="upc.changeConfiguration();">
+                               <i class="primary"></i> <span translate>label.current</span>
+                           </label>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.showAgentJobExecutionForJobScheduler</div>
+                       <div class="col-sm-6">
+                           <label class="md-check w">
+                               <input type="radio" name="agentTask" ng-model="upc.preferences.agentTask" value="all" ng-change="upc.changeConfiguration();">
+                               <i class="primary"></i> <span translate>label.all</span>
+                           </label>
+                           <label class="md-check w">
+                               <input type="radio" name="agentTask" ng-model="upc.preferences.agentTask" value="current" ng-change="upc.changeConfiguration();">
                                <i class="primary"></i> <span translate>label.current</span>
                            </label>
                        </div>

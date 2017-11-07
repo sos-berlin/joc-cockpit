@@ -32,6 +32,18 @@
         tabs._job.currentPage = '1';
         tabs._job.expand_to = [];
         tabs._job.selectedView = true;
+        tabs._job.showTaskPanel = undefined;
+
+        tabs._jobDetail = {};
+        tabs._jobDetail.filter = {};
+        tabs._jobDetail.filter.state = 'ALL';
+        tabs._jobDetail.filter.type = 'ALL';
+        tabs._jobDetail.filter.sortBy = 'name';
+        tabs._jobDetail.reverse = false;
+        tabs._jobDetail.currentPage = '1';
+        tabs._jobDetail.expand_to = [];
+        tabs._jobDetail.selectedView = true;
+        tabs._jobDetail.showTaskPanel = undefined;
 
         tabs._daliyPlan = {};
         tabs._daliyPlan.filter = {};
@@ -68,6 +80,7 @@
         tabs._orderDetail.pageView = 'grid';
         tabs._orderDetail.showErrorNodes = true;
         tabs._orderDetail.fitToScreen = false;
+        tabs._orderDetail.showLogPanel = undefined;
 
         tabs._history = {};
         tabs._history.order = {};
@@ -146,6 +159,18 @@
         tempTabs._job.currentPage = '1';
         tempTabs._job.expand_to = [];
         tempTabs._job.selectedView = true;
+        tempTabs._job.showTaskPanel = undefined;
+
+        tempTabs._jobDetail = {};
+        tempTabs._jobDetail.filter = {};
+        tempTabs._jobDetail.filter.state = 'ALL';
+        tempTabs._jobDetail.filter.type = 'ALL';
+        tempTabs._jobDetail.filter.sortBy = 'name';
+        tempTabs._jobDetail.reverse = false;
+        tempTabs._jobDetail.currentPage = '1';
+        tempTabs._jobDetail.expand_to = [];
+        tempTabs._jobDetail.selectedView = true;
+        tempTabs._jobDetail.showTaskPanel = undefined;
 
         tempTabs._daliyPlan = {};
         tempTabs._daliyPlan.filter = {};
@@ -256,9 +281,10 @@
         if ($window.localStorage.$SOS$DASHBOARDTABS) {
             try {
                 var obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
-
+                   
                 if (obj) {
-                    if (obj._dashboard.filter.orderSummaryfrom != 'today') {
+
+                    if (obj._dashboard.filter.label != 'button.today') {
                         dashboard = obj;
                     }
                 }
@@ -311,6 +337,9 @@
             },
             getJobTab: function () {
                 return tabs._job;
+            },
+            getJobDetailTab: function () {
+                return tabs._jobDetail;
             },
             getDailyPlanTab: function () {
                 return tabs._daliyPlan;

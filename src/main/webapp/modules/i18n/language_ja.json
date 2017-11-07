@@ -1049,5 +1049,16 @@
   "label.tasksOverview": "Tasks Overview",
   "label.tasksSummary": "Tasks Summary",
   "label.tasks": "Tasks",
-  "label.calendarViewFor": "Calendar View for"
+  "label.calendarViewFor": "Calendar View for",
+  "breadcrumb.jobsOverview": "Jobs Overview",
+  "label.agentJobExecution": "Agent Job Execution",
+  "breadcrumb.agentExecutedJobs": "Agent Executed Jobs",
+  "breadcrumb.agentExecutedJob": "Agent Executed Job",
+  "label.agentUrl": "Agent URL",
+  "label.causeOfTheTaskStart": "Cause of The Task Start",
+  "label.numberOfSuccessfullyExecutedTask": "Number of Successfully Executed Task",
+  "label.agentTaskFound": "Agent Task entry found",
+  "label.auditTasksFound": "Agent Task entries found",
+  "message.noAgentTaskFound" : "no Agent task entries found",
+  "label.showAgentJobExecutionForJobScheduler": "Show Agent Job Execution For JobScheduler"
 }

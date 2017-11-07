@@ -87,7 +87,7 @@
                 SOSAuth.currentUserData = null;
 
                 UserService.authenticate(
-                    encodeURIComponent(vm.user.username),
+                    vm.user.username,
                     vm.user.password
                 ).then(function (response) {
                         if (response && response.isAuthenticated) {
@@ -739,12 +739,12 @@
 
         }
 
-        var temp_name = '', temp_role = '';
+        var temp_role = '';
         //--------------------ACTION-----------------------
         vm.checkUser = function () {
             vm.isUnique = true;
             angular.forEach(vm.users, function (usr, index) {
-                if (usr.user != temp_name && (angular.equals(usr.user, vm.user.user) || usr.user == vm.user.user))
+                if (usr.user != vm.temp_name && (angular.equals(usr.user, vm.user.user) || usr.user == vm.user.user))
                     vm.isUnique = false;
             });
         };
@@ -810,7 +810,7 @@
         vm.editUser = function (user) {
             vm.user = angular.copy(user);
             vm.user.user = decodeURIComponent(vm.user.user);
-            temp_name = user.user;
+            vm.temp_name = user.user;
             vm.isUnique = true;
             if(vm.user.password)
             vm.user.fakepassword = "00000000";
@@ -823,6 +823,7 @@
                 backdrop: 'static'
             });
             modalInstance.result.then(function () {
+                 vm.temp_name='';
                 if (vm.user.fakepassword != '00000000') {
                     vm.user.password = vm.user.fakepassword || '';
                 }
@@ -839,8 +840,10 @@
                     selectedMasters = [];
                     selectedRoles = [];
                 }
+
             }, function () {
                 vm.user = {};
+                vm.temp_name='';
             });
         };
         vm.deleteUser = function (user) {

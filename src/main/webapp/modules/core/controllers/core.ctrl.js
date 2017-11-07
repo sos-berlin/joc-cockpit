@@ -1725,7 +1725,7 @@
         vm.viewDate = new Date();
         vm.events = [];
         vm.isCellOpen = true;
-        vm.ok = function () {
+        vm.ok = function (form) {
             if(vm.user) {
                 if (/\s/.test(vm.user.user) && vm.user.fakepassword) {
                     toasty.error({
@@ -1735,6 +1735,10 @@
                     return;
                 }else if(/\s/.test(vm.user.user) && !vm.user.fakepassword){
                    vm.user.user = encodeURIComponent(vm.user.user);
+                }
+                if (form) {
+                    form.$setPristine();
+                    form.$setUntouched();
                 }
             }
             if (vm.paramObject) {

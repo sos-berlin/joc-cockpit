@@ -21,7 +21,7 @@
                       </div>
                   </div>
                 </td>
-                <td><a ng-click="showMaster(user.user)" class="text-hover-primary" ng-bind="user.user  | decodeSpace"></a></td>
+                <td><a ng-click="showMaster(user.user)" class="text-hover-primary" ng-bind-html="user.user  | decodeSpace"></a></td>
                 <td><span>********</span></td>
                 <td>
                     <div ng-repeat="role in user.roles"><span ng-bind="role"></span></div>

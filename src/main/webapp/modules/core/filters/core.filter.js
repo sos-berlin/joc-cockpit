@@ -125,7 +125,7 @@
 
     function z() {
         return function (input) {
-            return decodeURIComponent(input);
+            return input ? input.replace(/%20/g, '&nbsp;') : '';
         }
     }
 

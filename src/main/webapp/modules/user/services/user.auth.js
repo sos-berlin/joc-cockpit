@@ -30,7 +30,7 @@
                                     }
                                 }
                             }
-                            config.url = './api/' + config.url;
+                             config.url = './api/' + config.url;
                             if ($rootScope.clientLogFilter.isEnable && !config.url.match('touch')) {
                                 var date = new Date();
                                 var info = {

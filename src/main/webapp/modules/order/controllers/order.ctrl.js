@@ -4901,7 +4901,7 @@
                     vm.auditLogs = result.auditLog;
                 }
             });
-        };
+        }
 
         vm.showAuditLogs = function (value) {
             vm.showLogPanel = value;

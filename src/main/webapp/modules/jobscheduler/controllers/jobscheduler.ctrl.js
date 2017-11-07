@@ -142,7 +142,7 @@
         /** -----------------Begin Agent clusters------------------- */
 
         /**
-         * Function to initialized SCHEDULE tree
+         * Function to initialized Agent tree
          */
         function initAgentTree(type) {
             ResourceService.tree({
@@ -394,7 +394,7 @@
 
         /** -----------------Begin Locks------------------- */
         /**
-         * Function to initialized SCHEDULE tree
+         * Function to initialized Lock tree
          */
         function initLockTree() {
 
@@ -1948,6 +1948,23 @@
 
 
         /** -----------------End Schedules------------------- */
+        /**
+         * Function to initialized Agent tasks
+         */
+        function getAgentTasks() {
+            var obj = {};
+            vm.agentTasks = [];
+            vm.isLoading = false;
+            vm.current = vm.userPreferences.agentTask == 'current';
+            obj.jobschedulerId = $scope.schedulerIds.selected;
+
+            ResourceService.getAgentTask({}).then(function (res) {
+                vm.agentTasks = res.agents;
+                vm.isLoading = true;
+            });
+        }
+
+        /** -----------------End Agent tasks------------------- */
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
             var views = {};
@@ -1971,11 +1988,14 @@
                 vm.resourceFilters.state = 'processClass';
                 vm.treeProcess = [];
                 initProccessTree();
-            } else {
+            } else if (toState.name == 'app.resources.schedules') {
                 vm.pageView = views.schedule;
                 vm.resourceFilters.state = 'schedules';
                 vm.tree = [];
                 initTree();
+            } else if (toState.name == 'app.resources.agentJobExecutions') {
+                vm.resourceFilters.state = 'agentJobExecutions';
+                getAgentTasks();
             }
             startPolling();
         });

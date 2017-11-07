@@ -83,6 +83,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            getAgentTask: function (filter) {
+                var deferred = $q.defer();
+                var AgentTask = $resource('report/agents ');
+                AgentTask.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

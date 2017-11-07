@@ -114,6 +114,16 @@
                 }
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.jobs' | translate}}", parent: "app.jobs"}
+        }).state("app.jobsOverview", {
+            url: "/tasks_overview/:name",
+            templateUrl: "modules/job/views/jobs-overview.html",
+            controller: "JobOverviewCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('Job');
+                }
+            },
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.jobsOverview' | translate}}", parent: "app.dashboard"}
         }).state("app.jobChains", {
             url: "/job_chains",
             templateUrl: "modules/job/views/job-chain.html",
@@ -220,6 +230,10 @@
             url: "/schedules",
             templateUrl: "modules/jobscheduler/views/resource-schedules.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.schedules' | translate}}", parent: "app.resources"}
+        }).state("app.resources.agentJobExecutions", {
+            url: "/agent_jobs_execution",
+            templateUrl: "modules/jobscheduler/views/resource-agent-job-execution.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.agentJobsExecution' | translate}}", parent: "app.resources"}
         }).state("app.agentCluster", {
             url: "/agent_cluster?path&scheduler_id",
             templateUrl: "modules/jobscheduler/views/agent-cluster.html",
@@ -240,6 +254,11 @@
             templateUrl: "modules/jobscheduler/views/schedule.html",
             controller: "ResourceInfoCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.schedule' | translate}}", parent: "app.resources.schedules"}
+        }).state("app.agentJobExecution", {
+            url: "/agent_job_execution?path&scheduler_id",
+            templateUrl: "modules/jobscheduler/views/agent-job-execution.html",
+            controller: "ResourceInfoCtrl",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.agentJobExecution' | translate}}", parent: "app.resources.agentExecutedJobs"}
         }).state("app.history", {
             url: "/history",
             templateUrl: "modules/order/views/history.html",

@@ -166,12 +166,13 @@
 <script type="text/javascript" src="bower_components/tracekit/tracekit.js"></script>
 <script type="text/javascript" src="js/stickySidebar.js"></script>
 <script type="text/javascript" src="js/tableexport.min.js"></script>
-    <!--[if !IE]><!-->
+<!--[if !IE]><!-->
 <script type="text/javascript" src="js/jquery.table2excel.js"></script>
-    <!--<![endif]-->
+<!--<![endif]-->
 <!-- runtime editor js files-->
 <script type="text/javascript" src="js/xml2json.min.js"></script>
 <script type="text/javascript" src="js/vkbeautify.js"></script>
+<!-- export pdf js files -->
 <script type="text/javascript" src="js/html2canvas.js"></script>
 <script type="text/javascript" src="js/pdfmake.min.js"></script>
 <script src="bower_components/es6-promise/dist/es6-promise.auto.js"></script>
@@ -190,9 +191,10 @@
 <script src="modules/user/controllers/user.ctrl.js"></script>
 <script src="modules/user/services/user.service.js"></script>
 <script src="modules/user/services/user.auth.js"></script>
-<!-- job module-->
+<!-- job and jobchain module-->
 <script src="modules/job/controllers/job.ctrl.js"></script>
 <script src="modules/job/services/job.service.js"></script>
+<script src="modules/job/directives/job.directive.js"></script>
 <!-- jobscheduler module-->
 <script src="modules/jobscheduler/controllers/jobscheduler.ctrl.js"></script>
 <script src="modules/jobscheduler/services/jobscheduler.service.js"></script>
