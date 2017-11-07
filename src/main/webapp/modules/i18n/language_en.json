@@ -1046,8 +1046,8 @@
   "label.weekDays": "Weekdays",
   "message.inValidUserName": "User names with spaces are not allowed with Shiro authentication",
   "label.showAuditLogForJobScheduler": "Show Audit Log for JobScheduler",
-  "label.tasksOverview": "Tasks Overview",
-  "label.tasksSummary": "Tasks Summary",
+  "label.tasksOverview": "Job Overview",
+  "label.tasksSummary": "Task Summary",
   "label.tasks": "Tasks",
   "label.calendarViewFor": "Calendar View for",
   "breadcrumb.jobsOverview": "Jobs Overview",
@@ -1055,10 +1055,10 @@
   "breadcrumb.agentJobsExecution": "Agent Jobs Executed",
   "breadcrumb.agentJobExecution": "Agent Job Executed",
   "label.agentUrl": "Agent URL",
-  "label.causeOfTheTaskStart": "Cause of The Task Start",
-  "label.numberOfSuccessfullyExecutedTask": "Number of Successfully Executed Task",
+  "label.causeOfTheTaskStart": "Cause of Task Start",
+  "label.numberOfSuccessfullyExecutedTask": "Number of Successfully Executed Tasks",
   "label.agentTaskFound": "Agent Task entry found",
   "label.auditTasksFound": "Agent Task entries found",
-  "message.noAgentTaskFound" : "no Agent task entries found",
-  "label.showAgentJobExecutionForJobScheduler": "Show Agent Job Execution For JobScheduler"
+  "message.noAgentTaskFound" : "no Agent Task entries found",
+  "label.showAgentJobExecutionForJobScheduler": "Show Agent Job Executions for JobScheduler"
 }
