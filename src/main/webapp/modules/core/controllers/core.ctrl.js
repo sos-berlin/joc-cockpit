@@ -750,6 +750,14 @@
                     $state.go('app.resources.agentClusters');
                     return;
                 } else {
+                    vm.resourceFilters.state = 'agentJobExecutions';
+                }
+            }
+            if (vm.resourceFilters.state == 'agentJobExecutions') {
+                if (vm.permission.JobschedulerUniversalAgent.view.status) {
+                    $state.go('app.resources.agentJobExecutions');
+                    return;
+                } else {
                     vm.resourceFilters.state = 'processClass';
                 }
             }

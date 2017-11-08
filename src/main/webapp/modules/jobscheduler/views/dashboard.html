@@ -394,78 +394,54 @@
                         <div class="table-responsive">
                             <table style="width: 100%" ng-if="!notPermissionForSnapshot">
                                 <tr class="text-center">
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.inProgress</div>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.waitForTransfer</div>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.transferring</div>
                                     </td>
-                                    <td width="8.3%">
-                                        <div translate>label.skipped</div>
-                                    </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.aborted</div>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.nonOverwritten</div>
                                     </td>
-                                    <td width="8.3%">
-                                        <div translate>label.deleted</div>
-                                    </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.transferred</div>
                                     </td>
-                                    <td width="8.3%">
-                                        <div translate>label.renamed</div>
-                                    </td>
-                                    <td width="8.3%">
-                                        <div translate>label.hasErrors</div>
-                                    </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.ignored</div>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <div translate>label.setBack</div>
                                     </td>
                                 </tr>
                                 <tr class="text-center" ng-if="snapshot">
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a  class="text-lg _600 " ng-bind="snapshot.pending || 0"></a>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-bind="snapshot.running || 0"></a>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-class="{'dark-orange':snapshot.suspended >0}"  ng-bind="snapshot.suspended || 0"></a>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-bind="snapshot.setback || 0"></a>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-bind="snapshot.waitingForResource || 0"></a>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
                                     </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
                                     </td>
-                                    <td width="8.3%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
-                                    </td>
-                                    <td width="8.3%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
-                                    </td>
-                                    <td width="8.3%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
-                                    </td>
-                                    <td width="8.3%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
-                                    </td>
-                                    <td width="8.3%">
+                                    <td width="12.5%">
                                         <a class="text-lg _600 " ng-bind="snapshot.blacklist || 0"></a>
                                     </td>
                                 </tr>

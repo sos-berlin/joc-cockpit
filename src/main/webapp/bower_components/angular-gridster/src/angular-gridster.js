@@ -37,7 +37,7 @@
 		mobileModeEnabled: true, // whether or not to toggle mobile mode when screen width is less than mobileBreakPoint
 		minColumns: 1, // minimum amount of columns the grid can scale down to
 		minRows: 1, // minimum amount of rows to show if the grid is empty
-		maxRows: 8, // maximum amount of rows in the grid
+		maxRows: 11, // maximum amount of rows in the grid
 		defaultSizeX: 2, // default width of an item in columns
 		defaultSizeY: 1, // default height of an item in rows
 		minSizeX: 2, // minimum column width of an item
@@ -935,7 +935,6 @@
 		 */
 		this.setPosition = function(row, column) {
 			this.gridster.putItem(this, row, column);
-
 			if (!this.isMoving()) {
 				this.setElementPosition();
 			}

@@ -492,7 +492,7 @@
                                                                 <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
                                                                     <td colspan="4">
 
-                                                                        <div class="text-sm text-l-c"
+                                                                        <div class="text-sm"
                                                                              ng-repeat="order in jobChain.fileOrderSources">
                                                                             <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
                                                                             <span>{{'label.directory' | translate}}:</span>
@@ -748,7 +748,7 @@
                                         <tr ng-if="jobChain.fileOrderSources && jobChain.fileOrderSources.length>0">
                                             <td colspan="4">
 
-                                                <div class="text-sm text-l-c"
+                                                <div class="text-sm"
                                                      ng-repeat="order in jobChain.fileOrderSources">
                                                     <span ng-if="$index==0">{{'label.fileOrders' | translate}} |&nbsp;</span>
                                                     <span>{{'label.directory' | translate}}:</span> {{order.directory}}&nbsp;
