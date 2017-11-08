@@ -1058,7 +1058,10 @@
   "label.causeOfTheTaskStart": "Cause du démarrage de la Tâche",
   "label.numberOfSuccessfullyExecutedTask": "Nombre des Tâches réussies",
   "label.agentTaskFound": "entrée trouvée pour Tâches avec Agent",
-  "label.auditTasksFound": "entrées trouvées pour Tâches avec Agent",
+  "label.agentTasksFound": "entrées trouvées pour Tâches avec Agent",
   "message.noAgentTaskFound" : "aucune entrée trouvée pour Tâches avec Agent",
-  "label.showAgentJobExecutionForJobScheduler": "Visualiser l'exécution des Tâches avec Agent pour JobScheduler"
+  "label.showAgentJobExecutionForJobScheduler": "Visualiser l'exécution des Tâches avec Agent pour JobScheduler",
+  "label.regularExpression": "Regular Expression",
+  "label.totalNumberOfExecutions": "Total number of executions",
+  "placeholder.enterAgentUrl": "Enter Agent Url"
 }

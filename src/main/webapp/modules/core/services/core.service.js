@@ -116,6 +116,12 @@
         tabs._resource.agents.reverse = false;
         tabs._resource.agents.currentPage = '1';
         tabs._resource.agents.expand_to = [];
+        tabs._resource.agentJobExecution = {};
+        tabs._resource.agentJobExecution.filter = {};
+        tabs._resource.agentJobExecution.filter.date = 'today';
+        tabs._resource.agentJobExecution.filter.sortBy = 'agent';
+        tabs._resource.agentJobExecution.reverse = false;
+        tabs._resource.agentJobExecution.currentPage = '1';
         tabs._resource.locks = {};
         tabs._resource.locks.filter = {};
         tabs._resource.locks.filter.state = 'all';
@@ -244,6 +250,12 @@
         tempTabs._resource.agents.reverse = false;
         tempTabs._resource.agents.currentPage = '1';
         tempTabs._resource.agents.expand_to = [];
+        tempTabs._resource.agentJobExecution = {};
+        tempTabs._resource.agentJobExecution.filter = {};
+        tempTabs._resource.agentJobExecution.filter.date = 'today';
+        tempTabs._resource.agentJobExecution.filter.sortBy = 'agent';
+        tempTabs._resource.agentJobExecution.reverse = false;
+        tempTabs._resource.agentJobExecution.currentPage = '1';
         tempTabs._resource.locks = {};
         tempTabs._resource.locks.filter = {};
         tempTabs._resource.locks.filter.state = 'all';
@@ -281,10 +293,9 @@
         if ($window.localStorage.$SOS$DASHBOARDTABS) {
             try {
                 var obj = JSON.parse($window.localStorage.$SOS$DASHBOARDTABS);
-                   
-                if (obj) {
 
-                    if (obj._dashboard.filter.label != 'button.today') {
+                if (obj) {
+                    if (obj._dashboard.filter.orderRange != 'today') {
                         dashboard = obj;
                     }
                 }

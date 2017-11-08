@@ -3651,7 +3651,25 @@
                 } else if (/^\s*(now)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = new Date();
                     toDate = new Date();
-                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    fromDate = date[1]+date[2];
+                    toDate =  date[3]+date[4];
+
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    fromDate = date[1] + date[2];
+                    toDate =  date[3] + date[4] + '+' + date[5] + date[6];
+
+                }else if (/^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    fromDate = date[1] + date[2] +'+' + date[3] + date[4];
+                    toDate =  date[5] + date[6] + '+' + date[7] + date[8];
+                }else if (/^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    fromDate = date[1] + date[2] +'+' + date[3] + date[4];
+                    toDate =  date[5] + date[6];
+                }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.selectedFiltered.planned);
                     fromDate = new Date();
                     if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
@@ -6271,6 +6289,21 @@
                 var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
                 fromDate = '-'+date[2]+date[3];
                 toDate = '-'+date[5]+date[6];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3];
+                toDate = '-'+date[5]+date[6]+'-'+date[8]+date[9];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
+                toDate = '-'+date[8]+date[9];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
+                toDate = '-'+date[8]+date[9]+'-'+date[11]+date[12];
 
             }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);

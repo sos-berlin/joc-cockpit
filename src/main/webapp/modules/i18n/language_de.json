@@ -1058,7 +1058,10 @@
   "label.causeOfTheTaskStart": "Grund des Prozessstarts",
   "label.numberOfSuccessfullyExecutedTask": "Anzahl erfolgreich ausgeführter Prozesse",
   "label.agentTaskFound": "Prozess für Agent gefunden",
-  "label.auditTasksFound": "Prozesse für Agenten gefunden",
+  "label.agentTasksFound": "Prozesse für Agenten gefunden",
   "message.noAgentTaskFound" : "Keine Einträge für Prozesse mit Agenten gefunden",
-  "label.showAgentJobExecutionForJobScheduler": "Job-Ausführungen mit Agenten anzeigen für JobScheduler"
+  "label.showAgentJobExecutionForJobScheduler": "Job-Ausführungen mit Agenten anzeigen für JobScheduler",
+  "label.regularExpression": "Regular Expression",
+  "label.totalNumberOfExecutions": "Total number of executions",
+  "placeholder.enterAgentUrl": "Enter Agent Url"
 }

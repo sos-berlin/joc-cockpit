@@ -16,6 +16,7 @@
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
         vm.agentsFilters = vm.resourceFilters.agents;
+        vm.agentJobExecutionFilters = vm.resourceFilters.agentJobExecution;
         vm.locksFilters = vm.resourceFilters.locks;
         vm.processFilters = vm.resourceFilters.processClasses;
         vm.scheduleFilters = vm.resourceFilters.schedules;
@@ -48,6 +49,10 @@
         vm.sortByA = function (propertyName) {
             vm.agentsFilters.reverse = !vm.agentsFilters.reverse;
             vm.agentsFilters.filter.sortBy = propertyName;
+        };
+        vm.sortByAT = function (propertyName) {
+            vm.agentJobExecutionFilters.reverse = !vm.agentJobExecutionFilters.reverse;
+            vm.agentJobExecutionFilters.filter.sortBy = propertyName;
         };
         vm.sortByP = function (propertyName) {
             vm.processFilters.reverse = !vm.processFilters.reverse;
@@ -1948,21 +1953,137 @@
 
 
         /** -----------------End Schedules------------------- */
+        vm.agentJobExecutionFilters.current = vm.userPreferences.agentTask == 'current';
         /**
          * Function to initialized Agent tasks
          */
+        vm.loadAgentTasks = getAgentTasks;
         function getAgentTasks() {
-            var obj = {};
-            vm.agentTasks = [];
             vm.isLoading = false;
-            vm.current = vm.userPreferences.agentTask == 'current';
-            obj.jobschedulerId = $scope.schedulerIds.selected;
+            var obj = {};
+            obj.jobschedulerId = vm.agentJobExecutionFilters.current == true ? vm.schedulerIds.selected : '';
+            obj = setDateRange(obj);
 
-            ResourceService.getAgentTask({}).then(function (res) {
+            ResourceService.getAgentTask(obj).then(function (res) {
                 vm.agentTasks = res.agents;
+                vm.totalJobExecution =res.totalNumOfSuccessfulTasks;
                 vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+                vm.agentTasks = [];
             });
         }
+
+         function setDateRange(filter) {
+
+             if (vm.agentJobExecutionFilters.filter.date == 'today') {
+                var from = new Date();
+                var to = new Date();
+                from.setHours(0);
+                from.setMinutes(0);
+                from.setSeconds(0);
+                from.setMilliseconds(0);
+                to.setDate(to.getDate() + 1);
+                to.setHours(0);
+                to.setMinutes(0);
+                to.setSeconds(0);
+                to.setMilliseconds(0);
+
+                filter.dateFrom = from;
+                filter.dateTo = to;
+            } else if (vm.agentJobExecutionFilters.filter.date && vm.agentJobExecutionFilters.filter.date != 'all'){
+                filter.dateFrom = vm.agentJobExecutionFilters.filter.date;filter.timeZone = vm.userPreferences.zone;
+            }
+            return filter;
+        }
+
+        vm.changeJobScheduler = function () {
+            getAgentTasks();
+        };
+        vm.agentJobSearch ={};
+        vm.advancedSearch = function () {
+            vm.showSearchPanel = true;
+            vm.agentJobSearch.from = new Date();
+            vm.agentJobSearch.from.setDate(vm.agentJobSearch.from.getDate() - 1);
+            vm.agentJobSearch.fromTime = '00:00';
+            vm.agentJobSearch.to = new Date();
+            vm.agentJobSearch.toTime = '00:00';
+        };
+        vm.cancel = function () {
+            if (!vm.agentJobExecutionFilters.filter.date) {
+                vm.agentJobExecutionFilters.filter.date = 'today';
+            }
+            vm.showSearchPanel = false;
+            vm.agentJobSearch={};
+            getAgentTasks();
+        };
+
+        vm.exportToExcel = function () {
+            $('#exportToExcelBtn').attr("disabled", true);
+            if (!vm.isIE()) {
+                $('#agentJobExecution').table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: "jobscheduler-agent-job-excution",
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            } else {
+                var ExportButtons = document.getElementById('agentJobExecution');
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false
+                });
+                var exportData = instance.getExportData()['agentJobExecution']['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, "jobscheduler-agent-job-excution", exportData.fileExtension);
+            }
+            $('#exportToExcelBtn').attr("disabled", false);
+        };
+
+        vm.search = function() {
+            var obj = {};
+            if(vm.agentJobSearch.jobschedulerId) {
+                obj.jobschedulerId = vm.agentJobSearch.jobschedulerId;
+            }else{
+                obj.jobschedulerId = vm.agentJobExecutionFilters.current == true ? vm.schedulerIds.selected : '';
+            }
+            if(vm.agentJobSearch.url)
+                obj.agents = vm.agentJobSearch.url.split(',');
+            if (vm.agentJobSearch.from) {
+                var fromDate = new Date(vm.agentJobSearch.from);
+                if (vm.agentJobSearch.fromTime) {
+                    fromDate.setHours(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').hours());
+                    fromDate.setMinutes(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').minutes());
+                    fromDate.setSeconds(moment(vm.agentJobSearch.fromTime, 'HH:mm:ss').seconds());
+                } else {
+                    fromDate.setHours(0);
+                    fromDate.setMinutes(0);
+                    fromDate.setSeconds(0);
+                }
+                fromDate.setMilliseconds(0);
+                obj.dateFrom = fromDate;
+            }
+            if (vm.agentJobSearch.to) {
+                var toDate = new Date(vm.agentJobSearch.to);
+                if (vm.agentJobSearch.toTime) {
+                    toDate.setHours(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').hours());
+                    toDate.setMinutes(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').minutes());
+                    toDate.setSeconds(moment(vm.agentJobSearch.toTime, 'HH:mm:ss').seconds());
+                } else {
+                    toDate.setHours(0);
+                    toDate.setMinutes(0);
+                    toDate.setSeconds(0);
+                }
+                toDate.setMilliseconds(0);
+                obj.dateTo = toDate;
+            }
+            ResourceService.getAgentTask(obj).then(function (res) {
+                vm.agentTasks = res.agents;
+                vm.totalJobExecution =res.totalNumOfSuccessfulTasks;
+            });
+
+        };
 
         /** -----------------End Agent tasks------------------- */
 

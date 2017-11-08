@@ -254,11 +254,6 @@
             templateUrl: "modules/jobscheduler/views/schedule.html",
             controller: "ResourceInfoCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.schedule' | translate}}", parent: "app.resources.schedules"}
-        }).state("app.agentJobExecution", {
-            url: "/agent_job_execution?path&scheduler_id",
-            templateUrl: "modules/jobscheduler/views/agent-job-execution.html",
-            controller: "ResourceInfoCtrl",
-            ncyBreadcrumb: {label: "{{ 'breadcrumb.agentJobExecution' | translate}}", parent: "app.resources.agentExecutedJobs"}
         }).state("app.history", {
             url: "/history",
             templateUrl: "modules/order/views/history.html",
