@@ -130,9 +130,10 @@
                             dispatch: {
                                 elementClick: function (e) {
                                     var res = e.data.key.toUpperCase();
-                                    vm.status = res;
-
-                                    $rootScope.$broadcast('jobState', res);
+                                    if(res!='TASKS') {
+                                        vm.status = res;
+                                        $rootScope.$broadcast('jobState', res);
+                                    }
                                 }
                             }
                         }

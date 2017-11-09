@@ -3331,8 +3331,8 @@
         vm.dashboard = {widgets: []};
         function initWidgets() {
             if (vm.userPreferences.dashboard) {
-/*                vm.dashboardLayout = vm.userPreferences.dashboard;
-            } else {*/
+                vm.dashboardLayout = vm.userPreferences.dashboard;
+            } else {
                 vm.dashboardLayout = [{
                     row: 0,
                     col: 0,
@@ -3436,7 +3436,15 @@
                 if (vm.dashboardLayout[i].visible) {
                     vm.dashboard.widgets.push(vm.dashboardLayout[i]);
                     if(i>0 && vm.dashboardLayout[i].row == vm.dashboardLayout[i-1].row && vm.dashboardLayout[i].col == vm.dashboardLayout[i-1].col){
-                        vm.dashboardLayout[i].row = vm.dashboardLayout[i].row+1;
+                        if(vm.dashboardLayout[i-1].sizeX ==4 && vm.dashboardLayout[i].sizeX ==2 && vm.dashboardLayout[i-1].sizeY == vm.dashboardLayout[i].sizeY){
+                            vm.dashboardLayout[i-1].col = 0;
+                            vm.dashboardLayout[i].col = 4;
+                        }else if(vm.dashboardLayout[i-1].sizeX ==2 && vm.dashboardLayout[i].sizeX ==4 && vm.dashboardLayout[i-1].sizeY == vm.dashboardLayout[i].sizeY){
+                            vm.dashboardLayout[i].col = 0;
+                            vm.dashboardLayout[i-1].col = 4;
+                        }else{
+                            vm.dashboardLayout[i].row = vm.dashboardLayout[i].row+1;
+                        }
                     }
                 }
 
@@ -3584,8 +3592,8 @@
                         }
                     }
                 }
-                if (vm.dashboard.widgets[i].row == 0){
-                    $('#' + vm.dashboard.widgets[i].name).css('top','22px');
+                if (vm.dashboard.widgets[i].row == 0) {
+                    $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
                 }
                 else if (vm.dashboard.widgets[i].row > 0) {
                     if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
@@ -3794,7 +3802,7 @@
         var interval2 = $interval(function () {
             if(!isDragging)
             setClusterWidgetHeight();
-        },1200);
+        },1000);
 
         vm.agentClusters = {};
         if (SOSAuth.jobChain) {
@@ -4645,6 +4653,7 @@
                  setWidgetPreference();
              }
         });
+
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
