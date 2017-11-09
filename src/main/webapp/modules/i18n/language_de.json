@@ -1061,7 +1061,7 @@
   "label.agentTasksFound": "Prozesse für Agenten gefunden",
   "message.noAgentTaskFound" : "Keine Einträge für Prozesse mit Agenten gefunden",
   "label.showAgentJobExecutionForJobScheduler": "Job-Ausführungen mit Agenten anzeigen für JobScheduler",
-  "label.regularExpression": "Regular Expression",
-  "label.totalNumberOfExecutions": "Total number of executions",
-  "placeholder.enterAgentUrl": "Enter Agent Url"
+  "label.regularExpression": "Regulärer Ausdruck",
+  "label.totalNumberOfExecutions": "Summe der Job-Ausführungen",
+  "placeholder.enterAgentUrl": "URL des Agenten angeben"
 }
