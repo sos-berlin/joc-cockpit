@@ -216,6 +216,7 @@
                 preferences.theme = 'light';
                 preferences.historyView = 'current';
                 preferences.adtLog = 'current';
+                preferences.agentTask = 'current';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
@@ -266,6 +267,9 @@
                             if (preferences && !preferences.adtLog) {
                                 preferences.adtLog = 'current';
                             }
+                      if (preferences && !preferences.agentTask) {
+                             preferences.agentTask = 'current';
+                        }
 
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
@@ -737,6 +741,14 @@
             if (vm.resourceFilters.state == 'agent') {
                 if (vm.permission.JobschedulerUniversalAgent.view.status) {
                     $state.go('app.resources.agentClusters');
+                    return;
+                } else {
+                    vm.resourceFilters.state = 'agentJobExecutions';
+                }
+            }
+            if (vm.resourceFilters.state == 'agentJobExecutions') {
+                if (vm.permission.JobschedulerUniversalAgent.view.status) {
+                    $state.go('app.resources.agentJobExecutions');
                     return;
                 } else {
                     vm.resourceFilters.state = 'processClass';

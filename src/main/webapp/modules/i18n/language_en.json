@@ -1058,7 +1058,10 @@
   "label.causeOfTheTaskStart": "Cause of Task Start",
   "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed Tasks",
   "label.agentTaskFound": "Agent Task entry found",
-  "label.auditTasksFound": "Agent Task entries found",
+  "label.agentTasksFound": "Agent Task entries found",
   "message.noAgentTaskFound" : "no Agent Task entries found",
-  "label.showAgentJobExecutionForJobScheduler": "Show Agent Job Executions for JobScheduler"
+  "label.showAgentJobExecutionForJobScheduler": "Show Agent Job Executions for JobScheduler",
+  "label.regularExpression": "Regular Expression",
+  "label.totalNumberOfExecutions": "Total number of executions",
+  "placeholder.enterAgentUrl": "Enter Agent Url"
 }
