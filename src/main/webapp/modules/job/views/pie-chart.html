@@ -32,8 +32,8 @@
             <a ng-click="setFilter('WAITINGFORRESOURCE')" class="pull-right text primary-text-hover-color" ng-class="{'_600': status =='WAITINGFORRESOURCE'}" ng-bind="snapshot.waitingForResource || 0"></a>
         </div>
         <div class="setback" >
-            <span class="text-black-lt _300" ng-class="{'_600': status =='TASKS'}"><a href ng-click="setFilter('TASKS')" class="primary-text-hover-color" translate>label.tasks</a></span>
-            <a ng-click="setFilter('TASKS')" class="pull-right text primary-text-hover-color" ng-class="{'_600': status =='TASKS'}" ng-bind="snapshot.tasks || 0"></a>
+            <span class="text-black-lt _300" ng-class="{'_600': status =='TASKS'}" translate>label.tasks</span>
+            <span class="pull-right text" ng-class="{'_600': status =='TASKS'}" ng-bind="snapshot.tasks || 0"></span>
         </div>
     </div>
 </div>
