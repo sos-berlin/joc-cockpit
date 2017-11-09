@@ -3722,6 +3722,8 @@ setClusterWidgetHeigth();
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = new Date();
+            } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = date;
             }
             return date;
         }
