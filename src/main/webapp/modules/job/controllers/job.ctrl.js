@@ -5718,6 +5718,7 @@
             dest.stateText = sour.stateText;
             dest.configurationStatus = sour.configurationStatus;
             dest.ordersSummary = sour.ordersSummary;
+            dest.path1 = sour.path1;
             return dest;
         }
 
