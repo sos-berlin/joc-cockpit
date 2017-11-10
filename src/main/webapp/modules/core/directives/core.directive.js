@@ -154,6 +154,7 @@
                     calendar: view,
                     jobChainOrder: view,
                     orderOverView: view,
+                    jobOverView: view,
                     permission: view
                 };
                 if (!e.localStorage.views) {
@@ -183,7 +184,9 @@
                     t.pageView = views.jobChainOrder;
                 } else if (l.path().match('/orders_overview')) {
                     t.pageView = views.orderOverView;
-                } else if (l.path().match('/users/')) {
+                }else if (l.path().match('/tasks_overview')) {
+                    t.pageView = views.jobOverView || 'grid';
+                }else if (l.path().match('/users/')) {
                     t.pageView = views.permission;
                 }else{
                     t.pageView = view;
@@ -211,7 +214,9 @@
                         views.jobChainOrder = t.pageView;
                     } else if (l.path().match('/orders_overview')) {
                         views.orderOverView = t.pageView;
-                    } else if (l.path().match('/users/')) {
+                    }else if (l.path().match('/tasks_overview')) {
+                        views.jobOverView = t.pageView;
+                    }else if (l.path().match('/users/')) {
                         views.permission =t.pageView;
                     }
                     e.localStorage.views = JSON.stringify(views);

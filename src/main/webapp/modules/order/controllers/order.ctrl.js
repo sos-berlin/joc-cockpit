@@ -6764,34 +6764,35 @@
                 }
                 if (vm.jobSearch.date == 'process') {
                     filter = parseProcessExecuted(vm.jobSearch.planned, filter);
-                }
-                if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
-                    var fromDate = new Date(vm.jobSearch.from);
-                    if (vm.jobSearch.fromTime) {
-                        fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
-                        fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
-                        fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
-                    } else {
-                        fromDate.setHours(0);
-                        fromDate.setMinutes(0);
-                        fromDate.setSeconds(0);
+                }else {
+                    if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
+                        var fromDate = new Date(vm.jobSearch.from);
+                        if (vm.jobSearch.fromTime) {
+                            fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
+                        } else {
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        }
+                        fromDate.setMilliseconds(0);
+                        filter.dateFrom = fromDate;
                     }
-                    fromDate.setMilliseconds(0);
-                    filter.dateFrom = fromDate;
-                }
-                if (vm.jobSearch.date == 'date' && vm.jobSearch.to) {
-                    var toDate = new Date(vm.jobSearch.to);
-                    if (vm.jobSearch.toTime) {
-                        toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
-                        toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
-                        toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
-                    } else {
-                        toDate.setHours(0);
-                        toDate.setMinutes(0);
-                        toDate.setSeconds(0);
+                    if (vm.jobSearch.date == 'date' && vm.jobSearch.to) {
+                        var toDate = new Date(vm.jobSearch.to);
+                        if (vm.jobSearch.toTime) {
+                            toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
+                        } else {
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        }
+                        toDate.setMilliseconds(0);
+                        filter.dateTo = toDate;
                     }
-                    toDate.setMilliseconds(0);
-                    filter.dateTo = toDate;
                 }
 
                 if (vm.jobSearch.regex) {

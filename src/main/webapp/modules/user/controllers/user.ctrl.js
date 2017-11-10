@@ -547,6 +547,75 @@
             return filter;
         }
 
+        function parseProcessExecuted(regex, obj) {
+            var fromDate;
+            var toDate;
+
+            if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
+
+            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+                fromDate = new Date();
+                toDate = new Date();
+                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                fromDate.setSeconds(toDate.getSeconds() - seconds);
+            } else if (/^\s*(Today)\s*$/i.test(regex)) {
+                fromDate = '0d';
+                toDate = '0d';
+            }else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+                fromDate = '-1d';
+                toDate = '0d';
+            } else if (/^\s*(now)\s*$/i.test(regex)) {
+                fromDate = new Date();
+                toDate = new Date();
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3];
+                toDate = '-'+date[5]+date[6];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3];
+                toDate = '-'+date[5]+date[6]+'-'+date[8]+date[9];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
+                toDate = '-'+date[8]+date[9];
+
+            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
+                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
+                toDate = '-'+date[8]+date[9]+'-'+date[11]+date[12];
+
+            }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+                fromDate = new Date();
+                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                    fromDate.setHours(parseInt(time[1]) - 12);
+                } else {
+                    fromDate.setHours(parseInt(time[1]));
+                }
+
+                fromDate.setMinutes(parseInt(time[2]));
+                toDate = new Date();
+                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                    toDate.setHours(parseInt(time[4]) - 12);
+                } else {
+                    toDate.setHours(parseInt(time[4]));
+                }
+                toDate.setMinutes(parseInt(time[5]));
+            }
+
+            if (fromDate) {
+                obj.dateFrom = fromDate;
+            }
+            if (toDate) {
+                obj.dateTo = toDate;
+            }
+            return obj;
+        }
+
 
         vm.filter_tree = {};
         vm.load = function () {
@@ -597,40 +666,41 @@
             if (vm.auditSearch.regex) {
                 filter.regex = vm.auditSearch.regex;
             }
+           if (vm.auditSearch.date == 'process') {
+               filter = parseProcessExecuted(vm.auditSearch.planned, filter);
+           }else {
+               if (vm.auditSearch.date == 'date' && vm.auditSearch.from) {
+                   var fromDate = new Date(vm.auditSearch.from);
+                   if (vm.auditSearch.fromTime) {
+                       fromDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
+                       fromDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
+                       fromDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
+                   } else {
+                       fromDate.setHours(0);
+                       fromDate.setMinutes(0);
+                       fromDate.setSeconds(0);
+                   }
+                   fromDate.setMilliseconds(0);
 
-            if (vm.auditSearch.from) {
-                var fromDate = new Date(vm.auditSearch.from);
-                if (vm.auditSearch.fromTime) {
-                    fromDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
-                    fromDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
-                    fromDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
-                } else {
-                    fromDate.setHours(0);
-                    fromDate.setMinutes(0);
-                    fromDate.setSeconds(0);
-                }
-                fromDate.setMilliseconds(0);
+                   filter.dateFrom = fromDate;
+               }
+               if (vm.auditSearch.date == 'date' && vm.auditSearch.to) {
+                   var toDate = new Date(vm.auditSearch.to);
+                   if (vm.auditSearch.toTime) {
+                       toDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
+                       toDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
+                       toDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
 
-                filter.dateFrom = fromDate;
-            }
-            if (vm.auditSearch.to) {
-                var toDate = new Date(vm.auditSearch.to);
-                if (vm.auditSearch.toTime) {
-                    toDate.setHours(moment(vm.auditSearch.fromTime, 'HH:mm:ss').hours());
-                    toDate.setMinutes(moment(vm.auditSearch.fromTime, 'HH:mm:ss').minutes());
-                    toDate.setSeconds(moment(vm.auditSearch.fromTime, 'HH:mm:ss').seconds());
+                   } else {
+                       toDate.setHours(0);
+                       toDate.setMinutes(0);
+                       toDate.setSeconds(0);
+                   }
+                   toDate.setMilliseconds(0);
 
-                } else {
-                    toDate.setHours(0);
-                    toDate.setMinutes(0);
-                    toDate.setSeconds(0);
-                }
-                toDate.setMilliseconds(0);
-
-                filter.dateTo = toDate;
-
-
-            }
+                   filter.dateTo = toDate;
+               }
+           }
             if (vm.auditSearch.account) {
                 filter.account = vm.auditSearch.account;
             }
@@ -654,6 +724,7 @@
         vm.advancedSearch = function () {
             vm.showSearchPanel = true;
             vm.auditSearch = {};
+            vm.auditSearch.date = 'date';
             vm.auditSearch.from = new Date();
             vm.auditSearch.from.setDate(vm.auditSearch.from.getDate() - 1);
             vm.auditSearch.fromTime = '00:00';
