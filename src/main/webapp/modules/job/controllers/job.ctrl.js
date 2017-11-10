@@ -5703,6 +5703,20 @@
         vm.jobFilters.filter.state = $stateParams.name;
         vm.object = {};
 
+        function mergePermanentAndVolatile(sour, dest) {
+            dest.runningTasks = sour.runningTasks;
+            dest.error = sour.error;
+            dest.numOfRunningTasks = sour.numOfRunningTasks;
+            dest.numOfQueuedTasks = sour.numOfQueuedTasks;
+            dest.taskQueue = sour.taskQueue;
+            dest.nextStartTime = sour.nextStartTime;
+            dest.startedAt = sour.startedAt;
+            dest.state = sour.state;
+            dest.stateText = sour.stateText;
+            dest.configurationStatus = sour.configurationStatus;
+            dest.ordersSummary = sour.ordersSummary;
+            return dest;
+        }
 
         vm.init = function () {
             var obj = {};
@@ -5713,13 +5727,25 @@
                 obj.states.push(vm.jobFilters.filter.state);
             vm.status = vm.jobFilters.filter.state;
             JobService.get(obj).then(function (res) {
+                obj.jobs =[];
                 angular.forEach(res.jobs, function (value) {
+                    obj.jobs.push({job:value.path});
                     value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
-                    if(value.ordersSummary) {
-                        value.isOrderJob = true;
-                    }
                 });
                 vm.allJobs = res.jobs;
+                JobService.getJobsP(obj).then(function (result) {
+
+                     angular.forEach(result.jobs, function (job) {
+                        for (var i = 0; i < res.jobs.length; i++) {
+                            if (job.path == res.jobs[i].path) {
+                                job = mergePermanentAndVolatile(res.jobs[i], job);
+                                res.jobs.splice(i,1);
+                                break;
+                            }
+                        }
+                    });
+                    vm.allJobs = result.jobs;
+                });
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
@@ -5739,22 +5765,6 @@
                 vm.changeStatus();
             }
         });
-
-        function mergePermanentAndVolatile(sour, dest) {
-            dest.runningTasks = sour.runningTasks;
-            dest.error = sour.error;
-            dest.numOfRunningTasks = sour.numOfRunningTasks;
-            dest.numOfQueuedTasks = sour.numOfQueuedTasks;
-            dest.taskQueue = sour.taskQueue;
-            dest.nextStartTime = sour.nextStartTime;
-            dest.startedAt = sour.startedAt;
-            dest.state = sour.state;
-            dest.stateText = sour.stateText;
-            dest.configurationStatus = sour.configurationStatus;
-            dest.ordersSummary = sour.ordersSummary;
-            dest.runTimeIsTemporary = sour.runTimeIsTemporary;
-            return dest;
-        }
 
         vm.exportToExcel = function () {
             $('#exportToExcelBtn').attr("disabled", true);
@@ -5907,11 +5917,8 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.jobs = [];
             obj.jobs.push({job: value.path});
-            JobService.get(obj).then(function (result) {
-                value = result.jobs[0];
-                if(value.ordersSummary) {
-                        value.isOrderJob = true;
-                    }
+            JobService.get(obj).then(function (res) {
+                value = mergePermanentAndVolatile(res.jobs[0], value);
             });
 
             if (value.ordersSummary)
@@ -5959,8 +5966,8 @@
             JobService.getJobsP(jobs).then(function (res) {
                 job.jobChains = res.jobs[0].jobChains;
                 job.showJobChains = true;
-                JobService.get(jobs).then(function (result) {
-                    job = mergePermanentAndVolatile(result.jobs[0], job);
+                JobService.get(jobs).then(function (res) {
+                    job = mergePermanentAndVolatile(res.jobs[0], job);
                 });
             });
 
@@ -6965,7 +6972,7 @@
         }
 
         function openCalendar() {
-            var modalInstance = $uibModal.open({
+            $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
@@ -7000,14 +7007,25 @@
                         if(vm.jobFilters.filter.state != 'ALL')
                             obj.states.push(vm.jobFilters.filter.state);
                         JobService.get(obj).then(function (res) {
-                            angular.forEach(res.jobs, function (value) {
-                                value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
-                                if(value.ordersSummary) {
-                                    value.isOrderJob = true;
-                                }
-                            });
+                            obj.jobs = [];
                             vm.reset();
+                            angular.forEach(res.jobs, function (value) {
+                                obj.jobs.push({job: value.path});
+                                value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                            });
                             vm.allJobs = res.jobs;
+                            JobService.getJobsP(obj).then(function (result) {
+                                angular.forEach(result.jobs, function (job) {
+                                    for (var i = 0; i < res.jobs.length; i++) {
+                                        if (job.path == res.jobs[i].path) {
+                                            job = mergePermanentAndVolatile(res.jobs[i], job);
+                                            res.jobs.splice(i, 1);
+                                            break;
+                                        }
+                                    }
+                                });
+                                vm.allJobs = result.jobs;
+                            });
                             var flag = false;
                             for (var i = 0; i < vm.allJobs.length; i++) {
                                 if (vm.showTaskPanel && vm.showTaskPanel.path == vm.allJobs[i].path) {

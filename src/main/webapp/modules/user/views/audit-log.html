@@ -81,7 +81,35 @@
             <div class="col-md-12">
                 <div class="box p-a m-b-xs">
                     <form name="form" ng-submit="search()">
-                        <div class="form-group row m-t">
+                        <div class="m-b-sm row">
+                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+                            <div class="col-md-6">
+                                <label class="md-check w-sm">
+                                    <input type="radio" name="radio" ng-model="auditSearch.date" value="date">
+                                    <i class="primary"></i> <span translate>label.specificDate</span>
+                                </label>
+                                <label class="md-check">
+                                    <input type="radio" name="radio" ng-model="auditSearch.date" value="process">
+                                    <i class="primary"></i> <span translate>label.manualDate</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row"  ng-if="auditSearch.date == 'process'">
+                                <label class="col-md-2 col-sm-4 form-control-label"
+                                       translate>label.processExecuted</label>
+
+                                <div class=" col-sm-6"
+                                     ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                                           placeholder="{{'placeholder.processExecuted' | translate}}"
+                                           ng-model="auditSearch.planned">
+
+                                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                                        <div ng-message="invalid" translate>message.invalid</div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="form-group row " ng-if="auditSearch.date == 'date'">
                             <label class="col-sm-2 form-control-label" translate>label.from</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="auditSearch.from"
@@ -91,7 +119,7 @@
                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" ng-if="auditSearch.date == 'date'">
                             <label class="col-sm-2 form-control-label" translate>label.to</label>
                             <div class="col-sm-6">
                                 <input class="form-control input-date" style="width: 225px;background-position: 200px"
