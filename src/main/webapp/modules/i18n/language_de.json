@@ -1051,7 +1051,7 @@
   "label.tasks": "Prozesse",
   "label.calendarViewFor": "Kalenderansicht für",
   "breadcrumb.jobsOverview": "Übersicht der Jobs",
-  "label.agentJobExecution": "Ausführungen von Jobs mit Agenten",
+  "label.agentJobExecution": "Agent Job-Ausführungen",
   "breadcrumb.agentExecutedJobs": "Mit Agent ausgeführte Jobs",
   "breadcrumb.agentExecutedJob": "Mit Agent ausgeführter Job",
   "label.agentUrl": "Agent URL",
