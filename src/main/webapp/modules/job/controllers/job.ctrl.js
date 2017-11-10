@@ -3541,7 +3541,7 @@
                     toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*\d+[d,h,w,M,y]\s*$/i.test(vm.selectedFiltered.planned)) {
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';
@@ -3551,22 +3551,25 @@
                     toDate = new Date();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1]+date[2];
-                    toDate =  date[3]+date[4];
-
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1] + date[2];
-                    toDate =  date[3] + date[4] + '+' + date[5] + date[6];
-
-                }else if (/^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1] + date[2] +'+' + date[3] + date[4];
-                    toDate =  date[5] + date[6] + '+' + date[7] + date[8];
-                }else if (/^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1] + date[2] +'+' + date[3] + date[4];
-                    toDate =  date[5] + date[6];
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    console.log('><><>')
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
                 } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.selectedFiltered.planned);
                     fromDate = new Date();

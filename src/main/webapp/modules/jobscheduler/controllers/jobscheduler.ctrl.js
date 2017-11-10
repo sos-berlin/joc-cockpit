@@ -3716,14 +3716,14 @@ setClusterWidgetHeigth();
                 date = new Date();
                 var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
                 date.setSeconds(fromDate.getSeconds() - seconds);
-            } else if (/^\s*[-,+]?\d+[d,h,w,M,y]{1}\s*$/i.test(regex)) {
+            } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 date = new Date();
             } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = date;
+                date = regex;
             }
             return date;
         }

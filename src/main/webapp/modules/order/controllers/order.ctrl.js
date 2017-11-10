@@ -3643,7 +3643,7 @@
                     toDate = new Date();
                     var seconds = parseInt(/^\s*(now\s*\+)\s*(\d+)\s*$/i.exec(vm.selectedFiltered.planned)[2]);
                     toDate.setSeconds(toDate.getSeconds() + seconds);
-                } else if (/^\s*\d+[d,h,w,M,y]\s*$/i.test(vm.selectedFiltered.planned)) {
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     obj.dateFrom = vm.selectedFiltered.planned;
                 } else if (/^\s*(Today)\s*$/i.test(vm.selectedFiltered.planned)) {
                     fromDate = '0d';
@@ -3653,23 +3653,26 @@
                     toDate = new Date();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
                     var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1]+date[2];
-                    toDate =  date[3]+date[4];
-
-                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1] + date[2];
-                    toDate =  date[3] + date[4] + '+' + date[5] + date[6];
-
-                }else if (/^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1] + date[2] +'+' + date[3] + date[4];
-                    toDate =  date[5] + date[6] + '+' + date[7] + date[8];
-                }else if (/^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+]\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
-                    fromDate = date[1] + date[2] +'+' + date[3] + date[4];
-                    toDate =  date[5] + date[6];
-                }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    console.log('><><>')
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
+                    var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
+                    var arr = date[0].split('to');
+                    fromDate = arr[0].trim();
+                    toDate = arr[1].trim();
+                } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(vm.selectedFiltered.planned)) {
                     var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(vm.selectedFiltered.planned);
                     fromDate = new Date();
                     if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
@@ -3677,7 +3680,6 @@
                     } else {
                         fromDate.setHours(parseInt(time[1]));
                     }
-
                     fromDate.setMinutes(parseInt(time[2]));
                     toDate = new Date();
                     if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
@@ -6285,25 +6287,29 @@
             } else if (/^\s*(now)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
-            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
-                fromDate = '-'+date[2]+date[3];
-                toDate = '-'+date[5]+date[6];
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+               var arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
 
-            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
-                fromDate = '-'+date[2]+date[3];
-                toDate = '-'+date[5]+date[6]+'-'+date[8]+date[9];
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                var arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
 
-            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
-                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
-                toDate = '-'+date[8]+date[9];
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                var arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
 
-            } else if (/^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*to\s*(-)(\d+)\s*(h|d|w|M|y)\s*(-)(\d+)\s*(h|d|w|M|y)\s*$/.exec(regex);
-                fromDate = '-'+date[2]+date[3]+'-'+date[5]+date[6];
-                toDate = '-'+date[8]+date[9]+'-'+date[11]+date[12];
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                var arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
 
             }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
@@ -6716,34 +6722,35 @@
                 }
                 if (vm.jobSearch.date == 'process') {
                     filter = parseProcessExecuted(vm.jobSearch.planned, filter);
-                }
-                if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
-                    var fromDate = new Date(vm.jobSearch.from);
-                    if (vm.jobSearch.fromTime) {
-                        fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
-                        fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
-                        fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
-                    } else {
-                        fromDate.setHours(0);
-                        fromDate.setMinutes(0);
-                        fromDate.setSeconds(0);
+                }else {
+                    if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
+                        var fromDate = new Date(vm.jobSearch.from);
+                        if (vm.jobSearch.fromTime) {
+                            fromDate.setHours(moment(vm.jobSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.jobSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.jobSearch.fromTime, 'HH:mm:ss').seconds());
+                        } else {
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        }
+                        fromDate.setMilliseconds(0);
+                        filter.dateFrom = fromDate;
                     }
-                    fromDate.setMilliseconds(0);
-                    filter.dateFrom = fromDate;
-                }
-                if (vm.jobSearch.date == 'date' && vm.jobSearch.to) {
-                    var toDate = new Date(vm.jobSearch.to);
-                    if (vm.jobSearch.toTime) {
-                        toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
-                        toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
-                        toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
-                    } else {
-                        toDate.setHours(0);
-                        toDate.setMinutes(0);
-                        toDate.setSeconds(0);
+                    if (vm.jobSearch.date == 'date' && vm.jobSearch.to) {
+                        var toDate = new Date(vm.jobSearch.to);
+                        if (vm.jobSearch.toTime) {
+                            toDate.setHours(moment(vm.jobSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.jobSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.jobSearch.toTime, 'HH:mm:ss').seconds());
+                        } else {
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        }
+                        toDate.setMilliseconds(0);
+                        filter.dateTo = toDate;
                     }
-                    toDate.setMilliseconds(0);
-                    filter.dateTo = toDate;
                 }
 
                 if (vm.jobSearch.regex) {
