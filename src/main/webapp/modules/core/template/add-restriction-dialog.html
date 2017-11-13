@@ -486,7 +486,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr ng-repeat="data in frequencyList track by $index" class="cursor"
+                                        <tr ng-repeat="data in calendar.frequencyList track by $index" class="cursor"
                                             ng-class="{'light-bg' : (temp.tab ==data.tab  && temp.str ==data.str)}">
                                             <td ng-click="editFrequency(data)">{{$index+1}}</td>
                                             <td ng-click="editFrequency(data)">
@@ -505,7 +505,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-12 text-center" ng-if="frequencyList.length==0" translate>
+                            <div class="col-md-12 text-center" ng-if="calendar.frequencyList.length==0" translate>
                                 message.noFrequencyFound
                             </div>
                         </div>
@@ -519,7 +519,7 @@
                     <div class="pull-left">
 
                         <button type="submit" class="btn orange btn-sm"
-                                ng-disabled="form.$invalid || frequencyList.length==0">
+                                ng-disabled="form.$invalid || calendar.frequencyList.length==0">
                             <span translate>button.close</span>
                         </button>
                         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>

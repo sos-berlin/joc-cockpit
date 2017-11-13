@@ -129,5 +129,14 @@
         }
     }
 
-    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"]
+    function c() {
+        return function (bytes) {
+            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes == 0) return '0 Byte';
+            var i = Math.floor(Math.log(bytes) / Math.log(1024));
+            return parseFloat(bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+        }
+    }
+
+    angular.module("app").filter("fromNow", e).filter("stringToDate", t).filter("stringToDate1", d).filter("duration", r).filter("convertTime", o).filter("durationFromCurrent", i).filter("startFrom", a).filter("remainingTime", s).filter("timeDifferenceFilter", f).filter("decodeSpace", z).filter("byteToSize", c), e.$inject = ["$window"], t.$inject = ["$window"],d.$inject = ["$window"], r.$inject = ["$window", "gettextCatalog"], i.$inject = ["$window", "gettextCatalog"], s.$inject = ["$window"], f.$inject = ["gettextCatalog"]
 }();
