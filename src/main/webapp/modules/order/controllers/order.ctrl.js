@@ -1637,7 +1637,8 @@
             orders.orders.push({
                 orderId: order.orderId,
                 jobChain: order.jobChain,
-                runTime: vkbeautify.xmlmin(order.runTime)
+                runTime: vkbeautify.xmlmin(order.runTime),
+                calendars: order.calendars
             });
             OrderService.setRunTime(orders).then(function () {
                 $scope.$emit('refreshList');
@@ -1829,9 +1830,9 @@
                     orderId: order.orderId
                 }).then(function (res) {
                     if (res.runTime) {
-
                         vm.runTimes = res.runTime;
                         vm.xml = vm.runTimes.runTime;
+                        vm.calendars = vm.runTimes.calendars;
                     }
                     modalInstance = $uibModal.open({
                         templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -5558,20 +5559,7 @@
             });
 
 
-            OrderService.setRunTime(orders).then(function () {
-                var orders = {};
-                orders.orders = [];
-                orders.jobschedulerId = $scope.schedulerIds.selected;
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
-                OrderService.get(orders).then(function (res) {
-                    order.nextStartTime = undefined;
-                    order.startedAt = undefined;
-                    order.at = undefined;
-                    order.runTime = undefined;
-                    order = angular.merge(order, res.orders[0]);
-                });
-
-            });
+            OrderService.setRunTime(orders);
             vm.reset();
         }
 

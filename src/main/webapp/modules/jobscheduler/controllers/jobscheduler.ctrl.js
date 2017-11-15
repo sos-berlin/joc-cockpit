@@ -1244,7 +1244,6 @@
         }
 
         vm.expandNodeC = function (data) {
-            //console.log(data)
             navFullTreeC();
             vm.allCalendars = [];
             vm.loading = true;
@@ -1646,6 +1645,7 @@
             var x = x2js.xml_str2json(schedule.runTime);
             x.schedule._substitute = vm.sch._substitute;
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
+            schedules.runTime = vm.schedule.calendars;
 
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -1685,13 +1685,15 @@
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.tempXML = vm.runTimes.content;
+                    vm.calendars = res.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/add-substitute-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
                     scope: vm,
                     size: 'lg',
-                    backdrop: 'static'
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
                     createSchedule(schedule);
@@ -1742,6 +1744,7 @@
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
@@ -1778,13 +1781,15 @@
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
+                    vm.calendars = res.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/edit-schedule-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
                     scope: vm,
                     size: 'lg',
-                    backdrop: 'static'
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
@@ -2872,6 +2877,7 @@
             var x = x2js.xml_str2json(schedule.runTime);
             x.schedule._substitute = vm.sch._substitute;
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
+            schedules.calendars = vm.schedule.calendars;
 
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -2911,6 +2917,7 @@
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.tempXML = vm.runTimes.content;
+                    vm.calendars = res.calendars;
                 }
 
                 var modalInstance = $uibModal.open({
@@ -2918,7 +2925,8 @@
                     controller: 'RuntimeEditorDialogCtrl',
                     scope: vm,
                     size: 'lg',
-                    backdrop: 'static'
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
                     createSchedule(schedule);
@@ -2942,6 +2950,7 @@
             schedules.jobschedulerId = $scope.schedulerIds.selected;
             schedules.schedule = schedule.path;
             schedules.runTime = vkbeautify.xmlmin(schedule.runTime);
+            schedules.calendars = vm.schedule.calendars;
             schedules.auditLog = {};
             if (vm.comments.comment) {
                 schedules.auditLog.comment = vm.comments.comment;
@@ -2974,6 +2983,7 @@
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.xml = vm.runTimes.content;
+                    vm.calendars = res.calendars;
                 }
 
                 var modalInstance = $uibModal.open({
@@ -2981,10 +2991,10 @@
                     controller: 'RuntimeEditorDialogCtrl',
                     scope: vm,
                     size: 'lg',
-                    backdrop: 'static'
+                    backdrop: 'static',
+                    windowClass: 'fade-modal'
                 });
                 modalInstance.result.then(function () {
-
                     setRunTime(schedule);
                 }, function () {
 

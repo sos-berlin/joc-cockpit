@@ -1181,5 +1181,7 @@
   "label.targetHost": "Target Host",
   "placeholder.targetHost": "Target Host",
   "label.protocol": "Protocol",
-  "placeholder.protocol": "Protocol"
+  "placeholder.protocol": "Protocol",
+  "message.emptyCalendar": "Calendar is empty!",
+  "message.noDatesFound": "No dates found."
 }

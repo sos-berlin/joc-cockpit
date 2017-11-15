@@ -3355,7 +3355,6 @@
         }
 
         vm.predefinedMessageList = JSON.parse($window.sessionStorage.comments);
-        vm.frequencyList =[];
 
         function setCalendarToRuntime() {
             if (vm.order && !vm.schedule) {
@@ -3372,13 +3371,13 @@
                     cal.path = value.path;
                     cal.basedOn = value.path;
                     cal.includes = {};
-                    angular.forEach(vm.frequencyList, function (data) {
+                    angular.forEach(value.frequencyList, function (data) {
                         cal = generateCalendarObj(data, cal);
                     });
-                    console.log(cal);
-                    if (vm.order.calendars)
+
+                    if (vm.order && vm.order.calendars)
                         vm.order.calendars.push(cal);
-                    else
+                    else if(vm.schedule && vm.schedule.calendars)
                         vm.schedule.calendars.push(cal);
                 });
             }
@@ -5686,13 +5685,24 @@
             $('.fade-modal').css('opacity', '0.85');
         };
         vm.deleteRestrictionInCalendar = function (data, frequency) {
-            console.log(data.calendar)
             for (var i = 0; i < data.calendar.frequencyList.length; i++) {
                 if (data.calendar.frequencyList[i].str == frequency.str) {
                     data.calendar.frequencyList.splice(i, 1);
                     break;
                 }
             }
+            for (var i = 0; i < vm.selectedCalendar.length; i++) {
+                if (data.id == vm.selectedCalendar[i].id) {
+                    for (var j = 0; j < vm.selectedCalendar[i].frequencyList.length; j++) {
+                        if (vm.selectedCalendar[i].frequencyList[j].str == frequency.str) {
+                            vm.selectedCalendar[i].frequencyList(j, 1);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            generateCalendarTag(vm.selectedCalendar);
         };
 
         vm.$on('save-restriction-frequency', function (event, data) {
@@ -5706,6 +5716,7 @@
                     value.frequencyList = data.frequencyList;
                 }
             });
+            generateCalendarTag(vm.selectedCalendar);
         });
 
         vm.editPeriodFromFrequency = function (data, index, periodStr) {
@@ -10410,7 +10421,21 @@
             $('.fade-modal').css('opacity', '0.85');
         };
 
-        function generateCalendarDates(run_time, dates,calendar) {
+        function generateCalendarDates(run_time, dates, calendar) {
+            if (run_time.date && run_time.date.length > 0) {
+                var _tempDates = angular.copy(run_time.date);
+                for (var x = 0; x < _tempDates.length; x++) {
+                    if (_tempDates[x]._calendar == calendar.path) {
+                        for (var i = 0; i < run_time.date.length; i++) {
+                            if (run_time.date[i]._calendar == calendar.path) {
+                                run_time.date.splice(i, 1);
+                                break;
+                            }
+
+                        }
+                    }
+                }
+            }
             if (dates.length > 0) {
                 angular.forEach(dates, function (d) {
                     if (run_time.date) {
@@ -10419,18 +10444,7 @@
                             run_time.date = [];
                             run_time.date.push(_temp)
                         }
-                        var flag = false;
-                        if (run_time.date.length > 0) {
-                            for (var i = 0; i < run_time.date.length; i++) {
-                                if (run_time.date[i]._date == d && run_time.date[i]._calendar == calendar.path) {
-                                    flag = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (!flag)
-                            run_time.date.push({_calendar: calendar.path, _date: d});
+                        run_time.date.push({_calendar: calendar.path, _date: d});
                     } else {
                         run_time.date = {};
                         run_time.date._calendar = calendar.path;
@@ -10482,14 +10496,26 @@
                 var obj = {};
                 obj.dateFrom = calendar.from;
                 obj.dateTo = calendar.to;
-                obj.path = calendar.path;
                 obj.jobschedulerId = vm.schedulerIds.selected;
-                obj.includes = {};
-                angular.forEach(calendar.frequencyList, function (data) {
-                    generateCalendarObj(data, obj);
-                });
-             
+                if(calendar.frequencyList && calendar.frequencyList.length>0) {
+                    obj.calendar = {};
+                    obj.calendar.basedOn = calendar.basedOn || calendar.path;
+                    obj.calendar.includes = {};
+                    angular.forEach(calendar.frequencyList, function (data) {
+                        generateCalendarObj(data, obj.calendar);
+                    });
+                }else {
+                    obj.path = calendar.path || calendar.basedOn;
+                }
+
                 CalendarService.getListOfDates(obj).then(function (result) {
+                    if(result.dates && result.dates.length==0) {
+                        toasty.info({
+                            title: gettextCatalog.getString('message.emptyCalendar'),
+                            msg: gettextCatalog.getString('message.noDatesFound'),
+                            timeout: 10000
+                        });
+                    }
                     if (type == 'holiday')
                         generateHolidayCalendarDates(run_time, result.dates, calendar);
                     else

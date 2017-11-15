@@ -5164,7 +5164,12 @@
         function setRunTime(job) {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobs.push({job: job.path, runTime: vkbeautify.xmlmin(job.runTime)});
+
+            jobs.jobs.push({
+                job: job.path,
+                runTime: vkbeautify.xmlmin(job.runTime),
+                calendars: job.calendars
+            });
 
             jobs.auditLog = {};
             if (vm.comments.comment) {
@@ -5178,14 +5183,7 @@
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
             jobs.jobschedulerId = vm.schedulerIds.selected;
-            JobService.setRunTime(jobs).then(function (res) {
-                JobService.get({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    jobs: [{job: job.path}]
-                }).then(function (res1) {
-                    job = mergePermanentAndVolatile(res1.jobs[0], job);
-                });
-            });
+            JobService.setRunTime(jobs);
         }
 
         function loadRuntime(job) {
@@ -5200,7 +5198,7 @@
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
-
+                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -5753,7 +5751,6 @@
             }
             $('#exportToExcelBtn').attr("disabled", false);
         };
-
 
         /**--------------- Checkbox functions -------------*/
         vm.allCheck = {
@@ -6635,7 +6632,12 @@
         function setRunTime(job) {
             var jobs = {};
             jobs.jobs = [];
-            jobs.jobs.push({job: job.path, runTime: vkbeautify.xmlmin(job.runTime)});
+
+            jobs.jobs.push({
+                job: job.path,
+                runTime: vkbeautify.xmlmin(job.runTime),
+                calendars: job.calendars
+            });
 
             jobs.auditLog = {};
             if (vm.comments.comment) {
@@ -6649,14 +6651,7 @@
                 jobs.auditLog.ticketLink = vm.comments.ticketLink;
             }
             jobs.jobschedulerId = vm.schedulerIds.selected;
-            JobService.setRunTime(jobs).then(function (res) {
-                JobService.get({
-                    jobschedulerId: vm.schedulerIds.selected,
-                    jobs: [{job: job.path}]
-                }).then(function (res1) {
-                    job = mergePermanentAndVolatile(res1.jobs[0], job);
-                });
-            });
+            JobService.setRunTime(jobs);
         }
 
         function loadRuntime(job) {
@@ -6671,6 +6666,7 @@
                 if (res.runTime) {
                     vm.runTimes = res.runTime;
                     vm.xml = vm.runTimes.runTime;
+                    vm.calendars = vm.runTimes.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/set-run-time-dialog.html',
@@ -6760,6 +6756,7 @@
                 });
             }
         };
+
         vm.showAssignedCalendar = function(job) {
             var jobs = {};
             jobs.jobschedulerId = vm.schedulerIds.selected;
@@ -6903,7 +6900,6 @@
                 backdrop: 'static'
             });
         }
-
 
         vm.viewAllHistories = function () {
             vm.taskHistoryTab = CoreService.getHistoryTab();
