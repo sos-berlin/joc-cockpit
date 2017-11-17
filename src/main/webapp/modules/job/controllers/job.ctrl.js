@@ -2758,9 +2758,9 @@
         });
     }
 
-    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService", "ScheduleService",
+    JobCtrl.$inject = ["$scope", "$rootScope", "JobService", "UserService", "$uibModal", "orderByFilter", "SavedFilter", "TaskService",
         "$state", "CoreService", "$timeout", "DailyPlanService", "AuditLogService", "$location","OrderService"];
-    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService, ScheduleService,
+    function JobCtrl($scope, $rootScope, JobService, UserService, $uibModal, orderBy, SavedFilter, TaskService,
                      $state, CoreService, $timeout, DailyPlanService, AuditLogService, $location, OrderService) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobTab();
@@ -6935,6 +6935,7 @@
                         }, function () {
                             waitForResponse = true;
                         });
+
                         $rootScope.$broadcast('reloadJobSnapshot');
                     }
 

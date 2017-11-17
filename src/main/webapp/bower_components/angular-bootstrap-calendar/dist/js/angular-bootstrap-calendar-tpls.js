@@ -338,7 +338,11 @@
                         i.monthOffsets = [];
                         for (var l = 0; a > l; l++)i.monthOffsets.push(7 * l);
                         i.view[i.yearCount].monthData = i.monthView, i.view[i.yearCount].monthOffsets = i.monthOffsets, i.yearCount++
-                    }), i.loadingDone = !0
+                    }), i.viewDate.setMonth(a), i.cellIsOpen && null === i.openMonthIndex && null === i.openRowIndex && (i.openMonthIndex = null, i.openDayIndex = null, i.view.forEach(function (e) {
+                        n(i.viewDate).startOf("month").isSame(e.date) && i.monthClicked(e, !0)
+                    }), i.view.forEach(function (e) {
+                        e.inMonth && n(i.viewDate).startOf("day").isSame(e.date) && i.dayClicked(e, !0)
+                    })), i.loadingDone = !0
                 }
             }), i.monthClicked = function (e, n, t) {
                 if (n || (i.onTimespanClick({
@@ -474,7 +478,12 @@
         }])
     }, function (e, n, t) {
         "use strict";
-
+        var a = t(12);
+        a.module("mwl.calendar").filter("calendarTruncateEventTitle", function () {
+            return function (e, n, t) {
+                return e ? e.length >= n && e.length / 20 > t / 30 ? e.substr(0, n) + "..." : e : ""
+            }
+        })
     }, function (e, n, t) {
         "use strict";
         var a = t(12);
@@ -599,11 +608,12 @@
             function p(e, n, t) {
                 date =[];
                 for (var i = [], s = c(n, "year", e), o = a(n).startOf("year"), v = 0; 12 > v;) {
-                    var w = o.clone(), p = w.clone().endOf("month"), g = {
+                    var w = o.clone(), p = w.clone().endOf("month"), h = r(s, w, p), g = {
                         label: d(w, l.dateFormats.month),
                         isToday: w.isSame(a().startOf("month")),
-                        events: [],
-                        date: w
+                        events: h,
+                        date: w,
+                        badgeTotal: m(h)
                     };
 
                     t({calendarCell: g}), i.push(g), o.add(1, "month"), v++
@@ -614,15 +624,19 @@
             function h(e, n, t, l, d) {
                 for (var s = a(n).startOf("month"), o = s.clone().startOf("week"), v = a(n).endOf("month").endOf("week"), r = [], c = a().startOf("day"); o.isBefore(v);) {
                     var m = o.month() === a(n).month(), w = !1, p = i("date")(new Date(o.clone()), "dd-MM-yyyy"), h = [], cl = '', z = 1;
-                    if (date.indexOf(p) == -1) {
-                        date.push(p);
-                        for (var g in l) {
-                            i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
-                            if (d!='month' && moment(l[g].plannedStartTime).format('DD-MM-YYYY') == p) {
-                                l.splice(g,1);
-                                break;
+                    if(d!='month') {
+                        if (date.indexOf(p) == -1) {
+                            date.push(p);
+                            for (var g in l) {
+                                i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
+                                if (moment(l[g].plannedStartTime).format('DD-MM-YYYY') == p) {
+                                    l.splice(g, 1);
+                                    break;
+                                }
                             }
                         }
+                    }else{
+                        for (var g in l) i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1)
                     }
                     var f = {
                         label: o.date(),
