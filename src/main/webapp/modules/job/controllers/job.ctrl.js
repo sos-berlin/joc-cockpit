@@ -5220,18 +5220,6 @@
 
         vm.setRunTime = function (job) {
             loadRuntime(job);
-
-            ScheduleService.getSchedulesP({
-                jobschedulerId: vm.schedulerIds.selected,
-                compact: true
-            }).then(function (res) {
-                vm.schedules = [];
-                angular.forEach(res.schedules, function (value) {
-                    if (value && !value.substitute)
-                        vm.schedules.push(value)
-                });
-            });
-            vm.zones = moment.tz.names();
         };
 
 
@@ -5650,10 +5638,8 @@
         });
     }
 
-    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "ScheduleService",
-        "$state", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams"];
-    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal,  TaskService, ScheduleService,
-                     $state, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams) {
+    JobOverviewCtrl.$inject = ["$scope", "$rootScope", "JobService", "$uibModal", "TaskService", "CoreService", "OrderService", "DailyPlanService", "AuditLogService", "$stateParams"];
+    function JobOverviewCtrl($scope, $rootScope, JobService, $uibModal,  TaskService, CoreService, OrderService, DailyPlanService, AuditLogService, $stateParams) {
         var vm = $scope;
         vm.jobFilters = CoreService.getJobDetailTab();
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
@@ -6687,18 +6673,6 @@
 
         vm.setRunTime = function (job) {
             loadRuntime(job);
-
-            ScheduleService.getSchedulesP({
-                jobschedulerId: vm.schedulerIds.selected,
-                compact: true
-            }).then(function (res) {
-                vm.schedules = [];
-                angular.forEach(res.schedules, function (value) {
-                    if (value && !value.substitute)
-                        vm.schedules.push(value)
-                });
-            });
-            vm.zones = moment.tz.names();
         };
 
         vm.deleteAllOrder =  function() {
@@ -6906,6 +6880,7 @@
             vm.taskHistoryTab.type = 'job';
             $state.go('app.history');
         };
+
         vm.showLeftPanel = function () {
             CoreService.setSideView(false);
             $('#rightPanel').removeClass('fade-in m-l-0');
@@ -6925,6 +6900,7 @@
                         obj.states = [];
                         if(vm.jobFilters.filter.state != 'ALL')
                             obj.states.push(vm.jobFilters.filter.state);
+
                         JobService.get(obj).then(function (res) {
                             obj.jobs = [];
                             vm.reset();

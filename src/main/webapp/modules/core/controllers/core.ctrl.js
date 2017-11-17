@@ -651,7 +651,7 @@
             var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
-                name = agentCluster.substring(agentCluster.lastIndexOf('/') + 1, agentCluster.length);
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.agent_cluster_expand_to = {
                 name: name,
                 path: path
@@ -663,7 +663,7 @@
             var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
-                name = processClass.substring(processClass.lastIndexOf('/') + 1, processClass.length);
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.process_class_expand_to = {
                 name: name,
                 path: path
@@ -675,7 +675,7 @@
             var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
-                name = schedule.substring(schedule.lastIndexOf('/') + 1, schedule.length);
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
             $rootScope.schedule_expand_to = {
                 name: name,
                 path: path
@@ -695,7 +695,18 @@
 
             $location.path('/orders')
         };
+        vm.showCalendarLink = function (calendar) {
+            var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $rootScope.calendar_expand_to = {
+                name: name,
+                path: path
+            };
 
+            $location.path('/resources/calendars')
+        };
 
         vm.about = function () {
             vm.versionData = $rootScope.versionData;
@@ -3422,6 +3433,24 @@
             return n1.value < n2.value ? -1 : 1;
         };
 
+
+        vm.selectSchedule = function() {
+            if(!vm.schedules)
+            ScheduleService.getSchedulesP({
+                jobschedulerId: $scope.schedulerIds.selected,
+                compact: true
+            }).then(function (res) {
+                vm.schedules = [];
+                angular.forEach(res.schedules, function (value) {
+                    if (value && !value.substitute)
+                        vm.schedules.push(value)
+                });
+            });
+        };
+
+
+        vm.zones = moment.tz.names();
+
         vm.loadHolidayList = function () {
             vm.holidayList =[];
             if (vm.runTime.country == 'IN' && vm.runTime.year) {
@@ -3518,8 +3547,10 @@
 
                     if (vm.order && vm.order.calendars)
                         vm.order.calendars.push(cal);
-                    else if (vm.schedule && vm.schedule.calendars)
+                    }
+                    else if (vm.schedule && vm.schedule.calendars) {
                         vm.schedule.calendars.push(cal);
+                    }
                 });
             }
 
@@ -3930,6 +3961,7 @@
                 vm._sch._schedule = run_time._schedule;
                 if (load && vm.order)
                     vm.order.at = 'later';
+                vm.selectSchedule();
             }
 
             vm.runTime1.timeZone = run_time._time_zone;
@@ -4142,8 +4174,9 @@
                         if (vm.calPeriod && vm.calPeriod.length > 0) {
                             for (var i = 0; i < vm.calPeriod.length; i++) {
                                 if (res._calendar == vm.calPeriod[i]._calendar) {
+                                    var flag = false;
                                     if (res.period && angular.isArray(res.period)) {
-                                        var flag = false;
+
                                         angular.forEach(res.period, function (period) {
                                             if (checkPeriod(period, vm.calPeriod[i].period)) {
                                                 flag = true;
@@ -4158,8 +4191,12 @@
                                             var x = angular.copy(res.period);
                                             res.period = [];
                                             res.period.push(x);
+                                            if (checkPeriod(x, vm.calPeriod[i].period)) {
+                                                flag = true;
+                                            }
                                         }
-                                        res.period.push(vm.calPeriod[i].period);
+                                        if (!flag)
+                                            res.period.push(vm.calPeriod[i].period);
                                     }
                                 }
                             }

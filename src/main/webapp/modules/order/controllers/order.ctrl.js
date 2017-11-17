@@ -1848,20 +1848,6 @@
 
                     });
                 });
-
-
-                ScheduleService.getSchedulesP({
-                    jobschedulerId: $scope.schedulerIds.selected,
-                    compact: true
-                }).then(function (res) {
-                    vm.schedules = [];
-                    angular.forEach(res.schedules, function (value) {
-                        if (value && !value.substitute)
-                            vm.schedules.push(value)
-                    });
-                });
-
-                vm.zones = moment.tz.names();
             }
 
             if (action == 'suspend order') {
@@ -5597,18 +5583,6 @@
 
         vm.setRunTime = function (order) {
             loadRuntime(order);
-            ScheduleService.getSchedulesP({
-                jobschedulerId: $scope.schedulerIds.selected,
-                compact: true
-            }).then(function (res) {
-                vm.schedules = [];
-                angular.forEach(res.schedules, function (value) {
-                    if (value && !value.substitute)
-                        vm.schedules.push(value)
-                });
-            });
-
-            vm.zones = moment.tz.names();
         };
 
 

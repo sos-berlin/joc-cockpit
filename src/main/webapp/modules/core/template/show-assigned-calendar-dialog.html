@@ -14,7 +14,7 @@
                     <div class="row form-group" >
                         <div class="col-md-12">
                             <div>
-                                {{$index+1}} - <span class="text-hover-primary cursor" ng-click="showCalendar(calendar.path)">{{calendar.path}} <span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></span>
+                                {{$index+1}} - <span class="text-hover-primary cursor" ng-click="showCalendarLink(calendar.path)">{{calendar.path}} <span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></span>
                             </div>
                         </div>
                     </div>
