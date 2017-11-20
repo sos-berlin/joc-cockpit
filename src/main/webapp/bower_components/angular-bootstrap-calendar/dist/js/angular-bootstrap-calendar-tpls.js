@@ -330,10 +330,8 @@
                 if ("year" === i.viewPeriod) {
                     i.loadingDone = !1, i.view = [], i.weekDays = t.getWeekDayNames(), i.view = t.getYearView(i.events, i.viewDate, i.cellModifier), i.yearCount = 0;
                     var e = i.viewDate, a = (l("date")(new Date, "dd-MM-yyyy"), l("date")(i.viewDate, "dd-MM-yyyy"), i.viewDate.getMonth());
-                    var _temp = angular.copy(i.planItems);
-
                     i.view.forEach(function (n) {
-                        e.setMonth(i.yearCount), i.monthView = t.getMonthView(i.events, e, i.cellModifier, _temp, "year");
+                        e.setMonth(i.yearCount), i.monthView = t.getMonthView(i.events, e, i.cellModifier, i.planItems, "year");
                         var a = Math.floor(i.monthView.length / 7);
                         i.monthOffsets = [];
                         for (var l = 0; a > l; l++)i.monthOffsets.push(7 * l);
@@ -478,12 +476,7 @@
         }])
     }, function (e, n, t) {
         "use strict";
-        var a = t(12);
-        a.module("mwl.calendar").filter("calendarTruncateEventTitle", function () {
-            return function (e, n, t) {
-                return e ? e.length >= n && e.length / 20 > t / 30 ? e.substr(0, n) + "..." : e : ""
-            }
-        })
+
     }, function (e, n, t) {
         "use strict";
         var a = t(12);
@@ -604,9 +597,7 @@
                 return e
             }
 
-             var date =[];
             function p(e, n, t) {
-                date =[];
                 for (var i = [], s = c(n, "year", e), o = a(n).startOf("year"), v = 0; 12 > v;) {
                     var w = o.clone(), p = w.clone().endOf("month"), h = r(s, w, p), g = {
                         label: d(w, l.dateFormats.month),
@@ -624,20 +615,8 @@
             function h(e, n, t, l, d) {
                 for (var s = a(n).startOf("month"), o = s.clone().startOf("week"), v = a(n).endOf("month").endOf("week"), r = [], c = a().startOf("day"); o.isBefore(v);) {
                     var m = o.month() === a(n).month(), w = !1, p = i("date")(new Date(o.clone()), "dd-MM-yyyy"), h = [], cl = '', z = 1;
-                    if(d!='month') {
-                        if (date.indexOf(p) == -1) {
-                            date.push(p);
-                            for (var g in l) {
-                                i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
-                                if (moment(l[g].plannedStartTime).format('DD-MM-YYYY') == p) {
-                                    l.splice(g, 1);
-                                    break;
-                                }
-                            }
-                        }
-                    }else{
-                        for (var g in l) i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1)
-                    }
+                    for (var g in l) i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1)
+
                     var f = {
                         label: o.date(),
                         date: o.clone(),

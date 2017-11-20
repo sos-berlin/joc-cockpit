@@ -911,11 +911,11 @@
                     </label>
                 </div>
                 <div class="text-md text-center">
-                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" >
+                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeDate('sub')">
                         <i class="fa fa-angle-left fa-lg"></i>
                     </a>
                     {{calendarTitle}}
-                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" >
+                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeDate('add')">
                         <i class="fa fa-angle-right fa-lg"></i>
                     </a>
                 </div>

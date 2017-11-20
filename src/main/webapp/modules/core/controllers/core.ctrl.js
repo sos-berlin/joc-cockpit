@@ -2006,12 +2006,23 @@
         vm.holidayDays = {checked: false};
         vm.selectAllHolidays = function () {
             if (vm.holidayDays.checked && vm.holidayList.length > 0) {
-                vm.frequency.nationalHoliday = [];
+                if(!vm.frequency.nationalHoliday){
+                    vm.frequency.nationalHoliday = [];
+                }
                 angular.forEach(vm.holidayList, function (holiday) {
+                    if(vm.frequency.nationalHoliday.indexOf(holiday.date)==-1)
                     vm.frequency.nationalHoliday.push(holiday.date);
                 });
-            } else {
-                vm.frequency.nationalHoliday = []
+            }else{
+                if(vm.frequency.nationalHoliday && vm.frequency.nationalHoliday.length>0)
+                angular.forEach(vm.holidayList, function (holiday) {
+                    for(var x=0; x< vm.frequency.nationalHoliday.length;x++){
+                        if(vm.frequency.nationalHoliday[x]==holiday.date){
+                            vm.frequency.nationalHoliday.splice(x,1);
+                            break;
+                        }
+                    }
+                });
             }
         };
 
@@ -2062,50 +2073,60 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = {};
 
-                if (data && data != 'all') {
-                    if (data.tab == 'weekDays') {
-                        if (data.startingWithW) {
-                            obj.dateFrom = moment(data.startingWithW).format('YYYY-MM-DD');
-                        }
-                        if (data.endOnW) {
-                            obj.dateTo = moment(data.endOnW).format('YYYY-MM-DD');
-                        }
-                    } else if (data.tab == 'specificWeekDays') {
-                        if (data.startingWithS) {
-                            obj.dateFrom = moment(data.startingWithS).format('YYYY-MM-DD');
-                        }
-                        if (data.endOnS) {
-                            obj.dateTo = moment(data.endOnS).format('YYYY-MM-DD');
-                        }
-                    } else if (data.tab == 'monthDays') {
-                        if (data.startingWithM) {
-                            obj.dateFrom = moment(data.startingWithM).format('YYYY-MM-DD');
-                        }
-                        if (data.endOnM) {
-                            obj.dateTo = moment(data.endOnM).format('YYYY-MM-DD');
-                        }
-                    } else if (data.tab == 'others') {
-                        if (data.startingWith) {
-                            obj.dateFrom = moment(data.startingWith).format('YYYY-MM-DD');
-                        }
-                        if (data.endOn) {
-                            obj.dateTo = moment(data.endOn).format('YYYY-MM-DD');
-                        }
+            vm.frequencyList1=[];
+            if (vm.calendar.includesFrequency.length > 0) {
+                angular.forEach(vm.calendar.includesFrequency, function (data) {
+                    vm.frequencyList1.push(data)
+                });
+            }
+            if (vm.calendar.excludesFrequency.length > 0) {
+                angular.forEach(vm.calendar.excludesFrequency, function (data) {
+                     vm.frequencyList1.push(data)
+                });
+            }
+
+            if (data && data != 'all') {
+                if (data.tab == 'weekDays') {
+                    if (data.startingWithW) {
+                        obj.dateFrom = moment(data.startingWithW).format('YYYY-MM-DD');
+                    }
+                    if (data.endOnW) {
+                        obj.dateTo = moment(data.endOnW).format('YYYY-MM-DD');
+                    }
+                } else if (data.tab == 'specificWeekDays') {
+                    if (data.startingWithS) {
+                        obj.dateFrom = moment(data.startingWithS).format('YYYY-MM-DD');
+                    }
+                    if (data.endOnS) {
+                        obj.dateTo = moment(data.endOnS).format('YYYY-MM-DD');
+                    }
+                } else if (data.tab == 'monthDays') {
+                    if (data.startingWithM) {
+                        obj.dateFrom = moment(data.startingWithM).format('YYYY-MM-DD');
+                    }
+                    if (data.endOnM) {
+                        obj.dateTo = moment(data.endOnM).format('YYYY-MM-DD');
+                    }
+                } else if (data.tab == 'others') {
+                    if (data.startingWith) {
+                        obj.dateFrom = moment(data.startingWith).format('YYYY-MM-DD');
+                    }
+                    if (data.endOn) {
+                        obj.dateTo = moment(data.endOn).format('YYYY-MM-DD');
                     }
                 }
+            }
 
-                if (!obj.dateFrom) {
-                    obj.dateFrom = vm.calendar.from || moment().format('YYYY-MM-DD');
+            if (!obj.dateFrom) {
+                obj.dateFrom = moment(vm.calendar.from).format('YYYY-MM-DD') || moment().format('YYYY-MM-DD');
+            }
+            if (!obj.dateTo) {
+                obj.dateTo = moment(vm.calendar.to).format('YYYY-MM-DD');
+                vm.toDate = angular.copy(obj.dateTo);
+                if(new Date(obj.dateTo).getTime()>new Date(vm.calendarTitle + '-12-31').getTime()){
+                    obj.dateTo = vm.calendarTitle + '-12-31';
                 }
-                if (!obj.dateTo) {
-                    obj.dateTo = moment(vm.calendar.to).format('YYYY-MM-DD');
-                    vm.toDate = angular.copy(obj.dateTo);
-                    if(new Date(obj.dateTo).getTime()>new Date(vm.calendarTitle + '-12-31').getTime()){
-                        obj.dateTo = vm.calendarTitle + '-12-31';
-                    }
-                }
-
-
+            }
 
             if (data && data != 'all') {
                 vm.editor.showYearView = true;
@@ -2113,16 +2134,9 @@
                 var obj1 = {};
                 obj1.includes = {};
 
-                if (vm.excludeFrequencyList && vm.excludeFrequencyList.length > 0) {
-                    var x = {};
-                    x.excludes = {};
-                    angular.forEach(vm.excludeFrequencyList, function (value) {
-                        generateCalendarObj(value, x);
-                    });
-                    obj1.excludes = x.excludes;
-                }
                 var data1 = angular.copy(data);
                 data1.type = 'INCLUDE';
+
                 vm.frequencyObj = generateCalendarObj(data1, obj1);
             } else {
                 vm.calObj.freqency = 'all';
@@ -2147,7 +2161,13 @@
                         color: 'orange'
                     });
                 });
+
                 tempList = angular.copy(vm.planItems);
+                if(vm.planItems.length ==0){
+                    vm.planItems.push({
+                        plannedStartTime: '01-01-1970'
+                    });
+                }
             });
         };
 
@@ -2552,12 +2572,12 @@
                             }
                         }
                         else if (vm.frequency.tab == 'nationalHoliday') {
-                            console.log(JSON.stringify(vm.frequencyList[i]))
-                            console.log(JSON.stringify(vm.frequency))
-
                             vm.frequencyList[i].nationalHoliday = [];
                             angular.forEach(vm.frequency.nationalHoliday, function (date) {
+
+                                if(vm.frequencyList[i].nationalHoliday.indexOf(date)==-1)
                                 vm.frequencyList[i].nationalHoliday.push(date);
+
                             });
                             vm.frequencyList[i].str = angular.copy(vm.frequency.str);
                             flag1 = true;
@@ -2644,14 +2664,7 @@
             }
         };
 
-
-        vm.changeDate = function (type) {
-
-            if(type =='add')
-                vm.calendarTitle = parseInt(vm.calendarTitle) + 1;
-            else
-               vm.calendarTitle = parseInt(vm.calendarTitle) - 1;
-
+        vm.changeDate = function () {
             var newDate = new Date();
             newDate.setHours(0, 0, 0, 0);
             if(new Date(vm.toDate).getTime()>new Date(vm.calendarTitle + '-12-31').getTime()){
@@ -2670,11 +2683,28 @@
                 obj.calendar = vm.frequencyObj;
 
                 CalendarService.getListOfDates(obj).then(function (result) {
+                    var color = 'blue';
+                    if (vm.calObj.freqency && vm.calObj.freqency !='all' && JSON.parse(vm.calObj.freqency).type =='EXCLUDE') {
+                        color = 'orange';
+                    }
+
                     angular.forEach(result.dates, function (date) {
                         vm.planItems.push({
-                            plannedStartTime: date
+                            plannedStartTime: date,
+                            color: color
                         });
                     });
+                    angular.forEach(result.withExcludes, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date,
+                            color: 'orange'
+                        });
+                    });
+                    if(vm.planItems.length ==0){
+                        vm.planItems.push({
+                            plannedStartTime: '01-01-1970'
+                        });
+                    }
                 });
             } else if (newDate.getFullYear() == vm.calendarTitle) {
                 vm.planItems = angular.copy(tempList)
@@ -2938,6 +2968,9 @@
                     }
                 }
             } else {
+                if(!obj.excludes){
+                   obj.exclude={};
+                }
                 if (data.months && angular.isArray(data.months) && data.months.length > 0) {
                     if (!obj.excludes.months)
                         obj.excludes.months = [];
@@ -10860,23 +10893,87 @@
             vm.viewDate = new Date();
             vm.calendarTitle = new Date().getFullYear();
             var obj = {};
+
             if (data.calendar) {
                 vm.calendarObj = data.calendar;
             } else {
                 vm.calendarObj = data;
             }
-            obj.dateFrom = vm.calendarObj.from;
-            obj.dateTo = vm.calendarObj.to;
-            obj.path = vm.calendarObj.path;
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            CalendarService.getListOfDates(obj).then(function (result) {
-                angular.forEach(result.dates, function (date) {
-                    vm.planItems.push({
-                        plannedStartTime: date
+            CalendarService.getCalendar({
+                jobschedulerId: vm.schedulerIds.selected,
+                path: vm.calendarObj.path
+            }).then(function (res) {
+
+                vm.calendarObj.from = res.calendar.from || moment().format('YYYY-MM-DD');
+                vm.calendarObj.to = res.calendar.to;
+                obj.dateFrom = vm.calendarObj.from;
+                obj.dateTo = vm.calendarObj.to;
+
+                vm.toDate = angular.copy(obj.dateTo);
+                if (new Date(obj.dateTo).getTime() > new Date(vm.calendarTitle + '-12-31').getTime()) {
+                    obj.dateTo = vm.calendarTitle + '-12-31';
+                }
+
+                obj.path = vm.calendarObj.path;
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                CalendarService.getListOfDates(obj).then(function (result) {
+                    angular.forEach(result.dates, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date,
+                            color: 'blue'
+                        });
+                    });
+                    angular.forEach(result.withExcludes, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date,
+                            color: 'orange'
+                        });
+                    });
+                    tempList = angular.copy(vm.planItems);
+                });
+            })
+        };
+        vm.changeDate = function (type) {
+
+            if(type =='add')
+                vm.calendarTitle = parseInt(vm.calendarTitle) + 1;
+            else
+                vm.calendarTitle = parseInt(vm.calendarTitle) - 1;
+
+            var newDate = new Date();
+            newDate.setHours(0, 0, 0, 0);
+            if(new Date(vm.toDate).getTime()>new Date(vm.calendarTitle + '-12-31').getTime()){
+                var todate = vm.calendarTitle + '-12-31';
+            }else{
+                var todate = vm.toDate;
+            }
+
+            if (newDate.getFullYear() < vm.calendarTitle && (new Date(vm.calendarTitle + '-01-01').getTime()< new Date(todate).getTime())) {
+                vm.planItems = [];
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.calendar = {};
+                obj.dateFrom = vm.calendarTitle + '-01-01';
+                obj.dateTo = todate;
+                obj.path = vm.calendarObj.path;
+
+                CalendarService.getListOfDates(obj).then(function (result) {
+                    angular.forEach(result.dates, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date,
+                            color: 'blue'
+                        });
+                    });
+                    angular.forEach(result.withExcludes, function (date) {
+                        vm.planItems.push({
+                            plannedStartTime: date,
+                            color: 'orange'
+                        });
                     });
                 });
-                tempList = angular.copy(vm.planItems);
-            });
+            } else if (newDate.getFullYear() == vm.calendarTitle) {
+                vm.planItems = angular.copy(tempList)
+            }
         };
 
         vm.deleteCalendar = function (data, index) {

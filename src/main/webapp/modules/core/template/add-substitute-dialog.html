@@ -865,19 +865,10 @@
                             </table>
                         </div>
                     </div>
-                    <!--<div class="form-group row" ng-if="holidayCalendar && holidayCalendar.length>0">
-                        <label class="col-sm-3" translate>label.calendar</label>
-                        <div class="col-md-9" style="max-height: 120px; overflow: auto;">
-                            <div ng-repeat="h in holidayCalendar">
-                                <a href="" ng-click="previewCalendar(h)"><i class="fa fa-calendar-plus-o"></i> {{h.path}}
-                                <span ng-if="h.title">- <i class="text-muted">{{h.title}}</i></span></a>
-                                <a href="" ng-click="deleteHolidayCalendar(h)"><i class="m-l fa fa-times"></i></a>
-                            </div>
-                        </div>
-                    </div>-->
+
                 </div>
             </div>
-            <div class="hide" ng-class="{show: editor.showCalendarTab}">
+            <div ng-if="editor.showCalendarTab">
                <div class="row">
                     <label class="col-sm-12 text" >{{calendarObj.path}} <i ng-if="calendarObj.title" class="text-muted">- {{calendarObj.title}}</i>
                         <span class="m-t">(<span class="text-sm" translate>label.validity </span>:
@@ -887,11 +878,11 @@
                     </label>
                 </div>
                 <div class="text-md text-center">
-                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" >
+                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeDate('sub')">
                         <i class="fa fa-angle-left fa-lg"></i>
                     </a>
                     {{calendarTitle}}
-                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" >
+                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeDate('add')">
                         <i class="fa fa-angle-right fa-lg"></i>
                     </a>
                 </div>

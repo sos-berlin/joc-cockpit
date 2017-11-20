@@ -1183,5 +1183,7 @@
   "label.totalNumberOfExecutions": "実行合計数",
   "placeholder.enterAgentUrl": "エージェントURL入力",
   "message.emptyCalendar": "Calendar is empty!",
-  "message.noDatesFound": "No dates found."
+  "message.noDatesFound": "No dates found.",
+  "EXCLUDE": "exclude",
+  "INCLUDE": "include"
 }

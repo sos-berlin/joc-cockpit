@@ -1183,5 +1183,7 @@
   "label.protocol": "Protocol",
   "placeholder.protocol": "Protocol",
   "message.emptyCalendar": "Calendar is empty!",
-  "message.noDatesFound": "No dates found."
+  "message.noDatesFound": "No dates found.",
+  "EXCLUDE":"exclude",
+  "INCLUDE":"include"
 }

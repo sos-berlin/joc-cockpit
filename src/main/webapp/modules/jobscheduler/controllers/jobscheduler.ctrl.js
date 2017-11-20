@@ -1408,7 +1408,7 @@
             });
             t1 = $timeout(function(){
                 vm.template = 'page1';
-            },100);
+            },400);
         };
 
         vm.editCalendar = function (calendar) {
@@ -1434,7 +1434,7 @@
                 });
                 t1 = $timeout(function () {
                     vm.template = 'page1';
-                }, 100);
+                }, 400);
             });
             vm.object.calendars = [];
         };
