@@ -179,7 +179,7 @@
                 } else if (l.path() == '/resources/schedules') {
                     t.pageView = views.schedule;
                 } else if (l.path() == '/resources/calendars') {
-                    t.pageView = views.calendar;
+                    t.pageView = views.calendar || view;
                 }else if (l.path().match('/job_chain_detail/')) {
                     t.pageView = views.jobChainOrder;
                 } else if (l.path().match('/orders_overview')) {
@@ -202,14 +202,14 @@
                         views.order = t.pageView;
                     } else if (l.path().match('/resources/agent_clusters')) {
                         views.agent = t.pageView;
-                    } else if (l.path() == '/resources/locks') {
+                    }else if (l.path() == '/resources/locks') {
                         views.lock = t.pageView;
                     } else if (l.path() == '/resources/process_classes') {
                         views.processClass = t.pageView;
                     } else if (l.path() == '/resources/schedules') {
                         views.schedule = t.pageView;
                     }else if (l.path() == '/resources/calendars') {
-                        views.calendar = t.pageView;
+                        views.calendar = t.pageView || view;
                     } else if (l.path().match('/job_chain_detail/')) {
                         views.jobChainOrder = t.pageView;
                     } else if (l.path().match('/orders_overview')) {

@@ -24,7 +24,7 @@
 <div id="rightPanel1">
 
     <div class="hide m-t-xs" ng-class="{'show': isLoading}" ng-hide="loading">
-        <div class="hide row" ng-class="{'show': pageView=='grid'}">
+        <div class="hide row" ng-class="{'show': pageView!='list'}">
             <div ng-repeat="(key, value) in allCalendars  | groupBy: 'path1'">
                 <div class="col-sm-12" style="margin-bottom: 10px">
                     <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
@@ -393,11 +393,11 @@
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOnW.$invalid && form1.endOnW.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" ng-disabled="!frequency.startingWithW"
+                                                <input class="form-control input-date" name="endOnW"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.endOnW"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWithW}}" data-max-date="{{calendar.to}}"
@@ -452,11 +452,11 @@
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOnS.$invalid && form1.endOnS.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" ng-disabled="!frequency.startingWithS"
+                                                <input class="form-control input-date" name="endOnS"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.endOnS"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWithS}}" data-max-date="{{calendar.to}}"
@@ -732,11 +732,11 @@
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOnM.$invalid && form1.endOnM.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" ng-disabled="!frequency.startingWithM"
+                                                <input class="form-control input-date" name="endOnM"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.endOnM"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWithM}}" data-max-date="{{calendar.to}}"
@@ -775,11 +775,11 @@
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOn.$invalid && form1.endOn.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
-                                                <input class="form-control input-date" ng-disabled="!frequency.startingWith"
+                                                <input class="form-control input-date" name="endOn"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.endOn"
                                                        data-date-format="{{dataFormat}}" data-min-date="{{frequency.startingWith}}" data-max-date="{{calendar.to}}"
@@ -1007,7 +1007,7 @@
                         </div>
                     </div>
                     <button ng-if="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
-                            style="position:absolute; bottom: 10px;" ng-disabled="form.$invalid || !editor.isEnable" ng-click="addFrequency();">
+                            style="position:absolute; bottom: 10px;" ng-disabled="form1.$invalid || !editor.isEnable" ng-click="addFrequency();">
                         <span translate>button.addNewFrequency</span>
                     </button>
                 </div>
@@ -1015,7 +1015,7 @@
                     <div class="pull-left">
 
                         <button ng-if="!editor.showYearView" type="submit" class="btn orange btn-sm"
-                                ng-disabled="form.$invalid || frequencyList.length==0">
+                                ng-disabled="form1.$invalid || frequencyList.length==0">
                             <span translate>button.close</span>
                         </button>
                         <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>

@@ -255,11 +255,11 @@
                     </div>
                     <div class="text-center text-orange "
                          ng-if="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
-                        <a href  ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to}" translate>button.addNewFrequency</a>
+                        <a href  ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to || form.$invalid}" translate>button.addNewFrequency</a>
                     </div>
                     <div class="text-center text-orange "
                          ng-if="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
-                        <a href ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to}" translate>button.addNewFrequency</a>
+                        <a href ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to || form.$invalid}" translate>button.addNewFrequency</a>
                     </div>
                 </div>
             </div>
@@ -268,7 +268,7 @@
             <button type="submit" class="btn btn-primary btn-sm"
                     translate>button.submit
             </button>
-            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath" type="button" class="btn orange btn-sm m-l-sm" ng-click="saveAs(form);"
+            <button ng-if="!calendar.create" ng-disabled="calendar.path == calendar.newPath || form.$invalid" type="button" class="btn orange btn-sm m-l-sm" ng-click="saveAs(form);"
                     translate>button.saveAs
             </button>
             <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()"

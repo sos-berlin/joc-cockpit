@@ -1363,8 +1363,8 @@
                     obj.calendar.path = vm.calendar.path + '/' + vm.calendar.name;
                 }
             }else{
-                obj.calendar.path = vm.calendar.path;
-                obj.calendar.id = vm.calendar.id;
+              obj.calendar.path = vm.calendar.newPath;
+              obj.calendar.id = vm.calendar.id;
             }
             obj.calendar.title = vm.calendar.title;
             obj.calendar.category = vm.calendar.category;
@@ -1391,7 +1391,6 @@
             storeCalendar();
         });
         vm.addCalendar = function () {
-
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm.calendar = {};
@@ -1412,7 +1411,6 @@
         };
 
         vm.editCalendar = function (calendar) {
-
             CalendarService.getCalendar({
                 id: calendar.id,
                 jobschedulerId: vm.schedulerIds.selected
@@ -1444,7 +1442,9 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = vm.calendar.calendarObj;
+
             obj.calendar.path = vm.calendar.newPath;
+           
             if (vm.calendar.title)
                 obj.calendar.title = vm.calendar.title;
             if (vm.calendar.category)
@@ -2650,7 +2650,7 @@
                 vm.tree = [];
                 initTree();
             } else if (toState.name == 'app.resources.calendars') {
-                vm.pageView = views.calendar || vm.userPreferences.pageView || 'grid';
+                vm.pageView = views.calendar || vm.userPreferences.pageView;
                 vm.resourceFilters.state = 'calendars';
                 vm.treeCalendar = [];
                 initCalendarTree();
@@ -3116,7 +3116,7 @@
                     obj.calendar.path = vm.calendar.path + '/' + vm.calendar.name;
                 }
             } else {
-                obj.calendar.path = vm.calendar.path;
+                obj.calendar.path = vm.calendar.newPath;
                 obj.calendar.id = vm.calendar.id;
             }
             obj.calendar.title = vm.calendar.title;
@@ -3135,9 +3135,7 @@
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            CalendarService.storeCalendar(obj).then(function () {
-
-            });
+            CalendarService.storeCalendar(obj);
         }
 
         $scope.$on('calendar-obj', function (event, data) {
