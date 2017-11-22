@@ -5899,7 +5899,7 @@
                 obj1.step = data.interval || 1;
                 if (data.startingWith)
                     obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
-                if (data.endOnW) {
+                if (data.endOn) {
                     obj1.to = moment(data.endOn).format('YYYY-MM-DD')
                 }
                 obj.includes.repetitions.push(obj1);
@@ -12133,7 +12133,7 @@
                         obj1.step = data.interval || 1;
                         if (data.startingWith)
                             obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
-                        if (data.endOnW) {
+                        if (data.endOn) {
                             obj1.to = moment(data.endOn).format('YYYY-MM-DD')
                         }
                         obj.includes.repetitions.push(obj1);

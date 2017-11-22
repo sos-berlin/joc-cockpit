@@ -940,7 +940,9 @@
                                         <tr>
                                             <th translate>label.srNo</th>
                                             <th translate>label.frequency</th>
-                                            <th width="100" translate>label.action</th>
+                                            <th translate>label.validFrom</th>
+                                            <th translate>label.validTo</th>
+                                            <th width="80" translate>label.action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -950,6 +952,18 @@
                                             <td ng-click="editFrequency(data)">
                                                 <i ng-if="data.exclude" class="fa fa-minus"> </i>
                                                 <span>{{data.str}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
                                             </td>
                                             <td>
                                                 <a class="text-hover-primary">

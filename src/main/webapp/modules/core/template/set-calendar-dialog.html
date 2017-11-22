@@ -186,7 +186,7 @@
                                 <th translate>label.listOfFrequencies</th>
                                 <th translate>label.validFrom</th>
                                 <th translate>label.validTo</th>
-                                <th translate>label.action</th>
+                                <th width="60" translate>label.action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -198,16 +198,16 @@
                                     <a ng-click="updateFrequency(data);">{{data.str}}</a>
                                 </td>
                                 <td>
-                                    <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate}}</span>
-                                    <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate}}</span>
-                                    <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate}}</span>
-                                    <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate}}</span>
+                                    <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
                                 </td>
                                 <td>
-                                    <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate}}</span>
-                                    <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate}}</span>
-                                    <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate}}</span>
-                                    <span ng-if="data.tab=='others'">{{data.endOn | stringToDate}}</span>
+                                    <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                                    <span ng-if="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
                                 </td>
                                 <td>
 

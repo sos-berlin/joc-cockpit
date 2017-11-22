@@ -480,7 +480,9 @@
                                         <tr>
                                             <th translate>label.srNo</th>
                                             <th translate>label.frequency</th>
-                                            <th width="80" translate>label.action</th>
+                                            <th translate>label.validFrom</th>
+                                            <th translate>label.validTo</th>
+                                            <th width="60" translate>label.action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -490,6 +492,18 @@
                                             <td ng-click="editFrequency(data)">
                                                 <i ng-if="data.exclude" class="fa fa-minus"> </i>
                                                 <span>{{data.str}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
                                             </td>
                                             <td>
                                                 <a><i ng-click="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
@@ -515,10 +529,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="pull-left">
-
-                        <button type="submit" class="btn orange btn-sm"
-                                ng-disabled="form1.$invalid || calendar.frequencyList.length==0">
-                            <span translate>button.close</span>
+                        <button type="submit" class="btn orange btn-sm" ng-disabled="form1.$invalid || calendar.frequencyList.length==0" translate>
+                            button.close
                         </button>
                         <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>
                             button.cancel
