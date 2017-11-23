@@ -3166,7 +3166,7 @@
                 });
                 t1 = $timeout(function () {
                     vm.template = 'page1';
-                }, 100);
+                }, 400);
             });
 
         };

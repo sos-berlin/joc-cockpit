@@ -1185,5 +1185,6 @@
   "message.emptyCalendar": "Calendar is empty!",
   "message.noDatesFound": "No dates found.",
   "EXCLUDE": "exclude",
-  "INCLUDE": "include"
+  "INCLUDE": "include",
+  "message.calendarTypeCannotBeChange": "You cannot change the calendar type when it is already assigned to a job, order or schedule."
 }

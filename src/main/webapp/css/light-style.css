@@ -1,18 +1,1 @@
-.backup {
-    background: #2c3e50; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.51), rgb(44, 62, 80)); /*Safari 5.1-6*/
-    background: -o-linear-gradient(right, rgba(255, 255, 255, 0.51), rgba(44, 62, 80, 1)); /*Opera 11.1-12*/
-    background: -moz-linear-gradient(right, rgba(255, 255, 255, 0.51), rgba(44, 62, 80, 1)); /*Fx 3.6-15*/
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.51), rgba(44, 62, 80, 1)); /*Standard*/
-}
-.backup-top-header {
-    background: rgb(44, 62, 80)
-}
-
-.backup-top-header .m-r-sm {
-    color: #ffffff;
-}
-
-.backup-top-header .backup-text {
-    color: #ffffff;
-}
+.backup{background:#2c3e50;background:-webkit-linear-gradient(left,rgba(255,255,255,.51),#2c3e50);background:-o-linear-gradient(right,rgba(255,255,255,.51),rgba(44,62,80,1));background:-moz-linear-gradient(right,rgba(255,255,255,.51),rgba(44,62,80,1));background:linear-gradient(to right,rgba(255,255,255,.51),rgba(44,62,80,1))}.backup-top-header{background:#2c3e50}.backup-top-header .backup-text,.backup-top-header .m-r-sm{color:#fff}

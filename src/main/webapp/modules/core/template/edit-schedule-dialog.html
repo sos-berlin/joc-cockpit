@@ -167,8 +167,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center text-orange "
-                                     ng-if="(runtimeList && runtimeList.length==0) || !runtimeList">
+                                <div class="text-center text-orange " ng-if="(!runtimeList || runtimeList.length==0) && holidayCalendar.length==0">
                                     <a href ng-click="createNewRunTime()"
                                        translate>button.addNewFrequency</a>
                                 </div>

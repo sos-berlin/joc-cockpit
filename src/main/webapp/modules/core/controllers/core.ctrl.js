@@ -5793,8 +5793,12 @@
             }
 
             if (!vm.isEmpty(run_time.holidays)) {
-                if (!(run_time.holidays.holiday && run_time.holidays.holiday.length > 0)) {
-                    delete run_time.holidays['holiday'];
+                if(run_time.holidays.holiday) {
+                    if (angular.isArray(run_time.holidays.holiday) && run_time.holidays.holiday.length == 0) {
+                        delete run_time.holidays['holiday'];
+                    }else if(vm.isEmpty(run_time.holidays.holiday)){
+                        delete run_time.holidays['holiday'];
+                    }
                 }
                 if (!(run_time.holidays.include && run_time.holidays.include.length > 0)) {
                     delete run_time.holidays['include'];
@@ -10533,16 +10537,30 @@
             } else {
                 delete vm.run_time['month'];
             }
-            vm.run_time.holidays = {};
-            vm.run_time.holidays.holiday = [];
+
+            if(!vm.run_time.holidays) {
+                vm.run_time.holidays = {};
+            }
+            if(!vm.run_time.holidays.holiday) {
+                vm.run_time.holidays.holiday = [];
+            }
             vm.run_time.holidays.include = [];
             if (vm.runTime1.holidays) {
                 if (vm.runTime1.holidays.weekdays) {
                     vm.run_time.holidays.weekdays = vm.runTime1.holidays.weekdays;
                 }
             }
+
             if (vm.holidayDates && vm.holidayDates.length > 0) {
                 angular.forEach(vm.holidayDates, function (value) {
+                    var flag = false;
+                    for(var i=0; i< vm.run_time.holidays.holiday.length;i++){
+                        if(!vm.run_time.holidays.holiday[i]._calendar && vm.run_time.holidays.holiday[i]._date == moment(value).format('YYYY-MM-DD')){
+                           flag = true;
+                            break;
+                        }
+                    }
+                    if(!flag)
                     vm.run_time.holidays.holiday.push({_date: moment(value).format('YYYY-MM-DD')});
                 });
             }
@@ -10750,10 +10768,31 @@
         }
 
         function generateHolidayCalendarDates(run_time, dates, calendar) {
+            var _tempDates = [];
+            if (run_time.holidays) {
+                if (!vm.isEmpty(run_time.holidays)) {
+                    if (run_time.holidays.holiday && run_time.holidays.holiday.length>0) {
+                        _tempDates = angular.copy(run_time.holidays.holiday );
+                        for (var x = 0; x < _tempDates.length; x++) {
+                            if (_tempDates[x]._calendar == calendar.path) {
+                                for (var i = 0; i < run_time.holidays.holiday.length; i++) {
+                                    if (run_time.holidays.holiday[i]._calendar == calendar.path) {
+                                        run_time.holidays.holiday.splice(i, 1);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+               run_time.holidays ={};
+            }
             if (dates.length > 0) {
                 angular.forEach(dates, function (d) {
                     if (!vm.isEmpty(run_time.holidays)) {
                         if (run_time.holidays.holiday && angular.isArray(run_time.holidays.holiday)) {
+
                             run_time.holidays.holiday.push({
                                 _calendar: calendar.path,
                                 _date: moment(d).format('YYYY-MM-DD')
@@ -10767,7 +10806,6 @@
                         }
 
                     } else {
-                        run_time.holidays = {};
                         run_time.holidays.holiday = [];
                         run_time.holidays.holiday.push({
                             _calendar: calendar.path,
@@ -10935,7 +10973,7 @@
             }
         };
 
-        vm.deleteCalendar = function (data, index) {
+        vm.deleteCalendar = function (data) {
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
@@ -11318,8 +11356,8 @@
         });
     }
 
-    CalendarEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', '$window', '$filter', 'CalendarService', '$uibModal'];
-    function CalendarEditorDialogCtrl($scope, $rootScope, $uibModalInstance, $window, $filter, CalendarService, $uibModal) {
+    CalendarEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', '$window', '$filter', 'CalendarService', '$uibModal','gettextCatalog','toasty'];
+    function CalendarEditorDialogCtrl($scope, $rootScope, $uibModalInstance, $window, $filter, CalendarService, $uibModal,gettextCatalog,toasty) {
         var vm = $scope;
 
         vm.minDate = new Date();
@@ -11344,20 +11382,28 @@
                     vm.calendar.usedIn = res;
                     vm.calendarArr = undefined;
                     if (vm.calendar.usedIn && (vm.calendar.usedIn.orders || vm.calendar.usedIn.jobs || vm.calendar.usedIn.schedules)) {
-                        var modalInstance = $uibModal.open({
-                            templateUrl: 'modules/core/template/confirm-dialog.html',
-                            controller: 'DialogCtrl1',
-                            scope: vm,
-                            backdrop: 'static'
-                        });
-                        modalInstance.result.then(function () {
-                            $rootScope.$broadcast('calendar-obj', {
-                                calendar: vm.calendar
+                        if(vm.oldType != vm.calendar.type) {
+                            toasty.warning({
+                                title: gettextCatalog.getString('message.calendarTypeCannotBeChange'),
+                                timeout: 10000
                             });
-                            $uibModalInstance.close('ok');
-                        }, function () {
+                        }else {
 
-                        });
+                            var modalInstance = $uibModal.open({
+                                templateUrl: 'modules/core/template/confirm-dialog.html',
+                                controller: 'DialogCtrl1',
+                                scope: vm,
+                                backdrop: 'static'
+                            });
+                            modalInstance.result.then(function () {
+                                $rootScope.$broadcast('calendar-obj', {
+                                    calendar: vm.calendar
+                                });
+                                $uibModalInstance.close('ok');
+                            }, function () {
+
+                            });
+                        }
                     } else {
                         $rootScope.$broadcast('calendar-obj', {
                             calendar: vm.calendar
@@ -11374,7 +11420,6 @@
         }
 
         vm.ok = function (form) {
-
             if (vm.calendar.name && vm.calendar.path && vm.calendar.to) {
                 form.$setPristine();
                 form.$setUntouched();
@@ -11387,7 +11432,6 @@
                 form.to.$dirty = !vm.calendar.to ? true : false;
                 return;
             }
-
             vm.logError = false;
             vm.calendar.calendarObj = generateCalendarAllObj();
             if (vm.required) {
@@ -11436,7 +11480,6 @@
             $uibModalInstance.dismiss('cancel');
         };
 
-
         vm.editor = {};
         vm.editor.isEnable = false;
         vm.frequency = {};
@@ -11446,6 +11489,9 @@
         vm.calendar.excludesFrequency = [];
         if (vm.calendar.includes || vm.calendar.excludes) {
             convertObjToArr(vm.calendar);
+        }
+        if(vm.calendar && vm.calendar.type){
+            vm.oldType = angular.copy(vm.calendar.type)
         }
         vm.frequencyList = [];
 
