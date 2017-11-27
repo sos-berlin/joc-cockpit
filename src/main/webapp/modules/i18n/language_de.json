@@ -1164,7 +1164,7 @@
   "label.size": "Größe",
   "label.progress": "Fortschritt",
   "label.polling": "Polling",
-  "button.showLog": "Show Log",
+  "button.showLog": "Protokoll anzeigen",
   "label.profileId": "Profil ID",
   "placeholder.profileId": "Profil ID",
   "placeholder.mandator": "Mandant",

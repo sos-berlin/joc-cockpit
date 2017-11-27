@@ -1186,5 +1186,5 @@
   "message.noDatesFound": "No dates found",
   "EXCLUDE": "exclude",
   "INCLUDE": "include",
-  "message.calendarTypeCannotBeChange": "You cannot change the type for a calendar that is assigned to a job, order or schedule"
+  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, order or schedule"
 }
