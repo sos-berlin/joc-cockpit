@@ -2634,7 +2634,7 @@
                         }
                     }
                 }
-                if (_dates.length > 0) {
+                if (_date && _dates.length > 0) {
                     angular.forEach(_dates, function (dates) {
                         var obj = angular.copy(vm.frequency);
                         obj.type = vm.editor.frequencyType;
