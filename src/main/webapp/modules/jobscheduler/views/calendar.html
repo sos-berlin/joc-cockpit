@@ -633,7 +633,7 @@
                                             <label class="col-sm-3" translate>label.country</label>
 
                                             <div class="col-sm-6">
-                                                <select class="form-control" ng-model="frequency.country"
+                                                <select class="form-control" ng-model="frequency.country" ng-disabled="countryField"
                                                         ng-change="loadHolidayList()">
                                                     <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName"
                                                             value="{{country.code}}">{{country.name}}
@@ -645,7 +645,7 @@
                                             <label class="col-sm-3 form-control-label" translate>label.year</label>
 
                                             <div class="col-sm-6">
-                                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="frequency.year"
+                                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="frequency.year" ng-disabled="countryField"
                                                        ng-change="loadHolidayList()">
                                             </div>
                                         </div>
@@ -660,28 +660,24 @@
                                         <div class="form-group row">
                                             <div class="col-sm-12">
                                                 <div class="col-sm-6 p-l-0">
-                                                    <div class="col-sm-12 p-l-0"
-                                                         ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))"
-                                                         >
+                                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(0,Math.floor(holidayList.length/2))">
                                                         <label class="md-check">
                                                             <input type="checkbox"
                                                                    data-checklist-model="frequency.nationalHoliday"
                                                                    data-checklist-value="holiday.date"><i class="primary"></i>
 
-                                                            {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                                            {{getDateFormat(holiday.date)}} <i ng-if="holiday.name">-</i> {{holiday.name}}
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6 p-l-0">
-                                                    <div class="col-sm-12 p-l-0"
-                                                         ng-repeat="holiday in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)"
-                                                         >
+                                                    <div class="col-sm-12 p-l-0" ng-repeat="holiday in holidayList.slice(Math.floor(holidayList.length/2),holidayList.length)">
                                                         <label class="md-check">
                                                             <input type="checkbox"
                                                                    data-checklist-model="frequency.nationalHoliday"
                                                                    data-checklist-value="holiday.date"><i class="primary"></i>
 
-                                                            {{getDateFormat(holiday.date)}} - {{holiday.name}}
+                                                            {{getDateFormat(holiday.date)}} <i ng-if="holiday.name">-</i> {{holiday.name}}
                                                         </label>
                                                     </div>
                                                 </div>
@@ -832,11 +828,10 @@
                                 </label>
                             </div>
                             <div class="col-sm-5">
-                                <select class="form-control" ng-model="calObj.freqency" ng-change="showCalendar(calObj.freqency)">
+                                <select class="form-control" ng-model="calObj.freqency" ng-change="changeFrequencyObj(calObj.freqency)">
                                     <option value="all" translate>label.allFrequency</option>
                                     <option value="{{data}}" ng-repeat="data in frequencyList1 track by $index">{{data.str}} - {{data.type | translate}}</option>
                                 </select>
-
                             </div>
                         </div>
                         <div class="text-md text-center">
@@ -858,6 +853,7 @@
                                     cell-is-open="true">
                             </mwl-calendar>
                         </div>
+                        <div class="text-center m-t-lg" ng-show="isCaledarLoading"> <div class="loading-img1 m-t-lg"></div></div>
                     </div>
                     <button ng-if="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
                             style="position:absolute; bottom: 10px;" ng-disabled="form1.$invalid || !editor.isEnable" ng-click="addFrequency();">
@@ -886,4 +882,5 @@
         </div>
     </div>
 </div>
+
 </script>

@@ -88,10 +88,10 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="permission.Calendar.edit.assign.runtime && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
-                        <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="permission.Calendar.edit.assign.nonworking && order._type!='AD_HOC'" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-disabled="order.at == 'later'" ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-r-sm"
@@ -211,9 +211,8 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="text-center text-orange " ng-if="(!runtimeList || runtimeList.length==0) && holidayCalendar.length==0">
-                                    <a href ng-click="createNewRunTime()"
-                                       translate>button.addNewFrequency</a>
+                                <div class="text-center" ng-if="(!runtimeList || runtimeList.length==0) && holidayCalendar.length==0">
+                                    <span translate>message.noFrequencyCalendarFound</span>
                                 </div>
                             </div>
                         </div>
@@ -944,7 +943,8 @@
             <button type="button" class="btn btn-primary btn-sm" ng-click="createRunTime();" ng-if="editor.showHolidayTab">
                 <span translate>button.save</span>
             </button>
-            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="editor.showHolidayTab" translate>button.cancel</button>
+            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="back1()" ng-if="!editor.showHolidayTab"  translate>button.close</button>
         </div>
     </form>
 </div>

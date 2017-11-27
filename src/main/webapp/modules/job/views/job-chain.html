@@ -280,7 +280,7 @@
                                                    ng-click="showOrders(jobChain);" translate>button.manageOrders</a>
                                                 <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                    ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
-                                                   ng-click="showCalendar(jobChain);" translate>button.showCalendar</a>
+                                                   ng-click="showCalendar(jobChain);" translate>button.showDailyPlan</a>
                                                 <a class="hide dropdown-item bg-hover-color"
                                                    ng-if="jobChain.state._text != 'STOPPED'"
                                                    ng-class="{show:permission.JobChain.execute.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -364,7 +364,7 @@
                                            ng-class="{'pull-right':permission.JobChain.execute.addOrder, 'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
                                            ng-click="showCalendar(jobChain);">
                                             <i class="fa fa-calendar text-black-lt"></i> <span class="text-black-lt"
-                                                                                               translate>button.showCalendar</span>
+                                                                                               translate>button.showDailyPlan</span>
                                         </a>
                                     </div>
                                 </div>
@@ -491,7 +491,7 @@
                                                ng-click="addOrder(jobChain);" translate>button.addOrder</a>
                                             <a class="dropdown-item" ng-if="permission.DailyPlan.view.status"
                                                ng-class="{'disable-link':(jobChain.fileWatchingProcessClass || jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
-                                               ng-click="showCalendar(jobChain);" translate>button.showCalendar</a>
+                                               ng-click="showCalendar(jobChain);" translate>button.showDailyPlan</a>
                                             <a class="hide dropdown-item bg-hover-color"
                                                ng-if="jobChain.state._text != 'STOPPED'"
                                                ng-class="{show:permission.JobChain.execute.stop, 'disable-link':(jobChain.state._text == 'UNDER_CONSTRUCTION' || jobChain.state._text == 'NOT_INITIALIZED')}"
@@ -603,7 +603,7 @@
                                                                        ng-if="permission.DailyPlan.view.status"
                                                                        ng-class="{'disable-link':(nestedJobChain.fileWatchingProcessClass || nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
                                                                        ng-click="showCalendar(nestedJobChain);"
-                                                                       translate>button.showCalendar</a>
+                                                                       translate>button.showDailyPlan</a>
                                                                     <a class="hide dropdown-item bg-hover-color"
                                                                        ng-if="nestedJobChain.state._text != 'STOPPED'"
                                                                        ng-class="{show:permission.JobChain.execute.stop, 'disable-link':(nestedJobChain.state._text == 'UNDER_CONSTRUCTION' || nestedJobChain.state._text == 'NOT_INITIALIZED')}"
@@ -781,7 +781,7 @@
                                                                                            ng-click="setRunTime(order)"
                                                                                            ><span translate>button.setRunTime</span></a>
                                                                                         <a href class="dropdown-item"
-                                                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                                                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
                                                                                            ng-click="showAssignedCalendar(order)">
                                                                                             <span translate>button.showAssignedCalendar</span></a>
                                                                                         <a href
@@ -813,7 +813,7 @@
                                                                                         <a href class="dropdown-item"
                                                                                            ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
                                                                                            ng-click="viewCalendar(order)"
-                                                                                           translate>button.showCalendar</a>
+                                                                                           translate>button.showDailyPlan</a>
                                                                                         <a href
                                                                                            class="dropdown-item bg-hover-color"
                                                                                            ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
@@ -1064,7 +1064,7 @@
                                                                    ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
                                                                    ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
                                                                 <a href class="dropdown-item"
-                                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
                                                                    ng-click="showAssignedCalendar(order)">
                                                                     <span translate>button.showAssignedCalendar</span>
                                                                 </a>
@@ -1088,7 +1088,7 @@
                                                                    ng-click="removeOrder(order)" translate>button.removeOrder</a>
                                                                 <a href class="dropdown-item"
                                                                    ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
-                                                                   ng-click="viewCalendar(order)" translate>button.showCalendar</a>
+                                                                   ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
                                                                 <a href class="dropdown-item bg-hover-color"
                                                                    ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
                                                                    ng-click="deleteOrder(order,jobChain)" translate>button.deleteOrder</a>

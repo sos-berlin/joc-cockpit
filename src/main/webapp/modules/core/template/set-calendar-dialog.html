@@ -164,7 +164,7 @@
                                 ng-class="{'btn-primary': editor.frequencyType=='INCLUDE'}" translate>
                             button.includedFrequencies
                         </button>
-                        <button type="button" class="btn btn-grey btn-sm " ng-model="editor.frequencyType"
+                        <button ng-if="calendar.type=='WORKING_DAYS'" type="button" class="btn btn-grey btn-sm " ng-model="editor.frequencyType"
                                 uib-btn-radio="'EXCLUDE'"
                                 ng-class="{'btn-primary': editor.frequencyType=='EXCLUDE'}" translate>
                             button.excludedFrequencies
@@ -221,7 +221,7 @@
                                 </td>
                             </tr>
                             <tr ng-repeat="data in calendar.excludesFrequency track by $index"
-                                ng-if="editor.frequencyType=='EXCLUDE'">
+                                ng-if="editor.frequencyType=='EXCLUDE' && calendar.type=='WORKING_DAYS'">
                                 <td class="cursor"
                                     style="border-right: none !important;vertical-align: top !important; ">
 
@@ -253,13 +253,13 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="text-center text-orange "
+                    <div class="text-center"
                          ng-if="(!calendar.includesFrequency || calendar.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'">
-                        <a href  ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to || form.$invalid}" translate>button.addNewFrequency</a>
+                        <span translate>message.noFrequencyFound</span>
                     </div>
-                    <div class="text-center text-orange "
+                    <div class="text-center"
                          ng-if="(!calendar.excludesFrequency || calendar.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'">
-                        <a href ng-click="createNewFrequency()" ng-class="{'disable-link':!calendar.to || form.$invalid}" translate>button.addNewFrequency</a>
+                       <span translate>message.noFrequencyFound</span>
                     </div>
                 </div>
             </div>

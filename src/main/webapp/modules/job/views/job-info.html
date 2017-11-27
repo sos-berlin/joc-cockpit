@@ -83,7 +83,7 @@
                                            ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                         <a class="dropdown-item"
                                            ng-if="job.isOrderJob!=true && permission.DailyPlan.view.status"
-                                           ng-click="viewCalendar(job)" translate>button.showCalendar</a>
+                                           ng-click="viewCalendar(job)" translate>button.showDailyPlan</a>
                                         <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
                                            ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
                                     </div>

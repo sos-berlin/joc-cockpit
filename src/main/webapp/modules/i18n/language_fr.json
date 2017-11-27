@@ -1186,5 +1186,7 @@
   "message.noDatesFound": "No dates found.",
   "EXCLUDE": "exclude",
   "INCLUDE": "include",
-  "message.calendarTypeCannotBeChange": "You cannot change the calendar type when it is already assigned to a job, order or schedule."
+  "message.calendarTypeCannotBeChange": "You cannot change the calendar type when it is already assigned to a job, order or schedule.",
+  "message.noFrequencyCalendarFound": "No frequency/calendar found",
+  "button.showDailyPlan": "Show Daily Plan"
 }
