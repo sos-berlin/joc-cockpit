@@ -1009,10 +1009,30 @@
 
 
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
             if (calendarView == 'month') {
-                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
                 lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
@@ -1045,7 +1065,7 @@
             vm._jobChain = jobChain;
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -5346,10 +5366,30 @@
 
         var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
             if (calendarView == 'month') {
-                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
                 lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
@@ -5383,7 +5423,7 @@
             vm._job = job;
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
@@ -6798,10 +6838,30 @@
 
         var firstDay, lastDay;
         vm.getPlan = function (calendarView, viewDate) {
-            var firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
             var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
             if (calendarView == 'month') {
-                firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
                 lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
             }
 
@@ -6833,7 +6893,7 @@
             vm._job = job;
             vm.planItems = [];
             vm.isCaledarLoading = true;
-            firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0);
+            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0)
             lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,

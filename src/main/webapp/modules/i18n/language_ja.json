@@ -1167,7 +1167,6 @@
   "label.tasksOverview": "タスク一覧",
   "label.tasksSummary": "タスクサマリ",
   "label.tasks": "タスク",
-  "label.calendarViewFor": "カレンダ表示",
   "breadcrumb.jobsOverview": "ジョブ一覧",
   "label.agentJobExecution": "エージェントジョブ実行",
   "breadcrumb.agentExecutedJobs": "エージェント実行ジョブ",
@@ -1188,5 +1187,6 @@
   "INCLUDE": "include",
   "message.calendarTypeCannotBeChange": "You cannot change the calendar type when it is already assigned to a job, order or schedule.",
   "message.noFrequencyCalendarFound": "No frequency/calendar found",
-  "button.showDailyPlan": "Show Daily Plan"
+  "button.showDailyPlan": "Show Daily Plan",
+  "label.calendarViewFor": "Daily Plan View for"
 }

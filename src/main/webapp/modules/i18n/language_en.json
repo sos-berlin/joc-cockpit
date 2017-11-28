@@ -1051,7 +1051,6 @@
   "label.months": "Months",
   "label.years": "Years",
   "label.updateCalendar": "Update Calendar",
-  "label.calendarViewFor": "Calendar View for",
   "label.calendar": "Calendar",
   "label.showCalendarAllDates": "Show calendar view for all frequencies",
   "button.includedFrequencies": "Included Frequencies",
@@ -1131,7 +1130,7 @@
   "message.noYadeHistoryFound": "no YADE History found",
   "message.inValidUserName": "User names with blank spaces are not allowed with Shiro authentication",
   "label.restrictions": "Restrictions",
-  "label.showAuditLogForJobScheduler" : "Show Audit Log for JobScheduler",
+  "label.showAuditLogForJobScheduler": "Show Audit Log for JobScheduler",
   "label.tasksOverview": "Tasks Overview",
   "label.tasksSummary": "Tasks Summary",
   "label.tasks": "Tasks",
@@ -1188,5 +1187,6 @@
   "INCLUDE":"include",
   "message.calendarTypeCannotBeChange":"You cannot change the type of a calendar that is assigned to a job, order or schedule",
   "message.noFrequencyCalendarFound": "No frequency/calendar found",
-  "button.showDailyPlan": "Show Daily Plan"
+  "button.showDailyPlan": "Show Daily Plan",
+  "label.calendarViewFor": "Daily Plan View for"
 }

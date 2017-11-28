@@ -156,7 +156,10 @@
                                         <thead>
                                         <tr>
                                             <th translate>label.listOfFrequenciesCalendars</th>
-                                            <th translate>label.period</th>
+                                            <th translate >
+                                                <span ng-if="!order.isOrderJob" translate>label.period</span>
+                                                <span ng-if="order.isOrderJob" translate>label.timeSlot</span>
+                                            </th>
                                             <th translate>label.restrictions</th>
                                         </tr>
                                         </thead>
@@ -172,7 +175,7 @@
                                             <td ng-if="data.calendar" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="previewCalendar(data);"><i class="fa fa-calendar text-success"></i> {{data.calendar.path}} -  <span class="label" ng-class="{'bg-green': data.calendar.type=='WORKING_DAYS','bg-gold':data.calendar.type=='NON_WORKING_DAYS'}" ng-bind="data.calendar.type | translate"></span></a>
                                                 <a class="text-xs text-hover-primary m-l-sm"
-                                                   ng-click="deleteCalendar(data,$index)"><i class="fa fa-times"></i></a>
+                                                   ng-click="deleteCalendar(data)"><i class="fa fa-times"></i></a>
                                             </td>
                                             <td style="border-left: none !important; ">
                                                 <div ng-repeat="p in data.period track by $index">
@@ -610,7 +613,7 @@
                     </div>
                 </div>
                 <div ng-hide="editor.update">
-                    <div class="form-group row" ng-if="runTime.frequency">
+                    <div class="form-group row" ng-if="runTime.frequency && runTime.frequency != 'time_slot'">
                         <label class="col-sm-3 form-control-label" translate>label.repeatInterval</label>
 
                         <div class="col-sm-6" >
@@ -646,7 +649,7 @@
                                    placeholder="HH:MM:SS" type="text">
                         </div>
                     </div>
-                    <div class="form-group row" ng-hide="!runTime.frequency || runTime.frequency=='single_start'"
+                    <div class="form-group row" ng-if="runTime.frequency == 'time_slot'" ng-hide="!runTime.frequency || runTime.frequency=='single_start'"
                          ng-class="{'has-error': (form.time1.$invalid || form.time2.$invalid)}">
                         <label class="col-sm-3 form-control-label" translate>label.begin</label>
 

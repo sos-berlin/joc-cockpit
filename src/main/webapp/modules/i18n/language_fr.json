@@ -1049,7 +1049,6 @@
   "label.tasksOverview": "Vue d'ensemble des Tâches",
   "label.tasksSummary": "Résumé des Processus",
   "label.tasks": "Processus",
-  "label.calendarViewFor": "Calendrier pour",
   "breadcrumb.jobsOverview": "Vue d'ensemble des Tâches",
   "label.agentJobExecution": "Agent Exécutions des Tâches",
   "breadcrumb.agentExecutedJobs": "Tâches exécutées avec Agent",
@@ -1188,5 +1187,6 @@
   "INCLUDE": "include",
   "message.calendarTypeCannotBeChange": "You cannot change the calendar type when it is already assigned to a job, order or schedule.",
   "message.noFrequencyCalendarFound": "No frequency/calendar found",
-  "button.showDailyPlan": "Show Daily Plan"
+  "button.showDailyPlan": "Show Daily Plan",
+  "label.calendarViewFor": "Daily Plan View for"
 }

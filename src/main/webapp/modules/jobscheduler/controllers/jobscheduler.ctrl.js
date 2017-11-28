@@ -1685,7 +1685,7 @@
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.tempXML = vm.runTimes.content;
-                    vm.calendars = res.calendars;
+                  //  vm.calendars = res.calendars;
                 }
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/add-substitute-dialog.html',
@@ -1709,7 +1709,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+
         };
 
         vm.substituteAll = function () {
@@ -1793,8 +1793,10 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
+                     vm.xml = undefined;
                 }, function () {
                     vm.object.schedules = [];
+                     vm.xml = undefined;
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -1804,7 +1806,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+
         };
 
 
@@ -2917,7 +2919,7 @@
                     vm.runTimes = res.configuration;
                     vm.runTimes.content = vm.runTimes.content.xml;
                     vm.tempXML = vm.runTimes.content;
-                    vm.calendars = res.calendars;
+                   // vm.calendars = res.calendars;
                 }
 
                 var modalInstance = $uibModal.open({
@@ -2942,7 +2944,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+
         };
 
         function setRunTime(schedule) {
@@ -2996,8 +2998,9 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
+                     vm.xml = undefined;
                 }, function () {
-
+                   vm.xml = undefined;
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -3007,7 +3010,7 @@
                         vm._schedules.push(value)
                 });
             });
-            vm.zones = moment.tz.names();
+
         };
 
         function terminateTaskWithTimeout(task, path) {

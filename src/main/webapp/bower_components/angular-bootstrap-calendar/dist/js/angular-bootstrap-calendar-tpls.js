@@ -140,9 +140,10 @@
                 }], function () {
                     r()
                 });
-                e.$watch("vm.planItems", function(n,o){
+                e.$watchCollection("vm.planItems", function(n,o){
                     if(n){
-                        e.$broadcast("calendar.refreshView")
+                        r()
+                       // e.$broadcast("calendar.refreshView")
                     }
                 }, !0)
             })["catch"](function (e) {

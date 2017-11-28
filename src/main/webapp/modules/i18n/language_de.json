@@ -1049,7 +1049,6 @@
   "label.tasksOverview": "Übersicht der Jobs",
   "label.tasksSummary": "Historie der Prozesse",
   "label.tasks": "Prozesse",
-  "label.calendarViewFor": "Kalenderansicht für",
   "breadcrumb.jobsOverview": "Übersicht der Jobs",
   "label.agentJobExecution": "Agent Job-Ausführungen",
   "breadcrumb.agentExecutedJobs": "Mit Agent ausgeführte Jobs",
@@ -1188,5 +1187,6 @@
   "INCLUDE": "einschließen",
   "message.calendarTypeCannotBeChange": "Der Typ eines Kalenders kann nicht geändert werden  solange dieser einem Job, Auftrag oder Zeitplan zugeordnet ist"
   "message.noFrequencyCalendarFound": "No frequency/calendar found",
-  "button.showDailyPlan": "Show Daily Plan"
+  "button.showDailyPlan": "Show Daily Plan",
+  "label.calendarViewFor": "Daily Plan View for"
 }
