@@ -118,6 +118,9 @@
         var a = t(12);
         a.module("mwl.calendar").controller("MwlCalendarCtrl", ["$scope","$rootScope", "$log", "$timeout", "$attrs", "$locale", "moment", "calendarTitle", "calendarHelper", function (e,x, n, t, l, i, d, s, o) {
             function r() {
+                if(!c.viewDate){
+                    return;
+                }
                 s[c.view] && a.isDefined(l.viewTitle) && (c.viewTitle = s[c.view](c.viewDate));
                 var n = d(c.viewDate), i = !0;
                 m.clone().startOf(c.view).isSame(n.clone().startOf(c.view)) && !m.isSame(n) && c.view === w && (i = !1), m = n, w = c.view, i && t(function () {
@@ -140,12 +143,18 @@
                 }], function () {
                     r()
                 });
-                e.$watchCollection("vm.planItems", function(n,o){
+
+                e.$watch("vm.planItems", function(n){
                     if(n){
-                        r()
-                       // e.$broadcast("calendar.refreshView")
+                        if(n.length == 0)
+                            r();
+                        else {
+                            if(c.viewDate)
+                                e.$broadcast("calendar.refreshView")
+                        }
                     }
-                }, !0)
+                },true)
+
             })["catch"](function (e) {
                 n.error("Could not load all calendar templates", e)
             })
@@ -329,6 +338,9 @@
             var i = this;
             i.calendarConfig = a, i.openMonthIndex = null, i.openRowIndex = null, e.$on("calendar.refreshView", function () {
                 if ("year" === i.viewPeriod) {
+                    if(!i.viewDate){
+                        return;
+                    }
                     i.loadingDone = !1, i.view = [], i.weekDays = t.getWeekDayNames(), i.view = t.getYearView(i.events, i.viewDate, i.cellModifier), i.yearCount = 0;
                     var e = i.viewDate, a = (l("date")(new Date, "dd-MM-yyyy"), l("date")(i.viewDate, "dd-MM-yyyy"), i.viewDate.getMonth());
                     i.view.forEach(function (n) {
@@ -616,8 +628,12 @@
             function h(e, n, t, l, d) {
                 for (var s = a(n).startOf("month"), o = s.clone().startOf("week"), v = a(n).endOf("month").endOf("week"), r = [], c = a().startOf("day"); o.isBefore(v);) {
                     var m = o.month() === a(n).month(), w = !1, p = i("date")(new Date(o.clone()), "dd-MM-yyyy"), h = [], cl = '', z = 1;
-                    for (var g in l) i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1)
-
+                    for (var g in l) {
+                        i("date")(new Date(l[g].plannedStartTime), "dd-MM-yyyy") == p && ("month" == d && h.push(l[g]), w = !0) && (l[g].color == 'orange' ? z = 0 : z = 1);
+                        if (moment(l[g].plannedStartTime).format('DD-MM-YYYY') == p) {
+                            break;
+                        }
+                    }
                     var f = {
                         label: o.date(),
                         date: o.clone(),

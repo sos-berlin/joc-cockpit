@@ -867,7 +867,7 @@
 
                 </div>
             </div>
-            <div ng-if="editor.showCalendarTab">
+            <div class="hide" ng-class="{'show':editor.showCalendarTab}">
                <div class="row">
                     <label class="col-sm-12 text" >{{calendarObj.path}} <i ng-if="calendarObj.title" class="text-muted">- {{calendarObj.title}}</i>
                         <span class="m-t">(<span class="text-sm" translate>label.validity </span>:
@@ -877,11 +877,11 @@
                     </label>
                 </div>
                 <div class="text-md text-center">
-                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeDate('sub')">
+                    <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeDate()">
                         <i class="fa fa-angle-left fa-lg"></i>
                     </a>
                     {{calendarTitle}}
-                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeDate('add')">
+                    <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeDate()">
                         <i class="fa fa-angle-right fa-lg"></i>
                     </a>
                 </div>

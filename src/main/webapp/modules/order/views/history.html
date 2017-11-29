@@ -296,16 +296,16 @@
         <div class="row m-b m-t-xs">
             <div class="col-md-6 col-sm-4">
                 <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                    <li class="nav-item" ng-if="permission.History.view">
+                    <li class="nav-item" ng-if="permission.History.view.status">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='jobChain'}" ng-model="historyFilters.type"
                            uib-btn-radio="'jobChain'" ng-click="orderHistory()">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.order</span></span>
                         </a>
                     </li>
-                    <li class="nav-item dropdown-separator" ng-if="permission.History.view">
+                    <li class="nav-item dropdown-separator" ng-if="permission.History.view.status">
                         <span class="separator"></span>
                     </li>
-                    <li class="nav-item" ng-if="permission.History.view">
+                    <li class="nav-item" ng-if="permission.History.view.status">
                         <a class="nav-link" ng-class="{'active': historyFilters.type=='job'}" ng-model="historyFilters.type"
                            uib-btn-radio="'job'" ng-click="jobHistory()">
                             <span class="nav-text text-dark p-b-sm"><span class="text" translate>button.task</span></span>

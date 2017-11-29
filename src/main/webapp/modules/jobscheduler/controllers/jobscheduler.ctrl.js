@@ -4774,7 +4774,7 @@
         vm.temp_filter = {};
 
         function checkSharedFilters() {
-            if (vm.permission.JOCConfigurations.share.view) {
+            if (vm.permission.JOCConfigurations.share.view.status) {
                 var obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.configurationType = "CUSTOMIZATION";
