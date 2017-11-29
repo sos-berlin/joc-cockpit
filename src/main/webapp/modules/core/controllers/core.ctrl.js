@@ -3635,8 +3635,8 @@
         };
     }
 
-    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService'];
-    function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService) {
+    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService','$filter'];
+    function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter) {
         var vm = $scope;
         var dom_parser = new DOMParser();
         vm.minDate = new Date();
@@ -6150,6 +6150,9 @@
         }
 
         function checkPeriod(value, period) {
+            if(!value || !period){
+                return;
+            }
             var flg = false;
             if (value._when_holiday == period._when_holiday) {
                 flg = true;
