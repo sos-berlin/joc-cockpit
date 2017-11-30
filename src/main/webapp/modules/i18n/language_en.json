@@ -1183,10 +1183,10 @@
   "placeholder.protocol": "Protocol",
   "message.emptyCalendar": "Calendar is empty!",
   "message.noDatesFound": "No dates found",
-  "EXCLUDE":"exclude",
-  "INCLUDE":"include",
-  "message.calendarTypeCannotBeChange":"You cannot change the type of a calendar that is assigned to a job, order or schedule",
-  "message.noFrequencyCalendarFound": "No frequency/calendar found",
+  "EXCLUDE": "exclude",
+  "INCLUDE": "include",
+  "message.calendarTypeCannotBeChange": "You cannot change the type of a calendar that is assigned to a job, order or schedule",
+  "message.noFrequencyCalendarFound": "No Frequency / Calendar found",
   "button.showDailyPlan": "Show Daily Plan",
   "label.calendarViewFor": "Daily Plan View for"
 }

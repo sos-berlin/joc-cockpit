@@ -1186,7 +1186,7 @@
   "EXCLUDE": "ausschließen",
   "INCLUDE": "einschließen",
   "message.calendarTypeCannotBeChange": "Der Typ eines Kalenders kann nicht geändert werden  solange dieser einem Job, Auftrag oder Zeitplan zugeordnet ist"
-  "message.noFrequencyCalendarFound": "No frequency/calendar found",
-  "button.showDailyPlan": "Show Daily Plan",
-  "label.calendarViewFor": "Daily Plan View for"
+  "message.noFrequencyCalendarFound": "Keine Häufigkeiten / Kalender gefunden",
+  "button.showDailyPlan": "Zeige Tagesplan",
+  "label.calendarViewFor": "Tagesplan Ansicht für"
 }
