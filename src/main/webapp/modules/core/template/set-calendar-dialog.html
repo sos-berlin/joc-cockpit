@@ -116,7 +116,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.type</label>
                         <div class="col-sm-9">
-                            <select class="form-control" ng-model="calendar.type">
+                            <select class="form-control" ng-model="calendar.type" ng-change="changeCalendarType()">
                                 <option value="WORKING_DAYS">{{'label.workingDay' | translate}}</option>
                                 <option value="NON_WORKING_DAYS">{{'label.nonWorkingDay' | translate}}</option>
                             </select>

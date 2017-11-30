@@ -459,6 +459,16 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            },
+            getPlansFromRuntime:function(filter){
+                var deferred = $q.defer();
+                var Runtime = $resource('plan/from_run_time ');
+                Runtime.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

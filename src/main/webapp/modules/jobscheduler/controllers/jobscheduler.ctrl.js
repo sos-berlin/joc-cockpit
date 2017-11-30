@@ -4449,7 +4449,8 @@
             isLoadedFileSummary = false;
             var obj = {};
             //obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
-            obj.timeZone = vm.userPreferences.zone;
+            //obj.timeZone = vm.userPreferences.zone;
+            obj.jobschedulerId= $scope.schedulerIds.selected;
             YadeService.getSummary(obj).then(function (res) {
                 vm.yadeSummary = res;
                 isLoadedFileSummary = true;

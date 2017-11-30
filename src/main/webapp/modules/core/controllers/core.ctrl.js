@@ -2008,63 +2008,114 @@
                 plannedStartTime: date
             };
 
-            var flag = false, isFound = false;
-            for (var i = 0; i < vm.planItems.length; i++) {
-                if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
-                    isFound = true;
-                    if(vm.planItems[i].color != 'orange') {
-                        vm.planItems[i].color = 'orange';
-                        flag = true;
-                    }else{
-                       vm.planItems[i].color = 'blue';
-                    }
-
-                    break;
-                }
-            }
-            if(vm.planItems.length==0){
-                includedDates.push(planData);
-                vm.planItems.push(planData);
-            }
-            if(!isFound) {
-                includedDates.push(planData);
-                vm.planItems.push(planData);
-
-            }else{
-              if (includedDates.length > 0) {
-                    for (var i = 0; i < includedDates.length; i++) {
-                        if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
-                             includedDates.splice(i, 1);
-                            break;
-                        }
-                    }
-                }
-            }
-            if (!flag) {
-                if (excludedDates.length > 0) {
-                    for (var i = 0; i < excludedDates.length; i++) {
-                        if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
-                            excludedDates.splice(i, 1);
-                            for (var j = 0; j < vm.planItems.length; j++) {
-                                if ((new Date(vm.planItems[j].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
-                                    vm.planItems[j].color = 'blue';
-                                    break;
-                                }
+            var flag = false, isFound = false, flg = false;
+            if (vm.calObj.freqency == 'all' || JSON.parse(vm.calObj.freqency).type == 'INCLUDE') {
+                if (vm.planItems.length == 0) {
+                    includedDates = [];
+                    includedDates.push(planData);
+                    vm.planItems.push(planData);
+                } else {
+                    for (var i = 0; i < vm.planItems.length; i++) {
+                        if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                            isFound = true;
+                            if (vm.planItems[i].color != 'orange') {
+                                vm.planItems[i].color = 'orange';
+                                flag = true;
+                            } else {
+                                vm.planItems[i].color = 'blue';
                             }
                             break;
                         }
                     }
-                }
-            } else {
-                var flg = false
-                for (var i = 0; i < excludedDates.length; i++) {
-                    if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
-                        flg = true;
-                        break;
+                    if (!isFound) {
+                        planData.color = 'blue';
+                        includedDates.push(planData);
+                        vm.planItems.push(planData);
+                    } else {
+                        if (includedDates.length > 0) {
+                            for (var i = 0; i < includedDates.length; i++) {
+                                if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                                    includedDates.splice(i, 1);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
-                if (!flg) {
-                     excludedDates.push(planData);
+
+                if (!flag) {
+                    if (excludedDates.length > 0) {
+                        for (var i = 0; i < excludedDates.length; i++) {
+                            if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                                excludedDates.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < excludedDates.length; i++) {
+                        if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                            flg = true;
+                            break;
+                        }
+                    }
+                    if (!flg) {
+                        excludedDates.push(planData);
+                    }
+                }
+
+            } else if (JSON.parse(vm.calObj.freqency).type == 'EXCLUDE') {
+                if (vm.planItems.length == 0) {
+                    excludedDates = [];
+                    excludedDates.push(planData);
+                    vm.planItems.push(planData);
+                } else {
+                    for (var i = 0; i < vm.planItems.length; i++) {
+                        if ((new Date(vm.planItems[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                            isFound = true;
+                            if (vm.planItems[i].color != 'orange') {
+                                vm.planItems[i].color = 'orange';
+                            } else {
+                                vm.planItems[i].color = 'blue';
+                                 flag = true;
+                            }
+                            break;
+                        }
+                    }
+                    if (!isFound) {
+                        planData.color = 'orange';
+                        excludedDates.push(planData);
+                        vm.planItems.push(planData);
+                    } else {
+                        if (excludedDates.length > 0) {
+                            for (var i = 0; i < excludedDates.length; i++) {
+                                if ((new Date(excludedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                                    excludedDates.splice(i, 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!flag) {
+                    if (includedDates.length > 0) {
+                        for (var i = 0; i < includedDates.length; i++) {
+                            if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                                includedDates.splice(i, 1);
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < includedDates.length; i++) {
+                        if ((new Date(includedDates[i].plannedStartTime).setHours(0, 0, 0, 0) == new Date(planData.plannedStartTime).setHours(0, 0, 0, 0))) {
+                            flg = true;
+                            break;
+                        }
+                    }
+                    if (!flg) {
+                        includedDates.push(planData);
+                    }
                 }
             }
         }
@@ -2238,8 +2289,8 @@
         };
 
         vm.showCalendar = function (data) {
-            //vm.calendarTitle = new Date().getFullYear();
             vm.viewDate = new Date();
+          vm.calendarTitle = new Date().getFullYear();
             vm.frequencyList1 = [];
             if (vm.calendar.includesFrequency.length > 0) {
                 angular.forEach(vm.calendar.includesFrequency, function (data) {
@@ -2577,6 +2628,7 @@
                 for (var i = 0; i < vm.frequencyList.length; i++) {
 
                     if (vm.frequency.tab == vm.frequencyList[i].tab) {
+
                         if (vm.frequency.tab == 'weekDays') {
                             if (vm.frequency.months) {
                                 if (vm.frequency.months == vm.frequencyList[i].months || angular.equals(vm.frequencyList[i].months, vm.frequency.months)) {
@@ -2781,7 +2833,6 @@
                     vm.frequencyList.push(angular.copy(vm.frequency));
                 }
             }
-
         };
 
         function groupByDates(arrayOfDates) {
@@ -2803,16 +2854,16 @@
         vm.editFrequency = function (data) {
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
-            if(vm.frequency.tab == 'nationalHoliday') {
+            if (vm.frequency.tab == 'nationalHoliday') {
                 vm.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
-                vm.holidayList =[];
+                vm.holidayList = [];
                 vm.countryField = true;
-                vm.holidayDays.checked =true;
-                angular.forEach(data.nationalHoliday, function(date){
-                    vm.holidayList.push({date:date})
+                vm.holidayDays.checked = true;
+                angular.forEach(data.nationalHoliday, function (date) {
+                    vm.holidayList.push({date: date})
                 });
-            }else{
-                vm.holidayDays.checked =false;
+            } else {
+                vm.holidayDays.checked = false;
             }
             vm.isRuntimeEdit = true;
             if (vm.frequency.tab == 'monthDays') {
@@ -2828,6 +2879,7 @@
                     });
                 }
             }
+
         };
 
         vm.deleteFrequency = function (data, index) {
@@ -3278,7 +3330,7 @@
                 else
                     vm.showCalendar();
             }
-           // vm.calendarTitle = new Date().getFullYear();
+            vm.calendarTitle = new Date().getFullYear();
             vm.viewDate = new Date();
             vm.tempItems = [];
             vm.planItems =[];
@@ -3635,9 +3687,10 @@
         };
     }
 
-    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService','$filter'];
-    function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter) {
+    RuntimeEditorDialogCtrl.$inject = ['$scope', '$rootScope', '$uibModalInstance', 'toasty', '$timeout', 'gettextCatalog', '$window', 'CalendarService', 'ScheduleService', '$filter', 'DailyPlanService','$uibModal'];
+    function RuntimeEditorDialogCtrl($scope, $rootScope, $uibModalInstance, toasty, $timeout, gettextCatalog, $window, CalendarService, ScheduleService, $filter, DailyPlanService,$uibModal) {
         var vm = $scope;
+         vm.calendarView = 'year';
         var dom_parser = new DOMParser();
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
@@ -3681,9 +3734,7 @@
         run_time.ultimos.day = [];
         var x2js = new X2JS();
 
-        vm.calendarView = 'year';
-
-        vm.events = [];
+         vm.events = [];
         vm.planItems = [];
         vm.selectedCalendar = [];
 
@@ -6202,7 +6253,7 @@
         };
         var promise4 = $timeout(function(){
             $rootScope.$broadcast('restrictionModalTemplateLoaded');
-        },100)
+        },100);
 
         vm.addRestrictionInCalendar = function (data) {
             $rootScope.$broadcast('restriction-frequency-editor', data);
@@ -11143,12 +11194,127 @@
             })
         }
 
+        var firstDay, lastDay;
+        vm.getPlan = function (calendarView, viewDate) {
+            var firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+            var lastDay2 = new Date(new Date(viewDate).getFullYear(), 11, 31, 23, 59, 0);
+            if (calendarView == 'year') {
+                if (viewDate.getFullYear() < new Date().getFullYear()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), 0, 1, 0, 0, 0);
+                }
+            }
+            if (calendarView == 'month') {
+                if (viewDate.getFullYear() <= new Date().getFullYear() && viewDate.getMonth() < new Date().getMonth()) {
+                    return;
+                }
+                else if (viewDate.getFullYear() == new Date().getFullYear() && viewDate.getMonth() == new Date().getMonth()) {
+                    firstDay2 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+                }
+                else {
+                    firstDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth(), 1, 0, 0, 0);
+
+                }
+                lastDay2 = new Date(new Date(viewDate).getFullYear(), new Date(viewDate).getMonth() + 1, 0, 23, 59, 0);
+            }
+
+            if (new Date(firstDay2) >= new Date(firstDay) && new Date(lastDay2) <= new Date(lastDay)) {
+                return;
+            }
+            firstDay = firstDay2;
+            lastDay = lastDay2;
+
+            vm.planItems = [];
+            vm.isCaledarLoading = true;
+            DailyPlanService.getPlansFromRuntime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                runTime: vm.xmlObj.xml,
+                dateFrom: moment(firstDay).format('YYYY-MM-DD'),
+                dateTo: moment(lastDay).format('YYYY-MM-DD')
+            }).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+            }, function (err) {
+                vm.isCaledarLoading = false;
+            });
+
+        };
+
+        function populatePlanItems(res) {
+            angular.forEach(res.periods, function (value) {
+                var planData = {};
+                if (value.begin) {
+                    planData = {
+                        plannedStartTime: value.begin,
+                        format: vm.getCalendarTimeFormat()
+                    };
+                }
+                else if (value.end) {
+                    planData = {
+                        plannedStartTime: value.end,
+                        format: vm.getCalendarTimeFormat()
+                    };
+                }
+                else if (value.singleStart) {
+                    planData = {
+                        plannedStartTime: value.singleStart,
+                        format: vm.getCalendarTimeFormat()
+                    };
+                }
+                vm.planItems.push(planData);
+            });
+        }
+
+        vm.planFromRuntime = function () {
+
+             vm.isCaledarLoading = true;
+            if(vm.order && vm.order.name)
+                vm.selectedPlanJob = vm.order;
+            else
+                 vm.selectedPlanOrder = vm.order;
+
+            vm.planItems = [];
+            var firstDay = new Date().getFullYear() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate();
+            var lastDay = new Date().getFullYear() + "-" + 12 + "-" + 31;
+            DailyPlanService.getPlansFromRuntime({
+                jobschedulerId: $scope.schedulerIds.selected,
+                runTime: vm.xmlObj.xml,
+                dateFrom: firstDay,
+                dateTo: lastDay
+            }).then(function (res) {
+                populatePlanItems(res);
+                vm.isCaledarLoading = false;
+                console.log(vm.planItems);
+            },function(){
+                 vm.isCaledarLoading = false;
+            });
+            $uibModal.open({
+                templateUrl: 'modules/core/template/calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+        };
 
         function calendarToXML(type, index, dates, calendar, list) {
-            if (type == 'holiday')
+
+            if (type == 'holiday') {
                 generateHolidayCalendarDates(run_time, dates, calendar);
-            else
+                if(list.length != vm.holidayCalendar.length){
+                    vm.holidayCalendar  = list;
+                }
+            }else {
                 generateCalendarDates(run_time, dates, calendar);
+                if(list.length != vm.selectedCalendar.length){
+                    vm.selectedCalendar  = list;
+                }
+            }
             if (index == list.length - 1) {
                 resetPeriodObj(run_time);
             }
@@ -11168,11 +11334,12 @@
         var tempList = [];
 
         vm.previewCalendar = function (data) {
+            vm.viewDate = new Date();
             vm.editor.showHolidayTab = false;
             vm.editor.showCalendarTab = true;
             vm.planItems = [];
-            vm.viewDate = new Date();
-           // vm.calendarTitle = new Date().getFullYear();
+
+            vm.calendarTitle = new Date().getFullYear();
             var obj = {};
 
             if (data.calendar) {
@@ -11414,7 +11581,6 @@
         }
 
         function convertObjToArr(calendar) {
-
             var obj = {};
             if (!calendar.frequencyList) {
                 calendar.frequencyList = [];
@@ -11521,7 +11687,6 @@
                     });
                 }
                 if (calendar.includes.dates && calendar.includes.dates.length > 0) {
-
                         obj = {};
                         obj.tab = "specificDays";
                         obj.type = "INCLUDE";
@@ -11563,6 +11728,7 @@
         }
 
         function getCalendarList() {
+
             vm.calPeriod = [];
             angular.forEach(vm.calendars, function (calendar) {
 
@@ -11589,12 +11755,10 @@
                 }
             });
 
-            if (vm.holidayCalendar && vm.holidayCalendar.length > 0)
-                generateCalendarTag(vm.holidayCalendar, 'holiday');
-
             if (vm.selectedCalendar && vm.selectedCalendar.length > 0)
                 generateCalendarTag(vm.selectedCalendar, 'working');
-
+            if (vm.holidayCalendar && vm.holidayCalendar.length > 0)
+                generateCalendarTag(vm.holidayCalendar, 'holiday');
         }
 
 
@@ -11777,6 +11941,12 @@
         vm.editor.isEnable = false;
         vm.frequency = {};
         vm.editor.frequencyType = 'INCLUDE';
+
+        vm.changeCalendarType = function(){
+            if(vm.calendar.type=='NON_WORKING_DAYS' && vm.editor.frequencyType != 'INCLUDE'){
+                vm.editor.frequencyType = 'INCLUDE';
+            }
+        };
 
         vm.calendar.includesFrequency = [];
         vm.calendar.excludesFrequency = [];
@@ -12663,117 +12833,113 @@
             vm.frequencyList = vm.calendar.excludesFrequency;
         }
 
-        $rootScope.$broadcast('frequency-editor', {
-            frequency: {
-                editor: vm.editor,
-                calendar: vm.calendar,
-                frequency: vm.frequency,
-                frequencyList: vm.frequencyList,
-                excludeFrequencyList: vm.excludeFrequencyList,
-                flag: true
+            $('#frequency-editor').modal({show: true});
+            $('.fade-modal').css('opacity', '0.85');
+            $rootScope.$broadcast('frequency-editor', {
+                frequency: {
+                    editor: vm.editor,
+                    calendar: vm.calendar,
+                    frequency: vm.frequency,
+                    frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
+                    flag: true
+                }
+            });
+        };
+
+        vm.createNewFrequency = function () {
+            vm.editor.create = true;
+            vm.editor.update = false;
+            vm.editor.showYearView = false;
+            vm.frequencyList = [];
+            vm.frequency = {};
+            vm.frequency.tab = 'weekDays';
+            vm.frequency.dateEntity = 'DAILY';
+            vm.frequency.year = new Date().getFullYear();
+            vm.isRuntimeEdit = false;
+            vm.holidayList = [];
+            vm.frequency.isUltimos = 'months';
+            $('#frequency-editor').modal({show: true});
+            $('.fade-modal').css('opacity', '0.85');
+            if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
+                vm.frequencyList = vm.calendar.includesFrequency;
+                if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
+            } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
+                vm.frequencyList = vm.calendar.excludesFrequency;
             }
-        });
+            $rootScope.$broadcast('frequency-editor', {
+                frequency: {
+                    editor: vm.editor,
+                    frequency: vm.frequency,
+                    frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
+                    calendar: vm.calendar
+                }
+            });
 
-        $('#frequency-editor').modal({show: true});
-        $('.fade-modal').css('opacity', '0.85');
-    };
+        };
 
-    vm.createNewFrequency = function () {
-        vm.editor.create = true;
-        vm.editor.update = false;
-        vm.editor.showYearView = false;
-        vm.frequencyList = [];
-        vm.frequency = {};
-        vm.frequency.tab = 'weekDays';
-        vm.frequency.dateEntity = 'DAILY';
-        vm.frequency.year = new Date().getFullYear();
-        vm.isRuntimeEdit = false;
-        vm.holidayList = [];
-        vm.frequency.isUltimos = 'months';
-
-        if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
-            vm.frequencyList = vm.calendar.includesFrequency;
-            if (vm.calendar.excludesFrequency.length > 0) {
-                vm.excludeFrequencyList = vm.calendar.excludesFrequency;
-            }
-        } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
-            vm.frequencyList = vm.calendar.excludesFrequency;
+        function getStringDay(day) {
+            return day == 0 ? "sunday" : day == 1 ? "monday" : day == 2 ? "tuesday" : day == 3 ? "wednesday" : day == 4 ? "thursday" : day == 5 ? "friday" : "saturday";
         }
-        $rootScope.$broadcast('frequency-editor', {
-            frequency: {
-                editor: vm.editor,
-                frequency: vm.frequency,
-                frequencyList: vm.frequencyList,
-                excludeFrequencyList: vm.excludeFrequencyList,
-                calendar: vm.calendar
+
+        vm.showCalendar = function (data) {
+            vm.editor.showYearView = true;
+            $('#frequency-editor').modal({show: true});
+            $('.fade-modal').css('opacity', '0.85');
+            if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
+                vm.frequencyList = vm.calendar.includesFrequency;
+                if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
+            } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
+                vm.frequencyList = vm.calendar.excludesFrequency;
             }
-        });
+            $rootScope.$broadcast('frequency-editor', {
+                frequency: {
+                    editor: vm.editor,
+                    frequency: vm.frequency,
+                    frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
+                    calendar: vm.calendar,
+                    data: data,
+                    flag: true
+                }
+            });
+        };
 
-        $('#frequency-editor').modal({show: true});
-        $('.fade-modal').css('opacity', '0.85');
-
-    };
-
-    function getStringDay(day) {
-        return day == 0 ? "sunday" : day == 1 ? "monday" : day == 2 ? "tuesday" : day == 3 ? "wednesday" : day == 4 ? "thursday" : day == 5 ? "friday" : "saturday";
-    }
-
-    vm.showCalendar = function (data) {
-        vm.editor.showYearView = true;
-        if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
-            vm.frequencyList = vm.calendar.includesFrequency;
-            if (vm.calendar.excludesFrequency.length > 0) {
-                vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+        vm.updateFrequency = function (data) {
+            vm.editor.hidePervious = true;
+            vm.editor.showYearView = false;
+            vm.editor.create = false;
+            vm.editor.update = true;
+            vm.frequencyList = [];
+            vm.isRuntimeEdit = true;
+            vm.temp = angular.copy(data);
+            vm.frequency = angular.copy(data);
+            $('#frequency-editor').modal({show: true});
+            $('.fade-modal').css('opacity', '0.85');
+            if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
+                vm.frequencyList = vm.calendar.includesFrequency;
+                if (vm.calendar.excludesFrequency.length > 0) {
+                    vm.excludeFrequencyList = vm.calendar.excludesFrequency;
+                }
+            } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
+                vm.frequencyList = vm.calendar.excludesFrequency;
             }
-        } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
-            vm.frequencyList = vm.calendar.excludesFrequency;
-        }
-        $rootScope.$broadcast('frequency-editor', {
-            frequency: {
-                editor: vm.editor,
-                frequency: vm.frequency,
-                frequencyList: vm.frequencyList,
-                excludeFrequencyList: vm.excludeFrequencyList,
-                calendar: vm.calendar,
-                data: data,
-                flag: true
-            }
-        });
-        $('#frequency-editor').modal({show: true});
-        $('.fade-modal').css('opacity', '0.85');
-    };
-
-    vm.updateFrequency = function (data) {
-        vm.editor.hidePervious = true;
-        vm.editor.showYearView = false;
-        vm.editor.create = false;
-        vm.editor.update = true;
-        vm.frequencyList = [];
-        vm.isRuntimeEdit = true;
-        vm.temp = angular.copy(data);
-        vm.frequency = angular.copy(data);
-
-        if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
-            vm.frequencyList = vm.calendar.includesFrequency;
-            if (vm.calendar.excludesFrequency.length > 0) {
-                vm.excludeFrequencyList = vm.calendar.excludesFrequency;
-            }
-        } else if (vm.editor.frequencyType == 'EXCLUDE' && vm.calendar.excludesFrequency.length > 0) {
-            vm.frequencyList = vm.calendar.excludesFrequency;
-        }
-        $rootScope.$broadcast('frequency-editor', {
-            frequency: {
-                editor: vm.editor,
-                temp: vm.temp,
-                frequency: vm.frequency,
-                frequencyList: vm.frequencyList,
-                excludeFrequencyList: vm.excludeFrequencyList,
-                calendar: vm.calendar
-            }
-        });
-        $('#frequency-editor').modal({show: true});
-        $('.fade-modal').css('opacity', '0.85');
-    };
+            $rootScope.$broadcast('frequency-editor', {
+                frequency: {
+                    editor: vm.editor,
+                    temp: vm.temp,
+                    frequency: vm.frequency,
+                    frequencyList: vm.frequencyList,
+                    excludeFrequencyList: vm.excludeFrequencyList,
+                    calendar: vm.calendar
+                }
+            });
+        };
 
     vm.removeFrequency = function (index) {
         if (vm.editor.frequencyType == 'INCLUDE') {

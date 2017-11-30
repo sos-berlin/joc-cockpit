@@ -121,6 +121,11 @@
                             <div class="col-sm-1 p-l-0 p-t-xs" ng-if="runTime1.timeZone" style="width: 20px">
                              <i class="fa fa-times cursor text-hover-primary" ng-click="removeTimeZone();"></i>
                             </div>
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-sm btn-grey"
+                                    ng-click="planFromRuntime()" translate>button.showDailyPlan
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12" ng-class="{'w-50': editor.editXml,'m-t':order.at == 'later'}">
