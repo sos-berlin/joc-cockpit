@@ -1188,5 +1188,8 @@
   "message.calendarTypeCannotBeChange": "You cannot change the calendar type when it is already assigned to a job, order or schedule.",
   "message.noFrequencyCalendarFound": "No frequency/calendar found",
   "button.showDailyPlan": "Show Daily Plan",
-  "label.calendarViewFor": "Daily Plan View for"
+  "label.calendarViewFor": "Daily Plan View for",
+  "label.updateNationalHoliday": "Modify National Holidays",
+  "button.updateFrequency": "Update Frequency",
+  "button.showPlanned": "Show Daily Plan"
 }

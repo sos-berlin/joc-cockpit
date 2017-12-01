@@ -116,7 +116,7 @@
                     <div class="form-group row">
                         <label class="col-sm-3 form-control-label" translate>label.type</label>
                         <div class="col-sm-9">
-                            <select class="form-control" ng-model="calendar.type" ng-change="changeCalendarType()">
+                            <select class="form-control" ng-model="calendar.type">
                                 <option value="WORKING_DAYS">{{'label.workingDay' | translate}}</option>
                                 <option value="NON_WORKING_DAYS">{{'label.nonWorkingDay' | translate}}</option>
                             </select>
@@ -164,7 +164,7 @@
                                 ng-class="{'btn-primary': editor.frequencyType=='INCLUDE'}" translate>
                             button.includedFrequencies
                         </button>
-                        <button ng-if="calendar.type=='WORKING_DAYS'" type="button" class="btn btn-grey btn-sm " ng-model="editor.frequencyType"
+                        <button type="button" class="btn btn-grey btn-sm " ng-model="editor.frequencyType"
                                 uib-btn-radio="'EXCLUDE'"
                                 ng-class="{'btn-primary': editor.frequencyType=='EXCLUDE'}" translate>
                             button.excludedFrequencies

@@ -1943,22 +1943,6 @@
             if (!flag) {
                 vm.calendar.excludesFrequency.push(obj);
             }
-            /*else {
-             for (var i = 0; i < vm.calendar.excludesFrequency.length; i++) {
-             if (vm.calendar.excludesFrequency[i].tab == obj.tab) {
-             for (var x = 0; x < obj.dates.length; x++) {
-             for (var j = 0; j < vm.calendar.excludesFrequency[i].dates.length; j++) {
-             if (vm.calendar.excludesFrequency[i].dates[j] == obj.dates[x]) {
-             vm.calendar.excludesFrequency[i].dates.splice(x, 1);
-             break;
-             }
-             }
-             }
-             vm.calendar.excludesFrequency[i].str = frequencyToString(vm.calendar.excludesFrequency[i]);
-             break;
-             }
-             }
-             }*/
         }
 
         function checkInclude(dates) {
@@ -2297,7 +2281,7 @@
                     vm.frequencyList1.push(data)
                 });
             }
-            if (vm.calendar.excludesFrequency.length > 0 && vm.calendar.type == 'WORKING_DAYS') {
+            if (vm.calendar.excludesFrequency.length > 0) {
                 angular.forEach(vm.calendar.excludesFrequency, function (data) {
                     vm.frequencyList1.push(data)
                 });
@@ -2353,12 +2337,24 @@
                 hd.init(vm.frequency.country);
                 var holidays = hd.getHolidays(vm.frequency.year);
                 angular.forEach(holidays, function (holiday) {
-                    if (holiday.type == 'public' && holiday.date && holiday.name) {
+                    if (holiday.type == 'public' && holiday.date && holiday.name && holiday.date !='null') {
+                        if(holiday.date.length>19){
+                            holiday.date = holiday.date.substring(0,19);
+                        }
                         holiday.date = moment(holiday.date).format('YYYY-MM-DD');
                         vm.holidayList.push(holiday);
                     }
                 });
             }
+            if (vm.frequencyList.length > 0) {
+                for (var i = 0; i < vm.frequencyList.length; i++) {
+                   if (vm.frequencyList[i].tab == 'nationalHoliday' && vm.frequencyList[i].nationalHoliday.length>0 && new Date(vm.frequencyList[i].nationalHoliday[0]).getFullYear()==vm.frequency.year) {
+                       vm.frequency.nationalHoliday = angular.copy(vm.frequencyList[i].nationalHoliday);
+                       break;
+                    }
+                }
+            }
+
         };
         //-------------------End year view ----------------------
 
@@ -2522,7 +2518,7 @@
                     generateCalendarObj(data, obj);
                 });
             }
-            if (vm.calendar.excludesFrequency.length > 0 && vm.calendar.type == 'WORKING_DAYS') {
+            if (vm.calendar.excludesFrequency.length > 0) {
                 obj.excludes = {};
                 angular.forEach(vm.calendar.excludesFrequency, function (data) {
                     generateCalendarObj(data, obj);
@@ -2575,15 +2571,12 @@
             vm.countryField = false;
             vm.frequency.str = frequencyToString(vm.frequency);
 
-          //vm.holidayList = [];
-
             var flag = false;
-
             if (vm.isRuntimeEdit) {
                 vm.isRuntimeEdit = false;
                 if (vm.frequencyList.length > 0) {
                     for (var i = 0; i < vm.frequencyList.length; i++) {
-                        if (angular.equals(vm.frequencyList[i], vm.temp)) {
+                        if (vm.frequencyList[i].tab == vm.temp.tab && vm.frequencyList[i].str == vm.temp.str && vm.frequencyList[i].type == vm.temp.type) {
 
                             if (vm.frequency.tab == 'specificDays') {
                                 vm.frequency.dates = [];
@@ -2598,6 +2591,8 @@
                         }
                     }
                 }
+                vm.temp ={};
+                vm.holidayList = [];
                 return;
             }
             if (vm.frequency.tab == 'specificDays') {
@@ -2892,6 +2887,7 @@
             }
             if (data.tab == 'specificDays') {
                 vm.tempItems = [];
+
             } else if (data.tab == 'nationalHoliday') {
                 vm.frequency.nationalHoliday = [];
             }
@@ -3323,6 +3319,7 @@
             var data = angular.copy(data1.frequency);
             excludedDates = []; includedDates = [];
             vm.editor = data.editor;
+            vm.isRuntimeEdit = false;
             vm.calendar = data.calendar;
             if (data.flag) {
                 if (data.data)
@@ -3383,6 +3380,7 @@
             } else {
                 vm.editor.showYearView = false;
             }
+            vm.isRuntimeEdit = false;
             excludedDates=[]; includedDates=[];
         };
 
@@ -11279,13 +11277,13 @@
                  vm.selectedPlanOrder = vm.order;
 
             vm.planItems = [];
-            var firstDay = new Date().getFullYear() + "-" + (new Date().getMonth() + 1) + "-" + new Date().getDate();
-            var lastDay = new Date().getFullYear() + "-" + 12 + "-" + 31;
+            firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
+            lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0, 23, 59, 0);
             DailyPlanService.getPlansFromRuntime({
                 jobschedulerId: $scope.schedulerIds.selected,
                 runTime: vm.xmlObj.xml,
-                dateFrom: firstDay,
-                dateTo: lastDay
+                dateFrom:  moment(firstDay).format('YYYY-MM-DD'),
+                dateTo:  moment(lastDay).format('YYYY-MM-DD')
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
@@ -11941,12 +11939,6 @@
         vm.editor.isEnable = false;
         vm.frequency = {};
         vm.editor.frequencyType = 'INCLUDE';
-
-        vm.changeCalendarType = function(){
-            if(vm.calendar.type=='NON_WORKING_DAYS' && vm.editor.frequencyType != 'INCLUDE'){
-                vm.editor.frequencyType = 'INCLUDE';
-            }
-        };
 
         vm.calendar.includesFrequency = [];
         vm.calendar.excludesFrequency = [];
@@ -12812,7 +12804,7 @@
                 generateCalendarObj(data, obj);
             });
         }
-        if (vm.calendar.excludesFrequency.length > 0 && vm.calendar.type == 'WORKING_DAYS') {
+        if (vm.calendar.excludesFrequency.length > 0) {
             obj.excludes = {};
             angular.forEach(vm.calendar.excludesFrequency, function (data) {
                 generateCalendarObj(data, obj);
@@ -13070,6 +13062,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
     AddRestrictionDialogCtrl.$inject = ['$scope', '$rootScope', 'gettextCatalog', '$filter'];
     function AddRestrictionDialogCtrl($scope, $rootScope, gettextCatalog, $filter) {
         var vm = $scope;
+        vm.calendarView = 'year';
 
         vm.events = [];
         vm.tempItems = [];
@@ -13130,7 +13123,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
 
         vm.$on('restriction-frequency-editor', function (event, data) {
             vm.calendarView = 'year';
-            //vm.calendarTitle = new Date().getFullYear();
+            vm.calendarTitle = new Date().getFullYear();
             vm.viewDate = new Date();
             vm.tempItems = [];
             vm.calendar = angular.copy(data.calendar);

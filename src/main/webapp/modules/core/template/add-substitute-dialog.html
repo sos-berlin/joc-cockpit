@@ -117,11 +117,14 @@
                         <button ng-disabled="form.$invalid || error.validDate" type="button" class="btn btn-sm btn-grey m-r-sm "
                                 ng-click="saveScheduleDetail();showHolidayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button ng-disabled="form.$invalid || error.validDate" ng-if="!editor.editXml" type="button" class="btn btn-sm btn-grey  "
+                        <button ng-disabled="form.$invalid || error.validDate" ng-if="!editor.editXml" type="button" class="btn btn-sm btn-grey  m-r-sm"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
-                        <button ng-disabled="form.$invalid || error.validDate" ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey  "
+                        <button ng-disabled="form.$invalid || error.validDate" ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey  m-r-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
+                        </button>
+                        <button ng-disabled="form.$invalid || error.validDate" type="button" class="btn btn-sm btn-grey"
+                                ng-click="planFromRuntime()" translate>button.showPlanned
                         </button>
                     </div>
                     <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">

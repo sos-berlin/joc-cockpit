@@ -13,7 +13,17 @@
         return {
             getSummary: function (filter) {
                 var deferred = $q.defer();
-                var Yade = $resource('yade/summary');
+                var Yade = $resource('yade/overview/summary');
+                Yade.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            getOverview: function (filter) {
+                var deferred = $q.defer();
+                var Yade = $resource('yade/overview/snapshot');
                 Yade.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {

@@ -1185,8 +1185,11 @@
   "message.noDatesFound": "Keine Informationen gefunden.",
   "EXCLUDE": "ausschließen",
   "INCLUDE": "einschließen",
-  "message.calendarTypeCannotBeChange": "Der Typ eines Kalenders kann nicht geändert werden  solange dieser einem Job, Auftrag oder Zeitplan zugeordnet ist"
+  "message.calendarTypeCannotBeChange": "Der Typ eines Kalenders kann nicht geändert werden  solange dieser einem Job, Auftrag oder Zeitplan zugeordnet ist",
   "message.noFrequencyCalendarFound": "Keine Häufigkeiten / Kalender gefunden",
   "button.showDailyPlan": "Zeige Tagesplan",
-  "label.calendarViewFor": "Tagesplan Ansicht für"
+  "label.calendarViewFor": "Tagesplan Ansicht für",
+  "label.updateNationalHoliday": "Modify National Holidays",
+  "button.updateFrequency": "Update Frequency",
+  "button.showPlanned": "Show Daily Plan"
 }

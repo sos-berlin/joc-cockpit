@@ -4440,6 +4440,17 @@
             if(!vm.isFileOverviewVisible){
                 return;
             }
+
+            isLoadedFileOverview = false;
+            YadeService.getOverview({jobschedulerId: $scope.schedulerIds.selected}).then(function (res) {
+                vm.yadeOverview = res;
+                vm.notPermissionForSnapshot = '';
+                isLoadedFileOverview = true;
+            }, function (err) {
+                if (err.data)
+                    vm.notPermissionForFileOverview = !err.data.isPermitted;
+                isLoadedFileOverview = true;
+            });
         };
 
         vm.getFileSummary = function () {

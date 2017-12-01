@@ -103,6 +103,9 @@
                         <button ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
+                        <button type="button" class="btn btn-sm btn-grey"
+                                ng-click="planFromRuntime()" translate>button.showPlanned
+                        </button>
                     </div>
                     <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">
@@ -843,16 +846,7 @@
                             </table>
                         </div>
                     </div>
-                    <!--<div class="form-group row" ng-if="holidayCalendar && holidayCalendar.length>0">
-                        <label class="col-sm-3" translate>label.calendar</label>
-                        <div class="col-md-9" style="max-height: 120px; overflow: auto;">
-                            <div ng-repeat="h in holidayCalendar">
-                                <a href="" ng-click="previewCalendar(h)"><i class="fa fa-calendar-plus-o"></i> {{h.path}}
-                                <span ng-if="h.title">- <i class="text-muted">{{h.title}}</i></span></a>
-                                <a href="" ng-click="deleteHolidayCalendar(h)"><i class="m-l fa fa-times"></i></a>
-                            </div>
-                        </div>
-                    </div>-->
+
                 </div>
             </div>
             <div class="hide" ng-class="{'show':editor.showCalendarTab}">

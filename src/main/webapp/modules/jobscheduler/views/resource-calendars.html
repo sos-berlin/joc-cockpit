@@ -286,13 +286,13 @@
                     <div ng-hide="editor.showYearView">
                         <div>
                             <div class="row m-b-sm">
-                                <label class="col-sm-12" ng-show="editor.create">
+                                <label class="col-sm-12" ng-show="!isRuntimeEdit">
                                     <span class="text-primary " translate>label.addFrequencies</span>
                                     : <span class="text-muted">{{str}}</span>
                                 </label>
-                                <label class="col-sm-12" ng-show="editor.update">
+                                <label class="col-sm-12" ng-show="isRuntimeEdit">
                                     <span class="text-primary " translate>label.editFrequencies</span>
-                                    : <span class="text-muted">{{str}}</span>
+                                    : <span class="text-muted">{{temp.str}}</span>
                                 </label>
                                 <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
                             </div>
@@ -790,11 +790,16 @@
                                     </div>
                                     <div class="tab-pane animated fadeIn" id="tab6"
                                          ng-class="{'active':frequency.tab == 'nationalHoliday'}">
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-if="countryField">
+                                            <label class="col-sm-12" >
+                                                <span translate>label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
+                                            </label>
+                                        </div>
+                                        <div class="form-group row" ng-if="!countryField">
                                             <label class="col-sm-3" translate>label.country</label>
 
                                             <div class="col-sm-6">
-                                                <select class="form-control" ng-model="frequency.country" ng-disabled="countryField"
+                                                <select class="form-control" ng-model="frequency.country"
                                                         ng-change="loadHolidayList()">
                                                     <option ng-repeat="country in countryListArr | orderBy:'name':false:compareName"
                                                             value="{{country.code}}">{{country.name}}
@@ -802,11 +807,11 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="form-group row">
+                                        <div class="form-group row" ng-if="!countryField">
                                             <label class="col-sm-3 form-control-label" translate>label.year</label>
 
                                             <div class="col-sm-6">
-                                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="frequency.year" ng-disabled="countryField"
+                                                <input type="number" class="form-control" min="{{calendarTitle}}" ng-model="frequency.year"
                                                        ng-change="loadHolidayList()">
                                             </div>
                                         </div>
@@ -1018,7 +1023,8 @@
                     </div>
                     <button ng-if="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
                             style="position:absolute; bottom: 10px;" ng-disabled="form1.$invalid || !editor.isEnable" ng-click="addFrequency();">
-                        <span translate>button.addNewFrequency</span>
+                        <span ng-if="!isRuntimeEdit" translate>button.addNewFrequency</span>
+                        <span ng-if="isRuntimeEdit" translate>button.updateFrequency</span>
                     </button>
                 </div>
                 <div class="modal-footer">

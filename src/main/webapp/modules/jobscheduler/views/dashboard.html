@@ -392,7 +392,7 @@
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
-                            <table style="width: 100%" ng-if="!notPermissionForSnapshot">
+                            <table style="width: 100%" ng-if="!notPermissionForFileOverview">
                                 <tr class="text-center">
                                     <td width="25%">
                                         <div translate>label.inProgress</div>
@@ -407,18 +407,18 @@
                                         <div translate>label.polling</div>
                                     </td>
                                 </tr>
-                                <tr class="text-center" ng-if="snapshot">
+                                <tr class="text-center" ng-if="yadeOverview">
                                     <td width="25%">
-                                        <a  class="text-lg _600 " ng-bind="snapshot.pending || 0"></a>
+                                        <a  class="text-lg _600 " ng-bind="yadeOverview.pending || 0"></a>
                                     </td>
                                     <td width="25%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.waitForTransfer || 0"></a>
+                                        <a class="text-lg _600 " ng-bind="yadeOverview.waitForTransfer || 0"></a>
                                     </td>
                                     <td width="25%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.setback || 0"></a>
+                                        <a class="text-lg _600 " ng-bind="yadeOverview.setback || 0"></a>
                                     </td>
                                     <td width="25%">
-                                        <a class="text-lg _600 " ng-bind="snapshot.polling || 0"></a>
+                                        <a class="text-lg _600 " ng-bind="yadeOverview.polling || 0"></a>
                                     </td>
                                 </tr>
                             </table>
@@ -432,7 +432,7 @@
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
-                            <div class="pull-right" ng-if="!notPermissionForSummary">
+                            <div class="pull-right" ng-if="!notPermissionForFileSummary">
                                 <div class="btn-group m-l-sm" style="padding-right:5px">
                                     <div class="btn-group dropdown ">
                                         <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"

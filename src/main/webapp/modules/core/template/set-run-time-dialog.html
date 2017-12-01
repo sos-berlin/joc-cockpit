@@ -102,11 +102,14 @@
                                 ng-disabled="order.at == 'later'"
                                 ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm btn-grey "
+                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
-                        <button ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey"
+                        <button ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
+                        </button>
+                        <button type="button" class="btn btn-sm btn-grey"
+                                ng-click="planFromRuntime()" translate>button.showPlanned
                         </button>
                     </div>
                     <div class="row col-md-12 m-t m-b-sm" ng-hide="order.at == 'later'">
@@ -120,11 +123,6 @@
                             </div>
                             <div class="col-sm-1 p-l-0 p-t-xs" ng-if="runTime1.timeZone" style="width: 20px">
                              <i class="fa fa-times cursor text-hover-primary" ng-click="removeTimeZone();"></i>
-                            </div>
-                            <div class="col-sm-6">
-                                <button type="button" class="btn btn-sm btn-grey"
-                                    ng-click="planFromRuntime()" translate>button.showDailyPlan
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -169,6 +167,7 @@
                                         </tr>
                                         </thead>
                                         <tbody >
+
                                         <tr ng-repeat="data in runtimeList track by $index">
                                             <td ng-if="data.frequency" class="cursor" style="border-right: none !important;vertical-align: top !important; ">
                                                 <a ng-click="editRunTime(data);">{{data.frequency}}</a>
@@ -741,9 +740,6 @@
             <div ng-if="editor.showHolidayTab">
                <div class="row m-b-sm">
                    <label class="col-sm-3 text">{{'label.nonWorkingDays' | translate}}</label>
-                   <!--                   <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey pull-right m-r"
-                           ng-click="assignHolidayCalendar(data)" translate>button.assignCalendar
-                   </button>-->
                 </div>
                 <div class="b-b">
                     <ul class="nav nav-tabs">
