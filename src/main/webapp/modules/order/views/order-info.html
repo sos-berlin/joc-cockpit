@@ -14,139 +14,171 @@
 <div class="scroll-y max-ht" ng-controller="OrderFunctionCtrl">
     <div class="padding p-b-0">
         <div class="hide m-t-sm" ng-class="{'show': isLoading}">
-        <div class="box p-a ">
-            <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
-                <table class="table table-hover table-bordered " id="orderTableId">
-                    <thead>
-                    <tr>
-                        <th width="45"><span translate>label.action</span></th>
-                        <th><span translate>label.orderId</span></th>
-                        <th><span translate>label.jobChain</span></th>
-                        <th><span translate>label.processingStatus</span></th>
-                        <th><span translate>label.state</span></th>
-                        <th><span translate>label.startedAt</span></th>
-                        <th><span translate>label.runningSince</span></th>
-                        <th><span translate>label.historyId</span></th>
-                        <th><span translate>label.nextStartTime</span></th>
-                    </tr>
-                    </thead>
-                    <tbody ng-repeat="order in orders" ng-class="{'light-bg':showLogPanel == order}">
-                    <tr>
-                        <td >
-                            <div class="btn-group dropdown ">
-                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                        class="fa fa-ellipsis-h"></i></button>
-                                <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu" id="menu{{$index}}">
-                                    <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                       ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
-                                       translate>button.viewLog</a>
-                                    <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}" translate>button.showConfiguration</a>
-                                    <a href class="dropdown-item"
-                                       ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
-                                       ng-click="start(order)" translate>button.startOrderNow</a>
-                                    <a href class="dropdown-item" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
-                                       ng-click="startOrder(order)" translate>button.startOrderat</a>
-                                    <a href class="dropdown-item"
-                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
-                                       ng-click="setOrderState(order)" translate>button.setOrderState</a>
-                                    <a href class="dropdown-item"
-                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                       ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
-                                    <a href class="dropdown-item"
-                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
-                                       ng-click="showAssignedCalendar(order)">
-                                        <span translate>button.showAssignedCalendar</span>
-                                    </a>
-                                    <a href class="dropdown-item bg-hover-color"
-                                       ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
-                                       ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
-                                    <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                       ng-click="resumeOrder(order)" translate>button.resumeOrder</a>
-                                    <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                       ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
-                                    <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                       ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
-                                    <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
-                                       ng-click="resetOrder(order)" translate>button.resetOrder</a>
-                                    <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
-                                       ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                    <a href class="dropdown-item" ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
-                                       ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
-                                    <a href class="dropdown-item bg-hover-color" ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
-                                       ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
-                                    <a class="dropdown-item" ng-if="permission.AuditLog.view.status" ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
-                               ng-click="showPanelFuc(order)"></i>
-                            <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show" ng-click="order.show = false"></i>
+            <div class="box p-a ">
+                <div class="table-responsive" resizable r-directions="['bottom']" r-height="450">
+                    <table class="table table-hover table-bordered " id="orderTableId">
+                        <thead>
+                        <tr>
+                            <th width="45"><span translate>label.action</span></th>
+                            <th><span translate>label.orderId</span></th>
+                            <th><span translate>label.jobChain</span></th>
+                            <th><span translate>label.processingStatus</span></th>
+                            <th><span translate>label.state</span></th>
+                            <th><span translate>label.startedAt</span></th>
+                            <th><span translate>label.runningSince</span></th>
+                            <th><span translate>label.historyId</span></th>
+                            <th><span translate>label.nextStartTime</span></th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="order in orders" ng-class="{'light-bg':showLogPanel == order}">
+                        <tr>
+                            <td>
+                                <div class="btn-group dropdown ">
+                                    <button type="button" class="btn-drop more-option-h" data-toggle="dropdown"><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more list-drop" role="menu"
+                                         id="menu{{$index}}">
+                                        <a ng-click="showLogWindow(order)" class="dropdown-item hide"
+                                           ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
+                                           translate>button.viewLog</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                           ng-click="start(order)" translate>button.startOrderNow</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                           ng-click="startOrder(order)" translate>button.startOrderat</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
+                                           ng-click="setOrderState(order)" translate>button.setOrderState</a>
+                                        <a href class="dropdown-item bg-hover-color"
+                                           ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
+                                           ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                           ng-click="resumeOrder(order)" translate>button.resumeOrder</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                           ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                           ng-click="resumeOrderNextstate(order)"
+                                           translate>button.resumeOrderFromState</a>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
+                                           ng-click="resetOrder(order)" translate>button.resetOrder</a>
+                                        <a href class="dropdown-item bg-hover-color"
+                                           ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
+                                           ng-click="removeOrder(order)" translate>button.removeOrder</a>
+                                        <a href class="dropdown-item bg-hover-color"
+                                           ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
+                                           ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
 
-                            <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span ng-if="order.title">-</span>
+                                        <div class="dropdown-divider"></div>
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                           ng-click="setRunTime(order)"><span translate>button.setRunTime</span></a>
+                                        <a href class="dropdown-item"
+                                           ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                           ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
+
+                                        <a href class="dropdown-item"
+                                           ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
+                                           ng-click="showAssignedCalendar(order)">
+                                            <span translate>button.showAssignedCalendar</span></a>
+
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
+                                           ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
+
+                                        <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
+                                           class="hide dropdown-item"
+                                           ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}"
+                                           translate>button.showConfiguration</a>
+
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <i class="cursor fa fa-caret-down noExl fa-lg" ng-if="!order.show"
+                                   ng-click="showPanelFuc(order)"></i>
+                                <i class="cursor fa fa-caret-up noExl fa-lg" ng-if="order.show"
+                                   ng-click="order.show = false"></i>
+
+                            <span class="text-hover-primary" ng-click="showLogFuc(order)"><span class="text-dark ">{{order.orderId}}</span> <span
+                                    ng-if="order.title">-</span>
                                 <i class="text-muted" ng-bind-html="order.title | linky:'_blank'"></i></span>
-                        </td>
-                        <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)" ng-bind="order.jobChain"></span></td>
-                        <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
-                            <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
-                        </td>
-                        <td uib-tooltip="{{order.stateText}}"><span  ng-bind="order.state"></span></td>
-                        <td >
-                            <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
-                            <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
-                        </td>
-                        <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
-                        <td ng-bind="order.historyId || '-'"></td>
-                        <td>
+                            </td>
+                            <td><span class="text-hover-primary" ng-click="showJobChain(order.jobChain)"
+                                      ng-bind="order.jobChain"></span></td>
+                            <td><span class="label " ng-class="bgColorFunction(order.processingState.severity)"
+                                      ng-bind="order.processingState._text | translate"></span>
+                                <span class="text-muted text-sm" ng-if="order.processingState._text == 'SETBACK'">{{order.setback | stringToDate}} <span
+                                        class="text-success">(<span time="{{order.setback}}"></span>)</span></span>
+                            </td>
+                            <td uib-tooltip="{{order.stateText}}"><span ng-bind="order.state"></span></td>
+                            <td>
+                                <span ng-if="order.startedAt" ng-bind="order.startedAt | stringToDate"></span>
+                                <span class="hide noExl" ng-class="{'show-inline':!order.startedAt}" translate>label.never</span>
+                            </td>
+                            <td><span class="hide" ng-class="{'show-inline':order.startedAt}">{{order.startedAt | stringToDate}} <span
+                                    class="text-success">(<span time="{{order.startedAt}}"></span>)</span></span></td>
+                            <td ng-bind="order.historyId || '-'"></td>
+                            <td>
                             <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
                                  {{order.nextStartTime | stringToDate}}
                                 <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span></span>
-                            <span class="hide noExl" ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
-                        </td>
-                    </tr>
-                    <tr ng-show="order.show" class="noExl">
+                                <span class="hide noExl"
+                                      ng-class="{'show-inline':!order.nextStartTime && !order.startedAt}" translate>label.never</span>
+                            </td>
+                        </tr>
+                        <tr ng-show="order.show" class="noExl">
 
-                        <td colspan="9" style="padding: 1px !important;">
-                            <table class="table m-a-0">
-                                <thead>
-                                <tr>
-                                    <th translate>label.type</th>
-                                    <th translate>label.stateText</th>
-                                    <th translate>label.endState</th>
-                                    <th translate>label.priority</th>
-                                    <th translate>label.params</th>
-                                    <th translate>label.taskId</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>{{order._type | translate}}</td>
-                                    <td><span ng-bind-html="order.stateText | linky:'_blank'"></span></td>
-                                    <td>{{order.endState || '-'}}</td>
-                                    <td>{{order.priority}}</td>
-                                    <td><div ng-repeat="param in order.params">{{param.name}} - {{param.value}}</div></td>
-                                    <td>{{order.taskId || '-'}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            <td colspan="9" style="padding: 1px !important;">
+                                <table class="table m-a-0">
+                                    <thead>
+                                    <tr>
+                                        <th translate>label.type</th>
+                                        <th translate>label.stateText</th>
+                                        <th translate>label.endState</th>
+                                        <th translate>label.priority</th>
+                                        <th translate>label.params</th>
+                                        <th translate>label.taskId</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{order._type | translate}}</td>
+                                        <td><span ng-bind-html="order.stateText | linky:'_blank'"></span></td>
+                                        <td>{{order.endState || '-'}}</td>
+                                        <td>{{order.priority}}</td>
+                                        <td>
+                                            <div ng-repeat="param in order.params">{{param.name}} - {{param.value}}
+                                            </div>
+                                        </td>
+                                        <td>{{order.taskId || '-'}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
+                </div>
             </div>
-        </div>
 
-    </div>
+        </div>
         <div class="hide text-center m-t-lg" ng-class="{'show': !isLoading}">
             <div class="cssload-loading">{{'label.loading' | translate}}...</div>
         </div>
-        <div class="hide " ng-class="{'show': isLoading}" >
+        <div class="hide " ng-class="{'show': isLoading}">
             <div class="row" ng-show="showLogPanel">
                 <div class="col-md-12">
                     <div class="box white">
                         <div class="box-header">
-                            <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted" ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
+                            <span class="text">{{showLogPanel.jobChain}}: {{showLogPanel.orderId}} <i
+                                    ng-if="showLogPanel.title">-</i> <i class="text-sm text-muted"
+                                                                        ng-bind-html="showLogPanel.title | linky:'_blank'"></i></span>
                         </div>
                         <div class="box-tool">
                             <ul class="nav text-muted text-md">
@@ -155,21 +187,26 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="box-body p-t b-t" >
+                        <div class="box-body p-t b-t">
                             <div class="b-b">
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link" ng-class="{active: !isAuditLog}" ng-click="showLogFuc(showLogPanel)" href data-toggle="tab" data-target="#tab1" translate>label.orderHistory</a>
+                                        <a class="nav-link" ng-class="{active: !isAuditLog}"
+                                           ng-click="showLogFuc(showLogPanel)" href data-toggle="tab"
+                                           data-target="#tab1" translate>label.orderHistory</a>
                                     </li>
                                     <li class="nav-item" ng-if="permission.AuditLog.view.status">
-                                        <a class="nav-link" ng-class="{active: isAuditLog}" ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab" data-target="#tab2" translate>label.auditLog</a>
+                                        <a class="nav-link" ng-class="{active: isAuditLog}"
+                                           ng-click="showAuditLogs(showLogPanel)" href data-toggle="tab"
+                                           data-target="#tab2" translate>label.auditLog</a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="tab-content p-a">
                                 <div class="tab-pane animated fadeIn " ng-class="{active: !isAuditLog}" id="tab1">
                                     <div class="row">
-                                        <div class="table-responsive" resizable r-directions="['bottom']" r-height="250">
+                                        <div class="table-responsive" resizable r-directions="['bottom']"
+                                             r-height="250">
                                             <table class="table table-hover table-bordered ">
                                                 <thead>
                                                 <tr>
@@ -182,7 +219,8 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <tr ng-repeat="history in historys | orderBy: 'startTime':true" ng-click="showLogWindow(history,null)" class="cursor">
+                                                <tr ng-repeat="history in historys | orderBy: 'startTime':true"
+                                                    ng-click="showLogWindow(history,null)" class="cursor">
                                                     <td ng-bind="history.orderId"></td>
                                                     <td><span class="label" ng-bind="history.state._text | translate"
                                                               ng-class="bgColorFunction(history.state.severity)"></span>
@@ -194,63 +232,67 @@
                                                 </tr>
                                                 </tbody>
                                             </table>
-                                            <div ng-if="historys.length==0" class="text-center m-t-md h6 text-uppercase" translate>
+                                            <div ng-if="historys.length==0" class="text-center m-t-md h6 text-uppercase"
+                                                 translate>
                                                 message.noOrderHistoryFound
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}"  id="tab2">
+                                <div class="tab-pane animated fadeIn" ng-class="{active: isAuditLog}" id="tab2">
                                     <div class="row">
                                         <div class="table-responsive" resizable r-directions="['bottom']"
                                              r-height="250">
                                             <table class="table table-hover table-bordered ">
-                                                    <thead>
-                                                    <tr>
-                                                        <th translate>label.created</th>
-                                                        <th translate>label.account</th>
-                                                        <th translate>label.request</th>
-                                                        <th translate>label.comment</th>
-                                                        <th translate>label.timeSpend</th>
-                                                        <th translate>label.ticketLink</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
-                                                    <tr>
-                                                        <td>
-                                                        <i class="cursor fa fa-caret-down fa-lg noExl" ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
-                                                        <i class="cursor fa fa-caret-up fa-lg noExl" ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
+                                                <thead>
+                                                <tr>
+                                                    <th translate>label.created</th>
+                                                    <th translate>label.account</th>
+                                                    <th translate>label.request</th>
+                                                    <th translate>label.comment</th>
+                                                    <th translate>label.timeSpend</th>
+                                                    <th translate>label.ticketLink</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                <tr>
+                                                    <td>
+                                                        <i class="cursor fa fa-caret-down fa-lg noExl"
+                                                           ng-if="!auditLog.show" ng-click="auditLog.show =true"></i>
+                                                        <i class="cursor fa fa-caret-up fa-lg noExl"
+                                                           ng-if="auditLog.show" ng-click="auditLog.show =false"></i>
                                                         <span ng-bind="auditLog.created | stringToDate"></span>
-                                                        </td>
-                                                        <td><span ng-bind="auditLog.account"></span></td>
-                                                        <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td><span ng-bind="auditLog.comment"></span></td>
-                                                        <td>
+                                                    </td>
+                                                    <td><span ng-bind="auditLog.account"></span></td>
+                                                    <td><span ng-bind="auditLog.request"></span></td>
+                                                    <td><span ng-bind="auditLog.comment"></span></td>
+                                                    <td>
                                                             <span ng-if="auditLog.timeSpent">
                                                                 <span ng-bind="auditLog.timeSpent"></span>
                                                                 <span>m</span>
                                                             </span>
-                                                        </td>
-                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary" target="_blank" ng-bind="auditLog.ticketLink"></a></td>
-                                                    </tr>
-                                                    <tr class="noExl" ng-show="auditLog.show">
-                                                        <td colspan="6">
-                                                            <table class="table m-a-0">
+                                                    </td>
+                                                    <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
+                                                           target="_blank" ng-bind="auditLog.ticketLink"></a></td>
+                                                </tr>
+                                                <tr class="noExl" ng-show="auditLog.show">
+                                                    <td colspan="6">
+                                                        <table class="table m-a-0">
                                                             <thead>
-                                                                 <tr>
-                                                                     <th translate>label.parameters</th>
-                                                                 </tr>
-                                                                 </thead>
-                                                                 <tbody>
-                                                                 <tr>
-                                                                     <td><span ng-bind="auditLog.parameters"></span></td>
-                                                                 </tr>
-                                                                 </tbody>
-                                                             </table>
-                                                         </td>
-                                                     </tr>
-                                                    </tbody>
-                                                </table>
+                                                            <tr>
+                                                                <th translate>label.parameters</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td><span ng-bind="auditLog.parameters"></span></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                             <div ng-if="auditLogs.length==0"
                                                  class="text-center m-t-md h6 text-uppercase" translate>
                                                 message.noAuditLogFound

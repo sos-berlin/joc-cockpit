@@ -122,72 +122,107 @@
             </aside>
             <div id="rightPanel">
                 <div class="hide " ng-class="{'show': isLoading}">
-                <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
-                    <div ng-repeat="(key, value) in allOrders  | groupBy: 'path1'">
-                        <div class="col-sm-12"  style="margin-bottom: 10px">
-                            <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
-                        </div>
-                        <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 "
-                             ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse">
-                            <div class="box card" >
-                                <div class="box-body">
-                                    <div>
-                                        <label class="md-check pos-abt" ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
-                                            <input type="checkbox" data-checklist-model="object.orders" data-checklist-value="order"><i
-                                                class="primary"></i>
-                                        </label>
-                                        <div class="text-left block-ellipsis" ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
-                                            <span uib-tooltip="{{order.title}}" ng-bind="order.orderId"></span></div>
-                                        <div class="btn-group dropdown pull-right abt-dropdown " >
-                                            <a href class=" more-option text-black-lt" data-toggle="dropdown">
-                                                <i class="text fa fa-ellipsis-h"></i></a>
-                                            <div class="dropdown-menu dropdown-ac dropdown-more">
-                                                <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                   ng-if="order.historyId" ng-class="{'show':permission.Order.view.orderLog}"
-                                                   translate>button.viewLog</a>
-                                                <a ng-click="showConfiguration('order',order.jobChain,order.orderId)" class="hide dropdown-item" ng-class="{show:permission.Order.view.configuration && order._type =='PERMANENT'}" translate>button.showConfiguration</a>
-                                                <a href class="dropdown-item"
-                                                   ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
-                                                   ng-click="start(order)" translate>button.startOrderNow</a>
-                                                <a href class="dropdown-item" ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
-                                                   ng-click="startOrder(order)" translate>button.startOrderat</a>
-                                                <a href class="dropdown-item"
-                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
-                                                   ng-click="setOrderState(order)" translate>button.setOrderState</a>
-                                                <a href class="dropdown-item"
-                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                   ng-click="setRunTime(order)" ><span translate>button.setRunTime</span></a>
-                                                <a href class="dropdown-item"
-                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
-                                                   ng-click="showAssignedCalendar(order)">
-                                                    <span translate>button.showAssignedCalendar</span></a>
-                                                <a href class="dropdown-item bg-hover-color"
-                                                   ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
-                                                   ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
-                                                <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                   ng-click="resumeOrder(order)" translate>button.resumeOrder</a>
-                                                <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                   ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
-                                                <a href class="dropdown-item" ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                   ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
-                                                <a href class="dropdown-item" ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
-                                                   ng-click="resetOrder(order)" translate>button.resetOrder</a>
-                                                <a href class="dropdown-item bg-hover-color" ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
-                                                   ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                                <a href class="dropdown-item" ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
-                                                   ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
-                                                <a href class="dropdown-item bg-hover-color" ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
-                                                   ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
-                                                <a class="dropdown-item" ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
+                    <div class="row hide m-t-xs" ng-class="{'show': pageView=='grid'}">
+                        <div ng-repeat="(key, value) in allOrders  | groupBy: 'path1'">
+                            <div class="col-sm-12" style="margin-bottom: 10px">
+                                <span class="text inline"><i class="fa fa-folder-o"></i> {{key}}</span>
+                            </div>
+                            <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12 "
+                                 ng-repeat="order in value | orderBy:orderFilters.filter.sortBy:orderFilters.reverse">
+                                <div class="box card">
+                                    <div class="box-body">
+                                        <div>
+                                            <label class="md-check pos-abt"
+                                                   ng-if="permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start">
+                                                <input type="checkbox" data-checklist-model="object.orders"
+                                                       data-checklist-value="order"><i
+                                                    class="primary"></i>
+                                            </label>
+
+                                            <div class="text-left block-ellipsis"
+                                                 ng-class="{'m-l-md':permission.Order.delete.permanent || permission.Order.execute.suspend || permission.Order.execute.resume || permission.Order.execute.reset || permission.Order.execute.start}">
+                                                <span uib-tooltip="{{order.title}}" ng-bind="order.orderId"></span>
+                                            </div>
+                                            <div class="btn-group dropdown pull-right abt-dropdown ">
+                                                <a href class=" more-option text-black-lt" data-toggle="dropdown">
+                                                    <i class="text fa fa-ellipsis-h"></i></a>
+
+                                                <div class="dropdown-menu dropdown-ac dropdown-more">
+                                                    <a ng-click="showLogWindow(order)" class="dropdown-item hide"
+                                                       ng-if="order.historyId"
+                                                       ng-class="{'show':permission.Order.view.orderLog}"
+                                                       translate>button.viewLog</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                                       ng-click="start(order)" translate>button.startOrderNow</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                                       ng-click="startOrder(order)"
+                                                       translate>button.startOrderat</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
+                                                       ng-click="setOrderState(order)"
+                                                       translate>button.setOrderState</a>
+                                                    <a href class="dropdown-item bg-hover-color"
+                                                       ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
+                                                       ng-click="suspendOrder(order)"
+                                                       translate>button.suspendOrder</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                                       ng-click="resumeOrder(order)"
+                                                       translate>button.resumeOrder</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                                       ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                                       ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
+                                                    <a href class="dropdown-item bg-hover-color"
+                                                       ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
+                                                       ng-click="removeOrder(order)"
+                                                       translate>button.removeOrder</a>
+                                                    <a href class="dropdown-item bg-hover-color"
+                                                       ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
+                                                       ng-click="deleteOrder(order)"
+                                                       translate>button.deleteOrder</a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
+                                                       ng-click="resetOrder(order)" translate>button.resetOrder</a>
+
+                                                    <div class="dropdown-divider"></div>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                                       ng-click="setRunTime(order)">
+                                                        <span translate>button.setRunTime</span>
+                                                    </a>
+                                                    <a href class="dropdown-item"
+                                                       ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                                       ng-click="viewCalendar(order)"
+                                                       translate>button.showDailyPlan</a>
+                                                    <a href
+                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
+                                                       class="dropdown-item" ng-click="showAssignedCalendar(order)">
+                                                        <span translate>button.showAssignedCalendar</span>
+                                                    </a>
+
+                                                    <div class="dropdown-divider"></div>
+                                                    <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
+                                                       class="hide dropdown-item"
+                                                       ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}"
+                                                       translate>button.showConfiguration</a>
+                                                    <a class="dropdown-item"
+                                                       ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="text-left text-muted p-t-sm">
-                                        <span translate>label.state </span>:
-                                        <span ng-class="colorFunction(order.processingState.severity)" ng-bind="order.processingState._text | translate"></span>
-                                    </div>
-                                    <div class="text-left text-muted text-sm p-t-sm">
-                                        <span class="hide" ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
+                                        <div class="text-left text-muted p-t-sm">
+                                            <span translate>label.state </span>:
+                                            <span ng-class="colorFunction(order.processingState.severity)"
+                                                  ng-bind="order.processingState._text | translate"></span>
+                                        </div>
+                                        <div class="text-left text-muted text-sm p-t-sm">
+                                        <span class="hide"
+                                              ng-class="{'show-inline':order.nextStartTime && !order.startedAt}">
                                             {{'label.nextStart' | translate}}:
                                             {{order.nextStartTime | stringToDate}}
                                            <span class="text-success">(<span time="{{order.nextStartTime}}"></span>)</span>
@@ -297,64 +332,70 @@
                                     </td>
                                      <td class="tableexport-ignore">
                                         <div class="btn-group dropdown ">
-                                            <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                                class="fa fa-ellipsis-h"></i></button>
-                                            <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu" id="menu{{$index}}">
-                                                 <a ng-click="showLogWindow(order)" class="dropdown-item hide"
-                                                       ng-if="order.historyId"
-                                                       ng-class="{'show':permission.Order.view.orderLog}"
-                                                       translate>button.viewLog</a>
-                                                    <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
-                                                       class="hide dropdown-item"
-                                                       ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}"
-                                                       translate>button.showConfiguration</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
-                                                       ng-click="start(order)" translate>button.startOrderNow</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
-                                                       ng-click="startOrder(order)" translate>button.startOrderat</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
-                                                       ng-click="setOrderState(order)"
-                                                       translate>button.setOrderState</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
-                                                       ng-click="setRunTime(order)"><span
-                                                            translate>button.setRunTime</span></a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
-                                                       ng-click="showAssignedCalendar(order)">
-                                                            <span translate>button.showAssignedCalendar</span>
-                                                    </a>
-                                                    <a href class="dropdown-item bg-hover-color"
-                                                       ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
-                                                       ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                       ng-click="resumeOrder(order)" translate>button.resumeOrder</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                       ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
-                                                       ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
-                                                       ng-click="resetOrder(order)" translate>button.resetOrder</a>
-                                                    <a href class="dropdown-item bg-hover-color"
-                                                       ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
-                                                       ng-click="removeOrder(order)" translate>button.removeOrder</a>
-                                                    <a href class="dropdown-item"
-                                                       ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
-                                                       ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
-                                                    <a href class="dropdown-item bg-hover-color"
-                                                       ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
-                                                       ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
-                                                    <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
-                                                       ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
-                                                    <a class="dropdown-item"
-                                                       ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
+                                            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                                <i
+                                                        class="fa fa-ellipsis-h"></i></button>
+                                            <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more"
+                                                 role="menu" id="menu{{$index}}">
+                                                <a ng-click="showLogWindow(order)" class="dropdown-item hide"
+                                                   ng-if="order.historyId"
+                                                   ng-class="{'show':permission.Order.view.orderLog}"
+                                                   translate>button.viewLog</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                                   ng-click="start(order)" translate>button.startOrderNow</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text == 'PENDING' || order.processingState._text == 'SETBACK') && permission.Order.execute.start"
+                                                   ng-click="startOrder(order)" translate>button.startOrderat</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.state"
+                                                   ng-click="setOrderState(order)"
+                                                   translate>button.setOrderState</a>
+                                                <a href class="dropdown-item bg-hover-color"
+                                                   ng-if="(order.processingState._text != 'SUSPENDED' && order.processingState._text != 'BLACKLIST') && permission.Order.execute.suspend"
+                                                   ng-click="suspendOrder(order)" translate>button.suspendOrder</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                                   ng-click="resumeOrder(order)" translate>button.resumeOrder</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                                   ng-click="resumeOrderWithParam(order)" translate>button.resumeOrderParametrized</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text == 'SUSPENDED') && permission.Order.execute.resume"
+                                                   ng-click="resumeOrderNextstate(order)" translate>button.resumeOrderFromState</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.execute.reset"
+                                                   ng-click="resetOrder(order)" translate>button.resetOrder</a>
+                                                <a href class="dropdown-item bg-hover-color"
+                                                   ng-if="order.processingState._text == 'SETBACK' && permission.Order.execute.removeSetback "
+                                                   ng-click="removeOrder(order)" translate>button.removeOrder</a>
+                                                <a href class="dropdown-item bg-hover-color"
+                                                   ng-if="order._type !='PERMANENT' && permission.Order.delete.permanent"
+                                                   ng-click="deleteOrder(order)" translate>button.deleteOrder</a>
+
+                                                <div class="dropdown-divider"></div>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime"
+                                                   ng-click="setRunTime(order)"><span
+                                                        translate>button.setRunTime</span></a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="order._type =='PERMANENT' && order.processingState._text != 'BLACKLIST' && permission.DailyPlan.view.status"
+                                                   ng-click="viewCalendar(order)" translate>button.showDailyPlan</a>
+                                                <a href class="dropdown-item"
+                                                   ng-if="(order.processingState._text != 'BLACKLIST') && permission.Order.change.runTime && order._type !='AD_HOC'"
+                                                   ng-click="showAssignedCalendar(order)">
+                                                    <span translate>button.showAssignedCalendar</span>
+                                                </a>
+
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
+                                                   ng-click="showAuditLogs(order)" translate>button.showAuditLog</a>
+                                                <a ng-click="showConfiguration('order',order.jobChain,order.orderId)"
+                                                   class="hide dropdown-item"
+                                                   ng-class="{show:(permission.Order.view.configuration && order._type =='PERMANENT')}"
+                                                   translate>button.showConfiguration</a>
+                                                <a class="dropdown-item"
+                                                   ng-click="copyLinkToObject('order',order.path)" translate>button.copyLinkToObject</a>
                                             </div>
                                         </div>
                                     </td>
