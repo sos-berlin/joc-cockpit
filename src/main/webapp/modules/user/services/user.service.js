@@ -243,6 +243,11 @@
                                 ifPermissionPassed = true;
                             }
                             break;
+                        case 'File Transfer':
+                            if (permissionModel.permission.YADE.view.transfers) {
+                                ifPermissionPassed = true;
+                            }
+                            break;
                         case 'ManageAccount':
                             if (permissionModel.permission.JobschedulerMaster.administration.editPermissions) {
                                 ifPermissionPassed = true;

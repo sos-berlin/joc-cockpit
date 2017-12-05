@@ -162,7 +162,8 @@
                             </div>
                         </div>
                         <div class="hide" ng-class="{'show-block': resourceFilters.state=='calendars'}">
-                            <button ng-if="object.calendars.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="deleteCalendar()"><i class="fa fa-trash"></i> {{'button.deleteCalendar' | translate}}</button>
+                            <button ng-if="object.calendars.length>0 && permission.Calendar.edit.delete" class="btn btn-grey btn-sm m-l-sm" ng-click="deleteCalendar()"><i class="fa fa-trash"></i> {{'button.deleteCalendar' | translate}}</button>
+                            <button ng-if="object.calendars.length>0" class="btn btn-grey btn-sm m-l-sm" ng-click="exortCalendar()"><i class="fa fa-download"></i> {{'button.exportCalendar' | translate}}</button>
                             <div class="inline" ng-class="{'hide':object.calendars.length>0}">
                                 <div class="btn-group ">
                                     <button class="btn btn-grey btn-sm "
@@ -217,6 +218,7 @@
                                     </div>
                                 </div>
                                 <button ng-if="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm" ng-click="addCalendar()"><i class="fa fa-plus"></i> {{'button.addCalendar' | translate}}</button>
+                                <button ng-if="permission.Calendar.edit.create" class="btn btn-grey btn-sm m-l-sm" ng-click="importCalendar()"><i class="fa fa-upload"></i> {{'button.importCalendar' | translate}}</button>
                             </div>
                         </div>
 

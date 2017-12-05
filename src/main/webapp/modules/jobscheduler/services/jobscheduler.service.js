@@ -555,6 +555,24 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
+            }, export: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars/export');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, import: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars/import');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
             }
         }
     }

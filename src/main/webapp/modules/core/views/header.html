@@ -224,6 +224,14 @@
                     </span>
                 </a>
             </li>
+            <li class="nav-item" ng-if="permission.YADE.view.transfers">
+                <a class="nav-link" ui-sref="app.yade" ui-sref-active="active">
+                    <span class="nav-text ">
+                        <i class="fa fa-exchange text-white fa-lg"></i>
+                        <span  class="font11 text-white text-u-c _600" translate>label.fileTransfers</span>
+                    </span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" ui-sref="app.resources" ng-click="navigateToResource()" ui-sref-active-eq="active" ng-if="(permission.JobschedulerUniversalAgent.view.status && permission.ProcessClass.view.status) || permission.JobschedulerUniversalAgent.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Lock.view.status  || permission.Calendar.view.status">
                     <span class="nav-text" id="resources_id">

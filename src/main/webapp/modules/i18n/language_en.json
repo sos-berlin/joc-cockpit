@@ -1191,5 +1191,18 @@
   "label.calendarViewFor": "Daily Plan View for",
   "label.updateNationalHoliday": "Modify National Holidays",
   "button.updateFrequency": "Update Frequency",
-  "button.showPlanned": "Show Preview"
+  "button.showPlanned": "Show Preview",
+  "breadcrumb.fileTransfer": "File Transfers",
+  "label.fileTransfers": "File Transfers",
+  "label.yade": "Yade",
+  "label.viewTransfers": "view transfers",
+  "label.viewFiles": "view files",
+  "label.viewLog": "view log",
+  "label.showFilesImmediately": "Show Files immediately in File Transfer view",
+  "label.importCalendar": "Import Calendar",
+  "button.importCalendar": "Import Calendar",
+  "button.exportCalendar": "Export Calendar",
+  "button.dropFileToUpload": "DROP CALENDAR FILES TO UPLOAD",
+  "button.chooseFileToUpload": "CHOOSE FILES TO UPLOAD",
+  "button.upload": "Upload"
 }

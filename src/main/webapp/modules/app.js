@@ -31,7 +31,8 @@
             'angular-clipboard',
             'ngclipboard',
             'ui.select',
-            'gridster'
+            'gridster',
+            'angularFileUpload'
         ])
         .run(['$resource', '$rootScope', function ($resource, $rootScope) {
             $rootScope.clientLogs = [];

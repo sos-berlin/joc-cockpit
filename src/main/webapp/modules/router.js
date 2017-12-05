@@ -204,6 +204,16 @@
             templateUrl: "modules/order/views/log.html",
             controller: "LogCtrl",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.taskLogs' | translate}}"}
+        }).state("app.yade", {
+            url: "/file_transfers",
+            templateUrl: "modules/yade/views/file-transfer.html",
+            controller: "YadeCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('File Transfer');
+                }
+            },
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.fileTransfer' | translate}}"}
         }).state("app.resources", {
             url: "/resources",
             templateUrl: "modules/jobscheduler/views/resource.html",

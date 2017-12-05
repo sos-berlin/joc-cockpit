@@ -283,6 +283,15 @@
                        </div>
                    </div>
                     <div class="row m-t">
+                       <div class="col-sm-3 text-dark" translate>label.showFilesImmediately</div>
+                       <div class="col-sm-6">
+                           <label class="md-check">
+                               <input type="checkbox" ng-model="upc.preferences.showFiles" ng-change="upc.changeConfiguration()">
+                               <i class="primary"></i>
+                           </label>
+                       </div>
+                   </div>
+                    <div class="row m-t">
                        <div class="col-sm-3 text-dark" translate>label.enableCommentsForAuditLog</div>
                        <div class="col-sm-6">
                            <label class="md-check">
@@ -565,6 +574,15 @@
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Calendar.edit.assign.runtime}"></i> <span translate>label.assignRuntime</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Calendar.edit.assign.nonworking}"></i> <span translate>label.assignNonworking</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.Calendar.edit.assign.change}"></i> <span translate>label.assignChange</span></span>
+                       </div>
+                   </div>
+                    <div class="row m-t">
+                       <div class="col-sm-3"><span class="text-dark" translate>label.yade</span></div>
+                       <div class="row col-sm-9">
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.status}"></i> <span translate>label.viewStatus</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.transfers}"></i> <span translate>label.viewTransfers</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.files}"></i> <span translate>label.viewFiles</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.log}"></i> <span translate>label.viewLog</span></span>
                        </div>
                    </div>
                </div>

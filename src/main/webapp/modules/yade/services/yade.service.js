@@ -51,39 +51,9 @@
                 });
                 return deferred.promise;
             },
-            getTransfer: function (filter) {
-                var deferred = $q.defer();
-                var Yade = $resource('yade/transfer');
-                Yade.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            start: function (filter) {
-                var deferred = $q.defer();
-                var Yade = $resource('yade/transfer/start');
-                Yade.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
             files: function (filter) {
                 var deferred = $q.defer();
                 var Yade = $resource('yade/files');
-                Yade.save(filter, function (res) {
-                    deferred.resolve(res);
-                }, function (err) {
-                    deferred.reject(err);
-                });
-                return deferred.promise;
-            },
-            store: function (filter) {
-                var deferred = $q.defer();
-                var Yade = $resource('yade/files/store');
                 Yade.save(filter, function (res) {
                     deferred.resolve(res);
                 }, function (err) {
@@ -101,7 +71,16 @@
                 });
                 return deferred.promise;
             },
-            log: function (filter) {
+            transferOrder: function (filter) {
+                var deferred = $q.defer();
+                var Yade = $resource('yade/transfer/order');
+                Yade.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }, log: function (filter) {
                 var deferred = $q.defer();
                 var Yade = $resource('yade/log');
                 Yade.save(filter, function (res) {

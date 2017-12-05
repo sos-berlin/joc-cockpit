@@ -47,8 +47,9 @@
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
-                                        <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                                        <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
@@ -141,10 +142,11 @@
                                  <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
                                      <i class="fa fa-ellipsis-h"></i></button>
                                  <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                     <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
-                                     <a ng-click="showUsage(calendar)" class="dropdown-item" translate>button.showUsage</a>
-                                     <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)" class="dropdown-item" translate>button.deleteCalendar</a>
-                                     <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
+                                        <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                                        <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
+                                        <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                  </div>
                              </div>
                          </td>
@@ -281,7 +283,7 @@
 <div class="modal fade" id="frequency-editor" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static" style="background: rgba(0,0,0,.03)">
     <div class="modal-dialog modal-lg" style="margin-top: 45px" ng-controller="FrequencyCtrl">
         <div class="modal-content" style="box-shadow: 0 0 8px rgba(0,0,0,0.18); margin: 16px">
-            <form name="form1" ng-submit="save(form1)" novalidate>
+            <form name="calendar-form" ng-submit="save(calendar-form)" novalidate>
                 <div class="modal-body p-a" style="min-height: 515px">
                     <div ng-hide="editor.showYearView">
                         <div>
@@ -294,7 +296,7 @@
                                     <span class="text-primary " translate>label.editFrequencies</span>
                                     : <span class="text-muted">{{temp.str}}</span>
                                 </label>
-                                <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
+                                <a ng-click="cancel(calendar-form)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
                             </div>
 
                             <div>
@@ -388,12 +390,12 @@
                                                 <input class="form-control input-date"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.startingWithW"
-                                                       data-date-format="{{dataFormat}}" data-min-date="{{calendar.from}}" data-max-date="{{calendar.to}}"
+                                                       data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOnW.$invalid && form1.endOnW.$dirty }">
+                                        <div class="form-group row" ng-class="{ 'has-error' : calendar-form.endOnW.$invalid && calendar-form.endOnW.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
@@ -447,12 +449,12 @@
                                                 <input class="form-control input-date"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.startingWithS"
-                                                       data-date-format="{{dataFormat}}" data-min-date="{{calendar.from}}" data-max-date="{{calendar.to}}"
+                                                       data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOnS.$invalid && form1.endOnS.$dirty }">
+                                        <div class="form-group row" ng-class="{ 'has-error' : calendar-form.endOnS.$invalid && calendar-form.endOnS.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
@@ -469,11 +471,11 @@
                                          ng-class="{'active':frequency.tab == 'specificDays'}">
                                         <div>
                                             <div class="text-center">
-                                                <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView">
+                                                <a class="m-r-sm" mwl-date-modifier date="viewDate" decrement="calendarView" ng-click="changeYear(calendar-form)">
                                                     <i class="fa fa-angle-left fa-lg"></i>
                                                 </a>
                                                 {{ calendarTitle }}
-                                                <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView">
+                                                <a class="m-l-sm" mwl-date-modifier date="viewDate" increment="calendarView" ng-click="changeYear(calendar-form)">
                                                     <i class="fa fa-angle-right fa-lg"></i>
                                                 </a>
                                             </div>
@@ -727,12 +729,12 @@
                                             <div class="col-sm-5">
                                                 <input class="form-control input-date"
                                                        style="width: 100%;background-position: 95%" ng-model="frequency.startingWithM"
-                                                       data-date-format="{{dataFormat}}" data-min-date="{{calendar.from}}" data-max-date="{{calendar.to}}"
+                                                       data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOnM.$invalid && form1.endOnM.$dirty }">
+                                        <div class="form-group row" ng-class="{ 'has-error' : calendar-form.endOnM.$invalid && calendar-form.endOnM.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
@@ -770,12 +772,12 @@
                                                 <input class="form-control input-date"
                                                        style="width: 100%;background-position: 95%"
                                                        ng-model="frequency.startingWith"
-                                                       data-date-format="{{dataFormat}}" data-min-date="{{calendar.from}}" data-max-date="{{calendar.to}}"
+                                                       data-date-format="{{dataFormat}}" data-min-date="{{freqMinDate}}" data-max-date="{{calendar.to}}"
                                                        data-autoclose="1" placeholder="{{'placeholder.startDate' | translate}}"
                                                        bs-datepicker type="text">
                                             </div>
                                         </div>
-                                        <div class="form-group row" ng-class="{ 'has-error' : form1.endOn.$invalid && form1.endOn.$dirty }">
+                                        <div class="form-group row" ng-class="{ 'has-error' : calendar-form.endOn.$invalid && calendar-form.endOn.$dirty }">
                                             <label class="col-sm-3 form-control-label" translate>label.validTo</label>
 
                                             <div class="col-sm-5">
@@ -1022,7 +1024,7 @@
                         <div class="text-center m-t-lg" ng-show="isCaledarLoading"> <div class="loading-img1 m-t-lg"></div></div>
                     </div>
                     <button ng-if="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
-                            style="position:absolute; bottom: 10px;" ng-disabled="form1.$invalid || !editor.isEnable" ng-click="addFrequency();">
+                            style="position:absolute; bottom: 10px;" ng-disabled="calendar-form.$invalid || !editor.isEnable" ng-click="addFrequency();">
                         <span ng-if="!isRuntimeEdit" translate>button.addNewFrequency</span>
                         <span ng-if="isRuntimeEdit" translate>button.updateFrequency</span>
                     </button>
@@ -1031,10 +1033,10 @@
                     <div class="pull-left">
 
                         <button ng-if="!editor.showYearView" type="submit" class="btn orange btn-sm"
-                                ng-disabled="form1.$invalid || frequencyList.length==0">
+                                ng-disabled="calendar-form.$invalid || frequencyList.length==0">
                             <span translate>button.close</span>
                         </button>
-                        <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
+                        <button ng-if="!editor.showYearView" type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(calendar-form)" translate>
                             button.cancel
                         </button>
                         <button  ng-if="editor.showYearView" type="button" class="btn orange btn-sm" ng-click="addCalendarDates()">
