@@ -1,0 +1,402 @@
+<div class="white box-shadow sub-header">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="padding">
+                <div class="text-right ">
+                    <div class="pull-left">
+                        <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="scroll-y max-ht" >
+    <div class="padding p-b-0">
+        <div class="row m-b m-t-xs">
+            <div class="col-md-12">
+                <button class="btn btn-sm btn-grey"
+                        ng-click="expandDetails()">
+                    <i class="fa fa fa-caret-down"></i>
+                    <span translate>button.expandDetails</span>
+                </button>
+                <button class="btn btn-sm btn-grey m-l-sm"
+                        ng-click="collapseDetails()">
+                    <i class="fa fa fa-caret-up"></i>
+                    <span translate>button.collapseDetails</span>
+                </button>
+                <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()"
+                        ng-show="!showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()"
+                        ng-if="showSearchPanel">
+                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
+                </button>
+                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
+                       ng-model="filterString" style="width: 180px">
+            </div>
+        </div>
+        <div class="row hide" ng-class="{'show':showSearchPanel}">
+                    <div class="col-md-12">
+                        <div class="box p-a m-b-xs">
+                            <form name="form" role="form" ng-submit="saveAsFilter(form)" novalidate>
+                                <div class="form-group row"
+                                     ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                                    <label class="col-md-3 col-sm-4 form-control-label"
+                                           translate>label.filterName</label>
+
+                                    <div class=" col-md-6 col-sm-8">
+                                        <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text"
+                                               class="form-control" placeholder="{{'placeholder.name' | translate}}"
+                                               name="filterName" ng-maxlength="25" ng-model="orderFilter1.name"
+                                               ng-blur="checkFilterName()">
+
+                                        <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                                             ng-messages="form.filterName.$error">
+                                            <div ng-message="maxlength" translate>message.tooLongError</div>
+                                        </div>
+                                        <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
+                                            <div translate>message.uniqueError</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-sm-4 form-control-label" translate>label.from</label>
+
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-date"
+                                               style="width: 225px;background-position: 200px"
+                                               ng-model="orderFilter1.fromDate" data-date-format="{{dataFormat}}"
+                                               data-autoclose="1"
+                                               placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text"
+                                               ng-disabled="orderFilter1.planned">
+                                        <input valid-time maxlength="8" ng-disabled="!orderFilter1.fromDate" class="form-control input-time"
+                                               ng-model="orderFilter1.fromTime"
+                                               placeholder="HH:MM:SS"
+                                               type="text" style="width: 175px;background-position: 150px">
+                                        <a class="text-sm text-primary"
+                                           ng-show="orderFilter1.fromDate || orderFilter1.fromTime"
+                                           ng-click="orderFilter1.fromDate='';orderFilter1.fromTime=''; " translate>button.clear</a>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-sm-4 form-control-label" translate>label.to</label>
+
+                                    <div class="col-sm-8">
+                                        <input class="form-control input-date"
+                                               style="width: 225px;background-position: 200px"
+                                               ng-model="orderFilter1.toDate" data-date-format="{{dataFormat}}"
+                                               data-autoclose="1"
+                                               data-min-date="{{orderFilter1.fromDate}}"
+                                               placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text"
+                                               ng-disabled="orderFilter1.planned">
+                                        <input valid-time maxlength="8" ng-disabled="!orderFilter1.toDate" class="form-control input-time"
+                                               ng-model="orderFilter1.toTime"
+                                               placeholder="HH:MM:SS"
+                                               type="text" style="width: 175px;background-position: 150px">
+                                        <a class="text-sm text-primary"
+                                           ng-show="orderFilter1.toDate || orderFilter1.toTime"
+                                           ng-click="orderFilter1.toDate='';orderFilter1.toTime=''; " translate>button.clear</a>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-sm-4 form-control-label" translate>label.regex</label>
+
+                                    <div class=" col-md-6 col-sm-8"
+                                         ng-class="{ 'has-error' : form.regex.$invalid && form.regex.$dirty }">
+                                        <input valid-regex type="text" class="form-control" name="regex"
+                                               placeholder="{{'placeholder.regexAndChooseTree' | translate}}"
+                                               ng-model="orderFilter1.regex">
+
+                                        <div class="help-block text-danger" ng-messages="form.regex.$error">
+                                            <div ng-message="invalid" translate>message.invalid</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1  p-l-0 p-t-sm"><a href="" ng-click="getTreeStructure()"><i
+                                            class="fa fa-folder-o fa-lg"></i></a></div>
+                                </div>
+                                <div class="form-group row" ng-if="orderFilter1.paths.length>0">
+                                    <label class="col-md-3 col-sm-4" translate>label.folders</label>
+
+                                    <div class="col-md-6 col-sm-8" style="max-height: 140px; overflow: auto">
+                                        <div ng-repeat="path in orderFilter1.paths track by $index">
+                                            <span class="">{{path}}</span><i
+                                                class="pull-right fa fa-remove m-l text-hover-primary"
+                                                ng-click="remove(path)"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-sm-4 " translate>label.orderState</label>
+
+                                    <div class="col-sm-8">
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                                   data-checklist-value="'PENDING'">
+                                            <i class="primary"></i>
+                                            <span translate>label.pending</span>
+                                        </label>
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                                   data-checklist-value="'RUNNING'">
+                                            <i class="primary"></i>
+                                            <span translate>label.running</span>
+                                        </label>
+                                        <label class="md-check w ">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                                   data-checklist-value="'SUSPENDED'">
+                                            <i class="primary"></i>
+                                            <span translate>label.suspended</span>
+                                        </label>
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                                   data-checklist-value="'SETBACK'">
+                                            <i class="primary"></i>
+                                            <span translate>label.setback</span>
+                                        </label>
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                                   data-checklist-value="'WAITINGFORRESOURCE'">
+                                            <i class="primary"></i>
+                                            <span translate>label.waitingForResource</span>
+                                        </label>
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.processingState"
+                                                   data-checklist-value="'BLACKLIST'">
+                                            <i class="primary"></i>
+                                            <span translate>label.blacklist</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-sm-4" translate>label.type</label>
+
+                                    <div class=" col-sm-8">
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.type"
+                                                   data-checklist-value="'PERMANENT'">
+                                            <i class="primary"></i>
+                                            <span translate>label.permanent</span>
+                                        </label>
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.type"
+                                                   data-checklist-value="'AD_HOC'">
+                                            <i class="primary"></i>
+                                            <span translate>label.adHoc</span>
+                                        </label>
+                                        <label class="md-check w">
+                                            <input type="checkbox" data-checklist-model="orderFilter1.type"
+                                                   data-checklist-value="'FILE_ORDER'">
+                                            <i class="primary"></i>
+                                            <span translate>label.fileOrder</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group m-t m-b-xs">
+                                    <button type="button" class="btn btn-primary btn-sm" ng-click="search()" translate>
+                                        button.search
+                                    </button>
+                                    <button type="submit" class="btn orange btn-sm m-l-sm"
+                                            ng-disabled="form.$invalid || !isUnique || !orderFilter1.name" translate>
+                                        button.saveAsFilter
+                                    </button>
+                                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)"
+                                            translate>button.cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        <div class="m-t-sm box p-a" >
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered " id="yade">
+                        <thead>
+                            <tr>
+                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.status</span>
+                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.operation</span>
+                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.sourceHost</span>
+                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.jumpHost</span>
+                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.targetHost</span>
+                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.job</span>
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jobChain')"><a><span translate>label.order</span>
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('state._text')"><a><span translate>label.protocol</span>
+                                    <i ng-show="order.filter.sortBy == 'profileName' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'profileName' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('startTime')"><a><span translate>label.mandator</span>
+                                    <i ng-show="order.filter.sortBy == 'mandator' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'mandator' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+
+                                <th ng-click="sortBy('duration')"><a><span translate>label.startTime</span>
+                                    <i ng-show="order.filter.sortBy == 'startTime' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'startTime' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('node')"><a><span translate>label.endTime</span>
+                                    <i ng-show="order.filter.sortBy == 'endTime' && !order.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="order.filter.sortBy == 'endTime' && order.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                        <tr  class="cursor">
+                            <td class="tableexport-ignore">
+                                <div class="btn-group dropdown"  >
+                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                            class="fa fa-ellipsis-h"></i></button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                        <a class="dropdown-item"
+                                           ng-click="addOrderToIgnoreList(transfer.orderId,transfer.jobChain)"
+                                           translate>button.addOrderToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addJobChainToIgnoreList(transfer.jobChain)"
+                                           translate>button.addJobChainToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addJobToIgnoreList(transfer.job)" translate>button.addJobToIgnoreList</a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td ng-if="!historyView.current" ng-click="showLogWindow(transfer,null)">
+                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
+                                 <span ng-bind="history.jobschedulerId"></span>
+                                 <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
+                             </td>
+                            <td ng-click="showLogWindow(transfer,null)"><span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span></td>
+                            <td class="nowrap" ng-click="showLogWindow(transfer,null)">
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
+                                <span ng-bind="transfer._operation"></span>
+                            </td>
+                            <td ng-click="showLogWindow(transfer,null)">
+                                <span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
+                            </td>
+                            <td ng-click="showLogWindow(transfer,null)">
+                                <span ng-click="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.job"></span>
+                            </td>
+                            <td ng-click="showLogWindow(transfer,null)">
+                                <span ng-click="showOrder(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
+                            </td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.protocol"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.mandator"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.end | stringToDate"></td>
+                        </tr>
+                        <tr class="tableexport-ignore" ng-show="transfer.show">
+                            <td></td>
+                         <td colspan="9" >
+                             <table class="table m-a-0">
+                                 <thead>
+                                 <tr class="tableexport-ignore">
+                                     <th translate>label.file</th>
+                                     <th translate>label.sourcePath</th>
+                                     <th translate>label.targetPath</th>
+                                     <th translate>label.status</th>
+                                     <th translate>label.size</th>
+                                     <th translate>label.duration</th>
+                                     <th translate>label.progress</th>
+                                 </tr>
+                                 </thead>
+                                 <tbody>
+                                 <tr ng-repeat="file in transfer.files" class="cursor">
+                                     <td ng-click="showLogWindow(null,file)">{{file.file}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.sourcePath}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.targetPath}}</td>
+                                     <td ng-click="showLogWindow(null,file)"><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.size | byteToSize}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.startTime | duration:file.endTime}}</td>
+                                     <td ng-click="showLogWindow(null,file)">{{file.progress}}</td>
+                                 </tr>
+                                 </tbody>
+                             </table>
+                             <div ng-if="files.length==0" translate>message.noDataMatched</div>
+                         </td>
+                     </tr>
+                        </tbody>
+                    </table>
+                    <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered2.length > 10}" ng-if="filtered2.length >0"><span translate>label.total</span> {{filtered2.length}}
+                        <span translate ng-if="filtered2.length >1">label.historiesFound</span>
+                        <span translate ng-if="filtered2.length ==1">label.historyFound</span>
+                    </div>
+                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="order.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <div class="pull-left" ng-show="filtered2.length > 10">
+                            <div class="btn-group m-r-xxs">
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='10'}" >10
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'25'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='25'}" >25
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'50'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='50'}" >50
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'100'"
+                                        ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                                </button>
+                                <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="{{maxEntryPerPage}}"
+                                        ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">{{maxEntryPerPage}}
+                                </button>
+                            </div>
+                    </div>
+                    <div ng-if="isLoading && yadeHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noYadeHistoryFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && yadeHistorys.length !==0)}" translate>message.noDataMatched</div>
+                </div>
+            </div>
+    </div>
+</div>
