@@ -558,8 +558,11 @@
             }, export: function (filter) {
                 var deferred = $q.defer();
                 var Calendar = $resource('calendars/export');
-                Calendar.save(filter,function (res) {
-                    deferred.resolve(res);
+                Calendar.save(filter,function (res,headers) {
+                    var response = {};
+                    response.data = res.calendars;
+                    response.headers = headers;
+                    deferred.resolve(response);
                 }, function (err) {
                     deferred.reject(err);
                 });

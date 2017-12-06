@@ -4633,7 +4633,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
 
             jobs.auditLog = {};
@@ -6106,7 +6106,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
 
             jobs.auditLog = {};

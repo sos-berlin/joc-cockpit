@@ -611,7 +611,6 @@
   "label.on": "On",
   "label.onHoliday": "休日",
   "label.onProcessing": "実行中",
-  "label.operation": "操作",
   "label.order": "オーダー",
   "label.orderBlacklist": "ブラックリストオーダー",
   "label.orderFinished": "オーダー完了",
@@ -1204,5 +1203,9 @@
   "button.exportCalendar": "Export Calendar",
   "button.dropFileToUpload": "DROP CALENDAR FILES TO UPLOAD",
   "button.chooseFileToUpload": "CHOOSE FILES TO UPLOAD",
-  "button.upload": "Upload"
+  "button.import": "Import",
+  "label.operation": "Operation",
+  "label.jumpHost": "Jump Host",
+  "label.exist": "exist",
+  "message.readingContentOfFile": "Reading content of file"
 }

@@ -614,7 +614,6 @@
   "label.on": "An",
   "label.onHoliday": "Bei Nicht-Arbeitstagen",
   "label.onProcessing": "bei Ereignis",
-  "label.operation": "Aktion",
   "label.order": "Auftrag",
   "label.orderBlacklist": "Auftrag in Schwarzer Liste",
   "label.orderFinished": "Auftrag beendet",
@@ -1204,5 +1203,9 @@
   "button.exportCalendar": "Export Calendar",
   "button.dropFileToUpload": "DROP CALENDAR FILES TO UPLOAD",
   "button.chooseFileToUpload": "CHOOSE FILES TO UPLOAD",
-  "button.upload": "Upload"
+  "button.import": "Import",
+  "label.operation": "Operation",
+  "label.jumpHost": "Jump Host",
+  "label.exist": "exist",
+  "message.readingContentOfFile": "Reading content of file"
 }

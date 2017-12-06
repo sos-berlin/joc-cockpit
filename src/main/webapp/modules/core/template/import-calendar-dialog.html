@@ -5,63 +5,73 @@
         </button>
         <h4 class="modal-title" translate>label.importCalendar</h4>
     </div>
-    <div class="modal-body p-a -m-b-sm">
-        <div class="table-responsive">
-
-            <table class="table table-hover" ng-if="uploader.queue.length>0">
-                <thead>
-                <tr>
-                    <th translate>label.name</th>
-                    <th ng-show="uploader.isHTML5" translate>label.size</th>
-                    <th ng-show="uploader.isHTML5" translate>label.progress</th>
-                    <th translate>label.status</th>
-                    <th width="232" translate>label.action</th>
-                </tr>
-                </thead>
-                <tbody style="width: 100%">
-                <tr ng-repeat="item in uploader.queue">
-                    <td>
-                        <i class="fa fa-file"></i>
-                        <span>{{ item.file.name }} </span>
-                    </td>
-                    <td ng-show="uploader.isHTML5" nowrap>
-                        <span>{{item.file.size/1024/1024|number:3 }} MB</span>
-                    </td>
-                    <td ng-show="uploader.isHTML5">
-                        <span class="font14">{{item.progress}}%</span></td>
-                    <td>
-                        <span ng-show="item.isSuccess"><i class="fa fa-check text-success"></i></span>
-                        <span ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
-                        <span ng-show="item.isError"><i class="fa fa-remove text-danger"></i></span>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                            <span class="fa fa-upload"></span> {{'button.upload' | translate}}
-                        </button>
-                        <button type="button" class="btn btn-warning btn-xs m-a-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                            <span class="fa fa-ban"></span> {{'button.cancel' | translate}}
-                        </button>
-                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                            <span class="fa fa-remove"></span> {{'button.remove' | translate}}
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <div nv-file-drop="" uploader="uploader" class="drop-box-full">
+    <div class="modal-body p-a">
+        <div ng-if="fileLoading" class="text-center" style="min-height: 250px">
+            <div class="cssload-loading text-sm" style="margin-top: 100px">{{'message.readingContentOfFile' | translate}}...</div>
+        </div>
+        <form name="form1" ng-submit="ok()" novalidate ng-hide="fileLoading">
+            <div class="table-responsive" ng-if="uploader.queue.length>0" style="min-height: 250px; max-height: 600px; overflow: auto">
+                <table class="table table-hover table-bordered  " >
+                        <thead>
+                        <tr>
+                            <th width="30">
+                                <label class="md-check lg-check">
+                                    <input type="checkbox" ng-model="checkImportCalendar.checkbox" ng-click="checkImportCalendarFn()"><i class="primary"></i>
+                                </label>
+                            </th>
+                            <th><span translate>label.name</span></th>
+                            <th><span translate>label.path</span></th>
+                            <th><span translate>label.type</span></th>
+                            <th><span translate>label.category</span></th>
+                            <th><span translate>label.validityFrom</span></th>
+                            <th><span translate>label.validityTo</span></th>
+                        </tr>
+                        </thead>
+                        <tbody ng-repeat="calendar in fileContentCalendars">
+                        <tr>
+                            <td >
+                                <label class="md-check">
+                                    <input type="checkbox" data-checklist-model="importCalendarObj.calendars"
+                                           data-checklist-value="calendar"><i class="primary"></i>
+                                </label>
+                            </td>
+                            <td>
+                             <span>
+                                 <span class="text-dark ">{{calendar.path.substring(calendar.path.lastIndexOf('/')+1)}}</span>
+                                 <span ng-if="calendar.title">-</span>
+                                 <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
+                                 <label class="label label-warning" ng-if="calendar.isExit" translate="">label.exist</label>
+                             </span>
+                            </td>
+                            <td ng-bind="calendar.path"></td>
+                            <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
+                            <td ng-bind="calendar.category"></td>
+                            <td ng-bind="calendar.from | stringToDate1"></td>
+                            <td ng-bind="calendar.to | stringToDate1"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+            </div>
+            <div nv-file-drop="" uploader="uploader" class="drop-box-full" ng-hide="uploader.queue.length>0">
                 <div><img src="images/upload.png"></div>
                 <div translate>button.dropFileToUpload</div>
             </div>
-            <div class="p-l-sm p-t-sm">
-                <button class="btn bg-blue btn-sm"
+            <div class="p-l-sm p-t-sm" ng-hide="uploader.queue.length>0">
+                <button type="button" class="btn bg-blue btn-sm"
                         onclick="openFileOption()">
                     <span translate="">button.chooseFileToUpload</span>
                 </button>
             </div>
-            <input type="file" id="file1" nv-file-select="" uploader="uploader"
-                   multiple style="display: none;">
-        </div>
-
+            <input type="file" id="file1" nv-file-select="" uploader="uploader" style="display: none;">
+            <div class="row m-t-md" ng-if="uploader.queue.length>0">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs" ng-if="uploader.queue.length>0">
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="importCalendarObj.calendars.length==0" translate> button.import </button>
+                <button type="button" class="btn btn-danger btn-sm m-l-sm" ng-click="uploader.queue[0].remove()" translate>button.remove</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            </div>
+        </form>
     </div>
 </div>
 <script>

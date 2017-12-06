@@ -216,87 +216,87 @@
                             <tr>
                                 <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                 <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobschedulerId' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobschedulerId' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.status</span>
-                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                <th ng-click="sortBy('status')"><a><span translate>label.status</span>
+                                    <i ng-show="yade.filter.sortBy == 'status' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'status' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.operation</span>
-                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
+                                    <i ng-show="yade.filter.sortBy == 'operation' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'operation' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.sourceHost</span>
-                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                <th ng-click="sortBy('sourceHost')"><a><span translate>label.sourceHost</span>
+                                    <i ng-show="yade.filter.sortBy == 'sourceHost' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'sourceHost' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.jumpHost</span>
-                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                <th ng-click="sortBy('jumpHost')"><a><span translate>label.jumpHost</span>
+                                    <i ng-show="yade.filter.sortBy == 'jumpHost' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jumpHost' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.targetHost</span>
-                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                <th ng-click="sortBy('targetHost')"><a><span translate>label.targetHost</span>
+                                    <i ng-show="yade.filter.sortBy == 'targetHost' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'targetHost' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobChain' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobChain' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('jobChain')"><a><span translate>label.job</span>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                <th ng-click="sortBy('job')"><a><span translate>label.job</span>
+                                    <i ng-show="yade.filter.sortBy == 'job' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'job' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('jobChain')"><a><span translate>label.order</span>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                <th ng-click="sortBy('order')"><a><span translate>label.order</span>
+                                    <i ng-show="yade.filter.sortBy == 'order' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'order' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.protocol</span>
-                                    <i ng-show="order.filter.sortBy == 'profileName' && !order.sortReverse"
+                                <th ng-click="sortBy('protocol')"><a><span translate>label.protocol</span>
+                                    <i ng-show="yade.filter.sortBy == 'protocol' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'profileName' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'protocol' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('startTime')"><a><span translate>label.mandator</span>
-                                    <i ng-show="order.filter.sortBy == 'mandator' && !order.sortReverse"
+                                <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
+                                    <i ng-show="yade.filter.sortBy == 'mandator' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'mandator' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'mandator' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
 
-                                <th ng-click="sortBy('duration')"><a><span translate>label.startTime</span>
-                                    <i ng-show="order.filter.sortBy == 'startTime' && !order.sortReverse"
+                                <th ng-click="sortBy('startTime')"><a><span translate>label.startTime</span>
+                                    <i ng-show="yade.filter.sortBy == 'startTime' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'startTime' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'startTime' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('node')"><a><span translate>label.endTime</span>
-                                    <i ng-show="order.filter.sortBy == 'endTime' && !order.sortReverse"
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.endTime</span>
+                                    <i ng-show="yade.filter.sortBy == 'endTime' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'endTime' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'endTime' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:yade.filter.sortBy:yade.sortReverse | startFrom:(yade.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
@@ -374,7 +374,7 @@
                         <span translate ng-if="filtered2.length >1">label.historiesFound</span>
                         <span translate ng-if="filtered2.length ==1">label.historyFound</span>
                     </div>
-                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="order.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="yade.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered2.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"

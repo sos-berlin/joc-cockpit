@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService","$timeout", "FileSaver","FileUploader","SOSAuth"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver,FileUploader,SOSAuth) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "SOSAuth", "toasty"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, SOSAuth, toasty) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -1484,51 +1484,78 @@
 
                 });
         };
-       var uploader = $scope.uploader = new FileUploader({
-            url: 'http://192.168.1.111:4446/joc/api/calendars/import'
+        var uploader = $scope.uploader = new FileUploader({
+            url: './calendars/import'
         });
 
-        // FILTERS
-        uploader.filters.push({
-            name: 'imageFilter',
-            fn: function(item /*{File|FileLikeObject}*/, options) {
-                var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-                return '|json|js'.indexOf(type) !== -1;
-            }
-        });
-
+         vm.fileLoading = false;
         // CALLBACKS
-
-        uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-            console.info('onWhenAddingFileFailed', item, filter, options);
-        };
-        uploader.onAfterAddingFile = function(fileItem) {
-            console.info('onAfterAddingFile', fileItem);
-        };
-        uploader.onAfterAddingAll = function(addedFileItems) {
-            console.info('onAfterAddingAll', addedFileItems);
-        };
-        uploader.onBeforeUploadItem = function(item) {
-            console.info('onBeforeUploadItem', item);
-            item.headers = {
-                'X-Access-Token': SOSAuth.accessTokenId,
-                'Content-Type': 'multipart/form-data'
+        uploader.onAfterAddingFile = function (item) {
+            var fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1);
+            if (fileExt != 'json') {
+                toasty.error({
+                    title: fileExt + " extension is not allowed",
+                    timeout: 10000
+                });
+                item.remove();
+            } else {
+                vm.fileLoading = true;
+                var reader = new FileReader();
+                reader.readAsText(item._file, "UTF-8");
+                reader.onload = onLoadFile;
             }
         };
-        uploader.onProgressItem = function(fileItem, progress) {
-            console.info('onProgressItem', fileItem, progress);
+
+        function onLoadFile(event) {
+            vm.fileContentCalendars = JSON.parse(event.target.result);
+            var paths =[];
+            if(angular.isArray(vm.fileContentCalendars)){
+                for(var i =0; i< vm.fileContentCalendars.length;i++){
+                    paths.push(vm.fileContentCalendars[i].path);
+                }
+            }
+            var obj = {};
+            obj.calendars = paths;
+            obj.compact = true;
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            CalendarService.getListOfCalendars(obj).then(function (res) {
+               angular.forEach(res.calendars, function(value){
+                   for(var i =0; i< vm.fileContentCalendars.length;i++){
+                       if(value.path == vm.fileContentCalendars[i].path){
+                           vm.fileContentCalendars[i].isExit=true;
+                           break;
+                       }
+                   }
+               });
+               vm.fileLoading = false;
+            }, function () {
+                vm.fileLoading = false;
+            });
+
+        }
+       
+        vm.importCalendarObj ={};
+        vm.importCalendarObj.calendars = [];
+        vm.checkImportCalendar = {
+            checkbox: false
         };
-        uploader.onSuccessItem = function(fileItem, response, status, headers) {
-            console.info('onSuccessItem', fileItem, response, status, headers);
-        };
-        uploader.onErrorItem = function(fileItem, response, status, headers) {
-            console.info('onErrorItem', fileItem, response, status, headers);
-        };
-        uploader.onCancelItem = function(fileItem, response, status, headers) {
-            console.info('onCancelItem', fileItem, response, status, headers);
+        vm.checkImportCalendarFn = function () {
+            if (vm.checkImportCalendar.checkbox && vm.fileContentCalendars.length > 0) {
+                vm.importCalendarObj.calendars = vm.fileContentCalendars;
+            } else {
+                vm.importCalendarObj.calendars = [];
+            }
         };
 
-        vm.importCalendar = function() {
+        var watcher5 = $scope.$watchCollection('importCalendarObj.calendars', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.checkImportCalendar.checkbox = newNames.length == vm.fileContentCalendars.length;
+            } else {
+                vm.checkImportCalendar.checkbox = false;
+            }
+        });
+
+        vm.importCalendar = function () {
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/import-calendar-dialog.html',
                 controller: 'DialogCtrl',
@@ -1536,25 +1563,40 @@
                 size: 'lg',
                 backdrop: 'static'
             });
+            modalInstance1.result.then(function () {
+                    importCalendarCall();
+                }, function () {
 
+                });
         };
 
-        vm.exportCalendar = function(calendar) {
-            console.log(calendar);
+
+        function importCalendarCall(){
+            CalendarService.import({
+                calendars: vm.importCalendarObj,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+                console.log('><><><')
+            });
+        }
+
+        vm.exportCalendar = function (calendar) {
             var calendars = [];
             if (calendar) {
                 calendars.push(calendar.path);
             } else {
                 angular.forEach(vm.object.calendars, function (value) {
-                    obj.calendars.push(value.path)
+                    calendars.push(value.path)
                 });
             }
             CalendarService.export({
                 calendars: calendars,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
+                console.log(res.headers('Content-Type'))
+                console.log(res.headers('Content-Disposition'))
                 vm.loading = false;
-                var name = vm.schedulerIds.selected + '_' + calendar.name + '.json';
+                var name = vm.schedulerIds.selected + '_calendars'  + '.json';
                 var fileType = 'application/octet-stream';
 
                 if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
@@ -1563,10 +1605,8 @@
                 if (res.headers('Content-Type')) {
                     fileType = res.headers('Content-Type');
                 }
-                console.log(fileType)
-                console.log(name)
 
-                var data = new Blob([res.data], {type: fileType});
+                var data = new Blob([JSON.stringify(res.data)], {type: fileType});
                 FileSaver.saveAs(data, name);
             });
         };
@@ -1574,9 +1614,10 @@
         function deleteCalendar(obj) {
             CalendarService.delete(obj).then(function () {
                 initCalendarTree();
-                vm.object.calendars=[];
+                vm.object.calendars = [];
             });
         }
+
         function deleteCalendarFn(obj, calendar) {
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -1731,7 +1772,7 @@
             var x = x2js.xml_str2json(schedule.runTime);
             x.schedule._substitute = vm.sch._substitute;
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
-            schedules.runTime = vm.schedule.calendars;
+            schedules.calendars = vm.schedule.calendars;
 
             schedules.auditLog = {};
             if (vm.comments.comment) {
@@ -1809,7 +1850,7 @@
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.object.schedules, function (value) {
-                    substitute(value);
+                    vm.substitute(value);
                 });
                 vm.object.schedules = [];
             }, function () {
@@ -1879,10 +1920,11 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
-                     vm.xml = undefined;
+                    vm.xml = undefined;
+                    vm.calendars = [];
                 }, function () {
                     vm.object.schedules = [];
-                     vm.xml = undefined;
+                    vm.calendars = [];
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -1905,7 +1947,7 @@
                 compact: true,
                 types: ['SCHEDULE']
             }).then(function (res) {
-               
+
                 if ($rootScope.schedule_expand_to) {
                     vm.tree = angular.copy(res.folders);
                     filteredTreeData();
@@ -2795,6 +2837,7 @@
             watcher1();
             watcher3();
             watcher4();
+            watcher5();
             $interval.cancel(interval1);
             $interval.cancel(interval2);
             $timeout.cancel(t1);
@@ -3084,9 +3127,11 @@
                 });
                 modalInstance.result.then(function () {
                     setRunTime(schedule);
-                     vm.xml = undefined;
+                    vm.xml = undefined;
+                    vm.calendars = [];
                 }, function () {
-                   vm.xml = undefined;
+                    vm.xml = undefined;
+                    vm.calendars = [];
                 });
             });
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {

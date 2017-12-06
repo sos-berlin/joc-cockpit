@@ -1570,7 +1570,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params =obj.params.concat(paramObject.params);
             }
             orders.auditLog = {};
             if (vm.comments.comment) {
@@ -1664,7 +1664,7 @@
             }
 
             if (order.params) {
-                order.params.concat(paramObject.params);
+                order.params =order.params.concat(paramObject.params);
             } else {
                 order.params = paramObject.params;
             }
@@ -5399,7 +5399,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
             orders.orders.push(obj);
             orders.auditLog = {};
@@ -5786,7 +5786,7 @@
             }
 
             if (order.params) {
-                order.params.concat(paramObject.params);
+                order.params = order.params.concat(paramObject.params);
             } else {
                 order.params = paramObject.params;
             }
@@ -5797,7 +5797,6 @@
                 orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
             }
             delete orders['params'];
-
             OrderService.resumeOrder(orders);
             vm.reset();
         }
@@ -6203,6 +6202,7 @@
 
         vm.jobChainSearch = {};
         vm.jobSearch = {};
+        vm.yadeSearch = {};
         var jobChainSearch = false;
         var jobSearch = false;
         var yadeSearch = false;

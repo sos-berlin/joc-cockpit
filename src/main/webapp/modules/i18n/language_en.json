@@ -614,7 +614,6 @@
   "label.on": "On",
   "label.onHoliday": "On Non-working Day",
   "label.onProcessing": "On Processing",
-  "label.operation": "Action",
   "label.order": "Order",
   "label.orderBlacklist": "Order Blacklisted",
   "label.orderFinished": "Order Finished",
@@ -1157,7 +1156,7 @@
   "label.numberOfSuccessfullyExecutedTask": "Number of successfully executed Tasks",
   "label.agentTaskFound": "Agent Task entry found",
   "label.agentTasksFound": "Agent Task entries found",
-  "message.noAgentTaskFound" : "no Agent Task entries found",
+  "message.noAgentTaskFound": "no Agent Task entries found",
   "label.showAgentJobExecutionForJobScheduler": "Show Agent Job Executions for JobScheduler",
   "label.regularExpression": "Regular Expression",
   "label.totalNumberOfExecutions": "Total number of task executions",
@@ -1204,5 +1203,9 @@
   "button.exportCalendar": "Export Calendar",
   "button.dropFileToUpload": "DROP CALENDAR FILES TO UPLOAD",
   "button.chooseFileToUpload": "CHOOSE FILES TO UPLOAD",
-  "button.upload": "Upload"
+  "button.import": "Import",
+  "label.operation": "Operation",
+  "label.jumpHost": "Jump Host",
+  "label.exist": "exist",
+  "message.readingContentOfFile": "Reading content of file"
 }
