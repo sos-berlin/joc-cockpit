@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "SOSAuth", "toasty"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, SOSAuth, toasty) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -118,7 +118,7 @@
                                 scrTree[i].processClasses = destTree[j].processClasses;
                             } else if (type == 'agent') {
                                 scrTree[i].agentClusters = destTree[j].agentClusters;
-                            }else if(type == 'schedule'){
+                            } else if (type == 'schedule') {
                                 scrTree[i].schedules = destTree[j].schedules;
                             } else {
                                 scrTree[i].calendars = destTree[j].calendars;
@@ -145,7 +145,7 @@
                                 scrTree[i].processClasses = destTree[j].processClasses;
                             } else if (type == 'agent') {
                                 scrTree[i].agentClusters = destTree[j].agentClusters;
-                            } else if(type == 'schedule'){
+                            } else if (type == 'schedule') {
                                 scrTree[i].schedules = destTree[j].schedules;
                             } else {
                                 scrTree[i].calendars = destTree[j].calendars;
@@ -338,7 +338,6 @@
                 })
             });
         };
-
 
         function insertData(node, x) {
             for (var i = 0; i < node.agentClusters.length; i++) {
@@ -1511,8 +1510,18 @@
             var paths =[];
             if(angular.isArray(vm.fileContentCalendars)){
                 for(var i =0; i< vm.fileContentCalendars.length;i++){
+                    if(vm.fileContentCalendars[i].path)
                     paths.push(vm.fileContentCalendars[i].path);
                 }
+            }
+            if(paths.length==0){
+                vm.fileLoading = false;
+                vm.fileContentCalendars = undefined;
+                 toasty.error({
+                    title: "Not a valid calendar file",
+                    timeout: 10000
+                });
+                return;
             }
             var obj = {};
             obj.calendars = paths;
@@ -1572,6 +1581,7 @@
 
 
         function importCalendarCall(){
+            vm.fileContentCalendars = undefined;
             CalendarService.import({
                 calendars: vm.importCalendarObj,
                 jobschedulerId: vm.schedulerIds.selected
