@@ -1047,7 +1047,7 @@
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                jobChain: vm.selectedChain.path,
+                jobChain: vm._jobChain.path,
                 dateFrom: firstDay,
                 dateTo: lastDay
             }).then(function (res) {
@@ -1060,9 +1060,8 @@
         };
 
         vm.showCalendar = function (jobChain) {
-            vm.selectedChain = jobChain;
             vm.maxPlannedTime = undefined;
-            vm._jobChain = jobChain;
+            vm._jobChain = angular.copy(jobChain);
             vm.planItems = [];
             vm.isCaledarLoading = true;
             firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
@@ -1104,6 +1103,11 @@
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm._jobChain = null;
+            }, function () {
+                vm._jobChain = null;
             });
             vm.reset();
         }
@@ -5404,7 +5408,7 @@
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                job: vm.selectedPlanJob.path,
+                job: vm._job.path,
                 dateFrom: firstDay,
                 dateTo: lastDay
             }).then(function (res) {
@@ -5419,8 +5423,7 @@
 
         vm.viewCalendar = function (job) {
             vm.maxPlannedTime = undefined;
-            vm.selectedPlanJob = job;
-            vm._job = job;
+            vm._job = angular.copy(job);
             vm.planItems = [];
             vm.isCaledarLoading = true;
             firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
@@ -5462,8 +5465,12 @@
                 size: 'lg',
                 backdrop: 'static'
             });
+            modalInstance.result.then(function () {
+                vm._job = null;
+            }, function () {
+                vm._job = null;
+            });
         }
-
 
         vm.viewAllHistories = function () {
             vm.taskHistoryTab = CoreService.getHistoryTab();
@@ -6876,7 +6883,7 @@
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                job: vm.selectedPlanJob.path,
+                job: vm._job.path,
                 dateFrom: firstDay,
                 dateTo: lastDay
             }).then(function (res) {
@@ -6889,8 +6896,7 @@
 
         vm.viewCalendar = function (job) {
             vm.maxPlannedTime = undefined;
-            vm.selectedPlanJob = job;
-            vm._job = job;
+            vm._job = angular.copy(job);
             vm.planItems = [];
             vm.isCaledarLoading = true;
             firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0)
@@ -6925,12 +6931,17 @@
         }
 
         function openCalendar() {
-            $uibModal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm._job = null;
+            }, function () {
+                vm._job = null;
             });
         }
 

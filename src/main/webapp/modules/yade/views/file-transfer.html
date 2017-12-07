@@ -305,38 +305,36 @@
                                     <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                         <a class="dropdown-item"
                                            ng-click="addOrderToIgnoreList(transfer.orderId,transfer.jobChain)"
-                                           translate>button.addOrderToIgnoreList</a>
-                                        <a class="dropdown-item" ng-click="addJobChainToIgnoreList(transfer.jobChain)"
-                                           translate>button.addJobChainToIgnoreList</a>
-                                        <a class="dropdown-item" ng-click="addJobToIgnoreList(transfer.job)" translate>button.addJobToIgnoreList</a>
+                                           translate>button.restart</a>
                                     </div>
                                 </div>
                             </td>
-                            <td ng-if="!historyView.current" ng-click="showLogWindow(transfer,null)">
+                            <td ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td ng-click="showLogWindow(transfer,null)"><span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span></td>
-                            <td class="nowrap" ng-click="showLogWindow(transfer,null)">
+                            <td class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                <span ng-bind="transfer._operation"></span>
+                                <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-click="showLogWindow(transfer,null)">
+                            <td ng-bind="transfer._operation"></td>
+                            <td  ng-bind="transfer.source.host"></td>
+                            <td  ng-bind="transfer.jump.host"></td>
+                            <td  ng-bind="transfer.target.host"></td>
+                            <td >
                                 <span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
                             </td>
-                            <td ng-click="showLogWindow(transfer,null)">
+                            <td >
                                 <span ng-click="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.job"></span>
                             </td>
-                            <td ng-click="showLogWindow(transfer,null)">
-                                <span ng-click="showOrder(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
-                            </td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.protocol"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.mandator"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | stringToDate"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.end | stringToDate"></td>
+                            <td ><span ng-click="showOrderLink(transfer.orderId);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                            <td ng-bind="transfer.protocol"></td>
+                            <td ng-bind="transfer.mandator"></td>
+                            <td ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-bind="transfer.end | stringToDate"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>

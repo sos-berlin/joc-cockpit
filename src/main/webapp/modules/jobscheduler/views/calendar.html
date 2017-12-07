@@ -39,8 +39,9 @@
                                          <i class="fa fa-ellipsis-h"></i></button>
                                      <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
                                          <a ng-if="permission.Calendar.edit.change" ng-click="editCalendar(calendar)" class="dropdown-item" translate>button.editCalendar</a>
+                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
+                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
                                          <a ng-click="showUsage(calendar)" class="dropdown-item" translate>button.showUsage</a>
-                                         <a ng-if="permission.Calendar.edit.delete" ng-click="deleteCalendar(calendar)" class="dropdown-item" translate>button.deleteCalendar</a>
                                      </div>
                                  </div>
                              </td>

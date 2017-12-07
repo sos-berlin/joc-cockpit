@@ -6012,7 +6012,7 @@
             DailyPlanService.getPlans({
                 jobschedulerId: $scope.schedulerIds.selected,
                 states: ['PLANNED'],
-                orderId: vm.selectedOrder.orderId,
+                orderId: vm._jobChain.orderId,
                 dateFrom: firstDay,
                 dateTo: lastDay
             }).then(function (res) {
@@ -6031,7 +6031,7 @@
             orders.compact = true;
             OrderService.getcalendars(orders).then(function (res) {
                 vm.obj = angular.copy(order);
-                    vm.obj.calendars = res.calendars;
+                vm.obj.calendars = res.calendars;
             });
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/show-assigned-calendar-dialog.html',
@@ -6049,9 +6049,8 @@
 
         vm.viewCalendar = function (order) {
             vm.maxPlannedTime = undefined;
-            vm.selectedOrder = order;
+            vm._jobChain = angular.copy(order);
             vm.isCaledarLoading = true;
-            vm._jobChain = order;
             vm._jobChain.name = order.orderId;
             vm.planItems = [];
             firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
@@ -6079,7 +6078,7 @@
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
                     orderId: data.orderId,
-                    format:vm.getCalendarTimeFormat()
+                    format: vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -6089,12 +6088,17 @@
         }
 
         function openCalendar() {
-            $uibModal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/calendar-dialog.html',
                 controller: 'DialogCtrl',
                 scope: vm,
                 size: 'lg',
                 backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                vm._jobChain = null;
+            }, function () {
+                vm._jobChain = null;
             });
         }
 
@@ -6248,7 +6252,7 @@
 
             if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-               
+
             } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
                 fromDate = new Date();
                 toDate = new Date();
@@ -6257,7 +6261,7 @@
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
                 fromDate = '0d';
                 toDate = '0d';
-            }else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+            } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
                 fromDate = '-1d';
                 toDate = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {

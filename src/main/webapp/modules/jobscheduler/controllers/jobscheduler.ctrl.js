@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty","gettextCatalog","AuditLogService"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty,gettextCatalog,AuditLogService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -1208,12 +1208,20 @@
                 vm.folderPathC = data.name || '/';
                 vm.folderFullPathC = data.path || '/';
                 vm.loading = false;
+                var flag =false;
                 if (data.calendars.length > 0) {
+
                     angular.forEach(data.calendars, function (value) {
-                        var flag = true;
                         value.path1 = data.path;
+                        if(vm.showPanel.path == data.path){
+                            flag =true;
+                        }
                     });
                 }
+                if(!flag) {
+                    vm.showPanel = undefined;
+                }
+
             }, function () {
                 vm.loading = false;
             });
@@ -1490,10 +1498,10 @@
          vm.fileLoading = false;
         // CALLBACKS
         uploader.onAfterAddingFile = function (item) {
-            var fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1);
-            if (fileExt != 'json') {
+            var fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
+            if (fileExt != 'JSON') {
                 toasty.error({
-                    title: fileExt + " extension is not allowed",
+                    title: fileExt +' ' + gettextCatalog.getString("message.invalidFileExtension"),
                     timeout: 10000
                 });
                 item.remove();
@@ -1518,7 +1526,7 @@
                 vm.fileLoading = false;
                 vm.fileContentCalendars = undefined;
                  toasty.error({
-                    title: "Not a valid calendar file",
+                    title: gettextCatalog.getString("message.notValidCalendarFile"),
                     timeout: 10000
                 });
                 return;
@@ -1542,8 +1550,9 @@
             });
 
         }
-       
+
         vm.importCalendarObj ={};
+        vm.importCalendarObj.jobschedulerId= vm.schedulerIds.selected;
         vm.importCalendarObj.calendars = [];
         vm.checkImportCalendar = {
             checkbox: false
@@ -1582,11 +1591,17 @@
 
         function importCalendarCall(){
             vm.fileContentCalendars = undefined;
-            CalendarService.import({
-                calendars: vm.importCalendarObj,
-                jobschedulerId: vm.schedulerIds.selected
-            }).then(function (res) {
-                console.log('><><><')
+             for(var i =0; i< vm.importCalendarObj.calendars.length;i++) {
+                 if (vm.importCalendarObj.calendars[i].isExit) {
+                     delete vm.importCalendarObj.calendars[i]['isExit'];
+                 }
+             }
+            CalendarService.import(vm.importCalendarObj).then(function (res) {
+                uploader.queue[0].remove();
+                vm.importCalendarObj.calendars = [];
+                initCalendarTree();
+            }, function(){
+                vm.importCalendarObj.calendars = [];
             });
         }
 
@@ -1680,6 +1695,7 @@
                 });
             }
         }
+
         vm.deleteCalendar = function (calendar) {
             var obj = {};
              obj.jobschedulerId = vm.schedulerIds.selected;
@@ -2761,6 +2777,23 @@
 
         };
 
+        vm.loadAuditLogs = function (value) {
+            vm.showPanel = value;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.calendars = [];
+            obj.calendars.push({calendar: value.path});
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            AuditLogService.getLogs(obj).then(function (result) {
+                if (result && result.auditLog) {
+                    vm.auditLogs = result.auditLog;
+                }
+            });
+        };
+        vm.hideAuditPanel = function(){
+            vm.showPanel = undefined;
+        };
+
         /** -----------------End Agent tasks------------------- */
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
@@ -2855,8 +2888,8 @@
         });
     }
 
-    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService','CalendarService','$timeout'];
-    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService,CalendarService, $timeout) {
+    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout','FileSaver'];
+    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout,FileSaver) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
             vm.checkSchedulerId();
@@ -3313,6 +3346,32 @@
                 }, 400);
             });
 
+        };
+
+        vm.exportCalendar = function (calendar) {
+            var calendars = [];
+            if (calendar) {
+                calendars.push(calendar.path);
+            }
+            CalendarService.export({
+                calendars: calendars,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+
+                vm.loading = false;
+                var name = vm.schedulerIds.selected + '_calendars'  + '.json';
+                var fileType = 'application/octet-stream';
+
+                if (res.headers('Content-Disposition') && /filename=(.+)/.test(res.headers('Content-Disposition'))) {
+                    name = /filename=(.+)/.exec(res.headers('Content-Disposition'))[1];
+                }
+                if (res.headers('Content-Type')) {
+                    fileType = res.headers('Content-Type');
+                }
+
+                var data = new Blob([JSON.stringify(res.data)], {type: fileType});
+                FileSaver.saveAs(data, name);
+            });
         };
 
         $scope.$on('copy-calendar', function (event, data) {

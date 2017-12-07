@@ -977,97 +977,132 @@
                             <tr>
                                 <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                 <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && !order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobschedulerId' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobschedulerId' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobschedulerId' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('orderId')"><a><span translate>label.transfer</span>
-                                    <i ng-show="order.filter.sortBy == 'transfer' && !order.sortReverse"
+                                <th ng-click="sortBy('status')"><a><span translate>label.status</span>
+                                    <i ng-show="yade.filter.sortBy == 'status' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'transfer' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'status' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
+                                    <i ng-show="yade.filter.sortBy == 'operation' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'operation' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('sourceHost')"><a><span translate>label.sourceHost</span>
+                                    <i ng-show="yade.filter.sortBy == 'sourceHost' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'sourceHost' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('jumpHost')"><a><span translate>label.jumpHost</span>
+                                    <i ng-show="yade.filter.sortBy == 'jumpHost' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'jumpHost' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('targetHost')"><a><span translate>label.targetHost</span>
+                                    <i ng-show="yade.filter.sortBy == 'targetHost' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'targetHost' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && !order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobChain' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'jobChain' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'jobChain' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('state._text')"><a><span translate>label.profileName</span>
-                                    <i ng-show="order.filter.sortBy == 'profileName' && !order.sortReverse"
+                                <th ng-click="sortBy('job')"><a><span translate>label.job</span>
+                                    <i ng-show="yade.filter.sortBy == 'job' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'profileName' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'job' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('startTime')"><a><span translate>label.mandator</span>
-                                    <i ng-show="order.filter.sortBy == 'mandator' && !order.sortReverse"
+                                <th ng-click="sortBy('order')"><a><span translate>label.order</span>
+                                    <i ng-show="yade.filter.sortBy == 'order' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'mandator' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'order' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.status</span>
-                                    <i ng-show="order.filter.sortBy == 'status' && !order.sortReverse"
+                                <th ng-click="sortBy('protocol')"><a><span translate>label.protocol</span>
+                                    <i ng-show="yade.filter.sortBy == 'protocol' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'status' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'protocol' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('duration')"><a><span translate>label.startTime</span>
-                                    <i ng-show="order.filter.sortBy == 'startTime' && !order.sortReverse"
+                                <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
+                                    <i ng-show="yade.filter.sortBy == 'mandator' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'startTime' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'mandator' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('node')"><a><span translate>label.endTime</span>
-                                    <i ng-show="order.filter.sortBy == 'endTime' && !order.sortReverse"
+
+                                <th ng-click="sortBy('startTime')"><a><span translate>label.startTime</span>
+                                    <i ng-show="yade.filter.sortBy == 'startTime' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'endTime' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'startTime' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('node')"><a><span translate>label.duration</span>
-                                    <i ng-show="order.filter.sortBy == 'duration' && !order.sortReverse"
+                                <th ng-click="sortBy('endTime')"><a><span translate>label.endTime</span>
+                                    <i ng-show="yade.filter.sortBy == 'endTime' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="order.filter.sortBy == 'duration' && order.sortReverse"
+                                    <i ng-show="yade.filter.sortBy == 'endTime' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:order.filter.sortBy:order.sortReverse | startFrom:(order.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:yade.filter.sortBy:yade.sortReverse | startFrom:(yade.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                        <a class="dropdown-item"  translate>button.restart</a>
-                                        <a class="dropdown-item"  translate>button.showLog</a>
+                                        <a class="dropdown-item"
+                                           ng-click="addOrderToIgnoreList(transfer.orderId,transfer.jobChain)"
+                                           translate>button.addOrderToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addJobChainToIgnoreList(transfer.jobChain)"
+                                           translate>button.addJobChainToIgnoreList</a>
+                                        <a class="dropdown-item" ng-click="addJobToIgnoreList(transfer.job)" translate>button.addJobToIgnoreList</a>
                                     </div>
                                 </div>
                             </td>
-                            <td ng-if="!historyView.current" ng-click="showLogWindow(transfer,null)">
+                            <td ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td class="nowrap" ng-click="showLogWindow(transfer,null)">
+                            <td class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                <span ng-bind="transfer._operation"></span>
+                                <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-click="showLogWindow(transfer,null)">
+                            <td ng-bind="transfer._operation"></td>
+                            <td  ng-bind="transfer.source.host"></td>
+                            <td  ng-bind="transfer.jump.host"></td>
+                            <td  ng-bind="transfer.target.host"></td>
+                            <td >
                                 <span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
                             </td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.profile"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.mandator"></td>
-                            <td ng-click="showLogWindow(transfer,null)"><span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | stringToDate"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.end | stringToDate"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | duration:transfer.end"></td>
+                            <td >
+                                <span ng-click="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.job"></span>
+                            </td>
+                            <td ><span ng-click="showOrderLink(transfer.orderId);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                            <td ng-bind="transfer.protocol"></td>
+                            <td ng-bind="transfer.mandator"></td>
+                            <td ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-bind="transfer.end | stringToDate"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                         <td colspan="9" >
+                         <td colspan="13" >
                              <table class="table m-a-0">
                                  <thead>
                                  <tr class="tableexport-ignore">

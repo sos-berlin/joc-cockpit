@@ -1207,5 +1207,7 @@
   "label.operation": "Operation",
   "label.jumpHost": "Jump Host",
   "label.exist": "exist",
-  "message.readingContentOfFile": "Reading content of file"
+  "message.readingContentOfFile": "Reading content of file",
+  "message.invalidFileExtension": "extension is not allowed",
+  "message.notValidCalendarFile": "Not a valid Calendar file"
 }
