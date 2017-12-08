@@ -1075,6 +1075,7 @@
             getDateFormat();
 
         vm.currentTime = moment();
+        var today = new Date();
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
 
@@ -1083,12 +1084,9 @@
         var interval = $interval(function () {
             --count;
             vm.currentTime = moment();
-            if (vm.currentTime.format("H") == "0" && resetDate) {
-                $rootScope.$broadcast('resetDailyPlanDate');
+            if(moment(today).format('YYYY-MM-DD') != moment(vm.currentTime).format('YYYY-MM-DD') && resetDate){
                 resetDate = false;
-            }
-            if (vm.currentTime.format("H") !== "0") {
-                resetDate = true;
+                $rootScope.$broadcast('resetViewDate');
             }
 
             var s = parseInt((count) % 60),
@@ -4005,10 +4003,12 @@
                     var cal = {};
                     cal.basedOn = value.path;
                     cal.type = "NON_WORKING_DAYS";
-                    if (vm.order.calendars)
+                    if (vm.order && vm.order.calendars) {
                         vm.order.calendars.push(cal);
-                    else
+                    }
+                    else if (vm.schedule && vm.schedule.calendars) {
                         vm.schedule.calendars.push(cal);
+                    }
                 })
             }
         }
@@ -11381,10 +11381,11 @@
         vm.planFromRuntime = function () {
 
              vm.isCaledarLoading = true;
-            if(vm.order && vm.order.name)
-                vm._jobChain = vm.order;
-            else
-                 vm._job = vm.order;
+            if(vm.order) {
+                vm._job = vm.order;
+            }else{
+                 vm._job = vm.schedule;
+            }
 
             vm.planItems = [];
             firstDay = new Date(new Date().getFullYear(),  new Date().getMonth(),  new Date().getDate(), 0, 0, 0);
@@ -13225,6 +13226,17 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                         vm.frequency.selectedMonths = angular.copy(vm.calendar.frequencyList[i].selectedMonths);
                     else
                         vm.frequency.selectedMonthsU = angular.copy(vm.calendar.frequencyList[i].selectedMonthsU);
+                      if (vm.calendar.frequencyList[i].isUltimos == 'months') {
+                        selectedMonths = [];
+                        angular.forEach(vm.calendar.frequencyList[i].selectedMonths, function (val) {
+                            vm.selectMonthDays(val);
+                        });
+                    } else {
+                        selectedMonthsU = [];
+                        angular.forEach(vm.calendar.frequencyList[i].selectedMonthsU, function (val) {
+                            vm.selectMonthDaysU(val);
+                        });
+                    }
                 }
             }
         }
@@ -13234,12 +13246,44 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
             vm.calendarTitle = new Date().getFullYear();
             vm.viewDate = new Date();
             vm.tempItems = [];
+            selectedMonths = []; selectedMonthsU = [];
             vm.calendar = angular.copy(data.calendar);
             if (!vm.calendar.frequencyList) {
                 vm.calendar.frequencyList = [];
             }
             vm.temp = data.updateFrequency;
-            if (!vm.temp) {
+            if (vm.temp && !vm.isEmpty(vm.temp)) {
+                vm.editor.create = false;
+                vm.isRuntimeEdit = true;
+                vm.frequency = angular.copy(vm.temp);
+                for (var i = 0; i < vm.calendar.frequencyList.length; i++) {
+                    if (vm.calendar.frequencyList[i] == vm.temp || angular.equals(vm.temp, vm.calendar.frequencyList[i])) {
+                        if (vm.calendar.frequencyList[i].tab == 'monthDays') {
+                            if (vm.calendar.frequencyList[i].isUltimos == 'months')
+                                vm.frequency.selectedMonths = angular.copy(vm.calendar.frequencyList[i].selectedMonths);
+                            else
+                                vm.frequency.selectedMonthsU = angular.copy(vm.calendar.frequencyList[i].selectedMonthsU);
+
+                            if (vm.calendar.frequencyList[i].isUltimos == 'months') {
+                                selectedMonths = [];
+                                angular.forEach(vm.calendar.frequencyList[i].selectedMonths, function (val) {
+                                    vm.selectMonthDays(val);
+                                });
+                            } else {
+                                selectedMonthsU = [];
+                                angular.forEach(vm.calendar.frequencyList[i].selectedMonthsU, function (val) {
+                                    vm.selectMonthDaysU(val);
+                                });
+                            }
+                        } else if (vm.calendar.frequencyList[i].tab == 'specificDays') {
+                            angular.forEach(vm.calendar.frequencyList[i].dates, function (date) {
+                                vm.tempItems.push({plannedStartTime: date});
+                            });
+                        }
+                        break;
+                    }
+                }
+            } else {
                 vm.editor.create = true;
                 vm.frequency = {};
                 vm.frequency.tab = 'weekDays';
@@ -13248,10 +13292,6 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                 if (vm.calendar.frequencyList && vm.calendar.frequencyList.length > 0) {
                     generateFrequencyObj();
                 }
-            } else {
-                vm.editor.create = false;
-                vm.isRuntimeEdit = true;
-                vm.frequency = angular.copy(vm.temp);
             }
 
     });
@@ -13398,6 +13438,12 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                         }
                     }
                 }
+                vm.temp = {};
+                if (vm.calendar.frequencyList && vm.calendar.frequencyList.length > 0) {
+                    generateFrequencyObj();
+                }
+
+                vm.editor.isEnable = false;
                 return;
             }
             if (vm.frequency.tab == 'specificDays') {
@@ -13576,8 +13622,8 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                 vm.calendar.frequencyList.push(angular.copy(vm.frequency));
 
             }
-
-    };
+                vm.editor.isEnable = false;
+        };
 
     vm.editFrequency = function (data) {
         vm.temp = angular.copy(data);

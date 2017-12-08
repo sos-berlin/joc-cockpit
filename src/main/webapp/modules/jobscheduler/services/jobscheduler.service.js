@@ -560,7 +560,7 @@
                 var Calendar = $resource('calendars/export');
                 Calendar.save(filter,function (res,headers) {
                     var response = {};
-                    response.data = res.calendars;
+                    response.data = res;
                     response.headers = headers;
                     deferred.resolve(response);
                 }, function (err) {

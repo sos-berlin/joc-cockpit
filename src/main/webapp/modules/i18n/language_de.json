@@ -1210,4 +1210,5 @@
   "message.readingContentOfFile": "Inhalt der Datei wird gelesen",
   "message.invalidFileExtension": "Dateierweiterung nicht zugelassen",
   "message.notValidCalendarFile": "Keine gültige Kalenderdatei"
+  "message.noFilesFound": "no transfer files found"
 }

@@ -1136,7 +1136,7 @@
                         <span translate ng-if="filtered2.length >1">label.historiesFound</span>
                         <span translate ng-if="filtered2.length ==1">label.historyFound</span>
                     </div>
-                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="order.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                    <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="yade.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered2.length > 10">
                             <div class="btn-group m-r-xxs">
                                 <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage" uib-btn-radio="'10'"

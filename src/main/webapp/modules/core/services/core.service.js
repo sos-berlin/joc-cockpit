@@ -109,6 +109,15 @@
         tabs._history.yade.currentPage = '1';
         tabs._history.yade.selectedView = true;
 
+        tabs._yade = {};
+        tabs._yade.filter = {};
+        tabs._yade.filter.states = 'all';
+        tabs._yade.filter.date = 'today';
+        tabs._yade.filter.sortBy = 'startTime';
+        tabs._yade.sortReverse = true;
+        tabs._yade.currentPage = '1';
+        tabs._yade.selectedView = true;
+
         tabs._auditLog = {};
         tabs._auditLog.filter = {};
         tabs._auditLog.filter.historyStates = 'all';
@@ -255,6 +264,15 @@
         tempTabs._history.yade.sortReverse = true;
         tempTabs._history.yade.currentPage = '1';
         tempTabs._history.yade.selectedView = true;
+
+        tempTabs._yade = {};
+        tempTabs._yade.filter = {};
+        tempTabs._yade.filter.states = 'all';
+        tempTabs._yade.filter.date = 'today';
+        tempTabs._yade.filter.sortBy = 'startTime';
+        tempTabs._yade.sortReverse = true;
+        tempTabs._yade.currentPage = '1';
+        tempTabs._yade.selectedView = true;
 
         tempTabs._auditLog = {};
         tempTabs._auditLog.filter = {};
@@ -412,6 +430,9 @@
             },
             getAuditLogTab: function(){
                 return tabs._auditLog;
+            },
+            getYadeTab: function(){
+                return tabs._yade;
             },
             getEvents: function (filter) {
                 var deferred = $q.defer();

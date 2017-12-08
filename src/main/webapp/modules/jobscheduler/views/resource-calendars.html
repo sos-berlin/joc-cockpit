@@ -49,6 +49,7 @@
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                                        <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                     </div>
@@ -145,6 +146,7 @@
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.change}" ng-click="editCalendar(calendar)" translate>button.editCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteCalendar(calendar)" translate>button.deleteCalendar</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="exportCalendar(calendar)" translate>button.exportCalendar</a>
+                                        <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" ng-click="showUsage(calendar)" translate>button.showUsage</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('calendar',calendar.path)" translate>button.copyLinkToObject</a>
                                  </div>
@@ -221,12 +223,12 @@
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item">
                                             <a class="nav-link active" href data-toggle="tab"
-                                               data-target="#tab1" translate>label.auditLog</a>
+                                               data-target="#tab" translate>label.auditLog</a>
                                         </li>
                                     </ul>
                                 </div>
                                 <div class="tab-content p-a">
-                                    <div class="tab-pane animated fadeIn active" id="tab1">
+                                    <div class="tab-pane animated fadeIn active" id="tab">
                                         <div class="row">
                                             <div class="table-responsive" resizable r-directions="['bottom']"
                                                  r-height="250">
@@ -236,7 +238,7 @@
                                                         <th translate>label.created</th>
                                                         <th translate>label.account</th>
                                                         <th translate>label.request</th>
-                                                        <th translate>label.order</th>
+                                                        <th translate>label.calendar</th>
                                                         <th translate>label.comment</th>
                                                         <th translate>label.timeSpend</th>
                                                         <th translate>label.ticketLink</th>
@@ -256,7 +258,7 @@
 
                                                         <td><span ng-bind="auditLog.account"></span></td>
                                                         <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td><span ng-bind="auditLog.orderId"></span></td>
+                                                        <td><span ng-bind="auditLog.calendar"></span></td>
                                                         <td><span ng-bind="auditLog.comment"></span></td>
                                                         <td>
                                                             <span ng-if="auditLog.timeSpent">

@@ -80,16 +80,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12 m-b">
+                    <div class="col-md-12 m-b-sm">
 
                         <button ng-if="permission.Calendar.edit.assign.runtime" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="assignCalendar()" translate>button.assignWorkingDayCalendar
                         </button>
                         <button ng-if="permission.Calendar.edit.assign.nonworking" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="assignHolidayCalendar()" translate>button.assignNonWorkingDayCalendar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-grey m-r-sm"
-                                ng-click="showScheduleTab()" translate>label.schedule
                         </button>
                         <button type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="createNewRunTime()" translate>button.addNewFrequency
@@ -103,9 +100,14 @@
                         <button ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
-<!--                        <button type="button" class="btn btn-sm btn-grey"
+                        <button type="button" class="btn btn-sm btn-grey"
                                 ng-click="planFromRuntime()" translate>button.showPlanned
-                        </button>-->
+                        </button>
+                    </div>
+                    <div class="col-md-12 m-b">
+                        <button type="button" class="btn btn-sm btn-grey m-r-sm"
+                                ng-click="showScheduleTab()" translate>label.schedule
+                        </button>
                     </div>
                     <div class="col-md-6" ng-class="{'col-md-12': !editor.editXml}">
                         <div class="form-group row">

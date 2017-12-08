@@ -6247,8 +6247,7 @@
         }
 
         function parseProcessExecuted(regex, obj) {
-            var fromDate;
-            var toDate;
+            var fromDate, toDate, date, arr;
 
             if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
@@ -6268,26 +6267,26 @@
                 fromDate = new Date();
                 toDate = new Date();
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-               var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
             } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                var date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                var arr = date[0].split('to');
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
@@ -7082,6 +7081,7 @@
                 vm.jobChainSearch = {};
                 jobChainSearch = false;
             } else {
+                vm.yadeSearch = {};
                 yadeSearch = false;
             }
             if (form)
@@ -7187,17 +7187,30 @@
              });
              }*/
 
-            if (vm.selectedFiltered3.regex) {
-                obj.regex = vm.selectedFiltered3.regex;
-            }
             if (vm.selectedFiltered3.state && vm.selectedFiltered3.state.length > 0) {
-                obj.historyStates = vm.selectedFiltered3.state;
+                obj.states = vm.selectedFiltered3.state;
             }
-            if (vm.selectedFiltered3.paths && vm.selectedFiltered3.paths.length > 0) {
-                obj.folders = [];
-                angular.forEach(vm.selectedFiltered3.paths, function (value) {
-                    obj.folders.push({folder: value, recursive: true});
-                })
+
+            if (vm.selectedFiltered3.operations && vm.selectedFiltered3.operations.length > 0) {
+                obj.operations = vm.selectedFiltered3.operations;
+            }
+
+            if (vm.selectedFiltered3.protocol) {
+                obj.protocol = vm.selectedFiltered3.protocol;
+            }
+
+            if (vm.selectedFiltered3.mandator) {
+                obj.mandator = vm.selectedFiltered3.mandator;
+            }
+
+            if (vm.selectedFiltered3.sourceHost) {
+                obj.sources = vm.selectedFiltered3.sourceHost;
+            }
+            if (vm.selectedFiltered3.targetHost) {
+                obj.targets = vm.selectedFiltered3.targetHost;
+            }
+            if (vm.selectedFiltered3.profileId) {
+                obj.profiles = vm.selectedFiltered3.profileId;
             }
             /*if (vm.selectedFiltered3.jobs && vm.selectedFiltered3.jobs.length > 0) {
              obj.jobs = [];
@@ -7257,7 +7270,7 @@
             value.show = true;
             var ids=[];
             ids.push(value.id)
-            YadeService.files({transferIds : ids}).then(function(res){
+            YadeService.files({transferIds: ids,jobschedulerId:value.jobschedulerId || vm.schedulerIds.selected}).then(function (res) {
                 value.files = res.files
             })
         };
@@ -7333,12 +7346,12 @@
 
         function isCustomizationSelected3(flag) {
             if (flag) {
-                vm.temp_filter3.historyStates = angular.copy(vm.yade.filter.historyStates);
+                vm.temp_filter3.states = angular.copy(vm.yade.filter.historyStates);
                 vm.temp_filter3.date = angular.copy(vm.yade.filter.date);
                 vm.yade.filter.historyStates = '';
                 vm.yade.filter.date = '';
             } else {
-                if (vm.temp_filter3.historyStates) {
+                if (vm.temp_filter3.states) {
                     vm.task.filter.historyStates = angular.copy(vm.temp_filter3.historyStates);
                     vm.task.filter.date = angular.copy(vm.temp_filter3.date);
                 } else {
@@ -7366,7 +7379,7 @@
                 obj.name = vm.jobChainSearch.name;
                 obj.planned = vm.jobChainSearch.planned;
             }
-            else {
+            else if (vm.jobChainSearch.name) {
                 configObj.name = vm.jobSearch.name;
                 obj.regex = vm.jobSearch.regex;
                 obj.paths = vm.jobSearch.paths;
@@ -8305,70 +8318,79 @@
                 vm.init();
         };
 
+
+        function updateHistoryAfterEvent() {
+            var filter = {};
+            isLoaded = false;
+            if (vm.historyFilters.type == 'jobChain') {
+
+                filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
+
+                if (vm.selectedFiltered1) {
+                    filter = orderParseDate(filter);
+                } else {
+                    filter = setOrderDateRange(filter);
+                    if (vm.order.filter.historyStates != 'all') {
+                        filter.historyStates = [];
+                        filter.historyStates.push(vm.order.filter.historyStates);
+                    }
+                }
+                filter.limit = parseInt(vm.userPreferences.maxRecords);
+                if (jobChainSearch) {
+                    vm.search(true);
+                } else {
+                    filter.timeZone = vm.userPreferences.zone;
+                    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                        delete filter['timeZone']
+                    }
+                    OrderService.histories(filter).then(function (res) {
+                        vm.historys = res.history;
+                        setDuration(vm.historys);
+                        isLoaded = true;
+                    }, function () {
+                        isLoaded = true;
+                    });
+                }
+            } else if (vm.historyFilters.type == 'job') {
+
+                filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
+                if (vm.selectedFiltered2) {
+                    filter = jobParseDate(filter);
+                } else {
+                    filter = setTaskDateRange(filter);
+                    if (vm.task.filter.historyStates != 'all') {
+                        filter.historyStates = [];
+                        filter.historyStates.push(vm.task.filter.historyStates);
+                    }
+                }
+                filter.limit = parseInt(vm.userPreferences.maxRecords);
+                if (jobSearch) {
+                    vm.search(true);
+                } else {
+                    filter.timeZone = vm.userPreferences.zone;
+                    if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                        delete filter['timeZone']
+                    }
+                    TaskService.histories(filter).then(function (res) {
+                        vm.jobHistorys = res.history;
+                        setDuration(vm.jobHistorys);
+                        isLoaded = true;
+                    }, function () {
+                        isLoaded = true;
+                    });
+                }
+            }
+        }
+
         vm.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots) {
                 for (var i = 0; i <= vm.events[0].eventSnapshots.length - 1; i++) {
                     if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedOrder' && isLoaded) {
                         isLoaded = false;
-                        var filter = {};
-                        filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
-
-                        if (vm.selectedFiltered1) {
-                            filter = orderParseDate(filter);
-                        } else {
-                            filter = setOrderDateRange(filter);
-                            if (vm.order.filter.historyStates != 'all') {
-                                filter.historyStates = [];
-                                filter.historyStates.push(vm.order.filter.historyStates);
-                            }
-                        }
-                        filter.limit = parseInt(vm.userPreferences.maxRecords);
-                        if (jobChainSearch) {
-                            vm.search(true);
-                        } else {
-                            filter.timeZone = vm.userPreferences.zone;
-                            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                                delete filter['timeZone']
-                            }
-                            OrderService.histories(filter).then(function (res) {
-                                vm.historys = res.history;
-                                setDuration(vm.historys);
-                                isLoaded = true;
-                            }, function () {
-                                isLoaded = true;
-                            });
-                        }
-
+                        updateHistoryAfterEvent();
                         break;
                     } else if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedJob' && isLoaded) {
-                        isLoaded = false;
-                        var filter = {};
-                        filter.jobschedulerId = vm.historyView.current == true ? vm.schedulerIds.selected : '';
-                        if (vm.selectedFiltered2) {
-                            filter = jobParseDate(filter);
-                        } else {
-                            filter = setTaskDateRange(filter);
-                            if (vm.task.filter.historyStates != 'all') {
-                                filter.historyStates = [];
-                                filter.historyStates.push(vm.task.filter.historyStates);
-                            }
-                        }
-                        filter.limit = parseInt(vm.userPreferences.maxRecords);
-                        if (jobSearch) {
-                            vm.search(true);
-                        } else {
-                            filter.timeZone = vm.userPreferences.zone;
-                            if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
-                                delete filter['timeZone']
-                            }
-                            TaskService.histories(filter).then(function (res) {
-                                vm.jobHistorys = res.history;
-                                setDuration(vm.jobHistorys);
-                                isLoaded = true;
-                            }, function () {
-                                isLoaded = true;
-                            });
-                        }
+                        updateHistoryAfterEvent();
                         break;
                     }
                 }
@@ -8382,7 +8404,9 @@
                 }
             })
         }
-
+        vm.$on('resetViewDate', function () {
+            updateHistoryAfterEvent();
+        });
         $scope.$on('$destroy', function () {
             watcher6();
             watcher7();

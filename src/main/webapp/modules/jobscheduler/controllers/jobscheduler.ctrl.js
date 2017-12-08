@@ -1314,7 +1314,7 @@
                     insertCalendar(value, x);
             });
         }
-        var obj1={};
+
         function getExpandTreeForUpdates1(data) {
             if (data.selected1) {
                 obj1.folders.push({folder: data.path, recursive: false});
@@ -1514,8 +1514,11 @@
         };
 
         function onLoadFile(event) {
-            vm.fileContentCalendars = JSON.parse(event.target.result);
+            var data= JSON.parse(event.target.result);
             var paths =[];
+            if(data){
+                vm.fileContentCalendars =data.calendars;
+            }
             if(angular.isArray(vm.fileContentCalendars)){
                 for(var i =0; i< vm.fileContentCalendars.length;i++){
                     if(vm.fileContentCalendars[i].path)
@@ -1529,6 +1532,7 @@
                     title: gettextCatalog.getString("message.notValidCalendarFile"),
                     timeout: 10000
                 });
+                uploader.queue[0].remove();
                 return;
             }
             var obj = {};
@@ -1574,6 +1578,8 @@
         });
 
         vm.importCalendar = function () {
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
             var modalInstance1 = $uibModal.open({
                 templateUrl: 'modules/core/template/import-calendar-dialog.html',
                 controller: 'DialogCtrl',
@@ -1596,12 +1602,27 @@
                      delete vm.importCalendarObj.calendars[i]['isExit'];
                  }
              }
+            vm.importCalendarObj.auditLog = {};
+            if (vm.comments.comment) {
+                 vm.importCalendarObj.auditLog.comment = vm.comments.comment;
+            }
+
+            if (vm.comments.timeSpent) {
+                 vm.importCalendarObj.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                 vm.importCalendarObj.auditLog.ticketLink = vm.comments.ticketLink;
+            }
             CalendarService.import(vm.importCalendarObj).then(function (res) {
                 uploader.queue[0].remove();
                 vm.importCalendarObj.calendars = [];
+                vm.importCalendarObj.auditLog = {};
                 initCalendarTree();
             }, function(){
+uploader.queue[0].remove();
                 vm.importCalendarObj.calendars = [];
+                vm.importCalendarObj.auditLog = {};
             });
         }
 
@@ -1796,7 +1817,8 @@
             var x2js = new X2JS();
 
             var x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = vm.sch._substitute;
+            x.schedule._substitute = schedule.path;
+
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
             schedules.calendars = vm.schedule.calendars;
 
@@ -1830,16 +1852,7 @@
             vm.scheduleAction = undefined;
 
 
-            ScheduleService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                schedule: schedule.path
-            }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.tempXML = vm.runTimes.content;
-                  //  vm.calendars = res.calendars;
-                }
+         
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/add-substitute-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
@@ -1852,7 +1865,7 @@
                     createSchedule(schedule);
                 }, function () {
 
-                });
+               
             });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
@@ -3049,7 +3062,7 @@
             var x2js = new X2JS();
 
             var x = x2js.xml_str2json(schedule.runTime);
-            x.schedule._substitute = vm.sch._substitute;
+            x.schedule._substitute = schedule.path;
             schedules.runTime = x2js.json2xml_str(x).replace(/,/g, ' ');
             schedules.calendars = vm.schedule.calendars;
 
@@ -3083,17 +3096,7 @@
             vm.scheduleAction = undefined;
 
 
-            ScheduleService.getRunTime({
-                jobschedulerId: $scope.schedulerIds.selected,
-                schedule: schedule.path
-            }).then(function (res) {
-                if (res.configuration) {
-                    vm.runTimes = res.configuration;
-                    vm.runTimes.content = vm.runTimes.content.xml;
-                    vm.tempXML = vm.runTimes.content;
-                   // vm.calendars = res.calendars;
-                }
-
+         
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/add-substitute-dialog.html',
                     controller: 'RuntimeEditorDialogCtrl',
@@ -3107,7 +3110,7 @@
                 }, function () {
 
                 });
-            });
+         
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = [];
@@ -5065,9 +5068,7 @@
             })
         }
 
-        vm.$on('resetDailyPlanDate', function () {
-            vm.getPlans();
-        });
+      
         function setDateRange() {
 
             if (vm.dailyPlanFilters.filter.range == 'today' || !vm.dailyPlanFilters.filter.range) {
@@ -6212,6 +6213,10 @@
                 }
             }
         };
+        vm.$on('resetViewDate', function () {
+         
+            vm.getPlansByEvents();
+        });
 
         var isLoaded = true;
         vm.$on('event-started', function () {

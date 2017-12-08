@@ -45,10 +45,11 @@
                                 <div class="btn-group dropdown pull-right abt-dropdown ">
                                     <a href class=" more-option text-black-lt" data-toggle="dropdown"><i class="text fa fa-ellipsis-h"></i></a>
                                     <div class="dropdown-menu dropdown-ac dropdown-more">
-                                        <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
-                                           ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.addSubstitute}" ng-click="substitute(schedule)" translate>button.addSubstitute</a>
                                         <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)" class="hide dropdown-item"
+                                           ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                         <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
@@ -163,12 +164,13 @@
                                                         class="fa fa-ellipsis-h"></i></button>
 
                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                    <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
-                                       class="hide dropdown-item"
-                                       ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                     <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.addSubstitute}" ng-click="substitute(schedule)"
                                        translate>button.addSubstitute</a>
                                     <a class="hide dropdown-item" ng-class="{show:permission.Schedule.change.editContent}" ng-click="editSchedule(schedule)" translate>button.editSchedule</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a ng-click="showConfiguration('schedule',schedule.path,schedule.name)"
+                                       class="hide dropdown-item"
+                                       ng-class="{show:permission.Schedule.view.configuration}" translate>button.showConfiguration</a>
                                     <a class="dropdown-item" ng-click="copyLinkToObject('schedule',schedule.path)" translate>button.copyLinkToObject</a>
                                 </div>
                             </div>

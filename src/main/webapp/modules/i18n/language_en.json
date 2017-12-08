@@ -1209,5 +1209,6 @@
   "label.exist": "exist",
   "message.readingContentOfFile": "Reading content of file",
   "message.invalidFileExtension": "extension is not allowed",
-  "message.notValidCalendarFile": "Not a valid Calendar file"
+  "message.notValidCalendarFile": "Not a valid Calendar file",
+  "message.noFilesFound": "no transfer files found"
 }
