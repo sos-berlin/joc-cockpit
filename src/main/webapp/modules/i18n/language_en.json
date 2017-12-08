@@ -1206,9 +1206,9 @@
   "button.import": "Import",
   "label.operation": "Operation",
   "label.jumpHost": "Jump Host",
-  "label.exist": "exist",
+  "label.exist": "object already exists",
   "message.readingContentOfFile": "Reading content of file",
   "message.invalidFileExtension": "extension is not allowed",
   "message.notValidCalendarFile": "Not a valid Calendar file",
-  "message.noFilesFound": "no transfer files found"
+  "message.noFilesFound": "no files found from File Transfer"
 }
