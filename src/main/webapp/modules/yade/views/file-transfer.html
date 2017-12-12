@@ -12,16 +12,16 @@
                     </label>
                     <div class="show-block">
                         <div class="btn-group m-l-sm hidden-btn-group" >
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadHistory()"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='all'}" translate>button.allStatus
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'" ng-click="loadHistory()"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='SUCCESSFUL'}" translate>button.successful
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'" ng-click="loadHistory()"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='FAILED'}" translate>button.failed
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'" ng-click="loadHistory()"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE'}" translate>button.incomplete
                             </button>
                         </div>
@@ -43,44 +43,44 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='all'}" translate>button.all
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='today'}" translate>button.today
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-1h'}" translate>button.last1
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-12h'"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-12h'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-12h'}" translate>button.last12
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
+                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-1d'}" translate>button.last24
                             </button>
-                             <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
+                             <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-1w'}" translate>button.lastWeak
                             </button>
                         </div>
                         <div class="btn-group dropdown hidden-dropdown">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
                                         ng-class="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.all
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
                                    ng-class="{'btn-primary': yadeFilters.filter.date=='today', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.today
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
                                         ng-class="{'btn-primary': yadeFilters.filter.date=='-1h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last1
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadYadeFiles()"
                                         ng-class="{'btn-primary': yadeFilters.filter.date=='-12h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last12
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
                                         ng-class="{'btn-primary': yadeFilters.filter.date=='-1d', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last24
                                 </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
+                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
                                         ng-class="{'btn-primary': yadeFilters.filter.date=='-1w', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
@@ -88,7 +88,7 @@
                         <div class="btn-group dropdown m-r-sm">
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered3.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered3.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="advanceFilter1()" translate>label.createFilter</a>
+                                <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
                                 <a class="dropdown-item" href ng-click="editFilters()" ng-if="yadeHistoryFilterList.length>0" translate>label.editExistingFilters</a>
                                 <div class="dropdown-divider" ng-if="yadeHistoryFilterList.length>0"></div>
                                 <a class="dropdown-item" ng-class="{orange: (savedYadeHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in yadeHistoryFilterList | orderBy: 'name'">
@@ -184,7 +184,7 @@
 
                             <div class=" col-sm-6"
                                  ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                <input valid-history-filter-regex type="text" name="planned" class="form-control"
+                                <input valid-yade-filter-regex type="text" name="planned" class="form-control"
                                        placeholder="{{'placeholder.processExecuted' | translate}}"
                                        ng-model="yadeSearch.planned">
 
@@ -348,70 +348,21 @@
                     </form>
                 </div>
         </div>
-        <div class="m-t-sm box p-a" >
+        <div class="m-t-sm box p-a" ng-if="isLoading">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="yade">
                         <thead>
                             <tr>
-                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
-                                <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
+                                <th width="30" ng-if="permission.Event.delete">
+                                    <label class="md-check lg-check">
+                                        <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-click="checkAllFileTransfersFnc()"><i class="primary"></i>
+                                    </label>
                                 </th>
+                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('status')"><a><span translate>label.status</span>
                                     <i ng-show="yadeFilters.filter.sortBy == 'status' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
                                     <i ng-show="yadeFilters.filter.sortBy == 'status' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('sourceHost')"><a><span translate>label.sourceHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'sourceHost' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'sourceHost' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('jumpHost')"><a><span translate>label.jumpHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jumpHost' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jumpHost' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('targetHost')"><a><span translate>label.targetHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'targetHost' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'targetHost' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('jobChain')"><a><span translate>label.jobChain</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobChain' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobChain' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('job')"><a><span translate>label.job</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'job' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'job' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('order')"><a><span translate>label.order</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'order' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'order' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('protocol')"><a><span translate>label.protocol</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'protocol' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'protocol' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
@@ -420,96 +371,205 @@
                                     <i ng-show="yadeFilters.filter.sortBy == 'mandator' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-
-                                <th ng-click="sortBy('startTime')"><a><span translate>label.startTime</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'startTime' && !yadeFilters.sortReverse"
+                                <th ng-if="!yadeView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'startTime' && yadeFilters.sortReverse"
+                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
-                                <th ng-click="sortBy('endTime')"><a><span translate>label.endTime</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'endTime' && !yadeFilters.sortReverse"
+                                <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'endTime' && yadeFilters.sortReverse"
+                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('source.host')"><a><span translate>label.sourceHost</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'source.host' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'source.host' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('target.host')"><a><span translate>label.targetHost</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'target.host' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'target.host' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('target.protocol')"><a><span translate>label.targetProtocol</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('start')"><a><span translate>label.startTime</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'start' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'start' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('end')"><a><span translate>label.endTime</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'end' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'end' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
+                                <th ng-click="sortBy('duration')">
+                                    <a><span translate>label.duration</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'duration' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                        <tbody ng-repeat="transfer in filtered2 = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
+                            <td ng-if="permission.Event.delete" >
+                                <label class="md-check">
+                                    <input type="checkbox" data-checklist-model="object.fileTransfers"
+                                           data-checklist-value="transfer" data-checklist-comparator=".id"><i class="primary"></i>
+                                </label>
+                            </td>
                             <td class="tableexport-ignore">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                        <a class="dropdown-item"
-                                           ng-click="addOrderToIgnoreList(transfer.orderId,transfer.jobChain)"
+                                        <a ng-if="permission.Order.execute.start" class="dropdown-item"
+                                           ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
+                                         <a class="dropdown-item"
+                                               ng-click="copyLinkToObject('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
                             </td>
-                            <td ng-if="!historyView.current" >
-                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                 <span ng-bind="history.jobschedulerId"></span>
-                                 <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
-                             </td>
                             <td class="nowrap" >
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
-                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
+                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
                                 <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-bind="transfer._operation"></td>
-                            <td  ng-bind="transfer.source.host"></td>
-                            <td  ng-bind="transfer.jump.host"></td>
-                            <td  ng-bind="transfer.target.host"></td>
-                            <td >
-                                <span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span>
-                            </td>
-                            <td >
-                                <span ng-click="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.job"></span>
-                            </td>
-                            <td ><span ng-click="showOrderLink(transfer.orderId);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
-                            <td ng-bind="transfer.protocol"></td>
                             <td ng-bind="transfer.mandator"></td>
+                            <td ng-if="!yadeView.current" >
+                                 <span ng-bind="yade.jobschedulerId"></span>
+                                 <span ng-if="!yade.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
+                             </td>
+                            <td ng-bind="transfer._operation"></td>
+                            <td ng-bind="transfer.source.host"></td>
+                            <td ng-bind="transfer.target.host"></td>
+                            <td ng-bind="transfer.target.protocol"></td>
+                            <td ng-bind="transfer.numOfFiles"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>
                             <td ng-bind="transfer.end | stringToDate"></td>
+                            <td ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                         <td colspan="9" >
-                             <table class="table m-a-0">
-                                 <thead>
-                                 <tr class="tableexport-ignore">
-                                     <th translate>label.file</th>
-                                     <th translate>label.sourcePath</th>
-                                     <th translate>label.targetPath</th>
-                                     <th translate>label.status</th>
-                                     <th translate>label.size</th>
-                                     <th translate>label.duration</th>
-                                     <th translate>label.progress</th>
-                                 </tr>
-                                 </thead>
-                                 <tbody>
-                                 <tr ng-repeat="file in transfer.files" class="cursor">
-                                     <td ng-click="showLogWindow(null,file)">{{file.file}}</td>
-                                     <td ng-click="showLogWindow(null,file)">{{file.sourcePath}}</td>
-                                     <td ng-click="showLogWindow(null,file)">{{file.targetPath}}</td>
-                                     <td ng-click="showLogWindow(null,file)"><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
-                                     <td ng-click="showLogWindow(null,file)">{{file.size | byteToSize}}</td>
-                                     <td ng-click="showLogWindow(null,file)">{{file.startTime | duration:file.endTime}}</td>
-                                     <td ng-click="showLogWindow(null,file)">{{file.progress}}</td>
-                                 </tr>
-                                 </tbody>
-                             </table>
-                             <div ng-if="files.length==0" translate>message.noDataMatched</div>
-                         </td>
-                     </tr>
+                            <td></td>
+                            <td colspan="11" >
+                                 <table class="table m-a-0">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th translate>label.sourceHostUser</th>
+                                         <th translate>label.sourceHostPort</th>
+                                         <th translate>label.sourceHostProtocol</th>
+                                         <th translate>label.targetHostUser</th>
+                                         <th translate>label.targetHostPort</th>
+                                         <th translate>label.targetHostProtocol</th>
+                                         <th translate>label.jumpHost</th>
+                                         <th translate>label.jumpUser</th>
+                                         <th translate>label.jumpPort</th>
+                                         <th translate>label.jumpProtocol</th>
+                                         <th translate>label.jobChain</th>
+                                         <th translate>label.job</th>
+                                         <th translate>label.order</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr ng-repeat="file in transfer.files">
+                                        <td  ng-bind="transfer.source.account"></td>
+                                        <td  ng-bind="transfer.source.port"></td>
+                                        <td  ng-bind="transfer.source.protocol"></td>
+                                        <td  ng-bind="transfer.target.account"></td>
+                                        <td  ng-bind="transfer.target.port"></td>
+                                        <td  ng-bind="transfer.target.protocol"></td>
+                                        <td  ng-bind="transfer.jump.host"></td>
+                                        <td  ng-bind="transfer.jump.account"></td>
+                                        <td  ng-bind="transfer.jump.port"></td>
+                                        <td  ng-bind="transfer.jump.protocol"></td>
+                                        <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
+                                        <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                             </td>
+                        </tr>
+                        <tr class="tableexport-ignore" ng-show="transfer.show">
+                            <td></td>
+                            <td colspan="12" >
+                                 <table class="table m-a-0">
+                                     <thead>
+                                     <tr class="tableexport-ignore">
+                                         <th width="30" ng-if="permission.Event.delete">
+                                            <label class="md-check lg-check">
+                                                <input type="checkbox" ng-model="checkAllFiles.checkbox" ng-click="checkAllFilesFnc(transfer)"><i class="primary"></i>
+                                            </label>
+                                        </th>
+                                         <th ng-if="permission.Order.execute.start" translate>label.action</th>
+                                         <th translate>label.sourceFileName</th>
+                                         <th translate>label.sourceFilePath</th>
+                                         <th translate>label.targetFileName</th>
+                                         <th translate>label.targetFilePath</th>
+                                         <th translate>label.status</th>
+                                         <th translate>label.lastErrorMessage</th>
+                                         <th translate>label.size</th>
+                                         <th translate>label.integrityHash</th>
+                                     </tr>
+                                     </thead>
+                                     <tbody>
+                                     <tr ng-repeat="file in transfer.files">
+                                         <td ng-if="permission.Event.delete" >
+                                            <label class="md-check">
+                                                <input type="checkbox" data-checklist-model="object.files"
+                                                       data-checklist-value="file"><i class="primary"></i>
+                                            </label>
+                                        </td>
+                                         <td ng-if="permission.Order.execute.start" class="tableexport-ignore">
+                                            <div class="btn-group dropdown"  >
+                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
+                                                        class="fa fa-ellipsis-h"></i></button>
+                                                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                                    <a  class="dropdown-item"
+                                                       ng-click="restartFile(transfer, file)"
+                                                       translate>button.restart</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                         <td>{{file.sourceName}}</td>
+                                         <td>{{file.sourcePath}}</td>
+                                         <td>{{file.targetName}}</td>
+                                         <td>{{file.targetPath}}</td>
+                                         <td><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
+                                         <td>{{file.error}}</td>
+                                         <td>{{file.size | byteToSize}}</td>
+                                         <td>{{file.integrityHash}}</td>
+                                     </tr>
+                                     </tbody>
+                                 </table>
+                                 <div ng-if="transfer.files.length==0" translate>message.noFileFound</div>
+                             </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered2.length > 10}" ng-if="filtered2.length >0"><span translate>label.total</span> {{filtered2.length}}
-                        <span translate ng-if="filtered2.length >1">label.historiesFound</span>
-                        <span translate ng-if="filtered2.length ==1">label.historyFound</span>
+                        <span translate ng-if="filtered2.length >1">label.fileTransfersFound</span>
+                        <span translate ng-if="filtered2.length ==1">label.fileTransferFound</span>
                     </div>
                     <ul ng-show="filtered2.length > userPreferences.entryPerPage" uib-pagination total-items="filtered2.length" ng-model="yadeFilters.currentPage" items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right" max-size="5" boundary-link-numbers="true" rotate="false" previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
                     <div class="pull-left" ng-show="filtered2.length > 10">
@@ -531,9 +591,12 @@
                                 </button>
                             </div>
                     </div>
-                    <div ng-if="isLoading && yadeHistorys.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
-                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && yadeHistorys.length !==0)}" translate>message.noDataMatched</div>
+                    <div ng-if="isLoading && fileTransfers.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noFilesFound</div>
+                    <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered2.length===0 && fileTransfers.length !==0)}" translate>message.noDataMatched</div>
                 </div>
             </div>
+        <div ng-if="!isLoading" class="text-center m-t-lg" >
+            <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+        </div>
     </div>
 </div>

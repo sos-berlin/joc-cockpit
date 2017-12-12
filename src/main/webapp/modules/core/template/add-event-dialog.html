@@ -1,0 +1,74 @@
+<div ng-click="refreshSession()">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
+        <h4 class="modal-title"><span translate> label.addNewEvent</span></h4>
+    </div>
+     <form name="form" ng-submit="ok()" novalidate>
+        <div class="modal-body p-a">
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.eventId</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" placeholder="{{'placeholder.eventId' | translate}}"  ng-model="event.eventId">
+                </div>
+            </div>
+
+            <div class="form-group row hide" ng-class="{'show': display}">
+            <label class="col-sm-4 " translate>label.selectComments</label>
+            <div class=" col-sm-8">
+                <div>
+                    <label class="md-check w">
+                        <input type="radio" name="radio1" ng-model="comments.radio" value="predefined">
+                        <i class="primary"></i> <span translate>label.predefined</span>
+                    </label>
+                    <label class="md-check  w">
+                        <input type="radio" name="radio1" ng-model="comments.radio" value="new">
+                        <i class="primary"></i> <span translate>label.individual</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+            <div class="form-group row hide" ng-if="comments.radio=='predefined'" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.selectComment</label>
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="comments.comment" ng-change="error = false">
+                        <option value="" selected translate>label.selectPredefinedReason</option>
+                        <option ng-repeat="list in predefinedMessageList" value="{{list}}">{{list}}</option>
+                    </select>
+                    <div class="help-block text-danger" ng-if="error">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row hide" ng-if="comments.radio=='new'" ng-class="{ 'has-error' : error,'show': display }">
+                <label class="col-sm-4 " translate>label.comment</label>
+                <div class=" col-sm-6">
+                    <textarea rows="3" class="form-control" name="comment" ng-model="comments.comment" ng-attr-placeholder="{{'placeholder.enterComment' | translate}}" ng-focus="error = false"></textarea>
+                    <div class="help-block text-danger" ng-if="error">
+                        <div translate>message.requiredError</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row hide" ng-class="{'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.timeSpend</label>
+                <div class="col-sm-6">
+                    <input type="text" ng-pattern="/^(\d)+$/" class="form-control" placeholder="{{'placeholder.timeSpend' | translate}}"  ng-model="comments.timeSpent">
+                </div>
+            </div>
+            <div class="form-group row hide" ng-class="{'show': display }">
+                <label class="col-sm-4 form-control-label" translate>label.ticketLink</label>
+                <div class="col-sm-6">
+                    <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
+                </div>
+            </div>
+
+            <div class="row m-t-md">
+                <div class="b-t"></div>
+            </div>
+            <div class="form-group m-t m-b-xs">
+
+                <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>button.submit</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel()" translate>button.cancel</button>
+            </div>
+        </div>
+     </form>
+</div>

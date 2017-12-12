@@ -221,6 +221,7 @@
                 preferences.historyView = 'current';
                 preferences.adtLog = 'current';
                 preferences.agentTask = 'current';
+                preferences.fileTransfer = 'current';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
@@ -797,8 +798,17 @@
                     vm.resourceFilters.state = 'calendars';
                 }
             }
-            if (vm.resourceFilters.state = 'calendars' && vm.permission.Calendar.view.status) {
-                $state.go('app.resources.calendars');
+            if (vm.resourceFilters.state == 'calendars') {
+                if (vm.permission.Calendar.view.status) {
+                    $state.go('app.resources.calendars');
+                    return;
+                } else {
+                    vm.resourceFilters.state = 'events';
+                }
+
+            }
+            if (vm.resourceFilters.state == 'events' && vm.permission.Event.view.status) {
+                $state.go('app.resources.events');
             }
         };
 
@@ -13094,7 +13104,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
 
     $scope.$on('calendar-editor', function (event, calendar) {
 
-        vm.filterTree1 = [];
+        
         vm.filter = {};
         vm.object.calendars = [];
         vm.filter.type = 'WORKING_DAYS';

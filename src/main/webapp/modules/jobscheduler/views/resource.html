@@ -252,22 +252,22 @@
                                 <div class="btn-group dropdown hidden-dropdown">
                                     <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
                                     <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadHistory()"
+                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'all'" ng-click="loadAgentTasks()"
                                                 ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='all'}" translate>button.all
                                         </a>
-                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'today'"
+                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'today'"
                                                 ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='today'}" translate>button.today
                                         </a>
-                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1h'"
+                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'-1h'"
                                                 ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-1h'}" translate>button.last1
                                         </a>
-                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadHistory()"
+                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadAgentTasks()"
                                                 ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-12h'}" translate>button.last12
                                         </a>
-                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1d'"
+                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'-1d'"
                                                 ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-1d'}" translate>button.last24
                                         </a>
-                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadHistory()" uib-btn-radio="'-1w'"
+                                        <a class="dropdown-item" ng-model="agentJobExecutionFilters.filter.date" ng-click="loadAgentTasks()" uib-btn-radio="'-1w'"
                                                 ng-class="{'btn-primary': agentJobExecutionFilters.filter.date=='-1w'}" translate>button.lastWeak
                                         </a>
                                     </div>
@@ -276,7 +276,103 @@
                                         id="exportToExcelBtn" ng-click="exportToExcel()"><i>.</i></button>
                             </div>
                         </div>
-                        <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions'}"></toggle-view>
+                        <div class="hide" ng-class="{'show-block': resourceFilters.state=='events'}">
+                            <div class="inline" ng-class="{'hide':object.customEvents.length>0}">
+                                <div class="btn-group hidden-btn-group">
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis"
+                                            ng-model="eventFilters.filter.type" uib-btn-radio="'ALL'"
+                                            ng-click="loadEvents()"
+                                            ng-class="{'btn-primary': eventFilters.filter.type=='ALL'}" translate>
+                                        button.all
+                                    </button>
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis"
+                                            ng-model="eventFilters.filter.type" uib-btn-radio="'EXPIRED'"
+                                            ng-click="loadEvents()"
+                                            ng-class="{'btn-primary': eventFilters.filter.type=='EXPIRED'}" translate>
+                                        button.expired
+                                    </button>
+                                    <button class="btn btn-grey btn-sm button-group-ellipsis"
+                                            ng-model="eventFilters.filter.type" uib-btn-radio="'ACTIVE'"
+                                            ng-click="loadEvents()"
+                                            ng-class="{'btn-primary': eventFilters.filter.type=='ACTIVE'}" translate>
+                                        button.active
+                                    </button>
+                                </div>
+                                <div class="btn-group dropdown hidden-dropdown">
+                                    <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown"
+                                            translate>label.state
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" ng-model="eventFilters.filter.type"
+                                           uib-btn-radio="'all'" ng-click="loadEvents()"
+                                           ng-class="{'btn-primary': eventFilters.filter.type=='ALL'}" translate>button.all
+                                        </a>
+                                        <a class="dropdown-item" ng-model="eventFilters.filter.type"
+                                           ng-click="loadEvents()" uib-btn-radio="'EXPIRED'"
+                                           ng-class="{'btn-primary': eventFilters.filter.type=='EXPIRED'}" translate>button.expired
+                                        </a>
+                                        <a class="dropdown-item" ng-model="eventFilters.filter.type"
+                                           ng-click="loadEvents()" uib-btn-radio="'ACTIVE'"
+                                           ng-class="{'btn-primary': eventFilters.filter.type=='ACTIVE'}" translate>button.active
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="btn-group dropdown">
+                                    <a class="btn btn-grey btn-sm m-l-sm" data-toggle="dropdown">{{'label.sortBy' |
+                                        translate}}
+                                            <span class="text-primary">
+                                                <span ng-show="eventFilters.filter.sortBy =='eventClass'">
+                                                    {{'label.eventClass' | translate}}
+                                                     <i ng-show="!eventFilters.reverse" class="fa fa-caret-up"></i>
+                                                    <i ng-show="eventFilters.reverse" class="fa fa-caret-down"></i>
+                                                </span>
+                                                <span ng-show="eventFilters.filter.sortBy =='eventStatus'">
+                                                    {{'label.eventStatus' | translate}}
+                                                      <i ng-show="!eventFilters.reverse" class="fa fa-caret-up"></i>
+                                                    <i ng-show="eventFilters.reverse" class="fa fa-caret-down"></i>
+                                                </span>
+                                            </span>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" href ng-click="sortByE('eventClass')" translate>label.name</a>
+                                        <a class="dropdown-item" href ng-click="sortByE('eventStatus')" translate>label.state</a>
+                                    </div>
+                                </div>
+                                <div class="btn-group dropdown">
+                                    <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle"
+                                            uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">
+                                        {{'label.filters' | translate}} <span class="text-primary"
+                                                                              ng-bind="selectedFiltered.name"></span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
+                                        <a class="dropdown-item" href ng-click="applyFilter()" translate>label.createFilter</a>
+                                        <a class="dropdown-item" href ng-click="editFilters()"
+                                           ng-if="jobFilterList.length>0" translate>label.editExistingFilters</a>
+
+                                        <div class="dropdown-divider" ng-if="jobFilterList.length>0"></div>
+                                        <a class="dropdown-item"
+                                           ng-class="{orange: savedJobFilter.selected == filter.id}"
+                                           ng-click="changeFilter(filter)"
+                                           ng-repeat="filter in jobFilterList | orderBy:'name'">
+                                            <span uib-tooltip="{{filter.account}}">{{filter.name}}</span> <i
+                                                ng-click="changeFilter();$event.stopPropagation();"
+                                                ng-if="savedJobFilter.selected == filter.id"
+                                                class="fa fa-times-circle-o remove"
+                                                uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}"
+                                                tooltip-placement="right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-if="permission.Event.execute.add" ng-click="addEvent()" translate>
+                                    button.addEvent
+                                </button>
+                            </div>
+                            <div class="hide" ng-class="{'show-block':object.customEvents.length>0}">
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="deleteAllEvents()"><i class="fa fa-trash"></i> {{'button.delete' | translate}}</button>
+                            </div>
+                        </div>
+                        <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions' || resourceFilters.state=='events'}"></toggle-view>
                     </div>
                     <div class="hide" ng-class="{'show-block':object.schedules.length>0}">
                         <button class="btn btn-grey btn-sm m-l-sm" ng-click="substituteAll()"><i class="fa fa-repeat"></i> {{'button.substitute' | translate}}</button>
@@ -303,7 +399,15 @@
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.agentJobExecution</span></span>
                     </a>
                 </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerUniversalAgent.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status)">
+                <li class="nav-item dropdown-separator" ng-if="permission.JobschedulerUniversalAgent.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Event.view.status || permission.Calendar.view.status)">
+                    <span class="separator"></span>
+                </li>
+                <li class="nav-item" ng-if="permission.Event.view.status">
+                    <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.events">
+                        <span class="nav-text text-dark p-b-sm"><span class="" translate>label.events</span></span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown-separator" ng-if="permission.Event.view.status && (permission.Lock.view.status || permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Calendar.view.status)">
                     <span class="separator"></span>
                 </li>
                 <li class="nav-item" ng-if="permission.Lock.view.status">
@@ -311,7 +415,7 @@
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.locks</span></span>
                     </a>
                 </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Lock.view.status && (permission.ProcessClass.view.status || permission.Schedule.view.status)">
+                <li class="nav-item dropdown-separator" ng-if="permission.Lock.view.status && (permission.ProcessClass.view.status || permission.Schedule.view.status || permission.Calendar.view.status)">
                     <span class="separator"></span>
                 </li>
                 <li class="nav-item" ng-if="permission.ProcessClass.view.status">
@@ -319,7 +423,7 @@
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.processClasses</span></span>
                     </a>
                 </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.ProcessClass.view.status && (permission.Schedule.view.status || permission.Calendar.view)">
+                <li class="nav-item dropdown-separator" ng-if="permission.ProcessClass.view.status && (permission.Schedule.view.status || permission.Calendar.view.status)">
                     <span class="separator"></span>
                 </li>
                 <li class="nav-item" ng-if="permission.Schedule.view.status">
@@ -327,10 +431,10 @@
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.schedules</span></span>
                     </a>
                 </li>
-                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view && permission.Schedule.view.status">
+                <li class="nav-item dropdown-separator" ng-if="permission.Calendar.view.status && permission.Schedule.view.status">
                     <span class="separator"></span>
                 </li>
-                <li class="nav-item" ng-if="permission.Calendar.view">
+                <li class="nav-item" ng-if="permission.Calendar.view.status">
                     <a class="nav-link" ui-sref-active="active" ui-sref="app.resources.calendars">
                         <span class="nav-text text-dark p-b-sm"><span class="" translate>label.calendars</span></span>
                     </a>
@@ -348,7 +452,7 @@
                 <span translate>button.collapseDetails</span>
             </button>
         </div>
-        <div class="col-md-4 text-right" ng-if="resourceFilters.state == 'agentJobExecutions'">
+        <div class="col-md-4 text-right" ng-if="resourceFilters.state == 'agentJobExecutions' || resourceFilters.state == 'events'">
            <div class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()" ng-show="!showSearchPanel">
                <span translate>button.advancedSearch</span><i class="fa fa-angle-down p-l-xs"></i>
            </div>

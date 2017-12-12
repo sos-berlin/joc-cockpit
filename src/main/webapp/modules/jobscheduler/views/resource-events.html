@@ -1,0 +1,220 @@
+<div>
+    <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
+        <div class="col-md-12">
+            <div class="box p-a m-b-xs m-t-xs">
+                <form name="form" ng-submit="search()" novalidate>
+                    <div class="form-group row m-t-sm" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
+                        <div class="col-sm-6">
+                            <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="eventSearch.from"
+                                   data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
+                                   bs-datepicker type="text">
+                            <input valid-time maxlength="8" ng-disabled="!eventSearch.from" class="form-control input-time m-l" ng-model="eventSearch.fromTime"
+                                   placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
+                            <a class="text-sm text-primary" ng-show="eventSearch.from || eventSearch.fromTime" ng-click="eventSearch.from='';eventSearch.fromTime=''; " translate>button.clear</a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
+
+                        <div class="col-sm-6">
+                            <input class="form-control input-date"
+                                   style="width: 225px;background-position: 200px"
+                                   ng-model="eventSearch.to" data-date-format="{{dataFormat}}"
+                                   data-autoclose="1"
+                                   placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                                   data-min-date="{{eventSearch.from}}" data-max-date="{{currentTime}}"
+                                   bs-datepicker type="text">
+                            <input valid-time maxlength="8" ng-disabled="!eventSearch.to"
+                                   class="form-control input-time m-l" ng-model="eventSearch.toTime"
+                                   placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                                   style="width: 175px;background-position: 150px">
+                            <a class="text-sm text-primary" ng-show="eventSearch.to || eventSearch.toTime"
+                               ng-click="eventSearch.to='';eventSearch.toTime=''; "
+                               translate>button.clear</a>
+                        </div>
+                    </div>
+                    <div class="form-group row" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
+                        <div class=" col-sm-6">
+                            <select class="form-control" ng-model="eventSearch.jobschedulerId">
+                                <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventId</label>
+                        <div class=" col-sm-6">
+                            <input type="text" class="form-control" ng-model="eventSearch.eventId">
+                        </div>
+                    </div>
+                    <div class="form-group row" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventClass</label>
+                        <div class=" col-sm-6">
+                            <input type="text" class="form-control" ng-model="eventSearch.eventClass">
+                        </div>
+                    </div>
+                    <div class="form-group row" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventExitCode</label>
+                        <div class=" col-sm-6">
+                            <input type="text" class="form-control" ng-model="eventSearch.eventExitCode">
+                        </div>
+                    </div>
+                    <div class="form-group row" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobs</label>
+                        <div class=" col-sm-6">
+                            <input type="text" class="form-control" ng-model="eventSearch.jobs">
+                        </div>
+                    </div>
+                    <div class="form-group row" >
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.orders</label>
+                        <div class=" col-sm-6">
+                            <input type="text" class="form-control" ng-model="eventSearch.orders">
+                        </div>
+                    </div>
+                    <div class="form-group m-t m-b-xs">
+                        <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                            button.search
+                        </button>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
+                            button.cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="hide" ng-class="{'show': isLoading}">
+        <div class="m-t-xs box p-a" >
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered" id="agentJobExecution">
+                    <thead>
+                    <tr>
+                        <th width="30" ng-if="permission.Event.execute.delete">
+                            <label class="md-check lg-check">
+                                <input type="checkbox" ng-model="checkAllEvent.checkbox" ng-click="checkAllEventFnc()"><i class="primary"></i>
+                            </label>
+                        </th>
+                        <th width="45"><span translate>label.action</span></th>
+                        <th ng-if="!eventFilters.current" ng-click="sortByE('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'jobschedulerId' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'jobschedulerId' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('eventId')"><a><span translate>label.eventId</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'eventId' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'eventId' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('job')"><a><span translate>label.job</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('jobChain')"><a><span translate>label.jobChain</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'jobChain' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'jobChain' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('orderId')"><a><span translate>label.orderId</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'orderId' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'orderId' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('expires')"><a><span translate>label.expires</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'expires' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'expires' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('remoteJobSchedulerHost')"><a><span translate>label.remoteJobSchedulerHost</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('remoteJobSchedulerPort')"><a><span translate>label.remoteJobSchedulerPort</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerPort' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerPort' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <tr ng-repeat="event in customEvents | orderBy:eventFilters.filter.sortBy:eventFilters.sortReverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                         <td ng-if="permission.Event.execute.delete" >
+                            <label class="md-check">
+                                <input type="checkbox" data-checklist-model="object.events"
+                                       data-checklist-value="event"><i class="primary"></i>
+                            </label>
+                        </td>
+                        <td>
+                             <div class="btn-group dropdown">
+                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                     <i class="fa fa-ellipsis-h"></i></button>
+                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                     <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteEvent(event)" translate>button.deleteEvent</a>
+                                 </div>
+                             </div>
+                         </td>
+                        <td ng-if="!eventFilters.current"><span ng-bind="event.jobschedulerId"></span></td>
+                        <td><span ng-bind="event.eventId"></span></td>
+                        <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)" ng-bind="event.jobChain"></a></td>
+                        <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
+                        <td><a class="text-hover-primary" ng-click="showOrderLink(event.orderId)" ng-bind="event.orderId"></a></td>
+                        <td><span ng-bind="event.expires"></span></td>
+                        <td><span ng-bind="event.remoteJobSchedulerHost"></span></td>
+                        <td><span ng-bind="event.remoteJobSchedulerPort"></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': customEvents.length > 10}"
+                     ng-if="customEvents.length >0"> {{customEvents.length}}
+                    <span translate ng-if="customEvents.length >1">label.customEventsFound</span>
+                    <span translate ng-if="customEvents.length ==1">label.customEventFound</span>.
+                    <span translate>label.totalNumberOfExecutions</span>: {{totalJobExecution}}
+                </div>
+                <ul ng-show="customEvents.length > userPreferences.entryPerPage" uib-pagination
+                    total-items="customEvents.length" ng-model="adtLog.currentPage"
+                    items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right"
+                    max-size="5" boundary-link-numbers="true" rotate="false"
+                    previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+                <div class="pull-left" ng-show="customEvents.length > 10">
+                    <div class="btn-group m-r-xxs">
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                uib-btn-radio="'10'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                uib-btn-radio="'25'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                uib-btn-radio="'50'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                uib-btn-radio="'100'"
+                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                        </button>
+                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                                uib-btn-radio="{{maxEntryPerPage}}"
+                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
+                            {{maxEntryPerPage}}
+                        </button>
+                    </div>
+                </div>
+                <div ng-if="isLoading && customEvents.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noEventsFound</div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="!isLoading" class="text-center m-t-lg">
+        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+    </div>
+</div>

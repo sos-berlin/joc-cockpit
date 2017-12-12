@@ -168,6 +168,12 @@
         tabs._resource.calendars.reverse = false;
         tabs._resource.calendars.currentPage = '1';
         tabs._resource.calendars.expand_to = [];
+        tabs._resource.events = {};
+        tabs._resource.events.filter = {};
+        tabs._resource.events.filter.type = 'ALL';
+        tabs._resource.events.filter.sortBy = 'name';
+        tabs._resource.events.reverse = false;
+        tabs._resource.events.currentPage = '1';
         tabs._resource.state = 'agent';
 
         tempTabs._jobChain = {};
@@ -324,6 +330,12 @@
         tempTabs._resource.calendars.reverse = false;
         tempTabs._resource.calendars.currentPage = '1';
         tempTabs._resource.calendars.expand_to = [];
+        tempTabs._resource.events = {};
+        tempTabs._resource.events.filter = {};
+        tempTabs._resource.events.filter.type = 'ALL';
+        tempTabs._resource.events.filter.sortBy = 'name';
+        tempTabs._resource.events.reverse = false;
+        tempTabs._resource.events.currentPage = '1';
         tempTabs._resource.state = 'agent';
 
         dashboard._dashboard = {};
@@ -405,26 +417,21 @@
             getJobChainTab: function () {
                 return tabs._jobChain;
             },
-
             getOrderTab: function () {
                 return tabs._order;
             },
-
             getOrderTab1: function () {
                 return tabs._order1;
             },
-
             getOrderDetailTab: function () {
                 return tabs._orderDetail;
             },
-
             getHistoryTab: function () {
                 return tabs._history;
             },
             getDashboardTab: function () {
                 return dashboard._dashboard;
             },
-
             getResourceTab: function () {
                 return tabs._resource;
             },
@@ -452,7 +459,7 @@
     SavedFilter.$inject = ['$window'];
     function SavedFilter($window) {
 
-        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'historyFilters', 'ignoreList', 'dailyPlanFilters'];
+        var props = ['jobChainFilters', 'orderFilters', 'jobFilters', 'yadeFilters','eventFilters','historyFilters', 'ignoreList', 'dailyPlanFilters'];
 
         var propsPrefix = '$SOS$';
 
@@ -490,7 +497,12 @@
         SavedFilter.prototype.setDailyPlan = function (dailyPlan) {
             this.dailyPlanFilters = JSON.stringify(dailyPlan);
         };
-
+        SavedFilter.prototype.setYade = function (yade) {
+            this.yadeFilters = JSON.stringify(yade);
+        };
+        SavedFilter.prototype.setEvent = function (event) {
+            this.eventFilters = JSON.stringify(event);
+        };
         SavedFilter.prototype.setIgnoreList = function (list) {
             this.ignoreList = JSON.stringify(list);
         };

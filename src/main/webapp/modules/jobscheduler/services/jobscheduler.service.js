@@ -10,7 +10,8 @@
         .service('ScheduleService', ScheduleService)
         .service('JobSchedulerService', JobSchedulerService)
         .service('DailyPlanService', DailyPlanService)
-        .service('CalendarService', CalendarService);
+        .service('CalendarService', CalendarService)
+        .service('EventService', EventService);
 
     ResourceService.$inject = ["$resource", "$q"];
     function ResourceService($resource, $q ) {
@@ -571,6 +572,42 @@
                 var deferred = $q.defer();
                 var Calendar = $resource('calendars/import');
                 Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            }
+        }
+    }
+
+    EventService.$inject = ["$resource", "$q"];
+    function EventService($resource, $q) {
+        return{
+            getEvents:function(filter){
+                var deferred = $q.defer();
+                var Event = $resource('events/custom');
+                Event.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            add:function(filter){
+                var deferred = $q.defer();
+                var Event = $resource('events/custom/add_event');
+                Event.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
+            delete:function(filter){
+                var deferred = $q.defer();
+                var Event = $resource('events/custom/delete_events');
+                Event.save(filter,function (res) {
                     deferred.resolve(res);
                 }, function (err) {
                     deferred.reject(err);

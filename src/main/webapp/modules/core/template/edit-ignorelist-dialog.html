@@ -12,20 +12,21 @@
                         <thead>
                         <tr>
                             <th>
-                                <span ng-if="historyFilters.type != 'job'">{{'label.order' | translate}}/{{'label.jobChain' | translate}}</span>
+                                <span ng-if="historyFilters.type == 'jobChain'">{{'label.order' | translate}}/{{'label.jobChain' | translate}}</span>
                                 <span ng-if="historyFilters.type == 'job'">{{'label.job' | translate}}</span>
+                                <span ng-if="historyFilters.type == 'yade'">{{'label.order' | translate}}/{{'label.jobChain' | translate}}/{{'label.job' | translate}}</span>
                             </th>
                             <th translate>label.action</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="order in savedIgnoreList.orders" ng-if="historyFilters.type != 'job'">
+                            <tr ng-repeat="order in savedIgnoreList.orders" ng-if="historyFilters.type == 'jobChain'">
                                 <td>{{order.jobChain}}, {{order.orderId}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeOrderIgnoreList(order)" translate>button.remove</a>
                                 </td>
                             </tr>
-                            <tr ng-repeat="jobChain in savedIgnoreList.jobChains" ng-if="historyFilters.type != 'job'">
+                            <tr ng-repeat="jobChain in savedIgnoreList.jobChains" ng-if="historyFilters.type == 'jobChain'">
                                 <td>{{jobChain}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeJobChainIgnoreList(jobChain)" translate>button.remove</a>
@@ -35,6 +36,24 @@
                                 <td>{{job}}</td>
                                 <td>
                                     <a href="" class="text-u-l text-danger" ng-click="ok();removeJobIgnoreList(job)" translate>button.remove</a>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="order in savedYadeIgnoreList.orders" ng-if="historyFilters.type == 'yade'">
+                                <td>{{order.jobChain}}, {{order.orderId}}</td>
+                                <td>
+                                    <a href="" class="text-u-l text-danger" ng-click="ok();removeYadeIgnoreList(order, 'order')" translate>button.remove</a>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="jobChain in savedYadeIgnoreList.jobChains" ng-if="historyFilters.type  == 'yade'">
+                                <td>{{jobChain}}</td>
+                                <td>
+                                    <a href="" class="text-u-l text-danger" ng-click="ok();removeYadeIgnoreList(jobChain,'jobChain')" translate>button.remove</a>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="job in savedYadeIgnoreList.jobs" ng-if="historyFilters.type  == 'yade'">
+                                <td>{{job}}</td>
+                                <td>
+                                    <a href="" class="text-u-l text-danger" ng-click="ok();removeYadeIgnoreList(job,'job')" translate>button.remove</a>
                                 </td>
                             </tr>
                         </tbody>
