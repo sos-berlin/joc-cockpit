@@ -179,9 +179,9 @@
     }
 
     JobChainOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "SOSAuth", "JobChainService", "JobService", "$timeout", "DailyPlanService", "$state", "$location",
-        "CoreService", "$uibModal", "AuditLogService", "ScheduleService", "FileSaver", "$filter"];
+        "CoreService", "$uibModal", "AuditLogService", "FileSaver", "$filter"];
     function JobChainOverviewCtrl($scope, $rootScope, OrderService, SOSAuth, JobChainService, JobService, $timeout, DailyPlanService, $state, $location,
-                                  CoreService, $uibModal, AuditLogService, ScheduleService, FileSaver, $filter) {
+                                  CoreService, $uibModal, AuditLogService,  FileSaver, $filter) {
 
         var vm = $scope;
         vm.orderFilters = CoreService.getOrderDetailTab();
@@ -1570,7 +1570,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params =obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
             orders.auditLog = {};
             if (vm.comments.comment) {
@@ -1664,7 +1664,7 @@
             }
 
             if (order.params) {
-                order.params =order.params.concat(paramObject.params);
+                order.params = order.params.concat(paramObject.params);
             } else {
                 order.params = paramObject.params;
             }
@@ -2183,7 +2183,7 @@
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
                     orderId: data.orderId,
-                    format:vm.getCalendarTimeFormat()
+                    format: vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -2445,7 +2445,7 @@
                 var planData = {
                     plannedStartTime: data.plannedStartTime,
                     orderId: data.orderId,
-                    format:vm.getCalendarTimeFormat()
+                    format: vm.getCalendarTimeFormat()
                 };
                 vm.planItems.push(planData);
                 if (res.created) {
@@ -2916,7 +2916,7 @@
                         $location.path('/job_chains');
                         break;
                     }
-                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' || vm.events[0].eventSnapshots[i].eventType === "OrderAdded" || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
 
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
@@ -3605,7 +3605,7 @@
                         for (var j = 0; j < _temp.length; j++) {
                             if (_temp[j].path == x[i].path) {
                                 x[i].show = _temp[j].show;
-                                if(x[i].show) {
+                                if (x[i].show) {
                                     x[i].priority = _temp[j].priority;
                                     x[i].params = _temp[j].params;
                                     x[i].stateText = _temp[j].stateText;
@@ -4726,7 +4726,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
-                    if (event.path && event.eventType === "OrderStateChanged" && !event.eventId) {
+                    if (event.path && (event.eventType === "OrderStateChanged" || event.eventType === "OrderAdded") && !event.eventId) {
                         if ($location.search().path) {
                             if (event.path == $location.search().path)
                                 getOrderByPath($location.search().path);
@@ -4858,7 +4858,6 @@
 
     OrderOverviewCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$stateParams", "CoreService", "$uibModal", "AuditLogService"];
     function OrderOverviewCtrl($scope, $rootScope, OrderService, $stateParams, CoreService, $uibModal, AuditLogService) {
-
         var vm = $scope;
 
         vm.orderFilters = CoreService.getOrderTab1();
@@ -5279,9 +5278,8 @@
         });
     }
 
-
-    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", "ScheduleService", '$timeout', "DailyPlanService", "JobChainService", "$location"];
-    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, ScheduleService, $timeout, DailyPlanService, JobChainService, $location) {
+    OrderFunctionCtrl.$inject = ["$scope", "$rootScope", "OrderService", "$uibModal", '$timeout', "DailyPlanService", "JobChainService", "$location"];
+    function OrderFunctionCtrl($scope, $rootScope, OrderService, $uibModal, $timeout, DailyPlanService, JobChainService, $location) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
 
@@ -6220,6 +6218,10 @@
         vm.savedIgnoreList.jobs = [];
         vm.savedIgnoreList.orders = [];
 
+        vm.savedYadeIgnoreList = {};
+        vm.savedYadeIgnoreList.jobChains = [];
+        vm.savedYadeIgnoreList.jobs = [];
+        vm.savedYadeIgnoreList.orders = [];
 
         vm.historyFilterObj = JSON.parse(SavedFilter.historyFilters) || {};
 
@@ -6290,7 +6292,7 @@
                 fromDate = arr[0].trim();
                 toDate = arr[1].trim();
 
-            }else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
                 var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
                 fromDate = new Date();
                 if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
@@ -6363,7 +6365,7 @@
                 var obj = {};
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.configurationType = "CUSTOMIZATION";
-                obj.objectType = "LOCK";
+                obj.objectType = "YADE_HISTORY";
                 obj.shared = true;
                 UserService.configurations(obj).then(function (res) {
                     vm.yadeHistoryFilterList = res.configurations;
@@ -6514,7 +6516,7 @@
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.account = vm.permission.user;
             obj.configurationType = "CUSTOMIZATION";
-            obj.objectType = "LOCK";
+            obj.objectType = "YADE_HISTORY";
             UserService.configurations(obj).then(function (res) {
                 if (vm.yadeHistoryFilterList && vm.yadeHistoryFilterList.length > 0) {
                     if (res.configurations && res.configurations.length > 0) {
@@ -6592,7 +6594,7 @@
                         jobschedulerId: vm.schedulerIds.selected,
                         id: res1.configurations[0].id
                     }).then(function (res) {
-                        if (res.configuration && res.configuration.configurationItem) {
+                        if (res.configuration && res.configuration.configurationItem && res.configuration.configurationItem.objectType !='YADE_HISTORY') {
                             vm.savedIgnoreList = JSON.parse(res.configuration.configurationItem);
                         }
                         loadIgnoreList = true;
@@ -6612,6 +6614,41 @@
         }
 
         getIgnoreList();
+
+        vm.ignoreYadeListConfigId = 0;
+        function getYadeIgnoreList() {
+            var configObj = {};
+            configObj.jobschedulerId = vm.schedulerIds.selected;
+            configObj.account = vm.permission.user;
+            configObj.configurationType = "IGNORELIST";
+            configObj.objectType = "YADE_HISTORY";
+            UserService.configurations(configObj).then(function (res1) {
+                if (res1.configurations && res1.configurations.length > 0) {
+                    vm.ignoreYadeListConfigId = res1.configurations[0].id;
+                    UserService.configuration({
+                        jobschedulerId: vm.schedulerIds.selected,
+                        id: res1.configurations[0].id
+                    }).then(function (res) {
+                        if (res.configuration && res.configuration.configurationItem) {
+                            vm.savedYadeIgnoreList = JSON.parse(res.configuration.configurationItem);
+                        }
+                        loadIgnoreList = true;
+                        vm.init();
+                    }, function () {
+                        loadIgnoreList = true;
+                        vm.init();
+                    });
+                } else {
+                    loadIgnoreList = true;
+                    vm.init();
+                }
+            }, function () {
+                loadIgnoreList = true;
+                vm.init();
+            });
+        }
+
+        getYadeIgnoreList();
 
         /**--------------- sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
@@ -6679,16 +6716,20 @@
         }
 
         function setYadeDateRange(filter) {
-            /*if ((vm.savedIgnoreList.isEnable == true || vm.savedIgnoreList.isEnable == 'true') && ((vm.savedIgnoreList.jobChains && vm.savedIgnoreList.jobChains.length > 0) || (vm.savedIgnoreList.orders && vm.savedIgnoreList.orders.length > 0))) {
-             filter.excludeOrders = [];
-             angular.forEach(vm.savedIgnoreList.jobChains, function (jobChain) {
-             filter.excludeOrders.push({jobChain: jobChain});
-             });
+            if ((vm.savedYadeIgnoreList.isEnable == true || vm.savedYadeIgnoreList.isEnable == 'true') && ((vm.savedYadeIgnoreList.jobs && vm.savedYadeIgnoreList.jobs.length > 0) ||(vm.savedYadeIgnoreList.jobChains && vm.savedYadeIgnoreList.jobChains.length > 0) || (vm.savedYadeIgnoreList.orders && vm.savedYadeIgnoreList.orders.length > 0))) {
+                filter.excludeOrders = [];
+                angular.forEach(vm.savedYadeIgnoreList.jobChains, function (jobChain) {
+                    filter.excludeOrders.push({jobChain: jobChain});
+                });
 
-             angular.forEach(vm.savedIgnoreList.orders, function (order) {
-             filter.excludeOrders.push(order);
-             });
-             }*/
+                angular.forEach(vm.savedYadeIgnoreList.orders, function (order) {
+                    filter.excludeOrders.push(order);
+                });
+                filter.excludeJobs = [];
+                angular.forEach(vm.savedYadeIgnoreList.jobs, function (job) {
+                    filter.excludeJobs.push(job);
+                });
+            }
 
             if (vm.yade.filter.date == 'today') {
                 var from = new Date();
@@ -6720,7 +6761,7 @@
                     checkSharedTaskFilters();
                     return;
                 }
-               
+
                 filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
             }
             vm.isLoading = false;
@@ -6758,7 +6799,7 @@
                 return;
             }
             if (!filter) {
-               
+
                 filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
             }
             vm.isLoading = false;
@@ -6767,7 +6808,7 @@
                 filter = orderParseDate(filter);
             } else {
                 filter = setOrderDateRange(filter);
-                if (vm.order.filter.historyStates && vm.order.filter.historyStates != 'all' && vm.order.filter.historyStates.length>0) {
+                if (vm.order.filter.historyStates && vm.order.filter.historyStates != 'all' && vm.order.filter.historyStates.length > 0) {
                     filter.historyStates = [];
                     filter.historyStates.push(vm.order.filter.historyStates);
                 }
@@ -6862,7 +6903,7 @@
                 }
                 if (vm.jobSearch.date == 'process') {
                     filter = parseProcessExecuted(vm.jobSearch.planned, filter);
-                }else {
+                } else {
                     if (vm.jobSearch.date == 'date' && vm.jobSearch.from) {
                         var fromDate = new Date(vm.jobSearch.from);
                         if (vm.jobSearch.fromTime) {
@@ -6946,7 +6987,7 @@
                     filter.historyStates = vm.jobChainSearch.states;
                 }
                 if (vm.jobChainSearch.date == 'process') {
-                  filter = parseProcessExecuted(vm.jobChainSearch.planned, filter);
+                    filter = parseProcessExecuted(vm.jobChainSearch.planned, filter);
 
                 }
                 if (vm.jobChainSearch.date == 'date' && vm.jobChainSearch.from) {
@@ -7033,8 +7074,94 @@
                     isLoaded = true;
                 });
                 jobChainSearch = true;
-            } else {
-                //TODO
+            }
+            else {
+                vm.yade.filter.states = '';
+                vm.yade.filter.date = '';
+                vm.yade.filter.operations = '';
+
+                if (vm.yadeSearch.states && vm.yadeSearch.states.length > 0) {
+                    filter.states = vm.yadeSearch.states;
+                }
+
+                if (vm.yadeSearch.operations && vm.yadeSearch.operations.length > 0) {
+                    filter.operations = vm.yadeSearch.operations;
+                }
+
+                if (vm.yadeSearch.profileId) {
+                    filter.profiles = vm.yadeSearch.profileId;
+                }
+
+                if (vm.yadeSearch.mandator) {
+                    filter.mandator = vm.yadeSearch.mandator;
+                }
+
+                if (vm.yadeSearch.sourceHost) {
+                    filter.sources = vm.yadeSearch.sourceHost;
+                }
+                if (vm.yadeSearch.targetHost) {
+                    filter.targets = vm.yadeSearch.targetHost;
+                }
+                if (vm.yadeSearch.protocol) {
+                    filter.protocol = [];
+                    var s = vm.yadeSearch.protocol.replace(/,\s+/g, ',');
+                    var protocols = s.split(',');
+                    angular.forEach(protocols, function (value) {
+                        filter.protocol.push(value)
+                    });
+
+                }
+                if (vm.yadeSearch.date == 'process') {
+                    filter = parseProcessExecuted(vm.yadeSearch.planned, filter);
+                } else {
+                    if (vm.yadeSearch.date == 'date' && vm.yadeSearch.from) {
+                        var fromDate = new Date(vm.yadeSearch.from);
+                        if (vm.yadeSearch.fromTime) {
+                            fromDate.setHours(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.yadeSearch.fromTime, 'HH:mm:ss').seconds());
+                        } else {
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        }
+                        fromDate.setMilliseconds(0);
+                        filter.dateFrom = fromDate;
+                    }
+                    if (vm.yadeSearch.date == 'date' && vm.yadeSearch.to) {
+                        var toDate = new Date(vm.yadeSearch.to);
+                        if (vm.yadeSearch.toTime) {
+                            toDate.setHours(moment(vm.yadeSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.yadeSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.yadeSearch.toTime, 'HH:mm:ss').seconds());
+                        } else {
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        }
+                        toDate.setMilliseconds(0);
+                        filter.dateTo = toDate;
+                    }
+                }
+
+                if (vm.yadeSearch.jobschedulerId) {
+                    filter.jobschedulerId = vm.yadeSearch.jobschedulerId;
+                }
+
+                filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    delete filter['timeZone']
+                }
+                YadeService.getTransfers(filter).then(function (res) {
+                    vm.yadeHistorys = res.transfers;
+                    setDuration(vm.yadeHistorys);
+                    vm.loading = false;
+                    isLoaded = true;
+                }, function () {
+                    vm.loading = false;
+                    isLoaded = true;
+                });
+                yadeSearch = true;
             }
         };
         vm.advancedSearch = function () {
@@ -7046,6 +7173,7 @@
             vm.object.jobs = [];
             vm.jobChainSearch.date = 'date';
             vm.jobSearch.date = 'date';
+            vm.yadeSearch.date = 'date';
 
             vm.jobChainSearch.from = new Date();
             vm.jobChainSearch.from.setDate(vm.jobChainSearch.from.getDate() - 1);
@@ -7058,6 +7186,13 @@
             vm.jobSearch.fromTime = '00:00';
             vm.jobSearch.to = new Date();
             vm.jobSearch.toTime = '00:00';
+
+            vm.yadeSearch.from = new Date();
+            vm.yadeSearch.from.setDate(vm.yadeSearch.from.getDate() - 1);
+            vm.yadeSearch.fromTime = '00:00';
+            vm.yadeSearch.to = new Date();
+            vm.yadeSearch.toTime = '00:00';
+
 
         };
         vm.cancel = function (form) {
@@ -7179,13 +7314,13 @@
         }
 
         function yadeParseDate(obj) {
-            /*if ((vm.savedIgnoreList.isEnable == true || vm.savedIgnoreList.isEnable == 'true') && (vm.savedIgnoreList.jobs && vm.savedIgnoreList.jobs.length > 0)) {
+            if ((vm.savedYadeIgnoreList.isEnable == true || vm.savedYadeIgnoreList.isEnable == 'true') && ((vm.savedYadeIgnoreList.jobs && vm.savedYadeIgnoreList.jobs.length > 0) || (vm.savedYadeIgnoreList.jobChains && vm.savedYadeIgnoreList.jobChains.length > 0) || (vm.savedYadeIgnoreList.orders && vm.savedYadeIgnoreList.orders.length > 0))) {
 
-             obj.excludeJobs = [];
-             angular.forEach(vm.savedIgnoreList.jobs, function (job) {
-             obj.excludeJobs.push({job: job});
-             });
-             }*/
+                obj.excludeJobs = [];
+                angular.forEach(vm.savedYadeIgnoreList.jobs, function (job) {
+                    obj.excludeJobs.push({job: job});
+                });
+            }
 
             if (vm.selectedFiltered3.state && vm.selectedFiltered3.state.length > 0) {
                 obj.states = vm.selectedFiltered3.state;
@@ -7266,9 +7401,9 @@
             });
 
         };
-        vm.showTransferFuc = function(value){
+        vm.showTransferFuc = function (value) {
             value.show = true;
-            var ids=[];
+            var ids = [];
             ids.push(value.id)
             YadeService.files({transferIds: ids,jobschedulerId:value.jobschedulerId || vm.schedulerIds.selected}).then(function (res) {
                 value.files = res.files
@@ -7388,6 +7523,20 @@
                 obj.name = vm.jobSearch.name;
                 obj.planned = vm.jobSearch.planned;
             }
+
+            else {
+                configObj.name = vm.yadeSearch.name;
+                obj.profileId = vm.yadeSearch.profileId;
+                obj.mandator = vm.yadeSearch.mandator;
+                obj.state = vm.yadeSearch.states;
+                obj.operations = vm.yadeSearch.operations;
+                obj.protocol = vm.yadeSearch.protocol;
+                obj.name = vm.yadeSearch.name;
+                obj.sourceFileName = vm.yadeSearch.sourceFileName;
+                obj.targetFileName = vm.yadeSearch.targetFileName;
+                obj.sourceHost = vm.yadeSearch.sourceHost;
+                obj.targetHost = vm.yadeSearch.targetHost;
+            }
             configObj.id = 0;
 
             if (vm.historyFilters.type == 'jobChain') {
@@ -7405,7 +7554,7 @@
                 } else if (vm.historyFilters.type == 'job') {
                     vm.jobSearch.name = '';
                 } else {
-                   vm.yadeSearch.name = '';
+                    vm.yadeSearch.name = '';
                 }
                 if (form)
                     form.$setPristine();
@@ -7452,8 +7601,6 @@
                     configObj.objectType = "ORDER_HISTORY";
                 } else if (vm.historyFilters.type == 'job') {
                     configObj.objectType = "TASK_HISTORY";
-                } else {
-                    configObj.objectType = "YADE_HISTORY";
                 }
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
@@ -7479,8 +7626,6 @@
                             isCustomizationSelected2(true);
                         }
                         vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-                    } else {
-                        //TODO
                     }
                     SavedFilter.setHistory(vm.historyFilterObj);
                     SavedFilter.save();
@@ -7498,6 +7643,7 @@
         };
         vm.advanceFilter1 = function () {
             vm.cancel();
+            vm.action = 'add';
             vm.historyFilter = {};
             vm.historyFilter.planned = 'today';
             var modalInstance = $uibModal.open({
@@ -7516,7 +7662,7 @@
                 configObj.shared = vm.historyFilter.shared;
                 configObj.id = 0;
                 configObj.configurationItem = JSON.stringify(vm.historyFilter);
-                configObj.objectType = "LOCK";
+                configObj.objectType = "YADE_HISTORY";
 
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
@@ -7550,7 +7696,8 @@
                 vm.filters.list = vm.jobHistoryFilterList;
                 vm.filters.favorite = vm.savedJobHistoryFilter.favorite;
             } else {
-                //TODO
+                vm.filters.list = vm.yadeHistoryFilterList;
+                vm.filters.favorite = vm.savedYadeHistoryFilter.favorite;
             }
 
             var modalInstance = $uibModal.open({
@@ -7577,10 +7724,12 @@
                 vm.object.jobChains = vm.jobChains;
                 vm.object.jobs = vm.jobs;
             });
-
-
+            var url = 'modules/core/template/edit-history-filter-dialog.html';
+            if (vm.historyFilters.type == 'yade') {
+                url = 'modules/core/template/yade-filter-dialog.html';
+            }
             var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/edit-history-filter-dialog.html',
+                templateUrl: url,
                 controller: 'DialogCtrl',
                 scope: vm,
                 size: 'lg',
@@ -7605,8 +7754,15 @@
                         isCustomizationSelected2(true);
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
-                } else {
-                    //TODO
+                } else if (vm.historyFilters.type == 'yade') {
+                    if (vm.savedHistoryFilter.selected == filter.id) {
+                        vm.selectedFiltered3 = vm.historyFilter;
+                        vm.historyFilters.yade.selectedView = true;
+                        vm.init();
+                        isCustomizationSelected3(true);
+                    }
+                    vm.historyFilterObj.yade = vm.savedHistoryFilter;
+
                 }
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
@@ -7624,12 +7780,14 @@
                 vm.object.orders = [];
                 vm.object.jobChains = [];
                 vm.object.jobs = [];
+                temp_name = '';
             }, function () {
                 temp_name = '';
                 vm.object.paths = [];
                 vm.object.orders = [];
                 vm.object.jobChains = [];
                 vm.object.jobs = [];
+                temp_name = '';
             });
         };
 
@@ -7679,8 +7837,6 @@
                         vm.orderHistoryFilterList.push(configObj);
                     } else if (vm.historyFilters.type == 'job') {
                         vm.jobHistoryFilterList.push(configObj);
-                    } else {
-                        //TODO
                     }
                 });
                 vm.object.paths = [];
@@ -7692,6 +7848,46 @@
                 vm.object.orders = [];
                 vm.object.jobChains = [];
                 vm.object.jobs = [];
+            });
+        };
+
+
+        vm.copyFilter1 = function (filter) {
+            vm.action = 'copy';
+            vm.isUnique = true;
+            UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
+                vm.historyFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.historyFilter.shared = filter.shared;
+
+                if (vm.historyFilters.type == 'yade') {
+                    vm.historyFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
+                }
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/yade-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.name = vm.historyFilter.name;
+                configObj.shared = vm.historyFilter.shared;
+                configObj.objectType = filter.objectType;
+                configObj.id = 0;
+                configObj.configurationItem = JSON.stringify(vm.historyFilter);
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    configObj.id = res.id;
+                    if (vm.historyFilters.type == 'yade') {
+                        vm.yadeHistoryFilterList.push(configObj);
+                    }
+                });
+            }, function () {
             });
         };
         vm.deleteFilter = function (filter) {
@@ -7746,7 +7942,27 @@
                     }
                     vm.historyFilterObj.job = vm.savedJobHistoryFilter;
                 } else {
-                    //TODO
+                    angular.forEach(vm.yadeHistoryFilterList, function (value, index) {
+                        if (value.id == filter.id) {
+                            vm.yadeHistoryFilterList.splice(index, 1);
+                        }
+                    });
+
+                    if (vm.savedYadeHistoryFilter.selected == filter.id) {
+                        vm.savedYadeHistoryFilter.selected = undefined;
+                        vm.historyFilters.yade.selectedView = false;
+                        vm.selectedFiltered3 = undefined;
+                        vm.init();
+                        isCustomizationSelected3(false);
+                    } else {
+                        if (vm.yadeHistoryFilterList.length == 0) {
+                            vm.savedYadeHistoryFilter.selected = undefined;
+                            vm.historyFilters.yade.selectedView = false;
+                            vm.selectedFiltered3 = undefined;
+                            isCustomizationSelected3(false);
+                        }
+                    }
+                    vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
                 }
                 SavedFilter.setHistory(vm.historyFilterObj);
                 SavedFilter.save();
@@ -7774,7 +7990,11 @@
                             }
                         });
                     } else {
-                        //TODO
+                        angular.forEach(vm.yadeHistoryFilterList, function (value, index) {
+                            if (value.id == configObj.id) {
+                                vm.yadeHistoryFilterList.splice(index, 1);
+                            }
+                        });
                     }
                 }
             });
@@ -7800,6 +8020,11 @@
                 vm.historyFilters.task.selectedView = true;
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
             }
+            else {
+                vm.savedYadeHistoryFilter.favorite = filter.id;
+                vm.historyFilters.yade.selectedView = true;
+                vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            }
             SavedFilter.setHistory(vm.historyFilterObj);
             SavedFilter.save();
             vm.init();
@@ -7812,6 +8037,10 @@
             } else if (vm.historyFilters.type == 'job') {
                 vm.savedJobHistoryFilter.favorite = '';
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
+            }
+            else {
+                vm.savedYadeHistoryFilter.favorite = '';
+                vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
             }
             vm.filters.favorite = '';
             SavedFilter.setHistory(vm.historyFilterObj);
@@ -7913,10 +8142,34 @@
 
                 vm.historyFilterObj.job = vm.savedJobHistoryFilter;
             }
+            else if (vm.historyFilters.type == 'yade') {
+                if (filter) {
+                    vm.savedYadeHistoryFilter.selected = filter.id;
+                    vm.historyFilters.yade.selectedView = true;
+                    UserService.configuration({
+                        jobschedulerId: filter.jobschedulerId,
+                        id: filter.id
+                    }).then(function (conf) {
+                        vm.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
+                        vm.selectedFiltered3.account = filter.account;
+                        vm.init();
+                    });
+                }
+                else {
+                    isCustomizationSelected3(false);
+                    vm.savedYadeHistoryFilter.selected = filter;
+                    vm.historyFilters.yade.selectedView = false;
+                    vm.selectedFiltered3 = filter;
+                    vm.init();
+                }
+
+                vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            }
 
             SavedFilter.setHistory(vm.historyFilterObj);
             SavedFilter.save();
         };
+
 
         vm.expanding_property = {
             field: "name"
@@ -8222,6 +8475,26 @@
             }
         };
 
+        vm.addYadeToIgnoreList = function (name, type) {
+            if (vm.savedYadeIgnoreList.jobs.indexOf(name) === -1) {
+                vm.savedYadeIgnoreList.jobs.push(name);
+                if ((vm.savedYadeIgnoreList.isEnable == 'true' || vm.savedYadeIgnoreList.isEnable == true)) {
+                    if (jobSearch) {
+                        vm.search(true);
+                    } else {
+                        vm.init();
+                    }
+                }
+                configObj.configurationType = "IGNORELIST";
+                configObj.id = vm.ignoreListConfigId;
+                configObj.objectType = "YADE_HISTORY";
+                configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    vm.ignoreYadeListConfigId = res.id;
+                })
+            }
+        };
+
         vm.editIgnoreList = function () {
             if ((vm.savedIgnoreList.jobChains && vm.savedIgnoreList.jobChains.length > 0) || (vm.savedIgnoreList.orders && vm.savedIgnoreList.orders.length > 0) || (vm.savedIgnoreList.jobs && vm.savedIgnoreList.jobs.length > 0)) {
                 var modalInstance = $uibModal.open({
@@ -8233,6 +8506,37 @@
             }
         };
 
+        vm.editYadeIgnoreList = function () {
+            if ((vm.savedYadeIgnoreList.jobChains && vm.savedYadeIgnoreList.jobChains.length > 0) || (vm.savedYadeIgnoreList.orders && vm.savedYadeIgnoreList.orders.length > 0) || (vm.savedYadeIgnoreList.jobs && vm.savedYadeIgnoreList.jobs.length > 0)) {
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/edit-ignorelist-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+            }
+        };
+        vm.removeYadeIgnoreList = function (name, type) {
+            if(type =='order')
+                vm.savedYadeIgnoreList.orders.splice(vm.savedYadeIgnoreList.orders.indexOf(name), 1);
+            else if(type =='jobChain')
+               vm.savedYadeIgnoreList.jobChains.splice(vm.savedYadeIgnoreList.jobChains.indexOf(name), 1);
+            else
+               vm.savedYadeIgnoreList.jobs.splice(vm.savedYadeIgnoreList.jobs.indexOf(name), 1);
+            configObj.configurationType = "IGNORELIST";
+            configObj.objectType = "YADE_HISTORY";
+            configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
+            configObj.id = vm.ignoreYadeListConfigId;
+            UserService.saveConfiguration(configObj).then(function (res) {
+                vm.ignoreYadeListConfigId = res.id;
+            });
+            if ((vm.savedYadeIgnoreList.isEnable == 'true' || vm.savedYadeIgnoreList.isEnable == true)) {
+                if (yadeSearch) {
+                    vm.search(true);
+                } else
+                    vm.init();
+            }
+        };
         vm.removeOrderIgnoreList = function (name) {
             vm.savedIgnoreList.orders.splice(vm.savedIgnoreList.orders.indexOf(name), 1);
             configObj.configurationType = "IGNORELIST";
@@ -8313,6 +8617,42 @@
                 vm.ignoreListConfigId = res.id;
             });
             if ((jobSearch && vm.historyFilters.type != 'jobChain') || (jobChainSearch && vm.historyFilters.type == 'jobChain')) {
+                vm.search(true);
+            } else
+                vm.init();
+        };
+
+        vm.resetYadeIgnoreList = function () {
+
+            if ((vm.savedYadeIgnoreList.isEnable == 'true' || vm.savedYadeIgnoreList.isEnable == true)  && ((vm.savedYadeIgnoreList.jobChains && vm.savedYadeIgnoreList.jobChains.length > 0) || (vm.savedYadeIgnoreList.orders && vm.savedYadeIgnoreList.orders.length > 0) || (vm.savedYadeIgnoreList.jobs && vm.savedYadeIgnoreList.jobs.length > 0))) {
+                if (yadeSearch) {
+                    vm.search(true);
+                } else
+                    vm.init();
+            }
+            vm.savedYadeIgnoreList.orders = [];
+            vm.savedYadeIgnoreList.jobChains = [];
+            vm.savedYadeIgnoreList.jobs = [];
+            vm.savedYadeIgnoreList.isEnable = false;
+            configObj.configurationType = "IGNORELIST";
+            configObj.objectType = "YADE_HISTORY";
+            configObj.id = vm.ignoreYadeListConfigId;
+            configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
+            UserService.saveConfiguration(configObj).then(function (res) {
+                vm.ignoreYadeListConfigId = res.id;
+            })
+        };
+
+        vm.enableDisableYadeIgnoreList = function () {
+            vm.savedYadeIgnoreList.isEnable = !vm.savedYadeIgnoreList.isEnable;
+            configObj.configurationType = "IGNORELIST";
+            configObj.objectType = "YADE_HISTORY";
+            configObj.id = vm.ignoreYadeListConfigId;
+            configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
+            UserService.saveConfiguration(configObj).then(function (res) {
+                vm.ignoreYadeListConfigId = res.id;
+            });
+            if (yadeSearch) {
                 vm.search(true);
             } else
                 vm.init();
@@ -8483,10 +8823,12 @@
             vm.taskId = object.taskId;
             vm.loadJobLog();
         }
+
         $scope.$on('$destroy', function () {
             if (t1)
                 $timeout.cancel(t1);
         });
 
     }
-})();
+})
+();

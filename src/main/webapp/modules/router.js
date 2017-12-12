@@ -248,6 +248,10 @@
             url: "/agent_jobs_execution",
             templateUrl: "modules/jobscheduler/views/resource-agent-job-execution.html",
             ncyBreadcrumb: {label: "{{ 'breadcrumb.agentJobsExecution' | translate}}", parent: "app.resources"}
+        }).state("app.resources.events", {
+            url: "/events",
+            templateUrl: "modules/jobscheduler/views/resource-events.html",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.events' | translate}}", parent: "app.resources"}
         }).state("app.agentCluster", {
             url: "/agent_cluster?path&scheduler_id",
             templateUrl: "modules/jobscheduler/views/agent-cluster.html",
