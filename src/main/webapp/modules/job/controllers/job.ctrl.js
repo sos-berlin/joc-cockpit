@@ -1244,11 +1244,11 @@
             vm.paramObject = {};
             vm.paramObject.params = [];
             vm.order.atTime = 'now';
+            vm.order.fromDate = new Date();
             vm.zones = moment.tz.names();
             if (vm.userPreferences.zone) {
                 vm.order.timeZone = vm.userPreferences.zone;
             }
-
             modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-order-dialog.html',
                 controller: 'DialogCtrl',
@@ -1262,7 +1262,6 @@
             });
 
         };
-
 
         vm.stopJobChain = function (jobChain) {
             var jobChains = {};
@@ -3798,10 +3797,11 @@
                     } else {
                         vm.isUnstopped = true;
                     }
-                    if ((value.ordersSummary && value.ordersSummary.pending != undefined)) {
+                    if ((value.ordersSummary && value.ordersSummary.pending != undefined) || job.configurationStatus.severity==2) {
                         vm.isStart = true;
-                    } else if (value.configurationStatus && value.configurationStatus.severity == 2) {
-                        vm.isStart = true;
+                    }
+                    if(value.isShellJob == true){
+                        vm.isStart = false;
                     }
                 });
             } else {
@@ -5809,10 +5809,11 @@
                     } else {
                         vm.isUnstopped = true;
                     }
-                    if ((value.ordersSummary && value.ordersSummary.pending != undefined)) {
+                    if ((value.ordersSummary && value.ordersSummary.pending != undefined) || job.configurationStatus.severity==2) {
                         vm.isStart = true;
-                    } else if (value.configurationStatus && value.configurationStatus.severity == 2) {
-                        vm.isStart = true;
+                    }
+                    if(value.isShellJob == true){
+                        vm.isStart = false;
                     }
                 });
             } else {

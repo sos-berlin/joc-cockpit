@@ -497,6 +497,16 @@
                 });
                 return deferred.promise;
             },
+            calendarsUsed: function (filter) {
+                var deferred = $q.defer();
+                var Calendar = $resource('calendars/used');
+                Calendar.save(filter,function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },
             calendarUsed: function (filter) {
                 var deferred = $q.defer();
                 var Calendar = $resource('calendar/used');
@@ -594,7 +604,7 @@
                 });
                 return deferred.promise;
             },
-            add:function(filter){
+            addEvent:function(filter){
                 var deferred = $q.defer();
                 var Event = $resource('events/custom/add_event');
                 Event.save(filter,function (res) {
@@ -604,7 +614,7 @@
                 });
                 return deferred.promise;
             },
-            delete:function(filter){
+            deleteEvent:function(filter){
                 var deferred = $q.defer();
                 var Event = $resource('events/custom/delete_events');
                 Event.save(filter,function (res) {

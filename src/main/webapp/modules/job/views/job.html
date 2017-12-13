@@ -304,14 +304,14 @@
 
                                         <div class="dropdown-menu dropdown-ac dropdown-more">
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}"
+                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
                                                ng-click="start(job)"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start"
+                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
                                                translate>button.startTask</a>
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}"
+                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
                                                ng-click="startAt(job)"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start"
+                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
                                                translate>button.startTaskat</a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
@@ -345,6 +345,8 @@
                                                 <span translate>button.showAssignedCalendar</span>
                                             </a>
                                             <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
+                                               ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
                                             <a ng-click="showConfiguration('job',job.path,job.name)"
                                                class="hide dropdown-item"
                                                ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"
@@ -503,15 +505,15 @@
                                                 class="fa fa-ellipsis-h"></i></button>
                                         <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more"
                                              role="menu">
-                                            <a class="dropdown-item"
-                                               ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}"
+                                             <a class="dropdown-item"
+                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
                                                ng-click="start(job)"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.Job.execute.start"
+                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
                                                translate>button.startTask</a>
                                             <a class="dropdown-item"
-                                               ng-class="{'disable-link':job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2}"
+                                               ng-class="{'disable-link':(job.ordersSummary.pending != undefinded || job.configurationStatus.severity==2) && job.isShellJob == false}"
                                                ng-click="startAt(job)"
-                                               ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true)  && permission.Job.execute.start"
+                                               ng-if="((job.isOrderJob != undefined && job.isOrderJob!=true) || job.isShellJob == true) && permission.Job.execute.start"
                                                translate>button.startTaskat</a>
                                             <a class="dropdown-item bg-hover-color"
                                                ng-if="job.state._text !='STOPPED' && permission.Job.execute.stop"
@@ -533,8 +535,8 @@
                                                ng-click="terminateTaskWithTimeout(job,null,null)" translate>button.terminateAllTasksWithTimeout</a>
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-click="setRunTime(job)"
-                                               ng-if="permission.Job.change.runTime"
-                                               ng-class="{'disable-link':job.configurationStatus.severity==2}"><span
+                                               ng-class="{'disable-link':job.configurationStatus.severity==2}"
+                                               ng-if="permission.Job.change.runTime"><span
                                                     translate>button.setRunTime</span></a>
                                             <a class="dropdown-item"
                                                ng-if="(job.isOrderJob != undefined && job.isOrderJob!=true) && permission.DailyPlan.view.status"
@@ -547,9 +549,9 @@
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" ng-if="permission.AuditLog.view.status"
                                                ng-click="showAuditLogs(job)" translate>button.showAuditLog</a>
-                                            <a class="hide dropdown-item"
-                                               ng-click="showConfiguration('job',job.path,job.name)"
-                                               ng-class="{show:permission.Job.view.configuration, 'disable-link':job.configurationStatus.severity==2}"
+                                            <a ng-click="showConfiguration('job',job.path,job.name)"
+                                               class="hide dropdown-item"
+                                               ng-class="{show:permission.Job.view.configuration,  'disable-link':job.configurationStatus.severity==2}"
                                                translate>button.showConfiguration</a>
                                             <a class="dropdown-item" ng-click="copyLinkToObject('job',job.path)"
                                                translate>button.copyLinkToObject</a>

@@ -12,16 +12,16 @@
                     </label>
                     <div class="show-block">
                         <div class="btn-group m-l-sm hidden-btn-group" >
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='all'}" translate>button.allStatus
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'" ng-click="loadYadeFiles()"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='SUCCESSFUL'}" translate>button.successful
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'" ng-click="loadYadeFiles()"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='FAILED'}" translate>button.failed
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'" ng-click="loadYadeFiles()"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE'}" translate>button.incomplete
                             </button>
                         </div>
@@ -43,22 +43,22 @@
                             </div>
                         </div>
                         <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='all'}" translate>button.all
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='today'}" translate>button.today
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-1h'}" translate>button.last1
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-12h'"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-12h'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-12h'}" translate>button.last12
                             </button>
-                            <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
+                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-1d'}" translate>button.last24
                             </button>
-                             <button ng-disabled="savedYadeHistoryFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
+                             <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
                                     ng-class="{'btn-primary': yadeFilters.filter.date=='-1w'}" translate>button.lastWeak
                             </button>
                         </div>
@@ -66,34 +66,34 @@
                             <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
                             <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.all
+                                        ng-class="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedYadeFilter.selected}" translate>button.all
                                 </a>
                                 <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.date=='today', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.today
+                                   ng-class="{'btn-primary': yadeFilters.filter.date=='today', 'disable-link':savedYadeFilter.selected}" translate>button.today
                                 </a>
                                 <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last1
+                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1h', 'disable-link':savedYadeFilter.selected}" translate>button.last1
                                 </a>
                                 <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadYadeFiles()"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-12h', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last12
+                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-12h', 'disable-link':savedYadeFilter.selected}" translate>button.last12
                                 </a>
                                 <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1d', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.last24
+                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1d', 'disable-link':savedYadeFilter.selected}" translate>button.last24
                                 </a>
                                 <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1w', 'disable-link':savedYadeHistoryFilter.selected}" translate>button.lastWeak
+                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1w', 'disable-link':savedYadeFilter.selected}" translate>button.lastWeak
                                 </a>
                             </div>
                         </div>
                         <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered3.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered3.name"></span></button>
+                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
                             <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
                                 <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="yadeHistoryFilterList.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="yadeHistoryFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: (savedYadeHistoryFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in yadeHistoryFilterList | orderBy: 'name'">
+                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="yadeFilterList.length>0" translate>label.editExistingFilters</a>
+                                <div class="dropdown-divider" ng-if="yadeFilterList.length>0"></div>
+                                <a class="dropdown-item" ng-class="{orange: (savedYadeFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in yadeFilterList | orderBy: 'name'">
                                     <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeHistoryFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
+                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
                                 </a>
                             </div>
                         </div>
@@ -470,8 +470,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                            <td></td>
-                            <td colspan="11" >
+                            <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -491,7 +490,7 @@
                                      </tr>
                                      </thead>
                                      <tbody>
-                                     <tr ng-repeat="file in transfer.files">
+                                     <tr>
                                         <td  ng-bind="transfer.source.account"></td>
                                         <td  ng-bind="transfer.source.port"></td>
                                         <td  ng-bind="transfer.source.protocol"></td>
@@ -600,3 +599,23 @@
         </div>
     </div>
 </div>
+<script>
+    $('.table-responsive').on('show.bs.dropdown', function (e) {
+        var $menu = $(e.target).find('.more-option-h');
+        if ($menu.offset().top + 70 > $(window).innerHeight() + $(window).scrollTop()) {
+            $('.dropdown-menu-list').css('top', $(window).innerHeight() - 70 + 'px');
+            $('.dropdown-menu-list').removeClass('dropdown-ac');
+            $('.dropdown-menu-list').addClass('dropdown-list');
+        } else {
+            $('.dropdown-menu-list').css('top', $menu.offset().top + 20 + 'px');
+        }
+        $('.dropdown-menu-list').addClass('list-dropdown');
+        $('.dropdown-menu-list').css('left', $menu.offset().left + 'px');
+    });
+
+    $('.table-responsive').on('hide.bs.dropdown', function () {
+        $('.dropdown-menu-list').removeClass('list-dropdown');
+        $('.dropdown-menu-list').removeClass('dropdown-list');
+        $('.dropdown-menu-list').addClass('dropdown-ac');
+    });
+</script>

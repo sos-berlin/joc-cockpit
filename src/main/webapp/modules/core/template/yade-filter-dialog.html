@@ -6,7 +6,7 @@
         <h4 class="modal-title" translate>
             <span ng-if="action == 'add'" translate>label.createFilter</span>
             <span ng-if="action == 'edit'" translate>label.updateFilter :</span>
-            <span ng-if="action == 'copy'" translate>label.copyFilter :</span>  {{::historyFilter.name}}</h4>
+            <span ng-if="action == 'copy'" translate>label.copyFilter :</span>  {{::yadeFilter.name}}</h4>
     </div>
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>
@@ -16,7 +16,7 @@
                 <div class=" col-sm-6">
                     <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" required
                            class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName"
-                           ng-maxlength="25" ng-model="historyFilter.name" ng-blur="checkFilterName()">
+                           ng-maxlength="25" ng-model="yadeFilter.name" ng-blur="checkFilterName()">
 
                     <div class="help-block text-danger" ng-if="form.filterName.$dirty"
                          ng-messages="form.filterName.$error">
@@ -35,7 +35,7 @@
 
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}" name="profileId"
-                           ng-model="historyFilter.profileId">
+                           ng-model="yadeFilter.profileId">
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
 
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}" name="mandator"
-                           ng-model="historyFilter.mandator">
+                           ng-model="yadeFilter.mandator">
                 </div>
             </div>
             <div class="form-group row">
@@ -52,17 +52,17 @@
 
                 <div class="col-sm-8">
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state"
+                        <input type="checkbox" data-checklist-model="yadeFilter.state"
                                data-checklist-value="'SUCCESSFUL'">
                         <i class="primary"></i><span translate>label.successful</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state"
+                        <input type="checkbox" data-checklist-model="yadeFilter.state"
                                data-checklist-value="'FAILED'">
                         <i class="primary"></i><span translate>label.failed</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.state"
+                        <input type="checkbox" data-checklist-model="yadeFilter.state"
                                data-checklist-value="'INCOMPLETE'">
                         <i class="primary"></i><span translate>label.incomplete</span>
                     </label>
@@ -75,22 +75,22 @@
 
                 <div class="col-sm-8">
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.operations"
+                        <input type="checkbox" data-checklist-model="yadeFilter.operations"
                                data-checklist-value="'COPY'">
                         <i class="primary"></i><span translate>label.copy</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.operations"
+                        <input type="checkbox" data-checklist-model="yadeFilter.operations"
                                data-checklist-value="'MOVE'">
                         <i class="primary"></i><span translate>label.move</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.operations"
+                        <input type="checkbox" data-checklist-model="yadeFilter.operations"
                                data-checklist-value="'GETLIST'">
                         <i class="primary"></i><span translate>label.getList</span>
                     </label>
                     <label class="md-check w">
-                        <input type="checkbox" data-checklist-model="historyFilter.operations"
+                        <input type="checkbox" data-checklist-model="yadeFilter.operations"
                                data-checklist-value="'RENAME'">
                         <i class="primary"></i><span translate>label.rename</span>
                     </label>
@@ -102,7 +102,7 @@
 
                 <div class=" col-sm-6">
                     <input type="text" class="form-control" placeholder="{{'placeholder.protocol' | translate}}" name="protocol"
-                           ng-model="historyFilter.protocol">
+                           ng-model="yadeFilter.protocol">
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
 
                 <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
                     <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                           placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="historyFilter.planned">
+                           placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="yadeFilter.planned">
 
                     <div class="help-block text-danger" ng-messages="form.planned.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
@@ -125,7 +125,7 @@
 
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.sourceFileName' | translate}}" name="sourceFileName"
-                           ng-model="historyFilter.sourceFileName">
+                           ng-model="yadeFilter.sourceFileName">
                 </div>
             </div>
 
@@ -134,7 +134,7 @@
 
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}" name="targetFileName"
-                           ng-model="historyFilter.targetFileName">
+                           ng-model="yadeFilter.targetFileName">
                 </div>
             </div>
 
@@ -143,7 +143,7 @@
 
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.sourceHost' | translate}}" name="sourceHost"
-                           ng-model="historyFilter.sourceHost">
+                           ng-model="yadeFilter.sourceHost">
                 </div>
             </div>
 
@@ -152,7 +152,7 @@
 
                 <div class=" col-sm-6">
                     <input class="form-control" placeholder="{{'placeholder.targetHost' | translate}}" name="targetHost"
-                           ng-model="historyFilter.targetHost">
+                           ng-model="yadeFilter.targetHost">
                 </div>
             </div>
 
@@ -162,7 +162,7 @@
 
                 <div class="col-sm-8">
                     <label class="md-check">
-                        <input type="checkbox" ng-model="historyFilter.shared">
+                        <input type="checkbox" ng-model="yadeFilter.shared">
                         <i class="primary"></i>
                     </label>
                 </div>

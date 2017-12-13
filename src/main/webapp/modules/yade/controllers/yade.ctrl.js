@@ -24,7 +24,7 @@
         vm.showFiles = vm.userPreferences.showFiles;
 
         vm.savedYadeFilter = JSON.parse(SavedFilter.yadeFilters) || {};
-        vm.jobFilterList = [];
+        vm.yadeFilterList = [];
 
 
         if (vm.yadeFilters.selectedView) {
@@ -72,7 +72,6 @@
         });
 
         function setDateRange(filter) {
-
             if (vm.yadeFilters.filter.date == 'all') {
 
             } else if (vm.yadeFilters.filter.date == 'today') {
@@ -174,7 +173,7 @@
         }
 
         vm.load = function () {
-            if (!vm.yadeFileTransferFilterList) {
+            if (!vm.yadeFilterList) {
                 checkSharedFilters();
                 return;
             }
@@ -183,18 +182,85 @@
             }
             var obj = {};
             obj.jobschedulerId = vm.yadeView.current == true ? vm.schedulerIds.selected : '';
-
-            if (vm.yadeFilters.filter.states && vm.yadeFilters.filter.states != 'all' && vm.yadeFilters.filter.states.length > 0) {
-                obj.states = [];
-                obj.states.push(vm.yadeFilters.filter.states);
-            }
             //obj.compact = true;
-            obj.limit = parseInt(vm.userPreferences.maxRecords);
-            obj = setDateRange(obj);
+
+            if (vm.selectedFiltered) {
+                if (vm.selectedFiltered.states && vm.selectedFiltered.states.length > 0) {
+                    obj.states = vm.selectedFiltered.states;
+                }
+
+                if (vm.selectedFiltered.operations && vm.selectedFiltered.operations.length > 0) {
+                    obj.operations = vm.selectedFiltered.operations;
+                }
+
+                if (vm.selectedFiltered.profileId) {
+                    obj.profiles = vm.selectedFiltered.profileId.split(',');
+                }
+
+                if (vm.selectedFiltered.mandator) {
+                    obj.mandator = vm.selectedFiltered.mandator;
+                }
+
+                if (vm.selectedFiltered.sourceHost) {
+                    obj.sources = vm.selectedFiltered.sourceHost;
+                }
+                if (vm.selectedFiltered.targetHost) {
+                    obj.targets = vm.selectedFiltered.targetHost;
+                }
+                if (vm.selectedFiltered.protocol) {
+                    obj.protocol = [];
+                    var s = vm.selectedFiltered.protocol.replace(/,\s+/g, ',');
+                    var protocols = s.split(',');
+                    angular.forEach(protocols, function (value) {
+                        obj.protocol.push(value)
+                    });
+
+                }
+                if (vm.selectedFiltered.date == 'process') {
+                    obj = parseProcessExecuted(vm.selectedFiltered.planned, obj);
+                } else {
+                    if (vm.selectedFiltered.date == 'date' && vm.selectedFiltered.from) {
+                        var fromDate = new Date(vm.selectedFiltered.from);
+                        if (vm.selectedFiltered.fromTime) {
+                            fromDate.setHours(moment(vm.selectedFiltered.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.selectedFiltered.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.selectedFiltered.fromTime, 'HH:mm:ss').seconds());
+                        } else {
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        }
+                        fromDate.setMilliseconds(0);
+                        obj.dateFrom = fromDate;
+                    }
+                    if (vm.selectedFiltered.date == 'date' && vm.selectedFiltered.to) {
+                        var toDate = new Date(vm.selectedFiltered.to);
+                        if (vm.selectedFiltered.toTime) {
+                            toDate.setHours(moment(vm.selectedFiltered.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.selectedFiltered.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.selectedFiltered.toTime, 'HH:mm:ss').seconds());
+                        } else {
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        }
+                        toDate.setMilliseconds(0);
+                        obj.dateTo = toDate;
+                    }
+                }
+            } else {
+                if (vm.yadeFilters.filter.states && vm.yadeFilters.filter.states != 'all') {
+                    obj.states = [];
+                    obj.states.push(vm.yadeFilters.filter.states);
+                }
+                obj = setDateRange(obj);
+            }
+
             obj.timeZone = vm.userPreferences.zone;
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
                 delete obj['timeZone']
             }
+            obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
                 vm.fileTransfers = res.transfers;
                 vm.isLoading = true;
@@ -248,7 +314,7 @@
             }
 
             if (vm.yadeSearch.profileId) {
-                filter.profiles = vm.yadeSearch.profileId;
+                filter.profiles = vm.yadeSearch.profileId.split(',');
             }
 
             if (vm.yadeSearch.mandator) {
@@ -350,14 +416,14 @@
                 obj.shared = true;
                 UserService.configurations(obj).then(function (res) {
                     if (res.configurations && res.configurations.length > 0)
-                        vm.yadeFileTransferFilterList = res.configurations;
+                        vm.yadeFilterList = res.configurations;
                     getYadeCustomizations();
                 }, function () {
-                    vm.yadeFileTransferFilterList = [];
+                    vm.yadeFilterList = [];
                     getYadeCustomizations();
                 });
             } else {
-                vm.yadeFileTransferFilterList = [];
+                vm.yadeFilterList = [];
                 getYadeCustomizations();
             }
         }
@@ -370,32 +436,31 @@
             obj.configurationType = "CUSTOMIZATION";
             obj.objectType = "YADE";
             UserService.configurations(obj).then(function (res) {
-                console.log(res)
-                if (vm.yadeFileTransferFilterList && vm.yadeFileTransferFilterList.length > 0) {
+                if (vm.yadeFilterList && vm.yadeFilterList.length > 0) {
                     if (res.configurations && res.configurations.length > 0) {
-                        vm.yadeFileTransferFilterList = vm.yadeFileTransferFilterList.concat(res.configurations);
+                        vm.yadeFilterList = vm.yadeFilterList.concat(res.configurations);
                     }
                     var data = [];
 
-                    for (var i = 0; i < vm.yadeFileTransferFilterList.length; i++) {
+                    for (var i = 0; i < vm.yadeFilterList.length; i++) {
                         var flag = true;
                         for (var j = 0; j < data.length; j++) {
-                            if (data[j].account == vm.yadeFileTransferFilterList[i].account && data[j].name == vm.yadeFileTransferFilterList[i].name) {
+                            if (data[j].account == vm.yadeFilterList[i].account && data[j].name == vm.yadeFilterList[i].name) {
                                 flag = false;
                             }
                         }
                         if (flag) {
-                            data.push(vm.yadeFileTransferFilterList[i]);
+                            data.push(vm.yadeFilterList[i]);
                         }
                     }
-                    vm.yadeFileTransferFilterList = data;
+                    vm.yadeFilterList = data;
                 } else {
-                    vm.yadeFileTransferFilterList = res.configurations;
+                    vm.yadeFilterList = res.configurations;
                 }
 
                 if (vm.savedYadeFilter.selected) {
                     var flag = true;
-                    angular.forEach(vm.yadeFileTransferFilterList, function (value) {
+                    angular.forEach(vm.yadeFilterList, function (value) {
                         if (value.id == vm.savedYadeFilter.selected) {
                             flag = false;
                             UserService.configuration({
@@ -432,32 +497,17 @@
             configObj.jobschedulerId = vm.schedulerIds.selected;
             configObj.account = vm.permission.user;
             configObj.configurationType = "CUSTOMIZATION";
-            var fromDate;
-            var obj = {};
-
-            configObj.name = vm.yadeSearch.name;
-            obj.profileId = vm.yadeSearch.profileId;
-            obj.mandator = vm.yadeSearch.mandator;
-            obj.state = vm.yadeSearch.states;
-            obj.operations = vm.yadeSearch.operations;
-            obj.protocol = vm.yadeSearch.protocol;
-            obj.name = vm.yadeSearch.name;
-            obj.sourceFileName = vm.yadeSearch.sourceFileName;
-            obj.targetFileName = vm.yadeSearch.targetFileName;
-            obj.sourceHost = vm.yadeSearch.sourceHost;
-            obj.targetHost = vm.yadeSearch.targetHost;
-
-            configObj.id = 0;
-
             configObj.objectType = "YADE";
+            configObj.id = 0;
+            configObj.name = vm.yadeSearch.name;
+            configObj.configurationItem = JSON.stringify(vm.yadeSearch);
 
-            configObj.configurationItem = JSON.stringify(obj);
             UserService.saveConfiguration(configObj).then(function (res) {
                 configObj.id = res.id;
                 vm.yadeSearch.name = '';
                 if (form)
                     form.$setPristine();
-                vm.yadeHistoryFilterList.push(configObj);
+                vm.yadeFilterList.push(configObj);
 
             });
         };
@@ -465,8 +515,8 @@
         vm.advanceFilter = function () {
             vm.cancel();
             vm.action = 'add';
-            vm.historyFilter = {};
-            vm.historyFilter.planned = 'today';
+            vm.yadeFilter = {};
+            vm.yadeFilter.planned = 'today';
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/yade-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -479,29 +529,26 @@
                 configObj.jobschedulerId = vm.schedulerIds.selected;
                 configObj.account = vm.permission.user;
                 configObj.configurationType = "CUSTOMIZATION";
-                configObj.name = vm.historyFilter.name;
-                configObj.shared = vm.historyFilter.shared;
+                configObj.name = vm.yadeFilter.name;
+                configObj.shared = vm.yadeFilter.shared;
                 configObj.id = 0;
-                configObj.configurationItem = JSON.stringify(vm.historyFilter);
+                configObj.configurationItem = JSON.stringify(vm.yadeFilter);
                 configObj.objectType = "YADE";
 
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
-                    vm.yadeHistoryFilterList.push(configObj);
-                    if (vm.historyFilters.type == 'yade') {
+                    vm.yadeFilterList.push(configObj);
 
-                        if (vm.yadeHistoryFilterList.length == 1) {
-                            vm.savedHistoryFilter.selected = res.id;
-                            vm.historyFilters.yade.selectedView = true;
-                            vm.selectedFiltered3 = vm.historyFilter;
-                            vm.selectedFiltered3.account = vm.permission.user;
-                            vm.init();
-                            isCustomizationSelected3(true);
-                        }
-                        vm.historyFilterObj.yade = vm.savedHistoryFilter;
+                    if (vm.yadeFilterList.length == 1) {
+                        vm.savedYadeFilter.selected = res.id;
+                        vm.yadeFilters.selectedView = true;
+                        vm.selectedFiltered = vm.yadeFilter;
+                        vm.selectedFiltered.account = vm.permission.user;
+                        isCustomizationSelected(true);
+                        SavedFilter.setYade(vm.savedYadeFilter);
+                        SavedFilter.save();
+                        vm.load();
                     }
-                    SavedFilter.setHistory(vm.historyFilterObj);
-                    SavedFilter.save();
                 });
 
             }, function () {
@@ -510,16 +557,8 @@
 
         vm.editFilters = function () {
             vm.filters = {};
-            if (vm.historyFilters.type == 'jobChain') {
-                vm.filters.list = vm.orderHistoryFilterList;
-                vm.filters.favorite = vm.savedHistoryFilter.favorite;
-            } else if (vm.historyFilters.type == 'job') {
-                vm.filters.list = vm.jobHistoryFilterList;
-                vm.filters.favorite = vm.savedJobHistoryFilter.favorite;
-            } else {
-                vm.filters.list = vm.yadeHistoryFilterList;
-                vm.filters.favorite = vm.savedYadeHistoryFilter.favorite;
-            }
+            vm.filters.list = vm.yadeFilterList;
+            vm.filters.favorite = vm.savedYadeFilter.favorite;
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/edit-filter-dialog.html',
@@ -535,8 +574,8 @@
             vm.isUnique = true;
             temp_name = angular.copy(filter.name);
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
-                vm.historyFilter = JSON.parse(conf.configuration.configurationItem);
-                vm.historyFilter.shared = filter.shared;
+                vm.yadeFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.yadeFilter.shared = filter.shared;
             });
 
 
@@ -549,15 +588,11 @@
             });
             modalInstance.result.then(function () {
 
-                if (vm.historyFilters.type == 'yade') {
-                    if (vm.savedHistoryFilter.selected == filter.id) {
-                        vm.selectedFiltered3 = vm.historyFilter;
-                        vm.historyFilters.yade.selectedView = true;
-                        vm.init();
-                        isCustomizationSelected3(true);
-                    }
-                    vm.historyFilterObj.yade = vm.savedHistoryFilter;
-
+                if (vm.savedYadeFilter.selected == filter.id) {
+                    vm.selectedFiltered = vm.yadeFilter;
+                    vm.yadeFilters.selectedView = true;
+                    isCustomizationSelected(true);
+                    vm.load();
                 }
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
@@ -565,11 +600,11 @@
                 configObj.configurationType = filter.configurationType;
                 configObj.objectType = filter.objectType;
                 configObj.id = filter.id;
-                configObj.configurationItem = JSON.stringify(vm.historyFilter);
-                configObj.name = vm.historyFilter.name;
-                configObj.shared = vm.historyFilter.shared;
+                configObj.configurationItem = JSON.stringify(vm.yadeFilter);
+                configObj.name = vm.yadeFilter.name;
+                configObj.shared = vm.yadeFilter.shared;
                 UserService.saveConfiguration(configObj);
-                filter.name = vm.historyFilter.name;
+                filter.name = vm.yadeFilter.name;
                 temp_name = '';
             }, function () {
                 temp_name = '';
@@ -580,12 +615,9 @@
             vm.action = 'copy';
             vm.isUnique = true;
             UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
-                vm.historyFilter = JSON.parse(conf.configuration.configurationItem);
-                vm.historyFilter.shared = filter.shared;
-
-                if (vm.historyFilters.type == 'yade') {
-                    vm.historyFilter.name = vm.checkCopyName(vm.yadeHistoryFilterList, filter.name);
-                }
+                vm.yadeFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.yadeFilter.shared = filter.shared;
+                vm.yadeFilter.name = vm.checkCopyName(vm.yadeFilterList, filter.name);
             });
 
             var modalInstance = $uibModal.open({
@@ -600,16 +632,14 @@
                 configObj.jobschedulerId = filter.jobschedulerId;
                 configObj.account = vm.permission.user;
                 configObj.configurationType = "CUSTOMIZATION";
-                configObj.name = vm.historyFilter.name;
-                configObj.shared = vm.historyFilter.shared;
+                configObj.name = vm.yadeFilter.name;
+                configObj.shared = vm.yadeFilter.shared;
                 configObj.objectType = filter.objectType;
                 configObj.id = 0;
-                configObj.configurationItem = JSON.stringify(vm.historyFilter);
+                configObj.configurationItem = JSON.stringify(vm.yadeFilter);
                 UserService.saveConfiguration(configObj).then(function (res) {
                     configObj.id = res.id;
-                    if (vm.historyFilters.type == 'yade') {
-                        vm.yadeHistoryFilterList.push(configObj);
-                    }
+                    vm.yadeFilterList.push(configObj);
                 });
             }, function () {
             });
@@ -621,29 +651,29 @@
                 id: filter.id
             }).then(function (res) {
 
-                angular.forEach(vm.yadeHistoryFilterList, function (value, index) {
+                angular.forEach(vm.yadeFilterList, function (value, index) {
                     if (value.id == filter.id) {
-                        vm.yadeHistoryFilterList.splice(index, 1);
+                        vm.yadeFilterList.splice(index, 1);
                     }
                 });
 
-                if (vm.savedYadeHistoryFilter.selected == filter.id) {
-                    vm.savedYadeHistoryFilter.selected = undefined;
-                    vm.historyFilters.yade.selectedView = false;
-                    vm.selectedFiltered3 = undefined;
-                    vm.init();
-                    isCustomizationSelected3(false);
+                if (vm.savedYadeFilter.selected == filter.id) {
+                    vm.savedYadeFilter.selected = undefined;
+                    vm.yadeFilters.selectedView = false;
+                    vm.selectedFiltered = undefined;
+                    vm.load();
+                    isCustomizationSelected(false);
                 } else {
-                    if (vm.yadeHistoryFilterList.length == 0) {
-                        vm.savedYadeHistoryFilter.selected = undefined;
-                        vm.historyFilters.yade.selectedView = false;
-                        vm.selectedFiltered3 = undefined;
-                        isCustomizationSelected3(false);
+                    if (vm.yadeFilterList.length == 0) {
+                        vm.savedYadeFilter.selected = undefined;
+                        vm.yadeFilters.selectedView = false;
+                        vm.selectedFiltered = undefined;
+                        isCustomizationSelected(false);
                     }
                 }
-                vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
 
-                SavedFilter.setHistory(vm.historyFilterObj);
+
+                SavedFilter.setYade(vm.savedYadeFilter);
                 SavedFilter.save();
             });
         };
@@ -657,9 +687,9 @@
                 configObj.shared = false;
                 if (vm.permission.user != configObj.account) {
 
-                    angular.forEach(vm.yadeHistoryFilterList, function (value, index) {
+                    angular.forEach(vm.yadeFilterList, function (value, index) {
                         if (value.id == configObj.id) {
-                            vm.yadeHistoryFilterList.splice(index, 1);
+                            vm.yadeFilterList.splice(index, 1);
                         }
                     });
 
@@ -679,70 +709,66 @@
         vm.favorite = function (filter) {
             vm.filters.favorite = filter.id;
 
-            vm.savedYadeHistoryFilter.favorite = filter.id;
-            vm.historyFilters.yade.selectedView = true;
-            vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            vm.savedYadeFilter.favorite = filter.id;
+            vm.yadeFilters.selectedView = true;
 
-            SavedFilter.setHistory(vm.historyFilterObj);
+
+            SavedFilter.setYade(vm.savedYadeFilter);
             SavedFilter.save();
-            vm.init();
+            vm.load();
         };
 
         vm.removeFavorite = function () {
-            vm.savedYadeHistoryFilter.favorite = '';
-            vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
+            vm.savedYadeFilter.favorite = '';
+
 
             vm.filters.favorite = '';
-            SavedFilter.setHistory(vm.historyFilterObj);
+            SavedFilter.setYade(vm.savedYadeFilter);
             SavedFilter.save();
         };
         vm.checkFilterName = function () {
             vm.isUnique = true;
 
-
             if (vm.yadeSearch && vm.yadeSearch.name) {
-                angular.forEach(vm.yadeHistoryFilterList, function (value) {
+                angular.forEach(vm.yadeFilterList, function (value) {
                     if (vm.yadeSearch.name == value.name && vm.permission.user == value.account) {
                         vm.isUnique = false;
                     }
                 });
-            } else if (vm.historyFilter) {
-                angular.forEach(vm.yadeHistoryFilterList, function (value) {
-                    if (vm.historyFilter.name == value.name && vm.permission.user == value.account && vm.historyFilter.name != temp_name) {
+            } else if (vm.yadeFilter) {
+                angular.forEach(vm.yadeFilterList, function (value) {
+                    if (vm.yadeFilter.name == value.name && vm.permission.user == value.account && vm.yadeFilter.name != temp_name) {
                         vm.isUnique = false;
                     }
                 });
             }
-
         };
 
         vm.changeFilter = function (filter) {
             vm.cancel();
 
             if (filter) {
-                vm.savedYadeHistoryFilter.selected = filter.id;
-                vm.historyFilters.yade.selectedView = true;
+                vm.savedYadeFilter.selected = filter.id;
+                vm.yadeFilters.selectedView = true;
                 UserService.configuration({
                     jobschedulerId: filter.jobschedulerId,
                     id: filter.id
                 }).then(function (conf) {
-                    vm.selectedFiltered3 = JSON.parse(conf.configuration.configurationItem);
-                    vm.selectedFiltered3.account = filter.account;
-                    vm.init();
+                    vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                    vm.selectedFiltered.account = filter.account;
+                    vm.load();
                 });
             }
             else {
                 isCustomizationSelected(false);
-                vm.savedYadeHistoryFilter.selected = filter;
-                vm.historyFilters.yade.selectedView = false;
-                vm.selectedFiltered3 = filter;
-                vm.init();
+                vm.savedYadeFilter.selected = filter;
+                vm.yadeFilters.selectedView = false;
+                vm.selectedFiltered = filter;
+                vm.load();
             }
 
-            vm.historyFilterObj.yade = vm.savedYadeHistoryFilter;
 
-
-            SavedFilter.setHistory(vm.historyFilterObj);
+            SavedFilter.setYade(vm.savedYadeFilter);
             SavedFilter.save();
         };
 

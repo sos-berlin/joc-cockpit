@@ -6594,8 +6594,15 @@
                         jobschedulerId: vm.schedulerIds.selected,
                         id: res1.configurations[0].id
                     }).then(function (res) {
-                        if (res.configuration && res.configuration.configurationItem && res.configuration.configurationItem.objectType !='YADE_HISTORY') {
-                            vm.savedIgnoreList = JSON.parse(res.configuration.configurationItem);
+
+                        if (res.configuration && res.configuration.configurationItem) {
+                            var data = JSON.parse(res.configuration.configurationItem) || {};
+                            if (res.configuration.objectType == 'YADE_HISTORY') {
+                                vm.savedYadeIgnoreList = data;
+                            } else {
+                                vm.savedIgnoreList = data;
+                            }
+
                         }
                         loadIgnoreList = true;
                         vm.init();
@@ -6615,40 +6622,6 @@
 
         getIgnoreList();
 
-        vm.ignoreYadeListConfigId = 0;
-        function getYadeIgnoreList() {
-            var configObj = {};
-            configObj.jobschedulerId = vm.schedulerIds.selected;
-            configObj.account = vm.permission.user;
-            configObj.configurationType = "IGNORELIST";
-            configObj.objectType = "YADE_HISTORY";
-            UserService.configurations(configObj).then(function (res1) {
-                if (res1.configurations && res1.configurations.length > 0) {
-                    vm.ignoreYadeListConfigId = res1.configurations[0].id;
-                    UserService.configuration({
-                        jobschedulerId: vm.schedulerIds.selected,
-                        id: res1.configurations[0].id
-                    }).then(function (res) {
-                        if (res.configuration && res.configuration.configurationItem) {
-                            vm.savedYadeIgnoreList = JSON.parse(res.configuration.configurationItem);
-                        }
-                        loadIgnoreList = true;
-                        vm.init();
-                    }, function () {
-                        loadIgnoreList = true;
-                        vm.init();
-                    });
-                } else {
-                    loadIgnoreList = true;
-                    vm.init();
-                }
-            }, function () {
-                loadIgnoreList = true;
-                vm.init();
-            });
-        }
-
-        getYadeIgnoreList();
 
         /**--------------- sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
@@ -6671,7 +6644,7 @@
                     filter.excludeJobs.push({job: job});
                 });
             }
-             if (vm.task.filter.date == 'today') {
+            if (vm.task.filter.date == 'today') {
                 var from = new Date();
                 var to = new Date();
                 from.setHours(0);
@@ -6686,7 +6659,7 @@
 
                 filter.dateFrom = from;
                 filter.dateTo = to;
-            } else if (vm.task.filter.date && vm.task.filter.date != 'all'){
+            } else if (vm.task.filter.date && vm.task.filter.date != 'all') {
                 filter.dateFrom = vm.task.filter.date;
             }
             return filter;
@@ -6704,11 +6677,11 @@
                 });
             }
 
-             if (vm.order.filter.date == 'today') {
+            if (vm.order.filter.date == 'today') {
                 filter.dateFrom = '0d';
                 filter.dateTo = '0d';
 
-            } else if(vm.order.filter.date && vm.order.filter.date != 'all'){
+            } else if (vm.order.filter.date && vm.order.filter.date != 'all') {
                 filter.dateFrom = vm.order.filter.date;
             }
 
@@ -8490,7 +8463,7 @@
                 configObj.objectType = "YADE_HISTORY";
                 configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
                 UserService.saveConfiguration(configObj).then(function (res) {
-                    vm.ignoreYadeListConfigId = res.id;
+                    vm.ignoreListConfigId = res.id;
                 })
             }
         };
@@ -8526,9 +8499,9 @@
             configObj.configurationType = "IGNORELIST";
             configObj.objectType = "YADE_HISTORY";
             configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
-            configObj.id = vm.ignoreYadeListConfigId;
+            configObj.id = vm.ignoreListConfigId;
             UserService.saveConfiguration(configObj).then(function (res) {
-                vm.ignoreYadeListConfigId = res.id;
+                vm.ignoreListConfigId = res.id;
             });
             if ((vm.savedYadeIgnoreList.isEnable == 'true' || vm.savedYadeIgnoreList.isEnable == true)) {
                 if (yadeSearch) {
@@ -8636,10 +8609,10 @@
             vm.savedYadeIgnoreList.isEnable = false;
             configObj.configurationType = "IGNORELIST";
             configObj.objectType = "YADE_HISTORY";
-            configObj.id = vm.ignoreYadeListConfigId;
+            configObj.id = vm.ignoreListConfigId;
             configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
             UserService.saveConfiguration(configObj).then(function (res) {
-                vm.ignoreYadeListConfigId = res.id;
+                vm.ignoreListConfigId = res.id;
             })
         };
 
@@ -8647,10 +8620,10 @@
             vm.savedYadeIgnoreList.isEnable = !vm.savedYadeIgnoreList.isEnable;
             configObj.configurationType = "IGNORELIST";
             configObj.objectType = "YADE_HISTORY";
-            configObj.id = vm.ignoreYadeListConfigId;
+            configObj.id = vm.ignoreListConfigId;
             configObj.configurationItem = JSON.stringify(vm.savedYadeIgnoreList);
             UserService.saveConfiguration(configObj).then(function (res) {
-                vm.ignoreYadeListConfigId = res.id;
+                vm.ignoreListConfigId = res.id;
             });
             if (yadeSearch) {
                 vm.search(true);

@@ -277,7 +277,9 @@
                             if (preferences && !preferences.agentTask) {
                                 preferences.agentTask = 'current';
                             }
-
+                            if (preferences && !preferences.fileTransfer) {
+                                preferences.fileTransfer = 'current';
+                            }
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';
                                 $window.sessionStorage.preferences = JSON.stringify(preferences);
@@ -1778,7 +1780,7 @@
         vm.events = [];
 
         function submit() {
-            if ((vm.calendar && !vm.calendar.copy && vm.calendar.usedIn && vm.calendar.usedIn.length > 0) || vm.calendarArr) {
+            if ((vm.calendar && !vm.calendar.copy && vm.calendar.usedIn && vm.calendar.usedIn.length > 0) || vm.calendarArr || (vm.importCalendars && vm.importCalendars.length>0)) {
                 var modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/confirm-dialog.html',
                     controller: 'DialogCtrl1',

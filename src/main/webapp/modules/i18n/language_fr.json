@@ -1240,5 +1240,20 @@
   "label.lastErrorMessage": "Last Error Message",
   "label.integrityHash": "Integrity Hash",
   "label.showFileTransferForJobScheduler" :"Show File Transfer for JobScheduler",
-  "label.eventExitCode" :"Event Exit Code"
+  "label.eventExitCode" :"Event Exit Code",
+  "label.expirationPeriod": "Expiration Period",
+  "label.expirationCycle": "Expiration Cycle",
+  "label.addNewEvent": "Add New Event",
+  "label.customEventFound": "Custom Event Found",
+  "label.customEventsFound": "Custom Events Found",
+  "label.expireFrom": "Expire From",
+  "label.expireTo": "Expire To",
+  "placeholder.eventId": "Enter event Id",
+  "placeholder.eventClass": "Enter event class",
+  "placeholder.expirationCycle": "Enter expiration cycle",
+  "placeholder.expirationPeriod": "Enter expiration period",
+  "placeholder.expires": "Enter expires",
+  "placeholder.exitCode": "Enter exit code",
+  "label.importAllCalendar": "Import used Calendars",
+  "message.importAllCalendar": "Are you sure you want to overwrite used Calendars"
 }

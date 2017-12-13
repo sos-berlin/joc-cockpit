@@ -10,9 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService","UserService","SavedFilter","OrderService","JobService"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService,UserService,SavedFilter,OrderService,JobService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -24,6 +23,16 @@
         vm.calendarFilters = vm.resourceFilters.calendars;
         vm.eventFilters = vm.resourceFilters.events;
 
+        vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
+        vm.eventFilterList = [];
+
+
+        if (vm.eventFilters.selectedView) {
+            vm.savedEventFilter.selected = vm.savedEventFilter.selected || vm.savedEventFilter.favorite;
+        }
+        else {
+            vm.savedEventFilter.selected = undefined;
+        }
         vm.object = {};
 
         vm.tree = [];
@@ -320,7 +329,6 @@
             });
         }
 
-
         var obj1 = {};
         vm.pollAgents = function () {
             obj1 = {folders: []};
@@ -489,7 +497,6 @@
             });
         }
 
-
         vm.expandNodeL = function (data) {
             navFullTreeL();
             vm.allLocks = [];
@@ -507,7 +514,6 @@
                 vm.loading = false;
             });
         };
-
 
         function startTraverseNodeL(data) {
             vm.allLocks = [];
@@ -696,7 +702,6 @@
             });
         }
 
-
         function checkExpandL(data) {
             if (data.selected1) {
                 data.locks = [];
@@ -713,7 +718,6 @@
                 checkExpandL(value);
             });
         }
-
 
         /** <<<<<<<<<<<<< End Locks >>>>>>>>>>>>>>> */
 
@@ -784,7 +788,6 @@
 
         }
 
-
         vm.terminateTaskWithTimeout = function (task, path) {
             if (task && path) {
                 vm.task = task;
@@ -853,7 +856,6 @@
             });
         }
 
-
         function expandFolderDataP(data) {
             vm.loading = true;
             var obj = {};
@@ -899,7 +901,6 @@
                 }
 
                 data.processClasses = res.processClasses;
-
 
                 if (data.processClasses.length > 0) {
                     angular.forEach(data.processClasses, function (value) {
@@ -1034,7 +1035,6 @@
             });
         };
 
-
         function startTraverseNodeP(data) {
             vm.allProcessClasses = [];
             function recursive(data) {
@@ -1095,7 +1095,6 @@
             });
         };
 
-
         /** <<<<<<<<<<<<< End ProcessClass >>>>>>>>>>>>>>> */
 
 
@@ -1104,7 +1103,7 @@
         vm.allCheckCalendar = {
             checkbox: false
         };
-        vm.checkAllCalendar = function() {
+        vm.checkAllCalendar = function () {
             if (vm.allCheckCalendar.checkbox && vm.allCalendars.length > 0) {
                 vm.object.calendars = vm.allCalendars.slice((vm.userPreferences.entryPerPage * (vm.calendarFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.calendarFilters.currentPage));
             } else {
@@ -1120,7 +1119,7 @@
             }
         });
 
-        vm.getCategories = function() {
+        vm.getCategories = function () {
             CalendarService.getCalendarCategories({jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
                 vm.categories = res.categories;
             });
@@ -1135,7 +1134,7 @@
             ResourceService.tree({
                 jobschedulerId: vm.schedulerIds.selected,
                 compact: true,
-                types: ["WORKINGDAYSCALENDAR","NONWORKINGDAYSCALENDAR"]
+                types: ["WORKINGDAYSCALENDAR", "NONWORKINGDAYSCALENDAR"]
             }).then(function (res) {
                 if ($rootScope.calendar_expand_to) {
                     vm.treeCalendar = angular.copy(res.folders);
@@ -1157,11 +1156,15 @@
             });
         }
 
-
         function filteredTreeDataC() {
             angular.forEach(vm.treeCalendar, function (value) {
                 value.expanded = true;
-                value.selected1 = true;
+                if($rootScope.calendar_expand_to){
+                    if((value.path == $rootScope.calendar_expand_to.path))
+                        value.selected1 = true;
+                }else{
+                    value.selected1 = true;
+                }
                 vm.allCalendars = [];
                 checkExpandC(value);
             });
@@ -1178,6 +1181,7 @@
                     value.path1 = data.path;
                     vm.allCalendars.push(value);
                 });
+
             }
             data.folders = orderBy(data.folders, 'name');
             angular.forEach(data.folders, function (value) {
@@ -1190,10 +1194,11 @@
                 }
                 checkExpandC(value);
             });
+
         }
 
         function expandFolderDataC(data) {
-            vm.object.calendars=[];
+            vm.object.calendars = [];
             vm.loading = true;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -1201,7 +1206,7 @@
             if (vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
             }
-            if(vm.calendarFilters.filter.category){
+            if (vm.calendarFilters.filter.category) {
                 obj.categories = [];
                 obj.categories.push(vm.calendarFilters.filter.category);
             }
@@ -1212,17 +1217,17 @@
                 vm.folderPathC = data.name || '/';
                 vm.folderFullPathC = data.path || '/';
                 vm.loading = false;
-                var flag =false;
+                var flag = false;
                 if (data.calendars.length > 0) {
 
                     angular.forEach(data.calendars, function (value) {
                         value.path1 = data.path;
-                        if(vm.showPanel.path == data.path){
-                            flag =true;
+                        if (vm.showPanel.path == data.path) {
+                            flag = true;
                         }
                     });
                 }
-                if(!flag) {
+                if (!flag) {
                     vm.showPanel = undefined;
                 }
 
@@ -1261,13 +1266,13 @@
             vm.folderPathC = data.name || '/';
             vm.folderFullPathC = data.path || '/';
             var obj = {};
-             obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobschedulerId = vm.schedulerIds.selected;
             obj.folders = [];
             obj.folders.push({folder: data.path, recursive: true});
             if (vm.calendarFilters.filter.type != 'ALL') {
                 obj.type = vm.calendarFilters.filter.type;
             }
-            if(vm.calendarFilters.filter.category){
+            if (vm.calendarFilters.filter.category) {
                 obj.categories = [];
                 obj.categories.push(vm.calendarFilters.filter.category);
             }
@@ -1297,6 +1302,7 @@
                     recursive(a);
                 });
             }
+
             recursive(data);
         }
 
@@ -1330,16 +1336,16 @@
             });
         }
 
-        vm.loadCalendar = function(flag) {
-            vm.object.calendars=[];
-            if(flag == 'remove'){
+        vm.loadCalendar = function (flag) {
+            vm.object.calendars = [];
+            if (flag == 'remove') {
                 vm.calendarFilters.filter.category = undefined;
             }
             obj1 = {folders: []};
             if (vm.calendarFilters.filter.type != 'ALL') {
                 obj1.type = vm.calendarFilters.filter.type;
             }
-            if(vm.calendarFilters.filter.category){
+            if (vm.calendarFilters.filter.category) {
                 obj1.categories = [];
                 obj1.categories.push(vm.calendarFilters.filter.category);
             }
@@ -1350,7 +1356,7 @@
                     getExpandTreeForUpdates1(value);
             });
             obj1.compact = true;
-             obj1.jobschedulerId = vm.schedulerIds.selected;
+            obj1.jobschedulerId = vm.schedulerIds.selected;
             CalendarService.getListOfCalendars(obj1).then(function (res) {
                 var data = res.calendars;
                 angular.forEach(vm.treeCalendar, function (value) {
@@ -1365,24 +1371,24 @@
 
         function storeCalendar() {
             var obj = {};
-             obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = vm.calendar.calendarObj;
-            if(vm.calendar.create) {
+            if (vm.calendar.create) {
                 if (vm.calendar.path == '/') {
                     obj.calendar.path = '/' + vm.calendar.name;
                 } else {
                     obj.calendar.path = vm.calendar.path + '/' + vm.calendar.name;
                 }
-            }else{
-              obj.calendar.path = vm.calendar.newPath;
-              obj.calendar.id = vm.calendar.id;
+            } else {
+                obj.calendar.path = vm.calendar.newPath;
+                obj.calendar.id = vm.calendar.id;
             }
             obj.calendar.title = vm.calendar.title;
             obj.calendar.category = vm.calendar.category;
             obj.calendar.type = vm.calendar.type;
-            if(vm.calendar.from)
-                obj.calendar.from = moment(vm.calendar.from).format('YYYY-MM-DD') ;
-            if(vm.calendar.to)
+            if (vm.calendar.from)
+                obj.calendar.from = moment(vm.calendar.from).format('YYYY-MM-DD');
+            if (vm.calendar.to)
                 obj.calendar.to = moment(vm.calendar.to).format('YYYY-MM-DD');
             if (vm.comments.comment) {
                 obj.auditLog = {};
@@ -1393,10 +1399,9 @@
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            CalendarService.storeCalendar(obj).then(function () {
-                  initCalendarTree();
-            });
+            CalendarService.storeCalendar(obj);
         }
+
         $scope.$on('calendar-obj', function (event, data) {
             vm.calendar = data.calendar;
             storeCalendar();
@@ -1416,9 +1421,9 @@
                 backdrop: 'static',
                 windowClass: 'fade-modal'
             });
-            t1 = $timeout(function(){
+            t1 = $timeout(function () {
                 vm.template = 'page1';
-            },400);
+            }, 400);
         };
 
         vm.editCalendar = function (calendar) {
@@ -1448,14 +1453,14 @@
             vm.object.calendars = [];
         };
 
-        $scope.$on('copy-calendar',function (event, data) {
+        $scope.$on('copy-calendar', function (event, data) {
             vm.calendar = data.calendar;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendar = vm.calendar.calendarObj;
 
             obj.calendar.path = vm.calendar.newPath;
-           
+
             if (vm.calendar.title)
                 obj.calendar.title = vm.calendar.title;
             if (vm.calendar.category)
@@ -1474,38 +1479,39 @@
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
 
-            CalendarService.saveAs(obj).then(function () {
-                initCalendarTree();
-            });
+            CalendarService.saveAs(obj);
         });
-        vm.showUsage = function(calendar){
+        vm.showUsage = function (calendar) {
             vm.calendar = angular.copy(calendar);
-            CalendarService.calendarUsed({id: calendar.id,jobschedulerId : vm.schedulerIds.selected}).then(function (res) {
-                    vm.calendar.usedIn = res;
-                });
-              var modalInstance1 = $uibModal.open({
-                    templateUrl: 'modules/core/template/show-usage-calendar-dialog.html',
-                    controller: 'DialogCtrl',
-                    scope: vm,
-                    backdrop: 'static'
-                });
-                modalInstance1.result.then(function () {
+            CalendarService.calendarUsed({
+                id: calendar.id,
+                jobschedulerId: vm.schedulerIds.selected
+            }).then(function (res) {
+                vm.calendar.usedIn = res;
+            });
+            var modalInstance1 = $uibModal.open({
+                templateUrl: 'modules/core/template/show-usage-calendar-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance1.result.then(function () {
 
-                }, function () {
+            }, function () {
 
-                });
+            });
         };
         var uploader = $scope.uploader = new FileUploader({
             url: './calendars/import'
         });
 
-         vm.fileLoading = false;
+        vm.fileLoading = false;
         // CALLBACKS
         uploader.onAfterAddingFile = function (item) {
             var fileExt = item.file.name.slice(item.file.name.lastIndexOf('.') + 1).toUpperCase();
             if (fileExt != 'JSON') {
                 toasty.error({
-                    title: fileExt +' ' + gettextCatalog.getString("message.invalidFileExtension"),
+                    title: fileExt + ' ' + gettextCatalog.getString("message.invalidFileExtension"),
                     timeout: 10000
                 });
                 item.remove();
@@ -1516,23 +1522,31 @@
                 reader.onload = onLoadFile;
             }
         };
-
+        vm.basedOnCalendars =[];
+        vm.fileContentCalendars =[];
         function onLoadFile(event) {
-            var data= JSON.parse(event.target.result);
-            var paths =[];
-            if(data){
-                vm.fileContentCalendars =data.calendars;
+            var data = JSON.parse(event.target.result);
+            var paths = [];
+            if (data && data.calendars) {
+                for(var i=0; i<data.calendars.length;i++) {
+                    if(!data.calendars[i].basedOn) {
+                        vm.fileContentCalendars.push(data.calendars[i]);
+                    }else{
+                        vm.basedOnCalendars.push(data.calendars[i]);
+                    }
+                }
+
             }
-            if(angular.isArray(vm.fileContentCalendars)){
-                for(var i =0; i< vm.fileContentCalendars.length;i++){
-                    if(vm.fileContentCalendars[i].path)
-                    paths.push(vm.fileContentCalendars[i].path);
+            if (vm.fileContentCalendars && angular.isArray(vm.fileContentCalendars)) {
+                for (var i = 0; i < vm.fileContentCalendars.length; i++) {
+                    if (vm.fileContentCalendars[i].path)
+                        paths.push(vm.fileContentCalendars[i].path);
                 }
             }
-            if(paths.length==0){
+            if (paths.length == 0) {
                 vm.fileLoading = false;
                 vm.fileContentCalendars = undefined;
-                 toasty.error({
+                toasty.error({
                     title: gettextCatalog.getString("message.notValidCalendarFile"),
                     timeout: 10000
                 });
@@ -1543,24 +1557,26 @@
             obj.calendars = paths;
             obj.compact = true;
             obj.jobschedulerId = vm.schedulerIds.selected;
-            CalendarService.getListOfCalendars(obj).then(function (res) {
-               angular.forEach(res.calendars, function(value){
-                   for(var i =0; i< vm.fileContentCalendars.length;i++){
-                       if(value.path == vm.fileContentCalendars[i].path){
-                           vm.fileContentCalendars[i].isExit=true;
-                           break;
-                       }
-                   }
-               });
-               vm.fileLoading = false;
+            CalendarService.calendarsUsed(obj).then(function (res) {
+
+                vm.calendrs = res.calendars;
+                angular.forEach(res.calendars, function (value) {
+                    for (var i = 0; i < vm.fileContentCalendars.length; i++) {
+                        if (value.path == vm.fileContentCalendars[i].path) {
+                            vm.fileContentCalendars[i].isExit = true;
+                            break;
+                        }
+                    }
+                });
+                vm.fileLoading = false;
             }, function () {
                 vm.fileLoading = false;
             });
 
         }
 
-        vm.importCalendarObj ={};
-        vm.importCalendarObj.jobschedulerId= vm.schedulerIds.selected;
+        vm.importCalendarObj = {};
+        vm.importCalendarObj.jobschedulerId = vm.schedulerIds.selected;
         vm.importCalendarObj.calendars = [];
         vm.checkImportCalendar = {
             checkbox: false
@@ -1574,11 +1590,22 @@
         };
 
         var watcher5 = $scope.$watchCollection('importCalendarObj.calendars', function (newNames) {
-            if (newNames && newNames.length > 0) {
+            vm.importCalendars = [];
+            if (newNames && newNames.length > 0 && vm.fileContentCalendars) {
                 vm.checkImportCalendar.checkbox = newNames.length == vm.fileContentCalendars.length;
             } else {
                 vm.checkImportCalendar.checkbox = false;
             }
+
+            if (newNames)
+            angular.forEach(vm.calendrs, function (value) {
+                for(var i = 0; i<newNames.length;i++) {
+                    if (value.usedBy && newNames[i].path == value.path) {
+                        vm.importCalendars.push(value);
+                        break;
+                    }
+                }
+            });
         });
 
         vm.importCalendar = function () {
@@ -1592,40 +1619,47 @@
                 backdrop: 'static'
             });
             modalInstance1.result.then(function () {
-                    importCalendarCall();
-                }, function () {
-
-                });
+                importCalendarCall();
+            }, function () {
+                 vm.importCalendars = [];
+                vm.fileContentCalendars =[];
+                vm.basedOnCalendars =[];
+            });
         };
 
 
-        function importCalendarCall(){
-            vm.fileContentCalendars = undefined;
-             for(var i =0; i< vm.importCalendarObj.calendars.length;i++) {
-                 if (vm.importCalendarObj.calendars[i].isExit) {
-                     delete vm.importCalendarObj.calendars[i]['isExit'];
-                 }
-             }
+        function importCalendarCall() {
+             vm.importAllCalendar = [];
+            vm.fileContentCalendars = [];
+            for (var i = 0; i < vm.importCalendarObj.calendars.length; i++) {
+                if (vm.importCalendarObj.calendars[i].isExit) {
+                    delete vm.importCalendarObj.calendars[i]['isExit'];
+                }
+            }
+            if(vm.basedOnCalendars && vm.basedOnCalendars.length>0){
+                vm.importCalendarObj.calendars = vm.importCalendarObj.calendars.concat(vm.basedOnCalendars)
+            }
             vm.importCalendarObj.auditLog = {};
             if (vm.comments.comment) {
-                 vm.importCalendarObj.auditLog.comment = vm.comments.comment;
+                vm.importCalendarObj.auditLog.comment = vm.comments.comment;
             }
 
             if (vm.comments.timeSpent) {
-                 vm.importCalendarObj.auditLog.timeSpent = vm.comments.timeSpent;
+                vm.importCalendarObj.auditLog.timeSpent = vm.comments.timeSpent;
             }
 
             if (vm.comments.ticketLink) {
-                 vm.importCalendarObj.auditLog.ticketLink = vm.comments.ticketLink;
+                vm.importCalendarObj.auditLog.ticketLink = vm.comments.ticketLink;
             }
             CalendarService.import(vm.importCalendarObj).then(function (res) {
                 uploader.queue[0].remove();
                 vm.importCalendarObj.calendars = [];
+                vm.basedOnCalendars =[];
                 vm.importCalendarObj.auditLog = {};
-                initCalendarTree();
-            }, function(){
-            uploader.queue[0].remove();
+
+            }, function () {
                 vm.importCalendarObj.calendars = [];
+                vm.basedOnCalendars =[];
                 vm.importCalendarObj.auditLog = {};
             });
         }
@@ -1665,7 +1699,6 @@
 
         function deleteCalendar(obj) {
             CalendarService.delete(obj).then(function () {
-                initCalendarTree();
                 vm.object.calendars = [];
             });
         }
@@ -1746,7 +1779,6 @@
 
                 });
             } else {
-
                 vm.calendarArr = angular.copy(vm.object.calendars);
                 angular.forEach(vm.calendarArr, function (value) {
                     CalendarService.calendarUsed({
@@ -2691,12 +2723,12 @@
 
         /** -----------------Begin of Events------------------- */
 
-        vm.object.events =[];
+        vm.object.events = [];
         vm.checkAllEvent = {
             checkbox: false
         };
         vm.checkAllEventFnc = function () {
-            if (vm.checkAllEvent.checkbox && vm.checkAllEvent.length > 0) {
+            if (vm.checkAllEvent.checkbox && vm.customEvents.length > 0) {
                 vm.object.events = vm.customEvents.slice((vm.userPreferences.entryPerPage * (vm.eventFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.eventFilters.currentPage));
             } else {
                 vm.object.events = [];
@@ -2711,12 +2743,11 @@
             }
         });
 
-         vm.loadEvents = getEvents;
-         function getEvents() {
+        vm.loadEvents = getEvents;
+        function getEvents() {
             vm.isLoading = false;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj = setDateRange(obj);
 
             EventService.getEvents(obj).then(function (res) {
                 vm.customEvents = res.events;
@@ -2727,7 +2758,7 @@
             });
         }
 
-        function  addEvent() {
+        function addEvent() {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.auditLog = {};
@@ -2738,14 +2769,22 @@
 
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
-            obj.event = vm.vm.event;
-            EventService.add(obj);
+            obj.event = vm.event;
+            if(vm.paramObject.params && vm.paramObject.params.length>0)
+                obj.params = vm.paramObject.params;
+            EventService.addEvent(obj).then(function(res){
+                 getEvents();
+            })
+
         }
 
-        vm.addEvent = function() {
-            vm.event= {};
+        vm.addEvent = function () {
+            vm.event = {};
+            vm.event.exitCode = 0;
             vm.comments = {};
             vm.comments.radio = 'predefined';
+            vm.paramObject = {};
+            vm.paramObject.params = [];
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/add-event-dialog.html',
                 controller: 'DialogCtrl',
@@ -2758,19 +2797,19 @@
 
             });
         };
-        vm.deleteEvent = function(event){
+        vm.deleteEvent = function (event) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.ids = [];
-            obj.ids.push(event.transferId);
-            EventService.delete(obj);
+            obj.ids.push(event.eventId);
+            EventService.deleteEvent(obj);
         };
-        vm.deleteAllEvents = function() {
+        vm.deleteAllEvents = function () {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.ids = [];
             angular.forEach(vm.object.events, function (value) {
-                obj.ids.push(value.transferId);
+                obj.ids.push(value.eventId);
             });
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
@@ -2800,16 +2839,584 @@
 
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
-                    EventService.delete(obj);
+                    EventService.deleteEvent(obj);
                     vm.object.events = [];
                 }, function () {
                     vm.object.events = [];
                 });
             } else {
-                EventService.delete(obj);
+                EventService.deleteEvent(obj);
                 vm.object.events = [];
             }
         };
+        vm.eventSearch = {};
+        vm.advancedEventSearch = function () {
+            vm.isUnique = true;
+            vm.showSearchPanel = true;
+            vm.eventSearch.date = 'date';
+            vm.eventSearch.from = new Date();
+            vm.eventSearch.from.setDate(vm.eventSearch.from.getDate() - 1);
+            vm.eventSearch.fromTime = '00:00';
+            vm.eventSearch.to = new Date();
+            vm.eventSearch.toTime = '00:00';
+        };
+        vm.cancelEventSearch = function (form) {
+            vm.eventSearch = {};
+            vm.showSearchPanel = false;
+            if (form)
+                form.$setPristine();
+            getEvents();
+        };
+
+        function checkSharedFilters() {
+            if (vm.permission.JOCConfigurations.share.view) {
+                var obj = {};
+                obj.jobschedulerId = vm.schedulerIds.selected;
+                obj.configurationType = "CUSTOMIZATION";
+                obj.objectType = "EVENT";
+                obj.shared = true;
+                UserService.configurations(obj).then(function (res) {
+                    if (res.configurations && res.configurations.length > 0)
+                        vm.eventFilterList = res.configurations;
+                    getCustomizations();
+                }, function () {
+                    vm.eventFilterList = [];
+                    getCustomizations();
+                });
+            } else {
+                vm.eventFilterList = [];
+                getCustomizations();
+            }
+        }
+        vm.tree1 = [];
+        vm.filter_tree1 = {};
+        vm.expanding_property = {
+            field: "name"
+        };
+
+        vm.getTreeStructureForObjects = function (type) {
+            vm.clickOn = type;
+            $('#objectModal').modal('show');
+            if (type == 'jobChain') {
+                OrderService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: ['ORDER']
+                }).then(function (res) {
+                    vm.tree1 = res.folders;
+
+                }, function (err) {
+                    $('#objectModal').modal('hide');
+                });
+            } else if (type == 'job') {
+                JobService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: ['JOB']
+                }).then(function (res) {
+                    vm.tree1 = res.folders;
+                }, function () {
+                    $('#objectModal').modal('hide');
+                });
+            }
+        };
+        vm.treeHandler = function (data) {
+            data.expanded = !data.expanded;
+            if (data.expanded) {
+                if (vm.clickOn == 'jobChain') {
+                    data.jobChains = [];
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.compact = true;
+                    obj.folders = [{folder: data.path, recursive: false}];
+                    OrderService.getOrdersP(obj).then(function (result) {
+                        data.jobChains = result.orders;
+                        setTimeout(function () {
+                            if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
+                                $('.order_img').attr("src", 'images/order.png');
+                            }
+                        }, 100);
+
+                    });
+                } else {
+                    data.jobs = [];
+                    var obj = {};
+                    obj.jobschedulerId = vm.schedulerIds.selected;
+                    obj.compact = true;
+                    obj.folders = [{folder: data.path, recursive: false}];
+                    JobService.getJobsP(obj).then(function (result) {
+                        data.jobs = result.jobs;
+                        setTimeout(function () {
+                            if (window.localStorage.$SOS$THEME == 'lighter' || window.localStorage.$SOS$THEME == 'light') {
+                                $('.job_img').attr("src", 'images/job.png');
+                            }
+                        }, 100);
+                    });
+                }
+            } else {
+                data.jobChains = [];
+                data.jobs = [];
+            }
+        };
+
+        vm.treeHandler1 = function (data) {
+            if (data.expanded) {
+                data.folders = orderBy(data.folders, 'name');
+            }
+        };
+
+        vm.object.orders = [];
+        vm.object.jobChains = [];
+        vm.object.jobs = [];
+
+        var watcher7 = $scope.$watchCollection('object.orders', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.orders = [];
+                angular.forEach(newNames, function (v) {
+                    vm.orders.push({orderId: v.orderId, jobChain: v.jobChain});
+                });
+            }
+        });
+        var watcher8 = $scope.$watchCollection('object.jobChains', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.jobChains = newNames;
+            }
+        });
+        var watcher9 = $scope.$watchCollection('object.jobs', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                vm.jobs = newNames;
+            }
+        });
+
+        vm.addFolderPaths = function () {
+             if (vm.eventSearch && vm.eventFilters.type == 'jobChain') {
+                vm.eventSearch.paths = vm.paths;
+            } else if (vm.eventSearch && vm.eventFilters.type == 'job') {
+                vm.eventSearch.paths = vm.paths;
+            }
+        };
+        vm.addObjectPaths = function () {
+            if (vm.clickOn == 'jobChain') {
+                if (vm.eventSearch && vm.showSearchPanel) {
+                    vm.eventSearch.orders = vm.orders;
+                    vm.eventSearch.jobChains = vm.jobChains;
+                }
+                else if (vm.eventFilter && !vm.showSearchPanel) {
+                    vm.eventFilter.orders = vm.orders;
+                    vm.eventFilter.jobChains = vm.jobChains;
+                }
+            } else {
+                if (vm.eventSearch && vm.showSearchPanel) {
+                    vm.eventSearch.jobs = vm.jobs;
+                }
+                else if (vm.eventFilter && !vm.showSearchPanel) {
+                    vm.eventFilter.jobs = vm.jobs;
+                }
+            }
+        };
+        vm.remove = function (object, type) {
+            if (type == 'jobChain') {
+                if (vm.eventFilter && vm.eventFilter.jobChains && !vm.showSearchPanel) {
+                    for (var i = 0; i < vm.eventFilter.jobChains.length; i++) {
+                        if (angular.equals(vm.eventFilter.jobChains[i], object)) {
+                            vm.eventFilter.jobChains.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                } else {
+                    for (var i = 0; i < vm.eventSearch.jobChains.length; i++) {
+                        if (angular.equals(vm.eventSearch.jobChains[i], object)) {
+                            vm.eventSearch.jobChains.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                }
+            } else if (type == 'job') {
+                if (vm.eventFilter && vm.eventFilter.jobs && !vm.showSearchPanel) {
+                    for (var i = 0; i < vm.eventFilter.jobs.length; i++) {
+                        if (angular.equals(vm.eventFilter.jobs[i], object)) {
+                            vm.eventFilter.jobs.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < vm.eventSearch.jobs.length; i++) {
+                        if (angular.equals(vm.eventSearch.jobs[i], object)) {
+                            vm.eventSearch.jobs.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+            } else if (type == 'order') {
+                if (vm.eventFilter && vm.eventFilter.orders && !vm.showSearchPanel) {
+                    for (var i = 0; i < vm.eventFilter.orders.length; i++) {
+                        if (angular.equals(vm.eventFilter.orders[i], object)) {
+                            vm.eventFilter.orders.splice(i, 1);
+                            vm.object.orders.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < vm.eventSearch.orders.length; i++) {
+                        if (angular.equals(vm.eventSearch.orders[i], object)) {
+                            vm.eventSearch.orders.splice(i, 1);
+                            vm.object.orders.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+            }
+        };
+        var loadConfig = true;
+        checkSharedFilters();
+        function getCustomizations() {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.account = vm.permission.user;
+            obj.configurationType = "CUSTOMIZATION";
+            obj.objectType = "EVENT";
+            UserService.configurations(obj).then(function (res) {
+                if (vm.eventFilterList && vm.eventFilterList.length > 0) {
+                    if (res.configurations && res.configurations.length > 0) {
+                        vm.eventFilterList = vm.eventFilterList.concat(res.configurations);
+                    }
+                    var data = [];
+
+                    for (var i = 0; i < vm.eventFilterList.length; i++) {
+                        var flag = true;
+                        for (var j = 0; j < data.length; j++) {
+                            if (data[j].account == vm.eventFilterList[i].account && data[j].name == vm.eventFilterList[i].name) {
+                                flag = false;
+                            }
+                        }
+                        if (flag) {
+                            data.push(vm.eventFilterList[i]);
+                        }
+                    }
+                    vm.eventFilterList = data;
+                } else {
+                    vm.eventFilterList = res.configurations;
+                }
+
+                if (vm.savedEventFilter.selected) {
+                    var flag = true;
+                    angular.forEach(vm.eventFilterList, function (value) {
+                        if (value.id == vm.savedEventFilter.selected) {
+                            flag = false;
+                            UserService.configuration({
+                                jobschedulerId: value.jobschedulerId,
+                                id: value.id
+                            }).then(function (conf) {
+                                loadConfig = true;
+                                vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                                vm.selectedFiltered.account = value.account;
+                                vm.load();
+                            });
+                        }
+                    });
+                    if (flag) {
+                        vm.savedEventFilter.selected = undefined;
+                        loadConfig = true;
+                        vm.load();
+                    }
+                } else {
+                    loadConfig = true;
+                    vm.savedEventFilter.selected = undefined;
+                    vm.load();
+                }
+
+            }, function (err) {
+                loadConfig = true;
+                vm.savedEventFilter.selected = undefined;
+                vm.load();
+            });
+        }
+
+        vm.saveAsFilter = function (form) {
+            var configObj = {};
+            configObj.jobschedulerId = vm.schedulerIds.selected;
+            configObj.account = vm.permission.user;
+            configObj.configurationType = "CUSTOMIZATION";
+            configObj.objectType = "EVENT";
+            configObj.id = 0;
+            configObj.name = vm.eventSearch.name;
+            configObj.configurationItem = JSON.stringify(vm.eventSearch);
+
+            UserService.saveConfiguration(configObj).then(function (res) {
+                configObj.id = res.id;
+                vm.eventSearch.name = '';
+                if (form)
+                    form.$setPristine();
+                vm.eventFilterList.push(configObj);
+
+            });
+        };
+
+        vm.advanceFilter = function () {
+            vm.cancelEventSearch();
+            vm.action = 'add';
+            vm.eventFilter = {};
+            vm.eventFilter.planned = 'today';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/event-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var configObj = {};
+                configObj.jobschedulerId = vm.schedulerIds.selected;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.name = vm.eventFilter.name;
+                configObj.shared = vm.eventFilter.shared;
+                configObj.id = 0;
+                configObj.configurationItem = JSON.stringify(vm.eventFilter);
+                configObj.objectType = "EVENT";
+
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    configObj.id = res.id;
+                    vm.eventFilterList.push(configObj);
+
+                    if (vm.eventFilterList.length == 1) {
+                        vm.savedEventFilter.selected = res.id;
+                        vm.eventFilters.selectedView = true;
+                        vm.selectedFiltered = vm.eventFilter;
+                        vm.selectedFiltered.account = vm.permission.user;
+                        isCustomizationSelected(true);
+                        SavedFilter.setEvent(vm.savedEventFilter);
+                        SavedFilter.save();
+                        vm.load();
+                    }
+                });
+
+            }, function () {
+            });
+        };
+
+        vm.editFilters = function () {
+            vm.filters = {};
+            vm.filters.list = vm.eventFilterList;
+            vm.filters.favorite = vm.savedEventFilter.favorite;
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/edit-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm
+            });
+        };
+        var temp_name = '';
+
+        vm.editFilter = function (filter) {
+            vm.cancelEventSearch();
+            vm.action = 'edit';
+            vm.isUnique = true;
+            temp_name = angular.copy(filter.name);
+            UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
+                vm.eventFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.eventFilter.shared = filter.shared;
+            });
+
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/event-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+
+                if (vm.savedEventFilter.selected == filter.id) {
+                    vm.selectedFiltered = vm.eventFilter;
+                    vm.eventFilters.selectedView = true;
+                    isCustomizationSelected(true);
+                    vm.load();
+                }
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = filter.account;
+                configObj.configurationType = filter.configurationType;
+                configObj.objectType = filter.objectType;
+                configObj.id = filter.id;
+                configObj.configurationItem = JSON.stringify(vm.eventFilter);
+                configObj.name = vm.eventFilter.name;
+                configObj.shared = vm.eventFilter.shared;
+                UserService.saveConfiguration(configObj);
+                filter.name = vm.eventFilter.name;
+                temp_name = '';
+            }, function () {
+                temp_name = '';
+            });
+        };
+
+        vm.copyFilter = function (filter) {
+            vm.action = 'copy';
+            vm.isUnique = true;
+            UserService.configuration({jobschedulerId: filter.jobschedulerId, id: filter.id}).then(function (conf) {
+                vm.eventFilter = JSON.parse(conf.configuration.configurationItem);
+                vm.eventFilter.shared = filter.shared;
+                vm.eventFilter.name = vm.checkCopyName(vm.eventFilterList, filter.name);
+            });
+
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/event-filter-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                var configObj = {};
+                configObj.jobschedulerId = filter.jobschedulerId;
+                configObj.account = vm.permission.user;
+                configObj.configurationType = "CUSTOMIZATION";
+                configObj.name = vm.eventFilter.name;
+                configObj.shared = vm.eventFilter.shared;
+                configObj.objectType = filter.objectType;
+                configObj.id = 0;
+                configObj.configurationItem = JSON.stringify(vm.eventFilter);
+                UserService.saveConfiguration(configObj).then(function (res) {
+                    configObj.id = res.id;
+                    vm.eventFilterList.push(configObj);
+                });
+            }, function () {
+            });
+        };
+        vm.deleteFilter = function (filter) {
+
+            UserService.deleteConfiguration({
+                jobschedulerId: filter.jobschedulerId,
+                id: filter.id
+            }).then(function (res) {
+
+                angular.forEach(vm.eventFilterList, function (value, index) {
+                    if (value.id == filter.id) {
+                        vm.eventFilterList.splice(index, 1);
+                    }
+                });
+
+                if (vm.savedEventFilter.selected == filter.id) {
+                    vm.savedEventFilter.selected = undefined;
+                    vm.eventFilters.selectedView = false;
+                    vm.selectedFiltered = undefined;
+                    vm.load();
+                    isCustomizationSelected(false);
+                } else {
+                    if (vm.eventFilterList.length == 0) {
+                        vm.savedEventFilter.selected = undefined;
+                        vm.eventFilters.selectedView = false;
+                        vm.selectedFiltered = undefined;
+                        isCustomizationSelected(false);
+                    }
+                }
+
+
+                SavedFilter.setEvent(vm.savedEventFilter);
+                SavedFilter.save();
+            });
+        };
+
+        vm.makePrivate = function (configObj) {
+
+            UserService.privateConfiguration({
+                jobschedulerId: configObj.jobschedulerId,
+                id: configObj.id
+            }).then(function (res) {
+                configObj.shared = false;
+                if (vm.permission.user != configObj.account) {
+
+                    angular.forEach(vm.eventFilterList, function (value, index) {
+                        if (value.id == configObj.id) {
+                            vm.eventFilterList.splice(index, 1);
+                        }
+                    });
+
+                }
+            });
+        };
+
+        vm.makeShare = function (configObj) {
+            UserService.shareConfiguration({
+                jobschedulerId: configObj.jobschedulerId,
+                id: configObj.id
+            }).then(function (res) {
+                configObj.shared = true;
+            });
+        };
+
+        vm.favorite = function (filter) {
+            vm.filters.favorite = filter.id;
+
+            vm.savedEventFilter.favorite = filter.id;
+            vm.eventFilters.selectedView = true;
+
+
+            SavedFilter.setEvent(vm.savedEventFilter);
+            SavedFilter.save();
+            vm.load();
+        };
+
+        vm.removeFavorite = function () {
+            vm.savedEventFilter.favorite = '';
+
+
+            vm.filters.favorite = '';
+            SavedFilter.setEvent(vm.savedEventFilter);
+            SavedFilter.save();
+        };
+        vm.checkFilterName = function () {
+            vm.isUnique = true;
+
+            if (vm.eventSearch && vm.eventSearch.name) {
+                angular.forEach(vm.eventFilterList, function (value) {
+                    if (vm.eventSearch.name == value.name && vm.permission.user == value.account) {
+                        vm.isUnique = false;
+                    }
+                });
+            } else if (vm.eventFilter) {
+                angular.forEach(vm.eventFilterList, function (value) {
+                    if (vm.eventFilter.name == value.name && vm.permission.user == value.account && vm.eventFilter.name != temp_name) {
+                        vm.isUnique = false;
+                    }
+                });
+            }
+        };
+
+        vm.changeFilter = function (filter) {
+            vm.cancelEventSearch();
+
+            if (filter) {
+                vm.savedEventFilter.selected = filter.id;
+                vm.eventFilters.selectedView = true;
+                UserService.configuration({
+                    jobschedulerId: filter.jobschedulerId,
+                    id: filter.id
+                }).then(function (conf) {
+                    vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
+                    vm.selectedFiltered.account = filter.account;
+                    vm.load();
+                });
+            }
+            else {
+                isCustomizationSelected(false);
+                vm.savedEventFilter.selected = filter;
+                vm.eventFilters.selectedView = false;
+                vm.selectedFiltered = filter;
+                vm.load();
+            }
+
+
+            SavedFilter.setEvent(vm.savedEventFilter);
+            SavedFilter.save();
+        };
+
+
         /** <<<<<<<<<<<<< End Events >>>>>>>>>>>>>> */
 
 
@@ -2985,6 +3592,51 @@
                             }
                         });
                     }
+                    if (vm.resourceFilters.state == 'calendars') {
+                        if (event.eventType == "CalendarCreated") {
+                            var path = event.path.substring(0, event.path.lastIndexOf('/')) || '/';
+                            var name = '';
+                            if (path != '/')
+                                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+                            $rootScope.calendar_expand_to = {
+                                name: name,
+                                path: path
+                            };
+                            initCalendarTree();
+                        } else if (event.eventType == "CalendarUpdated") {
+                            for (var x = 0; x < vm.allCalendars.length; x++) {
+                                if (vm.allCalendars[x].path == event.path) {
+                                    var obj = {};
+                                    obj.jobschedulerId = $scope.schedulerIds.selected;
+                                    obj.id = vm.allCalendars[x].id;
+                                    CalendarService.getCalendar(obj).then(function (res) {
+                                        if (res.calendar) {
+                                            vm.allCalendars[x] = angular.merge(vm.allCalendars[x], res.calendar);
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
+                        } else if (event.eventType == "CalendarDeleted") {
+                            for (var x = 0; x < vm.allCalendars.length; x++) {
+                                if (vm.allCalendars[x].path == event.path) {
+                                    vm.allCalendars.splice(x, 1);
+                                    break;
+                                }
+                            }
+                            if(vm.allCalendars.length==0){
+                                initCalendarTree();
+                            }
+                        } else {
+                            if (event.eventType.match('Calendar')) {
+                                console.log('if... ');
+                                initCalendarTree();
+                            }
+                        }
+                        if (event.eventType == "AuditLogChanged" && vm.showPanel && vm.showPanel.path == event.path) {
+                            vm.loadAuditLogs(vm.showPanel);
+                        }
+                    }
                 });
         });
 
@@ -3036,6 +3688,9 @@
             watcher4();
             watcher5();
             watcher6();
+            watcher7();
+            watcher8();
+            watcher9();
             $interval.cancel(interval1);
             $interval.cancel(interval2);
             $timeout.cancel(t1);
@@ -3043,8 +3698,8 @@
         });
     }
 
-    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout','FileSaver'];
-    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout,FileSaver) {
+    ResourceInfoCtrl.$inject = ['$scope', '$stateParams', '$state', 'ResourceService', 'ScheduleService', 'JobSchedulerService', '$uibModal', 'TaskService', 'CalendarService', '$timeout', 'FileSaver'];
+    function ResourceInfoCtrl($scope, $stateParams, $state, ResourceService, ScheduleService, JobSchedulerService, $uibModal, TaskService, CalendarService, $timeout, FileSaver) {
         var vm = $scope;
         if ($state.current.name != 'app.calendar')
             vm.checkSchedulerId();
@@ -3242,21 +3897,19 @@
             vm.scheduleAction = undefined;
 
 
-         
-                var modalInstance = $uibModal.open({
-                    templateUrl: 'modules/core/template/add-substitute-dialog.html',
-                    controller: 'RuntimeEditorDialogCtrl',
-                    scope: vm,
-                    size: 'lg',
-                    backdrop: 'static',
-                    windowClass: 'fade-modal'
-                });
-                modalInstance.result.then(function () {
-                    createSchedule(schedule);
-                }, function () {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/add-substitute-dialog.html',
+                controller: 'RuntimeEditorDialogCtrl',
+                scope: vm,
+                size: 'lg',
+                backdrop: 'static',
+                windowClass: 'fade-modal'
+            });
+            modalInstance.result.then(function () {
+                createSchedule(schedule);
+            }, function () {
 
-                });
-         
+            });
 
             ScheduleService.getSchedulesP({jobschedulerId: $scope.schedulerIds.selected}).then(function (result) {
                 vm._schedules = [];
@@ -3506,7 +4159,7 @@
                 calendars: calendars,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-
+                console.log(res.headers('Content-Disposition'));
                 vm.loading = false;
                 var name = 'calendars' + '.json';
                 var fileType = 'application/octet-stream';
@@ -3576,9 +4229,7 @@
         };
 
         function deleteCalendar(obj) {
-            CalendarService.delete(obj).then(function () {
-
-            });
+            CalendarService.delete(obj);
         }
 
         function deleteCalendarFn(obj, calendar) {
@@ -3628,11 +4279,8 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.calendarIds = [];
-
             obj.calendarIds.push(calendar.id);
-
             vm.calendar = angular.copy(calendar);
-
             vm.calendar.delete = true;
             CalendarService.calendarUsed({
                 id: vm.calendar.id,
@@ -3640,7 +4288,6 @@
             }).then(function (res) {
                 vm.calendar.usedIn = res;
             });
-
             deleteCalendarFn(obj, calendar);
         };
 
@@ -3649,9 +4296,8 @@
         });
     }
 
-
-    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval","UserService","$window","YadeService",'JobService'];
-    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval,UserService,$window,YadeService,JobService) {
+    DashboardCtrl.$inject = ['$scope', 'OrderService', 'JobSchedulerService', 'ResourceService', 'gettextCatalog', '$state', '$uibModal', 'DailyPlanService', '$rootScope', '$timeout', 'CoreService', 'SOSAuth', 'FileSaver', "$interval", "UserService", "$window", "YadeService", 'JobService'];
+    function DashboardCtrl($scope, OrderService, JobSchedulerService, ResourceService, gettextCatalog, $state, $uibModal, DailyPlanService, $rootScope, $timeout, CoreService, SOSAuth, FileSaver, $interval, UserService, $window, YadeService, JobService) {
         var vm = $scope;
         vm.loadingImg = true;
         var isDragging = false;
@@ -3662,7 +4308,7 @@
                 },
                 stop: function () {
                     setWidgetPreference();
-                     isDragging = false;
+                    isDragging = false;
                 }
             },
             draggable: {
@@ -3670,7 +4316,7 @@
                     isDragging = true;
                 },
                 stop: function () {
-                   setWidgetPreference();
+                    setWidgetPreference();
                     isDragging = false;
                 }
             }
@@ -3678,7 +4324,7 @@
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 
-        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary= true, isLoadedFileOverview=true, isLoadedTaskSummary = true,isLoadedTaskSnapshot= true;
+        var isLoadedSnapshot = true, isLoadedSummary = true, isLoadedDailyPlan = true, isLoadedFileSummary = true, isLoadedFileOverview = true, isLoadedTaskSummary = true, isLoadedTaskSnapshot = true;
 
         vm.isAgentClusterVisible = true;
         vm.isRunningAgentVisible = true;
@@ -3768,7 +4414,7 @@
                     name: "fileTransferSummary",
                     visible: true,
                     message: gettextCatalog.getString('message.fileTransferSummary')
-                },{
+                }, {
                     row: 5,
                     col: 0,
                     sizeX: 6,
@@ -3778,7 +4424,7 @@
                     message: gettextCatalog.getString('message.dailyPlanOverview')
                 }];
             }
-        
+
             vm.dashboard.widgets.sort(function (a, b) {
                 if (parseInt(a.row) == parseInt(b.row)) {
                     return parseInt(a.col) - parseInt(b.col);
@@ -3798,27 +4444,27 @@
                 }
                 if (vm.dashboardLayout[i].visible) {
                     vm.dashboard.widgets.push(vm.dashboardLayout[i]);
-                    if(i>0 && vm.dashboardLayout[i].row == vm.dashboardLayout[i-1].row && vm.dashboardLayout[i].col == vm.dashboardLayout[i-1].col){
-                        if(vm.dashboardLayout[i-1].sizeX ==4 && vm.dashboardLayout[i].sizeX ==2 && vm.dashboardLayout[i-1].sizeY == vm.dashboardLayout[i].sizeY){
-                            vm.dashboardLayout[i-1].col = 0;
+                    if (i > 0 && vm.dashboardLayout[i].row == vm.dashboardLayout[i - 1].row && vm.dashboardLayout[i].col == vm.dashboardLayout[i - 1].col) {
+                        if (vm.dashboardLayout[i - 1].sizeX == 4 && vm.dashboardLayout[i].sizeX == 2 && vm.dashboardLayout[i - 1].sizeY == vm.dashboardLayout[i].sizeY) {
+                            vm.dashboardLayout[i - 1].col = 0;
                             vm.dashboardLayout[i].col = 4;
-                        }else if(vm.dashboardLayout[i-1].sizeX ==2 && vm.dashboardLayout[i].sizeX ==4 && vm.dashboardLayout[i-1].sizeY == vm.dashboardLayout[i].sizeY){
+                        } else if (vm.dashboardLayout[i - 1].sizeX == 2 && vm.dashboardLayout[i].sizeX == 4 && vm.dashboardLayout[i - 1].sizeY == vm.dashboardLayout[i].sizeY) {
                             vm.dashboardLayout[i].col = 0;
-                            vm.dashboardLayout[i-1].col = 4;
-                        }else{
-                            vm.dashboardLayout[i].row = vm.dashboardLayout[i].row+1;
+                            vm.dashboardLayout[i - 1].col = 4;
+                        } else {
+                            vm.dashboardLayout[i].row = vm.dashboardLayout[i].row + 1;
                         }
                     }
                 }
 
                 restrictRestCall(vm.dashboardLayout[i].name, vm.dashboardLayout[i].visible);
                 if (i == vm.dashboardLayout.length - 1)
-                     vm.loadingImg= false;
+                    vm.loadingImg = false;
             }
         }
 
         function setWidgetPreference() {
-            if(!vm.userPreferences.theme){
+            if (!vm.userPreferences.theme) {
                 return;
             }
             vm.userPreferences.dashboard = vm.dashboardLayout;
@@ -3830,8 +4476,8 @@
             configObj.id = parseInt($window.sessionStorage.preferenceId);
             configObj.configurationItem = JSON.stringify(vm.userPreferences);
 
-           if(configObj.id && configObj.id>0)
-           UserService.saveConfiguration(configObj);
+            if (configObj.id && configObj.id > 0)
+                UserService.saveConfiguration(configObj);
         }
 
         vm.addWidgetDialog = function () {
@@ -3889,15 +4535,15 @@
         vm.removeWidget = function (widget) {
             isDragging = true;
             widget.visible = false;
-            restrictRestCall(widget.name,widget.visible);
+            restrictRestCall(widget.name, widget.visible);
             vm.dashboard.widgets.splice(vm.dashboard.widgets.indexOf(widget), 1);
-            if(t2){
+            if (t2) {
                 $timeout.cancel(t2);
             }
             t2 = $timeout(function () {
-                  setClusterWidgetHeight();
-                  setWidgetPreference();
-                  isDragging = false;
+                setClusterWidgetHeight();
+                setWidgetPreference();
+                isDragging = false;
             }, 100);
         };
 
@@ -4163,9 +4809,9 @@
         }
 
         var interval2 = $interval(function () {
-            if(!isDragging)
-            setClusterWidgetHeight();
-        },1000);
+            if (!isDragging)
+                setClusterWidgetHeight();
+        }, 1000);
 
         vm.agentClusters = {};
         if (SOSAuth.jobChain) {
@@ -4206,7 +4852,7 @@
         }
 
         vm.getAgentCluster = function () {
-            if(!vm.isAgentClusterVisible){
+            if (!vm.isAgentClusterVisible) {
                 return;
             }
             if (!vm.agentClusters) {
@@ -4341,7 +4987,7 @@
         }
 
         vm.getAgentClusterRunningTask = function () {
-            if(!vm.isRunningAgentVisible){
+            if (!vm.isRunningAgentVisible) {
                 return;
             }
             vm.isLoadedRunningTask = false;
@@ -4430,7 +5076,7 @@
 
         vm.isLoadedMasterCluster = false;
         function prepareClusterStatusData() {
-            if(!vm.isMasterClusterVisible){
+            if (!vm.isMasterClusterVisible) {
                 return;
             }
             clusterStatusData = {};
@@ -4626,10 +5272,11 @@
             }
 
             if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateAndRestartWithTimeout') {
-                vm.getTimeout(host, port, id,action);
-            } if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateWithin') {
-                vm.getTimeout(host, port, id,action);
-            }else {
+                vm.getTimeout(host, port, id, action);
+            }
+            if ((objectType == 'supervisor' || objectType == 'master') && action == 'terminateWithin') {
+                vm.getTimeout(host, port, id, action);
+            } else {
                 if (vm.userPreferences.auditLog && action !== 'downloadLog') {
                     vm.comments = {};
                     vm.comments.radio = 'predefined';
@@ -4669,7 +5316,7 @@
 
         vm.criterion = {};
         vm.criterion.timeout = 60;
-        vm.getTimeout = function (host, port, id,action) {
+        vm.getTimeout = function (host, port, id, action) {
             vm.comments = {};
             vm.comments.radio = 'predefined';
             vm._scheduleName = id + ' (' + host + ':' + port + ')';
@@ -4707,7 +5354,7 @@
         };
 
         vm.loadOrderSnapshot = function (flag) {
-            if(!vm.isOrderOverviewVisible){
+            if (!vm.isOrderOverviewVisible) {
                 return;
             }
             if (vm.scheduleState == 'UNREACHABLE' && !flag) {
@@ -4729,7 +5376,7 @@
 
 
         vm.getOrderSummary = function () {
-             if(!vm.isOrderSummaryVisible){
+            if (!vm.isOrderSummaryVisible) {
                 return;
             }
             isLoadedSummary = false;
@@ -4749,7 +5396,7 @@
         };
 
         vm.loadTaskSnapshot = function (flag) {
-            if(!vm.istaskOverviewVisible){
+            if (!vm.istaskOverviewVisible) {
                 return;
             }
             if (vm.scheduleState == 'UNREACHABLE' && !flag) {
@@ -4770,7 +5417,7 @@
         };
 
         vm.getTaskSummary = function () {
-             if(!vm.istaskSummaryVisible){
+            if (!vm.istaskSummaryVisible) {
                 return;
             }
             isLoadedTaskSummary = false;
@@ -4789,7 +5436,7 @@
         };
 
         vm.getFileOverview = function () {
-            if(!vm.isFileOverviewVisible){
+            if (!vm.isFileOverviewVisible) {
                 return;
             }
 
@@ -4806,7 +5453,7 @@
         };
 
         vm.getFileSummary = function () {
-            if(!vm.isFileSummaryVisible){
+            if (!vm.isFileSummaryVisible) {
                 return;
             }
             isLoadedFileSummary = false;
@@ -4814,7 +5461,7 @@
             obj.dateFrom = vm.dashboardFilters.filter.fileSummaryfrom;
             obj.dateTo = vm.dashboardFilters.filter.fileSummaryfrom;
             obj.timeZone = vm.userPreferences.zone;
-            obj.jobschedulerId= $scope.schedulerIds.selected;
+            obj.jobschedulerId = $scope.schedulerIds.selected;
             YadeService.getSummary(obj).then(function (res) {
                 vm.yadeSummary = res;
                 isLoadedFileSummary = true;
@@ -4827,7 +5474,7 @@
         /*----------------- Daily plan overview -----------------*/
 
         vm.getDailyPlans = function () {
-            if(!vm.isDailPlanVisible){
+            if (!vm.isDailPlanVisible) {
                 return;
             }
             isLoadedDailyPlan = false;
@@ -4971,7 +5618,8 @@
             vm.taskHistoryTab.task.filter.date = typeof vm.dashboardFilters.filter.taskSummaryfrom === 'string' ? vm.dashboardFilters.filter.taskSummaryfrom : 'today';
             $state.go('app.history');
         };
-        var interval1='';
+        var interval1 = '';
+
         function poll() {
             if (interval1)
                 $interval.cancel(interval1);
@@ -4985,8 +5633,8 @@
             if (id == 'agentClusterStatus') {
                 vm.isAgentClusterVisible = flag;
                 vm.getAgentCluster();
-                if(flag)
-                poll();
+                if (flag)
+                    poll();
             } else if (id == 'agentClusterRunningTasks') {
                 vm.isRunningAgentVisible = flag;
                 vm.getAgentClusterRunningTask();
@@ -5005,7 +5653,7 @@
             } else if (id == 'tasksSummary') {
                 vm.istaskSummaryVisible = flag;
                 vm.getTaskSummary();
-            }  else if (id == 'fileTransferOverview') {
+            } else if (id == 'fileTransferOverview') {
                 vm.isFileOverviewVisible = flag;
                 vm.getFileOverview();
             } else if (id == 'fileTransferSummary') {
@@ -5016,18 +5664,19 @@
                 vm.getDailyPlans();
             }
         }
-        if(!vm.isEmpty(vm.userPreferences)) {
+
+        if (!vm.isEmpty(vm.userPreferences)) {
             initWidgets();
             if (!vm.userPreferences.dashboard)
                 setWidgetPreference();
         }
 
         $scope.$on('reloadPreferences', function () {
-            if(vm.loadingImg)
-             initWidgets();
-             if (!vm.userPreferences.dashboard) {
-                 setWidgetPreference();
-             }
+            if (vm.loadingImg)
+                initWidgets();
+            if (!vm.userPreferences.dashboard) {
+                setWidgetPreference();
+            }
         });
 
         $scope.$on('event-started', function () {
@@ -5056,7 +5705,7 @@
                         isLoadedTaskSummary = false;
                         if (!vm.notPermissionForTaskSummary)
                             vm.getTaskSummary();
-                    }else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
+                    } else if (vm.events[0].eventSnapshots[i].eventType === "DailyPlanChanged" && isLoadedDailyPlan) {
                         isLoadedDailyPlan = false;
                         vm.getDailyPlans();
                     } else if (vm.events[0].eventSnapshots[i].eventType === "FileBasedActivated" && vm.events[0].eventSnapshots[i].objectType === "PROCESSCLASS" && (vm.isLoadedAgentCluster || vm.isLoadedRunningTask)) {
@@ -5081,7 +5730,7 @@
                 $timeout.cancel(t2);
             if (interval1)
                 $interval.cancel(interval1);
-                $interval.cancel(interval2);
+            $interval.cancel(interval2);
 
         });
     }
@@ -5217,7 +5866,6 @@
             })
         }
 
-      
         function setDateRange() {
 
             if (vm.dailyPlanFilters.filter.range == 'today' || !vm.dailyPlanFilters.filter.range) {
@@ -5520,10 +6168,10 @@
                 }
             } else {
                 if (vm.searchDailyPlanFilter.from1) {
-                   fromDate=  parseProcessExecuted(vm.searchDailyPlanFilter.from1);
+                    fromDate = parseProcessExecuted(vm.searchDailyPlanFilter.from1);
                 }
                 if (vm.searchDailyPlanFilter.to1) {
-                     toDate=  parseProcessExecuted(vm.searchDailyPlanFilter.to1);
+                    toDate = parseProcessExecuted(vm.searchDailyPlanFilter.to1);
                 }
             }
             if (!fromDate) {
@@ -5583,10 +6231,10 @@
             var toDate;
 
             if (vm.selectedFiltered.from) {
-                fromDate=  parseProcessExecuted(vm.selectedFiltered.from);
+                fromDate = parseProcessExecuted(vm.selectedFiltered.from);
             }
             if (vm.selectedFiltered.to) {
-                toDate=  parseProcessExecuted(vm.selectedFiltered.to);
+                toDate = parseProcessExecuted(vm.selectedFiltered.to);
             }
 
             if (!fromDate) {
@@ -6013,10 +6661,10 @@
             obj.name = vm.searchDailyPlanFilter.name;
             if (vm.searchDailyPlanFilter.radio != 'current') {
                 if (vm.searchDailyPlanFilter.from1) {
-                    fromDate=  parseProcessExecuted(vm.searchDailyPlanFilter.from1);
+                    fromDate = parseProcessExecuted(vm.searchDailyPlanFilter.from1);
                 }
                 if (vm.searchDailyPlanFilter.to1) {
-                    toDate=  parseProcessExecuted(vm.searchDailyPlanFilter.to1);
+                    toDate = parseProcessExecuted(vm.searchDailyPlanFilter.to1);
                 }
             }
             if (fromDate) {
@@ -6363,7 +7011,6 @@
             }
         };
         vm.$on('resetViewDate', function () {
-         
             vm.getPlansByEvents();
         });
 
