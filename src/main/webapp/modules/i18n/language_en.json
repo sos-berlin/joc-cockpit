@@ -1246,13 +1246,13 @@
   "label.addNewEvent": "Add Event",
   "label.customEventFound": "Custom Event found",
   "label.customEventsFound": "Custom Events found",
-  "label.expireFrom": "Expire from",
-  "label.expireTo": "Expire to",
+  "label.expireFrom": "Expire after",
+  "label.expireTo": "Expire before",
   "placeholder.eventId": "Enter Event ID",
   "placeholder.eventClass": "Enter Event Class",
-  "placeholder.expirationCycle": "Enter Expiration Cycle",
-  "placeholder.expirationPeriod": "Enter Expiration Period",
-  "placeholder.expires": "Enter Expiration",
+  "placeholder.expirationCycle": "Enter Expiration Cycle (time format hh:mm:ss",
+  "placeholder.expirationPeriod": "Enter Expiration Period (time format hh:mm:ss)",
+  "placeholder.expires": "Enter Expiration date",
   "placeholder.exitCode": "Enter Exit Code",
   "label.importAllCalendar": "Import Calendars in use",
   "message.importAllCalendar": "Are you sure you want to overwrite Calendars in use?",
@@ -1264,5 +1264,5 @@
   "label.eventClasses": "Event Classes",
   "label.eventExitCodes": "Event Exit Codes",
   "label.remoteJobScheduler": "Remote JobScheduler",
-  "label.fileTransfersFound": "File Transfers Found"
+  "label.fileTransfersFound": "File Transfers found"
 }
