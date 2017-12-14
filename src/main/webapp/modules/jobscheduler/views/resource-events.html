@@ -1,4 +1,4 @@
-<div>
+
     <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
         <div class="col-md-12">
             <div class="box p-a m-b-xs m-t-xs">
@@ -16,21 +16,21 @@
                         </div>
                     </div>
                     <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventId</label>
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventIds</label>
                         <div class=" col-sm-6">
-                            <input type="text" class="form-control" ng-model="eventSearch.eventId">
+                            <input type="text" class="form-control" ng-model="eventSearch.eventIds">
                         </div>
                     </div>
                     <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventClass</label>
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventClasses</label>
                         <div class=" col-sm-6">
-                            <input type="text" class="form-control" ng-model="eventSearch.eventClass">
+                            <input type="text" class="form-control" ng-model="eventSearch.eventClasses">
                         </div>
                     </div>
                     <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventExitCode</label>
+                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventExitCodes</label>
                         <div class=" col-sm-6">
-                            <input type="text" class="form-control" ng-model="eventSearch.eventExitCode">
+                            <input type="test" class="form-control" ng-model="eventSearch.exitCodes">
                         </div>
                     </div>
                     <div class="m-b-sm row ">
@@ -122,13 +122,13 @@
                            <div class="col-sm-1" ng-class="{'p-l-0': eventSearch.jobs.length>0}"><a href="" ng-click="getTreeStructureForObjects('job')"><i class="fa fa-folder-o fa-lg"></i></a></div>
                     </div>
                     <div class="form-group m-t m-b-xs">
-                        <button type="submit" class="btn btn-primary btn-sm" ng-disabled="form.$invalid" translate>
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="searchEvent();" translate>
                             button.search
                         </button>
                         <button type="submit" class="btn orange btn-sm m-l-sm"
                                     ng-disabled="form.$invalid || !isUnique || !eventSearch.name" translate>button.saveAsFilter
                             </button>
-                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form)" translate>
+                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancelEventSearch(form)" translate>
                             button.cancel
                         </button>
                     </div>
@@ -148,16 +148,16 @@
                             </label>
                         </th>
                         <th width="45"><span translate>label.action</span></th>
-                        <th ng-if="!eventFilters.current" ng-click="sortByE('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'jobschedulerId' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'jobschedulerId' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
                         <th ng-click="sortByE('eventId')"><a><span translate>label.eventId</span>
                             <i ng-show="eventFilters.filter.sortBy == 'eventId' && !eventFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="eventFilters.filter.sortBy == 'eventId' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th ng-click="sortByE('eventClass')"><a><span translate>label.eventClass</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'eventClass' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'eventClass' && eventFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th ng-click="sortByE('job')"><a><span translate>label.job</span>
@@ -178,28 +178,28 @@
                             <i ng-show="eventFilters.filter.sortBy == 'orderId' && eventFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
+                        <th ng-click="sortByE('exitCode')"><a><span translate>label.exitCode</span>
+                            <i ng-show="eventFilters.filter.sortBy == 'exitCode' && !eventFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i ng-show="eventFilters.filter.sortBy == 'exitCode' && eventFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
                         <th ng-click="sortByE('expires')"><a><span translate>label.expires</span>
                             <i ng-show="eventFilters.filter.sortBy == 'expires' && !eventFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="eventFilters.filter.sortBy == 'expires' && eventFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByE('remoteJobSchedulerHost')"><a><span translate>label.remoteJobSchedulerHost</span>
+                        <th ng-click="sortByE('remoteJobSchedulerHost')"><a><span translate>label.remoteJobScheduler</span>
                             <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && !eventFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && eventFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
-                        <th ng-click="sortByE('remoteJobSchedulerPort')"><a><span translate>label.remoteJobSchedulerPort</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerPort' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerPort' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
                     </tr>
                     </thead>
                     <tbody >
-                    <tr ng-repeat="event in customEvents | orderBy:eventFilters.filter.sortBy:eventFilters.sortReverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <tr ng-repeat="event in customEvents | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                          <td ng-if="permission.Event.execute.delete" >
                             <label class="md-check">
                                 <input type="checkbox" data-checklist-model="object.events"
@@ -215,14 +215,18 @@
                                  </div>
                              </div>
                          </td>
-                        <td ng-if="!eventFilters.current"><span ng-bind="event.jobschedulerId"></span></td>
-                        <td><span ng-bind="event.eventId"></span></td>
+                        <td><a ng-click="showEventPanelFnc(event)" ng-bind="event.eventId"></a></td>
+                        <td><span ng-bind="event.eventClass"></span></td>
                         <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)" ng-bind="event.jobChain"></a></td>
                         <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
                         <td><a class="text-hover-primary" ng-click="showOrderLink(event.orderId)" ng-bind="event.orderId"></a></td>
-                        <td><span ng-bind="event.expires"></span></td>
-                        <td><span ng-bind="event.remoteJobSchedulerHost"></span></td>
-                        <td><span ng-bind="event.remoteJobSchedulerPort"></span></td>
+                        <td><span ng-bind="event.exitCode"></span></td>
+                        <td><span ng-bind="event.expires | stringToDate"></span></td>
+                        <td>
+                            <span ng-bind="event.remoteJobSchedulerHost"></span>
+                            <span ng-if="event.remoteJobSchedulerPort">:</span>
+                           <span ng-bind="event.remoteJobSchedulerPort"></span>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -268,6 +272,102 @@
     <div ng-if="!isLoading" class="text-center m-t-lg">
         <div class="cssload-loading">{{'label.loading' | translate}}...</div>
     </div>
+     <div class="hide " ng-class="{'show': isLoading}">
+         <div class="row hide" ng-class="{'show': showEventPanel}">
+             <div class="col-md-12" ng-hide="loading">
+                        <div class="box white">
+                            <div class="box-header">
+                                <span class="text">{{showEventPanel.eventId}}: {{showEventPanel.eventClass}} </span>
+                            </div>
+                            <div class="box-tool">
+                                <ul class="nav text-muted text-md">
+                                    <li class="nav-item inline m-l-sm">
+                                        <a href="" ng-click="hideEventPanel()"><img src="images/remove.png"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="box-body p-t b-t">
+                                <div class="b-b">
+                                    <ul class="nav nav-tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" href data-toggle="tab"
+                                               data-target="#tab" translate>label.auditLog</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content p-a">
+                                    <div class="tab-pane animated fadeIn active" id="tab">
+                                        <div class="row">
+                                            <div class="table-responsive" resizable r-directions="['bottom']"
+                                                 r-height="250">
+                                                <table class="table table-hover table-bordered ">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.created</th>
+                                                        <th translate>label.account</th>
+                                                        <th translate>label.request</th>
+                                                        <th translate>label.event</th>
+                                                        <th translate>label.comment</th>
+                                                        <th translate>label.timeSpend</th>
+                                                        <th translate>label.ticketLink</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                                    <tr>
+                                                        <td >
+                                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                                                               ng-if="!auditLog.show"
+                                                               ng-click="auditLog.show =true"></i>
+                                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                                               ng-if="auditLog.show"
+                                                               ng-click="auditLog.show =false"></i>
+                                                            <span ng-bind="auditLog.created | stringToDate"></span>
+                                                        </td>
+
+                                                        <td><span ng-bind="auditLog.account"></span></td>
+                                                        <td><span ng-bind="auditLog.request"></span></td>
+                                                        <td><span ng-bind="auditLog.event"></span></td>
+                                                        <td><span ng-bind="auditLog.comment"></span></td>
+                                                        <td>
+                                                            <span ng-if="auditLog.timeSpent">
+                                                                <span ng-bind="auditLog.timeSpent"></span>
+                                                                <span>m</span>
+                                                            </span>
+                                                        </td>
+                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
+                                                               target="_blank" ng-bind="auditLog.ticketLink"></a></td>
+                                                    </tr>
+                                                    <tr class="tableexport-ignore" ng-show="auditLog.show">
+                                                        <td colspan="7">
+                                                            <table class="table m-a-0">
+                                                                <thead>
+                                                                <tr>
+                                                                    <th translate>label.parameters</th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td><span ng-bind="auditLog.parameters"></span></td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div ng-if="auditLogs.length==0"
+                                                     class="text-center m-t-md h6 text-uppercase" translate>
+                                                    message.noAuditLogFound
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+         </div>
+     </div><div>
 </div>
 <div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">

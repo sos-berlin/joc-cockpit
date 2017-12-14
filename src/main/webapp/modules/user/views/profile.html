@@ -356,11 +356,11 @@
                        <div class="col-sm-3 text-dark" translate>label.showFileTransferForJobScheduler</div>
                        <div class="col-sm-6">
                            <label class="md-check w">
-                               <input type="radio" name="agentTask" ng-model="upc.preferences.fileTrasfer" value="all" ng-change="upc.changeConfiguration();">
+                               <input type="radio" name="fileTrasfer" ng-model="upc.preferences.fileTrasfer" value="all" ng-change="upc.changeConfiguration();">
                                <i class="primary"></i> <span translate>label.all</span>
                            </label>
                            <label class="md-check w">
-                               <input type="radio" name="agentTask" ng-model="upc.preferences.fileTrasfer" value="current" ng-change="upc.changeConfiguration();">
+                               <input type="radio" name="fileTrasfer" ng-model="upc.preferences.fileTrasfer" value="current" ng-change="upc.changeConfiguration();">
                                <i class="primary"></i> <span translate>label.current</span>
                            </label>
                        </div>
@@ -595,7 +595,8 @@
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.status}"></i> <span translate>label.viewStatus</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.transfers}"></i> <span translate>label.viewTransfers</span></span>
                            <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.files}"></i> <span translate>label.viewFiles</span></span>
-<!--                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.log}"></i> <span translate>label.viewLog</span></span>-->
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.view.log}"></i> <span translate>label.viewLog</span></span>
+                           <span class="col-sm-3 text-black-lt"><i class="fa fa-check text-success" ng-class="{'fa-times text-black-lt': !permission.YADE.execute.transferStart}"></i> <span translate>label.transferStart</span></span>
                        </div>
                    </div>
                     <div class="row m-t">

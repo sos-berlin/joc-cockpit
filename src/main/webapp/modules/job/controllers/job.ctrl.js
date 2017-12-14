@@ -1053,10 +1053,9 @@
             }).then(function (res) {
                 populatePlanItems(res);
                 vm.isCaledarLoading = false;
-            }, function (err) {
+            }, function () {
                 vm.isCaledarLoading = false;
             });
-
         };
 
         vm.showCalendar = function (jobChain) {
@@ -1167,9 +1166,7 @@
             }, function () {
                 vm.orders = null;
             });
-
         };
-
 
         function addOrder(order, paramObject, jobChain) {
             var orders = {};
@@ -1188,9 +1185,9 @@
                 obj.title = order.title;
 
             if (order.fromDate && order.fromTime) {
-                order.fromDate.setHours(order.fromTime.getHours());
-                order.fromDate.setMinutes(order.fromTime.getMinutes());
-                order.fromDate.setSeconds(order.fromTime.getSeconds());
+                order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
             }
 
             if (order.fromDate) {
@@ -1199,11 +1196,9 @@
             } else {
                 obj.at = order.atTime;
             }
-
             if (paramObject && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             }
-
             orders.orders.push(obj);
             orders.auditLog = {};
             if (vm.comments.comment) {
@@ -1212,7 +1207,6 @@
             if (vm.comments.timeSpent) {
                 orders.auditLog.timeSpent = vm.comments.timeSpent;
             }
-
             if (vm.comments.ticketLink) {
                 orders.auditLog.ticketLink = vm.comments.ticketLink;
             }

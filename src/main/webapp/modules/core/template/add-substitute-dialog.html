@@ -215,31 +215,34 @@
                         </label>
                     </div>
                     <div>
-                        <div class="b-b">
-                            <ul class="nav nav-tabs">
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab1"
+                        <div class="btn-group dropdown m-b">
+                            <span translate style="font-weight: 600">label.frequencyType</span>
+                            <a class="dropdown-toggle m-l-sm text-primary" data-toggle="dropdown"  href ng-model="runTime.tabName">{{runTime.tabName | translate}}<span
+                                    class="caret m-l-xs"></span></a>
+                            <ul class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                <li>
+                                    <a href data-toggle="tab" data-target="#tab1"
                                        ng-class="{'active':runTime.tab == 'weekDays'}"
-                                       ng-click="runTime.tab = 'weekDays'" translate>tab.weekDays</a>
+                                       ng-click="changeFrequency1('weekDays')" translate>tab.weekDays</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab2"
+                                <li>
+                                    <a href data-toggle="tab" data-target="#tab2"
                                        ng-class="{'active':runTime.tab == 'specificWeekDays'}"
-                                       ng-click="runTime.tab = 'specificWeekDays'" translate>label.specificWeekDays</a>
+                                       ng-click="changeFrequency1('specificWeekDays')" translate>tab.specificWeekDays</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab3"
+                                <li>
+                                    <a href data-toggle="tab" data-target="#tab3"
                                        ng-class="{'active':runTime.tab == 'specificDays'}"
-                                       ng-click="runTime.tab = 'specificDays'" translate>label.specificDays</a>
+                                       ng-click="changeFrequency1('specificDays')" translate>tab.specificDays</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href data-toggle="tab" data-target="#tab4"
+                                <li>
+                                    <a href data-toggle="tab" data-target="#tab4"
                                        ng-class="{'active':runTime.tab == 'monthDays'}"
-                                       ng-click="runTime.tab = 'monthDays'" translate>tab.monthDays</a>
+                                       ng-click="changeFrequency1('monthDays')" translate>tab.monthDays</a>
                                 </li>
                             </ul>
                         </div>
-                        <div class="tab-content b-l b-r b-b p-a p-b-0 m-b">
+                        <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
                             <div class="tab-pane animated fadeIn" id="tab1"
                                  ng-class="{'active':runTime.tab == 'weekDays'}">
                                 <div class="form-group row">

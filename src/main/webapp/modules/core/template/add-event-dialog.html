@@ -9,20 +9,20 @@
                 <label class="col-sm-4 form-control-label" translate>label.eventId</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" name="eventId" required placeholder="{{'placeholder.eventId' | translate}}"  ng-model="event.eventId">
+                    <div class="help-block text-danger" ng-if="form.eventId.$dirty"
+                          ng-messages="form.eventId.$error">
+                         <div ng-message="required" translate>message.requiredError</div>
+                     </div>
                 </div>
-                 <div class="help-block text-danger" ng-if="form.eventId.$dirty"
-                      ng-messages="form.eventId.$error">
-                     <div ng-message="required" translate>message.requiredError</div>
-                 </div>
             </div>
             <div class="form-group row" ng-class="{ 'has-error' : form.eventClass.$invalid && form.eventClass.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.eventClass</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" name="eventClass" required placeholder="{{'placeholder.eventClass' | translate}}"  ng-model="event.eventClass">
-                </div>
                  <div class="help-block text-danger" ng-if="form.eventClass.$dirty"
                       ng-messages="form.eventClass.$error">
                      <div ng-message="required" translate>message.requiredError</div>
+                 </div>
                  </div>
             </div>
             <div class="form-group row">
@@ -34,7 +34,9 @@
             <div class="form-group row">
                 <label class="col-sm-4 form-control-label" translate>label.expires</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.expires' | translate}}"  ng-model="event.expires">
+                    <input class="form-control input-date" data-min-date="{{minDate}}" ng-model="event.expiresDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                    <input valid-time maxlength="8" class="form-control input-time" ng-model="event.expiresTime"
+                           placeholder="HH:MM:SS" type="text">
                 </div>
             </div>
             <div class="form-group row">

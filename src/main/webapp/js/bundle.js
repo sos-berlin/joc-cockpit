@@ -2998,7 +2998,7 @@ M.toDeg = function (rad) {
  *  {Number} f - (float) fractional portion; always > 1
  */
 M.modf = function (float) {
-  var i = Math.trunc(float);
+  var i = Math.floor(float);
   var f = Math.abs(float - i);
   return [i, f];
 };
@@ -3700,7 +3700,7 @@ var base = require('./base');
 
 var M = exports;
 
-var int = Math.trunc;
+var int = Math.floor;
 
 /**
  * Error values returned by functions and methods in this package.
@@ -4285,7 +4285,7 @@ var deltat = require('./deltat');
 var _padstart = require('lodash.padstart');
 
 var M = exports;
-var int = Math.trunc;
+var int = Math.floor;
 
 /** 1582-10-05 Julian Date is 1st Gregorian Date (1582-10-15) */
 var GREGORIAN0JD = M.GREGORIAN0JD = 2299160.5;
@@ -4345,7 +4345,7 @@ var Calendar = function () {
           s = _base$modf2[0],
           ms = _base$modf2[1];
 
-      ms = Math.trunc(ms * 1000);
+      ms = Math.floor(ms * 1000);
       return {
         hour: h % 24,
         minute: m,
@@ -6525,9 +6525,9 @@ var Time = function () {
       var t = this.time;
       var neg = t < 0;
       t = neg ? -t : t;
-      var h = Math.trunc(t / 3600);
+      var h = Math.floor(t / 3600);
       t = t - h * 3600;
-      var m = Math.trunc(t / 60);
+      var m = Math.floor(t / 60);
       var s = t - m * 60;
       return [neg, h, m, s];
     }
@@ -6578,7 +6578,7 @@ M.Time = Time;
  *  {Number} f - (float) fractional portion; always > 1
  */
 function modf(float) {
-  var i = Math.trunc(float);
+  var i = Math.floor(float);
   var f = Math.abs(float - i);
   return [i, f];
 }
@@ -7671,8 +7671,8 @@ var CalendarChinese = function () {
       }
 
       var years = 1.5 + (ny - this._epoch) / base.BesselianYear;
-      this.cycle = 1 + Math.trunc((years - 1) / 60);
-      this.year = 1 + Math.trunc((years - 1) % 60);
+      this.cycle = 1 + Math.floor((years - 1) / 60);
+      this.year = 1 + Math.floor((years - 1) % 60);
 
       this.month = this.inMajorSolarTerm(nm).term;
       var m = Math.round((nm - ny) / moonphase.meanLunarMonth);
@@ -7689,7 +7689,7 @@ var CalendarChinese = function () {
         this.month--;
       }
 
-      this.day = 1 + Math.trunc(toFixed(j, 3) - toFixed(nm, 3));
+      this.day = 1 + Math.floor(toFixed(j, 3) - toFixed(nm, 3));
     }
 
     /**
@@ -7710,7 +7710,7 @@ var CalendarChinese = function () {
       return {
         year: gc.year,
         month: gc.month,
-        day: Math.trunc(gc.day)
+        day: Math.floor(gc.day)
       };
     }
 
@@ -7787,7 +7787,7 @@ var CalendarChinese = function () {
     value: function midnight(jde) {
       var gcal = new julian.CalendarGregorian().fromJDE(jde);
       var ts = 0.5 - this.timeshiftUTC(gcal);
-      var mn = Math.trunc(gcal.toJD() - ts) + ts;
+      var mn = Math.floor(gcal.toJD() - ts) + ts;
       mn = gcal.fromJD(mn).toJDE();
       if (toFixed(jde, 5) === toFixed(mn, 5) + 1) {
         return jde;
@@ -7876,7 +7876,7 @@ var CalendarChinese = function () {
   }, {
     key: 'newYear',
     value: function newYear(gyear) {
-      gyear = Math.trunc(gyear);
+      gyear = Math.floor(gyear);
       if (this._cache.ny[gyear]) return this._cache.ny[gyear];
 
       var sue1 = this._cache.sue[gyear - 1] || solstice.december2(gyear - 1, earth);
@@ -35106,4 +35106,5 @@ return hooks;
 
 })));
 
-},{}]},{},[1]);
+},{}]
+},{},[1]);

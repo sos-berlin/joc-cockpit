@@ -6,98 +6,6 @@
                     <div class="pull-left">
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
-                    <label class="md-check" >
-                        <input type="checkbox" ng-model="yadeView.current" ng-click="changeJobScheduler()">
-                        <i class="primary"></i><span translate>label.currentJobscheduler</span>
-                    </label>
-                    <div class="show-block">
-                        <div class="btn-group m-l-sm hidden-btn-group" >
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
-                                    ng-class="{'btn-primary': yadeFilters.filter.states=='all'}" translate>button.allStatus
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'" ng-click="loadYadeFiles()"
-                                    ng-class="{'btn-primary': yadeFilters.filter.states=='SUCCESSFUL'}" translate>button.successful
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'" ng-click="loadYadeFiles()"
-                                    ng-class="{'btn-primary': yadeFilters.filter.states=='FAILED'}" translate>button.failed
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'" ng-click="loadYadeFiles()"
-                                    ng-class="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE'}" translate>button.incomplete
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.state</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item " ng-model="yadeFilters.filter.states" uib-btn-radio="'all'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.states=='all', 'disable-link':savedJobHistoryFilter.selected}" translate>button.allStatus
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'SUCCESSFUL'"
-                                   ng-class="{'btn-primary':yadeFilters.filter.states=='SUCCESSFUL', 'disable-link':savedJobHistoryFilter.selected}" translate>button.successful
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'FAILED'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.states=='FAILED', 'disable-link':savedJobHistoryFilter.selected}" translate>button.failed
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.states" uib-btn-radio="'INCOMPLETE'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.states=='INCOMPLETE', 'disable-link':savedJobHistoryFilter.selected}" translate>button.incomplete
-                                </a>
-                            </div>
-                        </div>
-                        <div class="btn-group m-l-sm hidden-btn-group">
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
-                                    ng-class="{'btn-primary': yadeFilters.filter.date=='all'}" translate>button.all
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
-                                    ng-class="{'btn-primary': yadeFilters.filter.date=='today'}" translate>button.today
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
-                                    ng-class="{'btn-primary': yadeFilters.filter.date=='-1h'}" translate>button.last1
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-12h'"
-                                    ng-class="{'btn-primary': yadeFilters.filter.date=='-12h'}" translate>button.last12
-                            </button>
-                            <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
-                                    ng-class="{'btn-primary': yadeFilters.filter.date=='-1d'}" translate>button.last24
-                            </button>
-                             <button ng-disabled="savedYadeFilter.selected" class="btn btn-grey btn-sm button-group-ellipsis" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
-                                    ng-class="{'btn-primary': yadeFilters.filter.date=='-1w'}" translate>button.lastWeak
-                            </button>
-                        </div>
-                        <div class="btn-group dropdown hidden-dropdown">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" data-toggle="dropdown" translate>label.anyDate</button>
-                            <div class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'all'" ng-click="loadYadeFiles()"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='all', 'disable-link':savedYadeFilter.selected}" translate>button.all
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'today'"
-                                   ng-class="{'btn-primary': yadeFilters.filter.date=='today', 'disable-link':savedYadeFilter.selected}" translate>button.today
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1h'"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1h', 'disable-link':savedYadeFilter.selected}" translate>button.last1
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" uib-btn-radio="'-12h'" ng-click="loadYadeFiles()"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-12h', 'disable-link':savedYadeFilter.selected}" translate>button.last12
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1d'"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1d', 'disable-link':savedYadeFilter.selected}" translate>button.last24
-                                </a>
-                                <a class="dropdown-item" ng-model="yadeFilters.filter.date" ng-click="loadYadeFiles()" uib-btn-radio="'-1w'"
-                                        ng-class="{'btn-primary': yadeFilters.filter.date=='-1w', 'disable-link':savedYadeFilter.selected}" translate>button.lastWeak
-                                </a>
-                            </div>
-                        </div>
-                        <div class="btn-group dropdown m-r-sm">
-                            <button class="btn btn-grey btn-sm m-l-sm dropdown-toggle" uib-tooltip="{{selectedFiltered.account}}" data-toggle="dropdown">{{'label.filters' | translate}} <span class="text-primary" ng-bind="selectedFiltered.name"></span></button>
-                            <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                                <a class="dropdown-item" href ng-click="advanceFilter()" translate>label.createFilter</a>
-                                <a class="dropdown-item" href ng-click="editFilters()" ng-if="yadeFilterList.length>0" translate>label.editExistingFilters</a>
-                                <div class="dropdown-divider" ng-if="yadeFilterList.length>0"></div>
-                                <a class="dropdown-item" ng-class="{orange: (savedYadeFilter.selected == filter.id)}" ng-click="changeFilter(filter)" ng-repeat="filter in yadeFilterList | orderBy: 'name'">
-                                    <span uib-tooltip="{{filter.account}}">{{filter.name}}</span>
-                                    <i ng-click="changeFilter();$event.stopPropagation();" ng-if="savedYadeFilter.selected == filter.id" class="fa fa-times-circle-o remove" uib-tooltip="{{'tooltip.deactivateCustomization' | translate}}" tooltip-placement="right"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -105,260 +13,12 @@
 </div>
 <div class="scroll-y max-ht" >
     <div class="padding p-b-0">
-        <div class="row m-b m-t-xs">
-            <div class="col-md-12">
-                <button class="btn btn-sm btn-grey"
-                        ng-click="expandDetails()">
-                    <i class="fa fa fa-caret-down"></i>
-                    <span translate>button.expandDetails</span>
-                </button>
-                <button class="btn btn-sm btn-grey m-l-sm"
-                        ng-click="collapseDetails()">
-                    <i class="fa fa fa-caret-up"></i>
-                    <span translate>button.collapseDetails</span>
-                </button>
-                <button class="btn btn-sm inline pull-right m-l btn-default" ng-click="advancedSearch()"
-                        ng-show="!showSearchPanel">
-                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
-                </button>
-                <button class="btn btn-sm inline pull-right m-l btn-grey" ng-click="cancel()"
-                        ng-if="showSearchPanel">
-                    <span translate>button.advancedSearch</span> <i class="fa fa-angle-down p-l-xs"></i>
-                </button>
-                <input type="search" class="pull-right" placeholder="{{'placeholder.search' | translate}}"
-                       ng-model="filterString" style="width: 180px">
-            </div>
-        </div>
-        <div class="row hide" ng-class="{'show':showSearchPanel}">
-             <div class="box p-a m-b-xs">
-                    <form name="form1" ng-submit="saveAsFilter(form1)" novalidate>
-                         <div class="form-group row" ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                           <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
-                           <div class=" col-sm-6">
-                               <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="yadeSearch.name" ng-blur="checkFilterName()">
-                               <div class="help-block text-danger" ng-if="form1.filterName.$dirty" ng-messages="form1.filterName.$error">
-                                    <div ng-message="maxlength" translate>message.tooLongError</div>
-                               </div>
-                               <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
-                                   <div translate>message.uniqueError</div>
-                               </div>
-                           </div>
-                        </div>
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.profileId</label>
-
-                            <div class=" col-sm-6">
-                                <input class="form-control" placeholder="{{'placeholder.profileId' | translate}}"
-                                       name="profileId"
-                                       ng-model="yadeSearch.profileId">
-                            </div>
-                        </div>
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.mandator</label>
-
-                            <div class=" col-sm-6">
-                                <input class="form-control" placeholder="{{'placeholder.mandator' | translate}}"
-                                       name="mandator"
-                                       ng-model="yadeSearch.mandator">
-                            </div>
-                        </div>
-                        <div class="m-b-sm row ">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
-
-                            <div class="col-md-6">
-                                <label class="md-check w-sm">
-                                    <input type="radio" name="radio" ng-model="yadeSearch.date" value="date">
-                                    <i class="primary"></i> <span translate>label.specificDate</span>
-                                </label>
-                                <label class="md-check">
-                                    <input type="radio" name="radio" ng-model="yadeSearch.date" value="process">
-                                    <i class="primary"></i> <span translate>label.manualDate</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-if="yadeSearch.date == 'process'">
-                            <label class="col-md-2 col-sm-4 form-control-label"
-                                   translate>label.processExecuted</label>
-
-                            <div class=" col-sm-6"
-                                 ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                <input valid-yade-filter-regex type="text" name="planned" class="form-control"
-                                       placeholder="{{'placeholder.processExecuted' | translate}}"
-                                       ng-model="yadeSearch.planned">
-
-                                <div class="help-block text-danger" ng-messages="form.planned.$error">
-                                    <div ng-message="invalid" translate>message.invalid</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-if="yadeSearch.date == 'date'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.from</label>
-                            <div class="col-sm-6">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="yadeSearch.from"
-                                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
-                                       bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!yadeSearch.from" class="form-control input-time m-l" ng-model="yadeSearch.fromTime"
-                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="yadeSearch.from || yadeSearch.fromTime" ng-click="yadeSearch.from='';yadeSearch.fromTime=''; " translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-if="yadeSearch.date == 'date'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.to</label>
-                            <div class="col-sm-6">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px"
-                                       ng-model="yadeSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{yadeSearch.from}}" data-max-date="{{currentTime}}"
-                                       bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!yadeSearch.to"
-                                       class="form-control input-time m-l" ng-model="jobSearch.toTime"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
-                                       style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="yadeSearch.to || yadeSearch.toTime"
-                                   ng-click="yadeSearch.to='';yadeSearch.toTime=''; "
-                                   translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-
-                            <div class=" col-sm-6">
-                                <select class="form-control" ng-model="yadeSearch.jobschedulerId">
-                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 " translate>label.status</label>
-
-                            <div class="col-sm-9">
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'INCOMPLETE'">
-                                    <i class="primary"></i><span translate>label.incomplete</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'SUCCESSFUL'">
-                                    <i class="primary"></i><span translate>label.successful</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'FAILED'">
-                                    <i class="primary"></i><span translate>label.failed</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-4 " translate>label.operations</label>
-
-                            <div class="col-sm-8">
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.operations"
-                                           data-checklist-value="'COPY'">
-                                    <i class="primary"></i><span translate>label.copy</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.operations"
-                                           data-checklist-value="'MOVE'">
-                                    <i class="primary"></i><span translate>label.move</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.operations"
-                                           data-checklist-value="'GETLIST'">
-                                    <i class="primary"></i><span translate>label.getList</span>
-                                </label>
-                                <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.operations"
-                                           data-checklist-value="'RENAME'">
-                                    <i class="primary"></i><span translate>label.rename</span>
-                                </label>
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.protocol</label>
-
-                            <div class=" col-sm-6">
-                                <input type="text" class="form-control"
-                                       placeholder="{{'placeholder.protocol' | translate}}" name="protocol"
-                                       ng-model="yadeSearch.protocol">
-                            </div>
-                        </div>
-
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceFileName</label>
-
-                            <div class=" col-sm-6">
-                                <input class="form-control" placeholder="{{'placeholder.sourceFileName' | translate}}"
-                                       name="sourceFileName"
-                                       ng-model="yadeSearch.sourceFileName">
-                            </div>
-                        </div>
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetFileName</label>
-
-                            <div class=" col-sm-6">
-                                <input class="form-control" placeholder="{{'placeholder.targetFileName' | translate}}"
-                                       name="targetFileName"
-                                       ng-model="yadeSearch.targetFileName">
-                            </div>
-                        </div>
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.sourceHost</label>
-
-                            <div class=" col-sm-6">
-                                <input class="form-control" placeholder="{{'placeholder.sourceHost' | translate}}"
-                                       name="sourceHost"
-                                       ng-model="yadeSearch.sourceHost">
-                            </div>
-                        </div>
-
-                        <div class="form-group row"
-                             ng-class="{ 'has-error' : form1.filterName.$invalid && form1.filterName.$dirty }">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.targetHost</label>
-
-                            <div class=" col-sm-6">
-                                <input class="form-control" placeholder="{{'placeholder.targetHost' | translate}}"
-                                       name="targetHost"
-                                       ng-model="yadeSearch.targetHost">
-                            </div>
-                        </div>
-
-
-                        <div class="form-group m-t m-b-xs">
-                            <button type="button" class="btn btn-primary btn-sm" ng-click="search();" translate>
-                                button.search
-                            </button>
-                            <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form1.$invalid || !isUnique || !yadeSearch.name" translate>button.saveAsFilter
-                            </button>
-                            <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancel(form1)" translate>
-                                button.cancel
-                            </button>
-                        </div>
-                    </form>
-                </div>
-        </div>
-        <div class="m-t-sm box p-a" ng-if="isLoading">
+        <div class="m-t-sm box p-a" ng-show="isLoading">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered " id="yade">
                         <thead>
                             <tr>
-                                <th width="30" ng-if="permission.Event.delete">
-                                    <label class="md-check lg-check">
-                                        <input type="checkbox" ng-model="checkAllFileTransfers.checkbox" ng-click="checkAllFileTransfersFnc()"><i class="primary"></i>
-                                    </label>
-                                </th>
-                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+                                <th ng-if="permission.YADE.execute.transferStart && fileTransfers[0].state._text=='FAILED'" width="45"><span translate>label.action</span></th>
                                 <th ng-click="sortBy('status')"><a><span translate>label.status</span>
                                     <i ng-show="yadeFilters.filter.sortBy == 'status' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -428,30 +88,23 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody ng-repeat="transfer in filtered2 = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
+                        <tbody ng-repeat="transfer in fileTransfers">
                         <tr  class="cursor">
-                            <td ng-if="permission.Event.delete" >
-                                <label class="md-check">
-                                    <input type="checkbox" data-checklist-model="object.fileTransfers"
-                                           data-checklist-value="transfer" data-checklist-comparator=".id"><i class="primary"></i>
-                                </label>
-                            </td>
-                            <td class="tableexport-ignore">
+
+                            <td ng-if="permission.YADE.execute.transferStart && transfer.state._text=='FAILED'">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                        <a ng-if="permission.Order.execute.start" class="dropdown-item"
+                                    <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
+                                        <a class="dropdown-item"
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
-                                         <a class="dropdown-item"
-                                               ng-click="copyLinkToObject('fileTransfer',transfer.id)" translate>button.copyLinkToObject</a>
                                     </div>
                                 </div>
                             </td>
                             <td class="nowrap" >
-                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
+                                <i class="cursor fa fa-caret-down fa-lg " ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg " ng-if="transfer.show" ng-click="transfer.show = false;"></i>
                                 <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
                             <td ng-bind="transfer.mandator"></td>
@@ -468,12 +121,12 @@
                             <td ng-bind="transfer.end | stringToDate"></td>
                             <td ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="transfer.show">
+                        <tr ng-show="transfer.show">
                             <td></td>
                             <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
-                                     <tr class="tableexport-ignore">
+                                     <tr>
                                          <th translate>label.sourceHostUser</th>
                                          <th translate>label.sourceHostPort</th>
                                          <th translate>label.sourceHostProtocol</th>
@@ -509,18 +162,17 @@
                                  </table>
                              </td>
                         </tr>
-                        <tr class="tableexport-ignore" ng-show="transfer.show">
+                        <tr ng-show="transfer.show">
                             <td></td>
                             <td colspan="12" >
                                  <table class="table m-a-0">
                                      <thead>
-                                     <tr class="tableexport-ignore">
-                                         <th width="30" ng-if="permission.Event.delete">
+                                     <tr>
+                                         <th width="30" ng-if="permission.YADE.execute.transferStart">
                                             <label class="md-check lg-check">
                                                 <input type="checkbox" ng-model="checkAllFiles.checkbox" ng-click="checkAllFilesFnc(transfer)"><i class="primary"></i>
                                             </label>
                                         </th>
-                                         <th ng-if="permission.Order.execute.start" translate>label.action</th>
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
@@ -533,23 +185,13 @@
                                      </thead>
                                      <tbody>
                                      <tr ng-repeat="file in transfer.files">
-                                         <td ng-if="permission.Event.delete" >
+                                         <td ng-if="permission.YADE.execute.transferStart" >
                                             <label class="md-check">
                                                 <input type="checkbox" data-checklist-model="object.files"
                                                        data-checklist-value="file"><i class="primary"></i>
                                             </label>
                                         </td>
-                                         <td ng-if="permission.Order.execute.start" class="tableexport-ignore">
-                                            <div class="btn-group dropdown"  >
-                                                <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                                        class="fa fa-ellipsis-h"></i></button>
-                                                <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                                    <a  class="dropdown-item"
-                                                       ng-click="restartFile(transfer, file)"
-                                                       translate>button.restart</a>
-                                                </div>
-                                            </div>
-                                        </td>
+
                                          <td>{{file.sourceName}}</td>
                                          <td>{{file.sourcePath}}</td>
                                          <td>{{file.targetName}}</td>

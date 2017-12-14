@@ -170,10 +170,10 @@
         tabs._resource.calendars.expand_to = [];
         tabs._resource.events = {};
         tabs._resource.events.filter = {};
-        tabs._resource.events.filter.type = 'ALL';
         tabs._resource.events.filter.sortBy = 'name';
         tabs._resource.events.reverse = false;
         tabs._resource.events.currentPage = '1';
+        tabs._resource.events.selectedView = true;
         tabs._resource.state = 'agent';
 
         tempTabs._jobChain = {};
@@ -332,10 +332,10 @@
         tempTabs._resource.calendars.expand_to = [];
         tempTabs._resource.events = {};
         tempTabs._resource.events.filter = {};
-        tempTabs._resource.events.filter.type = 'ALL';
         tempTabs._resource.events.filter.sortBy = 'name';
         tempTabs._resource.events.reverse = false;
         tempTabs._resource.events.currentPage = '1';
+        tempTabs._resource.events.selectedView = true;
         tempTabs._resource.state = 'agent';
 
         dashboard._dashboard = {};

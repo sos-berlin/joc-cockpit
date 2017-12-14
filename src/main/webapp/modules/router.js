@@ -206,7 +206,7 @@
             ncyBreadcrumb: {label: "{{ 'breadcrumb.taskLogs' | translate}}"}
         }).state("app.yade", {
             url: "/file_transfers",
-            templateUrl: "modules/yade/views/file-transfer.html",
+            templateUrl: "modules/yade/views/file-transfers.html",
             controller: "YadeCtrl",
             resolve: {
                 permission: function(authorizationService) {
@@ -214,6 +214,11 @@
                 }
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.fileTransfer' | translate}}"}
+        }).state("app.fileTransfer", {
+            url: "/file_transfer?id&scheduler_id",
+            templateUrl: "modules/yade/views/file-transfer.html",
+            controller: "YadeCtrl",
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.fileTransfer' | translate}}", parent: "app.yade"}
         }).state("app.resources", {
             url: "/resources",
             templateUrl: "modules/jobscheduler/views/resource.html",

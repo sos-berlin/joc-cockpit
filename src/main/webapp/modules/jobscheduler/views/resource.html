@@ -302,12 +302,12 @@
                                         </a>
                                     </div>
                                 </div>
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-if="permission.Event.execute.add" ng-click="addEvent()" translate>
-                                    button.addEvent
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-if="permission.Event.execute.add" ng-click="addEvent()" >
+                                   <i class="fa fa-plus"></i> <span translate>button.addEvent</span>
                                 </button>
                             </div>
                             <div class="hide" ng-class="{'show-block':object.events.length>0}">
-                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="deleteAllEvents()"><i class="fa fa-trash"></i> {{'button.deleteEvent' | translate}}</button>
+                                <button class="btn btn-grey btn-sm m-l-sm" ng-click="deleteEvent()"><i class="fa fa-trash"></i> {{'button.deleteEvent' | translate}}</button>
                             </div>
                         </div>
                         <toggle-view ng-class="{'hide': resourceFilters.state=='agentJobExecutions' || resourceFilters.state=='events'}"></toggle-view>

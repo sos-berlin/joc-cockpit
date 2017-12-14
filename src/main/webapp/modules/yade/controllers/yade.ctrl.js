@@ -7,8 +7,8 @@
         .module('app')
         .controller('YadeCtrl', YadeCtrl);
 
-    YadeCtrl.$inject = ["$scope","CoreService","YadeService","UserService","SavedFilter","$uibModal"];
-    function YadeCtrl($scope,CoreService,YadeService,UserService,SavedFilter,$uibModal) {
+    YadeCtrl.$inject = ["$scope","CoreService","YadeService","UserService","SavedFilter","$uibModal","$location","OrderService"];
+    function YadeCtrl($scope,CoreService,YadeService,UserService,SavedFilter,$uibModal,$location,OrderService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.yadeView = {};
@@ -25,7 +25,6 @@
 
         vm.savedYadeFilter = JSON.parse(SavedFilter.yadeFilters) || {};
         vm.yadeFilterList = [];
-
 
         if (vm.yadeFilters.selectedView) {
             vm.savedYadeFilter.selected = vm.savedYadeFilter.selected || vm.savedYadeFilter.favorite;
@@ -44,9 +43,18 @@
         };
         vm.checkAllFileTransfersFnc = function () {
             if (vm.checkAllFileTransfers.checkbox && vm.fileTransfers.length > 0) {
-                vm.object.fileTransfers = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                vm.object.fileTransfers = [];
+                var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                angular.forEach(data, function(value){
+                    if(value.state._text=='FAILED')
+                        vm.object.fileTransfers.push(value)
+                });
+
             } else {
                 vm.object.fileTransfers = [];
+            }
+            if(vm.object.fileTransfers.length==0 && vm.checkAllFileTransfers.checkbox){
+                vm.checkAllFileTransfers.checkbox = false;
             }
         };
         var watcher1 = $scope.$watchCollection('object.fileTransfers', function (newNames) {
@@ -55,17 +63,31 @@
             } else {
                 vm.checkAllFileTransfers.checkbox = false;
             }
+
         });
         vm.checkAllFilesFnc = function (transfer) {
             if (vm.checkAllFiles.checkbox && transfer.files.length > 0) {
-                vm.object.fileTransfers = transfer.files;
+                vm.object.files = transfer.files;
             } else {
-                vm.object.fileTransfers = [];
+                vm.object.files = [];
             }
+/*            if(vm.object.fileTransfers.length ==0){
+                vm.object.fileTransfers.push(transfer);
+            }else {
+                var flag = true;
+                for (var i = 0; i < vm.object.fileTransfers.length; i++) {
+                    if (transfer.id == vm.object.fileTransfers[i].id) {
+                        flag = false;
+                    }
+                }
+                if(flag){
+                    vm.object.fileTransfers.push(transfer);
+                }
+            }*/
         };
         var watcher2 = $scope.$watchCollection('object.files', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.checkAllFiles.checkbox = newNames.length == vm.files.length;
+               // vm.checkAllFiles.checkbox = newNames.length == vm.files.length;
             } else {
                 vm.checkAllFiles.checkbox = false;
             }
@@ -94,8 +116,8 @@
                     vm.yadeFilters.filter.states = angular.copy(vm.temp_filter.states);
                     vm.yadeFilters.filter.date = angular.copy(vm.temp_filter.date);
                 } else {
-                    vm.yadeFilters.filter.states = 'ALL';
-                    vm.yadeFilters.filter.date = 'ALL';
+                    vm.yadeFilters.filter.states = 'all';
+                    vm.yadeFilters.filter.date = 'today';
                 }
             }
         }
@@ -248,7 +270,8 @@
                         obj.dateTo = toDate;
                     }
                 }
-            } else {
+            }
+            else {
                 if (vm.yadeFilters.filter.states && vm.yadeFilters.filter.states != 'all') {
                     obj.states = [];
                     obj.states.push(vm.yadeFilters.filter.states);
@@ -268,6 +291,23 @@
                 vm.isLoading = true;
             });
         };
+        function getFileTransferById(transferId){
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.transferId = transferId;
+            YadeService.getTransfers(obj).then(function (res) {
+                vm.fileTransfers = res.transfers;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+        }
+        if ($location.search().scheduler_id && $location.search().id) {
+            vm.checkSchedulerId();
+            getFileTransferById($location.search().id);
+        } else {
+            checkSharedFilters();
+        }
 
         vm.loadYadeFiles = function () {
             vm.load();
@@ -428,7 +468,7 @@
             }
         }
 
-        checkSharedFilters();
+
         function getYadeCustomizations() {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -686,7 +726,6 @@
             }).then(function (res) {
                 configObj.shared = false;
                 if (vm.permission.user != configObj.account) {
-
                     angular.forEach(vm.yadeFilterList, function (value, index) {
                         if (value.id == configObj.id) {
                             vm.yadeFilterList.splice(index, 1);
@@ -708,10 +747,8 @@
 
         vm.favorite = function (filter) {
             vm.filters.favorite = filter.id;
-
             vm.savedYadeFilter.favorite = filter.id;
             vm.yadeFilters.selectedView = true;
-
 
             SavedFilter.setYade(vm.savedYadeFilter);
             SavedFilter.save();
@@ -799,7 +836,185 @@
                 value.show = false;
             });
         };
+        vm.restartAllTransfer = function () {
 
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.ids = [];
+
+            angular.forEach(vm.object.fileTransfers, function (value) {
+                obj.ids.push(value.id);
+            });
+
+            var modalInstance ={};
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Delete';
+                vm.comments.type = 'File transfer';
+                if(event){
+                    vm.comments.name = event.id;
+                }else {
+                    angular.forEach(vm.object.events, function (value, index) {
+                        if (index == vm.object.events.length - 1) {
+                            vm.comments.name = vm.comments.name + ' ' + value.id;
+                        } else {
+                            vm.comments.name = value.id + ', ' + vm.comments.name;
+                        }
+                    });
+                }
+                 modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    obj.auditLog = {};
+                    if (vm.comments.comment)
+                        obj.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        obj.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        obj.auditLog.ticketLink = vm.comments.ticketLink;
+                    YadeService.restart(obj);
+                    vm.object.events = [];
+                }, function () {
+                    vm.object.events = [];
+                });
+            } else {
+                 YadeService.restart(obj);
+            }
+        };
+        vm.restartTransfer = function(transfer){
+            console.log(transfer);
+            YadeService.restart();
+        };
+
+
+        vm.resumeOrderNextstate = function (order) {
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = order.path;
+                vm.comments.title = order.title;
+                vm.comments.operation = 'Resume';
+                vm.comments.type = 'Order';
+            }
+            vm.order = angular.copy(order);
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/resume-order-state-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                resumeOrderState(order);
+            }, function () {
+
+            });
+
+            JobChainService.getJobChainP({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain
+            }).then(function (res) {
+                vm._jobChain = res.jobChain;
+                angular.forEach(res.jobChain.endNodes, function (value) {
+                    vm._jobChain.nodes.push(value);
+                });
+            });
+        };
+
+        function resumeOrderState(order) {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            if (vm.comments) {
+                orders.auditLog = {};
+                if (vm.comments.comment) {
+                    orders.auditLog.comment = vm.comments.comment;
+                }
+                if (vm.comments.timeSpent) {
+                    orders.auditLog.timeSpent = vm.comments.timeSpent;
+                }
+
+                if (vm.comments.ticketLink) {
+                    orders.auditLog.ticketLink = vm.comments.ticketLink;
+                }
+            }
+            orders.orders.push({
+                orderId: order.orderId,
+                jobChain: order.jobChain,
+                state: vm.order.state,
+                endState: vm.order.endState,
+                resume: true
+            });
+
+            OrderService.setOrderState(orders);
+            vm.reset();
+        }
+
+        function resumeOrderWithParam(order, paramObject) {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.auditLog = {};
+            if (vm.comments.comment) {
+                orders.auditLog.comment = vm.comments.comment;
+            }
+            if (vm.comments.timeSpent) {
+                orders.auditLog.timeSpent = vm.comments.timeSpent;
+            }
+
+            if (vm.comments.ticketLink) {
+                orders.auditLog.ticketLink = vm.comments.ticketLink;
+            }
+
+            if (order.params) {
+                order.params = order.params.concat(paramObject.params);
+            } else {
+                order.params = paramObject.params;
+            }
+
+            if (order.params && order.params.length > 0) {
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+            } else {
+                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+            }
+            delete orders['params'];
+            OrderService.resumeOrder(orders);
+            vm.reset();
+        }
+
+        vm.resumeOrderWithParam = function (order) {
+
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
+            OrderService.get(orders).then(function (res) {
+                order = angular.merge(order, res.orders[0]);
+            });
+
+            vm.order = order;
+            vm.paramObject = {};
+            vm.paramObject.params = [];
+            vm.comments = {};
+            vm.comments.radio = 'predefined';
+            var modalInstance = $uibModal.open({
+                templateUrl: 'modules/core/template/resume-order-dialog.html',
+                controller: 'DialogCtrl',
+                scope: vm,
+                backdrop: 'static'
+            });
+            modalInstance.result.then(function () {
+                resumeOrderWithParam(order, vm.paramObject);
+            }, function () {
+                vm.reset();
+            });
+        };
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();

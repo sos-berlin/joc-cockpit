@@ -483,10 +483,10 @@
                             </tr>
                             <tr class="text-center" ng-if="yadeSummary">
                                 <td width="50%">
-                                    <a class="text-lg _600 " ng-class="{'text-success':yadeSummary.successful >0}" ng-bind="yadeSummary.successful || 0"></a>
+                                    <a class="text-lg _600 " ng-click="showYadeSummary('SUCCESSFUL')"  ng-class="{'text-success':yadeSummary.successful >0}" ng-bind="yadeSummary.successful || 0"></a>
                                 </td>
                                 <td width="50%">
-                                    <a class="text-lg _600 " ng-class="{'crimson':yadeSummary.failed  >0}" ng-bind="yadeSummary.failed || 0"></a>
+                                    <a class="text-lg _600 " ng-click="showYadeSummary('FAILED')" ng-class="{'crimson':yadeSummary.failed  >0}" ng-bind="yadeSummary.failed || 0"></a>
                                 </td>
                             </tr>
 

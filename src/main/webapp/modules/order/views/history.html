@@ -273,16 +273,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="btn-group dropdown m-r-sm">
-                        <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" ng-if="savedYadeIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
-                        <div class="dropdown-menu dropdown-ac dropdown-more pull-right">
-                            <a class="dropdown-item" ng-if="(savedYadeIgnoreList.jobChains.length > 0 || savedYadeIgnoreList.orders.length > 0 || savedYadeIgnoreList.jobs.length > 0 )" href ng-click="editYadeIgnoreList()" translate>button.editIgnoreList</a>
-                            <a class="dropdown-item" href ng-click="enableDisableYadeIgnoreList()" ng-if="!savedYadeIgnoreList.isEnable" translate>button.enableIgnoreList</a>
-                            <a class="dropdown-item" href ng-click="enableDisableYadeIgnoreList()" ng-if="savedYadeIgnoreList.isEnable" translate>button.disableIgnoreList</a>
-                            <a class="dropdown-item" href ng-click="resetYadeIgnoreList()" translate>button.resetIgnoreList</a>
 
-                        </div>
-                    </div>
                     </div>
                     <div class="btn-group dropdown m-r-sm" ng-if="historyFilters.type != 'yade'">
                         <button class="btn btn-grey btn-sm dropdown-toggle" data-toggle="dropdown">{{'label.ignoreList' | translate}} <span class="text-primary" ng-if="savedIgnoreList.isEnable" ng-bind="'label.active' | translate"></span></button>
@@ -621,16 +612,16 @@
 
                             <div class="col-sm-9">
                                 <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'INCOMPLETE'">
-                                    <i class="primary"></i><span translate>label.incomplete</span>
-                                </label>
-                                <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'SUCCESSFUL'">
                                     <i class="primary"></i><span translate>label.successful</span>
                                 </label>
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'FAILED'">
                                     <i class="primary"></i><span translate>label.failed</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="jobSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <i class="primary"></i><span translate>label.incomplete</span>
                                 </label>
                             </div>
                         </div>
@@ -754,16 +745,16 @@
 
                             <div class="col-sm-9">
                                 <label class="md-check w">
-                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'INCOMPLETE'">
-                                    <i class="primary"></i><span translate>label.incomplete</span>
-                                </label>
-                                <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'SUCCESSFUL'">
                                     <i class="primary"></i><span translate>label.successful</span>
                                 </label>
                                 <label class="md-check w">
                                     <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'FAILED'">
                                     <i class="primary"></i><span translate>label.failed</span>
+                                </label>
+                                <label class="md-check w">
+                                    <input type="checkbox" data-checklist-model="yadeSearch.states" data-checklist-value="'INCOMPLETE'">
+                                    <i class="primary"></i><span translate>label.incomplete</span>
                                 </label>
                             </div>
                         </div>
@@ -1141,7 +1132,7 @@
                     <table class="table table-hover table-bordered " id="yade" >
                         <thead>
                             <tr>
-                                <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
+
                                 <th ng-if="!historyView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
                                     <i ng-show="yade.filter.sortBy == 'jobschedulerId' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -1213,40 +1204,26 @@
                         </thead>
                         <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:yade.filter.sortBy:yade.sortReverse | startFrom:(yade.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
-                            <td class="tableexport-ignore">
-                                <div class="btn-group dropdown"  >
-                                    <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
-                                            class="fa fa-ellipsis-h"></i></button>
-                                    <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                        <a class="dropdown-item"
-                                           ng-click="addYadeToIgnoreList(transfer.orderId,'order')"
-                                           translate>button.addOrderToIgnoreList</a>
-                                        <a class="dropdown-item" ng-click="addYadeToIgnoreList(transfer.jobChain,'jobChain')"
-                                           translate>button.addJobChainToIgnoreList</a>
-                                        <a class="dropdown-item" ng-click="addYadeToIgnoreList(transfer.job,'job')" translate>button.addJobToIgnoreList</a>
-                                    </div>
-                                </div>
-                            </td>
-                            <td ng-if="!historyView.current" >
+                            <td ng-click="showLogWindow(transfer,null)" ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td class="nowrap" >
+                            <td ng-click="showLogWindow(transfer,null)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                 <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-bind="transfer.mandator"></td>
-                            <td ng-bind="transfer._operation"></td>
-                            <td ng-bind="transfer.source.host"></td>
-                            <td ng-bind="transfer.target.host"></td>
-                            <td ng-bind="transfer.target.protocol"></td>
-                            <td ng-bind="transfer.numOfFiles"></td>
-                            <td ng-bind="transfer.start | stringToDate"></td>
-                            <td ng-bind="transfer.end | stringToDate"></td>
-                            <td ng-bind="transfer.start | duration:transfer.end"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.mandator"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer._operation"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.source.host"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.target.host"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.target.protocol"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.numOfFiles"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.end | stringToDate"></td>
+                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
@@ -1281,9 +1258,9 @@
                                         <td  ng-bind="transfer.jump.account"></td>
                                         <td  ng-bind="transfer.jump.port"></td>
                                         <td  ng-bind="transfer.jump.protocol"></td>
-                                        <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
-                                        <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
-                                        <td><span ng-click="showOrderLink(transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                        <td><span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
+                                        <td><span ng-click="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.job"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.orderId);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>

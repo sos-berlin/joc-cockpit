@@ -747,12 +747,13 @@
                 link = host + 'process_class?path=' + path;
             } else if (objType == 'schedule' && path) {
                 link = host + 'schedule?path=' + path;
+            }else if(objType == 'fileTransfer' && path){
+                 link = host + 'file_transfer?id=' + path;
+            }else if (objType == 'calendar' && path) {
+                 link = host + 'calendar?path=' + path;
             }
-
             if (link !== '') {
                 clipboard.copyText(link + '&scheduler_id=' + vm.schedulerIds.selected);
-            } else if (objType == 'calendar' && path) {
-                clipboard.copyText((host + 'calendar?path=' + path));
             }
         };
 
@@ -955,13 +956,13 @@
                 months = month.toString().split(' ').sort(compareNumbers);
             }
             for (var i = 0; i < months.length; i++) {
-                if (months[i] == 31 && isUltimos) {
+                if (months[i] == 32 && isUltimos) {
                     continue;
                 }
                 if (months[i] == 0 && !isUltimos) {
                     continue;
                 }
-                if (months[i] == 1) {
+                if (months[i] == 1 || months[i] == 31) {
                     str = str + months[i] + 'st,';
                 }
                 else if (months[i] == 2) {
@@ -1889,10 +1890,16 @@
         vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
 
+        vm.changeFrequency = function (str) {
+            vm.frequency.tab = str;
+            vm.frequency.tabName = "tab" + "." + str;
+        };
+
         var tempList = [];
 
         //-------------------Begin year view ----------------------
         vm.Math = Math;
+
         var hd = new Holidays();
         // get supported countries
         vm.countryList = hd.getCountries('en');
@@ -2218,7 +2225,7 @@
                     if (data.endOnM) {
                         obj.dateTo = moment(data.endOnM).format('YYYY-MM-DD');
                     }
-                } else if (data.tab == 'others') {
+                } else if (data.tab == 'every') {
                     if (data.startingWith) {
                         obj.dateFrom = moment(data.startingWith).format('YYYY-MM-DD');
                     }
@@ -2425,7 +2432,7 @@
                         vm.str = gettextCatalog.getString('label.specificDays');
                     } else if (newNames.tab == 'weekDays') {
                         vm.str = gettextCatalog.getString('tab.weekDays');
-                    } else if (newNames.tab == 'others') {
+                    } else if (newNames.tab == 'every') {
                         vm.str = gettextCatalog.getString('tab.every');
                     } else if (newNames.tab == 'nationalHoliday') {
                         vm.str = gettextCatalog.getString('tab.nationalHoliday');
@@ -2453,7 +2460,7 @@
                         }
                     }
 
-                } else if (newNames.tab == 'others') {
+                } else if (newNames.tab == 'every') {
                     if (newNames.interval && newNames.dateEntity) {
                         vm.editor.isEnable = true;
                     } else {
@@ -2872,6 +2879,7 @@
         vm.editFrequency = function (data) {
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
+            vm.frequency.tabName = "tab" + "." + vm.frequency.tab;
             if (vm.frequency.tab == 'nationalHoliday') {
                 vm.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
                 vm.holidayList = [];
@@ -2928,6 +2936,7 @@
                 var temp = angular.copy(vm.frequency);
                 vm.frequency = {};
                 vm.frequency.tab = temp.tab;
+                vm.frequency.tab = "tab"+"."+vm.frequency.tab;
                 vm.frequency.isUltimos = temp.isUltimos;
             }
             if (vm.frequencyList && vm.frequencyList.length > 0) {
@@ -3040,7 +3049,7 @@
                     }
                 }
             }
-            else if (period.tab == 'others') {
+            else if (period.tab == 'every') {
                 if (period.interval == 1) {
                     str = period.interval + 'st ';
                 }
@@ -3193,7 +3202,7 @@
                             obj.includes.dates.push(moment(value).format('YYYY-MM-DD'))
                         });
 
-                    } else if (data.tab == 'others') {
+                    } else if (data.tab == 'every') {
                         if (!obj.includes.repetitions)
                             obj.includes.repetitions = [];
                         var obj1 = {};
@@ -3327,7 +3336,7 @@
                             obj.excludes.dates.push(moment(value).format('YYYY-MM-DD'))
                         });
 
-                    } else if (data.tab == 'others') {
+                    } else if (data.tab == 'every') {
                         if (!obj.excludes.repetitions)
                             obj.excludes.repetitions = [];
                         var obj1 = {};
@@ -3850,7 +3859,8 @@
         run_time.ultimos.day = [];
         var x2js = new X2JS();
 
-         vm.events = [];
+        vm.runTime.tabName = 'tab.weekDays';
+        vm.events = [];
         vm.planItems = [];
         vm.selectedCalendar = [];
 
@@ -3860,8 +3870,10 @@
             'suppress': gettextCatalog.getString('suppress execution (default)'),
             'ignore_holiday': gettextCatalog.getString('ignore holiday')
         };
-
-
+        vm.changeFrequency1 = function (str) {
+            vm.runTime.tab = str;
+            vm.runTime.tabName = "tab" + "." + str;
+        };
         //-------------------Begin national holiday----------------------
         var hd = new Holidays();
         // get supported countries
@@ -6302,7 +6314,7 @@
                     obj.includes.dates.push(moment(value).format('YYYY-MM-DD'))
                 });
 
-            } else if (data.tab == 'others') {
+            } else if (data.tab == 'every') {
                 if (!obj.includes.repetitions)
                     obj.includes.repetitions = [];
                 var obj1 = {};
@@ -8363,6 +8375,7 @@
             }
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = temp.tab;
+            vm.runTime.tabName = 'tab' + '.' + vm.runTime.tab;
             vm.runTime.all = temp.all;
             vm.runTime.allMonth = temp.allMonth;
             vm.runTime.isUltimos = temp.isUltimos;
@@ -9625,6 +9638,7 @@
                  }
                 vm.runTime.period._when_holiday = 'suppress';
                 vm.runTime.tab = temp.tab;
+                vm.runTime.tabName = 'tab' + '.' + vm.runTime.tab;
                 vm.runTime.isUltimos = temp.isUltimos;
                 vm.editor.isEnable = false;
                 selectedMonths = [];
@@ -9995,6 +10009,7 @@
 
             promise3 = $timeout(function () {
                 vm.runTime = runTime;
+                vm.runTime.tabName = 'tab' + "." + runTime.tab;
                 if (runTime.tab == 'monthDays') {
                     if (runTime.isUltimos == 'months') {
                         selectedMonths = [];
@@ -10500,6 +10515,7 @@
 
             promise1 = $timeout(function () {
                 vm.runTime = runTime;
+                vm.runTime.tabName = 'tab' + "." + runTime.tab;
             }, 0);
 
         };
@@ -10774,7 +10790,7 @@
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = 'weekDays';
             vm.runTime.isUltimos = 'months';
-
+            vm.runTime.tabName = 'tab.weekDays';
             if (vm.order && vm.order.isOrderJob) {
                 vm.runTime.frequency = 'time_slot';
                 vm.runTime.period._begin = '00:00';
@@ -11111,7 +11127,9 @@
                 var x = a['key'];
                 var y = b['key'];
                 if (x > y) {
-                    return x - y;
+                    return 1;
+                }else{
+                   return -1;
                 }
             });
             var tempData = {};
@@ -11273,7 +11291,6 @@
         }
 
         function generateCalendarTag(list, type) {
-
             try {
                 var _xml = x2js.xml_str2json(vm.xmlObj.xml);
             } catch (e) {
@@ -11306,6 +11323,7 @@
                             timeout: 10000
                         });
                     }
+
                     calendarToXML(type, index, result.dates, calendar, list, run_time);
 
                 }, function () {
@@ -11391,7 +11409,6 @@
         }
 
         vm.planFromRuntime = function () {
-
              vm.isCaledarLoading = true;
             if(vm.order) {
                 vm._job = vm.order;
@@ -11678,7 +11695,7 @@
                     });
                 return str;
             }
-            else if (period.tab == 'others') {
+            else if (period.tab == 'every') {
                 if (period.interval == 1) {
                     str = period.interval + 'st ';
                 }
@@ -11796,7 +11813,7 @@
                 if (calendar.includes.repetitions && calendar.includes.repetitions.length > 0) {
                     angular.forEach(calendar.includes.repetitions, function (value) {
                         obj = {};
-                        obj.tab = "others";
+                        obj.tab = "every";
                         obj.type = "INCLUDE";
                         obj.dateEntity = value.repetition;
                         obj.interval = value.step;
@@ -12124,7 +12141,7 @@
                     }
                 }
             }
-            else if (period.tab == 'others') {
+            else if (period.tab == 'every') {
                 if (period.interval == 1) {
                     str = period.interval + 'st ';
                 }
@@ -12392,7 +12409,7 @@
             if (data.includes.repetitions && data.includes.repetitions.length > 0) {
                 angular.forEach(data.includes.repetitions, function (value) {
                     obj = {};
-                    obj.tab = "others";
+                    obj.tab = "every";
                     obj.type = "INCLUDE";
                     obj.dateEntity = value.repetition;
                     obj.interval = value.step;
@@ -12623,7 +12640,7 @@
                 if (data.excludes.repetitions && data.excludes.repetitions.length > 0) {
                     angular.forEach(data.excludes.repetitions, function (value) {
                         obj = {};
-                        obj.tab = "others";
+                        obj.tab = "every";
                         obj.type = "EXCLUDE";
                         obj.dateEntity = value.repetition;
                         obj.interval = value.step;
@@ -12756,7 +12773,7 @@
                         obj.includes.dates.push(moment(value).format('YYYY-MM-DD'))
                     });
 
-                } else if (data.tab == 'others') {
+                } else if (data.tab == 'every') {
                     if (!obj.includes.repetitions)
                         obj.includes.repetitions = [];
                     var obj1 = {};
@@ -12887,7 +12904,7 @@
                         obj.excludes.dates.push(moment(value).format('YYYY-MM-DD'))
                     });
 
-                } else if (data.tab == 'others') {
+                } else if (data.tab == 'every') {
                     if (!obj.excludes.repetitions)
                         obj.excludes.repetitions = [];
                     var obj1 = {};
@@ -12967,6 +12984,7 @@
             vm.frequencyList = [];
             vm.frequency = {};
             vm.frequency.tab = 'weekDays';
+            vm.frequency.tabName = 'tab.weekDays';
             vm.frequency.dateEntity = 'DAILY';
             vm.frequency.year = new Date().getFullYear();
             vm.isRuntimeEdit = false;
@@ -13032,6 +13050,7 @@
             vm.isRuntimeEdit = true;
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
+            vm.frequency.tabName = "tab" + "." + vm.frequency.tab
             $('#frequency-editor').modal({show: true});
             $('.fade-modal').css('opacity', '0.85');
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
@@ -13191,7 +13210,11 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
     vm.editor = {};
     vm.editor.isEnable = false;
 
-    vm.calendar = {};
+        vm.calendar = {};
+        vm.changeFrequency = function (str) {
+            vm.frequency.tab = str;
+            vm.frequency.tabName = "tab" + "." + str;
+        };
 
     function getDateFormat() {
         var dataFormat = vm.userPreferences.dateFormat || 'DD.MM.YYYY HH:mm:ss';
@@ -13299,6 +13322,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                 vm.editor.create = true;
                 vm.frequency = {};
                 vm.frequency.tab = 'weekDays';
+                vm.frequency.tabName = 'tab.weekDays';
                 vm.frequency.isUltimos = 'months';
                 vm.frequency.dateEntity = 'DAILY';
                 if (vm.calendar.frequencyList && vm.calendar.frequencyList.length > 0) {
@@ -13356,7 +13380,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                     vm.str = gettextCatalog.getString('label.specificDays');
                 } else if (newNames.tab == 'weekDays') {
                     vm.str = gettextCatalog.getString('tab.weekDays');
-                } else if (newNames.tab == 'others') {
+                } else if (newNames.tab == 'every') {
                     vm.str = gettextCatalog.getString('tab.every');
                 } else if (newNames.tab == 'nationalHoliday') {
                     vm.str = gettextCatalog.getString('tab.nationalHoliday');
@@ -13390,7 +13414,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                         }
                     }
 
-            } else if (newNames.tab == 'others') {
+            } else if (newNames.tab == 'every') {
                 if (newNames.interval && newNames.dateEntity) {
                     vm.editor.isEnable = true;
                 } else {
@@ -13637,24 +13661,25 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                 vm.editor.isEnable = false;
         };
 
-    vm.editFrequency = function (data) {
-        vm.temp = angular.copy(data);
-        vm.frequency = angular.copy(data);
-        vm.isRuntimeEdit = true;
-        if (vm.frequency.tab == 'monthDays') {
-            if (vm.frequency.isUltimos == 'months') {
-                selectedMonths = [];
-                angular.forEach(data.selectedMonths, function (val) {
-                    vm.selectMonthDays(val);
-                });
-            } else {
-                selectedMonthsU = [];
-                angular.forEach(data.selectedMonthsU, function (val) {
-                    vm.selectMonthDaysU(val);
-                });
+        vm.editFrequency = function (data) {
+            vm.temp = angular.copy(data);
+            vm.frequency = angular.copy(data);
+            vm.frequency.tabName = "tab"+"."+vm.frequency.tab;
+            vm.isRuntimeEdit = true;
+            if (vm.frequency.tab == 'monthDays') {
+                if (vm.frequency.isUltimos == 'months') {
+                    selectedMonths = [];
+                    angular.forEach(data.selectedMonths, function (val) {
+                        vm.selectMonthDays(val);
+                    });
+                } else {
+                    selectedMonthsU = [];
+                    angular.forEach(data.selectedMonthsU, function (val) {
+                        vm.selectMonthDaysU(val);
+                    });
+                }
             }
-        }
-    };
+        };
 
         vm.deleteFrequency = function (data, index) {
             vm.calendar.frequencyList.splice(index, 1);
@@ -13662,6 +13687,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                 var temp = angular.copy(vm.frequency);
                 vm.frequency = {};
                 vm.frequency.tab = temp.tab;
+                vm.frequency.tabName = "tab"+"."+vm.frequency.tab;
                 vm.frequency.isUltimos = temp.isUltimos;
             }
             if (data.tab == 'specificDays') {
@@ -13728,7 +13754,7 @@ function CalendarAssignDialogCtrl($scope, $rootScope, ResourceService, CalendarS
                     }
                 }
             }
-            else if (period.tab == 'others') {
+            else if (period.tab == 'every') {
                 if (period.interval == 1) {
                     str = period.interval + 'st ';
                 }

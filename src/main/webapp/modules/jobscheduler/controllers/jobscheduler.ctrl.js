@@ -10,8 +10,8 @@
         .controller('DashboardCtrl', DashboardCtrl)
         .controller('DailyPlanCtrl', DailyPlanCtrl);
 
-    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService","UserService","SavedFilter","OrderService","JobService"];
-    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService,UserService,SavedFilter,OrderService,JobService) {
+    ResourceCtrl.$inject = ["$scope", "$rootScope", "JobSchedulerService", "ResourceService", "orderByFilter", "ScheduleService", "$uibModal", "CoreService", "$interval", "$window", "TaskService", "CalendarService", "$timeout", "FileSaver", "FileUploader", "toasty", "gettextCatalog", "AuditLogService", "EventService", "UserService", "SavedFilter", "OrderService", "JobService"];
+    function ResourceCtrl($scope, $rootScope, JobSchedulerService, ResourceService, orderBy, ScheduleService, $uibModal, CoreService, $interval, $window, TaskService, CalendarService, $timeout, FileSaver, FileUploader, toasty, gettextCatalog, AuditLogService, EventService, UserService, SavedFilter, OrderService, JobService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.resourceFilters = CoreService.getResourceTab();
@@ -23,9 +23,9 @@
         vm.calendarFilters = vm.resourceFilters.calendars;
         vm.eventFilters = vm.resourceFilters.events;
 
+        vm.selectedFiltered;
         vm.savedEventFilter = JSON.parse(SavedFilter.eventFilters) || {};
         vm.eventFilterList = [];
-
 
         if (vm.eventFilters.selectedView) {
             vm.savedEventFilter.selected = vm.savedEventFilter.selected || vm.savedEventFilter.favorite;
@@ -33,6 +33,7 @@
         else {
             vm.savedEventFilter.selected = undefined;
         }
+
         vm.object = {};
 
         vm.tree = [];
@@ -2366,13 +2367,13 @@
             });
         }
 
-        vm.treeHandler1 = function (data) {
+        vm.treeHandler1S = function (data) {
             if (data.expanded) {
                 data.folders = orderBy(data.folders, 'name');
             }
         };
 
-        vm.treeHandler = function (data) {
+        vm.treeHandlerS = function (data) {
             vm.reset();
             navFullTree();
             data.selected1 = true;
@@ -2748,6 +2749,31 @@
             vm.isLoading = false;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
+            if (vm.selectedFiltered) {
+                console.log(vm.selectedFiltered)
+                if (vm.selectedFiltered.planned) {
+                     obj = parseProcessExecuted(vm.selectedFiltered.planned, obj);
+                }
+                if (vm.selectedFiltered.jobs) {
+                    obj.jobs = [];
+                    angular.forEach(vm.selectedFiltered.jobs, function(job){
+                        obj.jobs.push({job:job});
+                    });
+                }
+                if (vm.selectedFiltered.orders) {
+                    obj.orders = vm.selectedFiltered.orders;
+                }
+                if (vm.selectedFiltered.eventIds) {
+                    obj.eventIds = vm.selectedFiltered.eventIds.split(',');
+                }
+                if (vm.selectedFiltered.eventClasses) {
+                    obj.eventClasses = vm.selectedFiltered.eventClasses.split(',');
+                }
+                if (vm.selectedFiltered.exitCodes) {
+                    obj.exitCodes = vm.selectedFiltered.exitCodes.split(',');
+                }
+            }
+            console.log(obj)
 
             EventService.getEvents(obj).then(function (res) {
                 vm.customEvents = res.events;
@@ -2760,6 +2786,20 @@
 
         function addEvent() {
             var obj = {};
+            obj.eventId = vm.event.eventId;
+            obj.eventClass = vm.event.eventClass;
+            obj.exitCode = vm.event.exitCode;
+            if(vm.event.expiresDate && vm.event.expiresTime) {
+                vm.event.expiresDate.setHours(moment(vm.event.expiresTime, 'HH:mm:ss').hours());
+                vm.event.expiresDate.setMinutes(moment(vm.event.expiresTime, 'HH:mm:ss').minutes());
+                vm.event.expiresDate.setSeconds(moment(vm.event.expiresTime, 'HH:mm:ss').seconds());
+            }
+            obj.expires = vm.event.expiresDate;
+            obj.job = vm.event.job;
+            obj.jobChain = vm.event.jobChain;
+            obj.orderId = vm.event.orderId;
+            obj.expirationPeriod = vm.event.expirationPeriod;
+            obj.expirationCycle = vm.event.expirationCycle;
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.auditLog = {};
             if (vm.comments.comment)
@@ -2769,13 +2809,10 @@
 
             if (vm.comments.ticketLink)
                 obj.auditLog.ticketLink = vm.comments.ticketLink;
-            obj.event = vm.event;
-            if(vm.paramObject.params && vm.paramObject.params.length>0)
-                obj.params = vm.paramObject.params;
-            EventService.addEvent(obj).then(function(res){
-                 getEvents();
-            })
 
+            if (vm.paramObject.params && vm.paramObject.params.length > 0)
+                obj.params = vm.paramObject.params;
+            EventService.addEvent(obj);
         }
 
         vm.addEvent = function () {
@@ -2797,34 +2834,38 @@
 
             });
         };
+
         vm.deleteEvent = function (event) {
+            vm._event = event;
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             obj.ids = [];
-            obj.ids.push(event.eventId);
-            EventService.deleteEvent(obj);
-        };
-        vm.deleteAllEvents = function () {
-            var obj = {};
-            obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.ids = [];
-            angular.forEach(vm.object.events, function (value) {
-                obj.ids.push(value.eventId);
-            });
+            if(event){
+                obj.ids.push(event.id);
+            }else {
+                angular.forEach(vm.object.events, function (value) {
+                    obj.ids.push(value.id);
+                });
+            }
+            var modalInstance ={};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
                 vm.comments.operation = 'Delete';
                 vm.comments.type = 'Event';
-                angular.forEach(vm.object.events, function (value, index) {
-                    if (index == vm.object.events.length - 1) {
-                        vm.comments.name = vm.comments.name + ' ' + value.path;
-                    } else {
-                        vm.comments.name = value.path + ', ' + vm.comments.name;
-                    }
-                });
-                var modalInstance = $uibModal.open({
+                if(event){
+                    vm.comments.name = event.eventId;
+                }else {
+                    angular.forEach(vm.object.events, function (value, index) {
+                        if (index == vm.object.events.length - 1) {
+                            vm.comments.name = vm.comments.name + ' ' + value.eventId;
+                        } else {
+                            vm.comments.name = value.eventId + ', ' + vm.comments.name;
+                        }
+                    });
+                }
+                 modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -2845,8 +2886,18 @@
                     vm.object.events = [];
                 });
             } else {
-                EventService.deleteEvent(obj);
-                vm.object.events = [];
+                 modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/delete-confirm-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    EventService.deleteEvent(obj);
+                    vm.object.events = [];
+                }, function () {
+                    vm.object.events = [];
+                });
             }
         };
         vm.eventSearch = {};
@@ -2854,6 +2905,7 @@
             vm.isUnique = true;
             vm.showSearchPanel = true;
             vm.eventSearch.date = 'date';
+            vm.eventSearch.exitCodes = 0;
             vm.eventSearch.from = new Date();
             vm.eventSearch.from.setDate(vm.eventSearch.from.getDate() - 1);
             vm.eventSearch.fromTime = '00:00';
@@ -2888,6 +2940,7 @@
                 getCustomizations();
             }
         }
+
         vm.tree1 = [];
         vm.filter_tree1 = {};
         vm.expanding_property = {
@@ -2988,13 +3041,6 @@
             }
         });
 
-        vm.addFolderPaths = function () {
-             if (vm.eventSearch && vm.eventFilters.type == 'jobChain') {
-                vm.eventSearch.paths = vm.paths;
-            } else if (vm.eventSearch && vm.eventFilters.type == 'job') {
-                vm.eventSearch.paths = vm.paths;
-            }
-        };
         vm.addObjectPaths = function () {
             if (vm.clickOn == 'jobChain') {
                 if (vm.eventSearch && vm.showSearchPanel) {
@@ -3072,7 +3118,7 @@
             }
         };
         var loadConfig = true;
-        checkSharedFilters();
+
         function getCustomizations() {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -3114,25 +3160,25 @@
                                 loadConfig = true;
                                 vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                                 vm.selectedFiltered.account = value.account;
-                                vm.load();
+                                getEvents();
                             });
                         }
                     });
                     if (flag) {
                         vm.savedEventFilter.selected = undefined;
                         loadConfig = true;
-                        vm.load();
+                        getEvents();
                     }
                 } else {
                     loadConfig = true;
                     vm.savedEventFilter.selected = undefined;
-                    vm.load();
+                    getEvents();
                 }
 
             }, function (err) {
                 loadConfig = true;
                 vm.savedEventFilter.selected = undefined;
-                vm.load();
+                getEvents();
             });
         }
 
@@ -3157,10 +3203,13 @@
         };
 
         vm.advanceFilter = function () {
-            vm.cancelEventSearch();
+            vm.eventSearch = {};
+            vm.showSearchPanel = false;
+            vm.isUnique = true;
             vm.action = 'add';
             vm.eventFilter = {};
             vm.eventFilter.planned = 'today';
+            vm.eventFilter.exitCodes = 0;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/event-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -3188,10 +3237,10 @@
                         vm.eventFilters.selectedView = true;
                         vm.selectedFiltered = vm.eventFilter;
                         vm.selectedFiltered.account = vm.permission.user;
-                        isCustomizationSelected(true);
+
                         SavedFilter.setEvent(vm.savedEventFilter);
                         SavedFilter.save();
-                        vm.load();
+                        getEvents();
                     }
                 });
 
@@ -3213,7 +3262,8 @@
         var temp_name = '';
 
         vm.editFilter = function (filter) {
-            vm.cancelEventSearch();
+                        vm.eventSearch = {};
+            vm.showSearchPanel = false;
             vm.action = 'edit';
             vm.isUnique = true;
             temp_name = angular.copy(filter.name);
@@ -3235,8 +3285,8 @@
                 if (vm.savedEventFilter.selected == filter.id) {
                     vm.selectedFiltered = vm.eventFilter;
                     vm.eventFilters.selectedView = true;
-                    isCustomizationSelected(true);
-                    vm.load();
+
+                    getEvents();
                 }
                 var configObj = {};
                 configObj.jobschedulerId = filter.jobschedulerId;
@@ -3289,7 +3339,6 @@
             });
         };
         vm.deleteFilter = function (filter) {
-
             UserService.deleteConfiguration({
                 jobschedulerId: filter.jobschedulerId,
                 id: filter.id
@@ -3305,17 +3354,14 @@
                     vm.savedEventFilter.selected = undefined;
                     vm.eventFilters.selectedView = false;
                     vm.selectedFiltered = undefined;
-                    vm.load();
-                    isCustomizationSelected(false);
+                    getEvents();
                 } else {
                     if (vm.eventFilterList.length == 0) {
                         vm.savedEventFilter.selected = undefined;
                         vm.eventFilters.selectedView = false;
                         vm.selectedFiltered = undefined;
-                        isCustomizationSelected(false);
                     }
                 }
-
 
                 SavedFilter.setEvent(vm.savedEventFilter);
                 SavedFilter.save();
@@ -3355,24 +3401,19 @@
 
             vm.savedEventFilter.favorite = filter.id;
             vm.eventFilters.selectedView = true;
-
-
             SavedFilter.setEvent(vm.savedEventFilter);
             SavedFilter.save();
-            vm.load();
+            getEvents();
         };
 
         vm.removeFavorite = function () {
             vm.savedEventFilter.favorite = '';
-
-
             vm.filters.favorite = '';
             SavedFilter.setEvent(vm.savedEventFilter);
             SavedFilter.save();
         };
         vm.checkFilterName = function () {
             vm.isUnique = true;
-
             if (vm.eventSearch && vm.eventSearch.name) {
                 angular.forEach(vm.eventFilterList, function (value) {
                     if (vm.eventSearch.name == value.name && vm.permission.user == value.account) {
@@ -3389,7 +3430,8 @@
         };
 
         vm.changeFilter = function (filter) {
-            vm.cancelEventSearch();
+                       vm.eventSearch = {};
+            vm.showSearchPanel = false;
 
             if (filter) {
                 vm.savedEventFilter.selected = filter.id;
@@ -3400,23 +3442,180 @@
                 }).then(function (conf) {
                     vm.selectedFiltered = JSON.parse(conf.configuration.configurationItem);
                     vm.selectedFiltered.account = filter.account;
-                    vm.load();
+                    getEvents();
                 });
             }
             else {
-                isCustomizationSelected(false);
                 vm.savedEventFilter.selected = filter;
                 vm.eventFilters.selectedView = false;
                 vm.selectedFiltered = filter;
-                vm.load();
+                getEvents();
             }
-
 
             SavedFilter.setEvent(vm.savedEventFilter);
             SavedFilter.save();
         };
+        function parseProcessExecuted(regex, obj) {
+            var fromDate, toDate, date, arr;
 
+            if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
 
+            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
+                fromDate = new Date();
+                toDate = new Date();
+                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                fromDate.setSeconds(toDate.getSeconds() - seconds);
+            } else if (/^\s*(Today)\s*$/i.test(regex)) {
+                fromDate = '0d';
+                toDate = '0d';
+            } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
+                fromDate = '-1d';
+                toDate = '0d';
+            } else if (/^\s*(now)\s*$/i.test(regex)) {
+                fromDate = new Date();
+                toDate = new Date();
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
+                arr = date[0].split('to');
+                fromDate = arr[0].trim();
+                toDate = arr[1].trim();
+
+            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
+                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
+                fromDate = new Date();
+                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
+                    fromDate.setHours(parseInt(time[1]) - 12);
+                } else {
+                    fromDate.setHours(parseInt(time[1]));
+                }
+
+                fromDate.setMinutes(parseInt(time[2]));
+                toDate = new Date();
+                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
+                    toDate.setHours(parseInt(time[4]) - 12);
+                } else {
+                    toDate.setHours(parseInt(time[4]));
+                }
+                toDate.setMinutes(parseInt(time[5]));
+            }
+
+            if (fromDate) {
+                obj.dateFrom = fromDate;
+            }
+            if (toDate) {
+                obj.dateTo = toDate;
+            }
+            console.log('hao')
+            return obj;
+        }
+        vm.searchEvent = function () {
+            var obj = {};
+            console.log(vm.eventSearch)
+            console.log('>>>')
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            if (vm.eventSearch.planned) {
+                obj = parseProcessExecuted(vm.eventSearch.planned, obj);
+            }else {
+                if (vm.eventSearch.date == 'date') {
+                    if (vm.eventSearch.from) {
+                        var fromDate = new Date(vm.eventSearch.from);
+                        if (vm.eventSearch.fromTime) {
+                            fromDate.setHours(moment(vm.eventSearch.fromTime, 'HH:mm:ss').hours());
+                            fromDate.setMinutes(moment(vm.eventSearch.fromTime, 'HH:mm:ss').minutes());
+                            fromDate.setSeconds(moment(vm.eventSearch.fromTime, 'HH:mm:ss').seconds());
+                        } else {
+                            fromDate.setHours(0);
+                            fromDate.setMinutes(0);
+                            fromDate.setSeconds(0);
+                        }
+                        obj.dateFrom =fromDate;
+                    }
+                    if (vm.eventSearch.to) {
+                        var toDate = new Date(vm.eventSearch.to);
+                        if (vm.eventSearch.toTime) {
+                            toDate.setHours(moment(vm.eventSearch.toTime, 'HH:mm:ss').hours());
+                            toDate.setMinutes(moment(vm.eventSearch.toTime, 'HH:mm:ss').minutes());
+                            toDate.setSeconds(moment(vm.eventSearch.toTime, 'HH:mm:ss').seconds());
+
+                        } else {
+                            toDate.setHours(0);
+                            toDate.setMinutes(0);
+                            toDate.setSeconds(0);
+                        }
+                        toDate.setMilliseconds(0);
+
+                        obj.dateTo = toDate;
+                    }
+                }
+            }
+            if (vm.eventSearch.jobs) {
+                obj.jobs = [];
+                angular.forEach(vm.eventSearch.jobs, function (job) {
+                    obj.jobs.push({job: job});
+                });
+            }
+            if (vm.eventSearch.orders) {
+                obj.orders = vm.eventSearch.orders;
+            }
+            if (vm.eventSearch.eventIds) {
+                obj.eventIds = vm.eventSearch.eventIds.split(',');
+            }
+            if (vm.eventSearch.eventClasses) {
+                obj.eventClasses = vm.eventSearch.eventClasses.split(',');
+            }
+            if (vm.eventSearch.exitCodes) {
+                obj.exitCodes = vm.eventSearch.exitCodes.split(',');
+            }
+
+            console.log(obj)
+
+            EventService.getEvents(obj).then(function (res) {
+                vm.customEvents = res.events;
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+                vm.customEvents = [];
+            });
+        };
+
+        vm.showEventPanelFnc = function(value){
+            if(!value){
+                return;
+            }
+            vm.showEventPanel = value;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.events = [];
+            obj.events.push(value.eventId);
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            AuditLogService.getLogs(obj).then(function (result) {
+                if (result && result.auditLog) {
+                    vm.auditLogs = result.auditLog;
+                }
+            });
+        };
+        vm.hideEventPanel = function () {
+            vm.showEventPanel = undefined;
+        };
         /** <<<<<<<<<<<<< End Events >>>>>>>>>>>>>> */
 
 
@@ -3456,10 +3655,11 @@
                 getAgentTasks();
             } else if (toState.name == 'app.resources.events') {
                 vm.resourceFilters.state = 'events';
-                getEvents();
+                   checkSharedFilters();
             }
             startPolling();
         });
+
 
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
@@ -3624,7 +3824,7 @@
                                     break;
                                 }
                             }
-                            if(vm.allCalendars.length==0){
+                            if (vm.allCalendars.length == 0) {
                                 initCalendarTree();
                             }
                         } else {
@@ -3636,6 +3836,9 @@
                         if (event.eventType == "AuditLogChanged" && vm.showPanel && vm.showPanel.path == event.path) {
                             vm.loadAuditLogs(vm.showPanel);
                         }
+                    }
+                    if (vm.resourceFilters.state == 'events' && event.objectType == 'OTHER') {
+                        getEvents()
                     }
                 });
         });
@@ -3855,9 +4058,9 @@
             if (vm.substituteObj.folder.lastIndexOf('/') != vm.substituteObj.folder.length - 1) {
                 vm.substituteObj.folder = vm.substituteObj.folder + '/';
             }
-            if(vm.substituteObj.name.substring(0,1)=='/'){
+            if (vm.substituteObj.name.substring(0, 1) == '/') {
                 schedules.schedule = vm.substituteObj.name;
-            }else {
+            } else {
                 schedules.schedule = vm.substituteObj.folder + '' + vm.substituteObj.name;
             }
             var x2js = new X2JS();
@@ -5616,6 +5819,14 @@
             vm.taskHistoryTab.task.filter.historyStates = state;
             vm.taskHistoryTab.task.selectedView = false;
             vm.taskHistoryTab.task.filter.date = typeof vm.dashboardFilters.filter.taskSummaryfrom === 'string' ? vm.dashboardFilters.filter.taskSummaryfrom : 'today';
+            $state.go('app.history');
+        };
+        vm.showYadeSummary = function (state) {
+            vm.taskHistoryTab = CoreService.getHistoryTab();
+            vm.taskHistoryTab.type = 'yade';
+            vm.taskHistoryTab.yade.filter.historyStates = state;
+            vm.taskHistoryTab.yade.selectedView = false;
+            vm.taskHistoryTab.yade.filter.date = typeof vm.dashboardFilters.filter.fileSummaryfrom === 'string' ? vm.dashboardFilters.filter.fileSummaryfrom : 'today';
             $state.go('app.history');
         };
         var interval1 = '';

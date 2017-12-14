@@ -61,37 +61,42 @@
                                 </label>
                                 <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
                             </div>
-                            <div class="b-b">
-                                    <ul class="nav nav-tabs">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab1"
+<div class="btn-group dropdown m-b">
+                                     <span translate style="font-weight: 600">label.frequencyType</span>
+                                    <a class="dropdown-toggle m-l-sm text-primary" data-toggle="dropdown" href>{{frequency.tabName | translate}}
+                                        <span class="caret m-l-xs"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
+                                        <li>
+                                            <a href data-toggle="tab" data-target="#tab1"
                                                ng-class="{'active':frequency.tab == 'weekDays'}"
-                                               ng-click="frequency.tab = 'weekDays'" translate>tab.weekDays</a>
+                                               ng-click="changeFrequency('weekDays')" translate>tab.weekDays</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab2"
+                                        <li>
+                                            <a href data-toggle="tab" data-target="#tab2"
                                                ng-class="{'active':frequency.tab == 'specificWeekDays'}"
-                                               ng-click="frequency.tab = 'specificWeekDays'"
-                                               translate>label.specificWeekDays</a>
+                                               ng-click="changeFrequency('specificWeekDays')"
+                                               translate>tab.specificWeekDays</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab3"
-                                           ng-class="{'active':frequency.tab == 'specificDays'}"
-                                           ng-click="frequency.tab = 'specificDays'" translate>label.specificDays</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href data-toggle="tab" data-target="#tab4"
+                                        <li>
+                                            <a href data-toggle="tab" data-target="#tab3"
+                                               ng-class="{'active':frequency.tab == 'specificDays'}"
+                                               ng-click="changeFrequency('specificDays')" translate>tab.specificDays</a>
+                                        </li>
+                                        <li>
+                                            <a href data-toggle="tab" data-target="#tab4"
                                                ng-class="{'active':frequency.tab == 'monthDays'}"
-                                               ng-click="frequency.tab = 'monthDays'" translate>tab.monthDays</a>
+                                               ng-click="changeFrequency('monthDays')" translate>tab.monthDays</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href data-toggle="tab" data-target="#tab5"
-                                               ng-class="{'active':frequency.tab == 'others'}"
-                                               ng-click="frequency.tab = 'others'" translate>tab.every</a>
+                                        <li>
+                                            <a href data-toggle="tab" data-target="#tab5"
+                                               ng-class="{'active':frequency.tab == 'every'}"
+                                               ng-click="changeFrequency('every')" translate>tab.every</a>
                                         </li>
                                     </ul>
-                            </div>
-                            <div class="tab-content b-l b-r b-b p-a p-b-0 m-b" ng-class="{'specific-day-ht':frequency.tab == 'specificDays' }">
+                                </div>
+                                <div class="tab-content  b-t b-l b-r b-b p-a p-b-0 m-b"
+                                     ng-class="{'specific-day-ht':frequency.tab == 'specificDays' }">
                                     <div class="tab-pane animated fadeIn" id="tab1"
                                          ng-class="{'active':frequency.tab == 'weekDays'}">
                                         <div class="form-group row">
@@ -504,7 +509,7 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane animated fadeIn" id="tab5"
-                                         ng-class="{'active':frequency.tab == 'others'}">
+                                         ng-class="{'active':frequency.tab == 'every'}">
                                         <div class="form-group row">
                                             <label class="col-sm-3 form-control-label" translate>label.every</label>
 
@@ -573,13 +578,13 @@
                                                 <span ng-if="data.tab=='weekDays'">{{data.startingWithW | stringToDate1}}</span>
                                                 <span ng-if="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1}}</span>
                                                 <span ng-if="data.tab=='monthDays'">{{data.startingWithM | stringToDate1}}</span>
-                                                <span ng-if="data.tab=='others'">{{data.startingWith | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='every'">{{data.startingWith | stringToDate1}}</span>
                                             </td>
                                             <td>
                                                 <span ng-if="data.tab=='weekDays'">{{data.endOnW | stringToDate1}}</span>
                                                 <span ng-if="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1}}</span>
                                                 <span ng-if="data.tab=='monthDays'">{{data.endOnM | stringToDate1}}</span>
-                                                <span ng-if="data.tab=='others'">{{data.endOn | stringToDate1}}</span>
+                                                <span ng-if="data.tab=='every'">{{data.endOn | stringToDate1}}</span>
                                             </td>
                                             <td>
                                                 <a><i ng-click="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>

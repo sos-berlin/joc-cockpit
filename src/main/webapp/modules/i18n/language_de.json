@@ -774,6 +774,8 @@
   "label.specificDate": "Bestimmtes Datum",
   "label.specificDays": "Bestimmte Tage",
   "label.specificWeekDays": "Erweiterte Wochentage",
+  "tab.specificDays": "Bestimmte Tage",
+  "tab.specificWeekDays": "Erweiterte Wochentage",
   "label.sr": "Lfd. Nr.",
   "label.srNo": "Lfd. Nr.",
   "label.standaloneJobs": "Autonome Jobs",
@@ -1221,8 +1223,6 @@
   "label.eventStatus": "Ereignis Status",
   "label.targetProtocol": "Target Protocol",
   "label.totalNumberOfFiles": "Total Number of Files",
-  "label.remoteJobSchedulerHost": "Remote JobScheduler Host",
-  "label.remoteJobSchedulerPort": "Remote JobScheduler Port",
   "button.expired": "Verfallen",
   "button.addEvent": "Ereignis hinzufügen",
   "button.deleteEvent": "Ereignis entfernen",
@@ -1255,5 +1255,14 @@
   "placeholder.expires": "Ablaufbedingung angeben",
   "placeholder.exitCode": "Exit Code angeben",
   "label.importAllCalendar": "Kalender importieren, die in Verwendung sind",
-  "message.importAllCalendar": "Sind Sie sicher, dass Sie Kalender überschreiben wollen, die in Verwendung sind?"
+  "message.importAllCalendar": "Sind Sie sicher, dass Sie Kalender überschreiben wollen, die in Verwendung sind?",
+  "message.deleteEvent": "Are you sure you want to delete this Event?",
+  "message.deleteAllEvent": "Are you sure you want to delete all Events?",
+  "label.deleteAllEvents": "Delete all Events?",
+  "label.frequencyType": "Frequency Type",
+  "label.eventIds": "Event IDs",
+  "label.eventClasses": "Event Classes",
+  "label.eventExitCodes": "Event Exit Codes",
+  "label.remoteJobScheduler": "Remote JobScheduler",
+  "label.fileTransfersFound": "File Transfers Found"
 }
