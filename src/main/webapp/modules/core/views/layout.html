@@ -61,7 +61,7 @@
                                 </label>
                                 <a ng-click="cancel(form1)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
                             </div>
-<div class="btn-group dropdown m-b">
+                            <div class="btn-group dropdown m-b">
                                      <span translate style="font-weight: 600">label.frequencyType</span>
                                     <a class="dropdown-toggle m-l-sm text-primary" data-toggle="dropdown" href>{{frequency.tabName | translate}}
                                         <span class="caret m-l-xs"></span>
@@ -605,7 +605,8 @@
                     </div>
                     <button type="button" class="btn btn-primary btn-sm"
                             style="position:absolute; bottom: 10px;" ng-disabled="form1.$invalid || !editor.isEnable" ng-click="addFrequency();">
-                        <span translate>button.addNewFrequency</span>
+                        <span ng-if="editor.create" translate>button.addNewFrequency</span>
+                        <span ng-if="!editor.create" translate>button.updateFrequency</span>
                     </button>
                 </div>
                 <div class="modal-footer">

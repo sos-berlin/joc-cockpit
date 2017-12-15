@@ -1214,20 +1214,19 @@
             obj.compact = true;
             CalendarService.getListOfCalendars(obj).then(function (result) {
                 data.calendars = result.calendars;
-                vm.allCalendars = result.calendars;
                 vm.folderPathC = data.name || '/';
                 vm.folderFullPathC = data.path || '/';
                 vm.loading = false;
                 var flag = false;
                 if (data.calendars.length > 0) {
-
                     angular.forEach(data.calendars, function (value) {
                         value.path1 = data.path;
-                        if (vm.showPanel.path == data.path) {
+                        if (vm.showPanel && vm.showPanel.path == data.path) {
                             flag = true;
                         }
                     });
                 }
+                vm.allCalendars = data.calendars;
                 if (!flag) {
                     vm.showPanel = undefined;
                 }
@@ -2946,7 +2945,32 @@
         vm.expanding_property = {
             field: "name"
         };
+        vm.getTreeStructureForObject = function (type) {
+            vm.clickOn = type;
+            $('#singleObjectModal').modal('show');
+            if (type == 'jobChain') {
+                OrderService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: ['ORDER']
+                }).then(function (res) {
+                    vm.tree1 = res.folders;
 
+                }, function (err) {
+                    $('#singleObjectModal').modal('hide');
+                });
+            } else if (type == 'job') {
+                JobService.tree({
+                    jobschedulerId: vm.schedulerIds.selected,
+                    compact: true,
+                    types: ['JOB']
+                }).then(function (res) {
+                    vm.tree1 = res.folders;
+                }, function () {
+                    $('#singleObjectModal').modal('hide');
+                });
+            }
+        };
         vm.getTreeStructureForObjects = function (type) {
             vm.clickOn = type;
             $('#objectModal').modal('show');
@@ -2973,7 +2997,22 @@
                 });
             }
         };
+        vm.filterString ='';
         vm.treeHandler = function (data) {
+            console.log(data)
+            if(!data.expanded && !data.level){
+
+                if(data.jobChain){
+                    vm.event.jobChain = data.jobChain;
+                }else if(data.order){
+                    vm.event.order = data.order.orderId;
+                    vm.event.jobChain = data.order.jobChain;
+                }else if(data.job){
+                    vm.event.job = data.job;
+                }
+                $('#singleObjectModal').modal('hide');
+                return;
+            }
             data.expanded = !data.expanded;
             if (data.expanded) {
                 if (vm.clickOn == 'jobChain') {
@@ -3042,6 +3081,25 @@
         });
 
         vm.addObjectPaths = function () {
+            if (vm.clickOn == 'jobChain') {
+                if (vm.eventSearch && vm.showSearchPanel) {
+                    vm.eventSearch.orders = vm.orders;
+                    vm.eventSearch.jobChains = vm.jobChains;
+                }
+                else if (vm.eventFilter && !vm.showSearchPanel) {
+                    vm.eventFilter.orders = vm.orders;
+                    vm.eventFilter.jobChains = vm.jobChains;
+                }
+            } else {
+                if (vm.eventSearch && vm.showSearchPanel) {
+                    vm.eventSearch.jobs = vm.jobs;
+                }
+                else if (vm.eventFilter && !vm.showSearchPanel) {
+                    vm.eventFilter.jobs = vm.jobs;
+                }
+            }
+        };
+        vm.addObjectPath = function () {
             if (vm.clickOn == 'jobChain') {
                 if (vm.eventSearch && vm.showSearchPanel) {
                     vm.eventSearch.orders = vm.orders;

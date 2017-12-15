@@ -2483,11 +2483,10 @@
                 obj.title = order.title;
 
             if (order.fromDate && order.fromTime) {
-                order.fromDate.setHours(order.fromTime.getHours());
-                order.fromDate.setMinutes(order.fromTime.getMinutes());
-                order.fromDate.setSeconds(order.fromTime.getSeconds());
+                order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
             }
-
             if (order.fromDate && order.at == 'later') {
                 obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
@@ -6705,13 +6704,11 @@
 
         vm.jobHistory = jobHistory;
         function jobHistory(filter) {
-
             if (!filter) {
                 if (!vm.jobHistoryFilterList) {
                     checkSharedTaskFilters();
                     return;
                 }
-
                 filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
             }
             vm.isLoading = false;
@@ -6804,6 +6801,7 @@
             if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
                 delete filter['timeZone']
             }
+            filter.compact = true;
             YadeService.getTransfers(filter).then(function (res) {
                 vm.yadeHistorys = res.transfers;
                 vm.isLoading = true;
@@ -7102,6 +7100,7 @@
                 if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
                     delete filter['timeZone']
                 }
+                filter.compact = true;
                 YadeService.getTransfers(filter).then(function (res) {
                     vm.yadeHistorys = res.transfers;
                     setDuration(vm.yadeHistorys);
@@ -7346,6 +7345,16 @@
 
         };
         vm.showTransferFuc = function (value) {
+            var obj = {};
+            obj.jobschedulerId = value.jobschedulerId || vm.schedulerIds.selected;
+            obj.transferIds = [];
+            obj.transferIds.push(value.id);
+            YadeService.getTransfers(obj).then(function (res) {
+                value = angular.merge(value,res.transfers[0]);
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
             value.show = true;
             var ids = [];
             ids.push(value.id);

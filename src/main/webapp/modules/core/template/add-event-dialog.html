@@ -39,36 +39,63 @@
                            placeholder="HH:MM:SS" type="text">
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row" ng-class="{ 'has-error' : form.expirationPeriod.$invalid && form.expirationPeriod.$dirty }">
                 <label class="col-sm-4 form-control-label" translate>label.expirationPeriod</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.expirationPeriod' | translate}}"  ng-model="event.expirationPeriod">
+                    <input valid-time1 maxlength="8" type="text" name="expirationPeriod" class="form-control" placeholder="{{'placeholder.expirationPeriod' | translate}}"  ng-model="event.expirationPeriod">
                 </div>
             </div>
-            <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.expirationCycle</label>
+            <div class="form-group row" ng-class="{ 'has-error' : form.expirationCycle.$invalid && form.expirationCycle.$dirty }">
+                <label class="col-sm-4 form-control-label" name="expirationCycle" translate>label.expirationCycle</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.expirationCycle' | translate}}"  ng-model="event.expirationCycle">
+                    <input valid-time1 maxlength="8" type="text" class="form-control" placeholder="{{'placeholder.expirationCycle' | translate}}"  ng-model="event.expirationCycle">
                 </div>
             </div>
-            <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.jobChain</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.enterJobChainPath' | translate}}"  ng-model="event.jobChain">
+                <div class="form-group row m-b-sm">
+                    <label class="col-md-4 col-sm-4">
+                        <span translate>label.jobChains</span>
+                        <span>/</span>
+                        <span translate>label.orders</span>
+                    </label>
+
+                    <div class="col-sm-6" ng-if="event.jobChain || event.order">
+                        <div style="max-height: 140px; overflow: auto" ng-if="event.jobChain">
+                            <div>
+                                <span class="text-muted" translate>label.jobChain</span>: <span
+                                    class="">{{event.jobChain}}</span> <i
+                                    class="pull-right fa fa-remove m-l text-hover-primary"
+                                    ng-click="event.jobChain = undefined"></i>
+                            </div>
+                        </div>
+                        <div style="max-height: 140px; overflow: auto" ng-if="event.order">
+                            <div >
+                                <span class="text-muted" translate>label.order</span>: <span
+                                    class="">{{event.order}}</span> <i
+                                    class="pull-right fa fa-remove m-l text-hover-primary"
+                                    ng-click="event.order = undefined"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1" ng-class="{'p-l-0': event.jobChains.length>0 || event.orders.length>0}">
+                        <a href="" ng-click="getTreeStructureForObject('jobChain')"><i class="fa fa-folder-o fa-lg"></i></a>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.job</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.enterJobPath' | translate}}"  ng-model="event.job">
+                <div class="form-group row m-b-sm">
+                    <label class="col-md-4 col-sm-4">
+                        <span translate>label.jobs</span>
+                    </label>
+                    <div class="col-sm-6" ng-if="event.job">
+                        <div style="max-height: 140px; overflow: auto" ng-if="event.job">
+                            <div>
+                                <span class="">{{event.job}}</span>
+                                <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="event.job = undefined"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1" ng-class="{'p-l-0': event.jobs.length>0}">
+                        <a href="" ng-click="getTreeStructureForObject('job')"><i class="fa fa-folder-o fa-lg"></i></a>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.orderId</label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" placeholder="{{'placeholder.enterOrderId' | translate}}"  ng-model="event.orderId">
-                </div>
-            </div>
             <div class="form-group row hide" ng-class="{'show': display}">
             <label class="col-sm-4 " translate>label.selectComments</label>
             <div class=" col-sm-8">

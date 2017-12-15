@@ -113,10 +113,20 @@
         tabs._yade.filter = {};
         tabs._yade.filter.states = 'all';
         tabs._yade.filter.date = 'today';
-        tabs._yade.filter.sortBy = 'startTime';
-        tabs._yade.sortReverse = true;
+        tabs._yade.filter.sortBy = 'state._text';
+        tabs._yade.sortReverse = false;
         tabs._yade.currentPage = '1';
         tabs._yade.selectedView = true;
+
+        tabs._yadeDetail = {};
+        tabs._yadeDetail.overview = true;
+        tabs._yadeDetail.filter = {};
+        tabs._yadeDetail.filter.sortBy = 'orderId';
+        tabs._yadeDetail.reverse = false;
+        tabs._yadeDetail.currentPage = '1';
+        tabs._yadeDetail.pageView = 'grid';
+        tabs._yadeDetail.showErrorNodes = true;
+        tabs._yadeDetail.fitToScreen = false;
 
         tabs._auditLog = {};
         tabs._auditLog.filter = {};
@@ -184,7 +194,6 @@
         tempTabs._jobChain.currentPage = '1';
         tempTabs._jobChain.expand_to = [];
         tempTabs._jobChain.selectedView = true;
-
 
         tempTabs._job = {};
         tempTabs._job.filter = {};
@@ -275,10 +284,20 @@
         tempTabs._yade.filter = {};
         tempTabs._yade.filter.states = 'all';
         tempTabs._yade.filter.date = 'today';
-        tempTabs._yade.filter.sortBy = 'startTime';
-        tempTabs._yade.sortReverse = true;
+        tempTabs._yade.filter.sortBy = 'state._text';
+        tempTabs._yade.sortReverse = false;
         tempTabs._yade.currentPage = '1';
         tempTabs._yade.selectedView = true;
+
+        tempTabs._yadeDetail = {};
+        tempTabs._yadeDetail.overview = true;
+        tempTabs._yadeDetail.filter = {};
+        tempTabs._yadeDetail.filter.sortBy = 'orderId';
+        tempTabs._yadeDetail.reverse = false;
+        tempTabs._yadeDetail.currentPage = '1';
+        tempTabs._yadeDetail.pageView = 'grid';
+        tempTabs._yadeDetail.showErrorNodes = true;
+        tempTabs._yadeDetail.fitToScreen = false;
 
         tempTabs._auditLog = {};
         tempTabs._auditLog.filter = {};
@@ -440,6 +459,9 @@
             },
             getYadeTab: function(){
                 return tabs._yade;
+            },
+            getYadeDetailTab: function () {
+                return tabs._yadeDetail;
             },
             getEvents: function (filter) {
                 var deferred = $q.defer();

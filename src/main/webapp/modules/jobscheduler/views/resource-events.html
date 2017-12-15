@@ -1,373 +1,409 @@
+<div class="row m-b hide" ng-class="{'show':showSearchPanel}">
+    <div class="col-md-12">
+        <div class="box p-a m-b-xs m-t-xs">
+            <form name="form" ng-submit="saveAsFilter(form)" novalidate>
+                <div class="form-group row"
+                     ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
 
-    <div class="row m-b hide" ng-class="{'show':showSearchPanel}">
-        <div class="col-md-12">
-            <div class="box p-a m-b-xs m-t-xs">
-                <form name="form" ng-submit="saveAsFilter(form)" novalidate>
-                    <div class="form-group row" ng-class="{ 'has-error' : form.filterName.$invalid && form.filterName.$dirty }">
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.filterName</label>
-                        <div class=" col-sm-6">
-                            <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control" placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"  ng-model="eventSearch.name" ng-blur="checkFilterName()">
-                            <div class="help-block text-danger" ng-if="form.filterName.$dirty" ng-messages="form.filterName.$error">
-                                <div ng-message="maxlength" translate>message.tooLongError</div>
-                            </div>
-                            <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
-                                <div translate>message.uniqueError</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventIds</label>
-                        <div class=" col-sm-6">
-                            <input type="text" class="form-control" ng-model="eventSearch.eventIds">
-                        </div>
-                    </div>
-                    <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventClasses</label>
-                        <div class=" col-sm-6">
-                            <input type="text" class="form-control" ng-model="eventSearch.eventClasses">
-                        </div>
-                    </div>
-                    <div class="form-group row" >
-                        <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventExitCodes</label>
-                        <div class=" col-sm-6">
-                            <input type="test" class="form-control" ng-model="eventSearch.exitCodes">
-                        </div>
-                    </div>
-                    <div class="m-b-sm row ">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+                    <div class=" col-sm-6">
+                        <input uib-tooltip="Max: 25 characters" tooltip-trigger="focus" type="text" class="form-control"
+                               placeholder="{{'placeholder.name' | translate}}" name="filterName" ng-maxlength="25"
+                               ng-model="eventSearch.name" ng-blur="checkFilterName()">
 
-                            <div class="col-md-6">
-                                <label class="md-check w-sm">
-                                    <input type="radio" name="radio" ng-model="eventSearch.date" value="date">
-                                    <i class="primary"></i> <span translate>label.specificDate</span>
-                                </label>
-                                <label class="md-check">
-                                    <input type="radio" name="radio" ng-model="eventSearch.date" value="process">
-                                    <i class="primary"></i> <span translate>label.manualDate</span>
-                                </label>
-                            </div>
+                        <div class="help-block text-danger" ng-if="form.filterName.$dirty"
+                             ng-messages="form.filterName.$error">
+                            <div ng-message="maxlength" translate>message.tooLongError</div>
                         </div>
-                        <div class="form-group row" ng-if="eventSearch.date == 'process'">
-                            <label class="col-md-2 col-sm-4 form-control-label"
-                                   translate>label.processExecuted</label>
-
-                            <div class=" col-sm-6"
-                                 ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                                <input valid-yade-filter-regex type="text" name="planned" class="form-control"
-                                       placeholder="{{'placeholder.processExecuted' | translate}}"
-                                       ng-model="eventSearch.planned">
-
-                                <div class="help-block text-danger" ng-messages="form.planned.$error">
-                                    <div ng-message="invalid" translate>message.invalid</div>
-                                </div>
-                            </div>
+                        <div class="help-block text-danger hide" ng-class="{'show-block':!isUnique}">
+                            <div translate>message.uniqueError</div>
                         </div>
-                        <div class="form-group row" ng-if="eventSearch.date == 'date'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.expireFrom</label>
-                            <div class="col-sm-6">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px" ng-model="eventSearch.from"
-                                       data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})" data-max-date="{{currentTime}}"
-                                       bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!eventSearch.from" class="form-control input-time m-l" ng-model="eventSearch.fromTime"
-                                        placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text" style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="eventSearch.from || eventSearch.fromTime" ng-click="eventSearch.from='';eventSearch.fromTime=''; " translate>button.clear</a>
-                            </div>
-                        </div>
-                        <div class="form-group row" ng-if="eventSearch.date == 'date'">
-                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.expireTo</label>
-                            <div class="col-sm-6">
-                                <input class="form-control input-date" style="width: 225px;background-position: 200px"
-                                       ng-model="eventSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{eventSearch.from}}" data-max-date="{{currentTime}}"
-                                       bs-datepicker type="text">
-                                <input valid-time maxlength="8" ng-disabled="!eventSearch.to"
-                                       class="form-control input-time m-l" ng-model="eventSearch.toTime"
-                                       placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
-                                       style="width: 175px;background-position: 150px">
-                                <a class="text-sm text-primary" ng-show="eventSearch.to || eventSearch.toTime"
-                                   ng-click="eventSearch.to='';eventSearch.toTime=''; "
-                                   translate>button.clear</a>
-                            </div>
-                        </div>
-                    <div class="form-group row m-b-sm">
-                           <label class="col-md-2 col-sm-4" >
-                               <span translate>label.jobChains</span>
-                               <span>/</span>
-                               <span translate>label.orders</span>
-                           </label>
-                            <div class="col-sm-6" ng-if="eventSearch.jobChains.length>0 || eventSearch.orders.length>0">
-                                <div style="max-height: 140px; overflow: auto" ng-if="eventSearch.jobChains.length>0">
-                                    <div ng-repeat="jobChain in eventSearch.jobChains track by $index">
-                                          <span class="text-muted" translate>label.jobChain</span>:  <span class="">{{jobChain}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(jobChain,'jobChain')"></i>
-                                    </div>
-                                </div>
-                                <div style="max-height: 140px; overflow: auto" ng-if="eventSearch.orders.length>0">
-                                    <div ng-repeat="order in eventSearch.orders track by $index">
-                                        <span class="text-muted" translate>label.order</span>: <span class="">{{order.orderId}}</span> <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(order,'order')"></i>
-                                    </div>
-                                </div>
-                            </div>
-                           <div class="col-sm-1" ng-class="{'p-l-0': eventSearch.jobChains.length>0 || eventSearch.orders.length>0}"><a href="" ng-click="getTreeStructureForObjects('jobChain')"><i class="fa fa-folder-o fa-lg"></i></a></div>
-                        </div>
-                    <div class="form-group row m-b-sm">
-                           <label class="col-md-2 col-sm-4" >
-                               <span translate>label.jobs</span>
-                           </label>
-                            <div class="col-sm-6" ng-if="eventSearch.jobs.length>0">
-                                <div style="max-height: 140px; overflow: auto" ng-if="eventSearch.jobs.length>0">
-                                    <div ng-repeat="job in eventSearch.jobs track by $index">
-                                        <span class="">{{job}}</span><i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(job,'job')"></i>
-                                    </div>
-                                </div>
-                            </div>
-                           <div class="col-sm-1" ng-class="{'p-l-0': eventSearch.jobs.length>0}"><a href="" ng-click="getTreeStructureForObjects('job')"><i class="fa fa-folder-o fa-lg"></i></a></div>
-                    </div>
-                    <div class="form-group m-t m-b-xs">
-                        <button type="button" class="btn btn-primary btn-sm" ng-click="searchEvent();" translate>
-                            button.search
-                        </button>
-                        <button type="submit" class="btn orange btn-sm m-l-sm"
-                                    ng-disabled="form.$invalid || !isUnique || !eventSearch.name" translate>button.saveAsFilter
-                            </button>
-                        <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancelEventSearch(form)" translate>
-                            button.cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="hide" ng-class="{'show': isLoading}">
-        <div class="m-t-xs box p-a" >
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered" id="agentJobExecution">
-                    <thead>
-                    <tr>
-                        <th width="30" ng-if="permission.Event.execute.delete">
-                            <label class="md-check lg-check">
-                                <input type="checkbox" ng-model="checkAllEvent.checkbox" ng-click="checkAllEventFnc()"><i class="primary"></i>
-                            </label>
-                        </th>
-                        <th width="45"><span translate>label.action</span></th>
-                        <th ng-click="sortByE('eventId')"><a><span translate>label.eventId</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'eventId' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'eventId' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('eventClass')"><a><span translate>label.eventClass</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'eventClass' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'eventClass' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('job')"><a><span translate>label.job</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('jobChain')"><a><span translate>label.jobChain</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'jobChain' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'jobChain' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('orderId')"><a><span translate>label.orderId</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'orderId' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'orderId' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('exitCode')"><a><span translate>label.exitCode</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'exitCode' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'exitCode' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('expires')"><a><span translate>label.expires</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'expires' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'expires' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th ng-click="sortByE('remoteJobSchedulerHost')"><a><span translate>label.remoteJobScheduler</span>
-                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && !eventFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && eventFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody >
-                    <tr ng-repeat="event in customEvents | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
-                         <td ng-if="permission.Event.execute.delete" >
-                            <label class="md-check">
-                                <input type="checkbox" data-checklist-model="object.events"
-                                       data-checklist-value="event"><i class="primary"></i>
-                            </label>
-                        </td>
-                        <td>
-                             <div class="btn-group dropdown">
-                                 <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
-                                     <i class="fa fa-ellipsis-h"></i></button>
-                                 <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
-                                     <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}" ng-click="deleteEvent(event)" translate>button.deleteEvent</a>
-                                 </div>
-                             </div>
-                         </td>
-                        <td><a ng-click="showEventPanelFnc(event)" ng-bind="event.eventId"></a></td>
-                        <td><span ng-bind="event.eventClass"></span></td>
-                        <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)" ng-bind="event.jobChain"></a></td>
-                        <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
-                        <td><a class="text-hover-primary" ng-click="showOrderLink(event.orderId)" ng-bind="event.orderId"></a></td>
-                        <td><span ng-bind="event.exitCode"></span></td>
-                        <td><span ng-bind="event.expires | stringToDate"></span></td>
-                        <td>
-                            <span ng-bind="event.remoteJobSchedulerHost"></span>
-                            <span ng-if="event.remoteJobSchedulerPort">:</span>
-                           <span ng-bind="event.remoteJobSchedulerPort"></span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': customEvents.length > 10}"
-                     ng-if="customEvents.length >0"> {{customEvents.length}}
-                    <span translate ng-if="customEvents.length >1">label.customEventsFound</span>
-                    <span translate ng-if="customEvents.length ==1">label.customEventFound</span>
-                </div>
-                <ul ng-show="customEvents.length > userPreferences.entryPerPage" uib-pagination
-                    total-items="customEvents.length" ng-model="adtLog.currentPage"
-                    items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right"
-                    max-size="5" boundary-link-numbers="true" rotate="false"
-                    previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
-                <div class="pull-left" ng-show="customEvents.length > 10">
-                    <div class="btn-group m-r-xxs">
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
-                                uib-btn-radio="'10'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
-                                uib-btn-radio="'25'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
-                                uib-btn-radio="'50'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
-                                uib-btn-radio="'100'"
-                                ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
-                        </button>
-                        <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
-                                uib-btn-radio="{{maxEntryPerPage}}"
-                                ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
-                            {{maxEntryPerPage}}
-                        </button>
                     </div>
                 </div>
-                <div ng-if="isLoading && customEvents.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noEventsFound</div>
-            </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventIds</label>
+
+                    <div class=" col-sm-6">
+                        <input type="text" class="form-control" ng-model="eventSearch.eventIds">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventClasses</label>
+
+                    <div class=" col-sm-6">
+                        <input type="text" class="form-control" ng-model="eventSearch.eventClasses">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventExitCodes</label>
+
+                    <div class=" col-sm-6">
+                        <input type="test" class="form-control" ng-model="eventSearch.exitCodes">
+                    </div>
+                </div>
+                <div class="m-b-sm row ">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.dateRange</label>
+
+                    <div class="col-md-6">
+                        <label class="md-check w-sm">
+                            <input type="radio" name="radio" ng-model="eventSearch.date" value="date">
+                            <i class="primary"></i> <span translate>label.specificDate</span>
+                        </label>
+                        <label class="md-check">
+                            <input type="radio" name="radio" ng-model="eventSearch.date" value="process">
+                            <i class="primary"></i> <span translate>label.manualDate</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row" ng-if="eventSearch.date == 'process'">
+                    <label class="col-md-2 col-sm-4 form-control-label"
+                           translate>label.processExecuted</label>
+
+                    <div class=" col-sm-6"
+                         ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
+                        <input valid-yade-filter-regex type="text" name="planned" class="form-control"
+                               placeholder="{{'placeholder.processExecuted' | translate}}"
+                               ng-model="eventSearch.planned">
+
+                        <div class="help-block text-danger" ng-messages="form.planned.$error">
+                            <div ng-message="invalid" translate>message.invalid</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row" ng-if="eventSearch.date == 'date'">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.expireFrom</label>
+
+                    <div class="col-sm-6">
+                        <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                               ng-model="eventSearch.from"
+                               data-date-format="{{dataFormat}}" data-autoclose="1"
+                               placeholder="{{'placeholder.setStartDate' | translate}} ({{dataFormat | uppercase}})"
+                               bs-datepicker type="text">
+                        <input valid-time maxlength="8" ng-disabled="!eventSearch.from"
+                               class="form-control input-time m-l" ng-model="eventSearch.fromTime"
+                               placeholder="{{'placeholder.startTime' | translate}} (HH:MM:SS)" type="text"
+                               style="width: 175px;background-position: 150px">
+                        <a class="text-sm text-primary" ng-show="eventSearch.from || eventSearch.fromTime"
+                           ng-click="eventSearch.from='';eventSearch.fromTime=''; " translate>button.clear</a>
+                    </div>
+                </div>
+                <div class="form-group row" ng-if="eventSearch.date == 'date'">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.expireTo</label>
+
+                    <div class="col-sm-6">
+                        <input class="form-control input-date" style="width: 225px;background-position: 200px"
+                               ng-model="eventSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1"
+                               placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})"
+                               data-min-date="{{eventSearch.from}}"
+                               bs-datepicker type="text">
+                        <input valid-time maxlength="8" ng-disabled="!eventSearch.to"
+                               class="form-control input-time m-l" ng-model="eventSearch.toTime"
+                               placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
+                               style="width: 175px;background-position: 150px">
+                        <a class="text-sm text-primary" ng-show="eventSearch.to || eventSearch.toTime"
+                           ng-click="eventSearch.to='';eventSearch.toTime=''; "
+                           translate>button.clear</a>
+                    </div>
+                </div>
+                <div class="form-group row m-b-sm">
+                    <label class="col-md-2 col-sm-4">
+                        <span translate>label.jobChains</span>
+                        <span>/</span>
+                        <span translate>label.orders</span>
+                    </label>
+
+                    <div class="col-sm-6" ng-if="eventSearch.jobChains.length>0 || eventSearch.orders.length>0">
+                        <div style="max-height: 140px; overflow: auto" ng-if="eventSearch.jobChains.length>0">
+                            <div ng-repeat="jobChain in eventSearch.jobChains track by $index">
+                                <span class="text-muted" translate>label.jobChain</span>: <span
+                                    class="">{{jobChain}}</span> <i
+                                    class="pull-right fa fa-remove m-l text-hover-primary"
+                                    ng-click="remove(jobChain,'jobChain')"></i>
+                            </div>
+                        </div>
+                        <div style="max-height: 140px; overflow: auto" ng-if="eventSearch.orders.length>0">
+                            <div ng-repeat="order in eventSearch.orders track by $index">
+                                <span class="text-muted" translate>label.order</span>: <span
+                                    class="">{{order.orderId}}</span> <i
+                                    class="pull-right fa fa-remove m-l text-hover-primary"
+                                    ng-click="remove(order,'order')"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1" ng-class="{'p-l-0': eventSearch.jobChains.length>0 || eventSearch.orders.length>0}">
+                        <a href="" ng-click="getTreeStructureForObjects('jobChain')"><i class="fa fa-folder-o fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="form-group row m-b-sm">
+                    <label class="col-md-2 col-sm-4">
+                        <span translate>label.jobs</span>
+                    </label>
+                    <div class="col-sm-6" ng-if="eventSearch.jobs.length>0">
+                        <div style="max-height: 140px; overflow: auto" ng-if="eventSearch.jobs.length>0">
+                            <div ng-repeat="job in eventSearch.jobs track by $index">
+                                <span class="">{{job}}</span>
+                                <i class="pull-right fa fa-remove m-l text-hover-primary" ng-click="remove(job,'job')"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-1" ng-class="{'p-l-0': eventSearch.jobs.length>0}">
+                        <a href="" ng-click="getTreeStructureForObjects('job')"><i class="fa fa-folder-o fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="form-group m-t m-b-xs">
+                    <button type="button" class="btn btn-primary btn-sm" ng-click="searchEvent();" translate>
+                        button.search
+                    </button>
+                    <button type="submit" class="btn orange btn-sm m-l-sm"
+                            ng-disabled="form.$invalid || !isUnique || !eventSearch.name" translate>button.saveAsFilter
+                    </button>
+                    <button type="button" class="btn btn-grey btn-sm m-l-sm" ng-click="cancelEventSearch(form)"
+                            translate>
+                        button.cancel
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-    <div ng-if="!isLoading" class="text-center m-t-lg">
-        <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+</div>
+<div class="hide" ng-class="{'show': isLoading}">
+    <div class="m-t-xs box p-a">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered" id="agentJobExecution">
+                <thead>
+                <tr>
+                    <th width="30" ng-if="permission.Event.execute.delete">
+                        <label class="md-check lg-check">
+                            <input type="checkbox" ng-model="checkAllEvent.checkbox" ng-click="checkAllEventFnc()"><i
+                                class="primary"></i>
+                        </label>
+                    </th>
+                    <th width="45"><span translate>label.action</span></th>
+                    <th ng-click="sortByE('eventId')"><a><span translate>label.eventId</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'eventId' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'eventId' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('eventClass')"><a><span translate>label.eventClass</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'eventClass' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'eventClass' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('job')"><a><span translate>label.job</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('jobChain')"><a><span translate>label.jobChain</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'jobChain' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'jobChain' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('orderId')"><a><span translate>label.orderId</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'orderId' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'orderId' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('exitCode')"><a><span translate>label.exitCode</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'exitCode' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'exitCode' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('expires')"><a><span translate>label.expires</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'expires' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'expires' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('remoteJobSchedulerHost')"><a><span translate>label.remoteJobScheduler</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'remoteJobSchedulerHost' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="event in filtered = (customEvents | filter: filterString:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                    <td ng-if="permission.Event.execute.delete">
+                        <label class="md-check">
+                            <input type="checkbox" data-checklist-model="object.events"
+                                   data-checklist-value="event"><i class="primary"></i>
+                        </label>
+                    </td>
+                    <td>
+                        <div class="btn-group dropdown">
+                            <button type="button" class="btn-drop more-option-h" data-toggle="dropdown">
+                                <i class="fa fa-ellipsis-h"></i></button>
+                            <div class="dropdown-menu dropdown-ac dropdown-more dropdown-menu-list" role="menu">
+                                <a class="hide dropdown-item" ng-class="{show:permission.Calendar.edit.delete}"
+                                   ng-click="deleteEvent(event)" translate>button.deleteEvent</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td><a ng-click="showEventPanelFnc(event)" ng-bind="event.eventId"></a></td>
+                    <td><span ng-bind="event.eventClass"></span></td>
+                    <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)"
+                           ng-bind="event.jobChain"></a></td>
+                    <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
+                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.orderId)"
+                           ng-bind="event.orderId"></a></td>
+                    <td><span ng-bind="event.exitCode"></span></td>
+                    <td><span ng-bind="event.expires | stringToDate"></span></td>
+                    <td>
+                        <span ng-bind="event.remoteJobSchedulerHost"></span>
+                        <span ng-if="event.remoteJobSchedulerPort">:</span>
+                        <span ng-bind="event.remoteJobSchedulerPort"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="inline text-sm m-l-xs m-b-sm" ng-class="{'m-t-xs m-l-sm': filtered.length > 10}"
+                 ng-if="filtered.length >0"> {{filtered.length}}
+                <span translate ng-if="filtered.length >1">label.customEventsFound</span>
+                <span translate ng-if="filtered.length ==1">label.customEventFound</span>
+            </div>
+            <ul ng-show="filtered.length > userPreferences.entryPerPage" uib-pagination
+                total-items="filtered.length" ng-model="adtLog.currentPage"
+                items-per-page='userPreferences.entryPerPage' class="pagination-sm text-sm m-t-0 pull-right"
+                max-size="5" boundary-link-numbers="true" rotate="false"
+                previous-text="{{'button.prev' | translate}}" next-text="{{'button.next' | translate}}"></ul>
+            <div class="pull-left" ng-show="filtered.length > 10">
+                <div class="btn-group m-r-xxs">
+                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                            uib-btn-radio="'10'"
+                            ng-class="{'primary': userPreferences.entryPerPage=='10'}">10
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                            uib-btn-radio="'25'"
+                            ng-class="{'primary': userPreferences.entryPerPage=='25'}">25
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                            uib-btn-radio="'50'"
+                            ng-class="{'primary': userPreferences.entryPerPage=='50'}">50
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                            uib-btn-radio="'100'"
+                            ng-class="{'primary': userPreferences.entryPerPage=='100'}">100
+                    </button>
+                    <button class="btn btn-default white btn-sm" ng-model="userPreferences.entryPerPage"
+                            uib-btn-radio="{{maxEntryPerPage}}"
+                            ng-class="{'primary': userPreferences.entryPerPage==maxEntryPerPage}">
+                        {{maxEntryPerPage}}
+                    </button>
+                </div>
+            </div>
+            <div ng-if="isLoading && customEvents.length==0" class="text-center m-t-md h6 text-uppercase" translate>message.noEventsFound</div>
+            <div class="text-center m-t text-uppercase hide text-orange" ng-class="{'show': (filtered.length===0 && customEvents.length !==0)}" translate>message.noDataMatched</div>
+        </div>
     </div>
-     <div class="hide " ng-class="{'show': isLoading}">
-         <div class="row hide" ng-class="{'show': showEventPanel}">
-             <div class="col-md-12" ng-hide="loading">
-                        <div class="box white">
-                            <div class="box-header">
-                                <span class="text">{{showEventPanel.eventId}}: {{showEventPanel.eventClass}} </span>
-                            </div>
-                            <div class="box-tool">
-                                <ul class="nav text-muted text-md">
-                                    <li class="nav-item inline m-l-sm">
-                                        <a href="" ng-click="hideEventPanel()"><img src="images/remove.png"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="box-body p-t b-t">
-                                <div class="b-b">
-                                    <ul class="nav nav-tabs">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" href data-toggle="tab"
-                                               data-target="#tab" translate>label.auditLog</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="tab-content p-a">
-                                    <div class="tab-pane animated fadeIn active" id="tab">
-                                        <div class="row">
-                                            <div class="table-responsive" resizable r-directions="['bottom']"
-                                                 r-height="250">
-                                                <table class="table table-hover table-bordered ">
-                                                    <thead>
-                                                    <tr>
-                                                        <th translate>label.created</th>
-                                                        <th translate>label.account</th>
-                                                        <th translate>label.request</th>
-                                                        <th translate>label.event</th>
-                                                        <th translate>label.comment</th>
-                                                        <th translate>label.timeSpend</th>
-                                                        <th translate>label.ticketLink</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
-                                                    <tr>
-                                                        <td >
-                                                            <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
-                                                               ng-if="!auditLog.show"
-                                                               ng-click="auditLog.show =true"></i>
-                                                            <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
-                                                               ng-if="auditLog.show"
-                                                               ng-click="auditLog.show =false"></i>
-                                                            <span ng-bind="auditLog.created | stringToDate"></span>
-                                                        </td>
+</div>
+<div ng-if="!isLoading" class="text-center m-t-lg">
+    <div class="cssload-loading">{{'label.loading' | translate}}...</div>
+</div>
+<div class="hide " ng-class="{'show': isLoading}">
+    <div class="row hide" ng-class="{'show': showEventPanel}">
+        <div class="col-md-12" ng-hide="loading">
+            <div class="box white">
+                <div class="box-header">
+                    <span class="text">{{showEventPanel.eventId}}: {{showEventPanel.eventClass}} </span>
+                </div>
+                <div class="box-tool">
+                    <ul class="nav text-muted text-md">
+                        <li class="nav-item inline m-l-sm">
+                            <a href="" ng-click="hideEventPanel()"><img src="images/remove.png"></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="box-body p-t b-t">
+                    <div class="b-b">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href data-toggle="tab"
+                                   data-target="#tab" translate>label.auditLog</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content p-a">
+                        <div class="tab-pane animated fadeIn active" id="tab">
+                            <div class="row">
+                                <div class="table-responsive" resizable r-directions="['bottom']"
+                                     r-height="250">
+                                    <table class="table table-hover table-bordered ">
+                                        <thead>
+                                        <tr>
+                                            <th translate>label.created</th>
+                                            <th translate>label.account</th>
+                                            <th translate>label.request</th>
+                                            <th translate>label.event</th>
+                                            <th translate>label.comment</th>
+                                            <th translate>label.timeSpend</th>
+                                            <th translate>label.ticketLink</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody ng-repeat="auditLog in auditLogs | orderBy:'created':true">
+                                        <tr>
+                                            <td>
+                                                <i class="cursor fa fa-caret-down fa-lg tableexport-ignore"
+                                                   ng-if="!auditLog.show"
+                                                   ng-click="auditLog.show =true"></i>
+                                                <i class="cursor fa fa-caret-up fa-lg tableexport-ignore"
+                                                   ng-if="auditLog.show"
+                                                   ng-click="auditLog.show =false"></i>
+                                                <span ng-bind="auditLog.created | stringToDate"></span>
+                                            </td>
 
-                                                        <td><span ng-bind="auditLog.account"></span></td>
-                                                        <td><span ng-bind="auditLog.request"></span></td>
-                                                        <td><span ng-bind="auditLog.event"></span></td>
-                                                        <td><span ng-bind="auditLog.comment"></span></td>
-                                                        <td>
+                                            <td><span ng-bind="auditLog.account"></span></td>
+                                            <td><span ng-bind="auditLog.request"></span></td>
+                                            <td><span ng-bind="auditLog.event"></span></td>
+                                            <td><span ng-bind="auditLog.comment"></span></td>
+                                            <td>
                                                             <span ng-if="auditLog.timeSpent">
                                                                 <span ng-bind="auditLog.timeSpent"></span>
                                                                 <span>m</span>
                                                             </span>
-                                                        </td>
-                                                        <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
-                                                               target="_blank" ng-bind="auditLog.ticketLink"></a></td>
+                                            </td>
+                                            <td><a href="{{auditLog.ticketLink}}" class="text-hover-primary"
+                                                   target="_blank" ng-bind="auditLog.ticketLink"></a></td>
+                                        </tr>
+                                        <tr class="tableexport-ignore" ng-show="auditLog.show">
+                                            <td colspan="7">
+                                                <table class="table m-a-0">
+                                                    <thead>
+                                                    <tr>
+                                                        <th translate>label.parameters</th>
                                                     </tr>
-                                                    <tr class="tableexport-ignore" ng-show="auditLog.show">
-                                                        <td colspan="7">
-                                                            <table class="table m-a-0">
-                                                                <thead>
-                                                                <tr>
-                                                                    <th translate>label.parameters</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                <tr>
-                                                                    <td><span ng-bind="auditLog.parameters"></span></td>
-                                                                </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td><span ng-bind="auditLog.parameters"></span></td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
-                                                <div ng-if="auditLogs.length==0"
-                                                     class="text-center m-t-md h6 text-uppercase" translate>
-                                                    message.noAuditLogFound
-                                                </div>
-                                            </div>
-                                        </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div ng-if="auditLogs.length==0"
+                                         class="text-center m-t-md h6 text-uppercase" translate>
+                                        message.noAuditLogFound
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-         </div>
-     </div><div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
 </div>
 <div class="modal fade" id="objectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
     <div class="modal-dialog modal-lg">
@@ -396,6 +432,37 @@
             </div>
             <div class="modal-footer ">
                 <button type="button" class="btn btn-primary btn-sm pull-left" ng-click="addObjectPaths()" data-dismiss="modal" translate>button.done</button>
+                <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="singleObjectModal" tabindex="-1" role="dialog" aria-labelledby="user" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body p-a" style="min-height: 400px;max-height: 550px; overflow: auto">
+                <div>
+                    <a class="text" ng-click="filter_tree1.expand_all();" uib-tooltip="{{'tooltip.expandAll' | translate}}">
+                        <i class="fa fa-angle-double-down fa-lg"></i>
+                    </a>
+                    <a class="text m-l-xs" ng-click="filter_tree1.collapse_all();" uib-tooltip="{{'tooltip.collapseAll' | translate}}">
+                       <i class="fa fa-angle-double-up fa-lg"></i>
+                    </a>
+                    <tree
+                            tree-data="tree1"
+                            tree-control="filter_tree1"
+                            object="object"
+                            icon-leaf     = "fa fa-folder"
+                            icon-expand   = "fa fa-folder"
+                            icon-collapse = "fa fa-folder-open"
+                            expand-on="expanding_property"
+                            on-select="treeHandler1(branch)"
+                            on-click="treeHandler(branch)"
+                            template-url="modules/core/template/object-tree-filter-structure1.html">
+                    </tree>
+                </div>
+            </div>
+            <div class="modal-footer ">
                 <button type="button" class="btn btn-grey btn-sm m-l-sm pull-left" data-dismiss="modal" translate>button.cancel</button>
             </div>
         </div>

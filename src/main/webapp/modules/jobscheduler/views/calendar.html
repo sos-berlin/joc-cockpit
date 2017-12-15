@@ -126,11 +126,11 @@
                     <div ng-hide="editor.showYearView">
                         <div>
                             <div class="row m-b-sm">
-                                <label class="col-sm-12" ng-show="!isRuntimeEdit">
+                                <label class="col-sm-12" ng-show="editor.create">
                                     <span class="text-primary " translate>label.addFrequencies</span>
                                     : <span class="text-muted">{{str}}</span>
                                 </label>
-                                <label class="col-sm-12" ng-show="isRuntimeEdit">
+                                <label class="col-sm-12" ng-hide="editor.create">
                                     <span class="text-primary " translate>label.editFrequencies</span>
                                     : <span class="text-muted">{{temp.str}}</span>
                                 </label>
@@ -866,8 +866,8 @@
                     </div>
                     <button ng-if="!editor.showYearView" type="button" class="btn btn-primary btn-sm"
                             style="position:absolute; bottom: 10px;" ng-disabled="calendar-form.$invalid || !editor.isEnable" ng-click="addFrequency();">
-                        <span ng-if="!isRuntimeEdit" translate>button.addNewFrequency</span>
-                        <span ng-if="isRuntimeEdit" translate>button.updateFrequency</span>
+                        <span ng-if="editor.create" translate>button.addNewFrequency</span>
+                        <span ng-if="!editor.create" translate>button.updateFrequency</span>
                     </button>
                 </div>
                 <div class="modal-footer">

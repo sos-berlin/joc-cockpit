@@ -1190,7 +1190,7 @@
                 order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
             }
 
-            if (order.fromDate) {
+            if (order.fromDate && order.at == 'later') {
                 obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else {

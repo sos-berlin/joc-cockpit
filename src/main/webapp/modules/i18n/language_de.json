@@ -1264,5 +1264,9 @@
   "label.eventClasses": "Ereignisklassen",
   "label.eventExitCodes": "Ereignis Exit Codes",
   "label.remoteJobScheduler": "Remote JobScheduler",
-  "label.fileTransfersFound": "File Transfers gefunden"
+  "label.fileTransfersFound": "File Transfers gefunden",
+  "label.fileTransferFound": "File Transfer gefunden",
+  "breadcrumb.fileTransferOverview": "File Transfers Overview",
+  "label.allTransfers": "All Transfers",
+  "button.deprecatedFeature": "Deprecated Feature"
 }

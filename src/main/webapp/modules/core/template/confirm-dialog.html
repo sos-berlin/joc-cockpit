@@ -19,7 +19,7 @@
             </span>
         </h4>
     </div>
-    <div class="modal-body p-a">
+    <div class="modal-body p-a" style="max-height: 600px; overflow: auto">
         <div class="row">
             <div class=" col-sm-12 text-center m-t">
                 <span ng-if="user.user" translate class="text">message.deleteUser</span>
@@ -73,8 +73,12 @@
                     <div class="row form-group">
                         <span  translate class="text">message.deleteAllCalendar</span>
                     </div>
-                    <div class="text-left row" ng-repeat="calendar in calendarArr" ng-class="{'b-b': $index>0}">
-                        <div class=" col-sm-12">
+                    <div class="text-left row" ng-repeat="calendar in calendarArr" ng-class="{'b-t p-t': $index !=0}">
+                        <div class="row col-sm-12">
+                            <span class="col-md-3" translate="">label.calendar</span>
+                            <label class="col-md-9">{{calendar.path}}</label>
+                        </div>
+                        <div class="col-sm-12">
                             <div>
                                 <div class="row form-group" ng-if="calendar.usedIn.jobs">
                                     <label class="col-md-3" translate="">
@@ -114,7 +118,11 @@
                     <div class="row form-group">
                         <span  translate class="text">message.importAllCalendar</span>
                     </div>
-                    <div class="text-left row" ng-repeat="calendar in importCalendars" ng-class="{'b-b': $index>0}">
+                    <div class="text-left row" ng-repeat="calendar in importCalendars" ng-class="{'b-t p-t': $index !=0}">
+                        <div class="row col-sm-12">
+                            <span class="col-md-3" translate="">label.calendar</span>
+                            <label class="col-md-9">{{calendar.path}}</label>
+                        </div>
                         <div class=" col-sm-12">
                             <div>
                                 <div class="row form-group" ng-if="calendar.usedBy.jobs">

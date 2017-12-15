@@ -5,10 +5,11 @@
     'use strict';
     angular
         .module('app')
-        .controller('YadeCtrl', YadeCtrl);
+        .controller('YadeCtrl', YadeCtrl)
+        .controller('YadeOverviewCtrl', YadeOverviewCtrl);
 
-    YadeCtrl.$inject = ["$scope","CoreService","YadeService","UserService","SavedFilter","$uibModal","$location","OrderService"];
-    function YadeCtrl($scope,CoreService,YadeService,UserService,SavedFilter,$uibModal,$location,OrderService) {
+    YadeCtrl.$inject = ["$scope", "CoreService", "YadeService", "UserService", "SavedFilter", "$uibModal", "$location", "OrderService"];
+    function YadeCtrl($scope, CoreService, YadeService, UserService, SavedFilter, $uibModal, $location, OrderService) {
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.yadeView = {};
@@ -21,7 +22,22 @@
         vm.object.files = [];
         vm.object.fileTransfers = [];
 
-        vm.showFiles = vm.userPreferences.showFiles;
+        if(vm.yadeFilters.showFiles != undefined){
+            vm.showFiles = vm.yadeFilters.showFiles;
+        }else{
+            vm.showFiles = vm.userPreferences.showFiles;
+        }
+
+        vm.reset = function(){
+            vm.object.files = [];
+            vm.object.fileTransfers = [];
+        };
+
+        vm.sortBy = function (propertyName) {
+            vm.reset();
+            vm.yadeFilters.sortReverse = !vm.yadeFilters.sortReverse;
+            vm.yadeFilters.filter.sortBy = propertyName;
+        };
 
         vm.savedYadeFilter = JSON.parse(SavedFilter.yadeFilters) || {};
         vm.yadeFilterList = [];
@@ -38,59 +54,120 @@
         vm.checkAllFileTransfers = {
             checkbox: false
         };
-        vm.checkAllFiles = {
-            checkbox: false
-        };
+
         vm.checkAllFileTransfersFnc = function () {
             if (vm.checkAllFileTransfers.checkbox && vm.fileTransfers.length > 0) {
                 vm.object.fileTransfers = [];
                 var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
-                angular.forEach(data, function(value){
-                    if(value.state._text=='FAILED')
-                        vm.object.fileTransfers.push(value)
+                angular.forEach(data, function (value) {
+                    if (value.state._text != 'SUCCESSFUL') {
+                        vm.object.fileTransfers.push(value);
+                        if(value.files && value.files.length>0){
+                            angular.forEach(value.files, function (file) {
+                                vm.object.files.push(file);
+                            });
+                        }
+                    }
                 });
 
             } else {
-                vm.object.fileTransfers = [];
+                vm.reset();
             }
-            if(vm.object.fileTransfers.length==0 && vm.checkAllFileTransfers.checkbox){
-                vm.checkAllFileTransfers.checkbox = false;
-            }
+
         };
         var watcher1 = $scope.$watchCollection('object.fileTransfers', function (newNames) {
             if (newNames && newNames.length > 0) {
                 vm.checkAllFileTransfers.checkbox = newNames.length == vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage)).length;
+                angular.forEach(newNames, function (value) {
+                    if (value.state._text != 'SUCCESSFUL') {
+                        if (value.files && value.files.length > 0) {
+                            angular.forEach(value.files, function (file) {
+                                var flag = false;
+                                for (var x = 0; x < vm.object.files.length; x++) {
+                                    if (angular.equals(file, vm.object.files[x])) {
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                                if (!flag) {
+                                    vm.object.files.push(file)
+                                }
+                            });
+                        }
+                    }
+                });
+
             } else {
                 vm.checkAllFileTransfers.checkbox = false;
+                vm.object.files = [];
+                 if(vm.fileTransfers && vm.fileTransfers.length>0) {
+                    var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                    angular.forEach(data, function (transfer) {
+                        if ($("#" + transfer.id)) {
+                            $("#" + transfer.id).prop('checked', false);
+                        }
+                    });
+                }
             }
 
         });
-        vm.checkAllFilesFnc = function (transfer) {
-            if (vm.checkAllFiles.checkbox && transfer.files.length > 0) {
-                vm.object.files = transfer.files;
+/*        vm.checkAllFilesFnc = function (transfer) {
+            var chk = $("#"+transfer.id).prop('checked');
+            if (chk) {
+                if(transfer.files && transfer.state._text != 'SUCCESSFUL') {
+                    angular.forEach(transfer.files, function (file) {
+                        var flag = false;
+                        for (var x = 0; x < vm.object.files.length; x++) {
+                            if (angular.equals(file, vm.object.files[x])) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if(!flag){
+                            vm.object.files.push(file)
+                        }
+                    });
+                }
             } else {
-                vm.object.files = [];
+                angular.forEach(transfer.files, function(file){
+                    for(var x=0;x<vm.object.files.length;x++ ){
+                        if(angular.equals(file, vm.object.files[x])){
+                            vm.object.files.splice(x,1);
+                            break;
+                        }
+                    }
+                });
             }
-/*            if(vm.object.fileTransfers.length ==0){
+            if (chk && vm.object.fileTransfers.length == 0) {
                 vm.object.fileTransfers.push(transfer);
-            }else {
+            } else {
                 var flag = true;
                 for (var i = 0; i < vm.object.fileTransfers.length; i++) {
                     if (transfer.id == vm.object.fileTransfers[i].id) {
                         flag = false;
                     }
                 }
-                if(flag){
+                if (flag) {
                     vm.object.fileTransfers.push(transfer);
                 }
-            }*/
-        };
-        var watcher2 = $scope.$watchCollection('object.files', function (newNames) {
-            if (newNames && newNames.length > 0) {
-               // vm.checkAllFiles.checkbox = newNames.length == vm.files.length;
-            } else {
-                vm.checkAllFiles.checkbox = false;
             }
+        };*/
+        var watcher2 = $scope.$watchCollection('object.files', function (newNames) {
+/*            if (newNames && newNames.length > 0) {
+/!*                angular.forEach(newNames, function(value){
+                    console.log(value)
+                })*!/
+                // vm.checkAllFiles.checkbox = newNames.length == vm.files.length;
+            } else {
+                if(vm.fileTransfers && vm.fileTransfers.length>0) {
+                    var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                    angular.forEach(data, function (transfer) {
+                        if ($("#" + transfer.id)) {
+                            $("#" + transfer.id).prop('checked', false);
+                        }
+                    });
+                }
+            }*/
         });
 
         function setDateRange(filter) {
@@ -195,6 +272,7 @@
         }
 
         vm.load = function () {
+            vm.reset();
             if (!vm.yadeFilterList) {
                 checkSharedFilters();
                 return;
@@ -204,7 +282,6 @@
             }
             var obj = {};
             obj.jobschedulerId = vm.yadeView.current == true ? vm.schedulerIds.selected : '';
-            //obj.compact = true;
 
             if (vm.selectedFiltered) {
                 if (vm.selectedFiltered.states && vm.selectedFiltered.states.length > 0) {
@@ -278,6 +355,9 @@
                 }
                 obj = setDateRange(obj);
             }
+            if (!vm.showFiles) {
+                obj.compact = true;
+            }
 
             obj.timeZone = vm.userPreferences.zone;
             if ((obj.dateFrom && typeof obj.dateFrom.getMonth === 'function') || (obj.dateTo && typeof obj.dateTo.getMonth === 'function')) {
@@ -286,15 +366,22 @@
             obj.limit = parseInt(vm.userPreferences.maxRecords);
             YadeService.getTransfers(obj).then(function (res) {
                 vm.fileTransfers = res.transfers;
+                if (vm.showFiles) {
+                    angular.forEach(vm.fileTransfers, function (transfer) {
+                        transfer.show = true;
+                        getFiles(transfer);
+                    });
+                }
                 vm.isLoading = true;
             }, function () {
                 vm.isLoading = true;
             });
         };
-        function getFileTransferById(transferId){
+        function getFileTransferById(transferId) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.transferId = transferId;
+            obj.transferIds = [];
+            obj.transferIds.push(transferId);
             YadeService.getTransfers(obj).then(function (res) {
                 vm.fileTransfers = res.transfers;
                 vm.isLoading = true;
@@ -302,6 +389,7 @@
                 vm.isLoading = true;
             });
         }
+
         if ($location.search().scheduler_id && $location.search().id) {
             vm.checkSchedulerId();
             getFileTransferById($location.search().id);
@@ -313,16 +401,7 @@
             vm.load();
         };
 
-        vm.showTransferFuc = function (value) {
-            /*            var obj = {};
-             obj.jobschedulerId = vm.yadeView.current == true ? vm.schedulerIds.selected : '';
-             YadeService.getTransfers(obj).then(function (res) {
-             vm.fileTransfers = res.transfers;
-             vm.isLoading = true;
-             }, function () {
-             vm.isLoading = true;
-             });*/
-            value.show = true;
+        function getFiles(value) {
             var ids = [];
             ids.push(value.id);
             YadeService.files({
@@ -331,6 +410,22 @@
             }).then(function (res) {
                 value.files = res.files
             })
+        }
+
+        vm.showTransferFuc = function (value) {
+            var obj = {};
+            obj.jobschedulerId = value.jobschedulerId || vm.schedulerIds.selected;
+            obj.transferIds = [];
+            obj.transferIds.push(value.id);
+            YadeService.getTransfers(obj).then(function (res) {
+                value = angular.merge(value,res.transfers[0]);
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+            });
+            value.show = true;
+            getFiles(value);
+
         };
         var isLoaded = true;
         vm.search = function (flag) {
@@ -810,28 +905,16 @@
         };
 
         vm.expandDetails = function () {
-            vm.isExpand = true;
-           // var a = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage)).length;
-           // var selecetedHistory = angular.copy(vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage)));
-            var ids = [];
-            angular.forEach(vm.fileTransfers, function (value) {
-                ids.push(value.id);
-            });
-            YadeService.files({transferIds: ids, jobschedulerId: vm.schedulerIds.selected}).then(function (res) {
-                angular.forEach(vm.fileTransfers, function (value) {
-                    value.show = true;
-                    value.files = [];
-                    for (var i = 0; i < res.files.length; i++) {
-                        if (value.id == res.files[i].transferId) {
-                            value.files.push(res.files[i]);
-                        }
-                    }
-                });
-            })
+            vm.showFiles = true;
+            vm.yadeFilters.showFiles = true;
+
+            vm.load();
         };
 
         vm.collapseDetails = function () {
-            vm.isExpand = false;
+            vm.showFiles = false;
+            vm.yadeFilters.showFiles = false;
+
             angular.forEach(vm.fileTransfers, function (value) {
                 value.show = false;
             });
@@ -840,31 +923,31 @@
 
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
-            obj.ids = [];
+            obj.transfers = [];
 
             angular.forEach(vm.object.fileTransfers, function (value) {
-                obj.ids.push(value.id);
+                obj.transfers.push({transferId: value.id});
             });
 
-            var modalInstance ={};
+            var modalInstance = {};
             if (vm.userPreferences.auditLog) {
                 vm.comments = {};
                 vm.comments.radio = 'predefined';
                 vm.comments.name = '';
-                vm.comments.operation = 'Delete';
+                vm.comments.operation = 'Restart';
                 vm.comments.type = 'File transfer';
-                if(event){
+                if (event) {
                     vm.comments.name = event.id;
-                }else {
-                    angular.forEach(vm.object.events, function (value, index) {
-                        if (index == vm.object.events.length - 1) {
+                } else {
+                    angular.forEach(vm.object.fileTransfers, function (value, index) {
+                        if (index == vm.object.fileTransfers.length - 1) {
                             vm.comments.name = vm.comments.name + ' ' + value.id;
                         } else {
                             vm.comments.name = value.id + ', ' + vm.comments.name;
                         }
                     });
                 }
-                 modalInstance = $uibModal.open({
+                modalInstance = $uibModal.open({
                     templateUrl: 'modules/core/template/comment-dialog.html',
                     controller: 'DialogCtrl',
                     scope: vm,
@@ -880,81 +963,23 @@
                     if (vm.comments.ticketLink)
                         obj.auditLog.ticketLink = vm.comments.ticketLink;
                     YadeService.restart(obj);
-                    vm.object.events = [];
+                    vm.object.fileTransfers = [];
                 }, function () {
-                    vm.object.events = [];
+                    vm.object.fileTransfers = [];
                 });
             } else {
-                 YadeService.restart(obj);
+                YadeService.restart(obj);
             }
         };
-        vm.restartTransfer = function(transfer){
-            console.log(transfer);
-            YadeService.restart();
-        };
-
-
-        vm.resumeOrderNextstate = function (order) {
-            if (vm.userPreferences.auditLog) {
-                vm.comments = {};
-                vm.comments.radio = 'predefined';
-                vm.comments.name = order.path;
-                vm.comments.title = order.title;
-                vm.comments.operation = 'Resume';
-                vm.comments.type = 'Order';
-            }
-            vm.order = angular.copy(order);
-            var modalInstance = $uibModal.open({
-                templateUrl: 'modules/core/template/resume-order-state-dialog.html',
-                controller: 'DialogCtrl',
-                scope: vm,
-                backdrop: 'static'
-            });
-            modalInstance.result.then(function () {
-                resumeOrderState(order);
-            }, function () {
-
-            });
-
-            JobChainService.getJobChainP({
-                jobschedulerId: $scope.schedulerIds.selected,
-                jobChain: order.jobChain
-            }).then(function (res) {
-                vm._jobChain = res.jobChain;
-                angular.forEach(res.jobChain.endNodes, function (value) {
-                    vm._jobChain.nodes.push(value);
-                });
+        vm.restartTransfer = function (transfer) {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.transferId = transfer.id;
+            YadeService.transferOrder(obj).then(function(res){
+                vm.resumeOrderWithParam(res.order);
             });
         };
 
-        function resumeOrderState(order) {
-            var orders = {};
-            orders.orders = [];
-            orders.jobschedulerId = $scope.schedulerIds.selected;
-            if (vm.comments) {
-                orders.auditLog = {};
-                if (vm.comments.comment) {
-                    orders.auditLog.comment = vm.comments.comment;
-                }
-                if (vm.comments.timeSpent) {
-                    orders.auditLog.timeSpent = vm.comments.timeSpent;
-                }
-
-                if (vm.comments.ticketLink) {
-                    orders.auditLog.ticketLink = vm.comments.ticketLink;
-                }
-            }
-            orders.orders.push({
-                orderId: order.orderId,
-                jobChain: order.jobChain,
-                state: vm.order.state,
-                endState: vm.order.endState,
-                resume: true
-            });
-
-            OrderService.setOrderState(orders);
-            vm.reset();
-        }
 
         function resumeOrderWithParam(order, paramObject) {
             var orders = {};
@@ -1018,6 +1043,446 @@
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
+        });
+    }
+
+    YadeOverviewCtrl.$inject = ["$scope","$rootScope", "CoreService", "YadeService","OrderService", "$uibModal",  "$stateParams", "AuditLogService"];
+    function YadeOverviewCtrl($scope,$rootScope, CoreService, YadeService, OrderService, $uibModal,$stateParams, AuditLogService) {
+        var vm = $scope;
+        vm.orderFilters = CoreService.getYadeDetailTab();
+        vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
+
+
+        vm.allOrders = [];
+        vm.orderFilters.filter.state = $stateParams.name;
+        vm.object = {};
+        vm.reset = function () {
+            vm.object = {};
+        };
+        vm.init = function () {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.compact = true;
+            obj.processingStates = [];
+            if (vm.orderFilters.filter.state != 'ALL')
+                obj.processingStates.push(vm.orderFilters.filter.state);
+            vm.status = vm.orderFilters.filter.state;
+            YadeService.yadeOrders(obj).then(function (res) {
+                angular.forEach(res.orders, function (value) {
+                    value.path1 = value.jobChain.substring(1, value.jobChain.lastIndexOf('/'));
+                });
+                vm.allOrders = res.orders;
+
+                vm.isLoading = true;
+            }, function () {
+                vm.isLoading = true;
+                vm.isError = true;
+            });
+        };
+        vm.init();
+
+        vm.showLogFuc = function (value) {
+            var orders = {};
+            vm.isAuditLog = false;
+            orders.orders = [];
+            orders.orders.push({orderId: value.orderId, jobChain: value.path.split(',')[0]});
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            orders.limit = parseInt(vm.userPreferences.maxHistoryPerOrder);
+
+            OrderService.histories(orders).then(function (res) {
+                vm.historys = res.history;
+            });
+
+            vm.showLogPanel = value;
+            vm.orderFilters.showLogPanel = vm.showLogPanel;
+        };
+
+        function loadAuditLogs(obj) {
+            obj.limit = parseInt(vm.userPreferences.maxAuditLogPerObject);
+            AuditLogService.getLogs(obj).then(function (result) {
+                if (result && result.auditLog) {
+                    vm.auditLogs = result.auditLog;
+                }
+            });
+        }
+
+        vm.showAuditLogs = function (value) {
+            vm.showLogPanel = value;
+            vm.orderFilters.showLogPanel = vm.showLogPanel;
+            vm.isAuditLog = true;
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.orders = [];
+            obj.orders.push({jobChain: value.jobChain, orderId: value.orderId});
+            if (vm.permission.AuditLog.view.status)
+                loadAuditLogs(obj);
+        };
+
+
+        vm.hideLogPanel = function () {
+            vm.showLogPanel = undefined;
+            vm.orderFilters.showLogPanel = vm.showLogPanel;
+        };
+
+        vm.showLeftPanel = function () {
+            CoreService.setSideView(false);
+            $('#rightPanel').removeClass('fade-in m-l-0');
+            $('#leftPanel').show();
+            $('.sidebar-btn').hide();
+        };
+        vm.changeStatus = function () {
+            vm.hideLogPanel();
+            vm.init();
+        };
+
+        $scope.$on("yadeState", function (evt, state) {
+            vm.orderFilters.filter.state = state;
+            vm.status = state;
+            if (state) {
+                var obj = {};
+                obj.jobschedulerId = $scope.schedulerIds.selected;
+                obj.compact = true;
+                if (vm.orderFilters.filter.state && vm.orderFilters.filter.state != 'ALL') {
+                    obj.processingStates = [];
+                    obj.processingStates.push(vm.orderFilters.filter.state);
+                }
+                YadeService.yadeOrders(obj).then(function (res) {
+                    angular.forEach(res.orders, function (value) {
+                        value.path1 = value.jobChain.substring(1, value.jobChain.lastIndexOf('/'));
+                    });
+                    vm.allOrders = res.orders;
+                });
+            }
+        });
+        vm.sortBy = function (propertyName) {
+            vm.reset();
+            vm.orderFilters.reverse = !vm.orderFilters.reverse;
+            vm.orderFilters.filter.sortBy = propertyName;
+        };
+
+        /** --------action ------------ **/
+
+        vm.deleteAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Delete';
+                vm.comments.type = 'Order';
+                angular.forEach(vm.object.orders, function (value, index) {
+                    if (index == vm.object.orders.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                    } else {
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+                    OrderService.deleteOrder(orders).then(function (res) {
+                        for (var i = 0; i < vm.object.orders.length; i++) {
+                            if (vm.showLogPanel && vm.object.orders[i].path == vm.showLogPanel.path) {
+                                vm.showLogPanel = undefined;
+                            }
+                            for (var j = 0; j < vm.allOrders.length; j++) {
+                                if (vm.object.orders[i].path == vm.allOrders[j].path) {
+                                    vm.allOrders.splice(j, 1);
+                                    break;
+                                }
+                            }
+                        }
+                        vm.reset();
+                    });
+                }, function () {
+
+                });
+            } else {
+                OrderService.deleteOrder(orders).then(function (res) {
+                    for (var i = 0; i < vm.object.orders.length; i++) {
+                        if (vm.showLogPanel && vm.object.orders[i].path == vm.showLogPanel.path) {
+                            vm.showLogPanel = undefined;
+                        }
+                        for (var j = 0; j < vm.allOrders.length; j++) {
+                            if (vm.object.orders[i].path == vm.allOrders[j].path) {
+                                vm.allOrders.splice(j, 1);
+                                break;
+                            }
+                        }
+                    }
+                    vm.reset();
+                });
+            }
+        };
+
+        vm.suspendAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Suspend';
+                vm.comments.type = 'Order';
+                angular.forEach(vm.object.orders, function (value, index) {
+                    if (index == vm.object.orders.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                    } else {
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+                    OrderService.suspendOrder(orders);
+                    vm.reset();
+                }, function () {
+
+                });
+            } else {
+                OrderService.suspendOrder(orders);
+                vm.reset();
+            }
+
+        };
+
+        vm.resumeAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Resume';
+                vm.comments.type = 'Order';
+                angular.forEach(vm.object.orders, function (value, index) {
+                    if (index == vm.object.orders.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                    } else {
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+                    OrderService.resumeOrder(orders);
+                    vm.reset();
+                }, function () {
+
+                });
+            } else {
+                OrderService.resumeOrder(orders);
+                vm.reset();
+            }
+
+        };
+        vm.resetAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Reset';
+                vm.comments.type = 'Order';
+                angular.forEach(vm.object.orders, function (value, index) {
+                    if (index == vm.object.orders.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                    } else {
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+                    OrderService.resetOrder(orders);
+                    vm.reset();
+                }, function () {
+
+                });
+            } else {
+                OrderService.resetOrder(orders);
+                vm.reset();
+            }
+
+        };
+        vm.startAllOrder = function () {
+            var orders = {};
+            orders.orders = [];
+            orders.jobschedulerId = $scope.schedulerIds.selected;
+            angular.forEach(vm.object.orders, function (value) {
+                orders.orders.push({orderId: value.orderId, jobChain: value.jobChain, at: 'now'});
+            });
+            if (vm.userPreferences.auditLog) {
+                vm.comments = {};
+                vm.comments.radio = 'predefined';
+                vm.comments.name = '';
+                vm.comments.operation = 'Start';
+                vm.comments.type = 'Order';
+                angular.forEach(vm.object.orders, function (value, index) {
+                    if (index == vm.object.orders.length - 1) {
+                        vm.comments.name = vm.comments.name + ' ' + value.path;
+                    } else {
+                        vm.comments.name = value.path + ', ' + vm.comments.name;
+                    }
+                });
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'modules/core/template/comment-dialog.html',
+                    controller: 'DialogCtrl',
+                    scope: vm,
+                    backdrop: 'static'
+                });
+                modalInstance.result.then(function () {
+                    orders.auditLog = {};
+                    if (vm.comments.comment)
+                        orders.auditLog.comment = vm.comments.comment;
+                    if (vm.comments.timeSpent)
+                        orders.auditLog.timeSpent = vm.comments.timeSpent;
+
+                    if (vm.comments.ticketLink)
+                        orders.auditLog.ticketLink = vm.comments.ticketLink;
+                    OrderService.startOrder(orders);
+                    vm.reset();
+                }, function () {
+
+                });
+            } else {
+                OrderService.startOrder(orders);
+                vm.reset();
+            }
+
+        };
+        vm.exportToExcel = function () {
+
+            $('#exportToExcelBtn').attr("disabled", true);
+            if (!vm.isIE()) {
+                $('#orderTableId').table2excel({
+                    exclude: ".tableexport-ignore",
+                    filename: "jobscheduler-yade-order",
+                    fileext: ".xls",
+                    exclude_img: false,
+                    exclude_links: false,
+                    exclude_inputs: false
+                });
+            } else {
+                var ExportButtons = document.getElementById('orderTableId');
+                var instance = new TableExport(ExportButtons, {
+                    formats: ['xlsx'],
+                    exportButtons: false
+                });
+                var exportData = instance.getExportData()['orderTableId']['xlsx'];
+                instance.export2file(exportData.data, exportData.mimeType, "jobscheduler-yade-order", exportData.fileExtension);
+            }
+            $('#exportToExcelBtn').attr("disabled", false);
+        };
+        var waitForResponse = true;
+        $scope.$on('event-started', function () {
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
+                for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                    console.log(vm.events[0].eventSnapshots[i].eventType + ' ><><>')
+                    if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId && waitForResponse) {
+                        waitForResponse = false;
+                        var obj = {};
+                        obj.jobschedulerId = $scope.schedulerIds.selected;
+                        obj.compact = true;
+                        obj.processingStates = [];
+                        obj.processingStates.push(vm.orderFilters.filter.state);
+                        YadeService.yadeOrders(obj).then(function (res) {
+                            angular.forEach(res.orders, function (value) {
+                                value.path1 = value.path.substring(1, value.path.lastIndexOf('/'));
+                            });
+                            vm.reset();
+                            vm.allOrders = res.orders;
+                            var flag = false;
+                            for (var i = 0; i < vm.allOrders.length; i++) {
+                                if (vm.showLogPanel && vm.showLogPanel.path == vm.allOrders[i].path) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (!flag) {
+                                vm.showLogPanel = undefined;
+                            }
+                            waitForResponse = true;
+
+                        }, function () {
+                            waitForResponse = true;
+                        });
+                        $rootScope.$broadcast('reloadYadeSnapshot');
+                    }
+                    if (vm.showLogPanel && vm.events[0].eventSnapshots[i].eventType == "AuditLogChanged" && vm.events[0].eventSnapshots[i].objectType == "ORDER" && vm.events[0].eventSnapshots[i].path == vm.showLogPanel.path) {
+                        var obj = {};
+                        obj.jobschedulerId = vm.schedulerIds.selected;
+                        obj.orders = [];
+                        obj.orders.push({jobChain: vm.showLogPanel.jobChain, orderId: vm.showLogPanel.orderId});
+                        loadAuditLogs(obj);
+                    }
+                }
         });
     }
 

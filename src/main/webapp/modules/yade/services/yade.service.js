@@ -80,7 +80,17 @@
                     deferred.reject(err);
                 });
                 return deferred.promise;
-            }, log: function (filter) {
+            },
+            yadeOrders: function (filter) {
+                var deferred = $q.defer();
+                var Yade = $resource('yade/orders');
+                Yade.save(filter, function (res) {
+                    deferred.resolve(res);
+                }, function (err) {
+                    deferred.reject(err);
+                });
+                return deferred.promise;
+            },log: function (filter) {
                 var deferred = $q.defer();
                 var Yade = $resource('yade/log');
                 Yade.save(filter, function (res) {

@@ -477,8 +477,64 @@
             }
         }
     }
+    function y() {
+        return {
+            restrict: "A",
+            require: "ngModel",
+            link: function (scope, element, attrs, ngModel) {
+                element.bind("blur", function () {
+                    if (ngModel.$modelValue) {
+                        if (ngModel.$modelValue.substring(0, 2) == 24) {
+                            ngModel.$setViewValue('24:00');
+                            ngModel.$render();
+                        }else {
+                            if (ngModel.$modelValue.length == 1) {
+                                ngModel.$setViewValue('');
+                                ngModel.$render();
+                            }else if (ngModel.$modelValue.length == 3) {
+                                ngModel.$setViewValue(ngModel.$modelValue + '00');
+                                ngModel.$render();
+                            } else if (ngModel.$modelValue.length == 4) {
+                                ngModel.$setViewValue(ngModel.$modelValue + '0');
+                                ngModel.$render();
+                            } else if (ngModel.$modelValue.length == 6) {
+                                ngModel.$setViewValue(ngModel.$modelValue + '00');
+                                ngModel.$render();
+                            } else if (ngModel.$modelValue.length == 7) {
+                                ngModel.$setViewValue(ngModel.$modelValue + '0');
+                                ngModel.$render();
+                            }
+                        }
+                        if((/^([0-9][0-9]):([0-5][0-9])?$/i.test(ngModel.$modelValue)) || (/^([0-9][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(ngModel.$modelValue))){
+                            ngModel.$setValidity("invalid", true)
+                        }else{
+                            ngModel.$setValidity("invalid", false)
+                        }
+                    }
+                }), element.bind("keyup", function ($event) {
+                    if(ngModel.$modelValue && $event.keyCode != 8) {
+                        if (ngModel.$modelValue.length == 2 && /^([0-9][0-9])?$/i.test(ngModel.$modelValue)) {
+                            ngModel.$setViewValue(ngModel.$modelValue + ':');
 
-    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).constant("defaultAvatarSettings", {
+                        } else if (ngModel.$modelValue.length == 5 && /^([0-9][0-9]):([0-5][0-9])?$/i.test(ngModel.$modelValue)) {
+                            ngModel.$setViewValue(ngModel.$modelValue + ':');
+                        } else {
+                            if (ngModel.$modelValue.length > 1 && ngModel.$modelValue.length < 3 && !(/^([0-9][0-9])?$/i.test(ngModel.$modelValue))) {
+                                ngModel.$setViewValue('');
+                            } else if (ngModel.$modelValue.length == 5 && !(/^([0-9][0-9]):([0-5][0-9])?$/i.test(ngModel.$modelValue))) {
+                                ngModel.$setViewValue(ngModel.$modelValue.substring(0, 3));
+                            } else if (ngModel.$modelValue.length == 8 && !(/^([0-9][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(ngModel.$modelValue))) {
+                                ngModel.$setViewValue(ngModel.$modelValue.substring(0, 6));
+                            }
+                        }
+                        ngModel.$render();
+
+                    }
+                })
+            }
+        }
+    }
+    angular.module("app").directive("a", e).directive("ngSpinnerBar", t).directive("uiInclude", i).value("uiJpConfig", {}).directive("uiNav", n).directive("checklistModel", a).directive("toggleView", r).directive("letterAvatar", o).directive("time", d).directive("time1", f).directive("validDateRegex", h).directive("validRegex", g).directive("validFilterRegex", m).directive("validHistoryFilterRegex", v).directive("validDailyPlanFilterRegex", p).directive("validTime", z).directive("validTime1", y).constant("defaultAvatarSettings", {
         alphabetcolors: ["#5A8770", "#B2B7BB", "#6FA9AB", "#F5AF29", "#0088B9", "#F18636", "#D93A37", "#A6B12E", "#5C9BBC", "#F5888D", "#9A89B5", "#407887", "#9A89B5", "#5A8770", "#D33F33", "#A2B01F", "#F0B126", "#0087BF", "#F18636", "#0087BF", "#B2B7BB", "#72ACAE", "#9C8AB4", "#5A8770", "#EEB424", "#407887"],
         textColor: "#ffffff",
         defaultBorder: "border:5px solid white",

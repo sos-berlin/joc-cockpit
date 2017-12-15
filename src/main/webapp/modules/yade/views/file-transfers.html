@@ -365,10 +365,10 @@
                                     </label>
                                 </th>
                                 <th class="tableexport-ignore" width="45"><span translate>label.action</span></th>
-                                <th ng-click="sortBy('status')"><a><span translate>label.status</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'status' && !yadeFilters.sortReverse"
+                                <th ng-click="sortBy('state._text')"><a><span translate>label.status</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'state._text' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'status' && yadeFilters.sortReverse"
+                                    <i ng-show="yadeFilters.filter.sortBy == 'state._text' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
                                 <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
@@ -438,7 +438,7 @@
                         <tr  class="cursor">
                             <td ng-if="permission.YADE.execute.transferStart">
                                 <label class="md-check">
-                                    <input type="checkbox" data-checklist-model="object.fileTransfers" ng-disabled="transfer.state._text!='FAILED'"
+                                    <input type="checkbox" data-checklist-model="object.fileTransfers" ng-disabled="transfer.state._text=='SUCCESSFUL'"
                                            data-checklist-value="transfer" data-checklist-comparator=".id"><i class="primary"></i>
                                 </label>
                             </td>
@@ -447,7 +447,7 @@
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
                                     <div class="dropdown-menu dropdown-menu-list dropdown-ac dropdown-more" role="menu">
-                                        <a ng-if="permission.YADE.execute.transferStart && transfer.state._text=='FAILED'" class="dropdown-item"
+                                        <a ng-if="permission.YADE.execute.transferStart && transfer.state._text!='SUCCESSFUL'" class="dropdown-item"
                                            ng-click="restartTransfer(transfer)"
                                            translate>button.restart</a>
                                          <a class="dropdown-item"
@@ -523,7 +523,7 @@
                                      <tr class="tableexport-ignore">
                                          <th width="30" ng-if="permission.YADE.execute.transferStart">
                                             <label class="md-check lg-check">
-                                                <input type="checkbox" ng-model="checkAllFiles.checkbox" ng-click="checkAllFilesFnc(transfer)"><i class="primary"></i>
+                                                <input type="checkbox" id="{{transfer.id}}" ng-click="checkAllFilesFnc(transfer)"><i class="primary"></i>
                                             </label>
                                         </th>
                                          <th translate>label.sourceFileName</th>
@@ -540,7 +540,7 @@
                                      <tr ng-repeat="file in transfer.files">
                                          <td ng-if="permission.YADE.execute.transferStart" >
                                             <label class="md-check">
-                                                <input type="checkbox" data-checklist-model="object.files"
+                                                <input type="checkbox" data-checklist-model="object.files" ng-disabled="transfer.state._text=='SUCCESSFUL'"
                                                        data-checklist-value="file"><i class="primary"></i>
                                             </label>
                                         </td>

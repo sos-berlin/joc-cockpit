@@ -214,6 +214,16 @@
                 }
             },
             ncyBreadcrumb: {label: "{{ 'breadcrumb.fileTransfer' | translate}}"}
+        }).state("app.fileTransfersOverview", {
+            url: "/file_transfer_overview/:name",
+            templateUrl: "modules/yade/views/transfer-overview.html",
+            controller: "YadeOverviewCtrl",
+            resolve: {
+                permission: function(authorizationService) {
+                    return authorizationService.permissionCheck('File Transfer');
+                }
+            },
+            ncyBreadcrumb: {label: "{{ 'breadcrumb.fileTransferOverview' | translate}}", parent: "app.dashboard"}
         }).state("app.fileTransfer", {
             url: "/file_transfer?id&scheduler_id",
             templateUrl: "modules/yade/views/file-transfer.html",

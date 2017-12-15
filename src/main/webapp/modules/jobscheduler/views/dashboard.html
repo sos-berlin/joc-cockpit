@@ -395,30 +395,30 @@
                             <table style="width: 100%" ng-if="!notPermissionForFileOverview">
                                 <tr class="text-center">
                                     <td width="25%">
-                                        <div translate>label.inProgress</div>
+                                        <div translate>label.running</div>
                                     </td>
                                     <td width="25%">
-                                        <div translate>label.waitForTransfer</div>
+                                        <div translate>label.suspended</div>
                                     </td>
                                     <td width="25%">
                                         <div translate>label.setBack</div>
                                     </td>
                                     <td width="25%">
-                                        <div translate>label.polling</div>
+                                        <div translate>label.waitingForResource</div>
                                     </td>
                                 </tr>
                                 <tr class="text-center" ng-if="yadeOverview">
                                     <td width="25%">
-                                        <a  class="text-lg _600 " ng-bind="yadeOverview.pending || 0"></a>
+                                        <a href="#!/file_transfer_overview/PENDING" class="text-lg _600 " ng-bind="yadeOverview.running || 0"></a>
                                     </td>
                                     <td width="25%">
-                                        <a class="text-lg _600 " ng-bind="yadeOverview.waitForTransfer || 0"></a>
+                                        <a href="#!/file_transfer_overview/SUSPENDED"  ng-class="{'dark-orange':yadeOverview.suspended >0}" class="text-lg _600 " ng-bind="yadeOverview.suspended || 0"></a>
                                     </td>
                                     <td width="25%">
-                                        <a class="text-lg _600 " ng-bind="yadeOverview.setback || 0"></a>
+                                        <a href="#!/file_transfer_overview/SETBACK"  class="text-lg _600 " ng-bind="yadeOverview.setback || 0"></a>
                                     </td>
                                     <td width="25%">
-                                        <a class="text-lg _600 " ng-bind="yadeOverview.polling || 0"></a>
+                                        <a href="#!/file_transfer_overview/WAITINGFORRESOURCE"  class="text-lg _600 " ng-bind="yadeOverview.waitingForResource || 0"></a>
                                     </td>
                                 </tr>
                             </table>

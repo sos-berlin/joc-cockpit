@@ -3,7 +3,7 @@
         <button type="button" class="close" ng-click="cancel()" aria-label="Close"><span aria-hidden="true" class="fa fa-times-circle"></span></button>
         <h4 class="modal-title" >
             <span ng-if="_event">
-                <span  class="text-capitalize" translate>label.delete</span> {{event.eventId}}?
+                <span  class="text-capitalize" translate>label.delete</span> {{_event.eventId}}?
             </span>
             <span ng-if="!_event">
                 <span  class="text-capitalize" translate>label.deleteAllEvents</span>?

@@ -18,80 +18,22 @@
                     <table class="table table-hover table-bordered " id="yade">
                         <thead>
                             <tr>
-                                <th ng-if="permission.YADE.execute.transferStart && fileTransfers[0].state._text=='FAILED'" width="45"><span translate>label.action</span></th>
-                                <th ng-click="sortBy('status')"><a><span translate>label.status</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'status' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'status' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'mandator' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'mandator' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-if="!yadeView.current" ng-click="sortBy('jobschedulerId')"><a><span translate>label.jobSchedulerId</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'jobschedulerId' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('operation')"><a><span translate>label.operation</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'operation' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('source.host')"><a><span translate>label.sourceHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'source.host' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'source.host' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('target.host')"><a><span translate>label.targetHost</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.host' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.host' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('target.protocol')"><a><span translate>label.targetProtocol</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'target.protocol' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('numOfFiles')"><a><span translate>label.totalNumberOfFiles</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('start')"><a><span translate>label.startTime</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'start' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'start' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('end')"><a><span translate>label.endTime</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'end' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'end' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
-                                <th ng-click="sortBy('duration')">
-                                    <a><span translate>label.duration</span>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'duration' && !yadeFilters.sortReverse"
-                                       class="fa fa-caret-up "></i>
-                                    <i ng-show="yadeFilters.filter.sortBy == 'duration' && yadeFilters.sortReverse"
-                                       class="fa fa-caret-down "></i></a>
-                                </th>
+                                <th ng-if="permission.YADE.execute.transferStart && fileTransfers[0].state._text!='SUCCESSFUL'" width="45"><span translate>label.action</span></th>
+                                <th><span translate>label.status</span></th>
+                                <th><span translate>label.mandator</span></th>
+                                <th><span translate>label.operation</span></th>
+                                <th><span translate>label.sourceHost</span></th>
+                                <th><span translate>label.targetHost</span></th>
+                                <th><span translate>label.targetProtocol</span></th>
+                                <th><span translate>label.totalNumberOfFiles</span></th>
+                                <th><span translate>label.startTime</span></th>
+                                <th><span translate>label.endTime</span></th>
+                                <th><span translate>label.duration</span></th>
                             </tr>
                         </thead>
                         <tbody ng-repeat="transfer in fileTransfers">
                         <tr  class="cursor">
-
-                            <td ng-if="permission.YADE.execute.transferStart && transfer.state._text=='FAILED'">
+                            <td ng-if="permission.YADE.execute.transferStart && transfer.state._text!='SUCCESSFUL'">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
                                             class="fa fa-ellipsis-h"></i></button>
@@ -108,10 +50,6 @@
                                 <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
                             <td ng-bind="transfer.mandator"></td>
-                            <td ng-if="!yadeView.current" >
-                                 <span ng-bind="yade.jobschedulerId"></span>
-                                 <span ng-if="!yade.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
-                             </td>
                             <td ng-bind="transfer._operation"></td>
                             <td ng-bind="transfer.source.host"></td>
                             <td ng-bind="transfer.target.host"></td>
