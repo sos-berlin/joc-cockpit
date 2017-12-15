@@ -1246,8 +1246,8 @@
   "label.addNewEvent": "Add Event",
   "label.customEventFound": "Custom Event found",
   "label.customEventsFound": "Custom Events found",
-  "label.expireFrom": "Expire after",
-  "label.expireTo": "Expire before",
+  "label.expireFrom": "Expired after",
+  "label.expireTo": "Expired before",
   "placeholder.eventId": "Enter Event ID",
   "placeholder.eventClass": "Enter Event Class",
   "placeholder.expirationCycle": "Enter Cycle (time format hh:mm:ss",
@@ -1267,6 +1267,6 @@
   "label.fileTransferFound": "File Transfer found",
   "label.fileTransfersFound": "File Transfers found",
   "breadcrumb.fileTransferOverview": "File Transfers Overview",
-  "label.allTransfers": "All Transfers",
+  "label.allTransfers": "All File Transfers",
   "button.deprecatedFeature": "Deprecated Feature"
 }
