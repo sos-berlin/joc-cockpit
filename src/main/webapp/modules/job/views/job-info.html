@@ -103,7 +103,7 @@
                                 <span ng-if="job.title">-</span><i class="text-muted"
                                                                    ng-bind-html="job.title | linky:'_blank'"></i>
                             </td>
-                            <td ng-bind="job.path"></td>
+                            <td ng-click="showJob1(job.path)" ><a class="text-hover-primary" ng-bind="job.path"></a></td>
                             <td>
                                 <span class="label" ng-class="bgColorFunction(job.state.severity)"
                                       ng-bind="job.state._text  | translate"></span>

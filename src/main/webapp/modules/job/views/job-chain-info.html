@@ -73,7 +73,7 @@
                                         <span ng-if="jobChain.title"> - </span>
                                         <i class="text-muted"><span ng-bind-html="jobChain.title | linky:'_blank'"></span></i>
                                     </td>
-                                    <td ng-bind="jobChain.path"></td>
+                                    <td><a class="text-hover-primary" ng-click="showJobChain1(jobChain.path)" ng-bind="jobChain.path"></a></td>
                                     <td><span class="label" ng-class="bgColorFunction(jobChain.state.severity)" ng-bind="jobChain.state._text  | translate"></span></td>
                                     <td ng-bind="jobChain.numOfNodes || 0"></td>
                                     <td ><a class="text-hover-primary" ui-sref="app.resources.agentClusters" ng-bind="jobChain.processClass"></a><i ng-if="!jobChain.processClass">-</i></td>

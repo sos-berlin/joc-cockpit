@@ -56,16 +56,26 @@
                     </div>
                 </div>
                 <div class="form-group row" ng-if="eventSearch.date == 'process'">
-                    <label class="col-md-2 col-sm-4 form-control-label"
-                           translate>label.processExecuted</label>
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.expireFrom</label>
 
-                    <div class=" col-sm-6"
-                         ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                        <input valid-yade-filter-regex type="text" name="planned" class="form-control"
-                               placeholder="{{'placeholder.processExecuted' | translate}}"
-                               ng-model="eventSearch.planned">
+                    <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
+                        <input valid-daily-plan-filter-regex type="text" name="from" class="form-control"
+                               placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="eventSearch.from1">
 
-                        <div class="help-block text-danger" ng-messages="form.planned.$error">
+                        <div class="help-block text-danger" ng-messages="form.from.$error">
+                            <div ng-message="invalid" translate>message.invalid</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row" ng-if="eventSearch.date == 'process'">
+                    <label class="col-md-2 col-sm-4 form-control-label" translate>label.expireTo</label>
+
+                    <div class=" col-sm-6" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
+                        <input valid-daily-plan-filter-regex type="text" name="to" class="form-control"
+                               placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="eventSearch.to1">
+
+                        <div class="help-block text-danger" ng-messages="form.to.$error">
                             <div ng-message="invalid" translate>message.invalid</div>
                         </div>
                     </div>
@@ -230,7 +240,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="event in filtered = (customEvents | filter: filterString:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
+                <tr ng-repeat="event in filtered = (customEvents | filter: searchObj.filterString:strict) | orderBy:eventFilters.filter.sortBy:eventFilters.reverse | startFrom:(eventFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage">
                     <td ng-if="permission.Event.execute.delete">
                         <label class="md-check">
                             <input type="checkbox" data-checklist-model="object.events"

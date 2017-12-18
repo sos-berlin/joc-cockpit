@@ -1145,6 +1145,12 @@
                                     <i ng-show="yade.filter.sortBy == 'status' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy2('profile')"><a><span translate>label.profileName</span>
+                                    <i ng-show="yade.filter.sortBy == 'profile' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'profile' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy2('mandator')"><a><span translate>label.mandator</span>
                                     <i ng-show="yade.filter.sortBy == 'mandator' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -1181,6 +1187,12 @@
                                     <i ng-show="yade.filter.sortBy == 'numOfFiles' && yade.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy2('error.message')"><a><span translate>label.lastErrorMessage</span>
+                                    <i ng-show="yade.filter.sortBy == 'error.message' && !yade.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yade.filter.sortBy == 'error.message' && yade.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy2('start')"><a><span translate>label.startTime</span>
                                     <i ng-show="yade.filter.sortBy == 'start' && !yade.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -1204,30 +1216,32 @@
                         </thead>
                         <tbody ng-repeat="transfer in filtered2 = (yadeHistorys | filter: filterString:strict) | orderBy:yade.filter.sortBy:yade.sortReverse | startFrom:(yade.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
                         <tr  class="cursor">
-                            <td ng-click="showLogWindow(transfer,null)" ng-if="!historyView.current" >
+                            <td ng-click="showLogWindow(null, transfer)" ng-if="!historyView.current" >
                                  <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && !historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && !historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
                                  <span ng-bind="history.jobschedulerId"></span>
                                  <span ng-if="!history.jobschedulerId" ng-bind="transfer.jobschedulerId"></span>
                              </td>
-                            <td ng-click="showLogWindow(transfer,null)" class="nowrap" >
+                            <td ng-click="showLogWindow(null, transfer)" class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show && historyView.current" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show && historyView.current" ng-click="transfer.show = false;$event.stopPropagation()"></i>
-                                <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                                <span class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.mandator"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer._operation"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.source.host"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.target.host"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.target.protocol"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.numOfFiles"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | stringToDate"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.end | stringToDate"></td>
-                            <td ng-click="showLogWindow(transfer,null)" ng-bind="transfer.start | duration:transfer.end"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.profile"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.mandator"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer._operation"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.source.host"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.target.host"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.target.protocol"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.numOfFiles"></td>
+                            <td ng-click="showLogWindow(null, transfer)" class="text-danger" ng-bind="transfer.error.message"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.start | stringToDate"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.end | stringToDate"></td>
+                            <td ng-click="showLogWindow(null, transfer)" ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                            <td colspan="11" >
+                            <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1260,7 +1274,7 @@
                                         <td  ng-bind="transfer.jump.protocol"></td>
                                         <td><span ng-click="showJobChain(transfer.jobChain);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
                                         <td><span ng-click="showJob(transfer.job);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.job"></span></td>
-                                        <td><span ng-click="showOrderLink(transfer.orderId);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.jobChain, transfer.orderId);$event.stopPropagation()" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>
@@ -1268,7 +1282,7 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                              <td></td>
-                             <td colspan="13" >
+                             <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -1277,7 +1291,7 @@
                                          <th translate>label.targetFileName</th>
                                          <th translate>label.targetFilePath</th>
                                          <th translate>label.status</th>
-                                         <th translate>label.lastErrorMessage</th>
+                                         <th translate>label.errorMessage</th>
                                          <th translate>label.size</th>
                                          <th translate>label.integrityHash</th>
                                      </tr>
@@ -1288,7 +1302,7 @@
                                          <td>{{file.sourcePath}}</td>
                                          <td>{{file.targetName}}</td>
                                          <td>{{file.targetPath}}</td>
-                                         <td><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
+                                         <td><span class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
                                          <td>{{file.error}}</td>
                                          <td>{{file.size | byteToSize}}</td>
                                          <td>{{file.integrityHash}}</td>

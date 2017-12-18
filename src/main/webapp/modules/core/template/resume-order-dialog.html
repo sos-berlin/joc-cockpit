@@ -59,7 +59,26 @@
                     <input type="url" class="form-control" placeholder="{{'placeholder.ticketLink' | translate}}"  ng-model="comments.ticketLink">
                 </div>
             </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.newOrderState</label>
 
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="order.state"
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
+                        <option value="" translate>label.chooseStartingStep</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.newOrderEndState</label>
+
+                <div class="col-sm-6">
+                    <select class="form-control" ng-model="order.endState"
+                            ng-options="node.name as node.name for node in _jobChain.nodes">
+                        <option value="" translate>label.chooseEndStep</option>
+                    </select>
+                </div>
+            </div>
             <div class="form-group row m-b-sm" ng-repeat="param in order.params">
                 <div class="col-sm-12 m-b-sm _600" ng-if="$index==0" translate>label.changeParameters</div>
 

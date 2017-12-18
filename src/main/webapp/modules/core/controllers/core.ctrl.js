@@ -442,13 +442,14 @@
                         } else if (task && task.taskId) {
                             if (task.job)
                                 url = 'log.html#!/?taskId=' + task.taskId + '&job=' + task.job;
-                            else
+                            else if(job)
                                 url = 'log.html#!/?taskId=' + task.taskId + '&job=' + job;
+                            else
+                                url = 'log.html#!/?taskId=' + task.taskId;
 
                         } else {
                             return;
                         }
-
 
                         if (id) {
                             document.cookie = "$SOS$scheduleId=" + id + ";path=/";
@@ -471,8 +472,10 @@
                 } else if (task && task.taskId) {
                     if (task.job)
                         url = '#!/job/log?taskId=' + task.taskId + '&job=' + task.job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
-                    else
+                    else if(job)
                         url = '#!/job/log?taskId=' + task.taskId + '&job=' + job + '&schedulerId=' + (id || SOSAuth.accessTokenId);
+                    else
+                        url = '#!/job/log?taskId=' + task.taskId + '&schedulerId=' + (id || SOSAuth.accessTokenId);
 
                 } else {
                     return;
@@ -627,6 +630,13 @@
         }
 
         vm.showJobChain = function (jobChain) {
+            $location.path('/job_chain').search({path: jobChain,scheduler_id:vm.schedulerIds.selected});
+        };
+
+        vm.showJob = function (job) {
+             $location.path('/job').search({path: job,scheduler_id:vm.schedulerIds.selected});
+        };
+        vm.showJobChain1 = function (jobChain) {
             var path = jobChain.substring(0, jobChain.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
@@ -635,10 +645,10 @@
                 name: name,
                 path: path
             };
-            $location.path('/job_chains')
+            $location.path('/job_chains').search({});
         };
 
-        vm.showJob = function (job) {
+        vm.showJob1 = function (job) {
             var path = job.substring(0, job.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
@@ -647,47 +657,10 @@
                 name: name,
                 path: path
             };
-            $location.path('/jobs')
+            $location.path('/jobs').search({});
         };
-
-        vm.showAgentCluster = function (agentCluster) {
-            var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
-            var name = '';
-            if (path != '/')
-                name = path.substring(path.lastIndexOf('/') + 1, path.length);
-            $rootScope.agent_cluster_expand_to = {
-                name: name,
-                path: path
-            };
-            $location.path('/resources/agent_clusters/')
-        };
-
-        vm.showProcessClass = function (processClass) {
-            var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
-            var name = '';
-            if (path != '/')
-                name = path.substring(path.lastIndexOf('/') + 1, path.length);
-            $rootScope.process_class_expand_to = {
-                name: name,
-                path: path
-            };
-            $location.path('/resources/process_classes');
-        };
-
-        vm.showScheduleLink = function (schedule) {
-            var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
-            var name = '';
-            if (path != '/')
-                name = path.substring(path.lastIndexOf('/') + 1, path.length);
-            $rootScope.schedule_expand_to = {
-                name: name,
-                path: path
-            };
-            $location.path('/resources/schedules');
-        };
-
-        vm.showOrderLink = function (order) {
-            var path = order.substring(0, order.lastIndexOf('/')) || '/';
+        vm.showOrderLink = function (path) {
+/*          var path = order.substring(0, order.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -696,10 +669,51 @@
                 path: path
             };
 
-            $location.path('/orders')
+            $location.path('/orders')*/
+            vm.showHistoryImmeditaly = true;
+            $location.path('/job_chain').search({path: path,scheduler_id:vm.schedulerIds.selected});
         };
+        vm.showAgentCluster = function (agentCluster) {
+/*            var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $rootScope.agent_cluster_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/resources/agent_clusters/');*/
+             $location.path('/agent_cluster').search({path: agentCluster,scheduler_id:vm.schedulerIds.selected});
+        };
+
+        vm.showProcessClass = function (processClass) {
+   /*         var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $rootScope.process_class_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/resources/process_classes');*/
+             $location.path('/process_class').search({path: jobChain,scheduler_id:vm.schedulerIds.selected});
+        };
+
+        vm.showScheduleLink = function (schedule) {
+/*            var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
+            var name = '';
+            if (path != '/')
+                name = path.substring(path.lastIndexOf('/') + 1, path.length);
+            $rootScope.schedule_expand_to = {
+                name: name,
+                path: path
+            };
+            $location.path('/resources/schedules');*/
+            $location.path('/schedule').search({path: schedule,scheduler_id:vm.schedulerIds.selected});
+        };
+
         vm.showCalendarLink = function (calendar) {
-            var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
+/*            var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -708,7 +722,8 @@
                 path: path
             };
 
-            $location.path('/resources/calendars')
+            $location.path('/resources/calendars')*/
+            $location.path('/calendar').search({path: calendar,scheduler_id:vm.schedulerIds.selected});
         };
 
         vm.about = function () {
@@ -1892,7 +1907,6 @@
 
         vm.changeFrequency = function (str) {
             vm.frequency.tab = str;
-            vm.frequency.tabName = "tab" + "." + str;
         };
 
         var tempList = [];
@@ -2879,7 +2893,6 @@
         vm.editFrequency = function (data) {
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
-            vm.frequency.tabName = "tab" + "." + vm.frequency.tab;
             if (vm.frequency.tab == 'nationalHoliday') {
                 vm.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
                 vm.holidayList = [];
@@ -2936,7 +2949,6 @@
                 var temp = angular.copy(vm.frequency);
                 vm.frequency = {};
                 vm.frequency.tab = temp.tab;
-                vm.frequency.tabName = "tab"+"."+vm.frequency.tab;
                 vm.frequency.isUltimos = temp.isUltimos;
             }
             if (vm.frequencyList && vm.frequencyList.length > 0) {
@@ -3859,7 +3871,6 @@
         run_time.ultimos.day = [];
         var x2js = new X2JS();
 
-        vm.runTime.tabName = 'tab.weekDays';
         vm.events = [];
         vm.planItems = [];
         vm.selectedCalendar = [];
@@ -3871,8 +3882,7 @@
             'ignore_holiday': gettextCatalog.getString('ignore holiday')
         };
         vm.changeFrequency1 = function (str) {
-            vm.runTime.tab = str;
-            vm.runTime.tabName = "tab" + "." + str;
+             vm.runTime.tab = str;
         };
 
         vm.changeText = function(){
@@ -8384,7 +8394,6 @@
             }
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = temp.tab;
-            vm.runTime.tabName = 'tab' + '.' + vm.runTime.tab;
             vm.runTime.all = temp.all;
             vm.runTime.allMonth = temp.allMonth;
             vm.runTime.isUltimos = temp.isUltimos;
@@ -9647,7 +9656,6 @@
                  }
                 vm.runTime.period._when_holiday = 'suppress';
                 vm.runTime.tab = temp.tab;
-                vm.runTime.tabName = 'tab' + '.' + vm.runTime.tab;
                 vm.runTime.isUltimos = temp.isUltimos;
                 vm.editor.isEnable = false;
                 selectedMonths = [];
@@ -10018,7 +10026,6 @@
 
             promise3 = $timeout(function () {
                 vm.runTime = runTime;
-                vm.runTime.tabName = 'tab' + "." + runTime.tab;
                 if (runTime.tab == 'monthDays') {
                     if (runTime.isUltimos == 'months') {
                         selectedMonths = [];
@@ -10524,7 +10531,6 @@
 
             promise1 = $timeout(function () {
                 vm.runTime = runTime;
-                vm.runTime.tabName = 'tab' + "." + runTime.tab;
             }, 0);
 
         };
@@ -10799,7 +10805,6 @@
             vm.runTime.period._when_holiday = 'suppress';
             vm.runTime.tab = 'weekDays';
             vm.runTime.isUltimos = 'months';
-            vm.runTime.tabName = 'tab.weekDays';
             if (vm.order && vm.order.isOrderJob) {
                 vm.runTime.frequency = 'time_slot';
                 vm.runTime.period._begin = '00:00';
@@ -12993,7 +12998,6 @@
             vm.frequencyList = [];
             vm.frequency = {};
             vm.frequency.tab = 'weekDays';
-            vm.frequency.tabName = 'tab.weekDays';
             vm.frequency.dateEntity = 'DAILY';
             vm.frequency.year = new Date().getFullYear();
             vm.isRuntimeEdit = false;
@@ -13059,7 +13063,6 @@
             vm.isRuntimeEdit = true;
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
-            vm.frequency.tabName = "tab" + "." + vm.frequency.tab
             $('#frequency-editor').modal({show: true});
             $('.fade-modal').css('opacity', '0.85');
             if (vm.editor.frequencyType == 'INCLUDE' && vm.calendar.includesFrequency.length > 0) {
@@ -13219,7 +13222,6 @@
         vm.calendar = {};
         vm.changeFrequency = function (str) {
             vm.frequency.tab = str;
-            vm.frequency.tabName = "tab" + "." + str;
         };
 
         function getDateFormat() {
@@ -13328,7 +13330,6 @@
                 vm.editor.create = true;
                 vm.frequency = {};
                 vm.frequency.tab = 'weekDays';
-                vm.frequency.tabName = 'tab.weekDays';
                 vm.frequency.isUltimos = 'months';
                 vm.frequency.dateEntity = 'DAILY';
                 if (vm.calendar.frequencyList && vm.calendar.frequencyList.length > 0) {
@@ -13670,7 +13671,6 @@
         vm.editFrequency = function (data) {
             vm.temp = angular.copy(data);
             vm.frequency = angular.copy(data);
-            vm.frequency.tabName = "tab"+"."+vm.frequency.tab;
             vm.isRuntimeEdit = true;
             if (vm.frequency.tab == 'monthDays') {
                 if (vm.frequency.isUltimos == 'months') {
@@ -13693,7 +13693,6 @@
                 var temp = angular.copy(vm.frequency);
                 vm.frequency = {};
                 vm.frequency.tab = temp.tab;
-                vm.frequency.tabName = "tab"+"."+vm.frequency.tab;
                 vm.frequency.isUltimos = temp.isUltimos;
             }
             if (data.tab == 'specificDays') {

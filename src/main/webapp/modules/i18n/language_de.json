@@ -1268,5 +1268,7 @@
   "label.fileTransferFound": "File Transfer gefunden",
   "breadcrumb.fileTransferOverview": "Übersicht der File Transfers",
   "label.allTransfers": "Alle File Transfers",
-  "button.deprecatedFeature": "Veraltete Funktion"
+  "button.deprecatedFeature": "Veraltete Funktion",
+  "label.errorMessage": "Error Message",
+  "message.noFileFound": "no file found"
 }

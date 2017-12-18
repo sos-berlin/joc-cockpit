@@ -1553,6 +1553,8 @@
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
             obj.params = order.params;
+            obj.state = vm.order.state;
+            obj.endState = vm.order.endState;
 
             if (order.date && order.time) {
                 order.date.setHours(order.time.getHours());
@@ -1670,9 +1672,20 @@
             }
 
             if (order.params && order.params.length > 0) {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    params: order.params,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             } else {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             }
             delete orders['params'];
             OrderService.resumeOrder(orders);
@@ -1788,6 +1801,15 @@
                     startAt(vm.order, vm.paramObject);
                 }, function () {
 
+                });
+                JobChainService.getJobChainP({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobChain: order.jobChain
+                }).then(function (res) {
+                    vm._jobChain = res.jobChain;
+                    angular.forEach(res.jobChain.endNodes, function (value) {
+                        vm._jobChain.nodes.push(value);
+                    });
                 });
             }
 
@@ -1942,6 +1964,15 @@
                     resumeOrderWithParam(order, vm.paramObject);
                 }, function () {
 
+                });
+                JobChainService.getJobChainP({
+                    jobschedulerId: $scope.schedulerIds.selected,
+                    jobChain: order.jobChain
+                }).then(function (res) {
+                    vm._jobChain = res.jobChain;
+                    angular.forEach(res.jobChain.endNodes, function (value) {
+                        vm._jobChain.nodes.push(value);
+                    });
                 });
             }
 
@@ -4165,6 +4196,7 @@
                 configObj.name = vm.orderFilter1.name;
                 configObj.id = filter.id;
                 configObj.shared = vm.orderFilter1.shared;
+                filter.shared = vm.orderFilter1.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.orderFilter1.name;
                 temp_name = '';
@@ -5380,7 +5412,8 @@
             obj.orderId = order.orderId;
             obj.jobChain = order.jobChain;
             obj.params = order.params;
-
+            obj.state = vm.order.state;
+            obj.endState = vm.order.endState;
             if (order.date && order.time) {
                 order.date.setHours(order.time.getHours());
                 order.date.setMinutes(order.time.getMinutes());
@@ -5414,7 +5447,6 @@
             OrderService.startOrder(orders).then(function (res) {
                 var obj = {};
                 obj.orders = [];
-
                 obj.jobschedulerId = vm.schedulerIds.selected;
                 obj.orders.push({orderId: order.orderId, jobChain: order.path.split(',')[0]});
                 OrderService.get(obj).then(function (res) {
@@ -5455,6 +5487,15 @@
                 startAt(vm.order, vm.paramObject);
             }, function () {
                 vm.reset();
+            });
+            JobChainService.getJobChainP({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain
+            }).then(function (res) {
+                vm._jobChain = res.jobChain;
+                angular.forEach(res.jobChain.endNodes, function (value) {
+                    vm._jobChain.nodes.push(value);
+                });
             });
         };
 
@@ -5789,9 +5830,20 @@
             }
 
             if (order.params && order.params.length > 0) {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain, params: order.params});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    params: order.params,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             } else {
-                orders.orders.push({orderId: order.orderId, jobChain: order.jobChain});
+                orders.orders.push({
+                    orderId: order.orderId,
+                    jobChain: order.jobChain,
+                    state: vm.order.state,
+                    endState: vm.order.endState
+                });
             }
             delete orders['params'];
             OrderService.resumeOrder(orders);
@@ -5823,6 +5875,15 @@
                 resumeOrderWithParam(order, vm.paramObject);
             }, function () {
                 vm.reset();
+            });
+            JobChainService.getJobChainP({
+                jobschedulerId: $scope.schedulerIds.selected,
+                jobChain: order.jobChain
+            }).then(function (res) {
+                vm._jobChain = res.jobChain;
+                angular.forEach(res.jobChain.endNodes, function (value) {
+                    vm._jobChain.nodes.push(value);
+                });
             });
         };
 
@@ -6611,7 +6672,6 @@
         }
 
         getIgnoreList();
-
 
         /**--------------- sorting and pagination -------------------*/
         vm.sortBy = function (propertyName) {
@@ -7730,11 +7790,13 @@
                     configObj.configurationItem = JSON.stringify(vm.yadeFilter);
                     configObj.name = vm.yadeFilter.name;
                     configObj.shared = vm.yadeFilter.shared;
+                    filter.shared = vm.yadeFilter.shared;
                     filter.name = vm.yadeFilter.name;
                 }else {
                     configObj.configurationItem = JSON.stringify(vm.historyFilter);
                     configObj.name = vm.historyFilter.name;
                     configObj.shared = vm.historyFilter.shared;
+                    filter.shared = vm.historyFilter.shared;
                     filter.name = vm.historyFilter.name;
                 }
 
@@ -8532,6 +8594,36 @@
         };
 
 
+        function getTransfer(transfer) {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.transferIds = [];
+            obj.transferIds.push(transfer.id);
+            YadeService.getTransfers(obj).then(function (res) {
+                if(res.transfers && res.transfers.length>0) {
+                    transfer.states = res.transfers[0].states;
+                    transfer.operations = res.transfers[0].operations;
+                    transfer.hasIntervention = res.transfers[0].hasIntervention;
+                    transfer.isIntervention = res.transfers[0].isIntervention;
+                    transfer.source = res.transfers[0].source;
+                    transfer.target = res.transfers[0].target;
+                    transfer.mandator = res.transfers[0].mandator;
+                    transfer.profile = res.transfers[0].profile;
+                    transfer.taskId = res.transfers[0].taskId;
+                }
+            });
+        }
+        function getFiles(value) {
+            var ids = [];
+            ids.push(value.id);
+            YadeService.files({
+                transferIds: ids,
+                jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
+            }).then(function (res) {
+                value.files = res.files
+            })
+        }
+
         function updateHistoryAfterEvent() {
             var filter = {};
             isLoaded = false;
@@ -8592,6 +8684,38 @@
                         isLoaded = true;
                     });
                 }
+            }else if (vm.historyFilters.type == 'yade') {
+
+                filter = {jobschedulerId: vm.historyView.current == true ? vm.schedulerIds.selected : ''};
+
+                if (vm.selectedFiltered3) {
+                    isCustomizationSelected3(true);
+                    filter = yadeParseDate(filter);
+                } else {
+                    filter = setYadeDateRange(filter);
+                    if (vm.yade.filter.historyStates && vm.yade.filter.historyStates != 'all' && vm.yade.filter.historyStates.length > 0) {
+                        filter.states = [];
+                        filter.states.push(vm.yade.filter.historyStates);
+                    }
+                }
+                filter.limit = parseInt(vm.userPreferences.maxRecords);
+                filter.timeZone = vm.userPreferences.zone;
+                if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function') || (filter.dateTo && typeof filter.dateTo.getMonth === 'function')) {
+                    delete filter['timeZone']
+                }
+                filter.compact = true;
+                if(yadeSearch) {
+                    vm.search(true);
+                }else {
+                    YadeService.getTransfers(filter).then(function (res) {
+                        vm.yadeHistorys = res.transfers;
+                        vm.isLoading = true;
+                        isLoaded = true;
+                    }, function () {
+                        vm.isLoading = true;
+                        isLoaded = true;
+                    });
+                }
             }
         }
 
@@ -8605,6 +8729,25 @@
                     } else if (vm.events[0].eventSnapshots[i].eventType == 'ReportingChangedJob' && isLoaded) {
                         updateHistoryAfterEvent();
                         break;
+                    } else if (vm.events[0].eventSnapshots[i].objectType == 'OTHER') {
+                        if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
+                           updateHistoryAfterEvent();
+                            break;
+                        }else if(vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated' && vm.historyFilters.type == 'yade'){
+                            for(var x=0; x<vm.yadeHistorys.length;x++){
+                                if(vm.yadeHistorys[x].id ==vm.events[0].eventSnapshots[i].path ){
+                                    getTransfer(vm.yadeHistorys[x]);
+                                    break;
+                                }
+                            }
+                        }else if(vm.events[0].eventSnapshots[i].eventType == 'YADEFileStateChanged'){
+                            for(var x=0; x<vm.yadeHistorys.length;x++){
+                                if(vm.yadeHistorys[x].id ==vm.events[0].eventSnapshots[i].path && vm.yadeHistorys[x].show ){
+                                    getFiles(vm.yadeHistorys[x]);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -1677,7 +1677,7 @@
                 calendars: calendars,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                console.log(res.headers('Content-Disposition'));
+                //console.log(res.headers('Content-Disposition'));
                 vm.loading = false;
                 var name = 'calendars' + '.json';
                 var fileType = 'application/octet-stream';
@@ -2749,14 +2749,16 @@
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
             if (vm.selectedFiltered) {
-                console.log(vm.selectedFiltered)
-                if (vm.selectedFiltered.planned) {
-                     obj = parseProcessExecuted(vm.selectedFiltered.planned, obj);
+                if (vm.selectedFiltered.from1) {
+                    obj.dateFrom = parseProcessExecuted(vm.selectedFiltered.from1);
+                }
+                if (vm.selectedFiltered.to1) {
+                    obj.dateTo = parseProcessExecuted(vm.selectedFiltered.to1);
                 }
                 if (vm.selectedFiltered.jobs) {
                     obj.jobs = [];
-                    angular.forEach(vm.selectedFiltered.jobs, function(job){
-                        obj.jobs.push({job:job});
+                    angular.forEach(vm.selectedFiltered.jobs, function (job) {
+                        obj.jobs.push({job: job});
                     });
                 }
                 if (vm.selectedFiltered.orders) {
@@ -2768,11 +2770,15 @@
                 if (vm.selectedFiltered.eventClasses) {
                     obj.eventClasses = vm.selectedFiltered.eventClasses.split(',');
                 }
-                if (vm.selectedFiltered.exitCodes) {
-                    obj.exitCodes = vm.selectedFiltered.exitCodes.split(',');
+                if (vm.selectedFiltered.exitCodes || vm.selectedFiltered.exitCodes == 0) {
+                    var data = vm.selectedFiltered.exitCodes.toString().split(',');
+                    obj.exitCodes = [];
+                    for (var i = 0; i < data.length; i++) {
+                        obj.exitCodes.push(data[i])
+                    }
+
                 }
             }
-            console.log(obj)
 
             EventService.getEvents(obj).then(function (res) {
                 vm.customEvents = res.events;
@@ -2905,11 +2911,6 @@
             vm.showSearchPanel = true;
             vm.eventSearch.date = 'date';
             vm.eventSearch.exitCodes = 0;
-            vm.eventSearch.from = new Date();
-            vm.eventSearch.from.setDate(vm.eventSearch.from.getDate() - 1);
-            vm.eventSearch.fromTime = '00:00';
-            vm.eventSearch.to = new Date();
-            vm.eventSearch.toTime = '00:00';
         };
         vm.cancelEventSearch = function (form) {
             vm.eventSearch = {};
@@ -2997,9 +2998,11 @@
                 });
             }
         };
-        vm.filterString ='';
+        vm.searchObj = {};
+        vm.searchObj.filterString ='';
+
         vm.treeHandler = function (data) {
-            console.log(data)
+           
             if(!data.expanded && !data.level){
 
                 if(data.jobChain){
@@ -3266,7 +3269,6 @@
             vm.isUnique = true;
             vm.action = 'add';
             vm.eventFilter = {};
-            vm.eventFilter.planned = 'today';
             vm.eventFilter.exitCodes = 0;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/event-filter-dialog.html',
@@ -3320,7 +3322,7 @@
         var temp_name = '';
 
         vm.editFilter = function (filter) {
-                        vm.eventSearch = {};
+            vm.eventSearch = {};
             vm.showSearchPanel = false;
             vm.action = 'edit';
             vm.isUnique = true;
@@ -3355,6 +3357,7 @@
                 configObj.configurationItem = JSON.stringify(vm.eventFilter);
                 configObj.name = vm.eventFilter.name;
                 configObj.shared = vm.eventFilter.shared;
+                filter.shared = vm.eventFilter.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.eventFilter.name;
                 temp_name = '';
@@ -3513,87 +3516,38 @@
             SavedFilter.setEvent(vm.savedEventFilter);
             SavedFilter.save();
         };
-        function parseProcessExecuted(regex, obj) {
-            var fromDate, toDate, date, arr;
+        function parseProcessExecuted(regex) {
+            var date;
+            if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
+                date = new Date();
+                var fromDate = new Date();
+                var seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
+                date.setSeconds(fromDate.getSeconds() - seconds);
 
-            if (/^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                fromDate = /^\s*(-)\s*(\d+)(h|d|w|M|y)\s*$/.exec(regex)[0];
-
-            } else if (/^\s*(now\s*\-)\s*(\d+)\s*$/i.test(regex)) {
-                fromDate = new Date();
-                toDate = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
-                fromDate.setSeconds(toDate.getSeconds() - seconds);
+            } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = regex;
             } else if (/^\s*(Today)\s*$/i.test(regex)) {
-                fromDate = '0d';
-                toDate = '0d';
-            } else if (/^\s*(Yesterday)\s*$/i.test(regex)) {
-                fromDate = '-1d';
-                toDate = '0d';
+                date = '0d';
             } else if (/^\s*(now)\s*$/i.test(regex)) {
-                fromDate = new Date();
-                toDate = new Date();
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
-                date = /^\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*to\s*(-)(\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.exec(regex);
-                arr = date[0].split('to');
-                fromDate = arr[0].trim();
-                toDate = arr[1].trim();
-
-            } else if (/^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.test(regex)) {
-                var time = /^\s*(\d+):(\d+)\s*(am|pm)\s*to\s*(\d+):(\d+)\s*(am|pm)\s*$/i.exec(regex);
-                fromDate = new Date();
-                if (/(pm)/i.test(time[3]) && parseInt(time[1]) != 12) {
-                    fromDate.setHours(parseInt(time[1]) - 12);
-                } else {
-                    fromDate.setHours(parseInt(time[1]));
-                }
-
-                fromDate.setMinutes(parseInt(time[2]));
-                toDate = new Date();
-                if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
-                    toDate.setHours(parseInt(time[4]) - 12);
-                } else {
-                    toDate.setHours(parseInt(time[4]));
-                }
-                toDate.setMinutes(parseInt(time[5]));
+                date = new Date();
+            } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
+                date = regex;
             }
-
-            if (fromDate) {
-                obj.dateFrom = fromDate;
-            }
-            if (toDate) {
-                obj.dateTo = toDate;
-            }
-            console.log('hao')
-            return obj;
+            return date;
         }
         vm.searchEvent = function () {
             var obj = {};
-            console.log(vm.eventSearch)
-            console.log('>>>')
+           
+            
             obj.jobschedulerId = vm.schedulerIds.selected;
-            if (vm.eventSearch.planned) {
-                obj = parseProcessExecuted(vm.eventSearch.planned, obj);
-            }else {
-                if (vm.eventSearch.date == 'date') {
+            if (vm.eventSearch.date == 'process') {
+                if (vm.eventSearch.from1) {
+                    obj.dateFrom = parseProcessExecuted(vm.eventSearch.from1);
+                }
+                if (vm.eventSearch.to1) {
+                    obj.dateTo = parseProcessExecuted(vm.eventSearch.to1);
+                }
+            }else if (vm.eventSearch.date == 'date') {
                     if (vm.eventSearch.from) {
                         var fromDate = new Date(vm.eventSearch.from);
                         if (vm.eventSearch.fromTime) {
@@ -3623,7 +3577,7 @@
 
                         obj.dateTo = toDate;
                     }
-                }
+
             }
             if (vm.eventSearch.jobs) {
                 obj.jobs = [];
@@ -3640,11 +3594,14 @@
             if (vm.eventSearch.eventClasses) {
                 obj.eventClasses = vm.eventSearch.eventClasses.split(',');
             }
-            if (vm.eventSearch.exitCodes) {
-                obj.exitCodes = vm.eventSearch.exitCodes.split(',');
-            }
+            if (vm.eventSearch.exitCodes || vm.eventSearch.exitCodes==0) {
+                var data = vm.eventSearch.exitCodes.toString().split(',');
+                obj.exitCodes = [];
+                for(var i=0; i< data.length;i++) {
+                    obj.exitCodes.push(data[i])
+                }
 
-            console.log(obj)
+            }
 
             EventService.getEvents(obj).then(function (res) {
                 vm.customEvents = res.events;
@@ -3887,7 +3844,6 @@
                             }
                         } else {
                             if (event.eventType.match('Calendar')) {
-                                console.log('if... ');
                                 initCalendarTree();
                             }
                         }
@@ -3896,7 +3852,10 @@
                         }
                     }
                     if (vm.resourceFilters.state == 'events' && event.objectType == 'OTHER') {
-                        getEvents()
+                        
+                        if(event.eventType == 'CustomEventAdded' || event.eventType == 'CustomEventDeleted') {
+                            getEvents()
+                        }
                     }
                 });
         });
@@ -4420,7 +4379,7 @@
                 calendars: calendars,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                console.log(res.headers('Content-Disposition'));
+                //console.log(res.headers('Content-Disposition'));
                 vm.loading = false;
                 var name = 'calendars' + '.json';
                 var fileType = 'application/octet-stream';
@@ -6356,8 +6315,9 @@
         function parseProcessExecuted(regex) {
             var date;
             if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
+                var fromDate = new Date();
                 date = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                var seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 date.setSeconds(fromDate.getSeconds() - seconds);
             } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
@@ -7052,6 +7012,7 @@
                 configObj.name = vm.dailyPlanFilter.name;
                 configObj.id = filter.id;
                 configObj.shared = vm.dailyPlanFilter.shared;
+                filter.shared = vm.dailyPlanFilter.shared;
 
                 if (!vm.dailyPlanFilter.from) {
                     vm.dailyPlanFilter.from = '0d';

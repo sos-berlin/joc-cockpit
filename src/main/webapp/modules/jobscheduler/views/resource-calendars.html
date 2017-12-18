@@ -397,50 +397,33 @@
                                 <a ng-click="cancel(calendar-form)" style="float: right; position: absolute; right: -10px; top: -19px; font-size: 27px; opacity: .9"><i class="fa fa-times-circle"></i></a>
                             </div>
 
-                            <div>
-                                <div class="btn-group dropdown m-b">
-                                    <span translate style="font-weight: 600">label.frequencyType</span>
-                                    <a class="dropdown-toggle m-l-sm text-primary" data-toggle="dropdown"  href>{{frequency.tabName | translate}}<span
-                                    class="caret m-l-xs"></span></a>
-                                    <ul class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                        <li>
-                                            <a href data-toggle="tab" data-target="#tab1"
-                                               ng-class="{'active':frequency.tab == 'weekDays'}"
-                                               ng-click="changeFrequency('weekDays')"  translate>tab.weekDays</a>
-                                        </li>
-                                        <li>
-                                            <a href data-toggle="tab" data-target="#tab2"
-                                               ng-class="{'active':frequency.tab == 'specificWeekDays'}"
-                                               ng-click="changeFrequency('specificWeekDays')"
-                                               translate>tab.specificWeekDays</a>
-                                        </li>
-                                        <li>
-                                            <a href data-toggle="tab" data-target="#tab3"
-                                               ng-class="{'active':frequency.tab == 'specificDays'}"
-                                               ng-click="changeFrequency('specificDays')" translate>tab.specificDays</a>
-                                        </li>
-                                        <li>
-                                            <a href data-toggle="tab" data-target="#tab4"
-                                               ng-class="{'active':frequency.tab == 'monthDays'}"
-                                               ng-click="changeFrequency('monthDays')" translate>tab.monthDays</a>
-                                        </li>
-                                        <li>
-                                            <a href data-toggle="tab" data-target="#tab5"
-                                               ng-class="{'active':frequency.tab == 'every'}"
-                                               ng-click="changeFrequency('every')" translate>tab.every</a>
-                                        </li>
-                                        <li>
-                                            <a href data-toggle="tab" data-target="#tab6"
-                                               ng-class="{'active':frequency.tab == 'nationalHoliday'}"
-                                               ng-click="changeFrequency('nationalHoliday')" translate>tab.nationalHoliday</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="tab-content b-l b-r b-b p-a p-b-0 m-b b-t" ng-class="{'specific-day-ht':frequency.tab == 'specificDays' }">
-                                    <div class="tab-pane animated fadeIn" id="tab1"
-                                         ng-class="{'active':frequency.tab == 'weekDays'}">
+                                <div>
+                                    <div class="m-b">
                                         <div class="form-group row">
-                                            <label class="col-sm-3" translate>label.weekDays</label>
+                                            <label class="col-sm-2" style="font-weight: 600"
+                                                   translate>label.frequencyType</label>
+
+                                            <div class="col-sm-3">
+                                                <select class="form-control" ng-model="frequency.tab"
+                                                        ng-change="changeFrequency(frequency.tab)">
+                                                    <option value="weekDays" translate>tab.weekDays</option>
+                                                    <option value="specificWeekDays" translate>tab.specificWeekDays
+                                                    </option>
+                                                    <option value="specificDays" translate>tab.specificDays</option>
+                                                    <option value="monthDays" translate>tab.monthDays</option>
+                                                    <option value="every" translate>tab.every</option>
+                                                    <option value="nationalHoliday" translate>tab.nationalHoliday
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content b-l b-r b-b p-a p-b-0 m-b b-t"
+                                         ng-class="{'specific-day-ht':frequency.tab == 'specificDays' }">
+                                        <div class="tab-pane animated fadeIn" id="tab1"
+                                             ng-class="{'active':frequency.tab == 'weekDays'}">
+                                            <div class="form-group row">
+                                                <label class="col-sm-3" translate>label.weekDays</label>
 
                                             <div class="col-sm-9">
                                                 <label class="md-check w">

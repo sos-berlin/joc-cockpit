@@ -20,19 +20,21 @@
                             <tr>
                                 <th ng-if="permission.YADE.execute.transferStart && fileTransfers[0].state._text!='SUCCESSFUL'" width="45"><span translate>label.action</span></th>
                                 <th><span translate>label.status</span></th>
+                                <th><span translate>label.profileName</span></th>
                                 <th><span translate>label.mandator</span></th>
                                 <th><span translate>label.operation</span></th>
                                 <th><span translate>label.sourceHost</span></th>
                                 <th><span translate>label.targetHost</span></th>
                                 <th><span translate>label.targetProtocol</span></th>
                                 <th><span translate>label.totalNumberOfFiles</span></th>
+                                <th><span translate>label.lastErrorMessage</span></th>
                                 <th><span translate>label.startTime</span></th>
                                 <th><span translate>label.endTime</span></th>
                                 <th><span translate>label.duration</span></th>
                             </tr>
                         </thead>
                         <tbody ng-repeat="transfer in fileTransfers">
-                        <tr  class="cursor">
+                        <tr >
                             <td ng-if="permission.YADE.execute.transferStart && transfer.state._text!='SUCCESSFUL'">
                                 <div class="btn-group dropdown"  >
                                     <button type="button" class="btn-drop more-option-h"  data-toggle="dropdown" ><i
@@ -44,24 +46,26 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="nowrap" >
-                                <i class="cursor fa fa-caret-down fa-lg " ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
-                                 <i class="cursor fa fa-caret-up fa-lg " ng-if="transfer.show" ng-click="transfer.show = false;"></i>
-                                <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                            <td  class="nowrap " >
+                                <i class="cursor fa fa-caret-down fa-lg " ng-if="!transfer.show" ng-click="showTransferFuc(transfer);$event.stopPropagation()"></i>
+                                 <i class="cursor fa fa-caret-up fa-lg " ng-if="transfer.show" ng-click="transfer.show = false;$event.stopPropagation()"></i>
+                                <span class="label cursor" ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
+                            <td ng-bind="transfer.profile"></td>
                             <td ng-bind="transfer.mandator"></td>
                             <td ng-bind="transfer._operation"></td>
                             <td ng-bind="transfer.source.host"></td>
                             <td ng-bind="transfer.target.host"></td>
                             <td ng-bind="transfer.target.protocol"></td>
                             <td ng-bind="transfer.numOfFiles"></td>
+                            <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>
                             <td ng-bind="transfer.end | stringToDate"></td>
                             <td ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr ng-show="transfer.show">
                             <td></td>
-                            <td colspan="12" >
+                            <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr>
@@ -94,7 +98,7 @@
                                         <td  ng-bind="transfer.jump.protocol"></td>
                                         <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
                                         <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
-                                        <td><span ng-click="showOrderLink(transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>
@@ -102,21 +106,19 @@
                         </tr>
                         <tr ng-show="transfer.show">
                             <td></td>
-                            <td colspan="12" >
+                            <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr>
                                          <th width="30" ng-if="permission.YADE.execute.transferStart">
-                                            <label class="md-check lg-check">
-                                                <input type="checkbox" ng-model="checkAllFiles.checkbox" ng-click="checkAllFilesFnc(transfer)"><i class="primary"></i>
-                                            </label>
+                                            #
                                         </th>
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
                                          <th translate>label.targetFilePath</th>
                                          <th translate>label.status</th>
-                                         <th translate>label.lastErrorMessage</th>
+                                         <th translate>label.errorMessage</th>
                                          <th translate>label.size</th>
                                          <th translate>label.integrityHash</th>
                                      </tr>
@@ -134,8 +136,8 @@
                                          <td>{{file.sourcePath}}</td>
                                          <td>{{file.targetName}}</td>
                                          <td>{{file.targetPath}}</td>
-                                         <td><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
-                                         <td>{{file.error}}</td>
+                                         <td><span class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
+                                         <td class="text-danger">{{file.error.message}}</td>
                                          <td>{{file.size | byteToSize}}</td>
                                          <td>{{file.integrityHash}}</td>
                                      </tr>

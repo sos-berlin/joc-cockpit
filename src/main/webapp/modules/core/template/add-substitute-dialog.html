@@ -215,32 +215,19 @@
                         </label>
                     </div>
                     <div>
-                        <div class="btn-group dropdown m-b">
-                            <span translate style="font-weight: 600">label.frequencyType</span>
-                            <a class="dropdown-toggle m-l-sm text-primary" data-toggle="dropdown"  href ng-model="runTime.tabName">{{runTime.tabName | translate}}<span
-                                    class="caret m-l-xs"></span></a>
-                            <ul class="dropdown-menu dropdown-menu-scale dropdown-ac dropdown-more pull-right">
-                                <li>
-                                    <a href data-toggle="tab" data-target="#tab1"
-                                       ng-class="{'active':runTime.tab == 'weekDays'}"
-                                       ng-click="changeFrequency1('weekDays')" translate>tab.weekDays</a>
-                                </li>
-                                <li>
-                                    <a href data-toggle="tab" data-target="#tab2"
-                                       ng-class="{'active':runTime.tab == 'specificWeekDays'}"
-                                       ng-click="changeFrequency1('specificWeekDays')" translate>tab.specificWeekDays</a>
-                                </li>
-                                <li>
-                                    <a href data-toggle="tab" data-target="#tab3"
-                                       ng-class="{'active':runTime.tab == 'specificDays'}"
-                                       ng-click="changeFrequency1('specificDays')" translate>tab.specificDays</a>
-                                </li>
-                                <li>
-                                    <a href data-toggle="tab" data-target="#tab4"
-                                       ng-class="{'active':runTime.tab == 'monthDays'}"
-                                       ng-click="changeFrequency1('monthDays')" translate>tab.monthDays</a>
-                                </li>
-                            </ul>
+                        <div class="m-b">
+                            <div class="form-group row">
+                                <label class="col-sm-2" style="font-weight: 600" translate>label.frequencyType</label>
+
+                                <div class="col-sm-3">
+                                    <select class="form-control" ng-model="runTime.tab" ng-change="changeFrequency1(runTime.tab)">
+                                        <option value="weekDays" translate>tab.weekDays </option>
+                                        <option value="specificWeekDays" translate>tab.specificWeekDays </option>
+                                        <option value="specificDays" translate>tab.specificDays</option>
+                                        <option value="monthDays" translate>tab.monthDays</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b">
                             <div class="tab-pane animated fadeIn" id="tab1"

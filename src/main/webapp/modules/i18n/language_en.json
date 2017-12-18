@@ -1232,7 +1232,7 @@
   "label.targetHostUser": "Target Host Account",
   "label.targetHostPort": "Target Host Port",
   "label.targetHostProtocol": "Target Host Protocol",
-  "label.jumpUser": "Jump Host",
+  "label.jumpUser": "Jump Host Account",
   "label.jumpPort": "Jump Host Port",
   "label.jumpProtocol": "Jump Host Protocol",
   "label.sourceFilePath": "Source File Path",
@@ -1268,5 +1268,7 @@
   "label.fileTransfersFound": "File Transfers found",
   "breadcrumb.fileTransferOverview": "File Transfers Overview",
   "label.allTransfers": "All File Transfers",
-  "button.deprecatedFeature": "Deprecated Feature"
+  "button.deprecatedFeature": "Deprecated Feature",
+  "label.errorMessage": "Error Message",
+  "message.noFileFound": "no file found"
 }

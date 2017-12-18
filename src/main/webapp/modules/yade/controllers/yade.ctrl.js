@@ -77,44 +77,18 @@
         };
         var watcher1 = $scope.$watchCollection('object.fileTransfers', function (newNames) {
             if (newNames && newNames.length > 0) {
-                vm.checkAllFileTransfers.checkbox = newNames.length == vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage)).length;
-                angular.forEach(newNames, function (value) {
-                    if (value.state._text != 'SUCCESSFUL') {
-                        if (value.files && value.files.length > 0) {
-                            angular.forEach(value.files, function (file) {
-                                var flag = false;
-                                for (var x = 0; x < vm.object.files.length; x++) {
-                                    if (angular.equals(file, vm.object.files[x])) {
-                                        flag = true;
-                                        break;
-                                    }
-                                }
-                                if (!flag) {
-                                    vm.object.files.push(file)
-                                }
-                            });
-                        }
-                    }
-                });
 
             } else {
                 vm.checkAllFileTransfers.checkbox = false;
                 vm.object.files = [];
-                 if(vm.fileTransfers && vm.fileTransfers.length>0) {
-                    var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
-                    angular.forEach(data, function (transfer) {
-                        if ($("#" + transfer.id)) {
-                            $("#" + transfer.id).prop('checked', false);
-                        }
-                    });
-                }
             }
 
         });
-/*        vm.checkAllFilesFnc = function (transfer) {
-            var chk = $("#"+transfer.id).prop('checked');
-            if (chk) {
-                if(transfer.files && transfer.state._text != 'SUCCESSFUL') {
+
+        vm.checkALLFilesFnc = function(transfer){
+            if($("#" + transfer.id) && $("#" + transfer.id).prop('checked')) {
+         
+                if (transfer && transfer.files) {
                     angular.forEach(transfer.files, function (file) {
                         var flag = false;
                         for (var x = 0; x < vm.object.files.length; x++) {
@@ -128,38 +102,40 @@
                         }
                     });
                 }
-            } else {
-                angular.forEach(transfer.files, function(file){
-                    for(var x=0;x<vm.object.files.length;x++ ){
-                        if(angular.equals(file, vm.object.files[x])){
-                            vm.object.files.splice(x,1);
+            }else{
+                var _temp = angular.copy(vm.object.files);
+                angular.forEach(_temp, function (file,index) {
+                     for (var x = 0; x < vm.object.files.length; x++) {
+                         if(transfer.id == vm.object.files[x].id) {
+                             vm.object.files.splice(index,1);
+                             break;
+                         }
+                     }
+                });
+            }
+        };
+
+        var watcher2 = $scope.$watchCollection('object.files', function (newNames) {
+            if (newNames && newNames.length > 0) {
+                var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
+                angular.forEach(newNames, function (value) {
+                    for(var i=0; i<data.length;i++) {
+                        if(data[i].id == value.transferId){
+                            var flg = false;
+                            for(var x= 0; x<vm.object.fileTransfers.length;x++ ){
+                                if(vm.object.fileTransfers[x].id  == data[i].id){
+                                    flg = true
+                                }
+                            }
+                            if(!flg)
+                            vm.object.fileTransfers.push(data[i]);
                             break;
                         }
                     }
                 });
-            }
-            if (chk && vm.object.fileTransfers.length == 0) {
-                vm.object.fileTransfers.push(transfer);
+
             } else {
-                var flag = true;
-                for (var i = 0; i < vm.object.fileTransfers.length; i++) {
-                    if (transfer.id == vm.object.fileTransfers[i].id) {
-                        flag = false;
-                    }
-                }
-                if (flag) {
-                    vm.object.fileTransfers.push(transfer);
-                }
-            }
-        };*/
-        var watcher2 = $scope.$watchCollection('object.files', function (newNames) {
-/*            if (newNames && newNames.length > 0) {
-/!*                angular.forEach(newNames, function(value){
-                    console.log(value)
-                })*!/
-                // vm.checkAllFiles.checkbox = newNames.length == vm.files.length;
-            } else {
-                if(vm.fileTransfers && vm.fileTransfers.length>0) {
+                if (vm.fileTransfers && vm.fileTransfers.length > 0) {
                     var data = vm.fileTransfers.slice((vm.userPreferences.entryPerPage * (vm.yadeFilters.currentPage - 1)), (vm.userPreferences.entryPerPage * vm.yadeFilters.currentPage));
                     angular.forEach(data, function (transfer) {
                         if ($("#" + transfer.id)) {
@@ -167,7 +143,7 @@
                         }
                     });
                 }
-            }*/
+            }
         });
 
         function setDateRange(filter) {
@@ -377,6 +353,27 @@
                 vm.isLoading = true;
             });
         };
+
+        function getTransfer(transfer) {
+            var obj = {};
+            obj.jobschedulerId = vm.schedulerIds.selected;
+            obj.transferIds = [];
+            obj.transferIds.push(transfer.id);
+            YadeService.getTransfers(obj).then(function (res) {
+                if(res.transfers && res.transfers.length>0) {
+                    transfer.states = res.transfers[0].states;
+                    transfer.operations = res.transfers[0].operations;
+                    transfer.hasIntervention = res.transfers[0].hasIntervention;
+                    transfer.isIntervention = res.transfers[0].isIntervention;
+                    transfer.source = res.transfers[0].source;
+                    transfer.target = res.transfers[0].target;
+                    transfer.mandator = res.transfers[0].mandator;
+                    transfer.profile = res.transfers[0].profile;
+                    transfer.taskId = res.transfers[0].taskId;
+                }
+            });
+        }
+
         function getFileTransferById(transferId) {
             var obj = {};
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -408,7 +405,7 @@
                 transferIds: ids,
                 jobschedulerId: value.jobschedulerId || vm.schedulerIds.selected
             }).then(function (res) {
-                value.files = res.files
+                value.files = res.files;
             })
         }
 
@@ -425,8 +422,8 @@
             });
             value.show = true;
             getFiles(value);
-
         };
+
         var isLoaded = true;
         vm.search = function (flag) {
             isLoaded = false;
@@ -523,6 +520,7 @@
             vm.yadeSearch = true;
 
         };
+
         vm.advancedSearch = function () {
             vm.isUnique = true;
             vm.showSearchPanel = true;
@@ -926,7 +924,12 @@
             obj.transfers = [];
 
             angular.forEach(vm.object.fileTransfers, function (value) {
-                obj.transfers.push({transferId: value.id});
+                var fields =[];
+                angular.forEach(vm.object.files, function (file) {
+                    if(value.id == file.transferId)
+                        fields.push(file.id);
+                });
+                obj.transfers.push({transferId: value.id,fields:fields});
             });
 
             var modalInstance = {};
@@ -1043,6 +1046,32 @@
         $scope.$on('$destroy', function () {
             watcher1();
             watcher2();
+        });
+
+        $scope.$on('event-started', function () {
+            if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
+                for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
+                    if (vm.events[0].eventSnapshots[i].objectType == 'OTHER') {
+                        if (vm.events[0].eventSnapshots[i].eventType == 'YADETransferStarted') {
+                           vm.load();
+                            break;
+                        }else if(vm.events[0].eventSnapshots[i].eventType == 'YADETransferUpdated'){
+                            for(var x=0; x<vm.fileTransfers.length;x++){
+                                if(vm.fileTransfers[x].id ==vm.events[0].eventSnapshots[i].path ){
+                                    getTransfer(vm.fileTransfers[x]);
+                                    break;
+                                }
+                            }
+                        }else if(vm.events[0].eventSnapshots[i].eventType == 'YADEFileStateChanged'){
+                            for(var x=0; x<vm.fileTransfers.length;x++){
+                                if(vm.fileTransfers[x].id ==vm.events[0].eventSnapshots[i].path && vm.fileTransfers[x].show ){
+                                    getFiles(vm.fileTransfers[x]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
         });
     }
 
@@ -1444,7 +1473,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 for (var i = 0; i < vm.events[0].eventSnapshots.length; i++) {
-                    console.log(vm.events[0].eventSnapshots[i].eventType + ' ><><>')
+
                     if (vm.events[0].eventSnapshots[i].path != undefined && vm.events[0].eventSnapshots[i].eventType == "OrderStateChanged" && !vm.events[0].eventSnapshots[i].eventId && waitForResponse) {
                         waitForResponse = false;
                         var obj = {};

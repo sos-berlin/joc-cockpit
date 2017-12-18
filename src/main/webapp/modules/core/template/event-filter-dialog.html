@@ -51,14 +51,27 @@
                     <input type="text" class="form-control" ng-model="eventFilter.exitCodes">
                 </div>
             </div>
+
             <div class="form-group row">
-                <label class="col-sm-4 form-control-label" translate>label.processExecuted</label>
+                <label class="col-sm-4 form-control-label" translate>label.expireFrom</label>
 
-                <div class=" col-sm-6" ng-class="{ 'has-error' : form.planned.$invalid && form.planned.$dirty }">
-                    <input valid-history-filter-regex type="text" name="planned" class="form-control"
-                           placeholder="{{'placeholder.processExecuted' | translate}}" ng-model="eventFilter.planned">
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.from.$invalid && form.from.$dirty }">
+                    <input valid-daily-plan-filter-regex type="text" name="from" class="form-control"
+                           placeholder="{{'placeholder.timeRangeFrom' | translate}}" ng-model="eventFilter.from1">
 
-                    <div class="help-block text-danger" ng-messages="form.planned.$error">
+                    <div class="help-block text-danger" ng-messages="form.from.$error">
+                        <div ng-message="invalid" translate>message.invalid</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>label.expireTo</label>
+
+                <div class=" col-sm-6" ng-class="{ 'has-error' : form.to.$invalid && form.to.$dirty }">
+                    <input valid-daily-plan-filter-regex type="text" name="to" class="form-control"
+                           placeholder="{{'placeholder.timeRangeTo' | translate}}" ng-model="eventFilter.to1">
+
+                    <div class="help-block text-danger" ng-messages="form.to.$error">
                         <div ng-message="invalid" translate>message.invalid</div>
                     </div>
                 </div>

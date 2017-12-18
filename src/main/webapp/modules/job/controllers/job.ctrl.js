@@ -92,6 +92,10 @@
                 } else {
                     vm.jobChains = res.jobChains;
                 }
+                if(vm.showHistoryImmeditaly){
+
+                    vm.showHistory(vm.jobChains[0]);
+                }
             });
         }
 
@@ -510,7 +514,6 @@
             });
         }
 
-
         function volatileFolderData1(data, obj) {
             if (vm.scheduleState == 'UNREACHABLE') {
                 var temp = [];
@@ -626,7 +629,6 @@
             });
         }
 
-
         function navFullTree() {
             for (var i = 0; i < vm.tree.length; i++) {
                 vm.tree[i].selected1 = false;
@@ -635,7 +637,6 @@
                 }
             }
         }
-
         function traverseTree1(data) {
             for (var i = 0; i < data.folders.length; i++) {
                 data.folders[i].selected1 = false;
@@ -646,7 +647,6 @@
         }
 
         var count = 1, splitPath = [];
-
         function checkExpand(data) {
             if (data.selected1) {
                 if (!data.jobChains) {
@@ -688,7 +688,6 @@
                 }
             }
         }
-
 
         function filteredTreeData() {
             for (var i = 0; i < vm.tree.length; i++) {
@@ -767,7 +766,6 @@
         }
 
         function volatileInformation(obj, expandNode) {
-
             if (vm.selectedFiltered && vm.selectedFiltered.state) {
                 obj.states = vm.selectedFiltered.state;
             } else {
@@ -2165,6 +2163,7 @@
                 configObj.name = vm.jobChainFilter.name;
                 configObj.id = filter.id;
                 configObj.shared = vm.jobChainFilter.shared;
+                filter.shared = vm.jobChainFilter.shared;
 
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.jobChainFilter.name;
@@ -4161,6 +4160,7 @@
                 configObj.id = filter.id;
                 configObj.name = vm.jobFilter.name;
                 configObj.shared = vm.jobFilter.shared;
+                filter.shared = vm.jobFilter.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.jobFilter.name;
                 temp_name = '';

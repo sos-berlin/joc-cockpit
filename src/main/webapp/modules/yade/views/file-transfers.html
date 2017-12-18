@@ -371,6 +371,12 @@
                                     <i ng-show="yadeFilters.filter.sortBy == 'state._text' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy('profile')"><a><span translate>label.profileName</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'profile' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'profile' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy('mandator')"><a><span translate>label.mandator</span>
                                     <i ng-show="yadeFilters.filter.sortBy == 'mandator' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -413,6 +419,12 @@
                                     <i ng-show="yadeFilters.filter.sortBy == 'numOfFiles' && yadeFilters.sortReverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th ng-click="sortBy('error.message')"><a><span translate>label.lastErrorMessage</span>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'error.message' && !yadeFilters.sortReverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="yadeFilters.filter.sortBy == 'error.message' && yadeFilters.sortReverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th ng-click="sortBy('start')"><a><span translate>label.startTime</span>
                                     <i ng-show="yadeFilters.filter.sortBy == 'start' && !yadeFilters.sortReverse"
                                        class="fa fa-caret-up "></i>
@@ -435,11 +447,11 @@
                             </tr>
                         </thead>
                         <tbody ng-repeat="transfer in filtered2 = (fileTransfers | filter: filterString:strict) | orderBy:yadeFilters.filter.sortBy:yadeFilters.sortReverse | startFrom:(yadeFilters.currentPage - 1) * userPreferences.entryPerPage | limitTo: userPreferences.entryPerPage" ng-class="{'light-bg':transfer.show}">
-                        <tr  class="cursor">
+                        <tr>
                             <td ng-if="permission.YADE.execute.transferStart">
                                 <label class="md-check">
-                                    <input type="checkbox" data-checklist-model="object.fileTransfers" ng-disabled="transfer.state._text=='SUCCESSFUL'"
-                                           data-checklist-value="transfer" data-checklist-comparator=".id"><i class="primary"></i>
+                                    <input type="checkbox" id="{{transfer.id}}" data-checklist-model="object.fileTransfers" ng-disabled="transfer.state._text=='SUCCESSFUL'"
+                                           data-checklist-value="transfer" data-checklist-comparator=".id" ng-click="checkALLFilesFnc(transfer)"><i class="primary"></i>
                                 </label>
                             </td>
                             <td class="tableexport-ignore">
@@ -458,8 +470,9 @@
                             <td class="nowrap" >
                                 <i class="cursor fa fa-caret-down fa-lg tableexport-ignore" ng-if="!transfer.show" ng-click="showTransferFuc(transfer);"></i>
                                  <i class="cursor fa fa-caret-up fa-lg tableexport-ignore" ng-if="transfer.show" ng-click="transfer.show = false;"></i>
-                                <span uib-tooltip="{{transfer.error.message}}" class="label" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
+                                <span class="label cursor"  ng-click="showLogWindow(null, transfer);$event.stopPropagation()" ng-class="bgColorFunction(transfer.state.severity)" ng-bind="transfer.state._text | translate"></span>
                             </td>
+                            <td ng-bind="transfer.profile"></td>
                             <td ng-bind="transfer.mandator"></td>
                             <td ng-if="!yadeView.current" >
                                  <span ng-bind="yade.jobschedulerId"></span>
@@ -470,13 +483,14 @@
                             <td ng-bind="transfer.target.host"></td>
                             <td ng-bind="transfer.target.protocol"></td>
                             <td ng-bind="transfer.numOfFiles"></td>
+                            <td class="text-danger" ng-bind="transfer.error.message"></td>
                             <td ng-bind="transfer.start | stringToDate"></td>
                             <td ng-bind="transfer.end | stringToDate"></td>
                             <td ng-bind="transfer.start | duration:transfer.end"></td>
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                            <td colspan="12" >
+                            <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
@@ -509,7 +523,7 @@
                                         <td  ng-bind="transfer.jump.protocol"></td>
                                         <td><span ng-click="showJobChain(transfer.jobChain);" class="text-hover-primary" ng-bind="transfer.jobChain"></span></td>
                                         <td><span ng-click="showJob(transfer.job);" class="text-hover-primary" ng-bind="transfer.job"></span></td>
-                                        <td><span ng-click="showOrderLink(transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
+                                        <td><span ng-click="showOrderLink(transfer.jobChain,transfer.orderId);" class="text-hover-primary" ng-bind="transfer.orderId"></span></td>
                                      </tr>
                                      </tbody>
                                  </table>
@@ -517,21 +531,19 @@
                         </tr>
                         <tr class="tableexport-ignore" ng-show="transfer.show">
                             <td></td>
-                            <td colspan="12" >
+                            <td colspan="14" >
                                  <table class="table m-a-0">
                                      <thead>
                                      <tr class="tableexport-ignore">
                                          <th width="30" ng-if="permission.YADE.execute.transferStart">
-                                            <label class="md-check lg-check">
-                                                <input type="checkbox" id="{{transfer.id}}" ng-click="checkAllFilesFnc(transfer)"><i class="primary"></i>
-                                            </label>
+                                            #
                                         </th>
                                          <th translate>label.sourceFileName</th>
                                          <th translate>label.sourceFilePath</th>
                                          <th translate>label.targetFileName</th>
                                          <th translate>label.targetFilePath</th>
                                          <th translate>label.status</th>
-                                         <th translate>label.lastErrorMessage</th>
+                                         <th translate>label.errorMessage</th>
                                          <th translate>label.size</th>
                                          <th translate>label.integrityHash</th>
                                      </tr>
@@ -549,8 +561,8 @@
                                          <td>{{file.sourcePath}}</td>
                                          <td>{{file.targetName}}</td>
                                          <td>{{file.targetPath}}</td>
-                                         <td><span uib-tooltip="{{file.error.message}}" class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
-                                         <td>{{file.error}}</td>
+                                         <td><span class="label" ng-class="bgColorFunction(file.state.severity)" ng-bind="file.state._text | translate"></span></td>
+                                         <td class="text-danger">{{file.error.message}}</td>
                                          <td>{{file.size | byteToSize}}</td>
                                          <td>{{file.integrityHash}}</td>
                                      </tr>
