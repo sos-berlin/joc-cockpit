@@ -1164,12 +1164,12 @@
                 obj.title = order.title;
 
             if (order.fromDate && order.fromTime) {
-                order.fromDate.setHours(order.fromTime.getHours());
-                order.fromDate.setMinutes(order.fromTime.getMinutes());
-                order.fromDate.setSeconds(order.fromTime.getSeconds());
+                order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
             }
 
-            if (order.fromDate) {
+            if (order.fromDate && order.at == 'later') {
                 obj.at = moment(order.fromDate).format("YYYY-MM-DD HH:mm:ss");
                 obj.timeZone = order.timeZone;
             } else {
@@ -1220,6 +1220,7 @@
             vm.paramObject = {};
             vm.paramObject.params = [];
             vm.order.atTime = 'now';
+            vm.order.fromDate = new Date();
             vm.zones = moment.tz.names();
             if (vm.userPreferences.zone) {
                 vm.order.timeZone = vm.userPreferences.zone;
@@ -2148,6 +2149,7 @@
                 configObj.name = vm.jobChainFilter.name;
                 configObj.id = filter.id;
                 configObj.shared = vm.jobChainFilter.shared;
+                filter.shared = vm.jobChainFilter.shared;
 
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.jobChainFilter.name;
@@ -3560,7 +3562,6 @@
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    console.log('><><>')
                     var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
                     var arr = date[0].split('to');
                     fromDate = arr[0].trim();
@@ -3578,7 +3579,6 @@
                     } else {
                         fromDate.setHours(parseInt(time[1]));
                     }
-
                     fromDate.setMinutes(parseInt(time[2]));
                     toDate = new Date();
                     if (/(pm)/i.test(time[6]) && parseInt(time[4]) != 12) {
@@ -4146,6 +4146,7 @@
                 configObj.id = filter.id;
                 configObj.name = vm.jobFilter.name;
                 configObj.shared = vm.jobFilter.shared;
+                filter.shared = vm.jobFilter.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.jobFilter.name;
                 temp_name = '';
@@ -4616,7 +4617,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
 
             jobs.auditLog = {};
@@ -6124,7 +6125,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
 
             jobs.auditLog = {};

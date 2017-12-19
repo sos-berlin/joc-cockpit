@@ -1571,7 +1571,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
             orders.auditLog = {};
             if (vm.comments.comment) {
@@ -1664,7 +1664,7 @@
             }
 
             if (order.params) {
-                order.params.concat(paramObject.params);
+                order.params = order.params.concat(paramObject.params);
             } else {
                 order.params = paramObject.params;
             }
@@ -2486,9 +2486,9 @@
 
 
             if (order.fromDate && order.fromTime) {
-                order.fromDate.setHours(order.fromTime.getHours());
-                order.fromDate.setMinutes(order.fromTime.getMinutes());
-                order.fromDate.setSeconds(order.fromTime.getSeconds());
+                order.fromDate.setHours(moment(order.fromTime, 'HH:mm:ss').hours());
+                order.fromDate.setMinutes(moment(order.fromTime, 'HH:mm:ss').minutes());
+                order.fromDate.setSeconds(moment(order.fromTime, 'HH:mm:ss').seconds());
             }
 
             if (order.fromDate && order.at == 'later') {
@@ -2919,7 +2919,7 @@
                         $location.path('/job_chains');
                         break;
                     }
-                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
+                    if (vm.events[0].eventSnapshots[i].path != undefined && (vm.events[0].eventSnapshots[i].eventType == 'JobChainStateChanged' || vm.events[0].eventSnapshots[i].eventType == 'JobStateChanged' || vm.events[0].eventSnapshots[i].eventType === "OrderAdded" || ((vm.events[0].eventSnapshots[i].eventType == 'FileBasedActivated' || vm.events[0].eventSnapshots[i].eventType == "FileBasedRemoved") && (vm.events[0].eventSnapshots[i].objectType == "JOBCHAIN" || vm.events[0].eventSnapshots[i].objectType == "ORDER")) && !vm.events[0].eventSnapshots[i].eventId)) {
 
                         var path = [];
                         if (vm.events[0].eventSnapshots[i].path.indexOf(",") > -1) {
@@ -3662,7 +3662,6 @@
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    console.log('><><>')
                     var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
                     var arr = date[0].split('to');
                     fromDate = arr[0].trim();
@@ -4169,6 +4168,7 @@
                 configObj.name = vm.orderFilter1.name;
                 configObj.id = filter.id;
                 configObj.shared = vm.orderFilter1.shared;
+                filter.shared = vm.orderFilter1.shared;
                 UserService.saveConfiguration(configObj);
                 filter.name = vm.orderFilter1.name;
                 temp_name = '';
@@ -4763,6 +4763,11 @@
                             } else {
                                 navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                             }
+                        }
+                    }else if (event.eventType === "OrderAdded" && !event.eventId) {
+                        var path1 = event.path.substring(1, event.path.lastIndexOf('/')) || '/';
+                        if (path1 == vm.folderPath) {
+                             navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                         }
                     }
 
@@ -5402,7 +5407,7 @@
             if (!obj.params && paramObject.params.length > 0) {
                 obj.params = paramObject.params;
             } else if (obj.params && paramObject.params.length > 0) {
-                obj.params.concat(paramObject.params);
+                obj.params = obj.params.concat(paramObject.params);
             }
             orders.orders.push(obj);
             orders.auditLog = {};
@@ -5868,7 +5873,7 @@
             }
 
             if (order.params) {
-                order.params.concat(paramObject.params);
+                order.params = order.params.concat(paramObject.params);
             } else {
                 order.params = paramObject.params;
             }
