@@ -917,13 +917,13 @@
                 months = month.toString().split(' ').sort(compareNumbers);
             }
             for (var i = 0; i < months.length; i++) {
-                if (months[i] == 31 && isUltimos) {
+                if (months[i] == 32 && isUltimos) {
                     continue;
                 }
                 if (months[i] == 0 && !isUltimos) {
                     continue;
                 }
-                if (months[i] == 1) {
+                if (months[i] == 1 || months[i] == 31) {
                     str = str + months[i] + 'st,';
                 }
                 else if (months[i] == 2) {
@@ -1044,7 +1044,8 @@
             getDateFormat();
 
         vm.currentTime = moment();
-                vm.minDate = new Date();
+        var today = new Date();
+        vm.minDate = new Date();
         vm.minDate.setDate(vm.minDate.getDate() - 1);
 
         var count = parseInt(SOSAuth.sessionTimeout / 1000);
@@ -1052,12 +1053,9 @@
         var interval = $interval(function () {
             --count;
             vm.currentTime = moment();
-            if (vm.currentTime.format("H") == "0" && resetDate) {
-                $rootScope.$broadcast('resetDailyPlanDate');
+            if(moment(today).format('YYYY-MM-DD') != moment(vm.currentTime).format('YYYY-MM-DD') && resetDate){
                 resetDate = false;
-            }
-            if (vm.currentTime.format("H") !== "0") {
-                resetDate = true;
+                $rootScope.$broadcast('resetDailyPlanDate');
             }
 
             var s = parseInt((count) % 60),

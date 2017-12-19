@@ -1192,7 +1192,7 @@
             });
             modalInstance.result.then(function () {
                 angular.forEach(vm.object.schedules, function (value) {
-                    substitute(value);
+                    vm.substitute(value);
                 });
                 vm.object.schedules = [];
             }, function () {
@@ -3490,7 +3490,7 @@ setClusterWidgetHeigth();
         }
 
         vm.$on('resetDailyPlanDate', function () {
-            vm.getPlans();
+             vm.getPlansByEvents();
         });
         function setDateRange() {
 
@@ -3713,8 +3713,9 @@ setClusterWidgetHeigth();
         function parseProcessExecuted(regex) {
             var date;
             if (/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.test(regex)) {
+                var fromDate = new Date();
                 date = new Date();
-                var seconds = parseInt(/^\s*(now\s*\-)\s*(\d+)\s*$/i.exec(regex)[2]);
+                var seconds = parseInt(/^\s*(now\s*[-,+])\s*(\d+)\s*$/i.exec(regex)[2]);
                 date.setSeconds(fromDate.getSeconds() - seconds);
             } else if (/^\s*[-,+](\d+)(h|d|w|M|y)\s*$/.test(regex)) {
                 date = regex;
@@ -4409,6 +4410,7 @@ setClusterWidgetHeigth();
                 configObj.name = vm.dailyPlanFilter.name;
                 configObj.id = filter.id;
                 configObj.shared = vm.dailyPlanFilter.shared;
+                filter.shared = vm.dailyPlanFilter.shared;
 
                 if (!vm.dailyPlanFilter.from) {
                     vm.dailyPlanFilter.from = '0d';

@@ -45,8 +45,9 @@
                 <label class="col-sm-4 form-control-label"  translate>label.enterDateAndTime</label>
 
                 <div class="col-sm-8">
-                     <input ng-required="order.at == 'later'" class="form-control input-date" data-min-date="{{minDate}}" ng-model="order.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
-                    <input ng-required="order.at == 'later'" class="form-control input-time" data-min-date="{{minDate}}" ng-model="order.fromTime" data-length="1" data-time-format="HH:mm:ss" data-minute-step="1" placeholder="HH:MM:SS" bs-timepicker type="text">
+                    <input ng-required="order.at == 'later'" class="form-control input-date" data-min-date="{{minDate}}" ng-model="order.fromDate" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{dataFormat | uppercase}}" bs-datepicker type="text">
+                    <input valid-time maxlength="8" ng-required="order.at == 'later'" class="form-control input-time" ng-model="order.fromTime"
+                           placeholder="HH:MM:SS" type="text">
                 </div>
             </div>
             <div class="form-group row" ng-hide="order.at =='now'">
