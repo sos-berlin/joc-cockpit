@@ -25,6 +25,7 @@
                             <th><span translate>label.status</span></th>
                             <th><span translate>label.stateText</span></th>
                             <th><span translate>label.jobChainsAssociated</span></th>
+                            <th><span translate>label.processClass</span></th>
                             <th><span translate>label.taskRunning</span></th>
                             <th><span translate>label.nextStartTime</span></th>
                             <th><span translate>label.orderPending</span></th>
@@ -103,6 +104,11 @@
                                     <span ng-if="job.usedInJobChains" class="text-hover-primary" ng-click="showJobChains(job)" href ng-bind="job.usedInJobChains"></span>
                                     <span ng-if="!job.usedInJobChains">0</span>
                                 </td>
+<td>
+                                <a class="text-hover-primary"
+                                   ng-click="showProcessClass(job.processClass)">
+                                    {{job.processClass || '-'}}</a>
+                            </td>
                                 <td>
                                     <span ng-if="job.numOfRunningTasks" class="text-hover-primary" ng-click="showTaskFuc(job, true)" href="">
                                         <span class="text-black _600" ng-bind="job.numOfRunningTasks || 0"></span>
