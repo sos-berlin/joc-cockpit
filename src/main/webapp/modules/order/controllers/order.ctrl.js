@@ -7218,32 +7218,9 @@
 
         };
         vm.cancel = function (form) {
-            if (!vm.order.filter.historyStates) {
-                vm.order.filter.historyStates = 'all';
-            }
-            if (!vm.order.filter.date) {
-                vm.order.filter.date = 'today';
-            }
-            if (!vm.task.filter.historyStates) {
-                vm.task.filter.historyStates = 'all';
-            }
-            if (!vm.task.filter.date) {
-                vm.task.filter.date = 'today';
-            }
-            vm.showSearchPanel = false;
-            if (vm.historyFilters.type == 'job') {
-                vm.jobSearch = {};
-                jobSearch = false;
-            } else if (vm.historyFilters.type == 'jobChain') {
-                vm.jobChainSearch = {};
-                jobChainSearch = false;
-            } else {
-                vm.yadeSearch = {};
-                yadeSearch = false;
-            }
             if (form)
                 form.$setPristine();
-            vm.init();
+            vm.loadHistory();
         };
 
 
@@ -7407,10 +7384,13 @@
             }
             if (vm.historyFilters.type == 'job') {
                 vm.jobSearch = {};
+                vm.jobSearch.date = 'date';
             } else if (vm.historyFilters.type == 'jobChain') {
                 vm.jobChainSearch = {};
+                vm.jobChainSearch.date = 'date';
             } else {
                 vm.yadeSearch = {};
+                vm.yadeSearch.date = 'date';
             }
             vm.init()
         };

@@ -1155,6 +1155,14 @@
 			//  common event handler for the mouse/pointer/touch models and their down/start, move, up/end, and cancel events
 			var doEvent = function(theEvtObj) {
 
+               var $target = angular.element(theEvtObj.target);
+                if($target.attr('class')){
+                    if( $target.hasClass('btn') || $target.hasClass('text-lg') || $target.hasClass('nav-link') || $target.hasClass('box-body')){
+                        return;
+                    }
+                }else{
+                    return;
+                }
 				if (theEvtObj.type === 'mousemove' && numberOfKeys(lastXYById) === 0) {
 					return;
 				}

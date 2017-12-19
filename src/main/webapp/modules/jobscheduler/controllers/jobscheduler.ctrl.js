@@ -5831,7 +5831,6 @@
             vm.taskHistoryTab.type = 'jobChain';
             vm.taskHistoryTab.order.filter.historyStates = state;
             vm.taskHistoryTab.order.selectedView = false;
-            console.log(vm.dashboardFilters.filter.orderSummaryfrom)
             vm.taskHistoryTab.order.filter.date = vm.dashboardFilters.filter.orderSummaryfrom === '0d' ? 'today' : vm.dashboardFilters.filter.orderSummaryfrom;
             $state.go('app.history');
         };

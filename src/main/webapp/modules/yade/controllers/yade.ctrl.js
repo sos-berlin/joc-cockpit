@@ -13,7 +13,7 @@
         var vm = $scope;
         vm.maxEntryPerPage = vm.userPreferences.maxEntryPerPage;
         vm.yadeView = {};
-        vm.yadeView.current = vm.userPreferences.fileTrasfer == 'current';
+        vm.yadeView.current = vm.userPreferences.fileTransfer == 'current';
         vm.yadeFilters = CoreService.getYadeTab();
         vm.yadeSearch = {};
         vm.selectedFiltered;
@@ -558,6 +558,7 @@
 
         vm.cancel = function (form) {
             vm.yadeSearch = {};
+            vm.yadeSearch.date = 'date';
             vm.showSearchPanel = false;
             if (form)
                 form.$setPristine();

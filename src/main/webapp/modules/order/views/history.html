@@ -420,6 +420,7 @@
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="jobChainSearch.jobschedulerId">
+                                   <option value="" translate=""></option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                </select>
                            </div>
@@ -572,6 +573,7 @@
                            <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
                            <div class=" col-sm-6">
                                <select class="form-control" ng-model="jobSearch.jobschedulerId">
+                                   <option value="" translate=""></option>
                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                </select>
                            </div>
@@ -734,8 +736,8 @@
 
                             <div class=" col-sm-6">
                                 <select class="form-control" ng-model="yadeSearch.jobschedulerId">
-                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}
-                                    </option>
+                                    <option value="" translate=""></option>
+                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                 </select>
                             </div>
                         </div>
