@@ -104,7 +104,7 @@
         tabs._history.yade.filter = {};
         tabs._history.yade.filter.historyStates = 'all';
         tabs._history.yade.filter.date = 'today';
-        tabs._history.yade.filter.sortBy = 'startTime';
+        tabs._history.yade.filter.sortBy = 'start';
         tabs._history.yade.sortReverse = true;
         tabs._history.yade.currentPage = '1';
         tabs._history.yade.selectedView = true;
@@ -275,7 +275,7 @@
         tempTabs._history.yade.filter = {};
         tempTabs._history.yade.filter.historyStates = 'all';
         tempTabs._history.yade.filter.date = 'today';
-        tempTabs._history.yade.filter.sortBy = 'startTime';
+        tempTabs._history.yade.filter.sortBy = 'start';
         tempTabs._history.yade.sortReverse = true;
         tempTabs._history.yade.currentPage = '1';
         tempTabs._history.yade.selectedView = true;

@@ -47,7 +47,7 @@
                                         <i class="cursor fa fa-caret-up noExl" ng-if="processClass.show" ng-click="hideRunningProcesses(processClass)"></i>
                                         <a class="text-hover-primary" ng-class="{'text-success': processClass.numOfProcesses>0 }"  ng-bind="processClass.name" ></a>
                                 </td>
-                                <td ng-bind="processClass.path"></td>
+                                <td><a ng-click="showProcessClass1(processClass.path)" class="text-hover-primary"  ng-bind="processClass.path"></a></td>
                                 <td ng-bind="processClass.maxProcesses"></td>
                                 <td>
                                     <a ng-click="showProcesses(processClass)" ng-if="processClass.numOfProcesses>0" class="text-hover-primary" ng-bind="processClass.numOfProcesses"></a>

@@ -94,10 +94,10 @@
                         <button type="button" class="btn btn-sm btn-grey m-r-sm" id="nonWorkingDays" ng-mouseover="changeText()"
                                 ng-click="showHolidayTab()" translate>button.nonWorkingDays
                         </button>
-                        <button ng-if="!editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="!editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="editor.editXml = true" translate>button.editXml
                         </button>
-                        <button ng-if="editor.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
+                        <button ng-if="editor.editXml && permission.Runtime.execute.editXml" type="button" class="btn btn-sm btn-grey m-r-sm"
                                 ng-click="editor.editXml = false" translate>button.hideXml
                         </button>
                         <button type="button" class="btn btn-sm btn-grey"

@@ -57,7 +57,7 @@
                                 <span ng-if="schedule.title">-</span>
                                 <i class="text-muted" ng-bind-html="schedule.title | linky:'_blank'" ></i>
                             </td>
-                            <td ng-bind="schedule.path"></td>
+                            <td><a ng-click="showScheduleLink1(schedule.path)" class="text-hover-primary" ng-bind="schedule.path"></a></td>
                             <td><span class="label" ng-class="bgColorFunction(schedule.state.severity)"
                                       ng-bind="schedule.state._text  | translate"></span></td>
                             <td><span ng-bind="schedule.usedByOrders.length || 0"></span></td>

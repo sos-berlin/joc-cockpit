@@ -5,8 +5,10 @@
         </button>
         <h4 class="modal-title" translate>
             <span ng-if="action == 'add'" translate>label.createFilter</span>
-            <span ng-if="action == 'edit'" translate>label.updateFilter :</span>
-            <span ng-if="action == 'copy'" translate>label.copyFilter :</span> {{::eventFilter.name}}</h4>
+            <span ng-if="action == 'edit'" translate>label.updateFilter</span>
+            <span ng-if="action == 'copy'" translate>label.copyFilter</span>
+            <span ng-if="action == 'edit' || action == 'copy'">: {{::eventFilter.name}}</span>
+        </h4>
     </div>
     <div class="modal-body p-a">
         <form name="form" role="form" ng-submit="ok()" novalidate>

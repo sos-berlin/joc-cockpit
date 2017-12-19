@@ -660,21 +660,14 @@
             $location.path('/jobs').search({});
         };
         vm.showOrderLink = function (path) {
-/*          var path = order.substring(0, order.lastIndexOf('/')) || '/';
-            var name = '';
-            if (path != '/')
-                name = path.substring(path.lastIndexOf('/') + 1, path.length);
-            $rootScope.order_expand_to = {
-                name: name,
-                path: path
-            };
-
-            $location.path('/orders')*/
             vm.showHistoryImmeditaly = true;
             $location.path('/job_chain').search({path: path,scheduler_id:vm.schedulerIds.selected});
         };
         vm.showAgentCluster = function (agentCluster) {
-/*            var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
+             $location.path('/agent_cluster').search({path: agentCluster,scheduler_id:vm.schedulerIds.selected});
+        };
+        vm.showAgentCluster1 = function (agentCluster) {
+            var path = agentCluster.substring(0, agentCluster.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -682,12 +675,13 @@
                 name: name,
                 path: path
             };
-            $location.path('/resources/agent_clusters/');*/
-             $location.path('/agent_cluster').search({path: agentCluster,scheduler_id:vm.schedulerIds.selected});
+            $location.path('/resources/agent_clusters/').search({});
         };
-
         vm.showProcessClass = function (processClass) {
-   /*         var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
+             $location.path('/process_class').search({path: processClass,scheduler_id:vm.schedulerIds.selected});
+        };
+        vm.showProcessClass1 = function (processClass) {
+           var path = processClass.substring(0, processClass.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -695,12 +689,13 @@
                 name: name,
                 path: path
             };
-            $location.path('/resources/process_classes');*/
-             $location.path('/process_class').search({path: jobChain,scheduler_id:vm.schedulerIds.selected});
+            $location.path('/resources/process_classes').search({});
         };
-
         vm.showScheduleLink = function (schedule) {
-/*            var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
+            $location.path('/schedule').search({path: schedule,scheduler_id:vm.schedulerIds.selected});
+        };
+        vm.showScheduleLink1 = function (schedule) {
+            var path = schedule.substring(0, schedule.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -708,12 +703,13 @@
                 name: name,
                 path: path
             };
-            $location.path('/resources/schedules');*/
-            $location.path('/schedule').search({path: schedule,scheduler_id:vm.schedulerIds.selected});
+            $location.path('/resources/schedules').search({});
         };
-
         vm.showCalendarLink = function (calendar) {
-/*            var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
+            $location.path('/calendar').search({path: calendar,scheduler_id:vm.schedulerIds.selected});
+        };
+        vm.showCalendarLink1 = function (calendar) {
+            var path = calendar.substring(0, calendar.lastIndexOf('/')) || '/';
             var name = '';
             if (path != '/')
                 name = path.substring(path.lastIndexOf('/') + 1, path.length);
@@ -722,10 +718,8 @@
                 path: path
             };
 
-            $location.path('/resources/calendars')*/
-            $location.path('/calendar').search({path: calendar,scheduler_id:vm.schedulerIds.selected});
+            $location.path('/resources/calendars').search({});
         };
-
         vm.about = function () {
             vm.versionData = $rootScope.versionData;
             var modalInstance = $uibModal.open({

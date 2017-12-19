@@ -1160,10 +1160,10 @@
         function filteredTreeDataC() {
             angular.forEach(vm.treeCalendar, function (value) {
                 value.expanded = true;
-                if($rootScope.calendar_expand_to){
-                    if((value.path == $rootScope.calendar_expand_to.path))
+                if ($rootScope.calendar_expand_to) {
+                    if ((value.path == $rootScope.calendar_expand_to.path))
                         value.selected1 = true;
-                }else{
+                } else {
                     value.selected1 = true;
                 }
                 vm.allCalendars = [];
@@ -1522,16 +1522,16 @@
                 reader.onload = onLoadFile;
             }
         };
-        vm.basedOnCalendars =[];
-        vm.fileContentCalendars =[];
+        vm.basedOnCalendars = [];
+        vm.fileContentCalendars = [];
         function onLoadFile(event) {
             var data = JSON.parse(event.target.result);
             var paths = [];
             if (data && data.calendars) {
-                for(var i=0; i<data.calendars.length;i++) {
-                    if(!data.calendars[i].basedOn) {
+                for (var i = 0; i < data.calendars.length; i++) {
+                    if (!data.calendars[i].basedOn) {
                         vm.fileContentCalendars.push(data.calendars[i]);
-                    }else{
+                    } else {
                         vm.basedOnCalendars.push(data.calendars[i]);
                     }
                 }
@@ -1598,14 +1598,14 @@
             }
 
             if (newNames)
-            angular.forEach(vm.calendrs, function (value) {
-                for(var i = 0; i<newNames.length;i++) {
-                    if (value.usedBy && newNames[i].path == value.path) {
-                        vm.importCalendars.push(value);
-                        break;
+                angular.forEach(vm.calendrs, function (value) {
+                    for (var i = 0; i < newNames.length; i++) {
+                        if (value.usedBy && newNames[i].path == value.path) {
+                            vm.importCalendars.push(value);
+                            break;
+                        }
                     }
-                }
-            });
+                });
         });
 
         vm.importCalendar = function () {
@@ -1621,22 +1621,22 @@
             modalInstance1.result.then(function () {
                 importCalendarCall();
             }, function () {
-                 vm.importCalendars = [];
-                vm.fileContentCalendars =[];
-                vm.basedOnCalendars =[];
+                vm.importCalendars = [];
+                vm.fileContentCalendars = [];
+                vm.basedOnCalendars = [];
             });
         };
 
 
         function importCalendarCall() {
-             vm.importAllCalendar = [];
+            vm.importAllCalendar = [];
             vm.fileContentCalendars = [];
             for (var i = 0; i < vm.importCalendarObj.calendars.length; i++) {
                 if (vm.importCalendarObj.calendars[i].isExit) {
                     delete vm.importCalendarObj.calendars[i]['isExit'];
                 }
             }
-            if(vm.basedOnCalendars && vm.basedOnCalendars.length>0){
+            if (vm.basedOnCalendars && vm.basedOnCalendars.length > 0) {
                 vm.importCalendarObj.calendars = vm.importCalendarObj.calendars.concat(vm.basedOnCalendars)
             }
             vm.importCalendarObj.auditLog = {};
@@ -1654,12 +1654,12 @@
             CalendarService.import(vm.importCalendarObj).then(function (res) {
                 uploader.queue[0].remove();
                 vm.importCalendarObj.calendars = [];
-                vm.basedOnCalendars =[];
+                vm.basedOnCalendars = [];
                 vm.importCalendarObj.auditLog = {};
-
+                initCalendarTree();
             }, function () {
                 vm.importCalendarObj.calendars = [];
-                vm.basedOnCalendars =[];
+                vm.basedOnCalendars = [];
                 vm.importCalendarObj.auditLog = {};
             });
         }
@@ -1677,7 +1677,7 @@
                 calendars: calendars,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                //console.log(res.headers('Content-Disposition'));
+
                 vm.loading = false;
                 var name = 'calendars' + '.json';
                 var fileType = 'application/octet-stream';
@@ -2682,8 +2682,10 @@
             } else {
                 obj.jobschedulerId = vm.agentJobExecutionFilters.current == true ? vm.schedulerIds.selected : '';
             }
-            if (vm.agentJobSearch.url)
+            if (vm.agentJobSearch.url) {
+                vm.agentJobSearch.url = vm.agentJobSearch.url.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.agents = vm.agentJobSearch.url.split(',');
+            }
             if (vm.agentJobSearch.from) {
                 var fromDate = new Date(vm.agentJobSearch.from);
                 if (vm.agentJobSearch.fromTime) {
@@ -2765,18 +2767,22 @@
                     obj.orders = vm.selectedFiltered.orders;
                 }
                 if (vm.selectedFiltered.eventIds) {
+                    vm.selectedFiltered.eventIds = vm.selectedFiltered.eventIds.replace(/\s*(,|^|$)\s*/g, "$1");
                     obj.eventIds = vm.selectedFiltered.eventIds.split(',');
                 }
                 if (vm.selectedFiltered.eventClasses) {
+                    vm.selectedFiltered.eventIds = vm.selectedFiltered.eventIds.replace(/\s*(,|^|$)\s*/g, "$1");
                     obj.eventClasses = vm.selectedFiltered.eventClasses.split(',');
                 }
                 if (vm.selectedFiltered.exitCodes || vm.selectedFiltered.exitCodes == 0) {
-                    var data = vm.selectedFiltered.exitCodes.toString().split(',');
-                    obj.exitCodes = [];
-                    for (var i = 0; i < data.length; i++) {
-                        obj.exitCodes.push(data[i])
+                    var regExp = new RegExp("[0-9]+", "g");
+                    var data = vm.selectedFiltered.exitCodes.match(regExp);
+                    if (data) {
+                        obj.exitCodes = [];
+                        for (var i = 0; i < data.length; i++) {
+                            obj.exitCodes.push(parseInt(data[i]))
+                        }
                     }
-
                 }
             }
 
@@ -2910,7 +2916,6 @@
             vm.isUnique = true;
             vm.showSearchPanel = true;
             vm.eventSearch.date = 'date';
-            vm.eventSearch.exitCodes = 0;
         };
         vm.cancelEventSearch = function (form) {
             vm.eventSearch = {};
@@ -3002,7 +3007,6 @@
         vm.searchObj.filterString ='';
 
         vm.treeHandler = function (data) {
-           
             if(!data.expanded && !data.level){
 
                 if(data.jobChain){
@@ -3269,7 +3273,6 @@
             vm.isUnique = true;
             vm.action = 'add';
             vm.eventFilter = {};
-            vm.eventFilter.exitCodes = 0;
             var modalInstance = $uibModal.open({
                 templateUrl: 'modules/core/template/event-filter-dialog.html',
                 controller: 'DialogCtrl',
@@ -3537,8 +3540,7 @@
         }
         vm.searchEvent = function () {
             var obj = {};
-           
-            
+
             obj.jobschedulerId = vm.schedulerIds.selected;
             if (vm.eventSearch.date == 'process') {
                 if (vm.eventSearch.from1) {
@@ -3589,18 +3591,22 @@
                 obj.orders = vm.eventSearch.orders;
             }
             if (vm.eventSearch.eventIds) {
+                 vm.eventSearch.eventIds = vm.eventSearch.eventIds.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.eventIds = vm.eventSearch.eventIds.split(',');
             }
             if (vm.eventSearch.eventClasses) {
+                vm.eventSearch.eventClasses = vm.eventSearch.eventClasses.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.eventClasses = vm.eventSearch.eventClasses.split(',');
             }
             if (vm.eventSearch.exitCodes || vm.eventSearch.exitCodes==0) {
-                var data = vm.eventSearch.exitCodes.toString().split(',');
-                obj.exitCodes = [];
-                for(var i=0; i< data.length;i++) {
-                    obj.exitCodes.push(data[i])
+                var regExp = new RegExp("[0-9]+", "g");
+                var data = vm.eventSearch.exitCodes.match(regExp);
+                if(data) {
+                    obj.exitCodes = [];
+                    for (var i = 0; i < data.length; i++) {
+                        obj.exitCodes.push(parseInt(data[i]))
+                    }
                 }
-
             }
 
             EventService.getEvents(obj).then(function (res) {
@@ -3852,7 +3858,6 @@
                         }
                     }
                     if (vm.resourceFilters.state == 'events' && event.objectType == 'OTHER') {
-                        
                         if(event.eventType == 'CustomEventAdded' || event.eventType == 'CustomEventDeleted') {
                             getEvents()
                         }
@@ -4379,7 +4384,6 @@
                 calendars: calendars,
                 jobschedulerId: vm.schedulerIds.selected
             }).then(function (res) {
-                //console.log(res.headers('Content-Disposition'));
                 vm.loading = false;
                 var name = 'calendars' + '.json';
                 var fileType = 'application/octet-stream';
@@ -5827,7 +5831,8 @@
             vm.taskHistoryTab.type = 'jobChain';
             vm.taskHistoryTab.order.filter.historyStates = state;
             vm.taskHistoryTab.order.selectedView = false;
-            vm.taskHistoryTab.order.filter.date = typeof vm.dashboardFilters.filter.orderSummaryfrom === 'string' ? vm.dashboardFilters.filter.orderSummaryfrom : 'today';
+            console.log(vm.dashboardFilters.filter.orderSummaryfrom)
+            vm.taskHistoryTab.order.filter.date = vm.dashboardFilters.filter.orderSummaryfrom === '0d' ? 'today' : vm.dashboardFilters.filter.orderSummaryfrom;
             $state.go('app.history');
         };
         vm.showTaskSummary = function (state) {
@@ -5835,7 +5840,7 @@
             vm.taskHistoryTab.type = 'job';
             vm.taskHistoryTab.task.filter.historyStates = state;
             vm.taskHistoryTab.task.selectedView = false;
-            vm.taskHistoryTab.task.filter.date = typeof vm.dashboardFilters.filter.taskSummaryfrom === 'string' ? vm.dashboardFilters.filter.taskSummaryfrom : 'today';
+            vm.taskHistoryTab.task.filter.date = vm.dashboardFilters.filter.taskSummaryfrom === '0d' ? 'today' : vm.dashboardFilters.filter.taskSummaryfrom;
             $state.go('app.history');
         };
         vm.showYadeSummary = function (state) {
@@ -5843,7 +5848,7 @@
             vm.taskHistoryTab.type = 'yade';
             vm.taskHistoryTab.yade.filter.historyStates = state;
             vm.taskHistoryTab.yade.selectedView = false;
-            vm.taskHistoryTab.yade.filter.date = typeof vm.dashboardFilters.filter.fileSummaryfrom === 'string' ? vm.dashboardFilters.filter.fileSummaryfrom : 'today';
+            vm.taskHistoryTab.yade.filter.date = vm.dashboardFilters.filter.fileSummaryfrom === '0d' ? 'today' : vm.dashboardFilters.filter.fileSummaryfrom;
             $state.go('app.history');
         };
         var interval1 = '';

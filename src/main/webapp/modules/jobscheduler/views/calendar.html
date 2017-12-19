@@ -52,7 +52,7 @@
                                  <i class="text-muted" ng-bind-html="calendar.title | linky:'_blank'"></i>
                              </span>
                             </td>
-                            <td ng-bind="calendar.path"></td>
+                            <td><a ng-click="showCalendarLink1(calendar.path)" class="text-hover-primary"  ng-bind="calendar.path"></a></td>
                             <td><span class="label " ng-class="{'bg-green': calendar.type=='WORKING_DAYS','bg-gold':calendar.type=='NON_WORKING_DAYS'}" ng-bind="calendar.type | translate"></span></td>
                             <td ng-bind="calendar.category"></td>
                             <td ng-bind="calendar.from | stringToDate1"></td>

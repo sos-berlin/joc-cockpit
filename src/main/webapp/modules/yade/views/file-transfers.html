@@ -217,7 +217,7 @@
                                        ng-model="yadeSearch.to" data-date-format="{{dataFormat}}" data-autoclose="1" placeholder="{{'placeholder.setEndDate' | translate}} ({{dataFormat | uppercase}})" data-min-date="{{yadeSearch.from}}" data-max-date="{{currentTime}}"
                                        bs-datepicker type="text">
                                 <input valid-time maxlength="8" ng-disabled="!yadeSearch.to"
-                                       class="form-control input-time m-l" ng-model="jobSearch.toTime"
+                                       class="form-control input-time m-l" ng-model="yadeSearch.toTime"
                                        placeholder="{{'placeholder.endTime' | translate}} (HH:MM:SS)" type="text"
                                        style="width: 175px;background-position: 150px">
                                 <a class="text-sm text-primary" ng-show="yadeSearch.to || yadeSearch.toTime"
@@ -227,11 +227,9 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-md-2 col-sm-4 form-control-label" translate>label.jobSchedulerId</label>
-
                             <div class=" col-sm-6">
                                 <select class="form-control" ng-model="yadeSearch.jobschedulerId">
-                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}
-                                    </option>
+                                    <option ng-repeat="jobScheduler in schedulerIds.jobschedulerIds">{{jobScheduler}}</option>
                                 </select>
                             </div>
                         </div>

@@ -264,6 +264,12 @@
                                     <i ng-show="jobFilters.filter.sortBy == 'usedInJobChains' && jobFilters.reverse"
                                        class="fa fa-caret-down "></i></a>
                                 </th>
+                                <th width="10" ng-click="sortBy('processClass')"><a><span translate>label.processClass</span>
+                                    <i ng-show="jobFilters.filter.sortBy == 'processClass' && !jobFilters.reverse"
+                                       class="fa fa-caret-up "></i>
+                                    <i ng-show="jobFilters.filter.sortBy == 'processClass' && jobFilters.reverse"
+                                       class="fa fa-caret-down "></i></a>
+                                </th>
                                 <th width="10" ng-click="sortBy('numOfRunningTasks')"><a><span translate>label.taskRunning</span>
                                     <i ng-show="jobFilters.filter.sortBy == 'numOfRunningTasks' && !jobFilters.reverse"
                                        class="fa fa-caret-up "></i>
@@ -401,24 +407,28 @@
                                     <span ng-if="!job.usedInJobChains">0</span>
                                 </td>
                                 <td>
-                                            <span ng-if="job.numOfRunningTasks" class="text-hover-primary"
-                                                  ng-click="showTaskFuc(job, true)" href="">
-                                                <span class="text-black _600"
-                                                      ng-bind="job.numOfRunningTasks || 0"></span>
-                                                <i class="text-black " translate>label.of</i>
-                                                <span class="text-black _600" ng-bind="job.maxTasks"></span>
-                                            </span>
-                                            <span ng-if="!job.numOfRunningTasks">
-                                                <span ng-bind="job.numOfRunningTasks || 0"></span>
-                                                <i class="text-black" translate>label.of</i>
-                                                <span ng-bind="job.maxTasks"></span>
-                                            </span>
+                                    <a class="text-hover-primary"
+                                       ng-click="showProcessClass(job.processClass)">{{job.processClass || '-'}}</a>
                                 </td>
                                 <td>
-                                            <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
-                                                 {{job.nextStartTime | stringToDate}}
-                                                <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
-                                            </span>
+                                    <span ng-if="job.numOfRunningTasks" class="text-hover-primary"
+                                          ng-click="showTaskFuc(job, true)" href="">
+                                        <span class="text-black _600"
+                                              ng-bind="job.numOfRunningTasks || 0"></span>
+                                        <i class="text-black " translate>label.of</i>
+                                        <span class="text-black _600" ng-bind="job.maxTasks"></span>
+                                    </span>
+                                    <span ng-if="!job.numOfRunningTasks">
+                                        <span ng-bind="job.numOfRunningTasks || 0"></span>
+                                        <i class="text-black" translate>label.of</i>
+                                        <span ng-bind="job.maxTasks"></span>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="hide" ng-class="{'show-inline':job.nextStartTime}">
+                                        {{job.nextStartTime | stringToDate}}
+                                        <span class="text-success">(<span time="{{job.nextStartTime}}"></span>)</span>
+                                    </span>
                                 </td>
                                 <td ng-bind="job.ordersSummary.pending"></td>
                                 <td ng-bind="job.ordersSummary.running"></td>

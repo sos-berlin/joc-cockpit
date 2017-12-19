@@ -683,6 +683,7 @@
                                                                     <th width="45"><span translate>label.action</span></th>
                                                                     <th translate>label.state</th>
                                                                     <th translate>label.job</th>
+                                                                    <th translate>label.processClass</th>
                                                                     <th translate>label.noOfOrders</th>
                                                                     <th translate>label.jobStatus</th>
                                                                     <th translate>label.nodeStatus</th>
@@ -940,6 +941,11 @@
                                                                             </tbody>
                                                                         </table>
                                                                     </td>
+                                                                    <td>
+                                                                        <a class="text-hover-primary"
+                                                                              ng-click="showProcessClass(nestedNode.job.processClass)">
+                                                                        {{nestedNode.job.processClass || '-'}}</a>
+                                                                    </td>
                                                                     <td>{{nestedNode.numOfOrders || 0}}</td>
                                                                     <td>
                                                                         <span class="label" ng-if="nestedNode.job.state"
@@ -989,6 +995,7 @@
                                             <th width="45"><span translate>label.action</span></th>
                                             <th translate>label.state</th>
                                             <th translate>label.job</th>
+                                            <th translate>label.processClass</th>
                                             <th translate>label.noOfOrders</th>
                                             <th translate>label.jobStatus</th>
                                             <th translate>label.nodeStatus</th>
@@ -1203,6 +1210,11 @@
                                                     </tr>
                                                     </tbody>
                                                 </table>
+                                            </td>
+                                            <td>
+                                                <a class="text-hover-primary"
+                                                          ng-click="showProcessClass(node.job.processClass)">
+                                                    {{node.job.processClass || '-'}}</a>
                                             </td>
                                             <td>{{node.numOfOrders || 0}}</td>
                                             <td>

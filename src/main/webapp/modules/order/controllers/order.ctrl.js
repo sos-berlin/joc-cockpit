@@ -3689,7 +3689,6 @@
                     fromDate = arr[0].trim();
                     toDate = arr[1].trim();
                 } else if (/^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.test(vm.selectedFiltered.planned)) {
-                    console.log('><><>')
                     var date = /^\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*to\s*(\d+)(h|d|w|M|y)\s*[+,-](\d+)(h|d|w|M|y)\s*$/.exec(vm.selectedFiltered.planned);
                     var arr = date[0].split('to');
                     fromDate = arr[0].trim();
@@ -4757,7 +4756,7 @@
         $scope.$on('event-started', function () {
             if (vm.events && vm.events[0] && vm.events[0].eventSnapshots)
                 angular.forEach(vm.events[0].eventSnapshots, function (event) {
-                    if (event.path && (event.eventType === "OrderStateChanged" || event.eventType === "OrderAdded") && !event.eventId) {
+                    if (event.path && (event.eventType === "OrderStateChanged") && !event.eventId) {
                         if ($location.search().path) {
                             if (event.path == $location.search().path)
                                 getOrderByPath($location.search().path);
@@ -4791,6 +4790,11 @@
                             } else {
                                 navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                             }
+                        }
+                    }else if (event.eventType === "OrderAdded" && !event.eventId) {
+                        var path1 = event.path.substring(1, event.path.lastIndexOf('/')) || '/';
+                        if (path1 == vm.folderPath) {
+                             navFullTreeForUpdateOrder(event.path.substring(0, event.path.lastIndexOf('/')));
                         }
                     }
 
@@ -7091,34 +7095,43 @@
                 if (vm.yadeSearch.states && vm.yadeSearch.states.length > 0) {
                     filter.states = vm.yadeSearch.states;
                 }
-
                 if (vm.yadeSearch.operations && vm.yadeSearch.operations.length > 0) {
                     filter.operations = vm.yadeSearch.operations;
                 }
-
                 if (vm.yadeSearch.profileId) {
-                    filter.profiles = vm.yadeSearch.profileId;
+                    vm.yadeSearch.profileId = vm.yadeSearch.profileId.replace(/\s*(,|^|$)\s*/g, "$1");
+                    filter.profiles = vm.yadeSearch.profileId.split(',');
                 }
-
                 if (vm.yadeSearch.mandator) {
                     filter.mandator = vm.yadeSearch.mandator;
                 }
-
+                if (vm.yadeSearch.protocol) {
+                    vm.yadeSearch.protocol = vm.yadeSearch.protocol.replace(/\s*(,|^|$)\s*/g, "$1");
+                    filter.protocol = vm.yadeSearch.protocol.split(',');
+                }
+                if (vm.yadeSearch.sourceFileName) {
+                    vm.yadeSearch.sourceFileName = vm.yadeSearch.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
+                    filter.sourceFiles = vm.yadeSearch.sourceFileName.split(',');
+                }
+                if (vm.yadeSearch.targetFileName) {
+                    vm.yadeSearch.targetFileName = vm.yadeSearch.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
+                    filter.targetFiles = vm.yadeSearch.targetFileName.split(',');
+                }
                 if (vm.yadeSearch.sourceHost) {
-                    filter.sources = vm.yadeSearch.sourceHost;
+                    vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    filter.sources = [];
+                    angular.forEach(vm.yadeSearch.sourceHost.split(','), function(value){
+                        filter.sources.push({host : value})
+                    })
                 }
                 if (vm.yadeSearch.targetHost) {
-                    filter.targets = vm.yadeSearch.targetHost;
+                    vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    filter.targets = [];
+                    angular.forEach(vm.yadeSearch.targetHost.split(','), function(value){
+                        filter.targets.push({host : value})
+                    })
                 }
-                if (vm.yadeSearch.protocol) {
-                    filter.protocol = [];
-                    var s = vm.yadeSearch.protocol.replace(/,\s+/g, ',');
-                    var protocols = s.split(',');
-                    angular.forEach(protocols, function (value) {
-                        filter.protocol.push(value)
-                    });
 
-                }
                 if (vm.yadeSearch.date == 'process') {
                     filter = parseProcessExecuted(vm.yadeSearch.planned, filter);
                 } else {
@@ -7325,39 +7338,50 @@
         function yadeParseDate(obj) {
 
 
-            if (vm.selectedFiltered3.state && vm.selectedFiltered3.state.length > 0) {
-                obj.states = vm.selectedFiltered3.state;
+            if (vm.selectedFiltered3.states && vm.selectedFiltered3.states.length > 0) {
+                obj.states = vm.selectedFiltered3.states;
             }
 
             if (vm.selectedFiltered3.operations && vm.selectedFiltered3.operations.length > 0) {
                 obj.operations = vm.selectedFiltered3.operations;
             }
 
-            if (vm.selectedFiltered3.protocol) {
-                obj.protocol = vm.selectedFiltered3.protocol;
+            if (vm.selectedFiltered3.profileId) {
+                vm.selectedFiltered3.profileId = vm.selectedFiltered3.profileId.replace(/\s*(,|^|$)\s*/g, "$1");
+                obj.profiles = vm.selectedFiltered3.profileId.split(',');
             }
 
             if (vm.selectedFiltered3.mandator) {
                 obj.mandator = vm.selectedFiltered3.mandator;
             }
 
+            if (vm.selectedFiltered3.protocol) {
+                vm.selectedFiltered3.protocol = vm.selectedFiltered3.protocol.replace(/\s*(,|^|$)\s*/g, "$1");
+                obj.protocol = vm.selectedFiltered3.protocol.split(',');
+
+            }
+            if (vm.selectedFiltered3.sourceFileName) {
+                vm.selectedFiltered3.sourceFileName = vm.selectedFiltered3.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
+                obj.sourceFiles = vm.selectedFiltered3.sourceFileName.split(',');
+            }
+            if (vm.selectedFiltered3.targetFileName) {
+                vm.selectedFiltered3.targetFileName = vm.selectedFiltered3.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
+                obj.targetFiles = vm.selectedFiltered3.targetFileName.split(',');
+            }
             if (vm.selectedFiltered3.sourceHost) {
-                obj.sources = vm.selectedFiltered3.sourceHost;
+                vm.selectedFiltered3.sourceHost = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                obj.sources = [];
+                angular.forEach(vm.selectedFiltered3.sourceHost.split(','), function (value) {
+                    obj.sources.push({host: value})
+                })
             }
             if (vm.selectedFiltered3.targetHost) {
-                obj.targets = vm.selectedFiltered3.targetHost;
+                vm.selectedFiltered3.targetHost = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                obj.targets = [];
+                angular.forEach(vm.selectedFiltered3.targetHost.split(','), function (value) {
+                    obj.targets.push({host: value})
+                })
             }
-            if (vm.selectedFiltered3.profileId) {
-                obj.profiles = vm.selectedFiltered3.profileId;
-            }
-            /*if (vm.selectedFiltered3.jobs && vm.selectedFiltered3.jobs.length > 0) {
-             obj.jobs = [];
-
-             angular.forEach(vm.selectedFiltered3.jobs, function (value) {
-             obj.jobs.push({job: value});
-             });
-
-             }*/
             obj = parseProcessExecuted(vm.selectedFiltered3.planned, obj);
             return obj;
         }
