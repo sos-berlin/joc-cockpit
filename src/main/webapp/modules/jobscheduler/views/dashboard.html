@@ -7,7 +7,7 @@
                         <span class="text-md text-orange _600 p-t-xs" ncy-breadcrumb></span>
                     </div>
                     <div class="inline m-l-sm">
-                        <button class="btn btn-grey btn-sm m-l-sm" ng-click="addWidgetDialog()" >
+                        <button ng-if="userPreferences.dashboardLayout == 'custom'" class="btn btn-grey btn-sm m-l-sm" ng-click="addWidgetDialog()" >
                             <i class="fa fa-plus"></i>&nbsp;
                             <span translate>button.widget</span>
                         </button>
@@ -30,7 +30,7 @@
                 <div id="agentClusterStatus1" ng-if="widget.name == 'agentClusterStatus'" style="min-height: 183px;max-height: 247px" class="box">
                     <div class="box-header b-b remove">
                         <h3 translate>label.agentClusterStatus</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row " ng-class="{'m-t-n-35' : agentClusterData.length>0}" ng-hide="!isLoadedAgentCluster">
                         <div class="col-xs-offset-1 col-xs-4"
@@ -57,7 +57,7 @@
                 <div id="agentClusterRunningTasks1" ng-if="widget.name == 'agentClusterRunningTasks'" style="min-height: 188px;max-height: 247px" class="box">
                     <div class="box-header b-b remove">
                         <h3 translate>label.agentClusterRunningTasks</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-tool" >
                         <ul class="nav" >
@@ -82,7 +82,7 @@
                 <div id="masterClusterStatus1" ng-if="widget.name == 'masterClusterStatus'" style="min-height: 300px;max-height: 468px;" class="box">
                     <div class="box-header b-b remove">
                         <h3 translate>label.masterClusterStatus</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-tool hide"
                          ng-class="{'show': selectedJobScheduler.clusterType._type != 'STANDALONE'}">
@@ -118,7 +118,7 @@
                 <div id="ordersOverview1" ng-if="widget.name == 'ordersOverview'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.ordersOverview</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
@@ -178,7 +178,7 @@
                 <div id="ordersSummary1" ng-if="widget.name == 'ordersSummary'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.ordersSummary</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
@@ -257,7 +257,7 @@
                 <div id="tasksOverview1" ng-if="widget.name == 'tasksOverview'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.tasksOverview</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
@@ -311,7 +311,7 @@
                 <div id="tasksSummary1" ng-if="widget.name == 'tasksSummary'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.tasksSummary</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
@@ -388,7 +388,7 @@
                 <div id="fileTransferOverview1" ng-if="widget.name == 'fileTransferOverview'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.fileTransferOverview</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-body" >
                         <div class="table-responsive">
@@ -428,7 +428,7 @@
                 <div id="fileTransferSummary1" ng-if="widget.name == 'fileTransferSummary'" style="min-height: 130px;max-height: 156px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.fileTransferSummary</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="row m-b-sm box-tool ">
                         <div class="col-md-12 container-fluid">
@@ -497,7 +497,7 @@
                 <div id="dailyPlanOverview1" ng-if="widget.name == 'dailyPlanOverview'" style="min-height: 110px;max-height: 130px" class="box">
                     <div class="box-header b-b remove">
                         <h3 class="m-t-xs" translate>label.dailyPlanOverview</h3>
-                        <i class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
+                        <i ng-if="userPreferences.dashboardLayout == 'custom'" class="fa fa-times-circle" ng-click="removeWidget(widget)"></i>
                     </div>
                     <div class="box-tool">
                         <div class="btn-group m-l-sm">

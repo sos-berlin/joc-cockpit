@@ -560,6 +560,13 @@
             vm.yadeSearch = {};
             vm.yadeSearch.date = 'date';
             vm.showSearchPanel = false;
+            if (!vm.yadeFilters.filter.states) {
+                vm.yadeFilters.filter.states = 'all';
+            }
+            if (!vm.yadeFilters.filter.date) {
+                vm.yadeFilters.filter.date = 'today';
+            }
+
             if (form)
                 form.$setPristine();
             vm.load();

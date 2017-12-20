@@ -2808,7 +2808,7 @@
             obj.expires = vm.event.expiresDate;
             obj.job = vm.event.job;
             obj.jobChain = vm.event.jobChain;
-            obj.orderId = vm.event.orderId;
+            obj.orderId = vm.event.order;
             obj.expirationPeriod = vm.event.expirationPeriod;
             obj.expirationCycle = vm.event.expirationCycle;
             obj.jobschedulerId = vm.schedulerIds.selected;
@@ -4527,6 +4527,7 @@
         var isDragging = false;
         vm.gridsterOpts = {
             resizable: {
+            enabled: vm.userPreferences.dashboardLayout == 'custom',
                 resize: function () {
                     isDragging = true;
                 },
@@ -4536,6 +4537,7 @@
                 }
             },
             draggable: {
+             enabled: vm.userPreferences.dashboardLayout == 'custom',
                 drag: function () {
                     isDragging = true;
                 },
@@ -4563,7 +4565,7 @@
 
         vm.dashboard = {widgets: []};
         function initWidgets() {
-            if (vm.userPreferences.dashboard) {
+            if (vm.userPreferences.dashboard && vm.userPreferences.dashboardLayout == 'custom') {
                 vm.dashboardLayout = vm.userPreferences.dashboard;
             } else {
                 vm.dashboardLayout = [{

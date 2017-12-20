@@ -222,6 +222,7 @@
                 preferences.adtLog = 'current';
                 preferences.agentTask = 'current';
                 preferences.fileTransfer = 'current';
+                preferences.dashboardLayout = 'default';
                 preferences.showTasks = true;
                 preferences.showOrders = false;
                 if ($window.sessionStorage.$SOS$FORCELOGING === 'true' || $window.sessionStorage.$SOS$FORCELOGING == true)
@@ -279,6 +280,9 @@
                             }
                             if (preferences && !preferences.fileTransfer) {
                                 preferences.fileTransfer = 'current';
+                            }
+                            if(preferences && !preferences.dashboardLayout){
+                                preferences.dashboardLayout = 'default';
                             }
                             if (!preferences.entryPerPage) {
                                 preferences.entryPerPage = '10';

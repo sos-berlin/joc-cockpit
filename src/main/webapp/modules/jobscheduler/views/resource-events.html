@@ -201,16 +201,16 @@
                         <i ng-show="eventFilters.filter.sortBy == 'eventClass' && eventFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th ng-click="sortByE('job')"><a><span translate>label.job</span>
-                        <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
-                           class="fa fa-caret-up "></i>
-                        <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
-                    </th>
                     <th ng-click="sortByE('jobChain')"><a><span translate>label.jobChain</span>
                         <i ng-show="eventFilters.filter.sortBy == 'jobChain' && !eventFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i ng-show="eventFilters.filter.sortBy == 'jobChain' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('job')"><a><span translate>label.job</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th ng-click="sortByE('orderId')"><a><span translate>label.orderId</span>
@@ -257,12 +257,12 @@
                             </div>
                         </div>
                     </td>
-                    <td  ng-bind="event.eventId"></td>
+                    <td ng-bind="event.eventId"></td>
                     <td><span ng-bind="event.eventClass"></span></td>
                     <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)"
                            ng-bind="event.jobChain"></a></td>
                     <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
-                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.orderId)"
+                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.jobChain, event.orderId)"
                            ng-bind="event.orderId"></a></td>
                     <td><span ng-bind="event.exitCode"></span></td>
                     <td><span ng-bind="event.expires | stringToDate"></span></td>
