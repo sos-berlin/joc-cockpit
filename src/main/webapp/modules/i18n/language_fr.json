@@ -1276,6 +1276,6 @@
   "label.defaultLayout": "Schéma par défaut",
   "label.customLayout": "Schéma personnalisé",
   "label.sourceProtocol": "Protocole source",
-  "placeholder.sourceProtocol": "Protocol source",
+  "placeholder.sourceProtocol": "Protocole source",
   "placeholder.targetProtocol": "Protocole cible"
 }
