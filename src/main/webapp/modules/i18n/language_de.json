@@ -1275,7 +1275,7 @@
   "label.dashboardWidgetLayout": "Dashboard Widget Layout",
   "label.defaultLayout": "Voreingestelltes Layout",
   "label.customLayout": "Angepasstes Layout",
-  "label.sourceProtocol": "Source Protokoll",
-  "placeholder.sourceProtocol": "Source Protokoll",
-  "placeholder.targetProtocol": "Target Protokoll"
+  "label.sourceProtocol": "Protokoll Quellsystem",
+  "placeholder.sourceProtocol": "Protokoll Quellsystem",
+  "placeholder.targetProtocol": "Protokoll Zielsystem"
 }
