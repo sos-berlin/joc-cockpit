@@ -4525,28 +4525,32 @@
         var vm = $scope;
         vm.loadingImg = true;
         var isDragging = false;
-        vm.gridsterOpts = {
-            resizable: {
-            enabled: vm.userPreferences.dashboardLayout == 'custom',
-                resize: function () {
-                    isDragging = true;
+
+        function initConfig() {
+            vm.gridsterOpts = {
+                resizable: {
+                    enabled: vm.userPreferences.dashboardLayout == 'custom',
+                    resize: function () {
+                        isDragging = true;
+                    },
+                    stop: function () {
+                        setWidgetPreference();
+                        isDragging = false;
+                    }
                 },
-                stop: function () {
-                    setWidgetPreference();
-                    isDragging = false;
+                draggable: {
+                    enabled: vm.userPreferences.dashboardLayout == 'custom',
+                    drag: function () {
+                        isDragging = true;
+                    },
+                    stop: function () {
+                        setWidgetPreference();
+                        isDragging = false;
+                    }
                 }
-            },
-            draggable: {
-             enabled: vm.userPreferences.dashboardLayout == 'custom',
-                drag: function () {
-                    isDragging = true;
-                },
-                stop: function () {
-                    setWidgetPreference();
-                    isDragging = false;
-                }
-            }
-        };
+            };
+        }
+        initConfig();
 
         vm.dashboardFilters = CoreService.getDashboardTab();
 
@@ -4564,6 +4568,7 @@
         vm.isDailPlanVisible = true;
 
         vm.dashboard = {widgets: []};
+        vm.dashboardLayout = [];
         function initWidgets() {
             if (vm.userPreferences.dashboard && vm.userPreferences.dashboardLayout == 'custom') {
                 vm.dashboardLayout = vm.userPreferences.dashboard;
@@ -4657,7 +4662,12 @@
                 }
                 return parseInt(a.row) - parseInt(b.row);
             });
-
+            vm.dashboardLayout.sort(function (a, b) {
+                if (parseInt(a.row) == parseInt(b.row)) {
+                    return parseInt(a.col) - parseInt(b.col);
+                }
+                return parseInt(a.row) - parseInt(b.row);
+            });
             for (var i = 0; i < vm.dashboardLayout.length; i++) {
                 if (vm.dashboardLayout[i].name == 'agentClusterStatus' && !vm.permission.JobschedulerUniversalAgent.view.status) {
                     vm.dashboardLayout[i].visible = false;
@@ -4769,7 +4779,6 @@
             }, 100);
         };
 
-
         vm.removeWidget = function (widget) {
             isDragging = true;
             widget.visible = false;
@@ -4843,204 +4852,206 @@
                     $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
                 }
                 else if (vm.dashboard.widgets[i].row > 0) {
-                    if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
-                        $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
-                        continue;
-                    }
-                    var ht = 0, ht1 = 0, ht2 = 0, ht3 = 0, ht4 = 0;
-                    var top = 0;
-                    if (i == 1) {
-                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
-                            $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
+                    if(vm.dashboard.widgets[i - 1]) {
+                        if (vm.dashboard.widgets[i - 1].row == vm.dashboard.widgets[i].row) {
+                            $('#' + vm.dashboard.widgets[i].name).css('top', $('#' + vm.dashboard.widgets[i - 1].name).position().top + 'px');
+                            continue;
                         }
-                        else {
-                            ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                        var ht = 0, ht1 = 0, ht2 = 0, ht3 = 0, ht4 = 0;
+                        var top = 0;
+                        if (i == 1) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row) {
+                                $('#' + vm.dashboard.widgets[i].name).css('top', '22px');
+                            }
+                            else {
+                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                            }
                         }
-                    }
-                    if (i == 2) {
-                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                if (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i - 2].sizeY) {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht = ht1 > ht2 ? ht1 : ht2;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-                                }
-                                else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                    ht4 = ht2 + ht3;
-                                    $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
-                                    ht = ht1 > ht2 ? ht2 : ht1;
-                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
-                                }
-                                else {
-                                    if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                        if (i == 2) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
+                                    if (vm.dashboard.widgets[i - 1].sizeY == vm.dashboard.widgets[i - 2].sizeY) {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        ht = ht1 > ht2 ? ht1 : ht2;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                                    }
+                                    else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
                                         ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                         ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
                                         ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                        ht4 = ht1 + ht3;
-                                        $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                        ht4 = ht2 + ht3;
+                                        $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
                                         ht = ht1 > ht2 ? ht2 : ht1;
                                         $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
                                     }
+                                    else {
+                                        if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                            ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                            ht4 = ht1 + ht3;
+                                            $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                            ht = ht1 > ht2 ? ht2 : ht1;
+                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + 22 + 'px');
+                                        }
 
+                                    }
                                 }
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-                        }
-                        else {
-                            if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                ht = ht1 > ht2 ? ht1 : ht2;
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-                        }
-
-                    }
-                    if (i == 3) {
-                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
-                                    ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
+                                else {
+                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                     top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                                     $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                 }
-                                else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
+                            }
+                            else {
+                                if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
                                     ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                     ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                    ht4 = ht2 + ht3;
-                                    $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
-                                    ht = ht1 > ht2 ? ht2 : ht1;
+                                    ht = ht1 > ht2 ? ht1 : ht2;
                                     top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                                     $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                 }
                                 else {
-                                    if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
+                            }
+
+                        }
+                        if (i == 3) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
+                                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
+                                        ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
+                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                    }
+                                    else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
                                         ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                         ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
                                         ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                        ht4 = ht1 + ht3;
-                                        $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                        ht4 = ht2 + ht3;
+                                        $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
                                         ht = ht1 > ht2 ? ht2 : ht1;
                                         top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                                         $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                     }
                                     else {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                        ht = ht1 > ht2 ? ht1 : ht2;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                        if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                            ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                            ht4 = ht1 + ht3;
+                                            $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                            ht = ht1 > ht2 ? ht2 : ht1;
+                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                        }
+                                        else {
+                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                            ht = ht1 > ht2 ? ht1 : ht2;
+                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                        }
+
                                     }
 
                                 }
-
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-
-                        } else {
-                            if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                ht = ht1 > ht2 ? ht1 : ht2;
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-                        }
-
-                    }
-
-                    if (i > 3) {
-                        if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
-                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
-                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
-                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
-                                    ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
+                                else {
+                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                     top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                                     $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                 }
-                                else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
+
+                            } else {
+                                if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
                                     ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                     ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                    ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                    ht4 = ht2 + ht3;
-                                    $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
-                                    ht = ht1 > ht2 ? ht2 : ht1;
+                                    ht = ht1 > ht2 ? ht1 : ht2;
                                     top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                                     $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                 }
                                 else {
-                                    if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
+                            }
+
+                        }
+
+                        if (i > 3) {
+                            if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 1].row + 1) {
+                                if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 2].row + 1) {
+                                    if (vm.dashboard.widgets[i].row == vm.dashboard.widgets[i - 3].row + 1) {
+                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                        ht3 = $('#' + vm.dashboard.widgets[i - 3].name).innerHeight();
+                                        ht = ht1 > ht2 ? ht1 > ht3 ? ht1 : ht3 : ht2 > ht3 ? ht2 : ht3;
+                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                    }
+                                    else if (vm.dashboard.widgets[i - 1].sizeY == 2 && vm.dashboard.widgets[i - 1].name == "masterClusterStatus") {
                                         ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
                                         ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
                                         ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
-                                        ht4 = ht1 + ht3;
-                                        $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                        ht4 = ht2 + ht3;
+                                        $('#' + vm.dashboard.widgets[i - 1].name + '1').css("height", ht4 - 22 + 'px');
                                         ht = ht1 > ht2 ? ht2 : ht1;
                                         top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
                                         $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
                                     }
                                     else {
-                                        ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                        ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                        top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                        ht = ht1 > ht2 ? ht1 : ht2;
-                                        $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                        if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                            ht3 = $('#' + vm.dashboard.widgets[i].name).innerHeight();
+                                            ht4 = ht1 + ht3;
+                                            $('#' + vm.dashboard.widgets[i - 2].name + '1').css("height", ht4 - 22 + 'px');
+                                            ht = ht1 > ht2 ? ht2 : ht1;
+                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                        }
+                                        else {
+                                            ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                            ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                            top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                            ht = ht1 > ht2 ? ht1 : ht2;
+                                            $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                        }
+
                                     }
 
                                 }
+                                else {
+                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
 
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                            } else {
+                                if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
+                                    ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
+                                    ht = ht1 > ht2 ? ht1 : ht2;
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
+                                else {
+                                    ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
+                                    top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
+                                    $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
+                                }
                             }
 
-                        } else {
-                            if (vm.dashboard.widgets[i - 2].sizeY == 2 && vm.dashboard.widgets[i - 2].name == "masterClusterStatus") {
-                                ht1 = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                ht2 = $('#' + vm.dashboard.widgets[i - 2].name).innerHeight();
-                                ht = ht1 > ht2 ? ht1 : ht2;
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
-                            else {
-                                ht = $('#' + vm.dashboard.widgets[i - 1].name).innerHeight();
-                                top = $('#' + vm.dashboard.widgets[i - 1].name).position().top;
-                                $('#' + vm.dashboard.widgets[i].name).css('top', ht + top + 'px');
-                            }
                         }
-
                     }
                 }
             }
@@ -5108,7 +5119,6 @@
                 vm.isLoadedAgentCluster = true;
             });
         };
-
 
         vm.barOptions = {
             chart: {
@@ -5918,6 +5928,8 @@
         }
 
         $scope.$on('reloadPreferences', function () {
+
+            initConfig();
             if (vm.loadingImg)
                 initWidgets();
             if (!vm.userPreferences.dashboard) {

@@ -38,7 +38,7 @@
                     <label class="col-md-2 col-sm-4 form-control-label" translate>label.eventExitCodes</label>
 
                     <div class=" col-sm-6">
-                        <input type="text" class="form-control" ng-model="eventSearch.exitCodes">
+                        <input type="text" ng-pattern="" class="form-control" ng-model="eventSearch.exitCodes">
                     </div>
                 </div>
                 <div class="m-b-sm row ">
@@ -207,16 +207,16 @@
                         <i ng-show="eventFilters.filter.sortBy == 'jobChain' && eventFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
-                    <th ng-click="sortByE('job')"><a><span translate>label.job</span>
-                        <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
-                           class="fa fa-caret-up "></i>
-                        <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
-                           class="fa fa-caret-down "></i></a>
-                    </th>
                     <th ng-click="sortByE('orderId')"><a><span translate>label.orderId</span>
                         <i ng-show="eventFilters.filter.sortBy == 'orderId' && !eventFilters.reverse"
                            class="fa fa-caret-up "></i>
                         <i ng-show="eventFilters.filter.sortBy == 'orderId' && eventFilters.reverse"
+                           class="fa fa-caret-down "></i></a>
+                    </th>
+                    <th ng-click="sortByE('job')"><a><span translate>label.job</span>
+                        <i ng-show="eventFilters.filter.sortBy == 'job' && !eventFilters.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i ng-show="eventFilters.filter.sortBy == 'job' && eventFilters.reverse"
                            class="fa fa-caret-down "></i></a>
                     </th>
                     <th ng-click="sortByE('exitCode')"><a><span translate>label.exitCode</span>
@@ -259,11 +259,9 @@
                     </td>
                     <td ng-bind="event.eventId"></td>
                     <td><span ng-bind="event.eventClass"></span></td>
-                    <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)"
-                           ng-bind="event.jobChain"></a></td>
+                    <td><a class="text-hover-primary" ng-click="showJobChain(event.jobChain)" ng-bind="event.jobChain"></a></td>
+                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.jobChain, event.orderId)" ng-bind="event.orderId"></a></td>
                     <td><a class="text-hover-primary" ng-click="showJob(event.job)" ng-bind="event.job"></a></td>
-                    <td><a class="text-hover-primary" ng-click="showOrderLink(event.jobChain, event.orderId)"
-                           ng-bind="event.orderId"></a></td>
                     <td><span ng-bind="event.exitCode"></span></td>
                     <td><span ng-bind="event.expires | stringToDate"></span></td>
                     <td>

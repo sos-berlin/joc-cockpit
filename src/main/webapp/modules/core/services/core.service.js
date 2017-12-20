@@ -113,8 +113,8 @@
         tabs._yade.filter = {};
         tabs._yade.filter.states = 'all';
         tabs._yade.filter.date = 'today';
-        tabs._yade.filter.sortBy = 'state._text';
-        tabs._yade.sortReverse = false;
+        tabs._yade.filter.sortBy = 'start';
+        tabs._yade.sortReverse = true;
         tabs._yade.currentPage = '1';
         tabs._yade.selectedView = true;
 
@@ -180,7 +180,7 @@
         tabs._resource.calendars.expand_to = [];
         tabs._resource.events = {};
         tabs._resource.events.filter = {};
-        tabs._resource.events.filter.sortBy = 'name';
+        tabs._resource.events.filter.sortBy = 'expires';
         tabs._resource.events.reverse = false;
         tabs._resource.events.currentPage = '1';
         tabs._resource.events.selectedView = true;
@@ -284,8 +284,8 @@
         tempTabs._yade.filter = {};
         tempTabs._yade.filter.states = 'all';
         tempTabs._yade.filter.date = 'today';
-        tempTabs._yade.filter.sortBy = 'state._text';
-        tempTabs._yade.sortReverse = false;
+        tempTabs._yade.filter.sortBy = 'start';
+        tempTabs._yade.sortReverse = true;
         tempTabs._yade.currentPage = '1';
         tempTabs._yade.selectedView = true;
 
@@ -351,7 +351,7 @@
         tempTabs._resource.calendars.expand_to = [];
         tempTabs._resource.events = {};
         tempTabs._resource.events.filter = {};
-        tempTabs._resource.events.filter.sortBy = 'name';
+        tempTabs._resource.events.filter.sortBy = 'expires';
         tempTabs._resource.events.reverse = false;
         tempTabs._resource.events.currentPage = '1';
         tempTabs._resource.events.selectedView = true;

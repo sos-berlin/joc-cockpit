@@ -7156,9 +7156,8 @@
                 if (vm.yadeSearch.mandator) {
                     filter.mandator = vm.yadeSearch.mandator;
                 }
-                if (vm.yadeSearch.protocol) {
-                    vm.yadeSearch.protocol = vm.yadeSearch.protocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                    filter.protocol = vm.yadeSearch.protocol.split(',');
+                if (vm.yadeSearch.operations && vm.yadeSearch.operations.length > 0) {
+                    obj.operations = vm.yadeSearch.operations;
                 }
                 if (vm.yadeSearch.sourceFileName) {
                     vm.yadeSearch.sourceFileName = vm.yadeSearch.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
@@ -7168,10 +7167,13 @@
                     vm.yadeSearch.targetFileName = vm.yadeSearch.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                     filter.targetFiles = vm.yadeSearch.targetFileName.split(',');
                 }
-                if (vm.yadeSearch.sourceHost) {
-                    vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    var hosts =vm.yadeSearch.sourceHost.split(',');
+                if (vm.yadeSearch.sourceHost || vm.yadeSearch.sourceProtocol) {
+                    var hosts = [];
                     var protocols =[];
+                    if(vm.yadeSearch.sourceHost){
+                        vm.yadeSearch.sourceHost = vm.yadeSearch.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = vm.yadeSearch.sourceHost.split(',');
+                    }
                     if(vm.yadeSearch.sourceProtocol){
                         vm.yadeSearch.sourceProtocol = vm.yadeSearch.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                         protocols = vm.yadeSearch.sourceProtocol.split(',');
@@ -7179,10 +7181,13 @@
                     filter.sources = mergeHostAndProtocol(hosts,protocols);
 
                 }
-                if (vm.yadeSearch.targetHost) {
-                    vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                    var hosts =vm.yadeSearch.targetHost.split(',');
+                if (vm.yadeSearch.targetHost || vm.yadeSearch.targetProtocol) {
+                    var hosts =[];
                     var protocols =[];
+                    if(vm.yadeSearch.targetHost){
+                        vm.yadeSearch.targetHost = vm.yadeSearch.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                        hosts = vm.yadeSearch.targetHost.split(',');
+                    }
                     if(vm.yadeSearch.targetProtocol){
                         vm.yadeSearch.targetProtocol = vm.yadeSearch.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                         protocols = vm.yadeSearch.targetProtocol.split(',');
@@ -7388,11 +7393,6 @@
                 obj.mandator = vm.selectedFiltered3.mandator;
             }
 
-            if (vm.selectedFiltered3.protocol) {
-                vm.selectedFiltered3.protocol = vm.selectedFiltered3.protocol.replace(/\s*(,|^|$)\s*/g, "$1");
-                obj.protocol = vm.selectedFiltered3.protocol.split(',');
-
-            }
             if (vm.selectedFiltered3.sourceFileName) {
                 vm.selectedFiltered3.sourceFileName = vm.selectedFiltered3.sourceFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.sourceFiles = vm.selectedFiltered3.sourceFileName.split(',');
@@ -7401,10 +7401,13 @@
                 vm.selectedFiltered3.targetFileName = vm.selectedFiltered3.targetFileName.replace(/\s*(,|^|$)\s*/g, "$1");
                 obj.targetFiles = vm.selectedFiltered3.targetFileName.split(',');
             }
-            if (vm.selectedFiltered3.sourceHost) {
-                vm.selectedFiltered3.sourceHost = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                var hosts = vm.selectedFiltered3.sourceHost.split(',');
+            if (vm.selectedFiltered3.sourceHost || vm.selectedFiltered3.sourceProtocol) {
+                var hosts = [];
                 var protocols = [];
+                if (vm.selectedFiltered3.sourceHost) {
+                    vm.selectedFiltered3.sourceHost = vm.selectedFiltered3.sourceHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = vm.selectedFiltered3.sourceHost.split(',');
+                }
                 if (vm.selectedFiltered3.sourceProtocol) {
                     vm.selectedFiltered3.sourceProtocol = vm.selectedFiltered3.sourceProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                     protocols = vm.selectedFiltered3.sourceProtocol.split(',');
@@ -7412,10 +7415,13 @@
                 obj.sources = mergeHostAndProtocol(hosts, protocols);
 
             }
-            if (vm.selectedFiltered3.targetHost) {
-                vm.selectedFiltered3.targetHost = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
-                var hosts = vm.selectedFiltered3.targetHost.split(',');
+            if (vm.selectedFiltered3.targetHost || vm.selectedFiltered3.targetProtocol) {
+                var hosts = [];
                 var protocols = [];
+                if (vm.selectedFiltered3.targetHost) {
+                    vm.selectedFiltered3.targetHost = vm.selectedFiltered3.targetHost.replace(/\s*(,|^|$)\s*/g, "$1");
+                    hosts = vm.selectedFiltered3.targetHost.split(',');
+                }
                 if (vm.selectedFiltered3.targetProtocol) {
                     vm.selectedFiltered3.targetProtocol = vm.selectedFiltered3.targetProtocol.replace(/\s*(,|^|$)\s*/g, "$1");
                     protocols = vm.selectedFiltered3.targetProtocol.split(',');
