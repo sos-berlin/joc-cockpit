@@ -1157,7 +1157,7 @@
 
                var $target = angular.element(theEvtObj.target);
                 if($target.attr('class')){
-                    if( $target.hasClass('btn') || $target.hasClass('text-lg') || $target.hasClass('nav-link') || $target.hasClass('box-body')){
+                    if( $target.hasClass('btn') || $target.hasClass('text-lg') || $target.hasClass('nav-link')){
                         return;
                     }
                 }else{
